@@ -1,27 +1,40 @@
-import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, createResolver, addImportsDir } from '@nuxt/kit'
 
-// Module options TypeScript interface definition
-export interface ModuleOptions {}
+export interface ModuleOptions {
+  url: string
+  store?: string
+  adminToken?: string
+  customerTokenCookie?: string
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'my-module',
-    configKey: 'myModule',
+    name: 'nuxt-magento',
+    configKey: 'magento'
   },
-  // Default configuration options of the Nuxt module
+
   defaults: {
-    endpoint: 'https://your-magento-site/graphql',
-    token: '' // optional integration token
+    url: '',
+    store: 'default',
+    adminToken: '',
+    customerTokenCookie: 'magento_customer_token'
   },
+
   setup(options, nuxt) {
-    const resolver = createResolver(import.meta.url)
+    const { resolve } = createResolver(import.meta.url)
 
-    // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
-    addPlugin(resolver.resolve('./runtime/plugin'))
-
-    nuxt.options.runtimeConfig.public.magento = {
-      endpoint: options.endpoint,
-      token: options.token
+    nuxt.options.runtimeConfig.magento = {
+      url: options.url,
+      store: options.store,
+      adminToken: options.adminToken,
+      customerTokenCookie: options.customerTokenCookie,
+      public: {
+        url: options.url,
+        store: options.store
+      }
     }
-  },
+
+    addPlugin(resolve('./runtime/plugin'))
+    addImportsDir(resolve('./composables'))
+  }
 })
