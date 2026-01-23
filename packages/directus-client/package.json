@@ -1,0 +1,42 @@
+{
+  "name": "@meeovi/directus-client",
+  "version": "1.0.9",
+  "description": "Directus Client Library with auto generating forms and tables, Directus SDK and Types, and vue/react components for Directus Visual Editing.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "directus",
+    "directus-sdk",
+    "directus-types",
+    "directus-visual-editing",
+    "directus-client",
+    "vue",
+    "react",
+    "typescript"
+  ],
+  "author": "Meeovi",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@directus/sdk": "^18.0.3",
+    "@directus/types": "^14.0.0",
+    "@directus/visual-editing": "^1.1.0",
+    "react": "^19.2.3",
+    "typescript": "^5.9.3",
+    "vue": "^3.5.24"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.9"
+  }
+}

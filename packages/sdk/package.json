@@ -1,0 +1,35 @@
+{
+  "name": "@meeovi/sdk",
+  "version": "1.0.0",
+  "description": "Official SDK for the Alternate Framework.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "directus",
+    "directus-sdk",
+    "directus-types",
+    "directus-visual-editing",
+    "directus-client",
+    "vue",
+    "react",
+    "typescript"
+  ],
+  "author": "Meeovi",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@meeovi/types": "^1.0.1",
+    "typescript": "^5.9.3"
+  }
+}

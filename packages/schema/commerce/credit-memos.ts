@@ -1,0 +1,50 @@
+export interface MeeoviCreditMemo {
+	id: number
+	created_at?: string | null
+	updated_at?: string | null
+	adjustment?: number | null
+	adjustment_negative?: number | null
+	adjustment_positive?: number | null
+	base_adjustment?: number | null
+	base_adjustment_negative?: number | null
+	base_adjustment_positive?: number | null
+	base_currency_code?: string | null
+	base_discount_amount?: number | null
+	base_grand_total?: number | null
+	base_discount_tax_compensation_amount?: number | null
+	base_shipping_amount?: number | null
+	base_shipping_discount_tax_compensation_amnt?: number | null
+	base_shipping_incl_tax?: number | null
+	base_shipping_tax_amount?: number | null
+	base_subtotal?: number | null
+	base_subtotal_incl_tax?: number | null
+	base_tax_amount?: number | null
+	base_to_global_rate?: number | null
+	base_to_order_rate?: number | null
+	creditmemo_status?: number | null
+	discount_amount?: number | null
+	discount_description?: string | null
+	email_sent?: number | null
+	entity_id?: number | null
+	global_currency_code?: string | null
+	grand_total?: number | null
+	discount_tax_compensation_amount?: number | null
+	increment_id?: string | null
+	invoice_id?: number | null
+	order_currency_code?: string | null
+	shipping_amount?: number | null
+	shipping_discount_tax_compensation_amount?: number | null
+	shipping_incl_tax?: number | null
+	shipping_tax_amount?: number | null
+	state?: number | null
+	store_currency_code?: string | null
+	store_id?: number | null
+	store_to_base_rate?: number | null
+	store_to_order_rate?: number | null
+	subtotal?: number | null
+	subtotal_incl_tax?: number | null
+	tax_amount?: number | null
+	user?: string | null
+}
+
+

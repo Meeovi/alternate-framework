@@ -1,0 +1,35 @@
+{
+  "name": "@meeovi/core",
+  "version": "1.0.3",
+  "description": "The core package of the Alternate Framework.",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "meeovi",
+    "alternate-framework",
+    "alternate-core",
+    "vue",
+    "react",
+    "typescript"
+  ],
+  "author": "Meeovi",
+  "type": "module",
+  "dependencies": {
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10"
+  }
+}

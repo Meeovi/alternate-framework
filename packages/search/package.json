@@ -1,0 +1,42 @@
+{
+  "name": "@meeovi/search",
+  "version": "1.0.3",
+  "description": "Powerful search module for the Alternate Framework.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "keywords": [
+    "meeovi",
+    "search",
+    "module",
+    "alternate-framework",
+    "vue",
+    "instantsearch"
+  ],
+  "bin": {
+    "meeovi-search": "./dist/cli.js"
+  },
+  "author": "Meeovi",
+  "license": "MIT",
+  "type": "module",  
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@meeovi/core": "^1.0.3",
+    "@types/react": "^19.2.9",
+    "react": "^19.2.3",
+    "typescript": "^5.9.3",
+    "vue": "^3.2.47"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10"
+  }
+}
