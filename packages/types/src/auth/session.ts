@@ -1,7 +1,7 @@
-import { User } from "./user"
+import { AuthUser } from "./user"
 
-export interface Session {
-  user: User | null
+export interface AuthSession {
+  user: AuthUser | null
   accessToken: string | null
   refreshToken?: string | null
   expiresAt?: number

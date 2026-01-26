@@ -13,5 +13,7 @@ export interface SearchQuery {
   filters?: SearchFilter[]
   sort?: SortOption[]
   page?: number
+  limit?: number
+  offset?: number
   pageSize?: number
 }

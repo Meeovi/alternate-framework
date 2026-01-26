@@ -1,0 +1,39 @@
+{
+  "name": "@meeovi/adapter-magento",
+  "version": "1.0.4",
+  "description": "A magento adapter for Meeovi SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "meeovi",
+    "adapter",
+    "magento"
+  ],
+  "author": "Meeovi",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@graphql-codegen/typescript-graphql-request": "^6.4.0",
+    "@meeovi/sdk": "^1.0.2",
+    "@meeovi/types": "^1.0.2",
+    "graphql-request": "^7.4.0",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@0no-co/graphqlsp": "^1.15.2",
+    "@graphql-codegen/cli": "^6.1.1",
+    "@graphql-codegen/schema-ast": "^5.0.0",
+    "@parcel/watcher": "^2.5.6",
+    "@types/node": "^25.0.10"
+  }
+}

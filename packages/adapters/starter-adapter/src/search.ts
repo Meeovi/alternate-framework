@@ -1,0 +1,25 @@
+import type { SearchAdapter, TransportAdapter } from '@meeovi/sdk'
+import type { SearchQuery, SearchResult, Facet, Result } from '@meeovi/types'
+import { unwrap } from './utils'
+
+export const createStarterSearchAdapter = (
+  transport: TransportAdapter
+): SearchAdapter => ({
+  async search<T>(query: SearchQuery): Promise<Result<SearchResult<T>>> {
+    const res = await transport.request<SearchResult<T>>(
+      'POST',
+      '/search',
+      { body: query }
+    )
+    return unwrap(res)
+  },
+
+  async facets(query: SearchQuery): Promise<Result<Facet[]>> {
+    const res = await transport.request<Facet[]>(
+      'POST',
+      '/search/facets',
+      { body: query }
+    )
+    return unwrap(res)
+  }
+})

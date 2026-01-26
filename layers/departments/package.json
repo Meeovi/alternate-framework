@@ -1,0 +1,35 @@
+{
+  "name": "@meeovi/layer-departments",
+  "version": "1.0.0",
+  "description": "Departments Layer for the Alternate Framework",
+  "keywords": [
+    "departments",
+    "alternate-framework",
+    "nuxt",
+    "layer"
+  ],
+  "license": "MIT",
+  "author": "Meeovi",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint 'src/**/*.{ts,tsx}' || true",
+    "clean": "rimraf dist",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run typecheck && npm run build"
+  },
+  "devDependencies": {
+    "nuxt": "^4.3.0"
+  }
+}

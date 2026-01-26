@@ -1,20 +1,14 @@
-import type { Price } from './product'
+import { CommercePrice } from "./product"
 
-export interface CartItem {
+export interface CommerceCartItem {
   id: string
   productId: string
-  variantId?: string
-  title: string
   quantity: number
-  price: Price
-  image?: string
+  price: CommercePrice
 }
 
-export interface Cart {
+export interface CommerceCart {
   id: string
-  items: CartItem[]
-  subtotal: Price
-  total: Price
-  currency: string
-  updatedAt: string
+  items: CommerceCartItem[]
+  total: CommercePrice
 }

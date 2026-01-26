@@ -1,0 +1,30 @@
+{
+  "name": "@meeovi/adapter-starter",
+  "version": "1.0.1",
+  "description": "A starter adapter for Meeovi SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "meeovi",
+    "adapter",
+    "starter"
+  ],
+  "author": "Meeovi",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@meeovi/sdk": "^1.0.2",
+    "@meeovi/types": "^1.0.1",
+    "typescript": "^5.9.3"
+  }
+}

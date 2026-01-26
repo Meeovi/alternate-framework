@@ -1,11 +1,11 @@
-import type { Price } from './product'
-import type { CartItem } from './cart'
+import { CommerceCartItem } from "./cart"
+import { CommercePrice } from "./product"
 
 export interface Order {
   id: string
-  items: CartItem[]
-  subtotal: Price
-  total: Price
+  items: CommerceCartItem[]
+  subtotal: CommercePrice
+  total: CommercePrice
   currency: string
   status: 'pending' | 'paid' | 'shipped' | 'completed' | 'cancelled'
   createdAt: string

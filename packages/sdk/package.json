@@ -1,6 +1,6 @@
 {
   "name": "@meeovi/sdk",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Official SDK for the Alternate Framework.",
   "main": "dist/index.js",
   "module": "dist/index.js",

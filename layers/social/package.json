@@ -1,0 +1,23 @@
+{
+  "name": "@meeovi/layer-social",
+  "version": "1.0.3",
+  "description": "Social Layer for the Alternate Framework",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "social",
+    "alternate-framework",
+    "nuxt",
+    "layer"
+  ],
+  "author": "Meeovi",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "nuxt": "^4.3.0"
+  }
+}

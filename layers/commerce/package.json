@@ -1,0 +1,63 @@
+{
+  "name": "@meeovi/layer-commerce",
+  "version": "1.0.0",
+  "description": "Commerce Layer for the Alternate Framework",
+  "keywords": [
+    "commerce",
+    "alternate-framework",
+    "nuxt",
+    "layer"
+  ],
+  "license": "MIT",
+  "author": "Meeovi",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint 'src/**/*.{ts,tsx}' || true",
+    "clean": "rimraf dist",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run typecheck && npm run build",
+    "codegen": "npx graphql-codegen --config ./node_modules/@meeovi/adapter-magento/codegen.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "@meeovi/types": "^1.0.0"
+  },
+  "dependencies": {
+    "@better-auth/stripe": "^1.4.15",
+    "@meeovi/adapter-magento": "^1.0.2",
+    "@meeovi/api": "^1.0.1",
+    "@meeovi/core": "^1.0.1",
+    "@meeovi/sdk": "^1.0.2",
+    "@meeovi/types": "^1.0.0",
+    "@polar-sh/better-auth": "^1.6.4",
+    "@polar-sh/sdk": "^0.42.2",
+    "@storefront-ui/nuxt": "^3.1.1",
+    "ramda": "^0.32.0",
+    "type-fest": "^5.4.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.11",
+    "@types/node": "^20.0.0",
+    "@types/ramda": "^0.31.1",
+    "@vitest/coverage-v8": "^4.0.17",
+    "eslint": "^8.0.0",
+    "jest-cucumber": "^4.5.0",
+    "nuxt": "^4.3.0",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.8.2",
+    "vitest": "^4.0.17"
+  }
+}

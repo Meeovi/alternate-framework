@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "noEmitOnError": false,
+    "plugins": [{
+      "name": "@0no-co/graphqlsp",
+      "schema": "./schema.graphql"
+    }]
+  },
+  "include": ["src", "index.ts", "tsconfig.json"],
+  "exclude": ["node_modules", "dist", "tests", "src/graphql/graphql.ts"]
+}

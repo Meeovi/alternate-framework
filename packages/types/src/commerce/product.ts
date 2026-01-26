@@ -1,27 +1,31 @@
-export interface Price {
+export interface CommercePrice {
   amount: number
   currency: string
-  formatted?: string
 }
 
-export interface Variant {
+export interface CommerceImage {
+  url: string
+  alt?: string
+}
+
+export interface CommerceProduct {
+  id: string
+  slug: string
+  sku?: string
+  name: string
+  description?: string
+  shortDescription?: string
+  price: CommercePrice
+  images: CommerceImage[]
+  categories?: string[]
+  variants?: CommerceVariant[]
+  attributes?: Record<string, string | number | boolean>
+}
+
+export interface CommerceVariant {
   id: string
   sku?: string
-  title: string
-  price: Price
-  available: boolean
-  attributes?: Record<string, string>
-}
-
-export interface Product {
-  id: string
-  title: string
-  description?: string
-  slug: string
-  images: string[]
-  price: Price
-  variants?: Variant[]
-  tags?: string[]
-  createdAt: string
-  updatedAt: string
+  name?: string
+  price?: CommercePrice
+  attributes?: Record<string, string | number | boolean>
 }

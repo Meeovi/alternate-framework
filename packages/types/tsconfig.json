@@ -11,5 +11,5 @@
     "skipLibCheck": true, 
     "noEmitOnError": false
   },
-  "include": ["src"]
+  "include": ["src", "../../layers/shared/app/types/componentMap.ts"]
 }

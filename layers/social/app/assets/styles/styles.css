@@ -1,0 +1,26 @@
+/********************** Main CSS *************/
+body {
+    margin: 0;
+}
+
+.feedPost {
+    padding: 10px;
+}
+
+.socialbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.member-cards {
+    padding: 15px;
+}
+
+.center-text {
+    text-align: center;
+    padding: 20px;
+}
+
+.mediaCard {
+    padding: 15px;
+}
