@@ -29,33 +29,18 @@
 
 <script setup>
 import productCard from './productCard.vue'
+import { useCatalogFallback } from '../../../composables/useCatalog'
 
   const model = ref(null)
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
+  const catalog = useCatalogFallback()
 
   const {
     data: deals
-  } = await useAsyncData('deals', () => {
-    return $directus.request($readItems('products', {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'currency.currency_id.*',
-        'brands.brands_id.*',
-        'image.*',
-      ],
+  } = await useAsyncData('deals', async () => {
+    return await catalog.listProducts({
+      fields: ['*', 'products.products_id.*', 'products.products_id.image.*', 'currency.currency_id.*', 'brands.brands_id.*', 'image.*'],
       limit: 10,
-      filter: {
-        price: {
-          _lte: "20.00"
-        },
-        status: {
-          _eq: "published"
-        }
-      }
-    }))
+      filter: { price: { _lte: '20.00' }, status: { _eq: 'published' } }
+    })
   })
 </script>

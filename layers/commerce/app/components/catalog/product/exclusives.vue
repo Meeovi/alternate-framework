@@ -31,21 +31,19 @@
   import productCard from './productCard.vue'
 
   const model = ref(null);
-  const { $directus, $readItems, $commerce } = useNuxtApp()
+  const { $commerce } = useNuxtApp()
+  import { useCatalogFallback } from '../../../composables/useCatalog'
+  const catalog = useCatalogFallback()
 
   const { data: exclusives } = await useAsyncData('exclusives', async () => {
-    const refs = await $directus.request($readItems('products', {
+    // ask the adapter for products first; composable will fallback to Directus
+    const refs = await catalog.listProducts({
       fields: ['id', 'sku'],
       limit: 10,
-      filter: {
-        status: { _eq: 'published' },
-        departments: {
-          departments_id: { name: { _eq: 'Exclusives' } }
-        }
-      }
-    }))
+      filter: { status: { _eq: 'published' }, departments: { departments_id: { name: { _eq: 'Exclusives' } } } }
+    })
 
-    const products = await Promise.all(refs.map(async (r) => {
+    const products = await Promise.all(refs.map(async (r: any) => {
       try {
         return await $commerce.getProduct(String(r.sku || r.id))
       } catch (e) {

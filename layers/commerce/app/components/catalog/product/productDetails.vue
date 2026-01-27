@@ -3,24 +3,27 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 col-md-6">
-                    <div v-if="product?.image?.filename_disk">
-                        <img :src="`${$directus.url}assets/${product.image.filename_disk}`" :alt="product.name"
+                    <div v-if="displayProduct?.image?.filename_disk || displayProduct?.imageUrl">
+                        <img v-if="$directus && displayProduct?.image?.filename_disk"
+                            :src="`${$directus.url}assets/${displayProduct.image.filename_disk}`" :alt="displayProduct.name"
+                            class="w-full rounded-md" />
+                        <img v-else-if="displayProduct?.imageUrl" :src="displayProduct?.imageUrl" :alt="displayProduct?.name"
                             class="w-full rounded-md" />
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="right">
-                        <h1 class="mb-1 font-bold typography-headline-4"><strong>{{ product?.name }}</strong></h1>
+                        <h1 class="mb-1 font-bold typography-headline-4"><strong>{{ displayProduct?.name }}</strong></h1>
                         <div class="price-line">
-                            <span class="block pb-2 font-bold typography-text-lg">
-                                {{ product?.price }}
+                                <span class="block pb-2 font-bold typography-text-lg">
+                                {{ displayProduct?.price }}
                             </span>
                         </div>
                         <p class="productRatings">
-                            <v-rating size="lg" :half-increment="true" :value="product?.ratings?.length || 0"
+                                <v-rating size="lg" :half-increment="true" :value="displayProduct?.ratings?.length || 0"
                                 :max="5" />
                             <NuxtLink to="#" variant="secondary" class="ratingReviews ml-2 text-xs text-neutral-500">
-                                {{ product?.comments?.comments_id?.length || 0 }} reviews
+                                {{ displayProduct?.comments?.comments_id?.length || 0 }} reviews
                             </NuxtLink>
                         </p>
                         <div class="py-4 mb-4 border-gray-200 border-y">
@@ -39,8 +42,8 @@
                                             <SfIconAdd />
                                         </v-btn>
                                     </div>
-                                    <p class="self-center mt-1 mb-4 text-xs text-neutral-500 xs:mb-0">
-                                        <strong class="text-neutral-900">{{ product?.stock }}</strong> in stock
+                                        <p class="self-center mt-1 mb-4 text-xs text-neutral-500 xs:mb-0">
+                                        <strong class="text-neutral-900">{{ displayProduct?.stock }}</strong> in stock
                                     </p>
                                 </div>
                                 <div class="col col-6">
@@ -50,10 +53,10 @@
                         </div>
                         <div class="mbr-section-btn row align-items-stretch justify-content-center">
                             <div class="col col-6">
-                                <createListBtn :lists="product?.id" />
+                                    <createListBtn :lists="displayProduct?.id" />
                             </div>
                         </div>
-                        <div class="price-line1" v-for="tag in product?.tags" :key="tag.id">
+                        <div class="price-line1" v-for="tag in displayProduct?.tags || []" :key="tag.id">
                             <p class="desc mbr-fonts-style display-7"><strong>Tags:</strong> <tagCard :tag="tag?.tag_id" />&nbsp;</p>
                         </div>
                     </div>
@@ -65,7 +68,8 @@
 
 <script setup lang="ts">
     import {
-        ref
+        ref,
+        computed
     } from 'vue';
     import {
         SfIconAdd,
@@ -77,9 +81,9 @@
     import {
         useCounter
     } from '@vueuse/core';
-    import tagCard from '#social/app/components/related/tag.vue';
+    import tagCard from '@/components/placeholders/Tag.vue';
     import addToCartBtn from '../../partials/addToCartBtn.vue';
-    import createListBtn from '#lists/app/components/partials/createListBtn.vue';
+    import createListBtn from '@/components/placeholders/CreateListBtn.vue';
 
     const {
         $directus,
@@ -109,6 +113,8 @@
             required: true
         },
     });
+
+    const displayProduct = computed(() => props.product)
 
     const formatPrice = (amount: number) => {
         if (!amount) return '$0.00';

@@ -47,7 +47,8 @@
     import productCard from '~/components/catalog/product/productCard.vue'
     import {
         ref,
-        onMounted
+        onMounted,
+        computed
     } from 'vue';
     import {
         useUserStore
@@ -60,61 +61,35 @@
         return userStore.name || userStore.username || 'User'
     })
 
-    const {
-        $directus,
-        $readItems,
-        $readItem
-    } = useNuxtApp()
+    const { $commerce } = useNuxtApp()
+    import { useCatalogFallback } from '../../../composables/useCatalog'
+    const catalog = useCatalogFallback()
 
     const {
         data: cards
-    } = await useAsyncData('cards', () => {
-        return $directus.request($readItems('products', {
-            fields: ['*',
-                'image.*',
-                'currency.currency_id.*'
-            ],
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        name: {
-                            _eq: "Gift Card"
-                        }
-                    }
-                }
-            }
-        }))
+    } = await useAsyncData('cards', async () => {
+        return await catalog.listProducts({
+            fields: ['*', 'image.*', 'currency.currency_id.*'],
+            filter: { product_types: { product_types_id: { name: { _eq: 'Gift Card' } } } }
+        })
     })
 
     const {
         data: mycards
-    } = await useAsyncData('mycards', () => {
-        return $directus.request($readItems('products', {
-            fields: ['*',
-                'image.*',
-                'currency.currency_id.*'
-            ],
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        name: {
-                            _eq: "Gift Card"
-                        }
-                    }
-                },
-                user: {
-                    directus_users: {
-                        _eq: `${userDisplayName.user.displayName}`
-                    }
-                }
-            }
-        }))
+    } = await useAsyncData('mycards', async () => {
+        // user-specific filtering may not map directly to adapters; fall back handled by composable
+        return await catalog.listProducts({
+            fields: ['*', 'image.*', 'currency.currency_id.*'],
+            filter: { product_types: { product_types_id: { name: { _eq: 'Gift Card' } } }, user: { directus_users: { _eq: `${userDisplayName.user.displayName}` } } }
+        })
     })
 
     const {
         data: callouts
-    } = await useAsyncData('callouts', () => {
-        return $directus.request($readItem('callouts', '4'))
+    } = await useAsyncData('callouts', async () => {
+        // callouts remain stored in Directus; use Nuxt runtime for these CMS pieces
+        const nuxtApp = useNuxtApp() as any
+        return nuxtApp.$directus ? await nuxtApp.$directus.request(nuxtApp.$readItem('callouts', '4')) : null
     })
 
     useHead({

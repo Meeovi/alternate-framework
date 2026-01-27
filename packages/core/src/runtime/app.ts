@@ -2,13 +2,14 @@ import { AlternateConfig } from '../types/config'
 import { AlternateContext } from './context'
 import { ModuleRegistry } from '../plugins/registry'
 import { createEventBus } from '../types/events'
+import type { AlternateEventBus } from '../types/events'
 import { setRuntimeContext } from './hooks'
 import { runAppLifecycle } from './lifecycle'
 import type { AlternateApp, AlternateAppOptions } from '../types/app'
 
 export function createAlternateApp(options: AlternateAppOptions): AlternateApp {
-  const registry = new ModuleRegistry()
-  const eventBus = createEventBus()
+  const eventBus: AlternateEventBus = createEventBus()
+  const registry = new ModuleRegistry(eventBus)
   const context = new AlternateContext(options.config, registry)
 
   setRuntimeContext(context, eventBus)

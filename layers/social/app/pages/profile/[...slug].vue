@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth, useI18n, useLocalePath, useAsyncData, useHead, useToast } from '#imports';
+import { useAuth, useI18n, useLocalePath, useAsyncData, useHead } from '#imports';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
   

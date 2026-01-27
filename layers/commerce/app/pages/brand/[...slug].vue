@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-  import shorts from '#social/app/components/features/vibeSections/shorts.vue'
+  import shorts from '@/components/placeholder/shorts.vue'
   import productCard from '@/components/catalog/product/productCard.vue'
   import relatedbrands from '@/components/catalog/product/relatedbrands.vue'
   import {

@@ -17,17 +17,12 @@ const sizes = ref([])
 const selectedSize = ref(null)
 
 
-const nuxtApp = useNuxtApp()
-const { $directus, $readItems } = nuxtApp
+const catalog = useCatalogFallback()
 
 const loadSizes = async () => {
     try {
-        const res = await $directus.request($readItems('attributes', {
-            filter: {
-                attribute_code: { _eq: 'size' }
-            },
-            sort: ['id']
-        }))
+        // adapter may expose attributes; composable falls back to Directus
+        const res = await catalog.listAttributes({ filter: { attribute_code: { _eq: 'size' } }, sort: ['id'] })
 
         const attr = (res && res[0]) || null
         const opts = attr?.options || []

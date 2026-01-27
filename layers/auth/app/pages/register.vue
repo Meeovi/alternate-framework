@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useToast, definePageMeta, useHead, useRouter } from '#imports'
+import { definePageMeta, useHead, useRouter } from '#imports'
 import { signUp } from '../lib/auth.client'
 
 definePageMeta({

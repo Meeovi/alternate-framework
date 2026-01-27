@@ -31,39 +31,27 @@
   import productCard from './productCard.vue'
 
   const model = ref(null);
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
+  import { useCatalogFallback } from '../../../composables/useCatalog'
+  const catalog = useCatalogFallback()
 
   const {
     data: featured
-  } = await useAsyncData('featured', () => {
-    return $directus.request($readItems('products', {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'currency.currency_id.*',
-        'brands.brands_id.*',
-        'image.*',
-      ],
+  } = await useAsyncData('featured', async () => {
+    return await catalog.listProducts({
+      fields: ['*', 'products.products_id.*', 'products.products_id.image.*', 'currency.currency_id.*', 'brands.brands_id.*', 'image.*'],
       limit: 10,
       filter: {
         lists: {
           lists_id: {
             lists_types: {
               lists_types_id: {
-                name: {
-                  _eq: "Featured"
-                }
+                name: { _eq: 'Featured' }
               }
             }
           }
         },
-        status: {
-          _eq: "published"
-        }
+        status: { _eq: 'published' }
       }
-    }))
+    })
   })
 </script>

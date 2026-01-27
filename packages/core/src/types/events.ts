@@ -1,6 +1,10 @@
+import { AlternateAdapterKey } from './adapters'
+
 export interface AlternateEventMap {
   'app:ready': { context: unknown }
   'app:error': { error: unknown }
+  // emitted when a module/registry registers an adapter at runtime
+  'adapter:registered': { key: AlternateAdapterKey }
   // modules extend this via declaration merging
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@meeovi/layer-social",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Social Layer for the Alternate Framework",
   "exports": {
     ".": "./index.ts"

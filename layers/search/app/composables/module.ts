@@ -65,8 +65,49 @@ export default defineAlternateModule({
       ctx.searchManager = new SearchManager<MeeoviSearchItem>(adapter)
     }
 
+    // Ensure search manager exists now if adapter already registered
+    if (!ctx.searchManager && ctx.getAdapter('search')) {
+      const runtimeAdapter = ctx.getAdapter('search') as
+        | SearchAdapter<MeeoviSearchItem>
+        | undefined
+      if (runtimeAdapter) {
+        ctx.searchManager = new SearchManager<MeeoviSearchItem>(runtimeAdapter)
+      }
+    }
+
+    // Listen for app readiness and for runtime adapter registrations so
+    // new adapters (registered by other modules) will auto-create the
+    // search manager when they become available.
     bus.on('app:ready', () => {
+      if (!ctx.searchManager) {
+        const runtimeAdapter = ctx.getAdapter('search') as
+          | SearchAdapter<MeeoviSearchItem>
+          | undefined
+        if (runtimeAdapter) {
+          ctx.searchManager = new SearchManager<MeeoviSearchItem>(runtimeAdapter)
+        }
+      }
       console.info('[@meeovi/search] Search module initialized')
+    })
+
+    // Optional runtime event: if other modules emit `adapter:registered`
+    // with a `{ key }` payload, respond and initialize when the `search`
+    // adapter becomes available.
+    // This is defensive — the core registry does not emit this by default,
+    // but some runtimes may choose to.
+    bus.on('adapter:registered' as any, (payload: any) => {
+      try {
+        if (payload?.key === 'search' && !ctx.searchManager) {
+          const runtimeAdapter = ctx.getAdapter('search') as
+            | SearchAdapter<MeeoviSearchItem>
+            | undefined
+          if (runtimeAdapter) {
+            ctx.searchManager = new SearchManager<MeeoviSearchItem>(runtimeAdapter)
+          }
+        }
+      } catch (e) {
+        /* noop */
+      }
     })
   }
 })

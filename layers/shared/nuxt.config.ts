@@ -7,5 +7,9 @@ export default defineNuxtConfig({
     name: 'shared',
   },
 
+  modules: [
+    'nuxt-tiptap-editor',
+  ],
+
   runtimeConfig: {}
 })

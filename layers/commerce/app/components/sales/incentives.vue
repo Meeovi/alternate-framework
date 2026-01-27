@@ -108,11 +108,9 @@
 
     const user = useSupabaseUser()
 
-    const {
-        $directus,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    const { $commerce } = useNuxtApp()
+    import { useCatalogFallback } from '../../../composables/useCatalog'
+    const catalog = useCatalogFallback()
     const tab = ref(null);
 
     const {
@@ -202,43 +200,21 @@
     const {
         data: giftCards
     } = await useAsyncData('giftCards', async () => {
-        const resp = await $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: user?.id
-                },                
-                incentive_type: {
-                    name: {
-                        _eq: 'Gift Card'
-                    }
-                }
-            }
-        }))
-        return resp?.data ?? resp ?? []
+        const resp = await catalog.listProducts({
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: user?.id }, incentive_type: { name: { _eq: 'Gift Card' } } }
+        })
+        return resp || []
     })
 
     const {
         data: certificates
     } = await useAsyncData('certificates', async () => {
-        const resp = await $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: user?.id
-                },
-                incentive_type: {
-                    name: {
-                        _eq: 'Gift Certificate'
-                    }
-                }
-            }
-        }))
-        return resp?.data ?? resp ?? []
+        const resp = await catalog.listProducts({
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: user?.id }, incentive_type: { name: { _eq: 'Gift Certificate' } } }
+        })
+        return resp || []
     })
 
     useHead({

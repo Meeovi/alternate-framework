@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { useHead, useRoute, useRuntimeConfig, navigateTo } from '#app'
-import { definePageMeta, useI18n, useToast, useLocalePath } from '#imports'
+import { definePageMeta, useI18n, useLocalePath } from '#imports'
 import { useAuth, z } from '@meeovi/auth'
 import { reactive, ref } from 'vue'
 

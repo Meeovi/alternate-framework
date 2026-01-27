@@ -35,7 +35,7 @@
 
 <script setup>
     import createshowcase from '@/components/catalog/product/add-showcase.vue'
-    import listShowcases from '#lists/app/components/related/list.vue'
+    import listShowcases from '@/components/placeholders/ListShowcases.vue'
 
     const {
         $directus,
