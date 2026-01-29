@@ -1,21 +1,25 @@
-// composables/usePosts.ts
-import { AtpAgent } from '@atproto/api'
+// composables/usePosts.ts - use registered social provider (adapter) under the hood
+import { getSocialConfig } from '../config'
+import { getSocialProvider } from '../registry'
 
 export const usePosts = () => {
-  const config = useRuntimeConfig()
-  const agent = new AtpAgent({ service: `${config.public.atprotoPds}` })
+  const config = getSocialConfig()
+  const provider = getSocialProvider(config.provider)
 
   const createPost = async (text: string, embed?: any, reply?: any) => {
-    return await agent.post({
-      text,
-      createdAt: new Date().toISOString(),
-      embed,
-      reply
-    })
+    if (typeof provider.createPost !== 'function') {
+      throw new Error('Social provider does not support createPost')
+    }
+    return provider.createPost(text, { embed, reply })
   }
 
-  const getTimeline = async (limit = 20) => {
-    return await agent.getTimeline({ limit })
+  const getTimeline = async (handle?: string, limit = 20) => {
+    // If provider exposes listPosts, use it. Otherwise, try a provider-specific timeline method.
+    if (typeof provider.listPosts === 'function') {
+      return provider.listPosts(handle || '', { limit })
+    }
+    // fallback: empty array
+    return []
   }
 
   return { createPost, getTimeline }

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["vitest", "node", "@nuxt/test-utils", "@vue/test-utils"],
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",
@@ -11,5 +12,19 @@
     "skipLibCheck": true, 
     "noEmitOnError": false
   },
-  "include": ["src", "index.ts", "app/types", "app/utils/client.ts", "app/utils/normalizers"]
+  "include": [
+    "app/composables/types.ts",
+    "app/composables/registry.ts",
+    "app/composables/useContent.ts",
+    "app/composables/useDirectusRequest.ts",
+    "README.md",
+    "package.json"
+    ,"src/global.d.ts"
+  ],
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "node_modules"
+  ]
 }

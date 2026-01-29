@@ -1,48 +1,144 @@
 import { registerListsProvider } from '../registry'
 import type { ListsProvider } from '../types'
-import { fetcher } from '@meeovi/api'
+import { getListsConfig } from '../config'
+
+async function directusFetch(path: string, options: RequestInit = {}) {
+  const cfg = getListsConfig()
+  const base = cfg.baseUrl?.replace(/\/$/, '') || ''
+
+  const res = await fetch(`${base}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(cfg.apiKey ? { Authorization: `Bearer ${cfg.apiKey}` } : {}),
+      ...(options.headers || {})
+    }
+  })
+
+  if (!res.ok) {
+    const err: any = new Error(`Directus error: ${res.status}`)
+    err.status = res.status
+    err.response = res
+    throw err
+  }
+
+  return res.json()
+}
 
 const DirectusListsProvider: ListsProvider = {
   async getList(id) {
-    const { data } = await fetcher('lists.GET_LIST', { id })
-    return data.list
+    const json = await directusFetch(`/lists/${id}`)
+    return json.list ?? json
   },
 
   async listLists() {
-    const { data } = await fetcher('lists.LIST_LISTS')
-    return data.lists
+    const json = await directusFetch(`/lists`)
+    return json.lists ?? json
   },
 
   async createList(data) {
-    const { data: result } = await fetcher('lists.CREATE_LIST', { data })
-    return result.list
+    const json = await directusFetch(`/lists`, { method: 'POST', body: JSON.stringify(data) })
+    return json.list ?? json
   },
 
   async updateList(id, data) {
-    const { data: result } = await fetcher('lists.UPDATE_LIST', { id, data })
-    return result.list
+    const json = await directusFetch(`/lists/${id}`, { method: 'PUT', body: JSON.stringify(data) })
+    return json.list ?? json
   },
 
   async deleteList(id) {
-    await fetcher('lists.DELETE_LIST', { id })
+    await directusFetch(`/lists/${id}`, { method: 'DELETE' })
   },
 
   async addItem(listId, item) {
-    const { data } = await fetcher('lists.ADD_ITEM', { listId, item })
-    return data.item
+    const json = await directusFetch(`/lists/${listId}/items`, { method: 'POST', body: JSON.stringify(item) })
+    return json.item ?? json
   },
 
   async updateItem(listId, itemId, data) {
-    const { data: result } = await fetcher('lists.UPDATE_ITEM', { listId, itemId, data })
-    return result.item
+    const json = await directusFetch(`/lists/${listId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify(data) })
+    return json.item ?? json
   },
 
   async deleteItem(listId, itemId) {
-    await fetcher('lists.DELETE_ITEM', { listId, itemId })
+    await directusFetch(`/lists/${listId}/items/${itemId}`, { method: 'DELETE' })
   },
 
   async reorderItems(listId, itemIds) {
-    await fetcher('lists.REORDER_ITEMS', { listId, itemIds })
+    await directusFetch(`/lists/${listId}/reorder`, { method: 'POST', body: JSON.stringify({ items: itemIds }) })
+  },
+
+  async toggleComplete(listId, itemId, completed = true) {
+    try {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}/toggle`, { method: 'POST', body: JSON.stringify({ completed }) })
+      return json.item ?? json
+    } catch (e) {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ completed }) })
+      return json.item ?? json
+    }
+  },
+
+  async setDueDate(listId, itemId, dueDate) {
+    try {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}/due`, { method: 'POST', body: JSON.stringify({ dueDate }) })
+      return json.item ?? json
+    } catch (e) {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ metadata: { dueDate } }) })
+      return json.item ?? json
+    }
+  },
+
+  async setReminder(listId, itemId, reminder) {
+    try {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}/reminder`, { method: 'POST', body: JSON.stringify({ reminder }) })
+      return json.item ?? json
+    } catch (e) {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ metadata: { reminder } }) })
+      return json.item ?? json
+    }
+  },
+
+  async setPriority(listId, itemId, priority) {
+    try {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}/priority`, { method: 'POST', body: JSON.stringify({ priority }) })
+      return json.item ?? json
+    } catch (e) {
+      const json = await directusFetch(`/lists/${listId}/items/${itemId}`, { method: 'PUT', body: JSON.stringify({ metadata: { priority } }) })
+      return json.item ?? json
+    }
+  },
+
+  async shareList(listId, userId, role = 'editor') {
+    try {
+      await directusFetch(`/lists/${listId}/share`, { method: 'POST', body: JSON.stringify({ userId, role }) })
+    } catch (e) {
+      const json = await directusFetch(`/lists/${listId}`)
+      const list = json.list ?? json
+      const collaborators = (list.metadata?.collaborators || []).concat({ userId, role })
+      await directusFetch(`/lists/${listId}`, { method: 'PUT', body: JSON.stringify({ metadata: { ...(list.metadata || {}), collaborators } }) })
+    }
+  },
+
+  async searchItems(listId, query) {
+    try {
+      const json = await directusFetch(`/lists/${listId}/search?q=${encodeURIComponent(String(query))}`)
+      return json.items ?? json
+    } catch (e) {
+      const json = await directusFetch(`/lists/${listId}`)
+      const list = json.list ?? json
+      const q = String(query).toLowerCase()
+      return list.items.filter((i: any) => (i.title || '').toLowerCase().includes(q) || (i.description || '').toLowerCase().includes(q))
+    }
+  },
+
+  async archiveList(listId) {
+    try {
+      await directusFetch(`/lists/${listId}/archive`, { method: 'POST' })
+    } catch (e) {
+      const json = await directusFetch(`/lists/${listId}`)
+      const list = json.list ?? json
+      await directusFetch(`/lists/${listId}`, { method: 'PUT', body: JSON.stringify({ metadata: { ...(list.metadata || {}), archived: true } }) })
+    }
   }
 }
 

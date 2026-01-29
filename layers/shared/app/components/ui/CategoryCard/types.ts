@@ -1,9 +1,9 @@
-import type { SfCategory } from '@vue-storefront/unified-data-model';
+import type { Category } from '../../types/ui'
 
-interface CategoryWithImage extends SfCategory {
-  image: string;
+interface CategoryWithImage extends Category {
+  image: string
 }
 
 export type CategoryCardProps = {
-  items: CategoryWithImage[];
-};
+  items: CategoryWithImage[]
+}

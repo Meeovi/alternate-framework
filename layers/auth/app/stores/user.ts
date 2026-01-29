@@ -1,9 +1,15 @@
 import { defineStore } from 'pinia'
 
-export const useUserStore = defineStore('user', {
-  state: () => ({
-    user: null as any | null,
-    profile: null as any | null,
+interface UserState {
+  user: any | null
+  profile: any | null
+  loading: boolean
+}
+
+export const useUserStore = defineStore<'user', UserState>('user', {
+  state: (): UserState => ({
+    user: null,
+    profile: null,
     loading: true
   }),
 
@@ -29,9 +35,9 @@ export const useUserStore = defineStore('user', {
   },
 
   getters: {
-    isAuthenticated: (s) => !!s.user,
-    isSeller: (s) => s.profile?.role?.key === 'seller' && s.profile?.seller_approved === true,
-    isAdmin: (s) => s.profile?.role?.key === 'admin',
-    isLoggedIn: (state) => !!state.user
+    isAuthenticated: (s: UserState) => !!s.user,
+    isSeller: (s: UserState) => s.profile?.role?.key === 'seller' && s.profile?.seller_approved === true,
+    isAdmin: (s: UserState) => s.profile?.role?.key === 'admin',
+    isLoggedIn: (state: UserState) => !!state.user
   }
 })

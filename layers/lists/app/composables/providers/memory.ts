@@ -82,6 +82,45 @@ const MemoryListsProvider: ListsProvider = {
       ...item,
       position: index
     }))
+  },
+
+  async toggleComplete(listId, itemId, completed = true) {
+    const item = await this.updateItem(listId, itemId, { completed })
+    return item
+  },
+
+  async setDueDate(listId, itemId, dueDate) {
+    const item = await this.updateItem(listId, itemId, { metadata: { ...( (await this.getList(listId)).items.find(i => i.id === itemId)?.metadata || {} ), dueDate } })
+    return item
+  },
+
+  async setReminder(listId, itemId, reminder) {
+    const item = await this.updateItem(listId, itemId, { metadata: { ...( (await this.getList(listId)).items.find(i => i.id === itemId)?.metadata || {} ), reminder } })
+    return item
+  },
+
+  async setPriority(listId, itemId, priority) {
+    const item = await this.updateItem(listId, itemId, { metadata: { ...( (await this.getList(listId)).items.find(i => i.id === itemId)?.metadata || {} ), priority } })
+    return item
+  },
+
+  async shareList(listId, userId, role = 'editor') {
+    // memory store: attach collaborators in list.metadata.collaborators
+    const list = await this.getList(listId)
+    const collaborators = (list.metadata?.collaborators as any[]) || []
+    collaborators.push({ userId, role })
+    list.metadata = { ...(list.metadata || {}), collaborators }
+  },
+
+  async searchItems(listId, query) {
+    const list = await this.getList(listId)
+    const q = String(query).toLowerCase()
+    return list.items.filter(i => (i.title || '').toLowerCase().includes(q) || (i.description || '').toLowerCase().includes(q))
+  },
+
+  async archiveList(listId) {
+    const list = await this.getList(listId)
+    list.metadata = { ...(list.metadata || {}), archived: true }
   }
 }
 

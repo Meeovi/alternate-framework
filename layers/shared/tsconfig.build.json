@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "lib": ["ESNext", "DOM"],
+    "noEmitOnError": false
+  },
+  "include": [
+    "app/utils/**/*.ts",
+    "app/types/**/*.ts",
+    "app/composables/mappers/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "app/**/*.d.ts"
+  ],
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "app/components/**",
+    "node_modules"
+  ]
+}

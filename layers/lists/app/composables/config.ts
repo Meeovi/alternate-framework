@@ -5,7 +5,7 @@ export interface ListsConfig {
 }
 
 let config: ListsConfig = {
-  provider: 'memory'
+  provider: 'directus'
 }
 
 export function setListsConfig(newConfig: Partial<ListsConfig>) {

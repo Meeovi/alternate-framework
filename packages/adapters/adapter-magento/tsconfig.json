@@ -17,5 +17,5 @@
     }]
   },
   "include": ["src", "index.ts", "tsconfig.json"],
-  "exclude": ["node_modules", "dist", "tests", "src/graphql/graphql.ts"]
+  "exclude": ["node_modules", "dist", "tests", "src/graphql/**"]
 }

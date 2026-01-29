@@ -32,7 +32,7 @@ export const useProductReviews: UseProductReviews = (slug) => {
   const fetchProductReviews: FetchProductReviews = async (slug) => {
     state.value.loading = true;
     const client = getCommerceClient();
-    const { data, error } = await useAsyncData(() => client.listProductReviews?.(productId) ?? client.listReviews?.(productId));
+      const { data, error } = await useAsyncData(() => client.listProductReviews?.(slug) ?? client.listReviews?.(slug));
     useHandleError(error.value);
     state.value.data = data.value as unknown as Maybe<SfProductReview[]>;
     state.value.loading = false;

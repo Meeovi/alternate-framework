@@ -12,7 +12,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "create": "node ./scripts/init-adapter.js",
+    "create:interactive": "node ./scripts/create-adapter-cli.cjs"
   },
   "keywords": [
     "meeovi",

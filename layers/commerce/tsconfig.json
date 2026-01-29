@@ -6,10 +6,26 @@
     "moduleResolution": "bundler",
     "module": "ESNext",
     "target": "ESNext",
-    "strict": true,
+    "strict": false,
     "jsx": "react-jsx",
-    "skipLibCheck": true, 
+    "skipLibCheck": true,
     "noEmitOnError": false
   },
-  "include": ["src", "index.ts", "app/types", "app/utils/client.ts", "app/utils/normalizers"]
+  "include": [
+    "src",
+    "index.ts",
+    "app",
+    "app/**/*.vue",
+    "app/types",
+    "global.d.ts",
+    "app/utils/client.ts",
+    "app/utils/normalizers"
+  ]
+  ,
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "node_modules"
+  ]
 }

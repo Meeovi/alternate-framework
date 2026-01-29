@@ -1,5 +1,5 @@
-import type { SfProductReview } from '@vue-storefront/unified-data-model';
+import type { Product } from '../../types/ui'
 
 export type ReviewProps = {
-  review: SfProductReview;
-};
+  review: Partial<Product> & { id?: string; rating?: number; comment?: string }
+}

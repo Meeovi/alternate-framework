@@ -1,5 +1,8 @@
 import { ref } from 'vue';
-import type { usersModel as User } from '../../../../base-app/prisma/generated/models/users';
+
+// `base-app` generated Prisma types may not exist in this workspace during isolated
+// builds. Use a local minimal `User` alias to keep the layer buildable.
+type User = any
 
 const isEditOpen = ref(false);
 const isCreateOpen = ref(false);

@@ -6,7 +6,7 @@ export interface SocialConfig {
 }
 
 let config: SocialConfig = {
-  provider: 'atproto',
+  provider: 'memory',
   baseUrl: '',
   apiKey: ''
 }

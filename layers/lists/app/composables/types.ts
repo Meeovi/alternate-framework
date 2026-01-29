@@ -32,4 +32,13 @@ export interface ListsProvider {
   deleteItem(listId: string, itemId: string): Promise<void>
 
   reorderItems?(listId: string, itemIds: string[]): Promise<void>
+
+  // Optional advanced features commonly found in task apps
+  toggleComplete?(listId: string, itemId: string, completed: boolean): Promise<ListItem>
+  setDueDate?(listId: string, itemId: string, dueDate: string | null): Promise<ListItem>
+  setReminder?(listId: string, itemId: string, reminder: string | null): Promise<ListItem>
+  setPriority?(listId: string, itemId: string, priority: number | null): Promise<ListItem>
+  shareList?(listId: string, userId: string, role?: string): Promise<void>
+  searchItems?(listId: string, query: string): Promise<ListItem[]>
+  archiveList?(listId: string): Promise<void>
 }

@@ -29,6 +29,9 @@
   "dependencies": {
     "typescript": "^5.9.3"
   },
+  "bin": {
+    "meeovi-create-adapter": "./bin/create-adapter.cjs"
+  },
   "devDependencies": {
     "@types/node": "^25.0.10"
   }

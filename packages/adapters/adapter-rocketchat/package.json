@@ -1,0 +1,24 @@
+{
+  "name": "@meeovi/adapter-rocketchat",
+  "version": "1.0.0",
+  "description": "Rocket.Chat adapter for Meeovi chat layer",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": ["meeovi","adapter","rocketchat","chat"],
+  "author": "Meeovi",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "typescript": "^5.9.3",
+    "@meeovi/chat": "^1.0.0"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "@meeovi/layer-search",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Powerful search module for the Alternate Framework.",
   "main": "./nuxt.config.ts",
   "keywords": [
@@ -23,6 +23,7 @@
     "@types/react": "^19.2.9",
     "react": "^19.2.3",
     "searchkit": "^4.15.0",
+    "graphql": "^16.8.0",
     "typescript": "^5.9.3",
     "vue": "^3.2.47",
     "vue-instantsearch": "^4.22.8"

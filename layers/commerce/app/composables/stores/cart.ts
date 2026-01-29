@@ -1,6 +1,6 @@
 import { ref, computed, readonly } from 'vue'
 import type { Cart, CartItem, Product } from '../types'
-import { useCart } from '../composables/cart/useCart'
+import { useCart } from '../cart/useCart'
 import { defineStore } from 'pinia'
 
 export const useCartStore = defineStore('cart', () => {
@@ -19,7 +19,7 @@ export const useCartStore = defineStore('cart', () => {
     clearCart,
     setShippingOption: setShippingOptionFn
     ,createCheckoutSession: createCheckoutSessionFn
-  } = useCart()
+  } = useCart() as any
   
   const initializeCart = async () => {
     loading.value = true

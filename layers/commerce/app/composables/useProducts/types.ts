@@ -1,17 +1,22 @@
-import { Ref } from 'vue';
-import type { GetProducts } from '@vue-storefront/storefront-boilerplate-sdk';
-import type { Maybe } from '../_types';
+import { Ref } from 'vue'
+import type { Product } from '../_types'
+import type { Maybe } from '../_types'
+
+export type GetProducts = {
+  items: Product[]
+  total?: number
+}
 
 export interface UseProductsState {
-  data: GetProducts | null;
-  loading: boolean;
+  data: GetProducts | null
+  loading: boolean
 }
 
-export type FetchProducts = () => Promise<Ref<Maybe<GetProducts>>>;
+export type FetchProducts = () => Promise<Ref<Maybe<GetProducts>>>
 export interface UseProducts {
-  data: Readonly<Ref<UseProductsState['data']>>;
-  loading: Readonly<Ref<boolean>>;
-  fetchProducts: FetchProducts;
+  data: Readonly<Ref<UseProductsState['data']>>
+  loading: Readonly<Ref<boolean>>
+  fetchProducts: FetchProducts
 }
 
-export type UseProductsReturn = () => UseProducts;
+export type UseProductsReturn = () => UseProducts

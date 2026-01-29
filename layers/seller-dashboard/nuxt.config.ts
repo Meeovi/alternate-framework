@@ -1,6 +1,11 @@
-import { defineNuxtConfig } from 'nuxt/config'
+import {
+  defineNuxtConfig
+} from 'nuxt/config'
 
 export default defineNuxtConfig({
-  alias: {},
-  modules: [],
+  $meta: {
+    name: 'dashboard',
+  },
+
+  runtimeConfig: {}
 })

@@ -20,27 +20,31 @@ export class ModuleRegistry {
     if (this.modules.has(module.id)) return
 
     this.modules.set(module.id, module)
-
     if (module.adapters) {
       for (const [key, adapter] of Object.entries(module.adapters)) {
         const typedKey = key as AlternateAdapterKey
-        this.adapters.set(typedKey, adapter as AlternateAdapterMap[typeof typedKey])
-        // emit adapter registration so other modules can react at runtime
-        if (this.bus) {
-          try {
-            this.bus.emit('adapter:registered', { key: typedKey } as any).catch(() => {})
-          } catch (e) {
-            // ignore emit errors
-          }
-        }
+        this.registerAdapter(typedKey, adapter as AlternateAdapterMap[typeof typedKey])
       }
     }
-
     module.setup?.(ctx)
   }
 
   getAdapter<K extends AlternateAdapterKey>(key: K): AlternateAdapterOf<K> | undefined {
     return this.adapters.get(key) as AlternateAdapterOf<K> | undefined
+  }
+
+  // Register an adapter at runtime. Emits `adapter:registered` so modules
+  // depending on adapters can react when new adapters become available.
+  registerAdapter<K extends AlternateAdapterKey>(key: K, adapter: AlternateAdapterMap[K]) {
+    this.adapters.set(key, adapter)
+    if (this.bus) {
+      try {
+        // notify listeners asynchronously
+        this.bus.emit('adapter:registered', { key } as any).catch(() => {})
+      } catch (e) {
+        // ignore emit errors
+      }
+    }
   }
 
   async runLifecycle(hook: keyof AlternateModule, ctx: AlternateContext) {

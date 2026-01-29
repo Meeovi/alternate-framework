@@ -1,0 +1,22 @@
+{
+  "name": "@meeovi/types",
+  "version": "1.0.2",
+  "description": "Centralized types for Meeovi stored in layers/shared",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}

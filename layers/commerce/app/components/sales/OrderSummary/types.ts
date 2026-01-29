@@ -1,5 +1,5 @@
-import type { SfCart } from '@vue-storefront/unified-data-model';
+import type { Cart } from '../../../composables/_types'
 
 export type OrderSummaryPropsType = {
-  cart: SfCart;
-};
+  cart: Cart
+}

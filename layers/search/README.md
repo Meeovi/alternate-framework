@@ -1,7 +1,7 @@
 <!-- packages/search/README.md -->
 # @meeovi/search
 
-A modular, provider-agnostic search module for the Alternate Framework. It provides a unified, typed search API with pluggable adapters (Meilisearch, OpenSearch, mock adapters), a small CLI for indexing/warmup, and event hooks.
+A modular, provider-agnostic search layer for the Alternate Framework. It provides a unified, typed search API with pluggable adapters (Meilisearch, OpenSearch, mock adapters), lightweight bridges for UI integrations (InstantSearch / Searchkit), a small CLI for indexing/warmup, and event hooks.
 
 ## Features
 
@@ -51,9 +51,12 @@ const app = createAlternateApp({
 
 await app.start()
 
-const search = app.context.getAdapter('search')
-const results = await search.search({ term: 'shoes' })
-console.log(results.items)
+// After app startup you can access the registered `search` adapter via the runtime
+const searchAdapter = app.context.getAdapter('search')
+if (searchAdapter) {
+  const results = await searchAdapter.search({ term: 'shoes', page: 1, pageSize: 10 })
+  console.log(results.items)
+}
 ```
 
 ## Adapters
@@ -92,7 +95,7 @@ const mock = createMockSearchAdapter([
   { id: '2', title: 'Blue Shirt' }
 ])
 
-const results = await mock.search({ term: 'red' })
+const results = await mock.search({ term: 'red', page: 1, pageSize: 10 })
 ```
 
 ## Configuration
@@ -114,6 +117,39 @@ Example `search` config in your app:
 ```
 
 The module validates that `defaultProvider` and the referenced provider configuration exist, and that required fields for each adapter are present.
+
+Note: this repository includes a top-level `.env.example` with recommended variables for Search and other providers; you can manage layer credentials from your main app's `.env` file. See `../.env.example`.
+
+## UI Integrations (InstantSearch / Searchkit)
+
+This layer includes bridges that let UI code use Algolia InstantSearch or Searchkit clients without coupling the UI to a particular backend provider. Use `createInstantSearchBridge` / `createSearchkitBridge` on the client, and `createSearchkitGraphQLHandler` on the server when exposing a GraphQL endpoint for Searchkit-server.
+
+Example (client):
+
+```ts
+import { createInstantSearchBridge } from '@meeovi/search'
+// `manager` is the `SearchManager` instance available on the app context
+const bridge = createInstantSearchBridge(manager)
+
+const instantsearchClient = {
+  search(requests) {
+    return bridge.searchFunction({ state: requests[0].params, setResults: () => {} })
+  }
+}
+```
+
+Example (server - Express):
+
+```ts
+import express from 'express'
+import { createSearchkitGraphQLHandler } from '@meeovi/search'
+
+const app = express()
+app.use(express.json())
+app.post('/graphql', createSearchkitGraphQLHandler(manager))
+```
+
+These bridges map InstantSearch/Searchkit request shapes into the layer's `SearchManager` and underlying adapters so UI code doesn't need to change when you swap search providers.
 
 ## Events
 
@@ -142,6 +178,35 @@ Environment variables supported (example for Meilisearch):
 - `MEILI_HOST=http://localhost:7700`
 - `MEILI_INDEX=products`
 - `MEILI_KEY=masterKey`
+
+Searchkit / Search provider environment variables
+
+- `SEARCHKIT_HOST` or `NUXT_PUBLIC_SEARCHKIT_HOST` — full host URL (e.g. `https://search.example.com`)
+- Alternatively compose with:
+  - `SEARCHKIT_PROTOCOL` / `NUXT_PUBLIC_SEARCHKIT_PROTOCOL` (defaults to `http`)
+  - `SEARCHKIT_HOSTNAME` / `NUXT_PUBLIC_SEARCHKIT_HOSTNAME` (e.g. `search.example.com`)
+  - `SEARCHKIT_PORT` / `NUXT_PUBLIC_SEARCHKIT_PORT` (e.g. `9200`)
+- Optional API key: `SEARCHKIT_API_KEY` or `NUXT_PUBLIC_SEARCHKIT_API_KEY`
+
+Notes:
+- Use the `NUXT_PUBLIC_` prefix for values that must be available in client-side code (public build). Keep API keys server-only when possible.
+- The plugin logs a runtime validation message on startup if search provider configuration is missing, with examples of env vars to set.
+
+Layer env conventions
+
+- All layers use the same environment lookup convention: the code checks `KEY` and falls back to `NUXT_PUBLIC_KEY` when appropriate. This lets you manage provider credentials and endpoints centrally from your main application's `.env` file.
+- Example `.env` entries in your main app to configure the Search layer:
+
+```
+SEARCHKIT_HOST=https://search.example.com
+SEARCHKIT_API_KEY=server-only-key
+# or compose:
+SEARCHKIT_PROTOCOL=https
+SEARCHKIT_HOSTNAME=search.example.com
+SEARCHKIT_PORT=9200
+```
+
+Because every layer follows this `KEY` / `NUXT_PUBLIC_KEY` pattern, you can place settings in the main app's `.env` and they will be available to the layer at runtime without editing layer files.
 
 ## Testing
 

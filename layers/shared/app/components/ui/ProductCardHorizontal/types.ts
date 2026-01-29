@@ -1,8 +1,5 @@
-import type { SfProduct } from '@vue-storefront/unified-data-model';
+import type { Product } from '../../types/ui'
 
 export type ProductHorizontalProps = {
-  product: Omit<
-    SfProduct,
-    'id' | 'sku' | 'slug' | 'description' | 'price' | 'primaryImage' | 'rating' | 'variants' | 'quantityLimit'
-  >;
-};
+  product: Omit<Product, 'id' | 'images' | 'price'>
+}

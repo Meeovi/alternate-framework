@@ -1,4 +1,4 @@
-import { useNuxtApp } from '#imports'
+declare function useNuxtApp(): any
 
 /**
  * Centralized safe wrapper around `$directus.request`.

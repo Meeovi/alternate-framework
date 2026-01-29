@@ -1,5 +1,5 @@
 import { getContentProvider } from './registry'
-import { useRuntimeConfig } from '#imports'
+declare function useRuntimeConfig(): any
 
 export function useContent() {
   const config = useRuntimeConfig()

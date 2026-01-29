@@ -13,6 +13,7 @@ export * from './src/adapters/auth'
 export * from './src/adapters/search'
 export * from './src/adapters/catalog'
 export * from './src/adapters/cart'
+export * from './src/adapters/lists'
 
 export * from './src/types/module'
 export * from './src/types/app'

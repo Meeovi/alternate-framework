@@ -1,5 +1,5 @@
-import type { SfProduct } from '@vue-storefront/unified-data-model';
+import type { Product } from '../../../../composables/_types'
 
 export type ProductAccordionPropsType = {
-  product: SfProduct;
-};
+  product: Product
+}

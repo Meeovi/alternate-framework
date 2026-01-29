@@ -1,7 +1,7 @@
-import type { HTMLAttributes } from 'vue';
-import type { SfProduct } from '@vue-storefront/unified-data-model';
+import type { HTMLAttributes } from 'vue'
+import type { Product } from '../../../../composables/_types'
 
 export type ProductSliderProps = {
-  items?: SfProduct[];
-  wrapperClass?: HTMLAttributes['class'];
-};
+  items?: Product[]
+  wrapperClass?: HTMLAttributes['class']
+}

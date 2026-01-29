@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["./global.d.ts"],
+    "paths": {
+      "#shared/*": ["../shared/*"],
+      "@meeovi/core": ["../../packages/core/index.ts"],
+      "@meeovi/core/*": ["../../packages/core/*"]
+    },
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "noEmitOnError": false
+  }
+}

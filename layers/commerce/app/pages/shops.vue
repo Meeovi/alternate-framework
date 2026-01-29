@@ -3,7 +3,7 @@
     <v-card elevation="0">
       <v-toolbar title="Shops on Meeovi" color="green"></v-toolbar>
       <v-tabs v-model="tab" bg-color="green" align-tabs="center">
-        <v-tab v-if="menus?.active === 'Active'" v-for="(menu, index) in shopbar?.menus" :key="index">
+        <v-tab v-if="shopbar?.active === 'Active'" v-for="(menu, index) in shopbar?.menus" :key="index">
           <NuxtLink :to="menu?.url">{{ menu?.name }}</NuxtLink>
         </v-tab>
       </v-tabs>
@@ -14,8 +14,8 @@
             <section data-bs-version="5.1" class="clients1 cid-uHg1k6KLf8" id="clients1-ap">
               <div class="container">
                 <div class="row justify-content-center">
-                  <div class="card col-12 col-md-6 col-lg-4" v-for=" (stores, index) in stores" :key="index">
-                    <store :store="stores" />
+                  <div class="card col-12 col-md-6 col-lg-4" v-for="(shop, index) in stores" :key="index">
+                    <store :store="shop" />
                   </div>
                 </div>
               </div>
@@ -26,8 +26,8 @@
             <section data-bs-version="5.1" class="clients1 cid-uHg1k6KLf8" id="clients1-ap">
               <div class="container">
                 <div class="row justify-content-center">
-                  <div class="card col-12 col-md-6 col-lg-4" v-for=" (stores, index) in stores" :key="index">
-                    <store :store="stores" />
+                  <div class="card col-12 col-md-6 col-lg-4" v-for="(shop, index) in stores" :key="index">
+                    <store :store="shop" />
                   </div>
                 </div>
               </div>
@@ -38,8 +38,8 @@
             <section data-bs-version="5.1" class="clients1 cid-uHg1k6KLf8" id="clients1-ap">
               <div class="container">
                 <div class="row justify-content-center">
-                  <div class="card col-12 col-md-6 col-lg-4" v-for=" (stores, index) in stores" :key="index">
-                    <store :store="stores" />
+                  <div class="card col-12 col-md-6 col-lg-4" v-for="(shop, index) in stores" :key="index">
+                    <store :store="shop" />
                   </div>
                 </div>
               </div>
@@ -51,30 +51,23 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import { useHead, useNuxtApp, useAsyncData } from '#imports'
   import store from '../components/catalog/shops/stores.vue'
 
   const tab = ref(null)
-    const {
-    $directus,
-    $readItems,
-    $readItem
-  } = useNuxtApp()
+  
+  import { useContentFallback } from '../composables/useContent'
+  const content = useContentFallback()
 
-  const {
-    data: stores
-  } = await useAsyncData('stores', () => {
-    return $directus.request($readItems('shops', {
-      fields: ['*', {
-        '*': ['*']
-      }]
-    }))
+  const { data: stores } = await useAsyncData('stores', async () => {
+    return await content.listShops({ fields: ['*', { '*': ['*'] }] })
   })
 
-  const {
-    data: shopbar
-  } = await useAsyncData('shopbar', () => {
-    return $directus.request($readItem('navigation', '55'))
+  const { data: shopbar } = await useAsyncData('shopbar', () => {
+    const nuxtApp = useNuxtApp() as any
+    return nuxtApp.$directus ? nuxtApp.$directus.request(nuxtApp.$readItem('navigation', '55')) : null
   })
 
   useHead({

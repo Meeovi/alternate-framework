@@ -24,29 +24,14 @@
 </template>
 
 <script setup>
-    import {
-        ref,
-        onMounted
-    } from 'vue'
-    import store from '~/components/catalog/product/stores.vue'
+    import { ref } from 'vue'
+    import store from './stores.vue'
+    import { useContentFallback } from '../../../composables/useContent'
 
     const model = ref(null)
-    const {
-        $directus,
-        $readItems,
-    } = useNuxtApp()
+    const content = useContentFallback()
 
-    const {
-        user
-    } = useSupabaseAuth()
-
-    const {
-        data: shops
-    } = await useAsyncData('shops', () => {
-        return $directus.request($readItems('shops', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: shops } = await useAsyncData('shops', () => {
+        return content.listShops({ fields: ['*', { '*': ['*'] }] })
     })
 </script>

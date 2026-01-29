@@ -100,31 +100,27 @@
 </template>
 
 <script setup>
-  import {
-    ref
-  } from 'vue'
+  import { ref } from 'vue'
   import showcases from '~/components/catalog/product/relatedproducts.vue'
   import productCard from '~/components/catalog/product/productCard.vue'
   import comments from '@/components/placeholders/Comments.vue'
   import spaces from '@/components/placeholders/Space.vue'
   import events from '@/components/placeholders/Event.vue'
+  import { useContentFallback } from '../../composables/useContent'
 
   const route = useRoute();
   const tab = ref(null);
-  const {
-    $directus,
-    $readItem
-  } = useNuxtApp()
+  const { $directus, $readItem } = useNuxtApp()
 
   const slug = computed(() => {
     const s = route.params.slug
     return Array.isArray(s) ? s[0] : s
   })
 
-  const {
-    data: shopRaw
-  } = await useAsyncData('shop', () => {
-    return $directus.request($readItem('shops', {
+  const content = useContentFallback()
+
+  const { data: shopRaw } = await useAsyncData('shop', () => {
+    return content.listShops({
       fields: ['*',
         'media.*',
         'spaces.spaces_id.*',
@@ -143,14 +139,12 @@
         }
       },
       limit: 1
-    }))
+    })
   })
 
   const shop = computed(() => shopRaw.value?.[0] || null)
 
-  const {
-    data: shopbar
-  } = await useAsyncData('shopbar', () => {
+  const { data: shopbar } = await useAsyncData('shopbar', () => {
     return $directus.request($readItem('navigation', '55'))
   })
 

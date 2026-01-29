@@ -1,4 +1,4 @@
-import type { User } from '../types';
+import type { User } from '../types/auth';
 
 export function userName(user: Partial<User>): string {
 	if (!user) {

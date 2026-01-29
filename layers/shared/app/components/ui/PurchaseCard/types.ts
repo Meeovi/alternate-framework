@@ -1,5 +1,5 @@
-import type { SfProduct } from '@vue-storefront/unified-data-model';
+import type { Product } from '../../types/ui'
 
 export type PurchaseCardProps = {
-  product: SfProduct;
-};
+  product: Product
+}
