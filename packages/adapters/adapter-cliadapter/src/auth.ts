@@ -1,52 +1,31 @@
-import type {
-  AuthAdapter,
-  TransportAdapter
-} from '@meeovi/sdk'
+import type { TransportAdapter } from '@meeovi/types/dist/sdk/adapter'
+import type { AuthAdapter } from '@meeovi/types/dist/auth/adapter'
+import type { LoginInput, RegisterInput } from '@meeovi/types/dist/auth/inputs'
+import type { Result } from '@meeovi/types/dist/core/result'
+import type { AuthSession as Session } from '@meeovi/types/dist/auth/session'
+import type { AuthUser as User } from '@meeovi/types/dist/auth/user'
 
-import type {
-  LoginInput,
-  RegisterInput,
-  Result,
-  Session,
-  User
-} from '@meeovi/types'
-
-import { unwrap } from './utils'
+import { unwrap } from './utils.js'
 
 export const createAuthAdapter = (
   transport: TransportAdapter
 ): AuthAdapter => ({
-  async login(input: LoginInput): Promise<Result<Session>> {
-    const res = await transport.request<Session>('POST', '/auth/login', {
-      body: input
-    })
-    return unwrap(res)
-  },
-
-  async register(input: RegisterInput): Promise<Result<Session>> {
-    const res = await transport.request<Session>('POST', '/auth/register', {
-      body: input
-    })
-    return unwrap(res)
-  },
-
-  async logout(): Promise<Result<true>> {
-    const res = await transport.request('POST', '/auth/logout')
-    return unwrap({ ...res, data: true })
-  },
-
-  async getSession(): Promise<Result<Session>> {
+  async getSession(): Promise<Session | null> {
     const res = await transport.request<Session>('GET', '/auth/session')
-    return unwrap(res)
+    if (res.error) return null
+    return res.data as Session
   },
 
-  async refresh(): Promise<Result<Session>> {
-    const res = await transport.request<Session>('POST', '/auth/refresh')
-    return unwrap(res)
+  async signIn(email: string, password: string): Promise<Session> {
+    const res = await transport.request<Session>('POST', '/auth/login', {
+      body: { email, password }
+    })
+    if (res.error) throw new Error(String(res.error))
+    return res.data as Session
   },
 
-  async getUser(): Promise<Result<User>> {
-    const res = await transport.request<User>('GET', '/auth/user')
-    return unwrap(res)
+  async signOut(): Promise<void> {
+    await transport.request('POST', '/auth/logout')
+    return
   }
 })

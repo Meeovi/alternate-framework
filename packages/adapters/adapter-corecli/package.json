@@ -11,7 +11,10 @@
   "type": "module",
   "dependencies": {
     "@meeovi/sdk": "^1.0.2",
-    "@meeovi/types": "^1.0.1",
+    "@meeovi/types": "file:../../../layers/shared/types",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.1.0"
   }
 }

@@ -34,6 +34,20 @@ declare module '@vue-storefront/unified-data-model' {
   export default whatever
 }
 
+// Project-specific shims for layers and themes
+declare module '@meeovi/commerce' {
+  export type Product = any
+  export type Cart = any
+  export type Category = any
+}
+
+declare module '@meeovi/chat' {
+  export function registerChatProviderRuntime(...args: any[]): void
+}
+
+// Global helper used across apps/themes
+declare function useMeeovi(): any
+
 declare module '@nuxt/kit' { export const defineNuxtModule: any; export const addPlugin: any; export const createResolver: any }
 declare module '#app' { export const defineNuxtPlugin: any; export const useRuntimeConfig: any }
 declare module 'ofetch' { export const ofetch: any }

@@ -32,14 +32,14 @@ export * from './ui/form'
 export * from './ui/state'
 export * from './ui/pagination'
 export * from './ui/component'
-export type * from './ui/blocks';
-export type * from './ui/content';
-export type * from './ui/meta';
-export type * from './ui/system';
-export type * from './ui/help';
-export type * from './ui/os';
-export type * from './ui/schema';
-export type * from './ui/api/global-search';
+export * from './ui/blocks'
+export * from './ui/content'
+export * from './ui/meta'
+export * from './ui/system'
+export * from './ui/help'
+export * from './ui/os'
+export * from './ui/schema'
+export * from './ui/api/global-search'
 
 // SDK
 export * from './sdk/errors'
@@ -47,3 +47,11 @@ export * from './sdk/endpoint'
 export * from './sdk/request'
 export * from './sdk/response'
 export * from './sdk/adapter'
+
+// Compatibility exports (legacy names expected by existing packages)
+export { AuthUser as User } from './auth/user'
+export { AuthSession as Session } from './auth/session'
+export { CommerceProduct as Product } from './commerce/product'
+export { CommerceCart as Cart, CommerceCartItem as CartItem } from './commerce/cart'
+export type SearchResultGeneric<T = unknown> = { items: T[]; total: number }
+export type { Result } from './core/result'

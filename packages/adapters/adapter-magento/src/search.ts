@@ -5,8 +5,8 @@ import { unwrap } from './utils'
 export const createStarterSearchAdapter = (
   transport: TransportAdapter
 ): SearchAdapter => ({
-  async search(query: SearchQuery): Promise<Result<SearchResult>> {
-    const res = await transport.request<SearchResult>(
+  async search<T = unknown>(query: SearchQuery): Promise<Result<SearchResult<T>>> {
+    const res = await transport.request<SearchResult<T>>(
       'POST',
       '/search',
       { body: query }

@@ -1,16 +1,18 @@
+import { getActivitypubClient } from '../client'
+
 export const useActivitypub = () => {
-  const { $activitypub } = useNuxtApp()
+  const client = getActivitypubClient() || (globalThis as any).__meeovi_activitypub_client
 
   const getInbox = async () => {
-    return await $activitypub('/inbox')
+    return await client('/inbox')
   }
 
   const getOutbox = async () => {
-    return await $activitypub('/outbox')
+    return await client('/outbox')
   }
 
   const postActivity = async (activity: Record<string, any>) => {
-    return await $activitypub('/outbox', {
+    return await client('/outbox', {
       method: 'POST',
       body: activity
     })

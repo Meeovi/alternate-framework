@@ -1,14 +1,12 @@
-import { defineNuxtPlugin } from '#app'
-import { ofetch } from 'ofetch'
+import { createActivitypubClient } from './client'
 
-export default defineNuxtPlugin((nuxtApp) => {
-  const config = useRuntimeConfig()
-  const client = ofetch.create({
-    baseURL: config.public.activitypub.server,
-    headers: {
-      'Accept': 'application/activity+json'
-    }
-  })
-
-  nuxtApp.provide('activitypub', client)
-})
+export default (nuxtApp: any) => {
+  const config: any = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : (globalThis as any).__meeovi_runtime_config || {}
+  const base = config?.public?.activitypub?.server
+  const client = createActivitypubClient(base)
+  if (nuxtApp && typeof nuxtApp.provide === 'function') {
+    nuxtApp.provide('activitypub', client)
+  } else {
+    ;(globalThis as any).__meeovi_activitypub_client = client
+  }
+}

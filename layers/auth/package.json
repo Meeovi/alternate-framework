@@ -26,7 +26,7 @@
     "@better-auth/sso": "^1.4.12",
     "@better-auth/stripe": "^1.4.15",
     "@meeovi/sdk": "^1.0.2",
-    "@meeovi/types": "^1.0.1",
+    "@meeovi/types": "file:../shared/types",
     "@polar-sh/better-auth": "^1.6.3",
     "better-auth": "^1.4.12",
     "typescript": "^5.9.3"

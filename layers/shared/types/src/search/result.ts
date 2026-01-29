@@ -7,7 +7,12 @@ export interface SearchResultItem {
   url?: string
 }
 
-export interface SearchResult {
+export interface SearchResultBase {
   items: SearchResultItem[]
+  total: number
+}
+
+export type SearchResult<T = SearchResultItem> = {
+  items: T[]
   total: number
 }

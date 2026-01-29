@@ -42,6 +42,7 @@ async function run() {
         else if (a === '--desc' || a === '-d') out.desc = argv[++i]
         else if (a === '--layers' || a === '-l') out.layers = argv[++i]
         else if (a === '--dest') out.dest = argv[++i]
+        else if (a === '--no-install' || a === '--noInstall' || a === '--noinstall') out.noInstall = true
       }
       return out
     }
@@ -175,19 +176,23 @@ async function run() {
 
     await fs.writeFile(path.join(dest, 'index.ts'), indexContent, 'utf8')
     // attempt to install dependencies to verify resolution
-    try {
-      const { exec } = require('child_process')
-      const util = require('util')
-      const execP = util.promisify(exec)
+    if (!cli.noInstall) {
+      try {
+        const { exec } = require('child_process')
+        const util = require('util')
+        const execP = util.promisify(exec)
 
-      console.log(`Running npm install in ${dest} to verify dependencies...`)
-      const { stdout, stderr } = await execP('npm install', { cwd: dest })
-      if (stdout) process.stdout.write(stdout)
-      if (stderr) process.stderr.write(stderr)
-      console.log('npm install completed')
-    } catch (err) {
-      console.error('npm install failed:', err.message || err)
-      console.log('You can run `npm install` manually inside', dest)
+        console.log(`Running npm install in ${dest} to verify dependencies...`)
+        const { stdout, stderr } = await execP('npm install', { cwd: dest })
+        if (stdout) process.stdout.write(stdout)
+        if (stderr) process.stderr.write(stderr)
+        console.log('npm install completed')
+      } catch (err) {
+        console.error('npm install failed:', err.message || err)
+        console.log('You can run `npm install` manually inside', dest)
+      }
+    } else {
+      console.log('Skipping npm install (flag --no-install provided)')
     }
 
     console.log(`Adapter scaffolded to ${dest}`)

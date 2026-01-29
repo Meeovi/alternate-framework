@@ -40,4 +40,46 @@ Notes
 - The scaffold script performs simple text replacements; review generated files before publishing.
 - This template is intentionally minimal — implement only the methods your backend supports.
 
+CLI Flags
+---------
+
+The starter CLI supports interactive and non-interactive modes. Flags:
+
+- `--name` / `-n`: Adapter short name (e.g. `shop`).
+- `--desc` / `-d`: Description for the generated package.
+- `--layers` / `-l`: Comma-separated list of layers to scaffold (e.g. `commerce,auth`).
+- `--dest`: Destination path for the generated package.
+- `--no-install`: Skip running `npm install` after scaffolding.
+
+Examples
+--------
+
+- Interactive:
+
+```
+npm run create:interactive
+```
+
+- Non-interactive (with install):
+
+```
+npm run create:interactive -- --name shop --desc "Shop adapter" --layers commerce,auth
+```
+
+- Non-interactive (skip install):
+
+```
+npm run create:interactive -- --name shop --layers commerce --no-install
+```
+
+Repo-level wrapper
+------------------
+
+From the repo root you can use the provided script:
+
+```
+scripts/create-adapter --name shop --layers commerce --no-install
+```
+
+
 Note: adapter credentials and endpoints can be centrally configured in your main app's `.env` file. See the repository `.env.example` for recommended variable names.

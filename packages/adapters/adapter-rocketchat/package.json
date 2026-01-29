@@ -19,6 +19,6 @@
   "type": "module",
   "dependencies": {
     "typescript": "^5.9.3",
-    "@meeovi/chat": "^1.0.0"
+    "@meeovi/chat": "file:../../../layers/chat"
   }
 }

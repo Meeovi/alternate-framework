@@ -1,46 +1,44 @@
-import type { CommerceAdapter, TransportAdapter } from '@meeovi/sdk'
-import type { Product, Cart, Result } from '@meeovi/types'
-import { unwrap } from './utils'
+import type { CommerceAdapter } from '@meeovi/types/dist/commerce/adapter'
+import type { TransportAdapter } from '@meeovi/types/dist/sdk/adapter'
+import type { CommerceProduct as Product } from '@meeovi/types/dist/commerce/product'
+import type { CommerceCart as Cart } from '@meeovi/types/dist/commerce/cart'
+import type { Result } from '@meeovi/types/dist/core/result'
+import { unwrap } from './utils.js'
 
 export const createCommerceAdapter = (
   transport: TransportAdapter
 ): CommerceAdapter => ({
-  async getProduct(id: string): Promise<Result<Product>> {
-    const res = await transport.request<Product>('GET', `/products/${id}`)
-    return unwrap(res)
+  async getProductBySlug(slug: string) {
+    const res = await transport.request<Product>('GET', `/products/slug/${slug}`)
+    if (res.error) return null
+    return res.data as Product
   },
 
-  async listProducts(): Promise<Result<Product[]>> {
-    const res = await transport.request<Product[]>('GET', '/products')
-    return unwrap(res)
+  async getProducts(params: { search?: string; categoryId?: string; limit?: number; offset?: number }) {
+    const res = await transport.request<Product[]>('GET', '/products', {
+      query: params
+    })
+    if (res.error) return []
+    return res.data as Product[]
   },
 
-  async getCart(): Promise<Result<Cart>> {
-    const res = await transport.request<Cart>('GET', '/cart')
-    return unwrap(res)
+  async getCategoryTree() {
+    const res = await transport.request<any[]>('GET', '/categories/tree')
+    if (res.error) return []
+    return res.data as any[]
   },
 
-  async addToCart(item: any): Promise<Result<Cart>> {
+  async getCart(cartId: string) {
+    const res = await transport.request<Cart>('GET', `/cart/${cartId}`)
+    if (res.error) return null
+    return res.data as Cart
+  },
+
+  async addToCart(cartId: string | null, input: { productId: string; quantity: number }) {
     const res = await transport.request<Cart>('POST', '/cart/items', {
-      body: item
+      body: { cartId, ...input }
     })
-    return unwrap(res)
-  },
-
-  async updateCartItem(id: any, quantity: any): Promise<Result<Cart>> {
-    const res = await transport.request<Cart>('PATCH', `/cart/items/${id}`, {
-      body: { quantity }
-    })
-    return unwrap(res)
-  },
-
-  async removeCartItem(id: any): Promise<Result<Cart>> {
-    const res = await transport.request<Cart>('DELETE', `/cart/items/${id}`)
-    return unwrap(res)
-  },
-
-  async clearCart(): Promise<Result<Cart>> {
-    const res = await transport.request<Cart>('DELETE', '/cart')
-    return unwrap(res)
+    if (res.error) throw new Error(String(res.error))
+    return res.data as Cart
   }
 })
