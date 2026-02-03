@@ -1,9 +1,4 @@
-import type { TransportAdapter } from '@meeovi/types/dist/sdk/adapter'
-import type { AuthAdapter } from '@meeovi/types/dist/auth/adapter'
-import type { LoginInput, RegisterInput } from '@meeovi/types/dist/auth/inputs'
-import type { Result } from '@meeovi/types/dist/core/result'
-import type { AuthSession as Session } from '@meeovi/types/dist/auth/session'
-import type { AuthUser as User } from '@meeovi/types/dist/auth/user'
+import type { TransportAdapter, AuthAdapter, LoginInput, RegisterInput, Result, AuthSession as Session, AuthUser as User } from '@meeovi/core'
 
 import { unwrap } from './utils.js'
 

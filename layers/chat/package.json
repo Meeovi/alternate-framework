@@ -1,8 +1,8 @@
 {
   "name": "@meeovi/chat",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "Chat layer for Meeovi framework.",
-  "main": "index.js",
+  "main": "./nuxt.config.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json"

@@ -3,7 +3,7 @@ import { SearchContext, type SearchContextState } from './SearchContext'
 import { QueryBuilder } from './QueryBuilder'
 import { SearchPipeline } from './Pipeline'
 
-export class SearchManager<TItem = any> {
+export class SearchManager<TItem> {
   context: SearchContext
   pipeline: SearchPipeline
   adapter: SearchAdapter<TItem>

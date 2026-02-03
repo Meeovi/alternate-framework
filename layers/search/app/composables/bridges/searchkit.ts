@@ -1,4 +1,5 @@
 import type { SearchManager } from '../core/SearchManager'
+import type { MeeoviSearchItem } from '../adapter/types'
 import type { BuiltSearchQuery } from '../core/QueryBuilder'
 
 type InstantSearchRequest = {
@@ -32,7 +33,7 @@ function mapRequestToQuery(params: Record<string, any>, existing?: Partial<Built
   return q as BuiltSearchQuery
 }
 
-export function createSearchkitBridge(manager: SearchManager) {
+export function createSearchkitBridge(manager: SearchManager<MeeoviSearchItem>) {
   return {
     // InstantSearch client "search" method
     async search(requests: InstantSearchRequest[]): Promise<InstantSearchResult[]> {

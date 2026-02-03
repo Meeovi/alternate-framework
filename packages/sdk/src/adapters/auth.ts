@@ -4,7 +4,7 @@ import type {
   Result,
   LoginInput,
   RegisterInput
-} from '@meeovi/types'
+} from '@meeovi/core'
 
 export interface AuthAdapter {
   login(input: LoginInput): Promise<Result<Session>>

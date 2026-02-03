@@ -1,7 +1,6 @@
 import {
   defineAlternateModule,
   useAlternateEventBus,
-  useAlternateContext,
   type AlternateContext
 } from '@meeovi/core'
 

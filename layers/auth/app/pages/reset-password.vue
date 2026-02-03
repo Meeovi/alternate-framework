@@ -28,11 +28,12 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useHead, useRoute, useRuntimeConfig, navigateTo } from '#app'
-import { definePageMeta, useI18n, useLocalePath } from '#imports'
-import { useAuth, z } from '@meeovi/auth'
+import { definePageMeta, useLocalePath } from '#imports'
+import { z } from 'better-auth'
 import { reactive, ref } from 'vue'
+import { useAuth } from '../composables/useAuth'
 
 definePageMeta({
   auth: {
@@ -52,30 +53,27 @@ const localePath = useLocalePath()
 const runtimeConfig = useRuntimeConfig()
 
 const state = reactive({
-  password: undefined as string | undefined,
-  confirmPassword: undefined as string | undefined
+  password: undefined,
+  confirmPassword: undefined
 })
 
 const schema = z.object({
-  password: z.string().min(8, t('resetPassword.errors.minLength', { min: 8 })),
-  confirmPassword: z.string().min(8, t('resetPassword.errors.minLength', { min: 8 })).refine(val => val === state.password, {
-    message: t('resetPassword.errors.passwordMismatch')
+  password: z.string().min(8, ('resetPassword.errors.minLength', { min: 8 })),
+  confirmPassword: z.string().min(8, ('resetPassword.errors.minLength', { min: 8 })).refine(val => val === state.password, {
+    message: ('resetPassword.errors.passwordMismatch')
   })
 })
-
-type Schema = z.infer<typeof schema>
 
 const loading = ref(false)
 
 // reactive message used by the template's v-alert
-const message = ref<string | null>(null)
-const messageType = ref<'success' | 'error' | 'info'>('info')
-
+const message = ref(null)
+const messageType = ref('info')
 // ref for the Turnstile container and the token set by the widget
-const turnstileRef = ref<HTMLDivElement | null>(null)
-const turnstileToken = ref<string | null>(null)
+const turnstileRef = ref(null)
+const turnstileToken = ref(null)
 
-async function onSubmit(event: SubmitEvent) {
+async function onSubmit(event) {
   event.preventDefault()
   if (loading.value)
     return
@@ -86,8 +84,8 @@ async function onSubmit(event: SubmitEvent) {
 
   loading.value = true
   const { error } = await auth.resetPassword({
-    newPassword: state.password!,
-    token: route.query.token as string
+    newPassword: state.password,
+    token: route.query.token
   })
 
   if (error) {
@@ -105,7 +103,7 @@ async function onSubmit(event: SubmitEvent) {
     })
     message.value = successMsg
     messageType.value = 'success'
-    navigateTo(localePath((runtimeConfig.public as any).auth.redirectGuestTo))
+    navigateTo(localePath((runtimeConfig.public).auth.redirectGuestTo))
   }
   loading.value = false
 }

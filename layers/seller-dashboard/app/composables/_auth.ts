@@ -1,3 +1,5 @@
+import { useNuxtApp, useState } from "nuxt/app"
+
 export function getCurrentSellerId(): string | undefined {
   try {
     const nuxtApp = useNuxtApp() as any

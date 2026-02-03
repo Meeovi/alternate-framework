@@ -232,9 +232,7 @@
 </template>
 
 <script setup>
-    import shorts from '#social/app/components/related/short.vue'
-    import spaces from '#social/app/components/related/space.vue'
-    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+        import productCard from '#commerce/app/components/catalog/product/productCard.vue'
     import travel from '@/components/categories/travel.vue'
     import deals from '@/components/categories/deals.vue'
     import timeComponent from '@/components/categories/time/time.vue'

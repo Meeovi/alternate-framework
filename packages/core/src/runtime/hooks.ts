@@ -22,3 +22,7 @@ export function useAlternateEventBus(): AlternateEventBus {
   }
   return currentEventBus
 }
+
+export function useRuntimeConfig() {
+  return useAlternateContext().config
+}

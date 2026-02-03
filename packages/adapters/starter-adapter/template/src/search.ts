@@ -1,5 +1,5 @@
 import type { SearchAdapter, TransportAdapter } from '@meeovi/sdk'
-import type { SearchQuery, SearchResult, Facet, Result } from '@meeovi/types'
+import type { SearchQuery, SearchResult, Facet, Result } from '@meeovi/core'
 import { unwrap } from './utils'
 
 export const createSearchAdapter = (

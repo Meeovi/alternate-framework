@@ -9,7 +9,7 @@ import type {
   Result,
   Session,
   User
-} from '@meeovi/types'
+} from '@meeovi/core'
 
 import { unwrap } from './utils'
 

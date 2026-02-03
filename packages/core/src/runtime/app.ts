@@ -25,3 +25,7 @@ export function createAlternateApp(options: AlternateAppOptions): AlternateApp {
     }
   }
 }
+
+export type { AlternateAppOptions }
+export type { AlternateApp }
+export type { AlternateConfig }

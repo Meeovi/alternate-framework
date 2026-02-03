@@ -1,10 +1,4 @@
-import {
-  defineAlternateAdapter,
-  type SearchAdapter,
-  type SearchAdapterConfig,
-  type SearchResult
-} from '@meeovi/core'
-
+import { defineAlternateAdapter, type SearchAdapter, type SearchAdapterConfig, type SearchResult } from '@meeovi/core'
 import type { MeeoviSearchItem } from './types'
 import type { BuiltSearchQuery } from '../core/QueryBuilder'
 
@@ -16,9 +10,9 @@ export function createMockSearchAdapter(items: MeeoviSearchItem[] = []) {
     type: 'search',
     config: cfg,
 
-    async search(query: BuiltSearchQuery): Promise<SearchResult<MeeoviSearchItem>> {
+    async search(query: any): Promise<SearchResult<MeeoviSearchItem>> {
       const filtered = items.filter((item) =>
-        item.title.toLowerCase().includes(query.term.toLowerCase())
+        item.title.toLowerCase().includes(String(query.term || '').toLowerCase())
       )
 
       return {

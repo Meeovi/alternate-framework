@@ -26,7 +26,7 @@
   "type": "module",
   "dependencies": {
     "@meeovi/sdk": "^1.0.2",
-    "@meeovi/types": "^1.0.1",
+    "@meeovi/core": "^1.0.4",
     "typescript": "^5.9.3"
   }
 }

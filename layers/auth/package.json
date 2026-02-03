@@ -1,6 +1,6 @@
 {
   "name": "@meeovi/layer-auth",
-  "version": "1.0.10",
+  "version": "1.1.11",
   "description": "The authentication layer for Alternate Framework applications.",
   "type": "module",
   "main": "./nuxt.config.ts",
@@ -25,8 +25,8 @@
     "@better-auth/scim": "^1.4.15",
     "@better-auth/sso": "^1.4.12",
     "@better-auth/stripe": "^1.4.15",
+    "@meeovi/core": "^1.0.4",
     "@meeovi/sdk": "^1.0.2",
-    "@meeovi/types": "file:../shared/types",
     "@polar-sh/better-auth": "^1.6.3",
     "better-auth": "^1.4.12",
     "typescript": "^5.9.3"
@@ -34,7 +34,6 @@
   "devDependencies": {
     "@types/node": "^25.0.9",
     "@types/uuid": "^10.0.0",
-    "nuxt": "^4.3.0",
-    "pinia": "^3.0.4"
+    "nuxt": "^4.3.0"
   }
 }

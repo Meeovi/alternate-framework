@@ -1,4 +1,4 @@
-import { CommerceProduct, CommercePrice } from '@meeovi/types'
+import { CommerceProduct, CommercePrice } from '@meeovi/core'
 import { ProductInterface } from '../client/sdk'
 
 export function mapMagentoProduct(product: ProductInterface): CommerceProduct {

@@ -1,6 +1,7 @@
 import type { SearchManager } from '../core/SearchManager'
+import type { MeeoviSearchItem } from '../adapter/types'
 
-export function createInstantSearchBridge(manager: SearchManager) {
+export function createInstantSearchBridge(manager: SearchManager<MeeoviSearchItem>) {
   return {
     searchFunction(helper: any) {
       manager.context.setQuery(helper.state.query || '')

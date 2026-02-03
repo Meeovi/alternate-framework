@@ -32,10 +32,9 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { useHead } from '#app'
-import { definePageMeta, useI18n, useLocalePath } from '#imports'
-import { useAuth, z } from '@meeovi/auth'
+<script setup>
+import { useHead } from 'nuxt/app'
+import { definePageMeta, useLocalePath, useAuth, z } from '#imports'
 import { reactive, ref } from 'vue'
 
 definePageMeta({
@@ -44,9 +43,8 @@ definePageMeta({
   }
 })
 
-const { t } = useI18n()
 useHead({
-  title: t('forgotPassword.title')
+  title: 'Forgot Password'
 })
 
 const auth = useAuth()
@@ -54,10 +52,8 @@ const toast = useToast()
 const localePath = useLocalePath()
 
 const schema = z.object({
-  email: z.email(t('forgotPassword.errors.invalidEmail'))
+  email: z.email(('forgotPassword.errors.invalidEmail'))
 })
-
-type Schema = z.infer<typeof schema>
 
 const state = reactive<Partial<Schema>>({
   email: undefined
@@ -73,7 +69,7 @@ const messageType = ref<'info' | 'success' | 'error' | 'warning' | undefined>(un
 const turnstileRef = ref<HTMLElement | null>(null)
 const turnstileToken = ref<string | null>(null)
 
-async function onSubmit(event: Event) {
+async function onSubmit(event) {
   event.preventDefault()
   if (loading.value)
     return
@@ -89,7 +85,7 @@ async function onSubmit(event: Event) {
   })
 
   if (error) {
-    const text = error.message || error.statusText || t('forgotPassword.errors.generic')
+    const text = error.message || error.statusText
     // update v-alert bindings
     message.value = text
     messageType.value = 'error'
@@ -99,7 +95,7 @@ async function onSubmit(event: Event) {
     })
   }
   else {
-    const successText = t('forgotPassword.success')
+    const successText = ('forgotPassword.success')
     // update v-alert bindings
     message.value = successText
     messageType.value = 'success'

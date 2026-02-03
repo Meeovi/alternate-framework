@@ -132,7 +132,7 @@ async function run() {
       } catch (err) {
         // create a generic stub
         const fnName = 'create' + toPascalCase(layer) + 'Adapter'
-        const content = `import type { TransportAdapter } from '@meeovi/sdk'\nimport type { Result } from '@meeovi/types'\n\nexport const ${fnName} = (transport: TransportAdapter) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example(): Promise<Result<any>> { return { ok: false, error: 'Not implemented' } }\n})\n`
+        const content = `import type { TransportAdapter } from '@meeovi/sdk'\nimport type { Result } from '@meeovi/core'\n\nexport const ${fnName} = (transport: TransportAdapter) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example(): Promise<Result<any>> { return { ok: false, error: 'Not implemented' } }\n})\n`
         await fs.writeFile(filePath, content, 'utf8')
       }
     }

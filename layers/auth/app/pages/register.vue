@@ -100,7 +100,7 @@
 </template>
 
 
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 import { definePageMeta, useHead, useRouter } from '#imports'
 import { signUp } from '../lib/auth.client'
@@ -124,10 +124,10 @@ const image = ref<File | null>(null);
 const imagePreview = ref<string | null>(null);
 const loading = ref(false);
 
-async function convertImageToBase64(file: File): Promise<string> {
+async function convertImageToBase64(file) {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
-		reader.onloadend = () => resolve(reader.result as string);
+		reader.onloadend = () => resolve(reader.result);
 		reader.onerror = reject;
 		reader.readAsDataURL(file);
 	});
@@ -157,13 +157,13 @@ const handleSignUp = async () => {
 	})
 };
 
-const handleImageChange = (e: Event) => {
-	const file = (e.target as HTMLInputElement)?.files?.[0];
+const handleImageChange = (e) => {
+	const file = (e.target)?.files?.[0];
 	if (file) {
 		image.value = file;
 		const reader = new FileReader();
 		reader.onloadend = () => {
-			imagePreview.value = reader.result as string;
+			imagePreview.value = reader.result;
 		};
 		reader.readAsDataURL(file);
 	}

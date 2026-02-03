@@ -1,5 +1,11 @@
 {
   "compilerOptions": {
+    "types": ["node", "vitest"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["app/*", "./*"],
+      "@/*": ["app/*", "./*"]
+    },
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",

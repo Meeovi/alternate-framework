@@ -1,8 +1,4 @@
-import type { CommerceAdapter } from '@meeovi/types/dist/commerce/adapter'
-import type { TransportAdapter } from '@meeovi/types/dist/sdk/adapter'
-import type { CommerceProduct as Product } from '@meeovi/types/dist/commerce/product'
-import type { CommerceCart as Cart } from '@meeovi/types/dist/commerce/cart'
-import type { Result } from '@meeovi/types/dist/core/result'
+import type { CommerceAdapter, Result, CommerceProduct as Product, CommerceCart as Cart, TransportAdapter } from '@meeovi/core'
 import { unwrap } from './utils.js'
 
 export const createCommerceAdapter = (

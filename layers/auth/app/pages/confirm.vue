@@ -2,7 +2,7 @@
   <div>Waiting for login...</div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { navigateTo } from '#app'
 import { watch } from 'vue'
 import { useUserStore } from '../stores/user'

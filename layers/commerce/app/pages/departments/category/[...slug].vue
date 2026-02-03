@@ -77,7 +77,7 @@
     import stations from '~/components/categories/stations.vue'
     import eats from '~/components/categories/eats.vue'
     import restaurants from '~/components/categories/restaurants.vue'
-    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+    import productCard from '~/components/catalog/product/productCard.vue'
 
     const route = useRoute()
     const {

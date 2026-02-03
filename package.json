@@ -20,5 +20,14 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.9.3"
-  }
+  },
+  "packageManager": "npm@8.5.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "layers/*",
+    "integrations/*",
+    "themes/*",
+    "docs/*"
+  ]
 }

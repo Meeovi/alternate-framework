@@ -10,5 +10,5 @@ export interface MeeoviSearchItem {
 }
 
 export type MeeoviSearchAdapter = SearchAdapter<MeeoviSearchItem> & {
-  search(query: BuiltSearchQuery): Promise<SearchResult<MeeoviSearchItem>>
+  search(query: any): Promise<SearchResult<MeeoviSearchItem>>
 }

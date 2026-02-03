@@ -1,10 +1,4 @@
-import {
-  defineAlternateAdapter,
-  type SearchAdapter,
-  type SearchAdapterConfig,
-  type SearchResult
-} from '@meeovi/core'
-
+import { defineAlternateAdapter, type SearchAdapter, type SearchAdapterConfig, type SearchResult } from '@meeovi/core'
 import type { MeeoviSearchItem } from './types'
 import type { BuiltSearchQuery } from '../core/QueryBuilder'
 import { normalizeOpenSearchHit } from '../utils/normalizers'
@@ -21,7 +15,7 @@ export function createOpenSearchAdapter(config: OpenSearchConfig) {
     type: 'search',
     config,
 
-    async search(query: BuiltSearchQuery): Promise<SearchResult<MeeoviSearchItem>> {
+    async search(query: any): Promise<SearchResult<MeeoviSearchItem>> {
       const body: any = {
         query: {
           bool: {

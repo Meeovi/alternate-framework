@@ -1,4 +1,4 @@
-import type { RequestOptions, APIResponse } from '@meeovi/types'
+import type { RequestOptions, APIResponse } from '@meeovi/core'
 
 export interface TransportAdapter {
   request<T = unknown>(

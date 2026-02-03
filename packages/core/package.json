@@ -1,6 +1,6 @@
 {
   "name": "@meeovi/core",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "The core package of the Alternate Framework.",
   "license": "MIT",
   "main": "dist/index.js",
@@ -27,7 +27,8 @@
   "author": "Meeovi",
   "type": "module",
   "dependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "zod": "^4.3.6"
   },
   "bin": {
     "meeovi-create-adapter": "./bin/create-adapter.cjs"

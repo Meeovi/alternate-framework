@@ -3,7 +3,7 @@ import type {
   SearchResult,
   Facet,
   Result
-} from '@meeovi/types'
+} from '@meeovi/core'
 
 export interface SearchAdapter {
   search<T = unknown>(query: SearchQuery): Promise<Result<SearchResult<T>>>

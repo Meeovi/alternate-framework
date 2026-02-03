@@ -1,4 +1,4 @@
-import { SearchQuery } from '@meeovi/types'
+import { SearchQuery } from '@meeovi/core'
 import { getRegistry } from './index'
 
 export const search = {

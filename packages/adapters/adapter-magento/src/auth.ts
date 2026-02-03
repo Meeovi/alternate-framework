@@ -7,24 +7,24 @@ import type {
   LoginInput,
   RegisterInput,
   Result,
-  AuthSession,
+  Session,
   User
-} from '@meeovi/types'
+} from '@meeovi/core'
 
 import { unwrap } from './utils'
 
 export const createStarterAuthAdapter = (
   transport: TransportAdapter
 ): AuthAdapter => ({
-  async login(input: LoginInput): Promise<Result<AuthSession>> {
-    const res = await transport.request<AuthSession>('POST', '/auth/login', {
+  async login(input: LoginInput): Promise<Result<Session>> {
+    const res = await transport.request<Session>('POST', '/auth/login', {
       body: input
     })
     return unwrap(res)
   },
 
-  async register(input: RegisterInput): Promise<Result<AuthSession>> {
-    const res = await transport.request<AuthSession>('POST', '/auth/register', {
+  async register(input: RegisterInput): Promise<Result<Session>> {
+    const res = await transport.request<Session>('POST', '/auth/register', {
       body: input
     })
     return unwrap(res)
@@ -35,13 +35,13 @@ export const createStarterAuthAdapter = (
     return unwrap({ ...res, data: true })
   },
 
-  async getSession(): Promise<Result<AuthSession>> {
-    const res = await transport.request<AuthSession>('GET', '/auth/session')
+  async getSession(): Promise<Result<Session>> {
+    const res = await transport.request<Session>('GET', '/auth/session')
     return unwrap(res)
   },
 
-  async refresh(): Promise<Result<AuthSession>> {
-    const res = await transport.request<AuthSession>('POST', '/auth/refresh')
+  async refresh(): Promise<Result<Session>> {
+    const res = await transport.request<Session>('POST', '/auth/refresh')
     return unwrap(res)
   },
 

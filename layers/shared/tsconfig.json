@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["vitest", "node", "@nuxt/test-utils", "@vue/test-utils"],
+    "types": ["vitest", "node"],
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",
@@ -19,7 +19,7 @@
     "app/composables/useDirectusRequest.ts",
     "README.md",
     "package.json"
-    ,"src/global.d.ts"
+    ,"global.d.ts"
   ],
   "exclude": [
     "**/__tests__/**",

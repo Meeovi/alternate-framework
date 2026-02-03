@@ -1,3 +1,5 @@
+import type { Price, ProductVariant } from '../../types/product'
+
 export interface Product {
   id: string
   title: string

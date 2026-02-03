@@ -1,8 +1,7 @@
 {
   "name": "@meeovi/layer-search",
-  "version": "1.0.7",
+  "version": "1.1.1",
   "description": "Powerful search module for the Alternate Framework.",
-  "main": "./nuxt.config.ts",
   "keywords": [
     "meeovi",
     "search",
@@ -14,16 +13,18 @@
   "author": "Meeovi",
   "license": "MIT",
   "type": "module",
+  "main": "./nuxt.config.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@meeovi/core": "^1.0.3",
+    "@meeovi/core": "^1.0.4",
     "@searchkit/instantsearch-client": "^4.14.1",
     "@types/react": "^19.2.9",
+    "graphql": "^16.8.0",
+    "instantsearch.css": "^7.4.5",
     "react": "^19.2.3",
     "searchkit": "^4.15.0",
-    "graphql": "^16.8.0",
     "typescript": "^5.9.3",
     "vue": "^3.2.47",
     "vue-instantsearch": "^4.22.8"
@@ -31,12 +32,5 @@
   "devDependencies": {
     "@types/node": "^25.0.10",
     "nuxt": "^4.3.0"
-  }
-
-  ,"exports": {
-    ".": {
-      "import": "./app/composables/index.ts",
-      "require": "./app/composables/index.ts"
-    }
   }
 }

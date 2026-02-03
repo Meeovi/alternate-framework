@@ -74,11 +74,10 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
   import {
     ref
   } from "vue";
-  declare function useToast(...args: any[]): any;
   import {
     signIn
   } from "../lib/auth.client";
@@ -90,7 +89,7 @@
   const toast = useToast();
   
   // simple classnames helper used in the template
-  const cn = (...classes: (string | false | null | undefined)[]) =>
+  const cn = (...classes) =>
     classes.filter(Boolean).join(" ");
 
   const handleSignIn = async () => {
@@ -122,7 +121,7 @@
     });
   };
 
-  const handleSocialSignIn = async (provider: string) => {
+  const handleSocialSignIn = async (provider) => {
     await signIn.social({
       provider,
       callbackURL: "/",

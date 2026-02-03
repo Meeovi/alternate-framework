@@ -15,3 +15,4 @@ export class AlternateContext {
     return this.modules.getAdapter<K>(key)
   }
 }
+

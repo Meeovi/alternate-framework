@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "types": ["./global.d.ts"],
     "paths": {
       "#shared/*": ["../shared/*"],
       "@meeovi/core": ["../../packages/core/index.ts"],

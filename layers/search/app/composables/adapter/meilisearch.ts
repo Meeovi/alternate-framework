@@ -1,10 +1,4 @@
-import {
-  defineAlternateAdapter,
-  type SearchAdapter,
-  type SearchAdapterConfig,
-  type SearchResult
-} from '@meeovi/core'
-
+import { defineAlternateAdapter, type SearchAdapter, type SearchAdapterConfig, type SearchResult } from '@meeovi/core'
 import type { MeeoviSearchItem } from './types'
 import type { BuiltSearchQuery } from '../core/QueryBuilder'
 
@@ -28,7 +22,7 @@ export function createMeilisearchAdapter(config: MeiliConfig) {
     type: 'search',
     config,
 
-    async search(query: BuiltSearchQuery): Promise<SearchResult<MeeoviSearchItem>> {
+    async search(query: any): Promise<SearchResult<MeeoviSearchItem>> {
       const params = new URLSearchParams({
         q: query.term,
         offset: String((query.page - 1) * query.pageSize),

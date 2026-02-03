@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "vitest"],
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",

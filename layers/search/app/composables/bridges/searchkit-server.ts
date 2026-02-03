@@ -1,5 +1,6 @@
 import { graphql, buildSchema } from 'graphql'
 import type { SearchManager } from '../core/SearchManager'
+import type { MeeoviSearchItem } from '../adapter/types'
 
 const schema = buildSchema(`
   type Hit { id: ID, title: String, description: String, price: Float }
@@ -20,7 +21,7 @@ function parseFilters(filters?: string) {
   return Object.fromEntries(entries.map(([k, v]) => [k, v?.replace(/^"|"$/g, '')]))
 }
 
-export function createSearchkitGraphQLHandler(manager: SearchManager) {
+export function createSearchkitGraphQLHandler(manager: SearchManager<MeeoviSearchItem>) {
   const root: any = {
     search: async ({ term, page, pageSize, filters }: any) => {
       manager.context.setQuery(term || '')

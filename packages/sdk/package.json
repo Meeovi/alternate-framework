@@ -29,7 +29,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@meeovi/types": "file:../../layers/shared/types",
+    "@meeovi/core": "^1.0.4",
     "typescript": "^5.9.3"
   }
 }

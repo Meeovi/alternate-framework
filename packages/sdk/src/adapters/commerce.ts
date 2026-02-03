@@ -1,9 +1,4 @@
-import type {
-  Product,
-  Cart,
-  CartItem,
-  Result
-} from '@meeovi/types'
+import type { Product, Cart, CartItem, Result } from '@meeovi/core'
 
 export interface CommerceAdapter {
   getProduct(id: string): Promise<Result<Product>>

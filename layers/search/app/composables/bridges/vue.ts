@@ -1,10 +1,11 @@
 import { ref, computed } from 'vue'
 import { useAlternateContext } from '@meeovi/core'
 import type { SearchManager } from '../core/SearchManager'
+import type { MeeoviSearchItem } from '../adapter/types'
 
 export function useSearch() {
   const ctx = useAlternateContext() as any
-  const manager = ctx.searchManager as SearchManager
+  const manager = ctx.searchManager as SearchManager<MeeoviSearchItem>
 
   const query = ref(manager.context.state.query)
   const page = ref(manager.context.state.page)

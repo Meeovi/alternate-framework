@@ -1,5 +1,5 @@
 import { CategoryInterface } from '../client/sdk'
-import { CommerceCategory } from 'node_modules/@meeovi/types/dist/commerce/category'
+import { CommerceCategory } from '@meeovi/core'
 
 export function mapMagentoCategory(category: CategoryInterface): CommerceCategory {
   return {

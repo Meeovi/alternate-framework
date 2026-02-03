@@ -2,7 +2,7 @@ import {
   CommerceCart,
   CommerceCartItem,
   CommercePrice,
-} from '@meeovi/types'
+} from '@meeovi/core'
 import { Cart, CartItemInterface } from '../client/sdk'
 import { mapMagentoProduct } from './product'
 

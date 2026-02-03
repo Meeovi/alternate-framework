@@ -1,15 +1,7 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "emitDeclarationOnly": false,
-    "outDir": "dist",
-    "moduleResolution": "bundler",
-    "module": "ESNext",
-    "target": "ESNext",
-    "strict": true,
-    "jsx": "react-jsx",
-    "skipLibCheck": true, 
-    "noEmitOnError": false
+    "composite": true,
+    "skipLibCheck": true
   },
-  "include": ["src", "../../layers/shared/app/types/componentMap.ts"]
+  "files": ["placeholder.ts"]
 }

@@ -1,4 +1,4 @@
-import type { TransportAdapter, RequestOptions, APIResponse } from '@meeovi/types'
+import type { TransportAdapter, RequestOptions, APIResponse } from '@meeovi/core'
 
 export const createTransport = (config: { baseUrl: string; apiKey?: string }): TransportAdapter => {
   return {

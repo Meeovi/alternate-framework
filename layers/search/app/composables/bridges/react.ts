@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react'
 import { useAlternateContext } from '@meeovi/core'
 import type { SearchManager } from '../core/SearchManager'
+import type { MeeoviSearchItem } from '../adapter/types'
 
 export function useReactSearch() {
   const ctx = useAlternateContext() as any
-  const manager = ctx.searchManager as SearchManager
+  const manager = ctx.searchManager as SearchManager<MeeoviSearchItem>
 
   const [query, setQuery] = useState(manager.context.state.query)
   const [page, setPage] = useState(manager.context.state.page)

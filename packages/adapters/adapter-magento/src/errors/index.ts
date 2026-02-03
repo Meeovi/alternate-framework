@@ -1,4 +1,4 @@
-import { MeeoviError, MeeoviErrorCode } from '@meeovi/types'
+import { MeeoviError, MeeoviErrorCode } from '@meeovi/core'
 
 export class MagentoError extends Error implements MeeoviError {
   code: MeeoviErrorCode

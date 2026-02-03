@@ -1,7 +1,7 @@
 // src/adapter/index.ts
 import {
   CommerceAdapter,
-} from '@meeovi/types'
+} from '@meeovi/core'
 
 import {
   createMagentoClient,

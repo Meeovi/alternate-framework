@@ -12,3 +12,5 @@ export async function runAppLifecycle(
 
   bus.emit('app:ready', { context: ctx })
 }
+
+
