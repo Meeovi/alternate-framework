@@ -103,7 +103,9 @@
 <script setup>
 import { ref } from 'vue'
 import { definePageMeta, useHead, useRouter } from '#imports'
-import { signUp } from '../lib/auth.client'
+import { useAuth } from '../composables/useAuth'
+
+const { signUp } = useAuth();
 
 definePageMeta({
   layout: false,
