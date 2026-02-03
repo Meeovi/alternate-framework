@@ -30,8 +30,8 @@
 
 <script setup>
 import { useHead, useRoute, useRuntimeConfig, navigateTo } from '#app'
-import { definePageMeta, useLocalePath } from '#imports'
-import { z } from 'better-auth'
+import { definePageMeta, useLocalePath, useI18n } from '#imports'
+import { z } from 'zod'
 import { reactive, ref } from 'vue'
 import { useAuth } from '../composables/useAuth'
 

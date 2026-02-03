@@ -73,9 +73,8 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: [
-        '/assets/images/*',
-      ]
+      enabled: false,
+      routes: [],
     },
     compressPublicAssets: true,
   },

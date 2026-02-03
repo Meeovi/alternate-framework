@@ -34,7 +34,8 @@
 
 <script setup>
 import { useHead } from 'nuxt/app'
-import { definePageMeta, useLocalePath, useAuth, z } from '#imports'
+import { definePageMeta, useLocalePath, useAuth } from '#imports'
+import { z } from 'zod'
 import { reactive, ref } from 'vue'
 
 definePageMeta({
