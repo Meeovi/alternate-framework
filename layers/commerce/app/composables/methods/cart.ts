@@ -1,4 +1,4 @@
-import type { Simplify } from "type-fest";
+import type { Simplify } from '../defs/typeHelpers';
 import type { Maybe, SfCart } from "../models";
 
 export interface GetCartExtendedArgs {}

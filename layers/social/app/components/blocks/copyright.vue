@@ -22,22 +22,14 @@
 </template>
 
 <script setup>
-    const {
-        $directus,
-        $readItem
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItem } = useDirectusRequest()
 
-    const {
-        data: blocksCopyright
-    } = await useAsyncData('blocksCopyright', () => {
-        return $directus.request($readItem('page_blocks', '5', {
-            fields: ['*', 'media.*.*'],
-        }))
+    const { data: blocksCopyright } = await useAsyncData('blocksCopyright', () => {
+        return readItem('page_blocks', '5', { fields: ['*', 'media.*.*'] })
     })
 
-    const {
-        data: copyright
-    } = await useAsyncData('copyright', () => {
-        return $directus.request($readItem('navigation', '10'))
+    const { data: copyright } = await useAsyncData('copyright', () => {
+        return readItem('navigation', '10')
     })
 </script>

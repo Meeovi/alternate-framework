@@ -1,15 +1,15 @@
 // composables/updateShort.js
-import { updateItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function updateShort(shortId, shortData) {
-    const { $directus } = useNuxtApp();
-  
+    const { updateItem } = useAdapterRequest()
+
     try {
-      const short = await $directus.request(updateItem('shorts', shortId));
+      const short = await updateItem('shorts', shortId, shortData)
       return short;
     } catch (error) {
       console.error('Error updating short:', error);
       throw error;
     }
-  }
+}
   

@@ -10,7 +10,7 @@ import { groupBy, uniqBy } from 'lodash-es';
 export function useProductAttribute<TAttribute extends string>(product: SfProduct, attributesNames: TAttribute[] = []) {
   const attributes = groupBy(
     uniqBy(
-      (product?.variants || []).flatMap((variant) => variant?.attributes),
+      (product?.variants || []).flatMap((variant: any) => variant?.attributes),
       'value',
     ),
     'name',

@@ -1,15 +1,13 @@
 // composables/createPost.js
-import { createItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function createPost(postData) {
     const route = useRoute();
-
     const id = route.params.id;
-    const { $directus } = useNuxtApp();
-  
+    const { createItem } = useAdapterRequest()
+
     try {
-      const post = await $directus.request(createItem('posts', [
-        {
+      const post = await createItem('posts', {
           title: postData.title,
           content: postData.content,
           status: postData.status,
@@ -22,19 +20,12 @@ export default async function createPost(postData) {
           coverFile: null,
           avatarFile: null,
           username: postData.username,
-          spaces: [
-            {
-                spaces_id: {
-                    id: id
-                }
-            }
-        ],
-        }
-      ]));
+          spaces: [{ spaces_id: { id } }]
+      })
       return post;
     } catch (error) {
       console.error('Error creating post:', error);
       throw error;
     }
-  }
+}
   

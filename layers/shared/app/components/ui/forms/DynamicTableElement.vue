@@ -3,12 +3,9 @@
     ref,
     onMounted
   } from 'vue';
-  import {
-    useVueDirectus
-  } from '@meeovi/directus-client';
-  import {
-    generateTableSchema
-  } from '@meeovi/directus-client';
+  // Resolve directus helpers at runtime (provided by a higher-level layer)
+  const useVueDirectus = (globalThis as any).useVueDirectus ?? (() => ({ client: { request: async () => [] }, readFieldsByCollection: () => '', readItems: () => [] }))
+  const generateTableSchema = (globalThis as any).generateTableSchema ?? ((fields: any[]) => [])
 
   const props = defineProps < {
     collection: string;

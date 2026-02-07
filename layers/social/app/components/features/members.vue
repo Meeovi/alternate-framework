@@ -29,31 +29,14 @@
 		title: 'Members Area',
 	})
 
-	const {
-		$directus,
-		$readItems,
-		$readItem
-	} = useNuxtApp();
+	import useDirectusRequest from '~/composables/useDirectusRequest'
+	const { readItem, readItems } = useDirectusRequest()
 
-	const {
-		data: memberPage
-	} = await useAsyncData('memberPage', () => {
-		return $directus.request($readItem('pages', '98', {
-			fields: ['*', {
-				'*': ['*']
-			}]
-		}))
+	const { data: memberPage } = await useAsyncData('memberPage', () => {
+		return readItem('pages', '98', { fields: ['*', { '*': ['*'] }] })
 	})
 
-	const {
-		data: members
-	} = await useAsyncData('members', () => {
-		return $directus.request($readItems('members', {
-			fields: [
-				'*',
-				'avatar.*'
-			],
-			sort: '-created_on'
-		}))
+	const { data: members } = await useAsyncData('members', () => {
+		return readItems('members', { fields: ['*', 'avatar.*'], sort: '-created_on' })
 	})
 </script>

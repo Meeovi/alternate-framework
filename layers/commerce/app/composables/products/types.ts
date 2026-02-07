@@ -1,11 +1,6 @@
-export interface Product {
-  id: string
-  title: string
-  description?: string
-  price: number
-  images: string[]
-  [key: string]: any
-}
+import { Product } from '../../types/domain'
+
+export type { Product }
 
 export interface ProductProvider {
   getProduct(id: string): Promise<Product>

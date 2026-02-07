@@ -3,8 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "#shared/*": ["../shared/*"],
-      "@meeovi/core": ["../../packages/core/index.ts"],
-      "@meeovi/core/*": ["../../packages/core/*"]
+      "@mframework/core": ["../../packages/core/index.ts"],
+      "@mframework/core/*": ["../../packages/core/*"]
     },
     "declaration": true,
     "emitDeclarationOnly": false,

@@ -16,7 +16,7 @@
                 </div>
 
                 <v-avatar class="ma-3" rounded="0" size="125">
-                    <NuxtImg :src="`${$directus.url}assets/${radio?.image?.filename_disk}`" />
+                    <NuxtImg :src="getAssetUrl(radio?.image)" />
                 </v-avatar>
             </div>
         </v-card>
@@ -33,4 +33,6 @@
     const {
         radio
     } = props;
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { getAssetUrl } = useAdapterRequest()
 </script>

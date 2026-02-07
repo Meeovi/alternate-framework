@@ -1,15 +1,15 @@
 // composables/deleteShort.js
-import { deleteItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function deleteShort(shortId) {
-    const { $directus } = useNuxtApp();
-  
+    const { deleteItem } = useAdapterRequest()
+
     try {
-      $directus.request(deleteItem('shorts', shortId));
+      await deleteItem('shorts', shortId)
       console.log('Short deleted successfully');
     } catch (error) {
       console.error('Error deleting short:', error);
       throw error;
     }
-  }
+}
   

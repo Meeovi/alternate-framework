@@ -17,14 +17,11 @@
   import spaceCard from '~/components/related/space.vue'
 
   const model = ref(null)
-  const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+  import useAdapterRequest from '~/composables/useAdapterRequest'
+  const { readItems } = useAdapterRequest()
 
-    const {
-        data: group
-    } = await useAsyncData('group', () => {
-        return $directus.request($readItems('spaces'))
-    })
+  const { data: group } = await useAsyncData('group', async () => {
+    const resp = await readItems('spaces')
+    return resp?.data || resp || []
+  })
 </script>

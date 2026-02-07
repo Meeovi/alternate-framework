@@ -36,16 +36,12 @@
     } from '../../../../shared/app/composables/globals/useDirectusForm'
 
     const dialog = ref(false)
-    const {
-        $directus,
-        $readFieldsByCollection
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readFieldsByCollection } = useAdapterRequest()
 
-    const {
-        data,
-        error
-    } = await useAsyncData('report', async () => {
-        return $directus.request($readFieldsByCollection('report'))
+    const { data, error } = await useAsyncData('report', async () => {
+        const resp = await readFieldsByCollection('report')
+        return resp?.data || resp || []
     })
 
     // guard against undefined/null data.value and empty arrays

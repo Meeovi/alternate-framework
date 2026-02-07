@@ -1,5 +1,15 @@
 // stores/orders.ts - Pinia store for order management
-import type { Order, Return, Transaction, Invoice, CreditMemo, OrderFilters } from '~/app/types'
+import { defineStore } from 'pinia'
+import { ref, computed, readonly } from 'vue'
+import { useOrders, useReturns, useTransactions, useInvoices, useCreditMemos } from '../composables/orders'
+import type { Order as DomainOrder, PaymentIntent as DomainPaymentIntent } from '../types/domain'
+
+type Order = DomainOrder
+type Return = DomainOrder
+type Transaction = DomainPaymentIntent
+type Invoice = DomainOrder
+type CreditMemo = DomainOrder
+type OrderFilters = any
 
 export const useOrdersStore = defineStore('orders', () => {
   const orders = ref<Order[]>([])
@@ -114,20 +124,21 @@ export const useOrdersStore = defineStore('orders', () => {
 
   // Computed properties
   const ordersByStatus = computed(() => {
-    return orders.value.reduce((acc, order) => {
+    return orders.value.reduce((acc: Record<string, number>, order: Order) => {
       acc[order.status] = (acc[order.status] || 0) + 1
       return acc
     }, {} as Record<string, number>)
   })
 
   const totalRevenue = computed(() => {
+    const toNumber = (v: any) => (typeof v === 'number' ? v : (v?.value ?? 0))
     return orders.value
-      .filter(order => !['cancelled', 'refunded'].includes(order.status))
-      .reduce((sum, order) => sum + order.total, 0)
+      .filter((order: Order) => !['cancelled', 'refunded'].includes(order?.status ?? ''))
+      .reduce((sum: number, order: Order) => sum + toNumber(order?.total), 0)
   })
 
   const averageOrderValue = computed(() => {
-    const validOrders = orders.value.filter(order => 
+    const validOrders = orders.value.filter((order: Order) => 
       !['cancelled', 'refunded'].includes(order.status)
     )
     return validOrders.length > 0 ? totalRevenue.value / validOrders.length : 0

@@ -1,3 +1,5 @@
+import { readonly, ref } from 'vue'
+
 export interface FileManagerConfig {
   maxSize?: number
   allowedTypes?: string[]
@@ -34,7 +36,7 @@ export function useFileManager(config: FileManagerConfig = {}) {
     error.value = null
 
     try {
-      const response = await $fetch('/api/file/upload', {
+      const response = await $fetch<{ file: any }>('/api/file/upload', {
         method: 'POST',
         body: formData
       })
@@ -73,4 +75,19 @@ export function useFileManager(config: FileManagerConfig = {}) {
     uploadToServer,
     uploadMultipleFiles
   }
+}
+function formatFileSize(maxSize: number): string {  if (!isFinite(maxSize) || maxSize <= 0) return '0 B'
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+  let size = maxSize
+  let unitIndex = 0
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024
+    unitIndex++
+  }
+
+  const formatted =
+    size >= 10 || unitIndex === 0 ? Math.round(size).toString() : size.toFixed(2).replace(/\.?0+$/, '')
+
+  return `${formatted} ${units[unitIndex]}`
 }

@@ -1,15 +1,15 @@
 // composables/updateStation.js
-import { updateItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function updateStation(stationId, stationData) {
-    const { $directus } = useNuxtApp();
-  
+    const { updateItem } = useAdapterRequest()
+
     try {
-      const station = await $directus.request(updateItem('radios', stationId));
+      const station = await updateItem('radios', stationId, stationData)
       return station;
     } catch (error) {
       console.error('Error updating station:', error);
       throw error;
     }
-  }
+}
   

@@ -1,4 +1,4 @@
-import { setCommerceAdapter } from '@meeovi/sdk'
+import { setCommerceAdapter } from '@mframework/sdk'
 
 import { createTransport } from './src/transport'
 import { createCommerceAdapter } from './src/commerce'

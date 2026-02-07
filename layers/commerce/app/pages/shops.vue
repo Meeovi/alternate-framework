@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { useHead, useNuxtApp, useAsyncData } from '#imports'
+  import { useHead, useNuxtApp, useAsyncData } from '~/types'
   import store from '../components/catalog/shops/stores.vue'
 
   const tab = ref(null)

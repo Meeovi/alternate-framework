@@ -6,15 +6,15 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
                         <div v-if="post?.file?.filename_disk && post?.file?.filename_disk.endsWith('.mp4')">
-                            <video :src="`${$directus.url}assets/${post?.file?.filename_disk}`"></video>
+                            <video :src="getAssetUrl(post?.file)"></video>
                         </div>
 
                         <div v-else-if="post?.audio?.filename_disk && post?.audio?.filename_disk.endsWith('.mp3')">
-                            <audio :src="`${$directus.url}assets/${post?.audio?.filename_disk}`"></audio>
+                            <audio :src="getAssetUrl(post?.audio)"></audio>
                         </div>
 
                         <div v-else-if="post?.image?.filename_disk && post?.image?.filename_disk.endsWith('.gif')">
-                            <img loading="lazy" :src="`${$directus.url}assets/${post?.image?.filename_disk}`"
+                            <img loading="lazy" :src="getAssetUrl(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 
@@ -172,31 +172,18 @@
     } from '~/stores/reactions'
 
     const route = useRoute();
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { readItems, getAssetUrl } = useAdapterRequest()
 
     const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
 
-    const {
-        data: post
-    } = await useAsyncData('post', () => {
-        return $directus.request($readItems('posts', {
-            filter: {
-                slug: {
-                    _eq: `${slugParam}`
-                }
-            },
-            fields: [
-                '*',
-                'author.*',
-                'image.*',
-                'file.*',
-                'audio.*'
-            ],
+    const { data: post } = await useAsyncData('post', async () => {
+        const resp = await readItems('posts', {
+            filter: { slug: { _eq: `${slugParam}` } },
+            fields: ['*', 'author.*', 'image.*', 'file.*', 'audio.*'],
             limit: 1
-        })).then(response => response?.[0])
+        })
+        return resp?.data?.[0] || resp?.[0] || null
     })
 
     const reactionsStore = useReactionsStore()

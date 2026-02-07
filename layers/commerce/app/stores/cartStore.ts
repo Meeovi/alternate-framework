@@ -1,13 +1,12 @@
 // stores/cartStore.ts
 import { defineStore } from 'pinia'
-import { MagentoService } from '~/services/magento'
-import { useAuth } from '~/composables/useAuth'
-import { useInventory } from '~/composables/useInventory'
-import { useTax } from '~/composables/useTax'
-import { useLoading } from '~/composables/useLoading'
-import { useNotification } from '~/composables/useNotification'
-import { useCache } from '~/composables/useCache'
-import { errorHandler } from '~/utils/errorHandler'
+import { getCommerceClient } from '../utils/client'
+import { useAuth } from '../composables/useAuth'
+import { useInventory } from '../composables/useInventory'
+import { useTax } from '../composables/useTax'
+import { useLoading } from '../composables/useLoading'
+import { useNotification } from '../composables/useNotification'
+import { useCache } from '../composables/useCache'
 
 class CartError extends Error {
   code: string
@@ -18,187 +17,131 @@ class CartError extends Error {
   }
 }
 
-interface MagentoProduct {
+interface CartProduct {
   sku: string
-  name: string
-  price: number
+  name?: string
+  price?: number
   qty: number
   quote_id?: string
   item_id?: string
 }
 
-interface CartState {
-  isGuest: boolean
-  items: MagentoProduct[]
-  total: number
-  quoteId: string | null
-  magentoService: MagentoService
-}
-
-
 export const useCartStore = defineStore('cart', {
   state: () => ({
     isGuest: true,
-    items: [] as MagentoProduct[],
+    items: [] as CartProduct[],
     total: 0,
     quoteId: null as string | null,
-    magentoService: new MagentoService()
+    client: getCommerceClient()
   }),
 
   actions: {
     async initializeCart() {
       const auth = useAuth()
       this.isGuest = !auth.token.value
-
       try {
-        if (this.isGuest) {
-          await this.createGuestCart()
-        } else {
-          await this.createCustomerCart()
-        }
-      } catch (error) {
-        errorHandler.handle(error)
+        if (this.isGuest) await this.createGuestCart()
+        else await this.createCustomerCart()
+      } catch (err) {
+        console.error(err)
       }
     },
 
     async createGuestCart() {
-      const response = await fetch(`${process.env.MAGENTO_API_URL}/guest-carts`, {
-        method: 'POST'
-      })
-      const quoteId = await response.json()
-      this.quoteId = quoteId as string
+      try {
+        if (this.client && typeof this.client.createGuestCart === 'function') {
+          this.quoteId = await this.client.createGuestCart()
+          return
+        }
+        const response = await fetch(`${process.env.MAGENTO_API_URL}/guest-carts`, { method: 'POST' })
+        this.quoteId = (await response.json()) as string
+      } catch (err) {
+        console.error(err)
+      }
     },
 
     async createCustomerCart() {
-      const auth = useAuth()
-      const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${auth.token.value}`
+      try {
+        const auth = useAuth()
+        if (this.client && typeof this.client.createCustomerCart === 'function') {
+          this.quoteId = await this.client.createCustomerCart(auth.token?.value)
+          return
         }
-      })
-      this.quoteId = await response.json()
+        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${auth.token.value}` }
+        })
+        this.quoteId = await response.json()
+      } catch (err) {
+        console.error(err)
+      }
     },
 
-    async addItem(product: MagentoProduct) {
+    async addItem(product: CartProduct) {
       const loading = useLoading()
       loading.startLoading('Adding to cart...')
-
       try {
-        // Check authentication
         const auth = useAuth()
-        if (auth.isTokenExpired()) {
-          await auth.refreshAccessToken()
-        }
-
-        // Check inventory
+        if (auth.isTokenExpired()) await auth.refreshAccessToken()
         const inventory = useInventory()
         await inventory.checkInventory(product.sku, product.qty)
+        if (!this.quoteId) await this.initializeCart()
+        if (!this.quoteId) throw new CartError('Failed to create cart', 'CART_ERROR')
 
-        // If no quote ID, create cart
-        if (!this.quoteId) {
-          await this.initializeCart()
-        }
-
-        // Ensure quoteId exists before proceeding
-        if (!this.quoteId) {
-          throw new CartError('Failed to create cart', 'CART_ERROR')
-        }
-
-        // Add to Magento cart
-        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${auth.token.value}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            cartItem: {
-              sku: product.sku,
-              qty: product.qty,
-              quote_id: this.quoteId
-            }
-          })
-        })
-
-        if (!response.ok) {
-          throw new CartError('Failed to add item to cart', 'CART_ERROR')
-        }
-
-        const cartItem = await response.json()
-
-        // Update local cart state
-        const existingItem = this.items.find(item => item.sku === product.sku)
-        if (existingItem) {
-          existingItem.qty += product.qty
+        if (this.client && typeof this.client.addItem === 'function') {
+          const cartItem = await this.client.addItem(this.quoteId, product, auth.token?.value)
+          const existing = this.items.find(i => i.sku === product.sku)
+          if (existing) existing.qty += product.qty
+          else this.items.push({ ...product, item_id: cartItem?.item_id })
         } else {
-          this.items.push({
-            ...product,
-            item_id: cartItem.item_id
+          const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${auth.token.value}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cartItem: { sku: product.sku, qty: product.qty, quote_id: this.quoteId } })
           })
+          if (!response.ok) throw new CartError('Failed to add item to cart', 'CART_ERROR')
+          const cartItem = await response.json()
+          const existing = this.items.find(i => i.sku === product.sku)
+          if (existing) existing.qty += product.qty
+          else this.items.push({ ...product, item_id: cartItem.item_id })
         }
 
-        // Calculate taxes
         const tax = useTax()
-        if (this.quoteId) {
-          await tax.calculateTax(this.quoteId)
-        }
-
-        // Cache product data
+        if (this.quoteId) await tax.calculateTax(this.quoteId)
         const cache = useCache()
         cache.setCacheItem(`cart_product_${product.sku}`, product)
-
         await this.calculateTotal()
-
         loading.stopLoading()
-        const { show } = useNotification()
-        show({
-          type: 'success',
-          message: 'Product added to cart'
-        })
-      } catch (error) {
+        useNotification().show({ type: 'success', message: 'Product added to cart' })
+      } catch (err) {
         loading.stopLoading()
-        errorHandler.handle(error)
+        console.error(err)
       }
     },
 
     async removeItem(itemId: string) {
       const loading = useLoading()
       loading.startLoading('Removing item...')
-
       try {
         const auth = useAuth()
-        if (auth.isTokenExpired()) {
-          await auth.refreshAccessToken()
+        if (auth.isTokenExpired()) await auth.refreshAccessToken()
+
+        if (this.client && typeof this.client.removeItem === 'function') {
+          await this.client.removeItem(this.quoteId, itemId, auth.token?.value)
+          this.items = this.items.filter(i => i.item_id !== itemId)
+          await this.calculateTotal()
+        } else {
+          const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items/${itemId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${auth.token.value}` } })
+          if (!response.ok) throw new CartError('Failed to remove item from cart', 'CART_ERROR')
+          this.items = this.items.filter(i => i.item_id !== itemId)
+          await this.calculateTotal()
         }
 
-        // Remove from Magento cart
-        const response = await fetch(
-          `${process.env.MAGENTO_API_URL}/carts/mine/items/${itemId}`,
-          {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${auth.token.value}`
-            }
-          }
-        )
-
-        if (!response.ok) {
-          throw new CartError('Failed to remove item from cart', 'CART_ERROR')
-        }
-
-        // Update local cart state
-        this.items = this.items.filter(item => item.item_id !== itemId)
-        await this.calculateTotal()
-
         loading.stopLoading()
-        useNotification().show({
-          type: 'success',
-          message: 'Item removed from cart'
-        })
-      } catch (error) {
+        useNotification().show({ type: 'success', message: 'Item removed from cart' })
+      } catch (err) {
         loading.stopLoading()
-        errorHandler.handle(error)
+        console.error(err)
       }
     },
 
@@ -206,109 +149,74 @@ export const useCartStore = defineStore('cart', {
       try {
         const auth = useAuth()
         if (!this.quoteId) return
-
-        // Get cart totals from Magento
-        const response = await fetch(
-          `${process.env.MAGENTO_API_URL}/carts/mine/totals`,
-          {
-            headers: {
-              'Authorization': `Bearer ${auth.token.value}`
-            }
-          }
-        )
-
-        if (!response.ok) {
-          throw new CartError('Failed to get cart totals', 'CART_ERROR')
+        if (this.client && typeof this.client.getTotals === 'function') {
+          const totals = await this.client.getTotals(this.quoteId, auth.token?.value)
+          this.total = totals?.grand_total || 0
+          return
         }
-
+        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/totals`, { headers: { Authorization: `Bearer ${auth.token.value}` } })
+        if (!response.ok) throw new CartError('Failed to get cart totals', 'CART_ERROR')
         const totals = await response.json()
         this.total = totals.grand_total
-      } catch (error) {
-        console.error('Error calculating totals:', error)
-        errorHandler.handle(error)
+      } catch (err) {
+        console.error('Error calculating totals:', err)
       }
     },
 
-    // Update other methods to use the notification composable
     async clearCart() {
       const loading = useLoading()
       loading.startLoading('Clearing cart...')
-
       try {
         const auth = useAuth()
         if (this.quoteId) {
-          const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/clear`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${auth.token.value}`
-            }
-          })
-
-          if (!response.ok) {
-            throw new CartError('Failed to clear cart', 'CART_ERROR')
+          if (this.client && typeof this.client.clearCart === 'function') {
+            await this.client.clearCart(this.quoteId, auth.token?.value)
+          } else {
+            const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/clear`, { method: 'POST', headers: { Authorization: `Bearer ${auth.token.value}` } })
+            if (!response.ok) throw new CartError('Failed to clear cart', 'CART_ERROR')
           }
         }
-        
         this.items = []
         this.total = 0
         this.quoteId = null
-
-        // Clear cart-related cache
         const cache = useCache()
-        this.items.forEach(item => {
-          cache.setCacheItem(`cart_product_${item.sku}`, null)
-        })
-
+        this.items.forEach(item => cache.setCacheItem(`cart_product_${item.sku}`, null))
         loading.stopLoading()
-        const { show } = useNotification()
-        show({
-          type: 'success',
-          message: 'Cart cleared successfully'
-        })
-      } catch (error) {
+        useNotification().show({ type: 'success', message: 'Cart cleared successfully' })
+      } catch (err) {
         loading.stopLoading()
-        errorHandler.handle(error)
+        console.error(err)
       }
     },
 
     async syncCartWithMagento() {
       try {
         const auth = useAuth()
-        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items`, {
-          headers: {
-            'Authorization': `Bearer ${auth.token.value}`
-          }
-        })
-
-        if (!response.ok) {
-          throw new CartError('Failed to sync cart', 'CART_ERROR')
+        if (this.client && typeof this.client.listItems === 'function') {
+          this.items = await this.client.listItems(this.quoteId, auth.token?.value)
+          await this.calculateTotal()
+          return
         }
-
-        const magentoItems = await response.json()
-        this.items = magentoItems
+        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items`, { headers: { Authorization: `Bearer ${auth.token.value}` } })
+        if (!response.ok) throw new CartError('Failed to sync cart', 'CART_ERROR')
+        this.items = await response.json()
         await this.calculateTotal()
-      } catch (error) {
-        errorHandler.handle(error)
+      } catch (err) {
+        console.error(err)
       }
     },
 
     async validateCart() {
       try {
-        // Check all items inventory
         for (const item of this.items) {
           const inventory = useInventory()
           const isAvailable = await inventory.checkInventory(item.sku, item.qty)
-          if (!isAvailable) {
-            throw new CartError(`${item.name} is out of stock`, 'INVENTORY_ERROR')
-          }
+          if (!isAvailable) throw new CartError(`${item.name} is out of stock`, 'INVENTORY_ERROR')
         }
-
-        // Validate prices
         await this.syncCartWithMagento()
-
         return true
-      } catch (error) {
-        errorHandler.handle(error)
+      } catch (err) {
+        console.error(err)
         return false
       }
     }

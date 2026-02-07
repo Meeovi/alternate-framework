@@ -1,6 +1,6 @@
 {
-  "name": "@meeovi/adapter-directus",
-  "version": "1.0.9",
+  "name": "@mframework/adapter-directus",
+  "version": "0.0.1",
   "description": "Directus Client Library with auto generating forms and tables, Directus SDK and Types, and vue/react components for Directus Visual Editing.",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -25,7 +25,7 @@
     "react",
     "typescript"
   ],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "dependencies": {

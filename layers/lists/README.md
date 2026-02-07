@@ -1,6 +1,6 @@
-# @meeovi/layer-lists
+# @mframework/layer-lists
 
-This layer provides first-class lists and task management functionality for the Alternate Framework. It's provider-driven: you can plug in different backends (Directus, memory, ATProto, etc.) without changing UI code. The default production-ready fallback is the `@meeovi/directus-client` provider.
+This layer provides first-class lists and task management functionality for the M Framework. It's provider-driven: you can plug in different backends (Directus, memory, ATProto, etc.) without changing UI code. The default production-ready fallback is the `@mframework/directus-client` provider.
 
 Key goals:
 - Provider-agnostic API used by the UI (`useLists()` composable).
@@ -12,17 +12,17 @@ Quick start
 Install the layer into your project (monorepo/local install):
 
 ```bash
-npm install @meeovi/layer-lists
+npm install @mframework/layer-lists
 # also install your chosen provider (Directus example)
-npm install @meeovi/directus-client
+npm install @mframework/directus-client
 ```
 
-Register the layer and configure the provider in your Alternate app (Directus example):
+Register the layer and configure the provider in your M Framework app (Directus example):
 
 ```ts
-import lists from '@meeovi/layer-lists'
+import lists from '@mframework/layer-lists'
 
-const app = createAlternateApp({
+const app = createM FrameworkApp({
   config: {
     lists: {
       provider: 'directus',
@@ -41,8 +41,8 @@ await app.start()
 Using in a Nuxt (modules) app
 
 1. Install the packages into your Nuxt app project.
-2. Add the layer module to your Nuxt alternate app bootstrap (see above).
-3. In Vue components or composables, use the `useLists()` composable the same way as in the Alternate UI:
+2. Add the layer module to your Nuxt mframework app bootstrap (see above).
+3. In Vue components or composables, use the `useLists()` composable the same way as in the M Framework UI:
 
 ```ts
 const { listLists, createList, addItem, updateItem } = useLists()
@@ -72,7 +72,7 @@ Implement a `ListsProvider` and register it with `registerListsProvider(name, pr
 Example skeleton (register at runtime):
 
 ```ts
-import { registerListsProvider } from '@meeovi/layer-lists/app/composables/registry'
+import { registerListsProvider } from '@mframework/layer-lists/app/composables/registry'
 
 const MyProvider = {
   async getList(id) { /* ... */ },
@@ -94,7 +94,7 @@ Health checks
 Use the provided `checkListsProviderHealth()` helper to validate that the configured provider is reachable (it performs a lightweight `listLists()` call). Example:
 
 ```ts
-import { checkListsProviderHealth } from '@meeovi/layer-lists/app/composables/utils/health'
+import { checkListsProviderHealth } from '@mframework/layer-lists/app/composables/utils/health'
 
 const healthy = await checkListsProviderHealth()
 if (!healthy) {

@@ -47,44 +47,21 @@
   import brand from '~/app/components/catalog/product/brands.vue'
 
   const tab = ref(null)
-  const {
-        $directus,
-        $readItems,
-        $readItem
-    } = useNuxtApp()
+  import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
+  const { readItems, readItem, getAssetUrl } = useDirectusRequest()
 
-    const {
-        data: brands
-    } = await useAsyncData('brands', () => {
-        return $directus.request($readItems('brands', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
-    })
+  const { data: brands } = await useAsyncData('brands', async () => {
+    const resp = await readItems('brands', { fields: ['*', { '*': ['*'] }] })
+    return resp?.data || resp || []
+  })
 
-    const {
-        data: meebrands
-    } = await useAsyncData('meebrands', () => {
-        return $directus.request($readItems('brands', {
-            filter: {
-                code: {
-                    _eq: 'Mee'
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
-    })
+  const { data: meebrands } = await useAsyncData('meebrands', async () => {
+    const resp = await readItems('brands', { filter: { code: { _eq: 'Mee' } }, fields: ['*', { '*': ['*'] }] })
+    return resp?.data || resp || []
+  })
 
-    const {
-    data: brandbar
-  } = await useAsyncData('brandbar', () => {
-    return $directus.request($readItem('navigation', '40', {
-      fields: ['*', {
-        '*': ['*']
-      }]
-    }))
+  const { data: brandbar } = await useAsyncData('brandbar', async () => {
+    const resp = await readItem('navigation', '40', { fields: ['*', { '*': ['*'] }] })
+    return resp?.data || resp || null
   })
 </script>

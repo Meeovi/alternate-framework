@@ -1,5 +1,6 @@
 import { ref, onMounted } from 'vue'
-import { useAsyncData, useNuxtApp } from '#imports'
+import { useAsyncData, useNuxtApp } from 'nuxt/app'
+import useDirectusRequest from '../useDirectusRequest'
 
 export interface Notification {
   id: string
@@ -15,32 +16,43 @@ export interface Notification {
 export function useNotifications() {
   const notifications = ref<Notification[]>([])
   const unreadCount = ref(0)
-  const { $directus, $readItems, $updateItem } = useNuxtApp() as any
+  const nuxt = useNuxtApp() as any
+  const { request, readItems, updateItem } = useDirectusRequest()
+
+  // Resolve a runtime notifications provider if one is registered by an adapter.
+  // Provider shape (optional methods):
+  // - fetchNotifications(): Promise<Notification[]>
+  // - markRead(id)
+  // - markAll()
+  const runtimeProvider: any = (globalThis as any).__notificationsProvider ?? null
+
+  function formatDirectusItems(items: any[]): Notification[] {
+    return items.map((notification: any) => ({
+      id: String(notification.id),
+      title: String(notification.subject),
+      content: String(notification.message),
+      date: String(notification.timestamp),
+      type: (['order', 'account', 'social', 'system'].includes(notification.collection) ? notification.collection : 'system') as Notification['type'],
+      isRead: notification.status === 'read',
+      source: 'directus',
+      payload: notification.item
+    }))
+  }
 
   // Fetch notifications from Directus
   const fetchDirectusNotifications = async () => {
     try {
       const { data } = await useAsyncData<any[]>('directusNotifications', () => {
-        return $directus.request($readItems('notifications', {
+        return readItems('notifications', {
           filter: {
             recipient: { _eq: 'current_user' }
           },
           sort: ['-date_created']
-        }))
+        })
       })
-      
+
       if (data.value) {
-        const formattedNotifications: Notification[] = data.value.map((notification: any) => ({
-          id: String(notification.id),
-          title: String(notification.subject),
-          content: String(notification.message),
-          date: String(notification.timestamp),
-          type: (['order', 'account', 'social', 'system'].includes(notification.collection) ? notification.collection : 'system') as Notification['type'],
-          isRead: notification.status === 'read',
-          source: 'directus',
-          payload: notification.item
-        }))
-        notifications.value = [...notifications.value, ...formattedNotifications]
+        notifications.value = [...notifications.value, ...formatDirectusItems(data.value)]
       }
     } catch (error) {
       console.error('Error fetching Directus notifications:', error)
@@ -50,16 +62,9 @@ export function useNotifications() {
   // Fetch notifications from Magento
   const fetchMagentoNotifications = async () => {
     try {
-      // Replace with your Magento API endpoint
       const response = await fetch('/api/magento/notifications')
-      if (!response.ok) {
-        const text = await response.text().catch(() => '')
-        console.error('Magento notifications fetch failed', { status: response.status, body: text })
-        return
-      }
-
+      if (!response.ok) return
       const data = await response.json()
-
       const formattedNotifications: Notification[] = data.map((notification: any) => ({
         id: String(notification.id),
         title: String(notification.title),
@@ -77,20 +82,17 @@ export function useNotifications() {
   }
 
   // Mark notification as read
-  const markAsRead = async (notificationId: string, source: 'magento' | 'directus') => {
+  const markAsRead = async (notificationId: string, source?: 'magento' | 'directus') => {
     try {
-      if (source === 'directus') {
-        await $directus.request($updateItem('notifications', notificationId, {
-          status: 'read'
-        }))
-      } else {
-        // Update Magento notification
-        await fetch(`/api/magento/notifications/${notificationId}/read`, {
-          method: 'POST'
-        })
+      // If a runtime provider is present, delegate
+      if (runtimeProvider && typeof runtimeProvider.markRead === 'function') {
+        await runtimeProvider.markRead(notificationId)
+      } else if (source === 'directus') {
+        await updateItem('notifications', notificationId, { status: 'read' })
+      } else if (source === 'magento') {
+        await fetch(`/api/magento/notifications/${notificationId}/read`, { method: 'POST' })
       }
-      
-      // Update local state
+
       const notification = notifications.value.find(n => n.id === notificationId)
       if (notification) {
         notification.isRead = true
@@ -104,26 +106,27 @@ export function useNotifications() {
   // Mark all notifications as read
   const markAllAsRead = async () => {
     try {
-      // Update Directus notifications
-      await $directus.request($updateItem('notifications', {
-        filter: {
-          recipient: { _eq: 'current_user' },
-          status: { _eq: 'inbox' }
-        },
-        data: {
-          status: 'read'
-        }
-      }))
+      if (runtimeProvider && typeof runtimeProvider.markAll === 'function') {
+        await runtimeProvider.markAll()
+      } else {
+        // Update Directus notifications
+        await updateItem('notifications', {
+          filter: {
+            recipient: { _eq: 'current_user' },
+            status: { _eq: 'inbox' }
+          },
+          data: {
+            status: 'read'
+          }
+        } as any, null)
 
-      // Update Magento notifications
-      await fetch('/api/magento/notifications/read-all', {
-        method: 'POST'
-      })
+        // Update Magento notifications (best-effort fallback)
+        try {
+          await fetch('/api/magento/notifications/read-all', { method: 'POST' })
+        } catch (_) {}
+      }
 
-      // Update local state
-      notifications.value.forEach(notification => {
-        notification.isRead = true
-      })
+      notifications.value.forEach(notification => { notification.isRead = true })
       unreadCount.value = 0
     } catch (error) {
       console.error('Error marking all notifications as read:', error)

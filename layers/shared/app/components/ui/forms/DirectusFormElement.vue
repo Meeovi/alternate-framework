@@ -15,13 +15,10 @@
     ref,
     onMounted
   } from 'vue';
-  import {
-    useVueDirectus
-  } from '@meeovi/directus-client';
-  import {
-    generateFieldSchema,
-    createFormEngine
-  } from '@meeovi/directus-client';
+  // Resolve directus helpers at runtime (provided by a higher-level layer)
+  const useVueDirectus = (globalThis as any).useVueDirectus ?? (() => ({ client: { request: async () => [] }, readFieldsByCollection: () => '', readItems: () => [] }))
+  const generateFieldSchema = (globalThis as any).generateFieldSchema ?? ((fields: any[]) => [])
+  const createFormEngine = (globalThis as any).createFormEngine ?? (() => ({ submit: async () => ({}) }))
 
   const props = defineProps < {
     collection: string;

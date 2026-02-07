@@ -1,4 +1,4 @@
-import type { TransportAdapter, RequestOptions, APIResponse } from '@meeovi/core'
+import type { TransportAdapter, RequestOptions, APIResponse } from '@mframework/core'
 
 export interface StarterTransportConfig {
   baseUrl: string

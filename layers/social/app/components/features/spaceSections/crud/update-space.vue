@@ -77,9 +77,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { readItem, deleteItem, updateItem } from '@meeovi/directus-client'; // Add this import at the top
-import uploadFiles from '#shared/app/composables/globals/uploadFiles';
+import { ref, onMounted } from 'vue';
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { readItem, deleteItem, updateItem, uploadFiles } = useAdapterRequest()
 import updateSpace from '~/composables/spaces/updateSpace';
 
 const route = useRoute();
@@ -106,19 +106,20 @@ const loading = ref(false);
 // Function to fetch existing space data
 const fetchSpaceData = async () => {
     try {
-        const { $directus, $readItem } = useNuxtApp();
-        const spaceId = route.params.id; // Assuming you're passing the ID in the route
-        const response = await $directus.request(readItem('spaces', spaceId));
-        
-        // Populate the form with existing data
-        spaceData.value = {
-            id: response.id,
-            name: response.name,
-            type: response.type,
-            status: response.status,
-            description: response.description,
-            image: response.image
-        };
+        const spaceId = route.params.id;
+        const resp = await readItem('spaces', spaceId)
+        const response = resp?.data || resp || null
+
+        if (response) {
+            spaceData.value = {
+                id: response.id,
+                name: response.name,
+                type: response.type,
+                status: response.status,
+                description: response.description,
+                image: response.image
+            };
+        }
     } catch (error) {
         console.error('Error fetching space:', error);
     }
@@ -126,13 +127,12 @@ const fetchSpaceData = async () => {
 
 // Load existing data when component mounts
 onMounted(() => {
-    if (route.params.id) {
-        fetchSpaceData();
-    }
+    if (route.params.id) fetchSpaceData()
 });
 
 const handleImageUpload = (event) => {
-    imageFile.value = event.target.files[0];
+    // v-file-input may provide files directly or an event; normalize
+    imageFile.value = event?.target?.files?.[0] || (Array.isArray(event) ? event[0] : event)
 };
 
 const resetForm = () => {
@@ -149,32 +149,26 @@ const resetForm = () => {
 const handleSubmit = async () => {
     try {
         loading.value = true;
-        const { $directus } = useNuxtApp();
-
         // Handle image upload if there's a new image
         if (imageFile.value) {
-            const uploadedFiles = await uploadFiles({
-                imageFile: imageFile.value,
-            });
-            spaceData.value.image = uploadedFiles.imageId;
+            const uploaded = await uploadFiles({ file: imageFile.value })
+            // adapter may return file id in different shapes
+            spaceData.value.image = uploaded?.data?.[0]?.id || uploaded?.id || uploaded?.imageId || uploaded
         }
 
-        // Update the space using Directus SDK directly
-        const updatedSpace = await $directus.request(
-            updateItem('spaces', route.params.id, {
-                name: spaceData.value.name,
-                type: spaceData.value.type,
-                status: spaceData.value.status,
-                description: spaceData.value.description,
-                image: spaceData.value.image,
-            })
-        );
+        // Update the space using adapter
+        const updated = await updateItem('spaces', route.params.id, {
+            name: spaceData.value.name,
+            type: spaceData.value.type,
+            status: spaceData.value.status,
+            description: spaceData.value.description,
+            image: spaceData.value.image,
+        })
 
-        if (updatedSpace) {
-            // Verify the update was successful
-            await fetchSpaceData(); // Refresh the data
-            alert('Space updated successfully');
-            navigateTo('/social/spaces'); // Adjust this path as needed
+        if (updated) {
+            await fetchSpaceData()
+            alert('Space updated successfully')
+            navigateTo('/social/spaces')
         }
     } catch (error) {
         console.error('Error updating space:', error);
@@ -193,10 +187,8 @@ const confirmDelete = () => {
 const deleteSpace = async () => {
     try {
         deleteLoading.value = true;
-        const { $directus } = useNuxtApp();
-        
-        // Delete the space using the imported deleteItem function
-        await $directus.request(deleteItem('spaces', route.params.id));
+        // Delete the space using adapter
+        await deleteItem('spaces', route.params.id)
         
         // Close the delete dialog
         deleteDialog.value = false;

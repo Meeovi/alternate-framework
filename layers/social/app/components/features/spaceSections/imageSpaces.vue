@@ -31,54 +31,17 @@
     })
         
     const model = ref(null)
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readItems } = useAdapterRequest()
 
-    const {
-        data: myImageSpaces
-    } = await useAsyncData('myImageSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                owner: {
-                    first_name: {
-                     _eq: userStore?.user?.firstName,   
-                    },
-                    last_name: {
-                        _eq: userStore?.user?.lastName,
-                    }
-                },
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Images'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: myImageSpaces } = await useAsyncData('myImageSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: userStore?.user?.firstName }, last_name: { _eq: userStore?.user?.lastName } }, space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 
     const {
         data: imageSpaces
     } = await useAsyncData('imageSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Images'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+            return readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] })
     })
 </script>

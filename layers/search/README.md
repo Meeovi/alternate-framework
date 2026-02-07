@@ -1,12 +1,12 @@
 <!-- packages/search/README.md -->
-# @meeovi/search
+# @mframework/layer-search
 
-A modular, provider-agnostic search layer for the Alternate Framework. It provides a unified, typed search API with pluggable adapters (Meilisearch, OpenSearch, mock adapters), lightweight bridges for UI integrations (InstantSearch / Searchkit), a small CLI for indexing/warmup, and event hooks.
+A modular, provider-agnostic search layer for the M Framework. It provides a unified, typed search API with pluggable adapters (Meilisearch, OpenSearch, mock adapters), lightweight bridges for UI integrations (InstantSearch / Searchkit), a small CLI for indexing/warmup, and event hooks.
 
 ## Features
 
 - Plug-and-play adapters (Meilisearch, OpenSearch, Mock)
-- Fully typed integration with `@meeovi/core`
+- Fully typed integration with `@mframework/core`
 - Mock adapter for tests
 - Small CLI for indexing and warmup
 - Configuration validation and event hooks (`search:query`, `search:results`)
@@ -16,29 +16,29 @@ A modular, provider-agnostic search layer for the Alternate Framework. It provid
 Using npm:
 
 ```bash
-npm install @meeovi/search
+npm install @mframework/layer-search
 ```
 
 Using pnpm:
 
 ```bash
-pnpm add @meeovi/search
+pnpm add @mframework/layer-search
 ```
 
 ## Quick Usage
 
-Register the module with an Alternate app:
+Register the module with an M Framework app:
 
 ```ts
-import { createAlternateApp } from '@meeovi/core'
-import searchModule from '@meeovi/search'
+import { createM FrameworkApp } from '@mframework/core'
+import searchModule from '@mframework/layer-search'
 
-const app = createAlternateApp({
+const app = createM FrameworkApp({
   config: {
     search: {
-      defaultProvider: 'meilisearch',
+      defaultProvider: 'opensearch',
       providers: {
-        meilisearch: {
+        opensearch: {
           host: 'http://localhost:7700',
           index: 'products',
           apiKey: 'masterKey'
@@ -61,42 +61,20 @@ if (searchAdapter) {
 
 ## Adapters
 
-Meilisearch adapter:
+Adapters are intentionally provider-agnostic and may be supplied by external packages or by your application.
+The core `@mframework/layer-search` layer does not bundle provider implementations; instead provide an adapter instance at startup
+or register one at runtime so the search manager can be created.
+
+Example (external adapter package or custom implementation):
 
 ```ts
-import { createMeilisearchAdapter } from '@meeovi/search'
+// import from an external adapter package or your own implementation
+import { createMySearchAdapter } from 'my-search-adapter-package' /* @mframework/adapter-opensearch */
 
-const adapter = createMeilisearchAdapter({
-  host: 'http://localhost:7700',
-  index: 'products',
-  apiKey: 'masterKey'
-})
+const adapter = createMySearchAdapter({ /* provider config */ })
 ```
 
-OpenSearch adapter:
-
-```ts
-import { createOpenSearchAdapter } from '@meeovi/search'
-
-const adapter = createOpenSearchAdapter({
-  endpoint: 'https://my-opensearch.com',
-  index: 'products',
-  apiKey: 'secret'
-})
-```
-
-Mock adapter (for testing):
-
-```ts
-import { createMockSearchAdapter } from '@meeovi/search'
-
-const mock = createMockSearchAdapter([
-  { id: '1', title: 'Red Shoes' },
-  { id: '2', title: 'Blue Shirt' }
-])
-
-const results = await mock.search({ term: 'red', page: 1, pageSize: 10 })
-```
+Register the adapter either when creating the M Framework app or at runtime (both shown below).
 
 ## Configuration
 
@@ -127,7 +105,7 @@ This layer includes bridges that let UI code use Algolia InstantSearch or Search
 Example (client):
 
 ```ts
-import { createInstantSearchBridge } from '@meeovi/search'
+import { createInstantSearchBridge } from '@mframework/layer-search'
 // `manager` is the `SearchManager` instance available on the app context
 const bridge = createInstantSearchBridge(manager)
 
@@ -142,7 +120,7 @@ Example (server - Express):
 
 ```ts
 import express from 'express'
-import { createSearchkitGraphQLHandler } from '@meeovi/search'
+import { createSearchkitGraphQLHandler } from '@mframework/layer-search'
 
 const app = express()
 app.use(express.json())
@@ -165,6 +143,53 @@ bus.on('search:results', ({ term, total }) => {
 })
 ```
 
+**Registering external adapters**
+
+There are two common ways to register a search adapter so the search layer can use it:
+
+- Module-based (recommended at startup): create a small provider module that exposes the adapter via the module `adapters` property. The module registry will register the adapter before modules run.
+
+```ts
+import { createM FrameworkApp } from '@mframework/core'
+import searchModule from '@mframework/layer-search'
+import { createMySearchAdapter } from 'my-search-adapter-package' /* @mframework/adapter-opensearch */
+
+const myProviderModule = {
+  id: 'search-provider-my',
+  adapters: {
+    search: createMySearchAdapter({ /* config */ })
+  }
+}
+
+const app = createM FrameworkApp({
+  config: { /* ... */ },
+  modules: [searchModule, myProviderModule]
+})
+
+await app.start()
+```
+
+- Runtime registration: register an adapter into the core module registry at runtime. This is useful for registering adapters from other modules or dynamic initialization.
+
+```ts
+import { createM FrameworkApp } from '@mframework/core'
+import searchModule from '@mframework/layer-search'
+import { createMySearchAdapter } from 'my-search-adapter-package' /* @mframework/adapter-opensearch */
+
+const app = createM FrameworkApp({ modules: [searchModule] })
+
+// register adapter before or after `app.start()`
+app.context.modules.registerAdapter('search', createMySearchAdapter({ /* config */ }))
+
+await app.start()
+```
+
+Notes:
+
+- Many layers adopt a convention of emitting `adapter:registered` events; the search layer listens for adapter registrations and will initialize its `SearchManager` when a `search` adapter becomes available.
+- If you publish adapters, prefer a small package such as `@your-org/adapter-mysearch` that exports a `createMySearchAdapter` factory so consumers can import and register it using one of the patterns above.
+
+
 ## CLI
 
 Included CLI commands:
@@ -174,7 +199,7 @@ Included CLI commands:
 
 Environment variables supported (example for Meilisearch):
 
-- `SEARCH_PROVIDER=meilisearch`
+- `SEARCH_PROVIDER=opensearch`
 - `MEILI_HOST=http://localhost:7700`
 - `MEILI_INDEX=products`
 - `MEILI_KEY=masterKey`
@@ -213,7 +238,7 @@ Because every layer follows this `KEY` / `NUXT_PUBLIC_KEY` pattern, you can plac
 Use the mock adapter in tests to avoid external dependencies:
 
 ```ts
-import { createMockSearchAdapter } from '@meeovi/search'
+import { createMockSearchAdapter } from '@mframework/layer-search'
 
 const mock = createMockSearchAdapter([{ id: '1', title: 'Test Product' }])
 const results = await mock.search({ term: 'test' })
@@ -224,13 +249,11 @@ const results = await mock.search({ term: 'test' })
 Typical layout:
 
 ```
-@meeovi/search
+@mframework/layer-search
 ├─ src/
 │  ├─ index.ts
 │  ├─ module.ts
 │  ├─ adapter/
-│  │  ├─ opensearch.ts
-│  │  ├─ meilisearch.ts
 │  │  ├─ mock.ts
 │  │  └─ types.ts
 │  ├─ config/schema.ts

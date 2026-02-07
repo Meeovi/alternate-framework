@@ -1,8 +1,8 @@
 {
-  "name": "@meeovi/adapter-atproto",
-  "version": "1.0.0",
+  "name": "@mframework/adapter-atproto",
+  "version": "0.0.1",
   "description": "Atproto adapter for meeovi",
-  "author": "Meeovi Labs",
+  "author": "M Framework Labs",
   "repository": "your-org/my-module",
   "license": "MIT",
   "type": "module",

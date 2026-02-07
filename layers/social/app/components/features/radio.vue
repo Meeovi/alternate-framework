@@ -27,30 +27,15 @@
     import stationCard from '~/components/related/radio.vue'
 
     const model = ref(null);
-    const {
-        $directus,
-        $readItems,
-        $readItem
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItems, readItem } = useDirectusRequest()
 
-    const {
-        data: radioPage
-    } = await useAsyncData('radioPage', () => {
-        return $directus.request($readItem('pages', '97', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: radioPage } = await useAsyncData('radioPage', () => {
+        return readItem('pages', '97', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: stations
-    } = await useAsyncData('stations', () => {
-        return $directus.request($readItems('radios', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: stations } = await useAsyncData('stations', () => {
+        return readItems('radios', { fields: ['*', { '*': ['*'] }] })
     })
 
     useHead({

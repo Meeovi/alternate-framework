@@ -71,67 +71,36 @@
     } from 'vue'
     import MembersList from '~/components/related/membersList.vue'
 
-    const {
-        $directus,
-        $readItem,
-        $readItems,
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItem, readItems } = useDirectusRequest()
     const tab = ref(null);
 
-    const {
-        data: birthdayBar
-    } = await useAsyncData('birthdayBar', () => {
-        return $directus.request($readItem('navigation', '82', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: birthdayBar } = await useAsyncData('birthdayBar', () => {
+        return readItem('navigation', '82', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: birthdayPage
-    } = await useAsyncData('birthdayPage', () => {
-        return $directus.request($readItem('pages', '91', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: birthdayPage } = await useAsyncData('birthdayPage', () => {
+        return readItem('pages', '91', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: members
-    } = await useAsyncData('members', () => {
-        return $directus.request($readItems('profiles', {
-            filter: {
-                birth_date: {
-                    _eq: new Date().toISOString().slice(5,
-                        10) // Get current month and day in MM-DD format
-                }
-            },
-            fields: [
-                '*',
-                'avatar.*'
-            ],
+    const { data: members } = await useAsyncData('members', async () => {
+        const resp = await readItems('profiles', {
+            filter: { birth_date: { _eq: new Date().toISOString().slice(5, 10) } },
+            fields: ['*', 'avatar.*'],
             limit: 1
-        })).then(response => response?.[0]) // Get first item from response
+        })
+        const data = resp?.data || resp || []
+        return data?.[0] || null
     })
 
-    const {
-        data: recentBirthdays
-    } = await useAsyncData('recentBirthdays', () => {
-        return $directus.request($readItems('profiles', {
-            filter: {
-                birth_date: {
-                    _lt: new Date().toISOString().slice(5,
-                        10) // Get current month and day in MM-DD format
-                }
-            },
-            fields: [
-                '*',
-                'avatar.*'
-            ],
+    const { data: recentBirthdays } = await useAsyncData('recentBirthdays', async () => {
+        const resp = await readItems('profiles', {
+            filter: { birth_date: { _lt: new Date().toISOString().slice(5, 10) } },
+            fields: ['*', 'avatar.*'],
             limit: 1
-        })).then(response => response?.[0]) // Get first item from response
+        })
+        const data = resp?.data || resp || []
+        return data?.[0] || null
     })
 
     useHead({

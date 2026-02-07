@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
-import type { StorePickupState } from '@/types/storeInPickUp';
 
 export const useStoreInPickupStore = defineStore('storeInPickUp', {
-    state: (): StorePickupState => ({
+    state: (): { selectedStoreId: string | null; stores: any[] } => ({
         selectedStoreId: null,
         stores: []
     }),
@@ -12,8 +11,8 @@ export const useStoreInPickupStore = defineStore('storeInPickUp', {
         },
         async fetchStores() {
             try {
-                const response = await $fetch('/api/stores');
-                this.stores = response;
+                const response = await $fetch<any[]>('/api/stores');
+                this.stores = response as any[];
             } catch (error) {
                 console.error('Error fetching stores:', error);
             }

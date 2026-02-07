@@ -1,5 +1,5 @@
 import { createRocketChatProvider, RocketChatAdapterOptions } from './runtime'
-import { registerChatProviderRuntime } from '@meeovi/chat'
+import { registerChatProviderRuntime } from '@mframework/chat'
 
 export { createRocketChatProvider }
 export type { RocketChatAdapterOptions }

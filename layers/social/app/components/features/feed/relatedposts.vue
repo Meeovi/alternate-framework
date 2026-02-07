@@ -22,16 +22,11 @@
     //import {posts} from '~/graphql/cms/queries/posts'  
 
     const tab = ref(null);
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readItems } = useAdapterRequest()
 
-    const {
-        data: posts
-    } = await useAsyncData('posts', () => {
-        return $directus.request($readItems('posts', {
-            fields: ['*', { '*': ['*'] }]
-        }))
+    const { data: posts } = await useAsyncData('posts', async () => {
+      const resp = await readItems('posts', { fields: ['*', { '*': ['*'] }] })
+      return resp?.data || resp || []
     })
 </script>

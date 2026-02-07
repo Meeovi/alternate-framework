@@ -19,3 +19,6 @@ export function registerCommerceProviderRuntime(name: string, bundle: CommercePr
 // Also re-export individual runtime helpers for convenience
 export { registerProductProviderRuntime } from './products/registry'
 export { registerCartProviderRuntime } from './cart/registry'
+export { registerEventProviderRuntime } from './products/registry'
+export { registerGiftCardProviderRuntime } from './products/registry'
+export { registerSubscriptionProviderRuntime } from './products/registry'

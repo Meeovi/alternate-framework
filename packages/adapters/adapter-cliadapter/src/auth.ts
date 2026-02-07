@@ -1,4 +1,4 @@
-import type { TransportAdapter, AuthAdapter, LoginInput, RegisterInput, Result, AuthSession as Session, AuthUser as User } from '@meeovi/core'
+import type { TransportAdapter, AuthAdapter, LoginInput, RegisterInput, Result, AuthSession as Session, AuthUser as User } from '@mframework/core'
 
 import { unwrap } from './utils.js'
 

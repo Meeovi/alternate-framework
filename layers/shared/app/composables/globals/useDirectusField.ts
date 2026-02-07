@@ -1,13 +1,11 @@
 import { ref, computed, watch } from "vue"
-import Input from "~/components/ui/forms/TextInput.vue"
-import TextArea from "~/components/ui/forms/TextArea.vue"
-import Select from "~/components/ui/forms/SelectInput.vue"
-import DateTime from "~/components/ui/forms/DateTime.vue"
-import FileInput from "~/components/ui/forms/FileInput.vue"
-import BooleanInput from "~/components/ui/forms/BooleanInput.vue"
-import RelationSelect from "~/components/ui/forms/RelationSelect.vue"
-import RepeaterInput from "~/components/ui/forms/RepeaterInput.vue"
-import TiptapEditor from "~/components/ui/forms/TiptapEditor.vue"
+import Input from "../../components/ui/forms/TextInput.vue"
+import Select from "../../components/ui/forms/SelectInput.vue"
+import DateTime from "../../components/ui/forms/DateTime.vue"
+import FileInput from "../../components/ui/forms/FileInput.vue"
+import BooleanInput from "../../components/ui/forms/BooleanInput.vue"
+import RelationSelect from "../../components/ui/forms/RelationSelect.vue"
+import TiptapEditor from "../../components/ui/forms/TiptapEditor.vue"
 
 export function useDirectusField(field: any, modelValue: any, emit: any, formContext?: any) {
   const internalValue = computed({

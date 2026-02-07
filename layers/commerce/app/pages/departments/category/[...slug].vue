@@ -80,39 +80,21 @@
     import productCard from '~/components/catalog/product/productCard.vue'
 
     const route = useRoute()
-    const {
-        $directus,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
+const { readItems, readItem } = useDirectusRequest()
 
     const slug = computed(() => {
         const s = route.params.slug
         return Array.isArray(s) ? s[0] : s
     })
 
-    const {
-        data: categoryRaw
-    } = await useAsyncData('categoryRaw', () => {
-        return $directus.request(
-            $readItems('categories', {
-                fields: [
-                    '*',
-                    'tags.tags_id.*',
-                    'departments.departments_id.*',
-                    'products.products_id.*',
-                    'products.products_id.image.*',
-                    'menus.*',
-                    'image.*'
-                ],
-                filter: {
-                    slug: {
-                        _eq: slug.value
-                    }
-                },
-                limit: 1
-            })
-        )
+    const { data: categoryRaw } = await useAsyncData('categoryRaw', async () => {
+        const resp = await readItems('categories', {
+            fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*', 'products.products_id.*', 'products.products_id.image.*', 'menus.*', 'image.*'],
+            filter: { slug: { _eq: slug.value } },
+            limit: 1
+        })
+        return resp?.data || resp || []
     })
 
     // Unwrap array cleanly
@@ -120,12 +102,9 @@
 
 
     // FETCH SHOPS FOR RESTAURANTS CATEGORY
-    const {
-        data: restaurantsList
-    } = await useAsyncData('restaurantsList', () => {
-        return $directus.request($readItems('shops', {
-            fields: ['*']
-        }))
+    const { data: restaurantsList } = await useAsyncData('restaurantsList', async () => {
+        const resp = await readItems('shops', { fields: ['*'] })
+        return resp?.data || resp || []
     })
 
     // SEO

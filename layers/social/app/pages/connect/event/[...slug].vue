@@ -7,7 +7,7 @@
                         <div class="card-wrapper">
                             <div class="row">
                                 <div class="col-12 col-md-12 col-lg-5 image-wrapper">
-                                    <img v-if="event?.image" class="w-100" :src="`${$directus.url}assets/${event?.image?.filename_disk}`" :alt="event?.name">
+                                    <img v-if="event?.image" class="w-100" :src="getAssetUrl(event?.image)" :alt="event?.name">
 
                                     <img v-else src="../../../assets/images/backgraund-trend.jpg" :alt="event?.name" />
                                 </div>
@@ -71,23 +71,16 @@
 
     const route = useRoute();
     const tab = ref(null);
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { readItems, getAssetUrl } = useAdapterRequest()
 
-    const {
-        data: event
-    } = await useAsyncData('event', () => {
-        return $directus.request($readItems('events', {
-            filter: {
-                slug: {
-                    _eq: `${route.params.slug}`
-                }
-            },
+    const { data: event } = await useAsyncData('event', async () => {
+        const resp = await readItems('events', {
+            filter: { slug: { _eq: `${route.params.slug}` } },
             fields: ['*'],
             limit: 1
-        })).then(response => response?.[0]) // Get first item from response
+        })
+        return resp?.data?.[0] || resp?.[0] || null
     })
 
     useHead({

@@ -1,11 +1,9 @@
 import { useState, useCallback } from 'react'
-import { useAlternateContext } from '@meeovi/core'
 import type { SearchManager } from '../core/SearchManager'
-import type { MeeoviSearchItem } from '../adapter/types'
 
-export function useReactSearch() {
-  const ctx = useAlternateContext() as any
-  const manager = ctx.searchManager as SearchManager<MeeoviSearchItem>
+// React bridge: accept a SearchManager instance to stay adapter-agnostic.
+export function useReactSearch(manager?: SearchManager) {
+  if (!manager) throw new Error('SearchManager instance is required for React bridge')
 
   const [query, setQuery] = useState(manager.context.state.query)
   const [page, setPage] = useState(manager.context.state.page)

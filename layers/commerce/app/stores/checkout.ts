@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
-import type { CheckoutState } from '@/types/checkout';
 
 export const useCheckoutStore = defineStore('checkout', {
-    state: (): CheckoutState => ({
+    state: (): { shippingAddress: string | null; paymentMethod: any; orderId: string; isLoading: boolean } => ({
         shippingAddress: null,
         paymentMethod: null,
         orderId: '',

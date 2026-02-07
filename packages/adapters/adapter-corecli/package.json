@@ -1,6 +1,6 @@
 {
-  "name": "@meeovi/adapter-corecli",
-  "version": "1.0.0",
+  "name": "@mframework/adapter-corecli",
+  "version": "0.0.1",
   "description": "Created via core bin",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,8 +10,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@meeovi/sdk": "^1.0.2",
-    "@meeovi/core": "^1.0.4",
+    "@mframework/sdk": "^0.0.1",
+    "@mframework/core": "^0.0.1",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

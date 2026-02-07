@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "types": ["node", "vitest"],
     "declaration": true,
     "emitDeclarationOnly": false,
@@ -11,5 +12,21 @@
     "jsx": "react-jsx",
     "skipLibCheck": true, 
     "noEmitOnError": false
+    ,
+    "paths": {
+      "@mframework/adapter-betterauth": ["../../packages/adapters/adapter-betterauth/src/index.ts"],
+      "@mframework/adapter-betterauth/*": ["../../packages/adapters/adapter-betterauth/src/*"]
+      ,
+      "@mframework/api": ["../../packages/modules/api/src/index.ts"]
+    }
   }
+  ,
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "include": [
+    "app/**/*",
+    "server/**/*"
+  ]
 }

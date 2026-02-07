@@ -1,10 +1,10 @@
 import { ref, computed, readonly } from 'vue'
-import type { Cart, CartItem, Product } from '../types'
+import type { Cart as DomainCart } from '../types/domain'
 import { useCart } from '../cart/useCart'
 import { defineStore } from 'pinia'
 
 export const useCartStore = defineStore('cart', () => {
-  const cart = ref<Cart | null>(null)
+  const cart = ref<DomainCart | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
   
@@ -152,7 +152,7 @@ export const useCartStore = defineStore('cart', () => {
   
   // Computed properties
   const itemCount = computed(() => {
-    return cart.value?.items?.reduce((count: any, item: { quantity: any }) => count + item.quantity, 0) || 0
+    return cart.value?.items?.reduce((count: number, item: any) => count + (item?.quantity ?? 0), 0) || 0
   })
   
   const isEmpty = computed(() => {
@@ -164,27 +164,27 @@ export const useCartStore = defineStore('cart', () => {
   })
   
   const subtotal = computed(() => {
-    return cart.value?.subtotal || 0
+    return (cart.value?.prices?.subtotal?.value ?? (cart.value as any)?.subtotal ?? 0) as number
   })
-  
+
   const total = computed(() => {
-    return cart.value?.total || 0
+    return (cart.value?.prices?.grand_total?.value ?? (cart.value as any)?.total ?? 0) as number
   })
-  
+
   const taxAmount = computed(() => {
-    return cart.value?.tax_amount || 0
+    return (cart.value?.prices?.tax?.value ?? (cart.value as any)?.tax_amount ?? 0) as number
   })
-  
+
   const shippingAmount = computed(() => {
-    return cart.value?.shipping_amount || 0
+    return (cart.value?.prices?.shipping?.value ?? (cart.value as any)?.shipping_amount ?? 0) as number
   })
-  
+
   const discountAmount = computed(() => {
-    return cart.value?.discount_amount || 0
+    return (cart.value?.prices?.discounts?.value ?? (cart.value as any)?.discount_amount ?? 0) as number
   })
   
   const hasCoupon = computed(() => {
-    return !!cart.value?.coupon_code
+    return !!(cart.value as any)?.coupon_code
   })
   
   return {

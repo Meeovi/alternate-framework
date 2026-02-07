@@ -1,7 +1,6 @@
 <script setup lang="ts">
-    import {
-        widgetRegistry
-    } from '@meeovi/directus-client';
+    // Resolve widget registry at runtime if provided by a higher-level layer.
+    const widgetRegistry = (globalThis as any).widgetRegistry ?? {};
 
     const props = defineProps < {
         field: any;

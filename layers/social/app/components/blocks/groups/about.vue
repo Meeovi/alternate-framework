@@ -89,14 +89,17 @@
         },
     })
 
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { getAssetUrl } = useAdapterRequest()
+
 const backgroundImage = computed(() => {
-  const image = props.group?.image
+    const image = props.group?.image
 
-  if (image?.filename_disk) {
-    return `${$directus.url}assets/${image.filename_disk}`
-  }
+    if (image?.filename_disk) {
+        return getAssetUrl(image)
+    }
 
-  // fallback image from /assets
-  return new URL('@/assets/images/background2.jpg', import.meta.url).href
+    // fallback image from /assets
+    return new URL('@/assets/images/background2.jpg', import.meta.url).href
 })
 </script>

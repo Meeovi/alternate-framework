@@ -1,18 +1,18 @@
 {
-  "name": "@meeovi/layer-social",
-  "version": "1.0.11",
-  "description": "Social Layer for the Alternate Framework",
+  "name": "@mframework/layer-social",
+  "version": "0.0.1",
+  "description": "Social Layer for the M Framework",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "social",
-    "alternate-framework",
+    "mframework-framework",
     "nuxt",
     "layer"
   ],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "main": "./nuxt.config.ts",

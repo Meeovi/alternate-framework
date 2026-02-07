@@ -1,23 +1,29 @@
 import { getSellerProvider } from './registry'
-import { getCurrentSellerId } from './_auth'
+import mockProvider from './mockProvider'
 
-export function useSellerOrders() {
-  const provider = getSellerProvider()
+export default function useSellerOrders() {
+  const provider: any = getSellerProvider() || mockProvider
 
-  async function listOrders(params?: any) {
-    const sellerId = getCurrentSellerId()
-    return provider.listOrders?.(params, { sellerId }) ?? []
+  async function listOrdersForSeller(sellerId: string, params?: Record<string, any>) {
+    if (provider && typeof provider.listOrdersForSeller === 'function') return provider.listOrdersForSeller(sellerId, params)
+    const all = await provider.listOrders(params)
+    return (all || []).filter((o: any) => o.sellerId === sellerId)
   }
 
-  async function getOrder(id: string) {
-    const sellerId = getCurrentSellerId()
-    return provider.getOrder?.(id, { sellerId }) ?? null
+  async function getOrderForSeller(orderId: string) {
+    if (provider && typeof provider.getOrder === 'function') return provider.getOrder(orderId)
+    return mockProvider.getOrder(orderId)
   }
 
-  async function updateOrderStatus(id: string, status: string) {
-    const sellerId = getCurrentSellerId()
-    return provider.updateOrderStatus?.(id, status, { sellerId })
+  async function updateOrderForSeller(orderId: string, payload: any) {
+    if (provider && typeof provider.updateOrderStatus === 'function') return provider.updateOrderStatus(orderId, payload.status)
+    const order = await mockProvider.getOrder(orderId)
+    if (!order) throw new Error('Order not found')
+    Object.assign(order, payload)
+    return order
   }
 
-  return { listOrders, getOrder, updateOrderStatus }
+  return { listOrdersForSeller, getOrderForSeller, updateOrderForSeller }
 }
+
+export { useSellerOrders }

@@ -29,18 +29,13 @@
     import {
         useDirectusForm
     } from '~/composables/globals/useDirectusForm'
-
+    import { useDirectusSchema } from '~/composables/globals/useDirectusSchema'
     const dialog = ref(false)
-    const {
-        $directus,
-        $readFieldsByCollection
-    } = useNuxtApp()
-
     const {
         data,
         error
     } = await useAsyncData('media', async () => {
-        return $directus.request($readFieldsByCollection('media'))
+        return useDirectusSchema('media')
     })
 
     // guard against undefined/null data.value and empty arrays

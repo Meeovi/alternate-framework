@@ -23,12 +23,14 @@
 import { ref } from 'vue'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
 import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 const dialog = ref(false)
-const { $directus, $readFieldsByCollection } = useNuxtApp()
+const { readFieldsByCollection } = useAdapterRequest()
 
 const { data, error } = await useAsyncData('shorts', async () => {
-  return $directus.request($readFieldsByCollection('shorts'))
+  const resp = await readFieldsByCollection('shorts')
+  return resp?.data || resp || []
 })
 
 // guard against undefined/null data.value and empty arrays

@@ -1,14 +1,14 @@
 // stores/products.ts - Pinia store for product management
-import type { Product } from '~/app/types'
+import type { Product as DomainProduct } from '../types/domain'
 import { defineStore } from 'pinia'
 import { ref, computed, readonly } from 'vue'
-import { useProducts } from '~/app/composables/products'
-import { useFeaturedProducts } from '~/app/composables/featured-products'
+import { useProducts } from '../composables/products'
+import { useFeaturedProducts } from '../composables/featured-products'
 
 export const useProductsStore = defineStore('products', () => {
-  const products = ref<Product[]>([])
-  const featuredProducts = ref<Product[]>([])
-  const currentProduct = ref<Product | null>(null)
+  const products = ref<DomainProduct[]>([])
+  const featuredProducts = ref<DomainProduct[]>([])
+  const currentProduct = ref<DomainProduct | null>(null)
   const categories = ref([])
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -84,9 +84,11 @@ export const useProductsStore = defineStore('products', () => {
   
   // Computed properties
   const productsOnSale = computed(() => {
-    return products.value.filter(product => 
-      product.sale_price && product.sale_price < product.price
-    )
+    return products.value.filter((product: DomainProduct) => {
+      if (product.sale_price == null) return false
+      const priceValue = (product as any).price?.value ?? (typeof (product as any).price === 'number' ? (product as any).price : undefined)
+      return priceValue != null && product.sale_price < priceValue
+    })
   })
   
   const productCount = computed(() => {

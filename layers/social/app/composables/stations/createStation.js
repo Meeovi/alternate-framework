@@ -1,15 +1,13 @@
 // composables/createStation.js
-import { createItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function createStation(stationData) {
     const route = useRoute();
-
     const id = route.params.id;
-    const { $directus } = useNuxtApp();
-  
+    const { createItem } = useAdapterRequest()
+
     try {
-      const station = await $directus.request(createItem('radios', [
-        {
+      const station = await createItem('radios', {
           name: stationData.name,
           description: stationData.description,
           status: stationData.status,
@@ -22,12 +20,11 @@ export default async function createStation(stationData) {
           coverFile: null,
           avatarFile: null,
           creator: stationData.creator,
-        }
-      ]));
+      })
       return station;
     } catch (error) {
       console.error('Error creating station:', error);
       throw error;
     }
-  }
+}
   

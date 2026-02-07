@@ -31,55 +31,16 @@
     })
     
     const model = ref(null)
-    
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readItems } = useAdapterRequest()
 
-    const {
-        data: myDefaultSpaces
-    } = await useAsyncData('myDefaultSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                owner: {
-                    first_name: {
-                     _eq: userStore?.user?.firstName,   
-                    },
-                    last_name: {
-                        _eq: userStore?.user?.lastName,
-                    }
-                },
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'default'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: myDefaultSpaces } = await useAsyncData('myDefaultSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: userStore?.user?.firstName }, last_name: { _eq: userStore?.user?.lastName } }, space_type: { space_types_id: { name: { _eq: 'default' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 
-    const {
-        data: defaultSpaces
-    } = await useAsyncData('defaultSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'default'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: defaultSpaces } = await useAsyncData('defaultSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'default' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 </script>

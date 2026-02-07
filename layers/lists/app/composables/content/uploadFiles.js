@@ -1,4 +1,4 @@
-import { uploadFiles } from '@meeovi/directus-client';
+import { uploadFiles } from '@mframework/directus-client';
 
 export default async function uploadFile({ imageFile, documentFile, videoFile, audioFile }) {
     const { $directus } = useNuxtApp();

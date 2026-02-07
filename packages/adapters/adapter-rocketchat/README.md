@@ -1,13 +1,13 @@
-# @meeovi/adapter-rocketchat
+# @mframework/adapter-rocketchat
 
-Adapter for integrating Rocket.Chat with the `@meeovi/chat` layer.
+Adapter for integrating Rocket.Chat with the `@mframework/chat` layer.
 
 Usage:
 
 1. Register at runtime from your app startup:
 
 ```ts
-import { registerRocketChat } from '@meeovi/adapter-rocketchat'
+import { registerRocketChat } from '@mframework/adapter-rocketchat'
 
 registerRocketChat({ baseUrl: 'https://chat.example.com', token: '...', userId: '...' })
 ```

@@ -1,15 +1,15 @@
 // composables/deletePost.js
-import { deleteItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function deletePost(postId) {
-    const { $directus } = useNuxtApp();
-  
+    const { deleteItem } = useAdapterRequest()
+
     try {
-      $directus.request(deleteItem('posts', postId));
+      await deleteItem('posts', postId)
       console.log('Post deleted successfully');
     } catch (error) {
       console.error('Error deleting post:', error);
       throw error;
     }
-  }
+}
   

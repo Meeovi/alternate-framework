@@ -1,4 +1,3 @@
-import type { SearchAdapter, SearchResult } from '@meeovi/core'
 import type { BuiltSearchQuery } from '../core/QueryBuilder'
 
 export interface MeeoviSearchItem {
@@ -6,9 +5,17 @@ export interface MeeoviSearchItem {
   title: string
   description?: string
   price?: number
-  [key: string]: unknown
+  [key: string]: any
 }
 
-export type MeeoviSearchAdapter = SearchAdapter<MeeoviSearchItem> & {
-  search(query: any): Promise<SearchResult<MeeoviSearchItem>>
+export type MeeoviSearchAdapter = {
+  id?: string
+  type?: string
+  config?: any
+  search(query: BuiltSearchQuery | any): Promise<{
+    items: MeeoviSearchItem[]
+    total: number
+    page?: number
+    pageSize?: number
+  }>
 }

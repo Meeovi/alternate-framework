@@ -124,43 +124,21 @@
 
     const route = useRoute();
     const tab = ref(null)
-    const {
-        $directus,
-        $readItems,
-        $readItem
-    } = useNuxtApp()
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { readItems, readItem } = useAdapterRequest()
 
-    const {
-        data: space
-    } = await useAsyncData('space', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                slug: {
-                    _eq: `${route.params.slug}`
-                }
-            },
-            fields: [
-                '*',
-                'posts.posts_id.*',
-                'image.*',
-                'owner.*',
-                'members.directus_users_id.*',
-                'products.products_id.*',
-                'lists.lists_id.*',
-                'media.*'
-            ],
+    const { data: space } = await useAsyncData('space', async () => {
+        const resp = await readItems('spaces', {
+            filter: { slug: { _eq: `${route.params.slug}` } },
+            fields: ['*', 'posts.posts_id.*', 'image.*', 'owner.*', 'members.directus_users_id.*', 'products.products_id.*', 'lists.lists_id.*', 'media.*'],
             limit: 1
-        })).then(response => response?.[0]) // Get first item from response
+        })
+        return resp?.data?.[0] || resp?.[0] || null
     })
 
-    const {
-        data: individualSpaceBar
-    } = await useAsyncData('individualSpaceBar', () => {
-        return $directus.request($readItem('navigation', '83', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: individualSpaceBar } = await useAsyncData('individualSpaceBar', async () => {
+        const resp = await readItem('navigation', '83', { fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || null
     })
 
 

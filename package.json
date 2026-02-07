@@ -1,8 +1,8 @@
 {
-  "name": "alternate-framework",
+  "name": "mframework-framework",
   "version": "1.0.0",
   "private": true,
-  "description": "Alternate Framework — Vue + Nuxt 4 starter and integrations",
+  "description": "M Framework — Vue + Nuxt 4 starter and integrations",
   "main": "apps/Meeovi/nuxt.config.ts",
   "scripts": {
     "dev": "cd apps/Meeovi && npx nuxi dev",
@@ -15,8 +15,8 @@
   "bin": {
     "meeovi-create-adapter": "packages/core/bin/create-adapter.cjs"
   },
-  "keywords": ["vue", "nuxt", "alternate-framework", "meeovi"],
-  "author": "Meeovi",
+  "keywords": ["vue", "nuxt", "mframework-framework", "meeovi"],
+  "author": "M Framework",
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.9.3"

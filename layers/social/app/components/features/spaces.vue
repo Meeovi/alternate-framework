@@ -66,33 +66,18 @@
     import createspace from '~/components/features/spaceSections/crud/add-space.vue'
     import { componentMap } from '~/types/componentMap'
 
-    const {
-        $directus,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItem, readItems } = useDirectusRequest()
 
     // current selected tab value (matches menu.value)
     const currentTab = ref(null);
 
-    const {
-        data: spacesPage
-    } = await useAsyncData('spacesPage', () => {
-        return $directus.request($readItem('pages', '99', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: spacesPage } = await useAsyncData('spacesPage', () => {
+        return readItem('pages', '99', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: spacesBar
-    } = await useAsyncData('spacesBar', () => {
-        return $directus.request($readItem('navigation', '79', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: spacesBar } = await useAsyncData('spacesBar', () => {
+        return readItem('navigation', '79', { fields: ['*', { '*': ['*'] }] })
     })
 
     // Normalize menus to objects: support both string arrays and object arrays

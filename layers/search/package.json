@@ -1,16 +1,16 @@
 {
-  "name": "@meeovi/layer-search",
-  "version": "1.1.1",
-  "description": "Powerful search module for the Alternate Framework.",
+  "name": "@mframework/layer-search",
+  "version": "0.0.1",
+  "description": "Powerful search module for the M Framework.",
   "keywords": [
     "meeovi",
     "search",
     "module",
-    "alternate-framework",
+    "mframework-framework",
     "vue",
     "instantsearch"
   ],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "main": "./nuxt.config.ts",
@@ -18,7 +18,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@meeovi/core": "^1.0.4",
+    "@mframework/core": "^0.0.1",
     "@searchkit/instantsearch-client": "^4.14.1",
     "@types/react": "^19.2.9",
     "graphql": "^16.8.0",

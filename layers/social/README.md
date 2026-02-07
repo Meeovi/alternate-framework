@@ -1,11 +1,11 @@
 
 ---
 
-# 📦 `@meeovi/social` — README.md  
+# 📦 `@mframework/social` — README.md  
 *(This one is more advanced because of caching, SWR, retry, metrics, etc.)*
 
 ```md
-# @meeovi/social
+# @mframework/social
 
 A powerful, backend‑agnostic social integration layer for Meeovi.  
 Supports ATProto (Bluesky), Mastodon, WordPress/BuddyPress, and any custom social backend.
@@ -25,11 +25,11 @@ Supports ATProto (Bluesky), Mastodon, WordPress/BuddyPress, and any custom socia
 ## 📦 Installation
 
 ```sh
-npm install @meeovi/social
+npm install @mframework/social
 
 🧩 Usage
 
-import { useSocial } from '@meeovi/social'
+import { useSocial } from '@mframework/social'
 
 const { getActivityFeed } = useSocial()
 
@@ -61,7 +61,7 @@ Provider‑Specific Rate Limits
 setRateLimit('mastodon', { maxRequests: 10, windowMs: 60000 })
 Metrics
 
-import { getMetrics } from '@meeovi/social'
+import { getMetrics } from '@mframework/social'
 
 console.log(getMetrics('atproto'))
 🧱 Folder Structure

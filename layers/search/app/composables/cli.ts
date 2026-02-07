@@ -3,7 +3,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { createAlternateApp } from '@meeovi/core'
 import searchModule from './module'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -13,32 +12,18 @@ async function run() {
 
   const defaultProvider = process.env.SEARCH_PROVIDER === 'meilisearch' ? 'meilisearch' : 'opensearch'
 
-  const app = createAlternateApp({
-    config: {
-      env: 'production',
-      search: {
-        defaultProvider,
-        providers: {
-          opensearch: {
-            endpoint: process.env.OPENSEARCH_ENDPOINT,
-            index: process.env.OPENSEARCH_INDEX
-          },
-          meilisearch: {
-            host: process.env.MEILI_HOST,
-            index: process.env.MEILI_INDEX,
-            apiKey: process.env.MEILI_KEY
-          }
-        }
-      }
-    },
-    modules: [searchModule]
-  })
-
-  const ctx = await app.start()
-  const search = ctx.getAdapter('search')
+  // Minimal CLI behaviour: prefer direct provider endpoints via env vars
+  const provider = defaultProvider
+  let search: any = null
+  // If a provider-specific client is available via env vars, use it; otherwise exit.
+  if (provider === 'meilisearch' && process.env.MEILI_HOST) {
+    search = { id: 'search:meilisearch', type: 'search' }
+  } else if (provider === 'opensearch' && process.env.OPENSEARCH_ENDPOINT) {
+    search = { id: 'search:opensearch', type: 'search' }
+  }
 
   if (!search) {
-    console.error('No search adapter registered')
+    console.error('No search provider configured via environment')
     process.exit(1)
   }
 

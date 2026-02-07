@@ -1,15 +1,23 @@
+import { getCommerceClient } from '../utils/client'
+
 export function useInventory() {
+  const client = getCommerceClient()
+
   async function checkInventory(sku: string, qty: number) {
     try {
-      const url = `${process.env.MAGENTO_API_URL}/inventory/${encodeURIComponent(sku)}`
+      // Prefer adapter-provided inventory check when available
+      if (client && typeof client.checkInventory === 'function') {
+        return await client.checkInventory(sku, qty)
+      }
+
+      // Fallback to Magento inventory endpoint
+      const url = `${process.env.COMMERCE_API_URL}${encodeURIComponent(sku)}`
       const res = await fetch(url)
       if (!res.ok) return false
       const data = await res.json()
-      // Expecting an object { available: number }
       const available = (data?.available ?? data?.qty ?? 0) as number
       return available >= qty
     } catch (e) {
-      // If inventory service is unavailable, fail-safe to false
       console.error('Inventory check failed', e)
       return false
     }

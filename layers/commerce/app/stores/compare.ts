@@ -5,7 +5,7 @@ import type {
   ComparableItem,
   ComparableProduct,
   CompareList,
-} from '~/graphql/queries-mutations_subscriptions/types/ProductCompare.type';
+} from '~/types/ProductCompare.type';
 
 export const useCompareStore = defineStore('compare', {
   state: () => ({
@@ -29,9 +29,9 @@ export const useCompareStore = defineStore('compare', {
     },
 
     removeComparedProduct(productSku: string) {
-      this.products = this.products.filter(product => product.sku !== productSku);
-      this.productSkus = this.productSkus.filter(sku => sku !== productSku);
-      this.items = this.items.filter(item => item.product.sku !== productSku);
+      this.products = this.products.filter((product: any) => product.sku !== productSku);
+      this.productSkus = this.productSkus.filter((sku: string) => sku !== productSku);
+      this.items = this.items.filter((item: any) => item.product.sku !== productSku);
     },
 
     clearComparedProducts() {

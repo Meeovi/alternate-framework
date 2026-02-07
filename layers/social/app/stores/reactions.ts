@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
-import { useRuntimeConfig, useNuxtApp, onNuxtReady } from 'nuxt/app'
+
+// Use runtime lookups to avoid static 'nuxt/app' imports which may not be
+// available during isolated typechecks. Fall back to sensible defaults.
+const runtimeFn = (globalThis as any).useRuntimeConfig
+const runtime = typeof runtimeFn === 'function' ? runtimeFn() : (globalThis as any).__runtimeConfig ?? {}
+const nuxtFn = (globalThis as any).useNuxtApp
+const nuxt = typeof nuxtFn === 'function' ? nuxtFn() : (globalThis as any).$nuxt ?? {}
 
 type ReactionEntry = {
   contentId: string | number

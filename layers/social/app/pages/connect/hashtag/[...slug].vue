@@ -6,8 +6,7 @@
                     <div class="row justify-content-center">
                         <div class="right-side col-12 col-md-5 item-wrapper">
                             <div v-if="tag?.image?.filename_disk">
-                                <img :alt="tag?.name" :src="`${$directus.url}assets/${tag?.image?.filename_disk}`"
-                                    cover />
+                                <img :alt="tag?.name" :src="getAssetUrl(tag?.image)" cover />
                             </div>
 
                             <div v-else><img src="../../../assets/images/backgraund-trend.jpg" :alt="tag?.name"></div>
@@ -82,26 +81,17 @@
     import spaceCard from '~/components/related/space.vue'
     import shortsCard from '~/components/related/short.vue'
 
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
     const route = useRoute()
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { readItems, getAssetUrl } = useAdapterRequest()
 
-    const {
-        data: tag
-    } = await useAsyncData('tag', () => {
-        return $directus.request($readItems('tags', {
-            filter: {
-                slug: {
-                    _eq: `${route.params.slug}`
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }],
+    const { data: tag } = await useAsyncData('tag', async () => {
+        const resp = await readItems('tags', {
+            filter: { slug: { _eq: `${route.params.slug}` } },
+            fields: ['*', { '*': ['*'] }],
             limit: 1
-        })).then(response => response?.[0]) // Get first item from response
+        })
+        return resp?.data?.[0] || resp?.[0] || null
     })
 
     useHead({

@@ -27,7 +27,7 @@
     <video 
       ref="videoRef"
       class="vibe-video"
-      :src="`${$directus.url}/assets/${short?.video?.filename_disk}`"
+      :src="getAssetUrl(short?.video)"
       controls
       preload="metadata"
       @click="togglePlay"
@@ -117,6 +117,8 @@ const isLiked = ref(false)
 const showComments = ref(false)
 const newComment = ref('')
 const vibeComments = ref([])
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { getAssetUrl } = useAdapterRequest()
 
 const hashtags = computed(() => {
   if (!short?.description) return []

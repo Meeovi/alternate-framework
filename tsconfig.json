@@ -1,0 +1,57 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowJs": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@mframework/core": ["packages/modules/core/src"],
+      "@mframework/core/*": ["packages/modules/core/src/*"],
+      "~/*": [
+        "./layers/commerce/app/*",
+        "./layers/commerce/*",
+        "./layers/social/app/*",
+        "./layers/social/*",
+        "./layers/shared/app/*",
+        "./layers/shared/*",
+        "./apps/Meeovi/*"
+      ],
+      "@/*": [
+        "./layers/commerce/app/*",
+        "./layers/commerce/*",
+        "./layers/social/app/*",
+        "./layers/social/*",
+        "./layers/shared/app/*",
+        "./layers/shared/*",
+        "./apps/Meeovi/*"
+      ]
+    }
+    ,
+    "typeRoots": ["./types", "./node_modules/@types"]
+  },
+  "include": [
+    "packages/modules/core/src/**/*",
+    "layers/social/**/*",
+    "layers/commerce/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

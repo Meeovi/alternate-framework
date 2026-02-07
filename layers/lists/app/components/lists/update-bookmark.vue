@@ -98,7 +98,7 @@
     import {
         updateItem,
         deleteItem
-    } from '@meeovi/directus-client';
+    } from '@mframework/directus-client';
     import {
         useUserStore
     } from '#auth/app/stores/user'

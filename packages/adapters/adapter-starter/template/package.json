@@ -1,0 +1,17 @@
+{
+  "name": "__PACKAGE_NAME__",
+  "version": "0.0.1",
+  "description": "An adapter for Meeovi built from the starter template",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "type": "module",
+  "dependencies": {
+    "@mframework/sdk": "^1.0.2",
+    "@mframework/core": "^1.0.4",
+    "typescript": "^5.9.3"
+  }
+}

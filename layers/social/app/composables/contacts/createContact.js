@@ -1,15 +1,13 @@
 // composables/createContact.js
-import { createItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function createContact(contactData) {
     const route = useRoute();
-
     const id = route.params.id;
-    const { $directus } = useNuxtApp();
-  
+    const { createItem } = useAdapterRequest()
+
     try {
-      const contact = await $directus.request(createItem('contacts', [
-        {
+      const contact = await createItem('contacts', {
           first_name: contactData.first_name,
           last_name: contactData.last_name,
           company: contactData.company,
@@ -46,19 +44,12 @@ export default async function createContact(contactData) {
           coverFile: null,
           avatarFile: null,
           username: contactData.username,
-          spaces: [
-            {
-                spaces_id: {
-                    id: id
-                }
-            }
-        ],
-        }
-      ]));
+          spaces: [{ spaces_id: { id } }]
+      })
       return contact;
     } catch (error) {
       console.error('Error creating contact:', error);
       throw error;
     }
-  }
+}
   

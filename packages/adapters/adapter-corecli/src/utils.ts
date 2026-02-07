@@ -1,4 +1,4 @@
-import type { APIResponse, Result } from '@meeovi/core'
+import type { APIResponse, Result } from '@mframework/core'
 
 export const unwrap = <T>(response: APIResponse<T>): Result<T> => {
   if (response.error) {

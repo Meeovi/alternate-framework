@@ -1,15 +1,15 @@
 // composables/deleteSpace.js
-import { deleteItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function deleteSpace(spaceId) {
-    const { $directus } = useNuxtApp();
-  
+    const { deleteItem } = useAdapterRequest()
+
     try {
-      $directus.request(deleteItem('spaces', spaceId));
+      await deleteItem('spaces', spaceId)
       console.log('Space deleted successfully');
     } catch (error) {
       console.error('Error deleting space:', error);
       throw error;
     }
-  }
+}
   

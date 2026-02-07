@@ -1,9 +1,8 @@
 {
-  "name": "@meeovi/adapter-activitypub",
-  "version": "1.0.0",
-  "description": "activitypub adapter for meeovi",
-  "author": "Meeovi Labs",
-  "repository": "your-org/my-module",
+  "name": "@mframework/adapter-activitypub",
+  "version": "0.0.1",
+  "description": "activitypub adapter for M Framework",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "exports": {

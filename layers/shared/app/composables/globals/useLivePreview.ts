@@ -1,3 +1,5 @@
+import { usePreviewMode, useRoute } from "nuxt/app";
+
 export function useLivePreview() {
 	return usePreviewMode({
 		// Enable preview mode when both preview and token params exist in URL

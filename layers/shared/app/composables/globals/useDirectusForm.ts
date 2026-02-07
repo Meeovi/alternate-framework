@@ -1,4 +1,6 @@
+import { useNuxtApp } from 'nuxt/app'
 import { ref, provide } from 'vue'
+import useDirectusRequest from '../useDirectusRequest'
 import type { Ref } from 'vue'
 
 export function useDirectusForm(collectionName: string, fieldsRef: Ref<any[]>, opts?: { clearOnSuccess?: boolean, closeDialogRef?: Ref<boolean> }) {
@@ -44,11 +46,11 @@ export function useDirectusForm(collectionName: string, fieldsRef: Ref<any[]>, o
       }
     }
 
-    const { $directus, $createItem } = useNuxtApp() as any
-    const result = await $directus.request($createItem(collectionName, form.value))
-    if (result.error) {
-      formError.value = result.error.message
-      console.error(`Error creating ${collectionName}:`, result.error)
+    const { createItem } = useDirectusRequest()
+    const result = await createItem(collectionName, form.value)
+    if (result?.error) {
+      formError.value = result?.error?.message || String(result)
+      console.error(`Error creating ${collectionName}:`, result?.error ?? result)
       return // Stop submission if error occurs
     }
     formSuccess.value = `${collectionName} created successfully`

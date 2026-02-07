@@ -1,7 +1,7 @@
-import { NormalizerRegistry, CommerceNormalizer } from './normalizer';
+import { NormalizerRegistry, CommerceNormalizer } from '../utils/normalizer';
 
-// Keep imports loose because host `@meeovi/commerce` implementations may vary
-import * as CommercePkg from '#imports';
+// Keep imports loose because host `@mframework/commerce` implementations may vary
+import * as CommercePkg from '~/types';
 const CommerceAny: any = CommercePkg as any;
 
 export type Provider = string;
@@ -21,7 +21,7 @@ export function createCommerceLayer(config: CommerceLayerConfig) {
     throw new Error('No normalizer found for provider: ' + config.provider);
   }
 
-  // Create or obtain a client from `@meeovi/commerce` in a resilient way
+  // Create or obtain a client from `@mframework/commerce` in a resilient way
   const client = ((): any => {
     try {
       if (typeof CommerceAny.createClient === 'function') {

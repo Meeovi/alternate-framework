@@ -1,15 +1,15 @@
 {
-  "name": "@meeovi/layer-commerce",
-  "version": "1.1.0",
-  "description": "Commerce Layer for the Alternate Framework",
+  "name": "@mframework/layer-commerce",
+  "version": "0.0.3",
+  "description": "Commerce Layer for the M Framework",
   "keywords": [
     "commerce",
-    "alternate-framework",
+    "mframework-framework",
     "nuxt",
     "layer"
   ],
   "license": "MIT",
-  "author": "Meeovi",
+  "author": "M Framework",
   "type": "module",
   "main": "./nuxt.config.ts",
   "scripts": {
@@ -19,17 +19,17 @@
     "lint": "eslint 'src/**/*.{ts,tsx}' || true",
     "prepare": "npm run build",
     "prepublishOnly": "npm run typecheck && npm run build",
-    "codegen": "npx graphql-codegen --config ./node_modules/@meeovi/adapter-magento/codegen.ts"
+    "codegen": "npx graphql-codegen --config ./node_modules/@mframework/adapter-magento/codegen.ts"
   },
   "dependencies": {
     "@better-auth/stripe": "^1.4.15",
-    "@meeovi/adapter-magento": "^1.0.2",
-    "@meeovi/layer-social": "^1.0.4",
-    "@meeovi/sdk": "^1.0.2",
-    "@meeovi/core": "^1.0.4",
-    "@polar-sh/better-auth": "^1.6.4",
+    "@mframework/core": "^0.0.1",
+    "@mframework/sdk": "^0.0.2",
     "@polar-sh/sdk": "^0.42.2",
     "@storefront-ui/nuxt": "^3.1.1",
+    "@tilework/opus": "^0.0.12",
+    "history": "^5.3.0",
+    "jwt-decode": "^4.0.0",
     "lodash-es": "^4.17.23"
   },
   "devDependencies": {

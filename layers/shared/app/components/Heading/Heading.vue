@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import type { HeadingProps } from '~/components/Heading/types';
+import type { HeadingProps } from './types';
 
 withDefaults(defineProps<HeadingProps>(), {
   tag: 'h1',

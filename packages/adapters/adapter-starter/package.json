@@ -1,0 +1,32 @@
+{
+  "name": "@mframework/adapter-starter",
+  "version": "0.0.1",
+  "description": "A starter adapter for Meeovi SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json",
+    "create": "node ./scripts/init-adapter.js",
+    "create:interactive": "node ./scripts/create-adapter-cli.cjs"
+  },
+  "keywords": [
+    "meeovi",
+    "adapter",
+    "starter"
+  ],
+  "author": "M Framework",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@mframework/sdk": "^0.0.1",
+    "@mframework/core": "^0.0.1",
+    "typescript": "^5.9.3"
+  }
+}

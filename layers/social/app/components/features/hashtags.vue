@@ -57,42 +57,21 @@
     } from 'vue'
     import TagChip from '~/components/related/tag.vue'
 
-    const {
-        $directus,
-        $readItems,
-        $readItem
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItems, readItem } = useDirectusRequest()
     const route = useRoute()
     const tab = ref(null);
 
-    const {
-        data: hashtags
-    } = await useAsyncData('hashtags', () => {
-        return $directus.request($readItems('tags', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: hashtags } = await useAsyncData('hashtags', () => {
+        return readItems('tags', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: hashtagPage
-    } = await useAsyncData('hashtagPage', () => {
-        return $directus.request($readItem('pages', '86', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: hashtagPage } = await useAsyncData('hashtagPage', () => {
+        return readItem('pages', '86', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: tagBar
-    } = await useAsyncData('tagBar', () => {
-        return $directus.request($readItem('navigation', '78', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: tagBar } = await useAsyncData('tagBar', () => {
+        return readItem('navigation', '78', { fields: ['*', { '*': ['*'] }] })
     })
 
     useHead({

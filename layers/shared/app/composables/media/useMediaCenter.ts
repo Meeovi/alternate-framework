@@ -1,14 +1,15 @@
 import { ref, computed, unref } from 'vue'
-import { useNuxtApp } from '#imports'
+import { useNuxtApp } from 'nuxt/app'
 import useDirectusRequest from '../useDirectusRequest'
-import { useAuth } from '~/composables/globals/useAuth'
 
 export function useMediaCenter() {
   // Prefer a BetterAuth `useAuth()` composable when available (provided by the auth layer).
   // Fallback to null if not present so the rest of the composable degrades gracefully.
   // `useAuth()` typically exposes `user` and `session` refs and a `fetchSession()` method.
+  // Prefer a composable provided by an auth layer at runtime. Do not statically
+  // import the auth layer here to keep `layers/shared` independent.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const auth: any = (globalThis as any).$useAuth ?? (typeof useAuth !== 'undefined' ? useAuth() : null)
+  const auth: any = (globalThis as any).$useAuth ?? (typeof (globalThis as any).useAuth !== 'undefined' ? (globalThis as any).useAuth() : null)
 
   const user = computed(() => {
     if (!auth) return null
@@ -20,12 +21,8 @@ export function useMediaCenter() {
   })
   const userId = computed(() => user.value?.id || null)
 
-  const {
-    $directus,
-    $readItems,
-    $createItem,
-    $uploadFiles,
-  } = useNuxtApp()
+  const nuxt = useNuxtApp() as any
+  const { request, readItems, createItem, uploadFiles: adapterUploadFiles } = useDirectusRequest()
 
   // CORE MEDIA STATE
   const allMedia = ref<any[]>([])
@@ -96,7 +93,7 @@ export function useMediaCenter() {
     }
 
     try {
-      const items = await $readItems('media', {
+      const items = await readItems('media', {
         fields: [
           '*',
           { directus_files_id: ['id', 'type', 'filename_download', 'title'] },
@@ -146,7 +143,7 @@ export function useMediaCenter() {
       }
     }
 
-    const { request } = useDirectusRequest()
+    // use adapterUploadFiles to send the FormData to the configured adapter
     const newItems: any[] = []
 
     for (let i = 0; i < files.length; i++) {
@@ -161,11 +158,11 @@ export function useMediaCenter() {
         const formData = new FormData()
         formData.append('file', file)
 
-        const resp = await request($uploadFiles(formData))
+        const resp = await adapterUploadFiles(formData)
         const uploaded = Array.isArray(resp) ? resp : (resp ? [resp] : [])
 
         for (const up of uploaded) {
-          const mediaItem = await $createItem('media', {
+          const mediaItem = await createItem('media', {
             user: userId.value,
             directus_files_id: up.id,
             title: up.filename_download || up.title || up.id,
@@ -203,14 +200,14 @@ export function useMediaCenter() {
   /* ---------- FOLDERS ---------- */
   async function fetchFolders() {
     if (!userId.value) return
-    folders.value = await $readItems('folders', {
+    folders.value = await readItems('folders', {
       filter: { user: { _eq: userId.value } },
       sort: ['sort', 'name'],
     })
   }
 
   async function createFolder(name: string, parent: string | null = null) {
-    await $createItem('folders', {
+    await createItem('folders', {
       name,
       user: userId.value,
       parent_folder: parent,
@@ -242,7 +239,7 @@ export function useMediaCenter() {
   /* ---------- SHARED WITH ME ---------- */
   async function fetchSharedWithMe() {
     if (!userId.value) return
-    sharedWithMe.value = await $readItems('media', {
+    sharedWithMe.value = await readItems('media', {
       fields: [
         '*',
         { directus_files_id: ['id', 'type', 'filename_download', 'title'] },
@@ -259,7 +256,7 @@ export function useMediaCenter() {
       return
     }
 
-    searchResults.value = await $readItems('media', {
+    searchResults.value = await readItems('media', {
       fields: [
         '*',
         { directus_files_id: ['id', 'type', 'filename_download', 'title'] },

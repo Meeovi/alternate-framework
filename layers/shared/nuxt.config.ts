@@ -7,6 +7,13 @@ export default defineNuxtConfig({
     name: 'shared',
   },
 
+  imports: {
+    dirs: [
+      'composables',
+      'app/composables'
+    ]
+  },
+
   modules: [
     'vuetify-nuxt-module',
     'nuxt-tiptap-editor',

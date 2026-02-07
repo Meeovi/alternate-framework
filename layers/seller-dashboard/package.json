@@ -1,6 +1,6 @@
 {
-  "name": "@meeovi/layer-seller-dashboard",
-  "version": "1.0.6",
+  "name": "@mframework/layer-seller-dashboard",
+  "version": "0.0.1",
   "description": "Seller dashboard for Meeovi platform",
   "main": "./nuxt.config.ts",
   "scripts": {
@@ -8,7 +8,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "keywords": ["seller", "dashboard", "meeovi"],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "devDependencies": {

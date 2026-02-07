@@ -1,15 +1,15 @@
 // composables/updatePost.js
-import { updateItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function updatePost(postId, postData) {
-    const { $directus } = useNuxtApp();
-  
+    const { updateItem } = useAdapterRequest()
+
     try {
-      const post = await $directus.request(updateItem('posts', postId));
+      const post = await updateItem('posts', postId, postData)
       return post;
     } catch (error) {
       console.error('Error updating post:', error);
       throw error;
     }
-  }
+}
   

@@ -19,19 +19,13 @@
 
     const tab = ref(null);
 
-    const {
-        $directus,
-        $readItem
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { request, readItem } = useDirectusRequest()
     const route = useRoute()
 
-    const {
-        data: lowerbar
-    } = await useAsyncData('lowerbar', () => {
-        return $directus.request($readItem('navigation', '76', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: lowerbar } = await useAsyncData('lowerbar', () => {
+        return readItem('navigation', '76', {
+            fields: ['*', { '*': ['*'] }]
+        })
     })
 </script>

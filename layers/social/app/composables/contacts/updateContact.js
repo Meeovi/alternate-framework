@@ -1,15 +1,15 @@
 // composables/updateContact.js
-import { updateItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function updateContact(contactId, contactData) {
-    const { $directus } = useNuxtApp();
-  
+    const { updateItem } = useAdapterRequest()
+
     try {
-      const contact = await $directus.request(updateItem('contacts', contactId));
+      const contact = await updateItem('contacts', contactId, contactData)
       return contact;
     } catch (error) {
       console.error('Error updating contact:', error);
       throw error;
     }
-  }
+}
   

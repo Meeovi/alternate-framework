@@ -30,10 +30,8 @@
     });
 
     const emit = defineEmits(["update:modelValue"]);
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp();
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItems } = useDirectusRequest()
 
     const internalValue = computed({
         get: () => props.modelValue,
@@ -44,18 +42,11 @@
 
     onMounted(async () => {
         try {
-            const {
-                data
-            } = await $directus.request(
-                $readItems(props.collection, {
-                    limit: 50, // adjust as needed
-                })
-            );
-            // Map to display-friendly format
-            options.value = data.map((item) => ({
+            const items = await readItems(props.collection, { limit: 50 })
+            options.value = (items || []).map((item: any) => ({
                 id: item.id,
                 display: item.name || item.title || `Item ${item.id}`,
-            }));
+            }))
         } catch (err) {
             console.error("Failed to load relation options:", err);
         }

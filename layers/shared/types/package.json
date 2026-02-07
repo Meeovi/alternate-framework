@@ -1,6 +1,0 @@
-{
-  "name": "@meeovi/types-deprecated",
-  "version": "0.0.0-deprecated",
-  "private": true,
-  "description": "Deprecated placeholder package — types have been moved to @meeovi/core. Remove this folder when safe."
-}

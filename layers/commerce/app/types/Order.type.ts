@@ -1,181 +1,174 @@
-// Order-specific types for the commerce layer
-export interface Order {
-  id: string
-  order_number: string
-  customer_id: string
-  company_id?: string
-  status: OrderStatusType
-  order_type?: 'standard' | 'purchase_order' | 'subscription'
-  
-  // Financial details
-  subtotal: number
-  tax_amount: number
-  shipping_amount: number
-  discount_amount: number
-  total: number
-  currency: string
-  
-  // Customer information
-  customer_name: string
-  customer_email: string
-  customer_phone?: string
-  
-  // Order items
-  order_items: OrderItem[]
-  
-  // Addresses
-  shipping_address?: Address
-  billing_address?: Address
-  
-  // Coupon/discount information
-  coupon_code?: string
-  coupon_id?: string
-  reward_points_used?: number
-  reward_discount_amount?: number
-  
-  // Purchase order details (B2B)
-  po_number?: string
-  po_reference?: string
-  
-  // Timestamps
-  created_at: string
-  updated_at: string
-  shipped_at?: string
-  delivered_at?: string
-  cancelled_at?: string
-}
+/**
+ * M Framework - Flexible backend agnostic framework.
+ *
+ * Copyright © Meeovi, LTD. All rights reserved.
+ * See LICENSE for license details.
+ *
+ * @license OSL-3.0 (Open Software License ("OSL") v. 3.0)
+ * @package mframework/mframework
+ * @link https://github.com/meeovi/mframework
+ */
 
-export interface OrderItem {
-  id: string
-  order_id: string
-  product_id: string
-  variant_id?: string
-  product_name: string
-  product_sku: string
-  quantity: number
-  price: number
-  total: number
-  product?: Product
-  variant?: ProductVariant
-}
+import PropTypes from 'prop-types';
 
-export interface Address {
-  id?: string
-  type?: 'shipping' | 'billing'
-  first_name: string
-  last_name: string
-  company?: string
-  street: string
-  street_2?: string
-  city: string
-  state: string
-  postal_code: string
-  country: string
-  phone?: string
-}
+// Support for comtabilitiy
 
-export interface Product {
-  id: string
-  name: string
-  sku: string
-  price: number
-  sale_price?: number
-  description?: string
-  images?: ProductImage[]
-  inventory?: ProductInventory
-}
+export const OrderPrintMapType = PropTypes.shape({
+    activeTab: PropTypes.string,
+    request: PropTypes.func,
+});
 
-export interface ProductVariant {
-  id: string
-  product_id: string
-  name: string
-  sku: string
-  price: number
-  attributes: Record<string, any>
-}
+export const OrderComment = PropTypes.shape({
+    message: PropTypes.string,
+    timestamp: PropTypes.string,
+});
 
-export interface ProductImage {
-  id: string
-  url: string
-  alt_text?: string
-  sort_order?: number
-}
+export const OrderComments = PropTypes.arrayOf(OrderComment);
 
-export interface ProductInventory {
-  id: string
-  product_id: string
-  quantity: number
-  reserved_quantity?: number
-  available_quantity?: number
-}
+export const OrderGrandTotalType = PropTypes.shape({
+    value: PropTypes.number,
+    currency: PropTypes.string,
+});
 
-export type OrderStatusType = 
-  | 'draft'
-  | 'pending' 
-  | 'processing' 
-  | 'shipped' 
-  | 'delivered' 
-  | 'cancelled'
-  | 'refunded'
-  | 'on_hold'
+export const OrderTotalType = PropTypes.shape({
+    grand_total: OrderGrandTotalType,
+});
 
-export interface OrderStatus {
-  status: 'success' | 'error' | 'partial'
-  message?: string
-  quantityAvailable?: number
-}
+export const OrderInfoType = PropTypes.shape({
+    id: PropTypes.number,
+    increment_id: PropTypes.string,
+    created_at: PropTypes.string,
+    status_label: PropTypes.string,
+    grand_total: PropTypes.number,
+    subtotal: PropTypes.string,
+});
 
-export interface OrderMutationResult {
-  status: 'success' | 'error' | 'partial'
-  message?: string
-  order?: Order
-  quantityAvailable?: number
-}
+export const OrderPaymentInfo = PropTypes.shape({
+    name: PropTypes.string,
+    type: PropTypes.string,
+    additional_data: PropTypes.shape({
+        name: PropTypes.string,
+        value: PropTypes.string,
+    }),
+});
 
-// Legacy types for backward compatibility
-export interface ActiveOrder extends Order {}
+export const OrderPaymentsInfo = PropTypes.arrayOf(OrderPaymentInfo);
 
-// Order creation/update payloads
-export interface CreateOrderPayload {
-  customer_id?: string
-  company_id?: string
-  order_type?: 'standard' | 'purchase_order' | 'subscription'
-  shipping_address?: Partial<Address>
-  billing_address?: Partial<Address>
-  po_number?: string
-  notes?: string
-}
+export const OrderAddressType = PropTypes.shape({
+    city: PropTypes.string,
+    country_code: PropTypes.string,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    postcode: PropTypes.string,
+    region: PropTypes.string,
+    region_id: PropTypes.string,
+    street: PropTypes.arrayOf(PropTypes.string),
+    telephone: PropTypes.string,
+});
 
-export interface UpdateOrderPayload {
-  status?: OrderStatusType
-  shipping_address?: Partial<Address>
-  billing_address?: Partial<Address>
-  notes?: string
-  tracking_number?: string
-}
+export const orderItemQtyType = PropTypes.shape({
+    quantity_ordered: PropTypes.number,
+    quantity_canceled: PropTypes.number,
+    quantity_invoiced: PropTypes.number,
+    quantity_refunded: PropTypes.number,
+    quantity_returned: PropTypes.number,
+    quantity_shipped: PropTypes.number,
+});
 
-// Order filters for queries
-export interface OrderFilters {
-  status?: OrderStatusType | OrderStatusType[]
-  customer_id?: string
-  company_id?: string
-  order_type?: string
-  date_from?: string
-  date_to?: string
-  search?: string
-  limit?: number
-  page?: number
-}
+export const MoneyType = PropTypes.shape({
+    currency: PropTypes.string,
+    value: PropTypes.number,
+});
 
-// Order statistics
-export interface OrderStats {
-  total_orders: number
-  total_revenue: number
-  average_order_value: number
-  orders_by_status: Record<OrderStatusType, number>
-  revenue_by_period: Array<{
-    period: string
-    revenue: number
-    orders: number
-  }>
-}
+export const DiscountType = PropTypes.shape({
+    amount: MoneyType,
+    value: PropTypes.number,
+});
+
+export const OptionItemType = PropTypes.shape({
+    title: PropTypes.string,
+    qty: PropTypes.number,
+    price: PropTypes.number,
+});
+
+export const OptionItemsType = PropTypes.arrayOf(OptionItemType);
+
+export const OptionType = PropTypes.shape({
+    label: PropTypes.string,
+    value: PropTypes.string,
+    items: OptionItemsType,
+    linkItems: PropTypes.arrayOf(PropTypes.string),
+});
+
+export const OptionsType = PropTypes.arrayOf(OptionType);
+
+export const OrderProductType = PropTypes.shape({
+    orderItemQtyType,
+    discounts: PropTypes.arrayOf(DiscountType),
+    id: PropTypes.string,
+    selected_options: OptionsType,
+    entered_options: OptionsType,
+    product_name: PropTypes.string,
+    product_sale_price: MoneyType,
+    product_sku: PropTypes.string,
+    product_type: PropTypes.string,
+    product_url_key: PropTypes.string,
+});
+
+export const OrderProductsType = PropTypes.arrayOf(OrderProductType);
+
+export const OrderTabType = PropTypes.shape({
+    items: OrderProductsType,
+    id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number,
+    ]),
+    number: PropTypes.string,
+    total: OrderTotalType,
+    comments: OrderComments,
+});
+
+export const OrderTabsType = PropTypes.arrayOf(OrderTabType);
+
+export const OrderType = PropTypes.shape({
+    can_reorder: PropTypes.bool,
+    carrier: PropTypes.string,
+    id: PropTypes.string,
+    order_date: PropTypes.string,
+    credit_memos: OrderTabsType,
+    invoices: OrderTabsType,
+    items: OrderProductsType,
+    shipments: OrderTabsType,
+    payment_methods: OrderPaymentsInfo,
+    rss_link: PropTypes.string,
+    shipping_address: OrderAddressType,
+    billing_address: OrderAddressType,
+    shipping_method: PropTypes.string,
+    status: PropTypes.string,
+    total: OrderTotalType,
+    comments: OrderComments,
+});
+
+export const DownloadableType = PropTypes.shape({
+    id: PropTypes.number,
+    order_id: PropTypes.number,
+    order_increment_id: PropTypes.string,
+    status_label: PropTypes.string,
+    downloads: PropTypes.string,
+    download_url: PropTypes.string,
+    created_at: PropTypes.string,
+    title: PropTypes.string,
+});
+
+export const PageInfoType = PropTypes.shape({
+    current_page: PropTypes.number,
+    page_size: PropTypes.number,
+    total_pages: PropTypes.number,
+});
+
+export const OrdersType = PropTypes.arrayOf(OrderType);
+
+export const OrdersListType = PropTypes.shape({
+    items: OrdersType,
+    pageInfo: PageInfoType,
+});

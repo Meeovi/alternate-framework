@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+export type SearchHit = Record<string, any>
 import { useNuxtApp } from 'nuxt/app'
 
 export function useSearchkit() {
@@ -8,7 +9,7 @@ export function useSearchkit() {
   const helpers: any = nuxt.$searchHelpers || {}
 
   const query = ref('')
-  const hits = ref<any[]>([])
+  const hits = ref<SearchHit[]>([])
   const total = ref(0)
   const loading = ref(false)
   const page = ref(1)

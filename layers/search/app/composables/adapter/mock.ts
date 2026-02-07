@@ -1,19 +1,17 @@
-import { defineAlternateAdapter, type SearchAdapter, type SearchAdapterConfig, type SearchResult } from '@meeovi/core'
 import type { MeeoviSearchItem } from './types'
 import type { BuiltSearchQuery } from '../core/QueryBuilder'
 
 export function createMockSearchAdapter(items: MeeoviSearchItem[] = []) {
-  const cfg: SearchAdapterConfig = { provider: 'mock' }
+  const cfg = { provider: 'mock' }
 
-  const adapter: SearchAdapter<MeeoviSearchItem> = {
+  const adapter = {
     id: 'search:mock',
     type: 'search',
     config: cfg,
 
-    async search(query: any): Promise<SearchResult<MeeoviSearchItem>> {
-      const filtered = items.filter((item) =>
-        item.title.toLowerCase().includes(String(query.term || '').toLowerCase())
-      )
+    async search(query: BuiltSearchQuery | any) {
+      const term = String((query && (query.term || query.params?.q)) || '')
+      const filtered = items.filter((item) => item.title?.toLowerCase().includes(term.toLowerCase()))
 
       return {
         items: filtered,
@@ -24,5 +22,5 @@ export function createMockSearchAdapter(items: MeeoviSearchItem[] = []) {
     }
   }
 
-  return defineAlternateAdapter(adapter)
+  return adapter
 }

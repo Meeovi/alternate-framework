@@ -17,14 +17,11 @@
   import shortsCard from '~/components/related/short.vue'
 
   const model = ref(null)
-  const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readItems } = useAdapterRequest()
 
-    const {
-        data: vibez
-    } = await useAsyncData('vibez', () => {
-        return $directus.request($readItems('shorts'))
+    const { data: vibez } = await useAsyncData('vibez', async () => {
+      const resp = await readItems('shorts')
+      return resp?.data || resp || []
     })
 </script>

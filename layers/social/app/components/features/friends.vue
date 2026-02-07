@@ -67,62 +67,29 @@
     } from 'vue'
     import memberCard from '~/components/related/memberList.vue'
 
-    const {
-        $directus,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItem, readItems } = useDirectusRequest()
     const route = useRoute()
     const tab = ref(null);
 
-    const {
-        data: friendBar
-    } = await useAsyncData('friendBar', () => {
-        return $directus.request($readItem('navigation', '77', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: friendBar } = await useAsyncData('friendBar', () => {
+        return readItem('navigation', '77', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: friendsPage
-    } = await useAsyncData('friendsPage', () => {
-        return $directus.request($readItem('pages', '87', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: friendsPage } = await useAsyncData('friendsPage', () => {
+        return readItem('pages', '87', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: friends
-    } = await useAsyncData('members', () => {
-        return $directus.request($readItems('profiles', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: friends } = await useAsyncData('members', () => {
+        return readItems('profiles', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: suggestions
-    } = await useAsyncData('members', () => {
-        return $directus.request($readItems('profiles', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: suggestions } = await useAsyncData('members', () => {
+        return readItems('profiles', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: membersList
-    } = await useAsyncData('members', () => {
-        return $directus.request($readItems('profiles', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: membersList } = await useAsyncData('members', () => {
+        return readItems('profiles', { fields: ['*', { '*': ['*'] }] })
     })
 
     useHead({

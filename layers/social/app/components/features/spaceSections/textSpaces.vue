@@ -31,54 +31,16 @@
     })
         
     const model = ref(null)
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItems } = useDirectusRequest()
 
-    const {
-        data: myTextSpaces
-    } = await useAsyncData('myTextSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                owner: {
-                    first_name: {
-                     _eq: userStore?.user?.firstName,   
-                    },
-                    last_name: {
-                        _eq: userStore?.user?.lastName,
-                    }
-                },
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Forum'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: myTextSpaces } = await useAsyncData('myTextSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: userStore?.user?.firstName }, last_name: { _eq: userStore?.user?.lastName } }, space_type: { space_types_id: { name: { _eq: 'Forum' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 
-    const {
-        data: textSpaces
-    } = await useAsyncData('textSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Forum'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: textSpaces } = await useAsyncData('textSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Forum' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 </script>

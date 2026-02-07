@@ -31,54 +31,16 @@
     })
         
     const model = ref(null)
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readItems } = useAdapterRequest()
 
-    const {
-        data: myVideoSpaces
-    } = await useAsyncData('myVideoSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                owner: {
-                    first_name: {
-                     _eq: userStore?.user?.firstName,   
-                    },
-                    last_name: {
-                        _eq: userStore?.user?.lastName,
-                    }
-                },
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Video'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: myVideoSpaces } = await useAsyncData('myVideoSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: userStore?.user?.firstName }, last_name: { _eq: userStore?.user?.lastName } }, space_type: { space_types_id: { name: { _eq: 'Video' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 
-    const {
-        data: videoSpaces
-    } = await useAsyncData('videoSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Video'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: videoSpaces } = await useAsyncData('videoSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Video' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 </script>

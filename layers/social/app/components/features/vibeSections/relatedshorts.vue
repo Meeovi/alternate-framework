@@ -20,16 +20,11 @@
   import shorts from './shorts.vue'
 
   const model = ref(null);
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
+  import useDirectusRequest from '~/composables/useDirectusRequest'
+  const { readItems } = useDirectusRequest()
 
-  const {
-    data: short
-  } = await useAsyncData('short', () => {
-    return $directus.request($readItems('shorts', {
-      fields: ['*', { '*': ['*'] }]
-    }))
+  const { data: short } = await useAsyncData('short', async () => {
+    const resp = await readItems('shorts', { fields: ['*', { '*': ['*'] }] })
+    return resp?.data || resp || []
   })
 </script>

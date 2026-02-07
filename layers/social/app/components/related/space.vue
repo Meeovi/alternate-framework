@@ -2,7 +2,7 @@
     <div>
         <v-card class="mx-auto" max-width="400" height="550">
             <img v-if="space?.image?.filename_disk" class="align-end text-white" height="200"
-                :src="`${$directus.url}assets/${space?.image?.filename_disk}`" :alt="space?.name" />
+                :src="getAssetUrl(space?.image)" :alt="space?.name" />
 
             <img class="align-end text-white" height="200" v-else src="assets/images/background8.jpg" :alt="space?.name" />
 
@@ -26,13 +26,10 @@
 </template>
 
 <script setup>
-    import {
-        ref
-    } from 'vue'
+    import { ref } from 'vue'
     import share from '../blocks/share.vue'
-    const {
-        $directus
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { getAssetUrl } = useAdapterRequest()
 
     const model = ref(null)
     const props = defineProps({

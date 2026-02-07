@@ -21,14 +21,11 @@
   import userCard from '~/components/related/memberList.vue'
 
   const model = ref(null)
-  const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+  import useAdapterRequest from '~/composables/useAdapterRequest'
+  const { readItems } = useAdapterRequest()
 
-    const {
-        data: users
-    } = await useAsyncData('users', () => {
-        return $directus.request($readItems('tags'))
-    })
+  const { data: users } = await useAsyncData('users', async () => {
+    const resp = await readItems('tags')
+    return resp?.data || resp || []
+  })
 </script>

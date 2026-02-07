@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-use-before-define */
 type ApiMethods = Record<string, (...args: any[]) => any>;
-import type { MergeDeep } from "type-fest";
+import type { MergeDeep } from './typeHelpers';
 import type { ContextualizedNormalizers } from "../helpers";
 import type { Maybe, SfCurrency, SfFacetType } from "../models";
 

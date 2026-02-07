@@ -1,7 +1,7 @@
 {
-  "name": "@meeovi/layer-auth",
-  "version": "1.1.11",
-  "description": "The authentication layer for Alternate Framework applications.",
+  "name": "@mframework/layer-auth",
+  "version": "0.0.1",
+  "description": "The authentication layer for M Framework applications.",
   "type": "module",
   "main": "./nuxt.config.ts",
   "scripts": {
@@ -16,19 +16,10 @@
     "vue",
     "m-framework"
   ],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "dependencies": {
-    "@better-auth/cli": "^1.4.10",
-    "@better-auth/oauth-provider": "^1.4.12",
-    "@better-auth/passkey": "^1.4.10",
-    "@better-auth/scim": "^1.4.15",
-    "@better-auth/sso": "^1.4.12",
-    "@better-auth/stripe": "^1.4.15",
-    "@meeovi/core": "^1.0.4",
-    "@meeovi/sdk": "^1.0.2",
-    "@polar-sh/better-auth": "^1.6.3",
-    "better-auth": "^1.4.12",
+    "@mframework/adapter-betterauth": "^0.0.7",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

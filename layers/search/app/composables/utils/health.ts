@@ -1,8 +1,8 @@
-import type { SearchAdapter } from '@meeovi/core'
+import type { MeeoviSearchAdapter } from '../adapter/types'
 
-export async function checkAdapterHealth(adapter: SearchAdapter<any>) {
+export async function checkAdapterHealth(adapter?: MeeoviSearchAdapter) {
+  if (!adapter) return { ok: false, error: 'no adapter' }
   try {
-    // perform a minimal search to verify connectivity
     const res = await adapter.search({ term: '', page: 1, pageSize: 1, filters: {} } as any)
     return { ok: true, total: res?.total ?? null }
   } catch (e: any) {

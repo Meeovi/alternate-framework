@@ -1,11 +1,11 @@
 // composables/cms/shorts/createSpace.js
-import { createItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function createSpace(shortData) {
-    const { $directus } = useNuxtApp();
+    const { createItem } = useAdapterRequest()
     
     try {
-        const short = await $directus.request(createItem('shorts', {
+        const short = await createItem('shorts', {
             name: shortData.name,
             description: shortData.description,
             status: shortData.status,
@@ -17,13 +17,8 @@ export default async function createSpace(shortData) {
             thumbnailFile: shortData.thumbnailFile,
             videoFile: shortData.videoFile,
             creator: shortData.creator,
-            // Match the structure from your GraphQL query
-            departments: {
-                create: [{
-                    departments_id: shortData.departments
-                }]
-            }
-        }));
+            departments: { create: [{ departments_id: shortData.departments }] }
+        })
         
         return short;
     } catch (error) {

@@ -119,12 +119,14 @@
 </template>
 
 <script setup lang="ts">
-import type { ComponentPublicInstance } from 'vue';
+import { ref, Ref, watch, type ComponentPublicInstance } from 'vue';
 import { clamp, type SfScrollableOnScrollData } from '@storefront-ui/shared';
 import { SfScrollable, SfButton, SfIconChevronLeft, SfIconChevronRight } from '@storefront-ui/vue';
 import type { Image } from '../../types/ui';
 import { unrefElement, useIntersectionObserver, useTimeoutFn } from '@vueuse/core';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const props = defineProps<{
   images: Image[]
 }>();

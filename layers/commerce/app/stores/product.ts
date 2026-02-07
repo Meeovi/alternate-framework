@@ -1,5 +1,12 @@
 import { defineStore } from 'pinia';
-import type { Product, ProductState } from '@/types/product';
+import type { Product as DomainProduct } from '../types/domain';
+import { useProducts } from '../composables/products'
+
+interface ProductState {
+    products: DomainProduct[]
+    selectedProduct: DomainProduct | null
+    isLoading: boolean
+}
 
 export const useProductStore = defineStore('product', {
     state: (): ProductState => ({
@@ -8,19 +15,20 @@ export const useProductStore = defineStore('product', {
         isLoading: false
     }),
     actions: {
-        async fetchProducts() {
+        async fetchProducts(options: any = {}) {
             this.isLoading = true;
             try {
-                const response = await $fetch<Product[]>('/api/products'); // Update API endpoint
-                this.products = response;
+                const { getProducts } = useProducts()
+                const response = await getProducts(options)
+                ;(this as any).products = response as DomainProduct[]
             } catch (error) {
                 console.error('Error fetching products:', error);
             } finally {
                 this.isLoading = false;
             }
         },
-        selectProduct(product: Product) {
-            this.selectedProduct = product;
+        selectProduct(product: DomainProduct) {
+            ;(this as any).selectedProduct = product
         }
     }
 });

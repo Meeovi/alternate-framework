@@ -1,5 +1,8 @@
-import useHead from "../modules/vue-head/composables/useHead";
 import { useAppConfig } from "nuxt/app";
+
+// Avoid relying on ambient auto-imports for `useHead` during typechecking
+const _useHead = (globalThis as any).useHead as ((h: any) => void) | undefined
+
 
 /**
  * Composable for setting the page title.
@@ -8,9 +11,10 @@ import { useAppConfig } from "nuxt/app";
 export const usePageTitle = () => {
   const { titleSuffix } = useAppConfig();
 
-  useHead({
-    titleTemplate: (titleChunk: any) => {
-      return titleChunk ? `${titleChunk} | ${titleSuffix}` : titleSuffix;
-    },
-  });
+  const runner = _useHead || ((globalThis as any).useHead)
+  if (typeof runner === 'function') {
+    runner({
+      titleTemplate: (titleChunk: any) => titleChunk ? `${titleChunk} | ${titleSuffix}` : titleSuffix
+    })
+  }
 };

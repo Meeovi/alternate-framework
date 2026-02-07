@@ -1,14 +1,13 @@
-import type { SearchAdapter } from '@meeovi/core'
 import { SearchContext, type SearchContextState } from './SearchContext'
 import { QueryBuilder } from './QueryBuilder'
 import { SearchPipeline } from './Pipeline'
 
-export class SearchManager<TItem> {
+export class SearchManager {
   context: SearchContext
   pipeline: SearchPipeline
-  adapter: SearchAdapter<TItem>
+  adapter: any
 
-  constructor(adapter: SearchAdapter<TItem>, initial?: Partial<SearchContextState>) {
+  constructor(adapter: any, initial?: Partial<SearchContextState>) {
     this.context = new SearchContext(initial)
     this.pipeline = new SearchPipeline()
     this.adapter = adapter

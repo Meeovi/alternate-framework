@@ -1,6 +1,6 @@
 {
-  "name": "@meeovi/layer-lists",
-  "version": "1.0.9",
+  "name": "@mframework/layer-lists",
+  "version": "0.0.1",
   "description": "Official Lists module for the M Framework.",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -8,19 +8,19 @@
   },
   "keywords": [
     "lists",
-    "alternate-framework",
+    "mframework-framework",
     "nuxt",
     "layer"
   ],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "main": "./nuxt.config.ts",
   "dependencies": {
-    "@meeovi/api": "^1.0.1",
-    "@meeovi/core": "^1.0.4",
-    "@meeovi/directus-client": "^1.0.0",
-    "@meeovi/layer-social": "^1.0.2",
+    "@mframework/api": "^0.0.1",
+    "@mframework/core": "^0.0.1",
+    "@mframework/directus-client": "^0.0.1",
+    "@mframework/layer-social": "^0.0.1",
     "list.js": "^2.3.1",
     "nanoid": "^5.1.6"
   },

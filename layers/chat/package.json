@@ -1,6 +1,6 @@
 {
-  "name": "@meeovi/chat",
-  "version": "1.0.6",
+  "name": "@mframework/chat",
+  "version": "0.0.1",
   "description": "Chat layer for Meeovi framework.",
   "main": "./nuxt.config.ts",
   "scripts": {
@@ -13,7 +13,7 @@
     "layer",
     "framework"
   ],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "devDependencies": {

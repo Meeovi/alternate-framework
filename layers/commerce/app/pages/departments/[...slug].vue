@@ -105,7 +105,7 @@
 
                 <!--Department Content Section-->
                 <section data-bs-version="5.1" class="gallery2 shopm5 cid-uW1BojE78S" id="agallery2-0" v-if="department?.shorts?.length && department?.products?.products_id?.type === 'department'"
-                    :style="`background-image: url(${$directus?.url}assets/${department?.image?.filename_disk})`">
+                    :style="`background-image: url(${getAssetUrl(department?.image)})`">
                     <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(255, 255, 255);">
                     </div>
 
@@ -240,72 +240,46 @@
 
     const route = useRoute()
     const model = ref(null)
-    const {
-        $directus,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
+const { readItems, readItem, getAssetUrl } = useDirectusRequest()
 
     const slug = computed(() => {
         const s = route.params.slug
         return Array.isArray(s) ? s[0] : s
     })
 
-    const {
-        data: departmentRaw
-    } = await useAsyncData('department', () => {
-        return $directus.request(
-            $readItems('departments', {
-                fields: [
-                    '*',
-                    'categories.categories_id.*',
-                    'spaces.spaces_id.*',
-                    'products.products_id.*',
-                    'products.products_id.image.*',
-                    'shorts.shorts_id.*',
-                    'shops.shops_id.*',
-                    'image.*'
-                ],
-                filter: {
-                    slug: {
-                        _eq: slug.value
-                    }
-                },
-                limit: 1
-            })
-        )
+    const { data: departmentRaw } = await useAsyncData('department', async () => {
+        const resp = await readItems('departments', {
+            fields: [
+                '*',
+                'categories.categories_id.*',
+                'spaces.spaces_id.*',
+                'products.products_id.*',
+                'products.products_id.image.*',
+                'shorts.shorts_id.*',
+                'shops.shops_id.*',
+                'image.*'
+            ],
+            filter: { slug: { _eq: slug.value } },
+            limit: 1
+        })
+        return resp?.data || resp || []
     })
 
     const department = computed(() => departmentRaw.value?.[0] || null)
 
-    const {
-        data: introProducts
-    } = await useAsyncData('introProducts', () => {
-        return $directus.request($readItems('departments', {
-            fields: ['*', { '*': ['*'] }],
-            limit: 2,
-        }))
+    const { data: introProducts } = await useAsyncData('introProducts', async () => {
+        const resp = await readItems('departments', { fields: ['*', { '*': ['*'] }], limit: 2 })
+        return resp?.data || resp || []
     })
 
-    const {
-        data: best
-    } = await useAsyncData('best', () => {
-        return $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'images.*'
-            ],
+    const { data: best } = await useAsyncData('best', async () => {
+        const resp = await readItems('departments', {
+            fields: ['*', 'products.products_id.*', 'images.*'],
             limit: 10,
-            filter: {
-                showcases: {
-                    showcases_id: {
-                        name: {
-                            _eq: "Best Sellers"
-                        }
-                    }
-                },
-            }
-        }))
+            filter: { showcases: { showcases_id: { name: { _eq: 'Best Sellers' } } } }
+        })
+        return resp?.data || resp || []
     })
 
     const {
@@ -320,16 +294,11 @@
             filter: {
                 products: {
                     products_id: {
-                        status: {
-                            _eq: "published"
-                        }
-                    }
-                },
-            }
-        }))
-    })
-
-    const {
+                        const { data: latestProducts } = await useAsyncData('latestProducts', async () => {
+                            const resp = await readItems('departments', {
+                                fields: ['*', 'products.products_id.*', 'images.*'],
+                                limit: 10,
+                                filter: {
         data: limitProducts
     } = await useAsyncData('limitProducts', () => {
         return $directus.request($readItems('departments', {
@@ -337,9 +306,10 @@
                 'products.products_id.*',
                 'images.*'
             ],
-            limit: 2,
-            filter: {
-                products: {
+                                }
+                            })
+                            return resp?.data || resp || []
+                        })
                     products_id: {
                         status: {
                             _eq: "published"

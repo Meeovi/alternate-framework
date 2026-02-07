@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 import { useProductReviews } from '~/composables/useProductReviews';
 import { mockProductReviews } from './productReviews.mock';
 
-vi.mock('@meeovi/sdk', () => ({
+vi.mock('@mframework/sdk', () => ({
   sdk: {
     commerce: {
       getProductReviews: vi.fn(() => mockProductReviews),

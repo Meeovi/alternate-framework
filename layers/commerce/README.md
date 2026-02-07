@@ -1,4 +1,4 @@
-# @meeovi/commerce
+# @mframework/commerce
 
 A backend‑agnostic commerce domain module for the Meeovi ecosystem.  
 This package provides a unified interface for products, categories, carts, and other commerce operations — regardless of the underlying backend (Directus, Medusa, Shopify, custom APIs, etc.).
@@ -15,13 +15,13 @@ This package provides a unified interface for products, categories, carts, and o
 ## 📦 Installation
 
 ```sh
-npm install @meeovi/commerce
+npm install @mframework/commerce
 
 ⚙️ Configuration
 Configure the active providers at runtime:
 
 
-import { setCommerceConfig } from '@meeovi/commerce'
+import { setCommerceConfig } from '@mframework/commerce'
 
 setCommerceConfig({
   productProvider: 'directus',
@@ -31,7 +31,7 @@ setCommerceConfig({
 
 🧩 Usage
 
-import { useProducts } from '@meeovi/commerce'
+import { useProducts } from '@mframework/commerce'
 
 const { listProducts, getProduct } = useProducts()
 
@@ -48,12 +48,47 @@ export interface ProductProvider {
 Register a provider:
 
 
-import { registerProductProvider } from '@meeovi/commerce'
+import { registerProductProvider } from '@mframework/commerce'
 
 registerProductProvider('directus', {
   getProduct: async (id) => { ... },
   listProducts: async () => { ... }
 })
+
+### Registering domain providers from an adapter
+
+Adapter packages can register domain-specific implementations at runtime. Import the runtime helpers from the layer package and call them from your adapter plugin entry:
+
+```ts
+import {
+  registerProductProvider,
+  registerEventProviderRuntime,
+  registerGiftCardProviderRuntime,
+  registerSubscriptionProviderRuntime
+} from '@mframework/commerce'
+
+registerProductProvider('my-adapter', {
+  getProduct: async (id) => { /* ... */ },
+  listProducts: async (params) => { /* ... */ }
+})
+
+registerEventProviderRuntime('my-adapter', {
+  getEvent: async (id) => { /* ... */ },
+  listEvents: async () => { /* ... */ }
+})
+
+registerGiftCardProviderRuntime('my-adapter', {
+  getGiftCard: async (id) => { /* ... */ },
+  listGiftCards: async () => { /* ... */ },
+  redeemGiftCard: async (code) => ({ success: true })
+})
+
+registerSubscriptionProviderRuntime('my-adapter', {
+  getSubscription: async (id) => { /* ... */ },
+  listSubscriptions: async () => { /* ... */ },
+  subscribe: async (payload) => ({ success: true })
+})
+```
 
 🧱 Folder Structure
 Code

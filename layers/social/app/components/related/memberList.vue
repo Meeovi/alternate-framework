@@ -1,6 +1,6 @@
 <template>
     <v-card class="mx-auto" max-width="400">
-        <img v-if="member?.avatar?.filename_disk" class="align-end auto-text" height="200" :src="`${$directus.url}assets/${member?.avatar?.filename_disk}`"  :alt="member?.first_name" />
+        <img v-if="member?.avatar?.filename_disk" class="align-end auto-text" height="200" :src="getAssetUrl(member?.avatar)"  :alt="member?.first_name" />
 
         <img v-else class="align-end auto-text" height="200" src="assets/images/face7.jpg" :alt="member?.first_name" />
             <v-card-title>{{ member?.first_name }} {{ member?.last_name }}</v-card-title>
@@ -22,9 +22,8 @@
 </template>
 
 <script setup>
-  const {
-        $directus
-    } = useNuxtApp()
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { getAssetUrl } = useAdapterRequest()
     
     const props = defineProps({
         member: {

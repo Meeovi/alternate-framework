@@ -84,8 +84,9 @@
 
 <script setup>
 import { ref, computed, watchEffect } from 'vue'
+import useDirectusRequest from '~/composables/useDirectusRequest'
 
-const { $directus, $readItems, $readItem, $createItem, $deleteItem } = useNuxtApp()
+const { readItems, createItem, deleteItem } = useDirectusRequest()
 const config = useRuntimeConfig()
 
 const user = useSupabaseUser()
@@ -98,8 +99,8 @@ const sortBy = ref('recency')
 
 async function fetchTags() {
     try {
-        const { data } = await $directus.request($readItems('tags', { fields: ['id', 'name'] }))
-        tags.value = data || []
+        const data = await readItems('tags', { fields: ['id', 'name'] })
+        tags.value = data?.data || data || []
     } catch (e) {
         console.error('Failed to fetch tags', e)
     }
@@ -116,32 +117,25 @@ async function fetchVideos() {
 
         const sort = sortBy.value === 'popularity' ? ['-view_count'] : ['-created_at']
 
-        const { data } = await $directus.request(
-            $readItems('videos', {
-                filter,
-                sort,
-                fields: ['*', 'tags.id', 'tags.name']
-            })
-        )
-
+        const resp = await readItems('videos', { filter, sort, fields: ['*', 'tags.id', 'tags.name'] })
+        const data = resp?.data || resp || []
         videos.value = (data || []).map((v) => ({ ...v, liked: false, reaction_count: v.reaction_count || 0, comment_count: v.comment_count || 0 }))
 
         // fetch counts and user reactions per video
         await Promise.all(
             videos.value.map(async (v) => {
                 try {
-                    const resp = await $directus.request($readItems('reactions', { filter: { video_id: { _eq: v.id } } }))
-                    v.reaction_count = resp?.data?.length || 0
+                    const resp = await readItems('reactions', { filter: { video_id: { _eq: v.id } } })
+                    v.reaction_count = resp?.data?.length || resp?.length || 0
 
                     if (userStore.user) {
-                        const me = await $directus.request(
-                            $readItems('reactions', { filter: { video_id: { _eq: v.id }, user_id: { _eq: userStore.user.id } }, limit: 1 })
-                        )
-                        v.liked = (me?.data && me.data.length > 0) || false
+                        const me = await readItems('reactions', { filter: { video_id: { _eq: v.id }, user_id: { _eq: userStore.user.id } }, limit: 1 })
+                        const meData = me?.data || me || []
+                        v.liked = (meData && meData.length > 0) || false
                     }
 
-                    const commentsResp = await $directus.request($readItems('comments', { filter: { video_id: { _eq: v.id } } }))
-                    v.comment_count = commentsResp?.data?.length || 0
+                    const commentsResp = await readItems('comments', { filter: { video_id: { _eq: v.id } } })
+                    v.comment_count = commentsResp?.data?.length || commentsResp?.length || 0
                 } catch (e) {
                     // non-fatal per-video
                 }
@@ -192,18 +186,17 @@ async function toggleLike(video) {
     if (!user) return
 
     try {
-        const existing = await $directus.request(
-            $readItems('reactions', { filter: { video_id: { _eq: video.id }, user_id: { _eq: user.id } }, limit: 1 })
-        )
-        const existingId = existing?.data?.[0]?.id || null
+        const existing = await readItems('reactions', { filter: { video_id: { _eq: video.id }, user_id: { _eq: user.id } }, limit: 1 })
+        const existingId = (existing?.data?.[0]?.id) || (existing?.[0]?.id) || null
 
         if (existingId) {
-            await $directus.request($deleteItem('reactions', existingId))
+            await deleteItem('reactions', existingId)
             video.liked = false
             video.reaction_count = Math.max(0, (video.reaction_count || 0) - 1)
         } else {
-            const resp = await $directus.request($createItem('reactions', { video_id: video.id, user_id: user.id }))
-            if (resp?.id) {
+            const resp = await createItem('reactions', { video_id: video.id, user_id: user.id })
+            const createdId = resp?.data?.id || resp?.id || null
+            if (createdId) {
                 video.liked = true
                 video.reaction_count = (video.reaction_count || 0) + 1
             }

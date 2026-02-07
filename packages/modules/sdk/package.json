@@ -1,0 +1,35 @@
+{
+  "name": "@mframework/sdk",
+  "version": "0.0.2",
+  "description": "Official SDK for the M Framework.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "directus",
+    "directus-sdk",
+    "directus-types",
+    "directus-visual-editing",
+    "directus-client",
+    "vue",
+    "react",
+    "typescript"
+  ],
+  "author": "M Framework",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@mframework/core": "^0.0.1",
+    "typescript": "^5.9.3"
+  }
+}

@@ -6,15 +6,15 @@
                     <v-card-title class="postTitle">{{ post?.title }}</v-card-title>
                     <div class="image">
                         <div v-if="post?.file">
-                            <video :src="`${$directus.url}assets/${post?.file?.filename_disk}`"></video>
+                            <video :src="getAssetUrl(post?.file)"></video>
                         </div>
 
                         <div v-else-if="post?.audio">
-                            <audio :src="`${$directus.url}assets/${post?.audio?.filename_disk}`"></audio>
+                            <audio :src="getAssetUrl(post?.audio)"></audio>
                         </div>
 
                         <div v-else-if="post?.image && post?.image?.filename_disk.endsWith('.gif')">
-                            <img loading="lazy" :src="`${$directus.url}assets/${post?.image?.filename_disk}`"
+                            <img loading="lazy" :src="getAssetUrl(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 
@@ -32,7 +32,7 @@
                         <v-spacer></v-spacer>
                         
                         <NuxtLink v-if="post?.author?.avatar" :to="`/user/${post?.author?.id}`" class="postAvatar">
-                            <v-avatar :image="post?.author?.avatar" size="x-small"></v-avatar>
+                            <v-avatar :image="getAssetUrl(post?.author?.avatar)" size="x-small"></v-avatar>
                         </NuxtLink>
 
                         <NuxtLink v-else :to="`/user/${post?.author?.id}`" class="postAvatar">
@@ -91,6 +91,8 @@
         useReactionsStore
     } from '~/stores/reactions'
 
+import useAdapterRequest from '~/composables/useAdapterRequest'
+
     const props = defineProps({
         post: {
             type: Object,
@@ -116,4 +118,6 @@
             await reactionsStore.fetchReactions(rid, post.value?.type)
         }
     })
+
+const { getAssetUrl } = useAdapterRequest()
 </script>

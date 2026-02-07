@@ -1,6 +1,6 @@
 // Lightweight helper to obtain a search client and index name for InstantSearch
-// This is intentionally minimal — it throws when no configuration is present
-// so the caller can fall back gracefully.
+// This version NEVER throws — it returns null when search is not configured.
+
 import type { SearchClient } from 'instantsearch.js'
 import { getEnv } from '../env'
 
@@ -16,40 +16,38 @@ function buildHostFromParts(): string | null {
   const explicit = getEnv('SEARCHKIT_HOST')
   if (explicit) return explicit
 
-  // Allow composing host from protocol/hostname/port path
   const protocol = (getEnv('SEARCHKIT_PROTOCOL') || 'http').replace(/:\/\//, '')
   const hostname = getEnv('SEARCHKIT_HOSTNAME')
   const port = getEnv('SEARCHKIT_PORT')
+
   if (!hostname) return null
+
   return `${protocol}://${hostname}${port ? `:${port}` : ''}`
 }
 
-export function getSearchClient(): SearchClient {
+export function getSearchClient(): SearchClient | null {
   const host = buildHostFromParts()
   if (!host) {
-    throw new Error('Searchkit host not configured via SEARCHKIT_HOST, SEARCHKIT_HOSTNAME, or NUXT_PUBLIC_SEARCHKIT_HOST')
+    console.warn('[search] Searchkit host not configured — search disabled')
+    return null
   }
 
-  // Optionally pass an API key if configured
-  const apiKey = getEnv('SEARCHKIT_API_KEY')
-
-  // Defer importing heavy searchkit/instantsearch client until runtime.
-  // Consumers can replace this implementation with a provider-specific client.
-  // Here we attempt to use @searchkit/instantsearch-client if available.
-  // If not present, let the import fail so the plugin can fallback.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const createClient = require('@searchkit/instantsearch-client')
-  if (!createClient) {
-    throw new Error('@searchkit/instantsearch-client is not installed')
+  let createClient: any
+  try {
+    createClient = require('@searchkit/instantsearch-client')
+  } catch {
+    console.warn('[search] @searchkit/instantsearch-client not installed — search disabled')
+    return null
   }
 
-  // Create a minimal client. The factory API may vary; adapt to your Searchkit config.
   try {
     const opts: any = { host }
+    const apiKey = getEnv('SEARCHKIT_API_KEY')
     if (apiKey) opts.apiKey = apiKey
+
     return createClient(opts)
   } catch (e: any) {
-    // rethrow with context
-    throw new Error('Failed to create Searchkit client: ' + (e?.message || e))
+    console.warn('[search] Failed to create Searchkit client:', e?.message || e)
+    return null
   }
 }

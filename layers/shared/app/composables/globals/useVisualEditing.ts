@@ -1,5 +1,13 @@
-import { apply as applyVisualEditing, setAttr } from '@directus/visual-editing';
-import type { PrimaryKey } from '@directus/types';
+import { useState, useRoute, useRuntimeConfig } from 'nuxt/app';
+
+type PrimaryKey = string | number;
+// Resolve the directus visual-editing adapter at runtime if present.
+const _directusAdapter: any = (globalThis as any).__directusAdapter ?? undefined;
+const setAttr = _directusAdapter?.setAttr as
+	| ((el: HTMLElement, attr: string, value: string) => void)
+	| undefined;
+
+const applyVisualEditing = _directusAdapter?.apply as ((opts: any) => void) | undefined;
 
 interface ApplyOptions {
 	directusUrl: string;
@@ -24,10 +32,12 @@ export default function useVisualEditing() {
 
 	const apply = (options: Pick<ApplyOptions, 'elements' | 'onSaved' | 'customClass'>) => {
 		if (!isVisualEditingEnabled.value) return;
-		applyVisualEditing({
-			...options,
-			directusUrl,
-		});
+		if (typeof applyVisualEditing === 'function') {
+			applyVisualEditing({
+				...options,
+				directusUrl,
+			});
+		}
 	};
 
 	return {

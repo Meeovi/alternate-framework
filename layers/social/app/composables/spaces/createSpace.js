@@ -1,11 +1,11 @@
 // composables/cms/spaces/createSpace.js
-import { createItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function createSpace(spaceData) {
-    const { $directus } = useNuxtApp();
-    
+    const { createItem } = useAdapterRequest()
+
     try {
-        const space = await $directus.request(createItem('spaces', {
+        const space = await createItem('spaces', {
             name: spaceData.name,
             description: spaceData.description,
             status: spaceData.status,
@@ -13,14 +13,8 @@ export default async function createSpace(spaceData) {
             coverFile: spaceData.coverFile,
             avatarFile: spaceData.avatarFile,
             creator: spaceData.creator,
-            // Match the structure from your GraphQL query
-            departments: {
-                create: [{
-                    departments_id: spaceData.departments
-                }]
-            }
-        }));
-        
+            departments: { create: [{ departments_id: spaceData.departments }] }
+        })
         return space;
     } catch (error) {
         console.error('Error creating space:', error);

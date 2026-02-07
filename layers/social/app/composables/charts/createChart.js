@@ -1,15 +1,13 @@
 // composables/createPost.js
-import { createItem } from '@directus/sdk';
+import useAdapterRequest from '~/composables/useAdapterRequest'
 
 export default async function createPost(chartData) {
     const route = useRoute();
-
     const id = route.params.id;
-    const { $directus } = useNuxtApp();
-  
+    const { createItem } = useAdapterRequest()
+
     try {
-      const chart = await $directus.request(createItem('musicchart', [
-        {
+      const chart = await createItem('musicchart', {
           name: chartData.name,
           description: chartData.description,
           status: chartData.status,
@@ -22,12 +20,11 @@ export default async function createPost(chartData) {
           coverFile: null,
           avatarFile: null,
           creator: chartData.creator,
-        }
-      ]));
+      })
       return chart;
     } catch (error) {
       console.error('Error creating chart:', error);
       throw error;
     }
-  }
+}
   

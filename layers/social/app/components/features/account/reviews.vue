@@ -169,7 +169,8 @@
         onMounted
     } from 'vue'
 
-    const { $directus, $readFieldsByCollection, $createItem, $updateItem, $deleteItem } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readFieldsByCollection, readItems, createItem, updateItem, deleteItem } = useAdapterRequest()
 
     const reviews = ref([])
     const pendingReviews = ref([])
@@ -204,10 +205,9 @@
 
     const loadReviewFields = async () => {
         try {
-            const fields = await $directus.request($readFieldsByCollection('reviews'))
-            reviewFields.value = fields.filter(field => 
-                ['rating', 'title', 'detail'].includes(field.field)
-            )
+            const fieldsResp = await readFieldsByCollection('reviews')
+            const fields = fieldsResp?.data || fieldsResp || []
+            reviewFields.value = fields.filter((field: any) => ['rating', 'title', 'detail'].includes(field.field))
         } catch (error) {
             console.error('Failed to load review fields:', error)
         }
@@ -215,17 +215,11 @@
 
     const loadReviews = async () => {
         try {
-            const response = await $directus.request($readItems('reviews', {
-                params: {
-                    page: page.value,
-                    limit: 10,
-                    filter: {
-                        status: { _neq: 'pending' }
-                    }
-                }
-            }))
-            reviews.value = response.data
-            totalPages.value = Math.ceil(response.meta.total_count / 10)
+            const resp = await readItems('reviews', { params: { page: page.value, limit: 10, filter: { status: { _neq: 'pending' } } } })
+            const data = resp?.data || resp || []
+            reviews.value = data
+            const total = resp?.meta?.total_count || (Array.isArray(resp) ? resp.length : data.length)
+            totalPages.value = Math.ceil((total || 0) / 10)
         } catch (error) {
             console.error('Failed to load reviews:', error)
         }
@@ -233,14 +227,8 @@
 
     const loadPendingReviews = async () => {
         try {
-            const response = await $directus.request($readItems('reviews', {
-                params: {
-                    filter: {
-                        status: 'pending'
-                    }
-                }
-            }))
-            pendingReviews.value = response.data
+            const resp = await readItems('reviews', { params: { filter: { status: 'pending' } } })
+            pendingReviews.value = resp?.data || resp || []
         } catch (error) {
             console.error('Failed to load pending reviews:', error)
         }
@@ -272,12 +260,9 @@
         try {
             saving.value = true
             if (editingReview.value) {
-                await $directus.request($updateItem('reviews', editingReview.value.id, reviewForm.value))
+                await updateItem('reviews', editingReview.value.id, reviewForm.value)
             } else {
-                await $directus.request($createItem('reviews', {
-                    ...reviewForm.value,
-                    status: 'pending'
-                }))
+                await createItem('reviews', { ...reviewForm.value, status: 'pending' })
             }
             showReviewDialog.value = false
             await loadReviews()
@@ -293,7 +278,7 @@
         if (!confirm('Are you sure you want to delete this review?')) return
         
         try {
-            await $directus.request($deleteItem('reviews', reviewId))
+            await deleteItem('reviews', reviewId)
             await loadReviews()
         } catch (error) {
             console.error('Failed to delete review:', error)

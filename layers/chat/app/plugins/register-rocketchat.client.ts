@@ -8,7 +8,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   if (!baseUrl) return
 
   try {
-    const mod = await import('@meeovi/adapter-rocketchat')
+    const mod = await import('@mframework/adapter-rocketchat')
     if (mod && typeof mod.registerRocketChat === 'function') {
       mod.registerRocketChat({ baseUrl, token: rc.token || process.env.ROCKETCHAT_TOKEN, userId: rc.userId })
       if (process.env.NODE_ENV !== 'production') console.debug('[rocketchat] adapter registered')

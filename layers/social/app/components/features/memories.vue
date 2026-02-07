@@ -27,37 +27,18 @@
     import postsCard from '~/components/related/post.vue'
     
     const user = useSupabaseUser()
-    const {
-        $directus,
-        $readItems,
-        $readItem
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItem, readItems } = useDirectusRequest()
     const route = useRoute()
     const tab = ref(null);
 
-    const {
-        data: memoryPage
-    } = await useAsyncData('memoryPage', () => {
-        return $directus.request($readItem('pages', '90', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: memoryPage } = await useAsyncData('memoryPage', () => {
+        return readItem('pages', '90', { fields: ['*', { '*': ['*'] }] })
     })
 
-    const {
-        data: historyPosts
-    } = await useAsyncData('historyPosts', () => {
-        return $directus.request($readItems('posts', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                date_created: {
-                    _lt: new Date().toISOString()
-                }
-            }
-        }))
+    const { data: historyPosts } = await useAsyncData('historyPosts', async () => {
+        const resp = await readItems('posts', { fields: ['*', { '*': ['*'] }], filter: { date_created: { _lt: new Date().toISOString() } } })
+        return resp?.data || resp || []
     })
 
     useHead({

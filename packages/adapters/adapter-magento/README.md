@@ -1,4 +1,4 @@
-# @meeovi/adapter-magento
+# @mframework/adapter-magento
 
 A Magento adapter for Meeovi SDK. This package provides:
 
@@ -27,8 +27,8 @@ Configuration
 Example
 
 ```ts
-import { createStarterTransport } from '@meeovi/adapter-magento/src/transport'
-import { createStarterCommerceAdapter } from '@meeovi/adapter-magento/src/commerce'
+import { createStarterTransport } from '@mframework/adapter-magento/src/transport'
+import { createStarterCommerceAdapter } from '@mframework/adapter-magento/src/commerce'
 
 const transport = createStarterTransport({ baseUrl: 'https://api.my-magento.com', timeoutMs: 5000, retries: 2 })
 const commerce = createStarterCommerceAdapter(transport)
@@ -37,7 +37,7 @@ const commerce = createStarterCommerceAdapter(transport)
 For GraphQL usage (search adapter):
 
 ```ts
-import { createMagentoClient } from '@meeovi/adapter-magento/src/client'
+import { createMagentoClient } from '@mframework/adapter-magento/src/client'
 const sdk = createMagentoClient({ endpoint: 'https://api.my-magento.com/graphql', accessToken: process.env.MAGENTO_TOKEN, timeoutMs: 5000 })
 // use sdk.GetProducts(...) etc.
 ```

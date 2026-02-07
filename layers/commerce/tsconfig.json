@@ -1,10 +1,18 @@
 {
   "compilerOptions": {
-    "types": ["node", "vitest"],
+    "types": ["node", "vitest", "vue", "pinia"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["app/*", "./*"],
-      "@/*": ["app/*", "./*"]
+      "@/*": ["app/*", "./*"],
+      "Util/*": ["app/utils/*"],
+      "Query/*": ["app/normalizers/*"],
+      "Component/*": ["app/components/*"],
+      "Store/*": ["app/stores/*"],
+      "Type/*": ["app/types/*"],
+      "../../routes/*": ["app/routes/*"],
+      "#imports": ["app/imports"],
+      "~/app/*": ["app/*"]
     },
     "declaration": true,
     "emitDeclarationOnly": false,
@@ -13,7 +21,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "strict": false,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "skipLibCheck": true,
     "noEmitOnError": false
   },

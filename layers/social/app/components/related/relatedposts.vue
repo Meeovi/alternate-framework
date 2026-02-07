@@ -17,14 +17,11 @@
   import postCard from '~/components/related/post.vue'
 
   const model = ref(null)
-  const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+  import useAdapterRequest from '~/composables/useAdapterRequest'
+  const { readItems } = useAdapterRequest()
 
-    const {
-        data: note
-    } = await useAsyncData('note', () => {
-        return $directus.request($readItems('posts'))
-    })
+  const { data: note } = await useAsyncData('note', async () => {
+    const resp = await readItems('posts')
+    return resp?.data || resp || []
+  })
 </script>

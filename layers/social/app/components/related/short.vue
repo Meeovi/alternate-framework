@@ -2,7 +2,7 @@
   <v-card class="mx-auto" max-width="400">
     <video loading="lazy" id="my-video" class="video-js" controls preload="auto"
       style="width: 100% !important; height: 50% !important;" loop>
-      <source :src="`${$directus.url}assets/${short?.video?.filename_disk}`" type="video/mp4">
+      <source :src="getAssetUrl(short?.video)" type="video/mp4">
       Your browser does not support the video tag.
     </video>
 
@@ -26,9 +26,8 @@
 import { ref, onMounted } from 'vue'
 import videojs from 'video.js'
 
-  const {
-        $directus
-    } = useNuxtApp()
+import useAdapterRequest from '~/composables/useAdapterRequest'
+const { getAssetUrl } = useAdapterRequest()
     
 const model = ref(null)
 const player = ref(null)

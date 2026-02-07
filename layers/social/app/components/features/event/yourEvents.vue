@@ -88,68 +88,24 @@
     } from 'vue'
     import eventCard from '#commerce/app/components/catalog/productCard.vue'
 
-    const {
-        $directus,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readItem, readItems } = useAdapterRequest()
     const route = useRoute()
     const tab = ref(null);
 
-    const {
-        data: eventBar
-    } = await useAsyncData('eventBar', () => {
-        return $directus.request($readItem('navigation', '80', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: eventBar } = await useAsyncData('eventBar', async () => {
+        const resp = await readItem('navigation', '80', { fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || null
     })
 
-    const {
-        data: events
-    } = await useAsyncData('events', () => {
-        return $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                product_type: {
-                    product_types_id: {
-                        name: {
-                            _eq: 'Event'
-                        }
-                    }
-                },
-                attributes: {
-                    default_label: {
-                        _eq: 'RSVP Status'
-                    }
-                }
-            }
-        }))
+    const { data: events } = await useAsyncData('events', async () => {
+        const resp = await readItems('products', { fields: ['*', { '*': ['*'] }], filter: { product_type: { product_types_id: { name: { _eq: 'Event' } } }, attributes: { default_label: { _eq: 'RSVP Status' } } } })
+        return resp?.data || resp || []
     })
 
-    const {
-        data: pastEvents
-    } = await useAsyncData('pastEvents', () => {
-        return $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                product_type: {
-                    product_types_id: {
-                        name: {
-                            _eq: 'Event'
-                        }
-                    }
-                },
-                date_created: {
-                    _lt: new Date().toISOString().slice(5, 10)
-                }
-            }
-        }))
+    const { data: pastEvents } = await useAsyncData('pastEvents', async () => {
+        const resp = await readItems('products', { fields: ['*', { '*': ['*'] }], filter: { product_type: { product_types_id: { name: { _eq: 'Event' } } }, date_created: { _lt: new Date().toISOString().slice(5, 10) } } })
+        return resp?.data || resp || []
     })
 
     useHead({

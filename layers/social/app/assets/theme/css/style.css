@@ -510,8 +510,8 @@ nav .mbr-section-btn {
 }
 .bg-gradient {
   background-size: 200% 200%;
-  animation: gradient-animation 5s infinite alternate;
-  -webkit-animation: gradient-animation 5s infinite alternate;
+  animation: gradient-animation 5s infinite mframework;
+  -webkit-animation: gradient-animation 5s infinite mframework;
 }
 
 .menu .navbar-brand {

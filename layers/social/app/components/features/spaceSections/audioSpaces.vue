@@ -31,54 +31,16 @@
     })
 
     const model = ref(null)
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+    import useAdapterRequest from '~/composables/useAdapterRequest'
+    const { readItems } = useAdapterRequest()
 
-    const {
-        data: myAudioSpaces
-    } = await useAsyncData('myAudioSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                owner: {
-                    first_name: {
-                     _eq: userStore?.user?.firstName,   
-                    },
-                    last_name: {
-                        _eq: userStore?.user?.lastName,
-                    }
-                },
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Audio'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: myAudioSpaces } = await useAsyncData('myAudioSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: userStore?.user?.firstName }, last_name: { _eq: userStore?.user?.lastName } }, space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 
-    const {
-        data: audioSpaces
-    } = await useAsyncData('audioSpaces', () => {
-        return $directus.request($readItems('spaces', {
-            filter: {
-                space_type: {
-                    space_types_id: {
-                        name: {
-                            _eq: 'Audio'
-                        }
-                    }
-                }
-            },
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
+    const { data: audioSpaces } = await useAsyncData('audioSpaces', async () => {
+        const resp = await readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
+        return resp?.data || resp || []
     })
 </script>

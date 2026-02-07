@@ -78,10 +78,8 @@
     import {
         ref
     } from 'vue';
-    import {
-        readItem,
-        updateItem
-    } from '@meeovi/directus-client'; // Add this import at the top
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItem, updateItem } = useDirectusRequest()
     import {
         useRouter
     } from 'vue-router';
@@ -129,30 +127,26 @@
     // Function to fetch existing space data
     const fetchShortData = async () => {
         try {
-            const {
-                $directus,
-                $readItem
-            } = useNuxtApp();
-            const shortId = route.params.id; // Assuming you're passing the ID in the route
-            const response = await $directus.request(readItem('shorts', shortId));
-
-            // Populate the form with existing data
+            const shortId = route.params.id
+            const resp = await readItem('shorts', shortId)
+            const data = resp?.data || resp || null
+            if (!data) return
             shortData.value = {
-                id: response.id,
-                name: response.name,
-                type: response.type,
-                status: response.status,
-                description: response.description,
-                video: response.video,
-                duration: response.duration,
-                video_url: response.video_url,
-                age_requirement: response.age_requirement,
-                thumbnail: response.thumbnail,
-            };
+                id: data.id,
+                name: data.name,
+                type: data.type,
+                status: data.status,
+                description: data.description,
+                video: data.video,
+                duration: data.duration,
+                video_url: data.video_url,
+                age_requirement: data.age_requirement,
+                thumbnail: data.thumbnail,
+            }
         } catch (error) {
-            console.error('Error fetching short:', error);
+            console.error('Error fetching short:', error)
         }
-    };
+    }
 
     // Load existing data when component mounts
     onMounted(() => {
@@ -204,10 +198,6 @@
     const handleSubmit = async () => {
         try {
             loading.value = true;
-            const {
-                $directus
-            } = useNuxtApp();
-
             let uploadedFiles = {};
             let videoDuration = shortData.value.duration; // Keep the existing duration as fallback
 
@@ -231,25 +221,23 @@
             }
 
             // Update the short using Directus SDK
-            const updatedShort = await $directus.request(
-                updateItem('shorts', route.params.id, {
-                    name: shortData.value.name,
-                    type: shortData.value.type,
-                    status: shortData.value.status,
-                    description: shortData.value.description,
-                    video: uploadedFiles.videoId || shortData.value.video,
-                    duration: videoDuration, // Use the calculated duration or existing one
-                    video_url: shortData.value.video_url,
-                    age_requirement: shortData.value.age_requirement,
-                    thumbnail: uploadedFiles.imageId || shortData.value.thumbnail,
-                })
-            );
+            const updatedShort = await updateItem('shorts', route.params.id, {
+                name: shortData.value.name,
+                type: shortData.value.type,
+                status: shortData.value.status,
+                description: shortData.value.description,
+                video: uploadedFiles.videoId || shortData.value.video,
+                duration: videoDuration,
+                video_url: shortData.value.video_url,
+                age_requirement: shortData.value.age_requirement,
+                thumbnail: uploadedFiles.imageId || shortData.value.thumbnail,
+            })
 
             if (updatedShort) {
-                await fetchShortData(); // Refresh the data
-                alert('Short updated successfully');
-                dialog.value = false; // Close the dialog
-                window.location.reload(); // Refresh the page
+                await fetchShortData()
+                alert('Short updated successfully')
+                dialog.value = false
+                window.location.reload()
             }
         } catch (error) {
             console.error('Error updating short:', error);

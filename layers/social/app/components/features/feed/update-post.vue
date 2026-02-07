@@ -91,7 +91,7 @@
     } from 'vue';
     import uploadFiles from '../../../composables/globals/uploadFiles';
     import updatePost from '~/composables/posts/updatePost';
-    import { updateItem, deleteItem } from '@meeovi/directus-client';
+    import useAdapterRequest from '~/composables/useAdapterRequest'
     import {
         useUserStore
     } from '#auth/app/stores/user'
@@ -143,12 +143,9 @@
     // Function to fetch existing post data
     const fetchPostData = async () => {
         try {
-            const {
-                $directus,
-                $readItem,
-            } = useNuxtApp();
+            const { readItem } = useAdapterRequest()
             const listId = route.params.id; // Assuming you're passing the ID in the route
-            const response = await $directus.request($readItem('posts', listId));
+            const response = await readItem('posts', listId)
 
             // Populate the form with existing data
             postData.value = {
@@ -204,7 +201,7 @@
     try {
         loading.value = true;
 
-        const { $directus } = useNuxtApp();
+        const { updateItem } = useAdapterRequest()
         
         // Prepare update data
         const updateData = {
@@ -223,9 +220,7 @@
         }
 
         // Update the post using Directus updateItem
-        const updatedPost = await $directus.request(
-            updateItem('posts', route.params.id, updateData)
-        );
+        const updatedPost = await updateItem('posts', route.params.id, updateData)
 
         if (updatedPost) {
             // Refresh the post data
@@ -254,12 +249,8 @@
     const deletePost = async () => {
         try {
             deleteLoading.value = true;
-            const {
-                $directus
-            } = useNuxtApp();
-
-            // Delete the post using the imported deleteItem function
-            await $directus.request(deleteItem('posts', route.params.id));
+            const { deleteItem } = useAdapterRequest()
+            await deleteItem('posts', route.params.id)
 
             // Close the delete dialog
             deleteDialog.value = false;

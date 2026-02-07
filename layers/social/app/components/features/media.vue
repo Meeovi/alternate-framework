@@ -109,32 +109,16 @@
         filterByFolder(folder?.id || null)
     }
 
-    const {
-        $directus,
-        $readItem
-    } = useNuxtApp()
+    import useDirectusRequest from '~/composables/useDirectusRequest'
+    const { readItem } = useDirectusRequest()
     const tab = ref(null)
 
-    const {
-        data: mediaBar
-    } = await useAsyncData('mediaBar', () =>
-        $directus.request(
-            $readItem('navigation', '81', {
-                fields: ['*', {
-                    menus: ['*']
-                }],
-            })
-        )
+    const { data: mediaBar } = await useAsyncData('mediaBar', () =>
+        readItem('navigation', '81', { fields: ['*', { menus: ['*'] }] })
     )
 
-    const {
-        data: mediaCenterPage
-    } = await useAsyncData('mediaCenterPage', () =>
-        $directus.request(
-            $readItem('pages', '100', {
-                fields: ['*'],
-            })
-        )
+    const { data: mediaCenterPage } = await useAsyncData('mediaCenterPage', () =>
+        readItem('pages', '100', { fields: ['*'] })
     )
 
     useHead({

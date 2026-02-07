@@ -1,6 +1,6 @@
 {
-  "name": "@meeovi/adapter-rocketchat",
-  "version": "1.0.0",
+  "name": "@mframework/adapter-rocketchat",
+  "version": "0.0.1",
   "description": "Rocket.Chat adapter for Meeovi chat layer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,11 +14,11 @@
     "build": "tsc -p tsconfig.json"
   },
   "keywords": ["meeovi","adapter","rocketchat","chat"],
-  "author": "Meeovi",
+  "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "dependencies": {
     "typescript": "^5.9.3",
-    "@meeovi/chat": "file:../../../layers/chat"
+    "@mframework/chat": "file:../../../layers/chat"
   }
 }

@@ -7,7 +7,7 @@ export type Product = any;
 export type SfCart = any;
 export type Cart = any;
 
-// No direct equivalents in @meeovi/commerce yet — use permissive any types
+// No direct equivalents in @mframework/commerce yet — use permissive any types
 export type SfCustomer = any;
 export type SfAddress = any;
 export type SfProductReview = any;
