@@ -1,4 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
+import { useProductListStore } from '../productList'
 
 // ProductList dispatcher that prefers the normalized commerce client when
 // available. Returns an array of normalized products or an empty array.
@@ -21,13 +22,19 @@ export async function fetchProductList(params: any = {}): Promise<any[]> {
 
 export async function handleData(dispatch: any, options: any) {
   const data = await fetchProductList(options)
-  if (typeof dispatch === 'function') {
-    try {
-      dispatch({ type: 'PRODUCT_LIST_LOADED', payload: data })
-    } catch (e) {
-      // best-effort: ignore dispatch errors
+  // Update Pinia store when available
+  try {
+    const store = useProductListStore()
+    if (store && typeof store.fetch === 'function') {
+      // let the store perform its fetch to populate items/state consistently
+      await store.fetch(options)
+    } else if (store) {
+      ;(store as any).items = Array.isArray(data) ? data : []
     }
+  } catch (e) {
+    // ignore Pinia errors
   }
+
   return data
 }
 

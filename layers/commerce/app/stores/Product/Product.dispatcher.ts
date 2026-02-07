@@ -1,4 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
+import { useProductStore } from '../product'
 
 // Product dispatcher that uses the normalized commerce client when available.
 export async function fetchProductById(id: string): Promise<any | null> {
@@ -35,7 +36,18 @@ export async function handleData(dispatch: any, options: any) {
   try {
     if (typeof dispatch === 'function' && options && options.id) {
       const product = await fetchProductById(options.id)
-      dispatch({ type: 'PRODUCT_LOADED', payload: product })
+      // Update Pinia store when available
+      try {
+        const store = useProductStore()
+        if (store && typeof store.selectProduct === 'function') {
+          store.selectProduct(product)
+        } else if (store) {
+          ;(store as any).selectedProduct = product
+        }
+      } catch (e) {
+        // ignore Pinia errors
+      }
+
       return product
     }
   } catch (e) {

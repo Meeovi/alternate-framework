@@ -23,8 +23,8 @@ export const withReducers = (reducers: Record<string, Reducer>) => (
     WrappedComponent: ElementType,
 ): WithReducersResult => {
     const injectAndExecute = (props: Props) => {
-        injectReducers(getStore(), reducers);
-
+        // Reducer injection is deprecated — we no longer inject Redux reducers.
+        // Keep this wrapper for API compatibility but avoid mutating the legacy store.
         // eslint-disable-next-line @mframework/mframework-guidelines/jsx-no-props-destruction
         return <WrappedComponent { ...props } />;
     };

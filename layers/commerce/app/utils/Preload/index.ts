@@ -10,8 +10,7 @@
  */
 
 import { UrlRewritePageType } from '../../routes/UrlRewrites/UrlRewrites.config';
-import ProductReducer from '../../stores/Product/Product.reducer';
-import ProductListReducer from '../../stores/ProductList/ProductList.reducer';
+// Reducers removed — migration to Pinia stores; keep Preload minimal
 import BrowserDatabase from '../../utils/BrowserDatabase';
 import { isMobile } from '../../utils/Mobile';
 import getStore, { injectReducers } from '../../utils/Store';
@@ -19,10 +18,8 @@ import getStore, { injectReducers } from '../../utils/Store';
 import CategoryPreload from './CategoryPreload';
 import ProductPreload from './ProductPreload';
 
-injectReducers(getStore(), {
-    ProductReducer,
-    ProductListReducer,
-});
+// Previously reducers were injected here for legacy Redux-style consumers.
+// Reducers have been migrated into Pinia stores; no injection needed.
 
 const { actionName: { type = '' } = {} } = window;
 

@@ -125,7 +125,8 @@ export const useOrdersStore = defineStore('orders', () => {
   // Computed properties
   const ordersByStatus = computed(() => {
     return orders.value.reduce((acc: Record<string, number>, order: Order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1
+      const status = order?.status ?? 'unknown'
+      acc[status] = (acc[status] || 0) + 1
       return acc
     }, {} as Record<string, number>)
   })
@@ -139,7 +140,7 @@ export const useOrdersStore = defineStore('orders', () => {
 
   const averageOrderValue = computed(() => {
     const validOrders = orders.value.filter((order: Order) => 
-      !['cancelled', 'refunded'].includes(order.status)
+      !['cancelled', 'refunded'].includes(order?.status ?? '')
     )
     return validOrders.length > 0 ? totalRevenue.value / validOrders.length : 0
   })
