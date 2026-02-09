@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-import { sdk } from '@mframework/sdk'
+import { sdk } from '@mframework/core'
 
 export function createClient(provider?: string, config?: any) {
   // Prefer provider-specific client creation if available on the SDK.

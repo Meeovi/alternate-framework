@@ -53,3 +53,31 @@ export interface CategoryQueryOptions {
     categoryIds: number;
     isSearchPage?: boolean;
 }
+
+// Lightweight normalizer for category objects. Adapters can provide
+// richer implementations; this helper maps common fields into a stable
+// Category shape used by the commerce layer.
+export function normalizeCategory(raw: any): Category {
+    if (!raw) return raw;
+    return {
+        id: raw?.id ?? raw?.category_id ?? raw?.uid ?? '',
+        url: raw?.url ?? raw?.url_key ?? raw?.url_path ?? '',
+        name: raw?.name ?? raw?.label ?? raw?.category_name ?? '',
+        image: raw?.image ?? raw?.thumbnail ?? '',
+        url_key: raw?.url_key ?? raw?.url ?? '',
+        url_path: raw?.url_path ?? raw?.url_key ?? '',
+        is_active: raw?.is_active ?? raw?.active ?? true,
+        meta_title: raw?.meta_title ?? raw?.title ?? '',
+        description: raw?.description ?? raw?.meta_description ?? '',
+        canonical_url: raw?.canonical_url ?? raw?.canonical ?? '',
+        product_count: raw?.product_count ?? raw?.products_count ?? 0,
+        meta_keywords: raw?.meta_keywords ?? raw?.keywords ?? '',
+        default_sort_by: raw?.default_sort_by ?? raw?.defaultSortBy ?? '',
+        meta_description: raw?.meta_description ?? raw?.description ?? '',
+        landing_page: raw?.landing_page ?? raw?.page ?? 0,
+        display_mode: raw?.display_mode ?? raw?.mode ?? '',
+        is_anchor: raw?.is_anchor ?? raw?.anchor ?? false,
+        cms_block: raw?.cms_block ?? raw?.cms ?? null,
+        breadcrumbs: Array.isArray(raw?.breadcrumbs) ? raw.breadcrumbs : (raw?.breadcrumb ? [raw.breadcrumb] : []),
+    } as Category;
+}

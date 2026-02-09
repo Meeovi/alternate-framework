@@ -1,13 +1,23 @@
 {
   "name": "@mframework/media",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A flexible video player packed with features and built on top of Videojs and various extensions.",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "build-browser": "npx -y esbuild src/entry-browser.ts --bundle --format=iife --global-name=MediaModule --outfile=dist/media.js --platform=browser --sourcemap",
+    "serve-test": "node ./test/serve.cjs",
+    "build-and-serve": "npm run build-browser && npm run serve-test"
   },
-  "keywords": [],
+  "keywords": [
+    "video",
+    "player",
+    "videojs",
+    "vue",
+    "nuxt",
+    "mframework"
+  ],
   "author": "M Framework",
   "license": "MIT",
   "type": "module",

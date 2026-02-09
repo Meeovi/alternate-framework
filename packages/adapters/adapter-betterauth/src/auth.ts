@@ -1,7 +1,7 @@
 import type {
   AuthAdapter,
   TransportAdapter
-} from '@mframework/sdk'
+} from '@mframework/core'
 
 import type {
   LoginInput,
@@ -11,7 +11,7 @@ import type {
   User
 } from '@mframework/core'
 
-import { unwrap } from './utils'
+import { unwrap } from './utils.js'
 
 export const createAuthAdapter = (
   transport: TransportAdapter

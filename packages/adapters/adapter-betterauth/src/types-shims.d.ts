@@ -1,4 +1,4 @@
-declare module '@mframework/sdk' {
+declare module '@mframework/core' {
   export type TransportAdapter = {
     request<T = any>(method: string, path: string, opts?: any): Promise<any>
   }
@@ -16,12 +16,12 @@ declare module '@mframework/core' {
   export type Result<T = any> = any
   export type Session = any
   export type User = any
-  export type TransportAdapter = import('@mframework/sdk').TransportAdapter
+  export type TransportAdapter = import('@mframework/core').TransportAdapter
   export type RequestOptions = any
   export type APIResponse<T = any> = any
 }
 
-declare module '@mframework/api' {
+declare module '@mframework/core' {
   export const prisma: any
   export function useDB(_event?: any): Promise<any>
   export function isValidTable(name: string): boolean

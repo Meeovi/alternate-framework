@@ -1,21 +1,8 @@
 import { BaseAdapter, BaseAdapterConfig } from './common'
+import type { Result, Facet, SearchQuery, SearchResult } from '../types'
 
 export interface SearchAdapterConfig extends BaseAdapterConfig {
   provider: string
-}
-
-export interface SearchQuery {
-  term: string
-  filters?: Record<string, unknown>
-  page?: number
-  pageSize?: number
-}
-
-export interface SearchResult<TItem = unknown> {
-  items: TItem[]
-  total: number
-  page: number
-  pageSize: number
 }
 
 export interface SearchAdapter<TItem = unknown>
@@ -23,4 +10,5 @@ export interface SearchAdapter<TItem = unknown>
   type: 'search'
   search(query: SearchQuery): Promise<SearchResult<TItem>>
   suggest?(term: string): Promise<string[]>
+  facets(query: SearchQuery): Promise<Result<Facet[]>>  
 }

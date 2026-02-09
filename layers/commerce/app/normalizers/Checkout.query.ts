@@ -27,6 +27,7 @@ import {
     TotalsItem,
     TotalsObject,
 } from './Checkout.type';
+import { normalizeOrder } from './Order.type';
 
 /** @namespace ../../normalizers/Checkout/Query */
 export class CheckoutQuery {
@@ -251,3 +252,24 @@ export class CheckoutQuery {
 }
 
 export default new CheckoutQuery();
+
+export function normalizePaymentMethodsResponse(raw: any): PaymentMethod[] {
+    if (!raw) return [];
+    const payload = raw.paymentMethods ?? raw.payment_methods ?? raw;
+    return Array.isArray(payload) ? payload : (Array.isArray(payload?.payment_methods) ? payload.payment_methods : []);
+}
+
+export function normalizeTotalsResponse(raw: any): TotalsObject | null {
+    if (!raw) return null;
+    const payload = raw.totals ?? raw.Totals ?? raw;
+    return payload || null;
+}
+
+export function normalizePlaceOrderResponse(raw: any) {
+    if (!raw) return null;
+    // placeOrder typically returns { order: { order_id } }
+    const payload = raw.placeOrder ?? raw.order ?? raw;
+    if (payload?.order) return normalizeOrder(payload.order as any);
+    if (payload?.order_id) return { id: String(payload.order_id), raw: payload };
+    return payload;
+}

@@ -16,6 +16,7 @@ import { GQLUrlRewriteEntityTypeEnum } from '../types/Graphql.type';
 import {
     UrlRewritesOutput,
     UrlRewritesQueryOptions,
+    normalizeUrlRewriteResponse,
 } from './UrlRewrites.type';
 
 /**
@@ -53,3 +54,9 @@ export class UrlRewritesQuery {
 }
 
 export default new UrlRewritesQuery();
+
+export function normalizeUrlRewrite(raw: any): UrlRewritesOutput | null {
+    if (!raw) return null;
+    if (raw.urlResolver) return normalizeUrlRewriteResponse(raw.urlResolver as any);
+    return normalizeUrlRewriteResponse(raw as any);
+}

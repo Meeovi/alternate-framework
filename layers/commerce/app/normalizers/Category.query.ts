@@ -17,6 +17,7 @@ import {
     CategoryQueryOptions,
     CategoryTree,
     CmsBlock,
+    normalizeCategory,
 } from './Category.type';
 
 /**
@@ -144,3 +145,9 @@ export class CategoryQuery {
 }
 
 export default new CategoryQuery();
+
+export function normalizeCategoryResponse(raw: any): Category | null {
+    if (!raw) return null;
+    if (raw.category) return normalizeCategory(raw.category as any);
+    return normalizeCategory(raw as any);
+}

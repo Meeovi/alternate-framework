@@ -1,4 +1,4 @@
-import { setCommerceAdapter } from '@mframework/sdk'
+import { setCommerceAdapter } from '@mframework/core'
 
 import { createTransport } from './src/transport'
 import { createCommerceAdapter } from './src/commerce'

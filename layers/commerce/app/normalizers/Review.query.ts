@@ -18,6 +18,7 @@ import {
     ReviewRatingItem,
     ReviewRatingValue,
 } from './Review.type';
+import { normalizeReview } from './Review.type';
 
 /** @namespace ../../normalizers/Review/Query */
 export class ReviewQuery {
@@ -79,3 +80,9 @@ export class ReviewQuery {
 }
 
 export default new ReviewQuery();
+
+export function normalizeReviewResponse(raw: any) {
+    if (!raw) return null;
+    if (raw.review) return normalizeReview(raw.review as any);
+    return normalizeReview(raw as any);
+}

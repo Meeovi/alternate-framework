@@ -5,19 +5,22 @@
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",
-    "moduleResolution": "bundler",
     "module": "ESNext",
-    "target": "ESNext",
+    "target": "ES2017",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2017", "DOM"],
     "strict": true,
     "jsx": "react-jsx",
-    "skipLibCheck": true, 
+    "skipLibCheck": true,
     "noEmitOnError": false
     ,
     "paths": {
       "@mframework/adapter-betterauth": ["../../packages/adapters/adapter-betterauth/src/index.ts"],
       "@mframework/adapter-betterauth/*": ["../../packages/adapters/adapter-betterauth/src/*"]
       ,
-      "@mframework/api": ["../../packages/modules/api/src/index.ts"]
+      "@mframework/core": ["../../packages/modules/core/src/index.ts"]
     }
   }
   ,

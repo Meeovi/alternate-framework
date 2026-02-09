@@ -16,13 +16,11 @@
     import {
         ref
     } from 'vue'
-
-    const tab = ref(null);
-
     import useDirectusRequest from '~/composables/useDirectusRequest'
-    const { request, readItem } = useDirectusRequest()
-    const route = useRoute()
 
+    const { readItem } = useDirectusRequest()
+    const tab = ref(null);
+    
     const { data: lowerbar } = await useAsyncData('lowerbar', () => {
         return readItem('navigation', '76', {
             fields: ['*', { '*': ['*'] }]

@@ -1,3 +1,28 @@
+import { loadGraphQL } from './src/loader/loadGraphql'
+
+loadGraphQL() 
+
+export * from './src/utils/fetcher' 
+export * from './src/loader/registry'
+
+// Apollo client
+export * from './src/client/apollo'
+
+// REST helper
+export * from './src/client/rest'
+
+// GraphQL queries/mutations
+export * from './src/graphql/queries/products'
+// cart mutation not present in source — omitted for now
+
+// Providers
+export * from './src/providers/commerce'
+// content/search providers are intentionally not exported here (no module)
+
+// Utils
+//export * from './src/utils/errors'
+export * from './src/utils/prisma'
+
 // src/index.ts
 export * from './src/runtime/app'
 export * from './src/runtime/context'
@@ -79,6 +104,8 @@ export * from './src/types/sdk/endpoint'
 export * from './src/types/sdk/request'
 export * from './src/types/sdk/response'
 export * from './src/types/sdk/adapter'
+// Explicit SDK runtime export
+export { sdk } from './src/client'
 
 // Normalizers
 export * from './src/normalizers/factories'
@@ -91,3 +118,10 @@ export * from './src/normalizers/utils/logger'
 export * from './src/normalizers/utils/shared'
 export * from './src/normalizers/utils/ssr'
 export * from './src/normalizers/utils/wrap'
+
+export * from './src/client';
+// Note: adapters re-exports may cause type name collisions with dedicated types
+// (e.g. CommerceAdapter). Avoid re-exporting the entire adapters folder here;
+// import specific adapter helpers from `@mframework/core/src/adapters` when
+// needed instead.
+export * from './src/registry';

@@ -1,6 +1,6 @@
 {
   "name": "@mframework/layer-auth",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "The authentication layer for M Framework applications.",
   "type": "module",
   "main": "./nuxt.config.ts",
@@ -19,7 +19,6 @@
   "author": "M Framework",
   "license": "MIT",
   "dependencies": {
-    "@mframework/adapter-betterauth": "^0.0.7",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

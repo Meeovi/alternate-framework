@@ -133,7 +133,7 @@ async function run() {
       } catch (err) {
         // create a generic stub
         const fnName = 'create' + toPascalCase(layer) + 'Adapter'
-        const content = `import type { TransportAdapter } from '@mframework/sdk'\nimport type { Result } from '@mframework/core'\n\nexport const ${fnName} = (transport: TransportAdapter) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example(): Promise<Result<any>> { return { ok: false, error: 'Not implemented' } }\n})\n`
+        const content = `import type { TransportAdapter } from '@mframework/core'\nimport type { Result } from '@mframework/core'\n\nexport const ${fnName} = (transport: TransportAdapter) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example(): Promise<Result<any>> { return { ok: false, error: 'Not implemented' } }\n})\n`
         await fs.writeFile(filePath, content, 'utf8')
       }
     }
@@ -161,7 +161,7 @@ async function run() {
       setters.push(map.set)
     }
 
-    const sdkSetters = setters.length ? `import { ${Array.from(new Set(setters)).join(', ')} } from '@mframework/sdk'` : ''
+    const sdkSetters = setters.length ? `import { ${Array.from(new Set(setters)).join(', ')} } from '@mframework/core'` : ''
 
     let indexContent = ''
     if (sdkSetters) indexContent += sdkSetters + '\n\n'

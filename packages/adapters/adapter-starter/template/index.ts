@@ -2,7 +2,7 @@ import {
   setAuthAdapter,
   setCommerceAdapter,
   setSearchAdapter
-} from '@mframework/sdk'
+} from '@mframework/core'
 
 import { createTransport } from './src/transport'
 import { createAuthAdapter } from './src/auth'

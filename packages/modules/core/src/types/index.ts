@@ -12,6 +12,8 @@ export * from './auth/session'
 export * from './auth/providers'
 export * from './auth/inputs'
 export * from './auth/adapter'
+// Compatibility alias: expose `Session` name expected by adapters
+export { AuthSession as Session } from './auth/session'
 
 // Commerce
 export * from './commerce/product'

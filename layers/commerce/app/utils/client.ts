@@ -1,7 +1,15 @@
 import * as CommercePkg from '~/types';
-import { sdk } from '@mframework/sdk';
+import { sdk } from '@mframework/core';
 import imports from '../types';
 import { normalizeProductsQueryOutput, normalizeProduct } from '../normalizers/ProductList.type';
+import { normalizeProductsResponse } from '../normalizers/ProductList.query';
+import { normalizeMenuResponse } from '../normalizers/Menu.query';
+import { normalizeCategoryResponse } from '../normalizers/Category.query';
+import { normalizeCompareResponse } from '../normalizers/ProductCompare.query';
+import { normalizeStoresResponse } from '../normalizers/StoreInPickUp.query';
+import { normalizeCmsPage } from '../normalizers/CmsPage.type';
+import { normalizeUrlRewrite } from '../normalizers/UrlRewrites.query';
+import { normalizeWishlistResponse } from '../normalizers/Wishlist.query';
 import { normalizeCart } from '../normalizers/Cart.type';
 import { normalizeOrder } from '../normalizers/Order.type';
 import { normalizeReview } from '../normalizers/Review.type';
@@ -48,11 +56,97 @@ function createNormalizedClient(client: any) {
     wrapped.listProducts = async (...args: any[]) => {
       const res = await client.listProducts(...args);
       try {
-        return normalizeProductsQueryOutput(res);
+        // prefer the type-level normalizer but also accept query-level responses
+        return normalizeProductsQueryOutput(res) || normalizeProductsResponse(res);
       } catch (e) {
         return res;
       }
     };
+  }
+
+  // Menu endpoints
+  const menuMethods = ['getMenu', 'getMenus', 'listMenus', 'listMenu', 'getMenuItems', 'listMenuItems'];
+  for (const m of menuMethods) {
+    if (typeof client[m] === 'function') {
+      wrapped[m] = async (...args: any[]) => {
+        const res = await client[m](...args);
+        try {
+          return normalizeMenuResponse(res);
+        } catch (e) {
+          return res;
+        }
+      };
+    }
+  }
+
+  // Category endpoints
+  const categoryMethods = ['getCategory', 'getCategoryBySlug', 'getCategories', 'listCategories', 'getCategoryTree'];
+  for (const m of categoryMethods) {
+    if (typeof client[m] === 'function') {
+      wrapped[m] = async (...args: any[]) => {
+        const res = await client[m](...args);
+        try {
+          return normalizeCategoryResponse(res);
+        } catch (e) {
+          return res;
+        }
+      };
+    }
+  }
+
+  // CMS / pages
+  const cmsMethods = ['getPage', 'getCmsPage', 'getPageBySlug', 'listPages', 'getPages'];
+  for (const m of cmsMethods) {
+    if (typeof client[m] === 'function') {
+      wrapped[m] = async (...args: any[]) => {
+        const res = await client[m](...args);
+        try { return normalizeCmsPage(res); } catch (e) { return res; }
+      };
+    }
+  }
+
+  // URL rewrites / resolver
+  const urlMethods = ['resolveUrl', 'getUrlRewrite', 'urlResolver', 'findUrl'];
+  for (const m of urlMethods) {
+    if (typeof client[m] === 'function') {
+      wrapped[m] = async (...args: any[]) => {
+        const res = await client[m](...args);
+        try { return normalizeUrlRewrite(res); } catch (e) { return res; }
+      };
+    }
+  }
+
+  // Wishlist
+  const wishlistMethods = ['getWishlist', 'listWishlist', 'getWishlistById', 'getWishlistItems'];
+  for (const m of wishlistMethods) {
+    if (typeof client[m] === 'function') {
+      wrapped[m] = async (...args: any[]) => {
+        const res = await client[m](...args);
+        try { return normalizeWishlistResponse(res); } catch (e) { return res; }
+      };
+    }
+  }
+
+  // Compare / product compare
+  const compareMethods = ['getCompare', 'listCompare', 'compareProducts', 'getCompareList'];
+  for (const m of compareMethods) {
+    if (typeof client[m] === 'function') {
+      wrapped[m] = async (...args: any[]) => {
+        const res = await client[m](...args);
+        try { return normalizeCompareResponse(res); } catch (e) { return res; }
+      };
+    }
+  }
+
+  // Stores / pickup
+  const storeMethods = ['listStores', 'getStores', 'getStore', 'listPickUpStores', 'getStoresInPickUp'];
+  for (const m of storeMethods) {
+    if (typeof client[m] === 'function') {
+      wrapped[m] = async (...args: any[]) => {
+        const res = await client[m](...args);
+        try { return normalizeStoresResponse(res); } catch (e) { return res; }
+      };
+    }
   }
 
   if (typeof client.getProductById === 'function') {

@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Media module test</title>
+    <link href="https://vjs.zencdn.net/8.23.4/video-js.css" rel="stylesheet" />
+    <style>body{font-family:system-ui,Arial,sans-serif;padding:20px}video{max-width:100%}</style>
+  </head>
+  <body>
+    <h1>Media module test</h1>
+
+    <p>This page demonstrates the media auto-attach example. It includes Video.js from CDN and sets up a plugin map and plugin list.</p>
+
+    <script>
+      // Map short keys to plugin specs; defaultOptions will be merged with per-element options
+      window.MFRAMEWORK_MEDIA_PLUGINS_MAP = {
+        hotkeys: { name: 'hotkeys', src: '/libs/videojs-hotkeys.js', defaultOptions: { seekStep: 5 } }
+      }
+      // Default plugins to attach
+      window.MFRAMEWORK_MEDIA_PLUGINS = ['hotkeys']
+    </script>
+
+    <video id="v1" class="video-js" controls data-plugins="hotkeys" data-plugins-options='{"hotkeys":{"seekStep":10}}'>
+      <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+    </video>
+
+    <p>
+      <button id="init">Manual init (calls setupAutoAttach if available)</button>
+      <span id="status"></span>
+    </p>
+
+    <script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
+    <script>
+      document.getElementById('init').addEventListener('click', async () => {
+        const status = document.getElementById('status')
+        status.textContent = ' — initializing...'
+        try {
+          if (window.setupAutoAttach) {
+            await window.setupAutoAttach({})
+            status.textContent = ' — initialized via global setupAutoAttach'
+            return
+          }
+          // If module not bundled, try to dynamically import the module source (requires build)
+          try {
+            // prefer the built bundle if present
+            const m = await import('../dist/media.js')
+            // built bundle exposes setupAutoAttach to globalThis
+            if (m && (m.setupAutoAttach || (globalThis as any).setupAutoAttach)) {
+              const fn = m.setupAutoAttach ?? (globalThis as any).setupAutoAttach
+              await fn({})
+              status.textContent = ' — initialized via built bundle'
+              return
+            }
+          } catch (e) {
+            // ignore and fallback
+          }
+          try {
+            const m2 = await import('../src/autoAttach.js')
+            await m2.setupAutoAttach?.({})
+            status.textContent = ' — initialized via module import'
+            return
+          } catch (e) {
+            // ignore
+          }
+          status.textContent = ' — setupAutoAttach not available; build/integrate module first'
+        } catch (err) {
+          status.textContent = ' — error: ' + err.message
+        }
+      })
+    </script>
+  </body>
+</html>

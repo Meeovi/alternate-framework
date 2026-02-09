@@ -16,6 +16,7 @@
     "paths": {
       "@mframework/core": ["packages/modules/core/src"],
       "@mframework/core/*": ["packages/modules/core/src/*"],
+      
       "~/*": [
         "./layers/commerce/app/*",
         "./layers/commerce/*",
@@ -40,6 +41,8 @@
   },
   "include": [
     "packages/modules/core/src/**/*",
+    "packages/modules/api/**/*",
+    "layers/shared/**/*",
     "layers/social/**/*",
     "layers/commerce/**/*"
   ],

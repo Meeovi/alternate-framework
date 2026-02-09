@@ -27,6 +27,7 @@ export * from './generators/widget-registry';
 
 export * from './utils/visualEditing';
 export * from './utils/livePreview';
+export * from './composables';
 
 export { 
     readItem,

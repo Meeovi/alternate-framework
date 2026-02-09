@@ -17,8 +17,7 @@
   "type": "module",
   "main": "./nuxt.config.ts",
   "dependencies": {
-    "@mframework/api": "^0.0.1",
-    "@mframework/core": "^0.0.1",
+    "@mframework/core": "^0.0.2",
     "@mframework/directus-client": "^0.0.1",
     "@mframework/layer-social": "^0.0.1",
     "list.js": "^2.3.1",

@@ -49,6 +49,7 @@ import {
     SelectedShippingMethod,
     UserErrors,
 } from './Cart.type';
+import { normalizeCart } from './Cart.type';
 
 /** @namespace ../../normalizers/Cart/Query */
 export class CartQuery {
@@ -727,3 +728,10 @@ export class CartQuery {
 }
 
 export default new CartQuery();
+
+export function normalizeCartResponse(raw: any) {
+    if (!raw) return null;
+    if (raw.cartData) return normalizeCart(raw.cartData as any);
+    if (raw.cart) return normalizeCart(raw.cart as any);
+    return normalizeCart(raw as any);
+}

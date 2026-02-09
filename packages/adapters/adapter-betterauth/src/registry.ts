@@ -1,4 +1,4 @@
-import type { AuthProvider } from './types'
+import type { AuthProvider } from './types.js'
 
 // allow missing entries in the map so TypeScript understands runtime checks
 const providers: Record<string, AuthProvider | undefined> = {}

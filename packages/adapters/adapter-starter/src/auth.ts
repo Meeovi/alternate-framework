@@ -1,7 +1,7 @@
 import type {
   AuthAdapter,
   TransportAdapter
-} from '@mframework/sdk'
+} from '@mframework/core'
 
 import type {
   LoginInput,

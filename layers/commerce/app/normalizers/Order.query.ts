@@ -41,6 +41,7 @@ import {
     ShippingHandling,
     TaxItem,
 } from './Order.type';
+import { normalizeOrder } from './Order.type';
 
 /**
  * Order Query
@@ -739,3 +740,16 @@ export class OrderQuery {
 }
 
 export default new OrderQuery();
+
+export function normalizeOrderResponse(raw: any) {
+    if (!raw) return null;
+    if (raw.order) return normalizeOrder(raw.order as any);
+    if (raw.orderData) return normalizeOrder(raw.orderData as any);
+    return normalizeOrder(raw as any);
+}
+
+export function normalizeOrdersResponse(raw: any) {
+    if (!raw) return [];
+    const list = Array.isArray(raw.items) ? raw.items : (Array.isArray(raw) ? raw : (raw.orders ?? raw.items ?? []));
+    return Array.isArray(list) ? list.map((o: any) => normalizeOrder(o)) : [];
+}

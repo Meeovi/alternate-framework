@@ -1,6 +1,6 @@
 {
   "name": "@mframework/adapter-betterauth",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "Official Better-Auth adapter for M Framework Auth Layer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,9 +29,7 @@
     "@better-auth/scim": "^1.4.15",
     "@better-auth/sso": "^1.4.12",
     "@better-auth/stripe": "^1.4.15",
-    "@mframework/api": "^0.0.1",
-    "@mframework/core": "^0.0.1",
-    "@mframework/sdk": "^0.0.2",
+    "@mframework/core": "^0.0.2",
     "@polar-sh/better-auth": "^1.6.3",
     "better-auth": "^1.4.12",
     "typescript": "^5.9.3"

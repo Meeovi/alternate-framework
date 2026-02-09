@@ -30,10 +30,12 @@
 
 <script setup>
 import { useHead, useRoute, useRuntimeConfig, navigateTo } from '#app'
-import { definePageMeta, useLocalePath, useI18n } from '#imports'
+import { definePageMeta } from '#imports'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
 import { useAuth } from '../composables/useAuth'
+import { useI18n } from 'vue-i18n'
+import useLocalePath from '../composables/useLocalePath'
 
 definePageMeta({
   auth: {

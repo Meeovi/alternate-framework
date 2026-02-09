@@ -9,6 +9,7 @@
     "build": "cd apps/Meeovi && npx nuxi build",
     "preview": "cd apps/Meeovi && npx nuxi preview",
     "typecheck": "bash ./scripts/typecheck",
+    "prisma:api": "node ./scripts/run-prisma-api.js",
     "create-adapter": "./scripts/create-adapter",
     "lint": "echo \"No lint script configured\" && exit 0"
   },
@@ -30,4 +31,8 @@
     "themes/*",
     "docs/*"
   ]
+  ,
+  "dependencies": {
+    "@mframework/core": "file:./packages/modules/core"
+  }
 }

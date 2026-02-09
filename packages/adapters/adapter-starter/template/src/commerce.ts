@@ -1,4 +1,4 @@
-import type { CommerceAdapter, TransportAdapter } from '@mframework/sdk'
+import type { CommerceAdapter, TransportAdapter } from '@mframework/core'
 import type { Product, Cart, Result } from '@mframework/core'
 import { unwrap } from './utils'
 

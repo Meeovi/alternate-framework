@@ -1,6 +1,6 @@
 import {
   setAuthAdapter
-} from '@mframework/sdk'
+} from '@mframework/core'
 
 import { createAuthTransport } from './src/transport'
 import { createAuthAdapter } from './src/auth'

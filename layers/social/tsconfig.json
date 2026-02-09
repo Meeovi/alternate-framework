@@ -1,22 +1,15 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "types": ["node", "vitest"],
-    "declaration": true,
-    "emitDeclarationOnly": false,
-    "outDir": "dist",
-    "moduleResolution": "bundler",
-    "module": "ESNext",
-    "target": "ESNext",
-    "strict": true,
-    "jsx": "react-jsx",
-    "skipLibCheck": true, 
-    "noEmitOnError": false
-  }
-  ,
+    "types": ["node"],
+    "noEmit": true
+  },
   "include": [
-    "src/**/*",
     "app/**/*",
-    "index.ts",
-    "package.json"
-, "global.d.ts"  ]
+    "server/**/*",
+    "types/**/*",
+    "../../packages/modules/api/src/**/*",
+    "**/*.ts",
+    "**/*.vue"
+  ]
 }

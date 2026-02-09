@@ -1,6 +1,6 @@
 {
   "name": "@mframework/layer-shared",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Shared Layer for the M Framework",
   "main": "./module.ts",
   "scripts": {
@@ -15,13 +15,9 @@
     "@fortawesome/vue-fontawesome": "^3.1.2",
     "@grapesjs/studio-sdk": "^1.0.57",
     "@mdi/font": "^7.4.47",
-    "@mframework/adapter-directus": "^1.0.0",
+    "@mframework/core": "^0.0.2",
     "@nuxt/image": "^2.0.0",
     "@nuxtjs/i18n": "^10.1.0",
-    "@pinia/nuxt": "^0.11.3",
-    "@prisma/adapter-pg": "^7.3.0",
-    "@prisma/client": "^7.3.0",
-    "@prisma/client-runtime-utils": "^7.3.0",
     "@vue/apollo-composable": "^4.2.2",
     "@vueuse/motion": "^3.0.3",
     "eslint": "^9.32.0",
@@ -45,7 +41,6 @@
     "@vueuse/core": "^14.0.0",
     "@vueuse/nuxt": "^14.0.0",
     "nuxt": "^4.3.0",
-    "prisma": "^7.3.0",
     "sass": "^1.94.2",
     "sass-embedded": "^1.93.3",
     "vitest": "^4.0.18"

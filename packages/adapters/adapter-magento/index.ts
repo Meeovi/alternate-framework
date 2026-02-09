@@ -9,4 +9,5 @@ export { createStarterCommerceAdapter } from './src/commerce'
 export { createStarterSearchAdapter } from './src/search'
 export { createStarterTransport } from './src/transport'
 export { unwrap } from './src/utils'
+export { registerMagentoProvidersRuntime, createMagentoProviders } from './src/runtime'
 

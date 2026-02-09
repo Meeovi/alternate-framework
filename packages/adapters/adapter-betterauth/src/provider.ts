@@ -1,6 +1,6 @@
 import * as BetterAuth from 'better-auth'
-import { getAuthConfig } from './config'
-import { getFrameworkContext } from './framework'
+import { getAuthConfig } from './config.js'
+import { getFrameworkContext } from './framework.js'
 
 // Create a single shared Better Auth client instance
 let client: any = null

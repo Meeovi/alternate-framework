@@ -28,6 +28,7 @@ import {
     WishlistItem,
     WishListUserInputError,
 } from './Wishlist.type';
+import { normalizeProduct } from './ProductList.type';
 
 /** @namespace ../../normalizers/Wishlist/Query */
 export class WishlistQuery {
@@ -200,3 +201,28 @@ export class WishlistQuery {
 }
 
 export default new WishlistQuery();
+
+export function normalizeWishlistResponse(raw: any): Wishlist | null {
+    if (!raw) return null;
+    const payload = raw.wishlist ?? raw;
+    const items = Array.isArray(payload.items) ? payload.items.map((it: any) => ({
+        id: String(it?.id ?? it?.uid ?? ''),
+        sku: it?.sku ?? it?.product?.sku ?? '',
+        qty: Number(it?.qty ?? it?.quantity ?? 0),
+        description: it?.description ?? it?.product?.description ?? '',
+        price: it?.price ?? it?.product?.price ?? 0,
+        price_without_tax: it?.price_without_tax ?? 0,
+        buy_request: it?.buy_request ?? '',
+        options: it?.options ?? [],
+        product: it?.product ? normalizeProduct(it.product) : (it?.product as any),
+        raw: it,
+    } as WishlistItem)) : [];
+
+    return {
+        id: Number(payload.id ?? 0),
+        updated_at: payload.updated_at ?? payload.updatedAt ?? '',
+        items_count: Number(payload.items_count ?? items.length),
+        creators_name: payload.creators_name ?? '',
+        items,
+    } as Wishlist;
+}

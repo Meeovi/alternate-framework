@@ -1,4 +1,4 @@
-import type { SearchAdapter, TransportAdapter } from '@mframework/sdk'
+import type { SearchAdapter, TransportAdapter } from '@mframework/core'
 import type { SearchQuery, SearchResult, Facet, Result } from '@mframework/core'
 import { unwrap } from './utils'
 

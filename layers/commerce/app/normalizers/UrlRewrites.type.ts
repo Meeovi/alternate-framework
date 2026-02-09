@@ -23,3 +23,18 @@ export interface UrlRewritesOutput {
 export interface UrlRewritesQueryOptions {
     urlParam: string;
 }
+
+export function normalizeUrlRewriteResponse(raw: any): UrlRewritesOutput | null {
+    if (!raw) return null;
+    // GraphQL urlResolver may return the object directly or wrap it under
+    // urlResolver property depending on response shape.
+    const payload = raw?.urlResolver ?? raw;
+    if (!payload) return null;
+    return {
+        sku: payload?.sku ?? payload?.product_sku ?? '',
+        type: payload?.type ?? payload?.entity_type ?? (payload?.is_category ? 'CATEGORY' : 'PRODUCT'),
+        id: Number(payload?.id ?? payload?.entity_id ?? 0),
+        display_mode: payload?.display_mode ?? payload?.mode ?? 'PRODUCTS',
+        sort_by: payload?.sort_by ?? payload?.sort ?? '',
+    } as UrlRewritesOutput;
+}

@@ -83,6 +83,8 @@ import {
     SwatchData,
     TierPrice,
     UrlRewrite,
+    NormalizedProductsQueryOutput,
+    normalizeProductsQueryOutput,
     VariantItem,
 } from './ProductList.type';
 
@@ -1618,3 +1620,10 @@ export class ProductListQuery {
 }
 
 export default new ProductListQuery();
+
+// Normalize a products GraphQL response into the canonical NormalizedProductsQueryOutput
+export function normalizeProductsResponse(raw: any): NormalizedProductsQueryOutput {
+    if (!raw) return normalizeProductsQueryOutput({ items: [], sort_fields: { options: [] }, filters: [], total_count: 0, page_info: { current_page: 1, total_pages: 1 } });
+    if (raw.products) return normalizeProductsQueryOutput(raw.products);
+    return normalizeProductsQueryOutput(raw);
+}

@@ -13,7 +13,7 @@ import { Field, Query } from '@tilework/opus';
 
 import { CategoryDisplayMode } from '../routes/CategoryPage/CategoryPage.config';
 
-import { MenuItem } from './Menu.type';
+import { MenuItem, normalizeMenuItems } from './Menu.type';
 /**
  * Menu Query
  * @class MenuQuery
@@ -52,3 +52,11 @@ export class MenuQuery {
 }
 
 export default new MenuQuery();
+
+export function normalizeMenuResponse(raw: any): MenuItem[] {
+    if (!raw) return [];
+    if (raw.menu) return normalizeMenuItems(raw.menu);
+    if (Array.isArray(raw)) return normalizeMenuItems(raw);
+    if (Array.isArray(raw?.menuItems)) return normalizeMenuItems(raw.menuItems);
+    return normalizeMenuItems(raw);
+}

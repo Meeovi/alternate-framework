@@ -20,3 +20,21 @@ export interface MenuItem {
     category_id: number;
     display_mode: CategoryDisplayMode;
 }
+
+export function normalizeMenuItems(raw: any): MenuItem[] {
+    if (!raw) return [];
+    if (Array.isArray(raw)) {
+        return raw.map((it: any) => ({
+            url: it?.url ?? it?.link ?? '',
+            title: it?.title ?? it?.label ?? it?.name ?? '',
+            item_id: String(it?.item_id ?? it?.id ?? ''),
+            position: Number(it?.position ?? 0),
+            parent_id: Number(it?.parent_id ?? it?.parent ?? 0),
+            category_id: Number(it?.category_id ?? it?.cat_id ?? 0),
+            display_mode: it?.display_mode ?? it?.mode ?? 'PRODUCTS',
+        } as MenuItem));
+    }
+    // If the payload contains an items key, map that
+    if (Array.isArray(raw?.items)) return normalizeMenuItems(raw.items);
+    return [];
+}

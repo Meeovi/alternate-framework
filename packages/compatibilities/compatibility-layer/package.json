@@ -1,13 +1,20 @@
 {
   "name": "@mframework/compatibility-layer",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "This flexible compatibility layer allows you to use M Framework with various libraries and frameworks, providing a seamless integration experience.",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "keywords": [
+    "M Framework",
+    "compatibility layer",
+    "integration",
+    "libraries",
+    "frameworks"
+  ],
+  "author": "M Framework Team",
+  "license": "MIT",
+  "type": "module"
 }
