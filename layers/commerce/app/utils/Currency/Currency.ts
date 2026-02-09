@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { Currencies, CurrencyData } from '../../normalizers/Config.type';
+import { Currencies, CurrencyData } from '../../types/normalizers/Config.type';
 import BrowserDatabase from '../../utils/BrowserDatabase';
 import { getStoreState } from '../../utils/Store';
 

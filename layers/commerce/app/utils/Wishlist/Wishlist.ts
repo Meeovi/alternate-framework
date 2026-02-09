@@ -14,7 +14,7 @@ import {
     ProductDiscount,
     ProductItem,
     ProductPrice,
-} from '../../normalizers/ProductList.type';
+} from '../../types/normalizers/ProductList.type';
 import { Product as DomainProduct } from '../../types/domain';
 
 /**

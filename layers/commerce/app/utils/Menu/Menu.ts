@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { MenuItem } from '../../normalizers/Menu.type';
+import { MenuItem } from '../../types/normalizers/Menu.type';
 import { getUrlPathname } from '../../utils/Url';
 
 import { FormattedMenuItem, MenuLocation } from './Menu.type';

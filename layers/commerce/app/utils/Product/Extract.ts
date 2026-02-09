@@ -18,7 +18,7 @@ import {
     GroupedProductItem,
     Money,
     PriceRange,
-} from '../../normalizers/ProductList.type';
+} from '../../types/normalizers/ProductList.type';
 import { GQLCurrencyEnum, GQLProductStockStatus } from '../../types/Graphql.type';
 import { decodeBase64 } from '../../utils/Base64';
 import { FieldValue } from '../../utils/Form/Form.type';

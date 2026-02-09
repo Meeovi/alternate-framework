@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import {
     Directions,
 } from 'Component/ChevronIcon/ChevronIcon.config';
-import { SortDirections } from '../routes/CategoryPage/CategoryPage.config';
+import { SortDirections } from './routes/CategoryPage/CategoryPage.config';
 
 // Support for comtabilitiy
 

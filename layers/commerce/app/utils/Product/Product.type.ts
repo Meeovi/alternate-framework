@@ -26,7 +26,7 @@ import {
     ProductStockItem,
     RatingsBreakdown,
     SwatchData,
-} from '../../normalizers/ProductList.type';
+} from '../../types/normalizers/ProductList.type';
 import { Product as DomainProduct } from '../../types/domain';
 import { WishlistProduct } from '../../stores/Wishlist/Wishlist.type';
 import { Merge } from '../../types/Common.type';

@@ -1,6 +1,6 @@
 {
   "name": "@mframework/adapter-betterauth",
-  "version": "0.0.9",
+  "version": "0.1.2-beta1",
   "description": "Official Better-Auth adapter for M Framework Auth Layer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json",
     "create": "node ./scripts/init-adapter.js",
-    "create:interactive": "node ./scripts/create-adapter-cli.cjs"
+    "create:interactive": "node ./scripts/create-adapter-cli.cjs",
+    "clean": "rm -rf dist"
   },
   "keywords": [
     "meeovi",
@@ -29,14 +30,12 @@
     "@better-auth/scim": "^1.4.15",
     "@better-auth/sso": "^1.4.12",
     "@better-auth/stripe": "^1.4.15",
-    "@mframework/core": "^0.0.2",
+    "@mframework/core": "^0.0.11",
     "@polar-sh/better-auth": "^1.6.3",
     "better-auth": "^1.4.12",
     "typescript": "^5.9.3"
   },
   "files": [
-    "dist",
-    "src",
-    "README.md"
+    "dist"
   ]
 }

@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { UrlRewritePageType } from '../../routes/UrlRewrites/UrlRewrites.config';
+import { UrlRewritePageType } from '../../types/routes/UrlRewrites/UrlRewrites.config';
 // Reducers removed — migration to Pinia stores; keep Preload minimal
 import BrowserDatabase from '../../utils/BrowserDatabase';
 import { isMobile } from '../../utils/Mobile';

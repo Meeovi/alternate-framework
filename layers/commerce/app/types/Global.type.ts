@@ -9,11 +9,11 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { StoreEnhancer } from 'redux';
+// removed redux dependency: do not import `StoreEnhancer` here
 
-import { CmsPageFields } from '../normalizers/CmsPage.type';
-import { Slider } from '../normalizers/Slider.type';
-import { CategoryDisplayMode } from '../routes/CategoryPage/CategoryPage.config';
+import { CmsPageFields } from './normalizers/CmsPage.type';
+import { Slider } from './normalizers/Slider.type';
+import { CategoryDisplayMode } from './routes/CategoryPage/CategoryPage.config';
 
 import { Mix } from './Common.type';
 
@@ -22,7 +22,7 @@ declare global {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         '__REACT_DEVTOOLS_GLOBAL_HOOK__'?: Record<string, unknown>;
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        '__REDUX_DEVTOOLS_EXTENSION__'?: (options: any) => StoreEnhancer<any, any>;
+        '__REDUX_DEVTOOLS_EXTENSION__'?: (options: any) => any;
         storeRegexText: string;
         actionName: {
             type?: string;
@@ -86,7 +86,7 @@ declare global {
     }
 
     interface Navigator {
-        userAgentData: NavigatorUAData;
+        userAgentData?: NavigatorUAData;
     }
 
     interface NavigatorUABrandVersion {

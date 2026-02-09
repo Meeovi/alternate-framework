@@ -13,7 +13,7 @@
 import { FieldType } from 'Component/Field/Field.config';
 import { ProductType } from 'Component/Product/Product.config';
 import { NONE_RADIO_OPTION } from 'Component/ProductCustomizableOption/ProductCustomizableOption.config';
-import { CustomizableSelectionValue, GroupedProductItem } from '../../normalizers/ProductList.type';
+import { CustomizableSelectionValue, GroupedProductItem } from '../../types/normalizers/ProductList.type';
 import { GQLCurrencyEnum } from '../../types/Graphql.type';
 import { decodeBase64, encodeBase64 } from '../../utils/Base64';
 import { formatPrice } from '../../utils/Price';

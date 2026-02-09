@@ -9,11 +9,11 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { CustomerAddress } from '../../normalizers/MyAccount.type';
-import { OrderAddress } from '../../normalizers/Order.type';
-import { Country, Region } from '../../normalizers/Region.type';
-import { Store } from '../../normalizers/StoreInPickUp.type';
-import { CheckoutAddress } from '../../routes/Checkout/Checkout.type';
+import { CustomerAddress } from '../../types/normalizers/MyAccount.type';
+import { OrderAddress } from '../../types/normalizers/Order.type';
+import { Country, Region } from '../../types/normalizers/Region.type';
+import { Store } from '../../types/normalizers/StoreInPickUp.type';
+import { CheckoutAddress } from '../../types/routes/Checkout/Checkout.type';
 import { GQLCountryCodeEnum, GQLCustomerAddressInput } from '../../types/Graphql.type';
 import { getStoreState } from '../../utils/Store';
 

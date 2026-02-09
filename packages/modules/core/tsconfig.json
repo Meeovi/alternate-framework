@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "emitDeclarationOnly": false,
-    "outDir": "dist",
-    "moduleResolution": "bundler",
+    "target": "ES2020",
     "module": "ESNext",
-    "target": "ESNext",
-    "strict": true,
-    "jsx": "react-jsx",
-    "skipLibCheck": true, 
-    "noEmitOnError": false
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "lib": ["ES2020", "DOM"],
+    "resolveJsonModule": true
   },
-  "include": ["src", "index.ts"]
+  "include": ["**/*.ts", "**/*.d.ts"]
 }

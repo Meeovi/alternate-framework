@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { ProductListOptions } from '../../normalizers/ProductList.type';
+import { ProductListOptions } from '../../types/normalizers/ProductList.type';
 import ProductDispatcher from '../../stores/Product/Product.dispatcher';
 import getStore from '../../utils/Store';
 

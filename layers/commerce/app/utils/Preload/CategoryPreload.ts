@@ -9,8 +9,8 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { ProductListOptions } from '../../normalizers/ProductList.type';
-import { SortDirections } from '../../routes/CategoryPage/CategoryPage.config';
+import { ProductListOptions } from '../../types/normalizers/ProductList.type';
+import { SortDirections } from '../../types/routes/CategoryPage/CategoryPage.config';
 import ProductListDispatcher from '../../stores/ProductList/ProductList.dispatcher';
 import history from '../../utils/History';
 import getStore from '../../utils/Store';

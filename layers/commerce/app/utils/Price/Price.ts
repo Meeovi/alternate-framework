@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { TierPrice } from '../../normalizers/ProductList.type';
+import { TierPrice } from '../../types/normalizers/ProductList.type';
 import { GQLCurrencyEnum } from '../../types/Graphql.type';
 
 import { CurrencyMap, HUNDRED_PERCENT } from './Price.config';

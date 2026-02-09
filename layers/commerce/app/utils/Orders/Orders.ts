@@ -12,7 +12,7 @@
 
 import {
     InvoiceItem, OrderItem, OrderItemProduct, RefundItem, ShipmentItemInterface,
-} from '../../normalizers/Order.type';
+} from '../../types/normalizers/Order.type';
 import { decodeBase64 } from '../../utils/Base64';
 
 import { OrderItemQtyArray } from './Orders.type';

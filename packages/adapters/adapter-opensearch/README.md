@@ -9,7 +9,7 @@ Usage (direct registration):
 
 ```ts
 import { createOpenSearchAdapter } from 'adapter-opensearch'
-import searchModule from '@mframework/search'
+import searchModule from '@mframework/layer-search'
 
 const myProviderModule = {
   id: 'search-provider-opensearch',

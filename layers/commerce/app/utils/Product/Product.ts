@@ -25,7 +25,7 @@ import {
     ProductStockItem,
     RatingsBreakdown,
     VariantItem,
-} from '../../normalizers/ProductList.type';
+} from '../../types/normalizers/ProductList.type';
 import { Product as DomainProduct } from '../../types/domain';
 import { showNotification } from '../../stores/Notification/Notification.action';
 import { NotificationType } from '../../stores/Notification/Notification.type';

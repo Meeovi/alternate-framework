@@ -11,7 +11,7 @@
 
 import PropTypes from 'prop-types';
 
-import { CategoryPageLayout } from '../routes/CategoryPage/CategoryPage.config';
+import { CategoryPageLayout } from './routes/CategoryPage/CategoryPage.config';
 
 // Support for comtabilitiy
 

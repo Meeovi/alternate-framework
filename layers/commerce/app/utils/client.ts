@@ -1,25 +1,25 @@
 import * as CommercePkg from '~/types';
 import { sdk } from '@mframework/core';
 import imports from '../types';
-import { normalizeProductsQueryOutput, normalizeProduct } from '../normalizers/ProductList.type';
-import { normalizeProductsResponse } from '../normalizers/ProductList.query';
-import { normalizeMenuResponse } from '../normalizers/Menu.query';
-import { normalizeCategoryResponse } from '../normalizers/Category.query';
-import { normalizeCompareResponse } from '../normalizers/ProductCompare.query';
-import { normalizeStoresResponse } from '../normalizers/StoreInPickUp.query';
-import { normalizeCmsPage } from '../normalizers/CmsPage.type';
-import { normalizeUrlRewrite } from '../normalizers/UrlRewrites.query';
-import { normalizeWishlistResponse } from '../normalizers/Wishlist.query';
-import { normalizeCart } from '../normalizers/Cart.type';
-import { normalizeOrder } from '../normalizers/Order.type';
-import { normalizeReview } from '../normalizers/Review.type';
-import { normalizeGiftCard, normalizeGiftCards } from '../normalizers/GiftCard.type';
-import { normalizeSubscription, normalizeSubscriptions } from '../normalizers/Subscription.type';
-import { normalizeReturn, normalizeReturns } from '../normalizers/Return.type';
-import { normalizeCreditMemo, normalizeCreditMemos } from '../normalizers/CreditMemo.type';
-import { normalizeInvoice, normalizeInvoices } from '../normalizers/Invoice.type';
-import { normalizeTransaction, normalizeTransactions } from '../normalizers/Transaction.type';
-import { normalizePayment, normalizePayments } from '../normalizers/Payment.type';
+import { normalizeProductsQueryOutput, normalizeProduct } from '../types/normalizers/ProductList.type';
+import { normalizeProductsResponse } from '../types/normalizers/ProductList.query';
+import { normalizeMenuResponse } from '../types/normalizers/Menu.query';
+import { normalizeCategoryResponse } from '../types/normalizers/Category.query';
+import { normalizeCompareResponse } from '../types/normalizers/ProductCompare.query';
+import { normalizeStoresResponse } from '../types/normalizers/StoreInPickUp.query';
+import { normalizeCmsPage } from '../types/normalizers/CmsPage.type';
+import { normalizeUrlRewrite } from '../types/normalizers/UrlRewrites.query';
+import { normalizeWishlistResponse } from '../types/normalizers/Wishlist.query';
+import { normalizeCart } from '../types/normalizers/Cart.type';
+import { normalizeOrder } from '../types/normalizers/Order.type';
+import { normalizeReview } from '../types/normalizers/Review.type';
+import { normalizeGiftCard, normalizeGiftCards } from '../types/normalizers/GiftCard.type';
+import { normalizeSubscription, normalizeSubscriptions } from '../types/normalizers/Subscription.type';
+import { normalizeReturn, normalizeReturns } from '../types/normalizers/Return.type';
+import { normalizeCreditMemo, normalizeCreditMemos } from '../types/normalizers/CreditMemo.type';
+import { normalizeInvoice, normalizeInvoices } from '../types/normalizers/Invoice.type';
+import { normalizeTransaction, normalizeTransactions } from '../types/normalizers/Transaction.type';
+import { normalizePayment, normalizePayments } from '../types/normalizers/Payment.type';
 
 function getRawCommerceClient(provider?: string, config?: any): any {
   try {

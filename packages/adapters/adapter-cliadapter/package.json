@@ -10,8 +10,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@mframework/core": "^0.0.1",
-    "@mframework/core": "^0.0.1",
     "typescript": "^5.9.3"
   },
   "devDependencies": {

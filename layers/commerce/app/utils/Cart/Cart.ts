@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { ShippingMethod } from '../../normalizers/Checkout.type';
+import { ShippingMethod } from '../../types/normalizers/Checkout.type';
 import { IndexedCartItem } from '../../stores/Cart/Cart.type';
 import { RootState } from '../../utils/Store/Store.type';
 

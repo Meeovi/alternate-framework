@@ -1,9 +1,9 @@
 import { loadGraphQL } from './src/loader/loadGraphql'
 
-loadGraphQL() 
+loadGraphQL();
 
-export * from './src/utils/fetcher' 
-export * from './src/loader/registry'
+export * from './src/utils/fetcher';
+export * from './src/loader/registry';
 
 // Apollo client
 export * from './src/client/apollo'
@@ -45,8 +45,8 @@ export * from './src/adapters/cart'
 export * from './src/adapters/lists'
 
 export * from './src/types/module'
-export * from './src/types/app'
-export * from './src/types/config'
+export * from './src/types/index'
+export { MFrameworkConfig } from './src/types/config'
 export * from './src/types/events'
 
 //// Types and Utilities ////
@@ -90,12 +90,12 @@ export * from './src/types/ui/form'
 export * from './src/types/ui/state'
 export * from './src/types/ui/pagination'
 export * from './src/types/ui/component'
-export * from './src/types/ui/blocks'
-export * from './src/types/ui/content'
-export * from './src/types/ui/meta'
-export * from './src/types/ui/system'
-export * from './src/types/ui/help'
-export * from './src/types/ui/os'
+export * from './src/types/ui/blocks/index'
+export * from './src/types/ui/content/index'
+export * from './src/types/ui/meta/index'
+export * from './src/types/ui/system/index'
+export * from './src/types/ui/help/index'
+export * from './src/types/ui/os/index'
 export * from './src/types/ui/schema'
 
 // SDK
@@ -105,23 +105,16 @@ export * from './src/types/sdk/request'
 export * from './src/types/sdk/response'
 export * from './src/types/sdk/adapter'
 // Explicit SDK runtime export
-export { sdk } from './src/client'
+export { sdk } from './src/client/index'
 
-// Normalizers
-export * from './src/normalizers/factories'
-export * from './src/normalizers/factories/apiClientFactory'
-export * from './src/normalizers/utils/context'
-export * from './src/normalizers/utils/factoryParams'
-export * from './src/normalizers/utils/helpers'
-export * from './src/normalizers/utils/i18n-redirects'
-export * from './src/normalizers/utils/logger'
-export * from './src/normalizers/utils/shared'
-export * from './src/normalizers/utils/ssr'
-export * from './src/normalizers/utils/wrap'
+// Normalizers: these are types-only in source (d.ts) and produce no runtime
+// JS. Avoid exporting them from the runtime entry to prevent Node from
+// attempting to import non-existent JS files. Import these types directly
+// from their source paths where needed.
 
-export * from './src/client';
+export * from './src/client/index';
 // Note: adapters re-exports may cause type name collisions with dedicated types
 // (e.g. CommerceAdapter). Avoid re-exporting the entire adapters folder here;
 // import specific adapter helpers from `@mframework/core/src/adapters` when
 // needed instead.
-export * from './src/registry';
+export * from './src/registry/index';

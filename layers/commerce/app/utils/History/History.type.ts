@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { CategoryDisplayMode } from '../../routes/CategoryPage/CategoryPage.config';
+import { CategoryDisplayMode } from '../../types/routes/CategoryPage/CategoryPage.config';
 import { IndexedProduct } from '../../utils/Product/Product.type';
 
 export interface HistoryState {

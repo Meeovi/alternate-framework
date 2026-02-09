@@ -1,7 +1,7 @@
 import { ref, computed, readonly } from 'vue'
 import type { Cart as DomainCart } from '../types/domain'
-import { useCart } from '../cart/useCart'
 import { defineStore } from 'pinia'
+import { useCart } from '~/composables/useCart'
 
 export const useCartStore = defineStore('cart', () => {
   const cart = ref<DomainCart | null>(null)

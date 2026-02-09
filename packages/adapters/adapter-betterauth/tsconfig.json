@@ -3,13 +3,12 @@
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",
-    "baseUrl": ".",
-    "moduleResolution": "bundler",
-    "module": "ESNext",
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
     "target": "ESNext",
     "strict": true,
     "jsx": "react-jsx",
-    "skipLibCheck": true,
+    "skipLibCheck": true, 
     "noEmitOnError": false
   },
   "include": ["src", "index.ts"]

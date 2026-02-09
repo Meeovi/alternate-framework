@@ -5,12 +5,12 @@ export interface SearchModuleConfig {
 
 export function validateSearchConfig(config: SearchModuleConfig) {
   if (!config.defaultProvider) {
-    throw new Error('[@mframework/search] Missing defaultProvider')
+    throw new Error('[@mframework/layer-search] Missing defaultProvider')
   }
 
   if (!config.providers[config.defaultProvider]) {
     throw new Error(
-      `[@mframework/search] Provider "${config.defaultProvider}" not found in config.providers`
+      `[@mframework/layer-search] Provider "${config.defaultProvider}" not found in config.providers`
     )
   }
 }
