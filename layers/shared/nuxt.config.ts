@@ -7,15 +7,7 @@ export default defineNuxtConfig({
     name: 'shared',
   },
 
-  imports: {
-    dirs: [
-      'composables',
-      'app/composables'
-    ]
-  },
-
   modules: [
-    'vuetify-nuxt-module',
     'nuxt-tiptap-editor',
     '@pinia/nuxt',
     '@vueuse/nuxt',
@@ -32,18 +24,6 @@ export default defineNuxtConfig({
       crossOriginOpenerPolicy: false,
       crossOriginEmbedderPolicy: false,
       permissionsPolicy: false
-    }
-  },
-
-  vuetify: {
-    vuetifyOptions: {
-      icons: {
-        defaultSet: 'fa',
-        sets: [{
-          name: 'mdi',
-          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
-        }]
-      }
     }
   },
 

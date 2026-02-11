@@ -1,5 +1,5 @@
-// Lightweight helper to obtain a search client and index name for InstantSearch
-// This version NEVER throws — it returns null when search is not configured.
+// layers/search/utils/client.ts
+// Fully robust Searchkit InstantSearch client loader for Nuxt 3/4
 
 import type { SearchClient } from 'instantsearch.js'
 import { getEnv } from '../env'
@@ -32,11 +32,24 @@ export function getSearchClient(): SearchClient | null {
     return null
   }
 
-  let createClient: any
+  let mod: any
   try {
-    createClient = require('@searchkit/instantsearch-client')
+    mod = require('@searchkit/instantsearch-client')
   } catch {
     console.warn('[search] @searchkit/instantsearch-client not installed — search disabled')
+    return null
+  }
+
+  // Normalize all possible export shapes (ESM, CJS, wrapped, double-wrapped)
+  const candidate =
+    mod?.default?.default ||        // ESM wrapped twice
+    mod?.default?.createClient ||   // ESM default object with named export
+    mod?.default ||                 // ESM default export
+    mod?.createClient ||            // CJS named export
+    mod                             // CJS default export
+
+  if (typeof candidate !== 'function') {
+    console.warn('[search] createClient not found in @searchkit/instantsearch-client export:', mod)
     return null
   }
 
@@ -45,7 +58,7 @@ export function getSearchClient(): SearchClient | null {
     const apiKey = getEnv('SEARCHKIT_API_KEY')
     if (apiKey) opts.apiKey = apiKey
 
-    return createClient(opts)
+    return candidate(opts)
   } catch (e: any) {
     console.warn('[search] Failed to create Searchkit client:', e?.message || e)
     return null

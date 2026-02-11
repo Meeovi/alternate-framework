@@ -45,43 +45,26 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    useRouter
-  } from 'vue-router'
+import { useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { getSearchClient, getIndexName } from '../utils/search/client'
 
-  import {
-    type Ref,
-    ref,
-    watch
-  } from 'vue';
-  import Client from '@searchkit/instantsearch-client'
+const router = useRouter()
+const searchQuery = ref('')
+const searchClient = getSearchClient()
+const indexName = getIndexName()
+const isDev = process.env.NODE_ENV !== 'production'
 
-  const searchClient = Client({
-    url: '/api/search'
+if (isDev) {
+  console.debug('[search] searchClient', searchClient, 'has search method:', typeof searchClient?.search)
+}
+
+function openResult(item: any) {
+  const id = item._id ?? item.id ?? ''
+  const title = item.title ?? ''
+  router.push({
+    path: '/results',
+    query: { id, title }
   })
-
-  const configDetails = useRuntimeConfig()
-
-  const router = useRouter()
-  const searchQuery = ref('');
-  const indexName = configDetails.public.indexName;
-  const isDev = process.env.NODE_ENV !== 'production'
-
-
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.debug('[search] searchClient', searchClient, 'has search method:', typeof searchClient.search)
-  }
-
-  function openResult(item: any) {
-    const id = item._id ?? item.id ?? '';
-    const title = item.title ?? '';
-    router.push({
-      path: '/results',
-      query: {
-        id,
-        title
-      }
-    });
-  }
+}
 </script>
