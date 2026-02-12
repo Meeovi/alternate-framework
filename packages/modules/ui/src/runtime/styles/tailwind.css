@@ -1,9 +1,7 @@
 /* @mframework/ui/runtime/assets/css/tailwind.css */
 
 /* Tailwind base (if using Tailwind 3 style) */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/preflight";
 
 /* Vuetify + Tailwind coexistence tips:
    - Avoid global resets that fight Vuetify

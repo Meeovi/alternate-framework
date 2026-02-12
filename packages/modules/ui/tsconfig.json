@@ -11,6 +11,6 @@
     "skipLibCheck": true, 
     "noEmitOnError": false
   },
-  "include": ["runtime/**/*", "src/**/*", "types/**/*"],
+  "include": ["runtime/**/*", "src/**/*", "types/**/*", "../../adapters/adapter-directus/src/types/ui.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "mframework-framework",
+  "name": "mframework",
   "version": "1.0.0",
   "private": true,
   "description": "M Framework — Vue + Nuxt 4 starter and integrations",
@@ -16,7 +16,7 @@
   "bin": {
     "meeovi-create-adapter": "packages/core/bin/create-adapter.cjs"
   },
-  "keywords": ["vue", "nuxt", "mframework-framework", "meeovi"],
+  "keywords": ["vue", "nuxt", "mframework", "meeovi"],
   "author": "M Framework",
   "license": "MIT",
   "devDependencies": {

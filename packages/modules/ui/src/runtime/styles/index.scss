@@ -1,0 +1,101 @@
+@import './tailwind.css';
+
+// Your design tokens, utilities, etc.
+:root {
+  --m-primary: #3b82f6;
+  --m-secondary: #64748b;
+  --m-accent: #10b981;
+  --m-muted: #f3f4f6;
+  --m-surface: #ffffff;
+  --m-border: #e5e7eb;
+}
+
+.dark {
+  --m-primary: #60a5fa;
+  --m-secondary: #94a3b8;
+  --m-accent: #34d399;
+  --m-muted: #1f2937;
+  --m-surface: #111827;
+  --m-border: #374151;
+}
+
+// GrapesJS canvas and editor styling
+/* Let's highlight canvas boundaries */
+#gjs {
+  border: 3px solid #444;
+}
+
+/* Theming */
+
+/* Primary color for the background */
+.gjs-one-bg {
+  background-color: #78366a;
+}
+
+/* Secondary color for the text color */
+.gjs-two-color {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Tertiary color for the background */
+.gjs-three-bg {
+  background-color: #ec5896;
+  color: white;
+}
+
+/* Quaternary color for the text color */
+.gjs-four-color,
+.gjs-four-color-h:hover {
+  color: #ec5896;
+}
+
+/* Reset some default styling */
+.gjs-cv-canvas {
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gjs-block {
+  width: auto;
+  height: auto;
+  min-height: auto;
+}
+
+.panel__top {
+  padding: 0;
+  width: 100%;
+  display: flex;
+  position: initial;
+  justify-content: center;
+  justify-content: space-between;
+}
+.panel__basic-actions {
+  position: initial;
+}
+
+.editor-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  height: 300px;
+}
+
+.editor-canvas {
+  flex-grow: 1;
+}
+
+.panel__right {
+  flex-basis: 230px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.panel__switcher {
+  position: initial;
+}
+
+.panel__devices {
+  position: initial;
+}
