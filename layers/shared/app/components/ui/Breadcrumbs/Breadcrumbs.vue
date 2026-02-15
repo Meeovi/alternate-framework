@@ -11,7 +11,7 @@
                 variant="tertiary"
                 square
                 @click="toggle"
-                data-testid="breadcrumbs-dropdown-button"
+                data-testid="breadcrumbs-dropdown-v-btn"
               >
                 <template #prefix>
                   <SfIconMoreHoriz

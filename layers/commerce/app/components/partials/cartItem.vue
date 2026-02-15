@@ -8,27 +8,27 @@
       <p class="mt-1 text-sm text-gray-500">SKU: {{ item.productVariant?.sku }}</p>
       <div class="mt-2 flex items-center">
         <div class="flex items-center border border-gray-300 rounded">
-          <button
+          <v-btn
             class="px-2 py-1 text-gray-600 hover:bg-gray-100"
             @click="updateQuantity(item.id, item.quantity - 1)"
             :disabled="item.quantity <= 1"
           >
             -
-          </button>
+          </v-btn>
           <span class="px-4 py-1">{{ item.quantity }}</span>
-          <button
+          <v-btn
             class="px-2 py-1 text-gray-600 hover:bg-gray-100"
             @click="updateQuantity(item.id, item.quantity + 1)"
           >
             +
-          </button>
+          </v-btn>
         </div>
-        <button
+        <v-btn
           class="ml-4 text-sm text-red-600 hover:text-red-800"
           @click="removeItem(item.id)"
         >
           Remove
-        </button>
+        </v-btn>
       </div>
     </div>
     <div class="ml-4 text-right">

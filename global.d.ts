@@ -28,3 +28,6 @@ declare module '~/*' {
 
 // Fallback for any other unknown imports
 declare module '*';
+
+// Nuxt i18n helper (auto-imported at runtime)
+declare function defineI18nConfig<T>(fn: () => T): T;

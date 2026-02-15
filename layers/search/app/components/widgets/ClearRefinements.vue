@@ -1,12 +1,12 @@
 <template>
   <div v-if="state" class="ais-ClearRefinements">
-    <button
+    <v-btn
       type="reset"
-      class="ais-ClearRefinements-button"
+      class="ais-ClearRefinements-v-btn"
       @click.prevent="refine"
     >
       Reset filters
-    </button>
+    </v-btn>
   </div>
 </template>
 

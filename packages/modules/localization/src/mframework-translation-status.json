@@ -1,0 +1,149 @@
+{
+  "total": 262,
+  "locales": {
+    "en-US": {
+      "total": 262,
+      "percentage": "100"
+    },
+    "ar-EG": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "ca-ES": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "ca-valencia": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "ckb": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "cs-CZ": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "cy": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "de-DE": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "el-GR": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "en-CA": {
+      "total": 262,
+      "percentage": "100"
+    },
+    "en-GB": {
+      "total": 262,
+      "percentage": "100"
+    },
+    "es-419": {
+      "total": 69,
+      "percentage": "26.0"
+    },
+    "es-ES": {
+      "total": 69,
+      "percentage": "26.0"
+    },
+    "eu-ES": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "fa-IR": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "fi": {
+      "total": 26,
+      "percentage": "9.9"
+    },
+    "fr-FR": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "gl-ES": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "hu-HU": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "id-ID": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "it-IT": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "ja-JP": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "ko-KR": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "nl-NL": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "pl-PL": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "pt-BR": {
+      "total": 4,
+      "percentage": "1.5"
+    },
+    "pt-PT": {
+      "total": 4,
+      "percentage": "1.5"
+    },
+    "ru-RU": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "sv": {
+      "total": 11,
+      "percentage": "4.2"
+    },
+    "th-TH": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "tl-PH": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "tr-TR": {
+      "total": 611,
+      "percentage": "100.0"
+    },
+    "uk-UA": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "vi-VN": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "zh-CN": {
+      "total": 0,
+      "percentage": "0"
+    },
+    "zh-TW": {
+      "total": 611,
+      "percentage": "100.0"
+    }
+  }
+}

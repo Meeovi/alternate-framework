@@ -42,3 +42,13 @@ export function setSocialCache(customCache: SocialCache) {
 export function getSocialCache() {
   return cache
 }
+
+export async function fetchAccountByHandle(handle: string) {
+  // Minimal stub used during build to satisfy imports.
+  return null
+}
+
+export async function fetchAccountById(id: string) {
+  // Minimal stub used during build to satisfy imports.
+  return null
+}

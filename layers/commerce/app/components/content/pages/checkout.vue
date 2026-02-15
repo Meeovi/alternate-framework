@@ -4,10 +4,10 @@
       <div id="payment-element">
         <!-- Stripe Elements will inject the payment form here -->
       </div>
-      <button id="submit" :disabled="isLoading">
+      <v-btn id="submit" :disabled="isLoading">
         <span v-if="isLoading">Processing...</span>
         <span v-else>Pay now</span>
-      </button>
+      </v-btn>
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
@@ -87,7 +87,7 @@ form {
   margin-bottom: 24px;
 }
 
-button {
+v-btn {
   background: #5469d4;
   color: #ffffff;
   border-radius: 4px;
@@ -101,11 +101,11 @@ button {
   transition: all 0.2s ease;
 }
 
-button:hover {
+v-btn:hover {
   filter: brightness(1.1);
 }
 
-button:disabled {
+v-btn:disabled {
   opacity: 0.5;
   cursor: default;
 }

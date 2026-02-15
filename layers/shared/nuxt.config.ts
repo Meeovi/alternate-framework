@@ -7,13 +7,27 @@ export default defineNuxtConfig({
     name: 'shared',
   },
 
+  app: {
+    baseURL: '/',
+    head: {
+      meta: [{
+        charset: 'utf-8'
+      }, ],
+    },
+  },
+
   modules: [
     'nuxt-tiptap-editor',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    '@nuxtjs/i18n',
     'nuxt-security',
+    'vuetify-nuxt-module',
+    '@nuxt/image',
   ],
+
+  image: {
+    provider: process.env.IMAGE_PROVIDER || 'netlify',
+  },
 
   security: {
     headers: {
@@ -27,45 +41,67 @@ export default defineNuxtConfig({
     }
   },
 
-  i18n: {
-    strategy: "prefix_except_default",
-    defaultLocale: "en-GB",
-    detectBrowserLanguage: false,
-    langDir: "./src/langs/",
-    vueI18n: "./config",
-    locales: [{
-        code: "en-GB",
-        language: "en-GB",
-        file: "en-GB.ts",
+  vuetify: {
+    moduleOptions: {
+      includeTransformAssetsUrls: {
+        'v-card': [
+          'image',
+          'prepend-avatar',
+          'append-avatar',
+        ],
       },
-      {
-        code: "pl-PL",
-        language: "pl-PL",
-        file: "pl-PL.ts",
+      ssrClientHints: {
+        reloadOnFirstRequest: false,
+        prefersColorScheme: true,
+        prefersColorSchemeOptions: {
+          useBrowserThemeOnly: false,
+        },
+        viewportSize: true,
       },
-      {
-        code: "testde",
-        language: "de-DE",
-        file: "de-DE.ts",
-        localeId: "c19b753b5f2c4bea8ad15e00027802d4",
-      },
-    ],
+      // styles: { configFile: 'assets/custom-vuetify.scss' },
+    },
   },
 
-  build: {
-    transpile: [
-      'vuetify',
-    ],
+  vite: {
+    clearScreen: false,
+    define: {
+      'process.env.DEBUG': false,
+    },
+    build: {
+      target: 'esnext',
+    },
+    vue: {
+      // template: { transformAssetUrls },
+      script: {
+        propsDestructure: true,
+      },
+    },
+  },
+
+  routeRules: {
+    '/no-ssr': {
+      ssr: false
+    },
   },
 
   nitro: {
-    prerender: {
-      enabled: true,
-      crawlLinks: true,
-      routes: [],
+    esbuild: {
+      options: {
+        target: 'esnext',
+      },
     },
-    compressPublicAssets: true,
   },
 
-  runtimeConfig: {}
+  features: {
+    devLogs: false,
+  },
+  
+  experimental: {
+    payloadExtraction: false,
+    typedPages: false,
+  },
+
+  devtools: {
+    enabled: true,
+  },
 })

@@ -4,9 +4,9 @@
   <form v-else @submit.prevent="submit" class="space-y-4">
     <FormField v-for="field in schema" :key="field.key" :field="field" :form="engine.form" />
 
-    <button type="submit" class="btn-primary">
+    <v-btn type="submit" class="btn-primary">
       {{ submitLabel || 'Submit' }}
-    </button>
+    </v-btn>
   </form>
 </template>
 

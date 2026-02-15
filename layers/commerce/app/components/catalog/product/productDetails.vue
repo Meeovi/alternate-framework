@@ -31,7 +31,7 @@
                                             :aria-controls="inputId" aria-label="Decrease value" @click="dec()">
                                             <SfIconRemove />
                                         </v-btn>
-                                        <input :id="inputId" v-model="count" type="number"
+                                        <v-text-field :id="inputId" v-model="count" type="number"
                                             class="grow appearance-none mx-2 w-8 text-center bg-transparent font-medium"
                                             :min="min" :max="max" @input="handleOnChange" />
                                         <v-btn variant="flat" :disabled="count >= max" square class="rounded-l-none p-3"

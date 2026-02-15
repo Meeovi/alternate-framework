@@ -44,9 +44,9 @@ const removeItem = async () => {
     </div>
     <div class="flex flex-1 items-end justify-end text-sm">
       <div class="flex">
-        <button v-if="isRemovable" type="button" class="font-medium text-dark bg-transparent" @click="removeItem">
+        <v-btn v-if="isRemovable" type="v-btn" class="font-medium text-dark bg-transparent" @click="removeItem">
           Remove
-        </button>
+        </v-btn>
       </div>
     </div>
   </div>

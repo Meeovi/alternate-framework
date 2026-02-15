@@ -4,17 +4,17 @@
     <form @submit.prevent="onSubmit">
       <div>
         <label>Name</label>
-        <input v-model="form.name" />
+        <v-text-field v-model="form.name" />
       </div>
       <div>
         <label>Price</label>
-        <input v-model.number="form.price" type="number" />
+        <v-text-field v-model.number="form.price" type="number" />
       </div>
       <div>
         <label>Description</label>
         <textarea v-model="form.description" />
       </div>
-      <button type="submit">Create</button>
+      <v-btn type="submit">Create</v-btn>
     </form>
   </div>
 </template>

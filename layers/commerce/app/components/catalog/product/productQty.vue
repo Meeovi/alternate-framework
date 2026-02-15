@@ -10,7 +10,7 @@
           <v-btn square variant="secondary" :disabled="count <= min" @click="dec()" size="sm">
             <SfIconRemove />
           </v-btn>
-          <input :id="inputId" type="number" :min="min" :max="max" class="mx-2 w-16 text-center" :value="count"
+          <v-text-field :id="inputId" type="number" :min="min" :max="max" class="mx-2 w-16 text-center" :value="count"
             @change="handleOnChange" :disabled="!isValidProduct" />
           <v-btn square variant="secondary" :disabled="count >= max" @click="inc()" size="sm">
             <SfIconAdd />

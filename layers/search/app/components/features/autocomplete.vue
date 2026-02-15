@@ -1,6 +1,6 @@
 <template>
 	<div class="autocomplete">
-		<input
+		<v-text-field
 			v-model="input"
 			@input="onInput"
 			@keydown.enter.prevent="onSelectFirst"

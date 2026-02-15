@@ -1,6 +1,6 @@
 {
   "name": "@mframework/layer-commerce",
-  "version": "0.0.8",
+  "version": "0.0.8-beta.0",
   "description": "Commerce Layer for the M Framework",
   "keywords": [
     "commerce",

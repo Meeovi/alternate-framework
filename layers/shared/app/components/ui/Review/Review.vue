@@ -12,29 +12,29 @@
       </p>
     </header>
     <p class="pb-2 text-sm text-neutral-900">{{ truncatedContent }}</p>
-    <button
+    <v-btn
       v-if="isButtonVisible"
-      type="button"
+      type="v-btn"
       class="inline-block mb-2 text-sm font-normal border-b-2 border-black cursor-pointer w-fit hover:text-primary-700 hover:border-primary-800"
       @click="isCollapsed = !isCollapsed"
     >
       {{ $t(isCollapsed ? 'readMore' : 'readLess') }}
-    </button>
+    </v-btn>
     <footer class="flex items-center justify-between">
       <div class="text-sm text-neutral-500">
-        <button type="button" class="mr-6 hover:text-primary-800">
+        <v-btn type="v-btn" class="mr-6 hover:text-primary-800">
           <SfIconThumbUp size="sm" class="mr-2.5" />
           <SfCounter size="sm" class="text-inherit">6</SfCounter>
-        </button>
-        <button type="button" class="hover:text-primary-800">
+        </v-btn>
+        <v-btn type="v-btn" class="hover:text-primary-800">
           <SfIconThumbDown size="sm" class="mr-2.5" />
           <SfCounter size="sm" class="text-inherit">2</SfCounter>
-        </button>
+        </v-btn>
       </div>
 
-      <button class="px-3 py-1.5 text-neutral-500 font-medium text-sm hover:text-primary-800" type="button">
+      <v-btn class="px-3 py-1.5 text-neutral-500 font-medium text-sm hover:text-primary-800" type="v-btn">
         {{ $t('review.reportAbuse') }}
-      </button>
+      </v-btn>
     </footer>
   </article>
 </template>

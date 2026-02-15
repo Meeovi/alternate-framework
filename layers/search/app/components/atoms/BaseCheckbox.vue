@@ -17,7 +17,7 @@ const { name, label } = toRefs(props)
 
 <template>
   <div class="input-group" :class="{ disabled: disabled }">
-    <input
+    <v-text-field
       :id="name"
       type="checkbox"
       :name="name"

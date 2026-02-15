@@ -1,15 +1,18 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "types": ["node"],
-    "noEmit": true
-  },
-  "include": [
-    "app/**/*",
-    "server/**/*",
-    "types/**/*",
-    "../../packages/modules/api/src/**/*",
-    "**/*.ts",
-    "**/*.vue"
-  ]
+  "references": [
+    {
+      "path": "./.nuxt/tsconfig.app.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.server.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.shared.json"
+    },
+    {
+      "path": "./.nuxt/tsconfig.node.json"
+    },
+    
+  ],
+  "files": []
 }

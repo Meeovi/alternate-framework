@@ -5,15 +5,15 @@
         <SfIconSearch />
       </template>
       <template #suffix>
-        <button
+        <v-btn
           v-if="inputModel"
-          type="button"
+          type="v-btn"
           aria-label="Reset search"
           class="flex rounded-md focus-visible:outline focus-visible:outline-offset"
           @click="handleReset"
         >
           <SfIconCancel />
-        </button>
+        </v-btn>
       </template>
     </SfInput>
   </form>

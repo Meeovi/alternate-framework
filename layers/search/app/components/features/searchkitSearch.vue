@@ -14,7 +14,7 @@
 
       <label>
         Semantic:
-        <input type="checkbox" v-model="semanticEnabled" @change="toggleSemantic" />
+        <v-text-field type="checkbox" v-model="semanticEnabled" @change="toggleSemantic" />
       </label>
 
       <label>

@@ -4,8 +4,8 @@
         <NuxtImg loading="lazy" :src="item.image" :alt="item.name" />
         <p>Current Bid: ${{ currentBid }}</p>
         <p>Time Left: {{ timeLeft }}</p>
-        <input v-model.number="bidAmount" type="number" :min="minBid" step="0.01" />
-        <button @click="placeBid" :disabled="!canBid">Place Bid</button>
+        <v-text-field v-model.number="bidAmount" type="number" :min="minBid" step="0.01" />
+        <v-btn @click="placeBid" :disabled="!canBid">Place Bid</v-btn>
         <div v-if="bidHistory.length > 0">
             <h3>Bid History</h3>
             <ul>

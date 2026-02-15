@@ -11,7 +11,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="shipping-firstname">First Name*</label>
-                        <input 
+                        <v-text-field 
                             id="shipping-firstname"
                             v-model="shippingAddress.firstname"
                             type="text"
@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group">
                         <label for="shipping-lastname">Last Name*</label>
-                        <input 
+                        <v-text-field 
                             id="shipping-lastname"
                             v-model="shippingAddress.lastname"
                             type="text"
@@ -30,7 +30,7 @@
                 </div>
                 <div class="form-group">
                     <label for="shipping-street">Street Address*</label>
-                    <input 
+                    <v-text-field 
                         id="shipping-street"
                         v-model="shippingAddress.street[0]"
                         type="text"
@@ -40,7 +40,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="shipping-city">City*</label>
-                        <input 
+                        <v-text-field 
                             id="shipping-city"
                             v-model="shippingAddress.city"
                             type="text"
@@ -49,7 +49,7 @@
                     </div>
                     <div class="form-group">
                         <label for="shipping-postcode">Postcode*</label>
-                        <input 
+                        <v-text-field 
                             id="shipping-postcode"
                             v-model="shippingAddress.postcode"
                             type="text"
@@ -73,7 +73,7 @@
                     </div>
                     <div class="form-group">
                         <label for="shipping-telephone">Phone Number*</label>
-                        <input 
+                        <v-text-field 
                             id="shipping-telephone"
                             v-model="shippingAddress.telephone"
                             type="tel"
@@ -93,7 +93,7 @@
             <div class="form-section">
                 <h3>Billing Address</h3>
                 <div class="form-check">
-                    <input 
+                    <v-text-field 
                         type="checkbox"
                         id="same-as-shipping"
                         v-model="sameAsShipping"
@@ -105,7 +105,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="billing-firstname">First Name*</label>
-                            <input 
+                            <v-text-field 
                                 id="billing-firstname"
                                 v-model="billingAddress.firstname"
                                 type="text"
@@ -114,7 +114,7 @@
                         </div>
                         <div class="form-group">
                             <label for="billing-lastname">Last Name*</label>
-                            <input 
+                            <v-text-field 
                                 id="billing-lastname"
                                 v-model="billingAddress.lastname"
                                 type="text"
@@ -155,10 +155,10 @@
                 </div>
             </div>
 
-            <button class="submit-button" type="submit" :disabled="loading">
+            <v-btn class="submit-v-btn" type="submit" :disabled="loading">
                 <span v-if="loading">Processing...</span>
                 <span v-else>Pay {{ formatPrice(cart.total) }}</span>
-            </button>
+            </v-btn>
         </form>
     </div>
 </template>
@@ -359,7 +359,7 @@ const formatPrice = (price) => {
     background-color: #fff0f0;
 }
 
-.submit-button {
+.submit-v-btn {
     background: #5469d4;
     color: #ffffff;
     border-radius: 4px;
@@ -375,11 +375,11 @@ const formatPrice = (price) => {
     margin-top: 24px;
 }
 
-.submit-button:hover {
+.submit-v-btn:hover {
     filter: brightness(1.1);
 }
 
-.submit-button:disabled {
+.submit-v-btn:disabled {
     opacity: 0.5;
     cursor: default;
     background-color: #7795f8;

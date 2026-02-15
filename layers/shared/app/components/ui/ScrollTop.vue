@@ -55,7 +55,7 @@ function scrollToTop() {
 				</g>
 			</svg>
 
-			<button
+			<v-btn
 				v-if="progress >= 0.95"
 				class="absolute inset-0 flex items-center justify-center"
 				@click="scrollToTop"
@@ -65,7 +65,7 @@ function scrollToTop() {
 					<path d="M12 4v16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 					<path d="M18 10l-6-6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 				</svg>
-			</button>
+			</v-btn>
 		</div>
 
 		<span

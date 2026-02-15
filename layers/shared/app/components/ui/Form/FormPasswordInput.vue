@@ -1,9 +1,9 @@
 <template>
   <SfInput :type="isPasswordVisible ? 'text' : 'password'">
     <template #suffix>
-      <button type="button" @click="isPasswordVisible = !isPasswordVisible">
+      <v-btn type="v-btn" @click="isPasswordVisible = !isPasswordVisible">
         <component :is="isPasswordVisible ? SfIconVisibilityOff : SfIconVisibility" />
-      </button>
+      </v-btn>
     </template>
   </SfInput>
 </template>

@@ -25,32 +25,34 @@ function buildHostFromParts(): string | null {
   return `${protocol}://${hostname}${port ? `:${port}` : ''}`
 }
 
-export function getSearchClient(): SearchClient | null {
+export function getSearchClient(): SearchClient {
   const host = buildHostFromParts()
+
   if (!host) {
-    console.warn('[search] Searchkit host not configured — search disabled')
-    return null
+    console.warn('[search] Searchkit host not configured — returning fallback client')
+    return createFallbackClient()
   }
 
   let mod: any
   try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     mod = require('@searchkit/instantsearch-client')
-  } catch {
-    console.warn('[search] @searchkit/instantsearch-client not installed — search disabled')
-    return null
+  } catch (err) {
+    console.warn('[search] @searchkit/instantsearch-client not installed or failed to load — returning fallback client', err?.message || err)
+    return createFallbackClient()
   }
 
-  // Normalize all possible export shapes (ESM, CJS, wrapped, double-wrapped)
+  // Normalize all possible export shapes (ESM, CJS, wrapped)
   const candidate =
-    mod?.default?.default ||        // ESM wrapped twice
-    mod?.default?.createClient ||   // ESM default object with named export
-    mod?.default ||                 // ESM default export
-    mod?.createClient ||            // CJS named export
-    mod                             // CJS default export
+    mod?.default?.default ||
+    mod?.default?.createClient ||
+    mod?.default ||
+    mod?.createClient ||
+    mod
 
   if (typeof candidate !== 'function') {
-    console.warn('[search] createClient not found in @searchkit/instantsearch-client export:', mod)
-    return null
+    console.warn('[search] createClient not found in @searchkit/instantsearch-client export — returning fallback client')
+    return createFallbackClient()
   }
 
   try {
@@ -60,7 +62,22 @@ export function getSearchClient(): SearchClient | null {
 
     return candidate(opts)
   } catch (e: any) {
-    console.warn('[search] Failed to create Searchkit client:', e?.message || e)
-    return null
+    console.warn('[search] Failed to create Searchkit client — returning fallback client:', e?.message || e)
+    return createFallbackClient()
   }
+}
+
+function createFallbackClient(): SearchClient {
+  return {
+    search(requests: any) {
+      const results = requests.map(() => ({
+        hits: [],
+        nbHits: 0,
+        processingTimeMS: 0,
+        page: 0,
+        hitsPerPage: 0
+      }))
+      return Promise.resolve(results)
+    }
+  } as unknown as SearchClient
 }

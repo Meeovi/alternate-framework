@@ -5,17 +5,17 @@
     <form @submit.prevent="handleUpload">
       <label>
         Title:
-        <input v-model="name" type="text" placeholder="My awesome video" />
+        <v-text-field v-model="name" type="text" placeholder="My awesome video" />
       </label>
 
       <label>
         Video File:
-        <input type="file" accept="video/*" @change="handleFile" />
+        <v-text-field type="file" accept="video/*" @change="handleFile" />
       </label>
 
-      <button :disabled="loading">
+      <v-btn :disabled="loading">
         {{ loading ? 'Uploading...' : 'Upload Vibez' }}
-      </button>
+      </v-btn>
 
       <p v-if="error" class="error">{{ error }}</p>
       <p v-if="success" class="success">Upload successful! 🎉</p>
@@ -99,7 +99,7 @@ input[type="file"] {
   width: 100%;
   padding: 0.5rem;
 }
-button {
+v-btn {
   padding: 0.75rem 1.5rem;
   background: #0070f3;
   color: white;

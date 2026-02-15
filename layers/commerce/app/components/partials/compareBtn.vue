@@ -24,7 +24,7 @@
     return compareStore.getComparedProducts.some((product: { sku: string; }) => product.sku === props.product?.sku) || compareStore.getComparedProductSkus.includes(props.product?.sku);
   });
 
-  // Dynamically update button text
+  // Dynamically update v-btn text
   const buttonText = computed(() => (isInCompare.value ? 'In Compare List' : 'Add to Compare'));
 
   // Handle Add/Remove from Compare list using Directus where possible

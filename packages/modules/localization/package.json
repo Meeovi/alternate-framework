@@ -1,0 +1,32 @@
+{
+  "name": "@mframework/localization",
+  "version": "0.0.1",
+  "description": "Automated localization module for the M Framework.",
+  "keywords": [
+    "Localization",
+    "locale",
+    "i18n",
+    "nuxt",
+    "vue",
+    "m-framework"
+  ],
+  "license": "MIT",
+  "author": "M Framework",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json",
+    "cleanup-translations": "tsx src/scripts/cleanup-translations.ts",
+    "prepare-translation-status": "tsx src/scripts/prepare-translation-status.ts",
+    "generate-pwa-icons": "tsx src/scripts/generate-pwa-icons.ts",
+    "postinstall": "tsx src/scripts/prepare-translation-status.ts"
+  },
+  "dependencies": {
+    "@intlify/core-base": "^11.2.8",
+    "@nuxtjs/i18n": "^10.2.3",
+    "iso-639-1": "^3.0.0"
+  }
+}

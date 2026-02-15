@@ -25,12 +25,12 @@
         />
         
         <div class="mt-8 flex justify-between">
-          <button 
+          <v-btn 
             @click="clearCompareList" 
             class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           >
             Clear Compare List
-          </button>
+          </v-btn>
           <NuxtLink 
             to="/" 
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"

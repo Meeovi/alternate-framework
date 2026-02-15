@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Reviews</h2>
-    <button @click="refresh">Refresh</button>
+    <v-btn @click="refresh">Refresh</v-btn>
     <ul>
       <li v-for="r in reviews" :key="r.id">{{ r.author || r.id }} — {{ r.rating || '' }} — {{ r.content || '' }}</li>
     </ul>

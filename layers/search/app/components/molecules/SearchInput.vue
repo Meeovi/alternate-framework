@@ -16,16 +16,16 @@ const placeholder = toRef(props, 'placeholder')
 
 <template>
   <form class="search-form">
-    <input
+    <v-text-field
       type="search"
       :placeholder="placeholder"
       :value="value"
       class="input search-input"
       @input="$emit('input', $event)"
     >
-    <button type="reset" class="search-input-reset" @click="$emit('reset')">
+    <v-btn type="reset" class="search-input-reset" @click="$emit('reset')">
       <XIcon class="x-icon" />
-    </button>
+    </v-btn>
   </form>
 </template>
 

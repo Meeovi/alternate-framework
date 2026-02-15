@@ -34,7 +34,7 @@
                                             </v-btn>
 
                                             <!-- Quantity Input -->
-                                            <input :id="inputId" v-model="count" type="number"
+                                            <v-text-field :id="inputId" v-model="count" type="number"
                                                 class="grow appearance-none mx-2 w-8 text-center bg-transparent font-medium"
                                                 :min="min" :max="max" @change="handleQuantityChange"
                                                 aria-label="Product quantity" />
@@ -168,8 +168,8 @@ watch(() => props.product.quantity, (newQuantity) => {
         -moz-appearance: textfield;
     }
 
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
+    input[type="number"]::-webkit-outer-spin-v-btn,
+    input[type="number"]::-webkit-inner-spin-v-btn {
         -webkit-appearance: none;
         margin: 0;
     }

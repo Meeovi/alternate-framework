@@ -1,6 +1,6 @@
 import { useNuxtApp } from 'nuxt/app'
 import { ref, provide } from 'vue'
-import useDirectusRequest from '../useDirectusRequest'
+import useDirectusRequest from './useDirectusRequest'
 import type { Ref } from 'vue'
 
 export function useDirectusForm(collectionName: string, fieldsRef: Ref<any[]>, opts?: { clearOnSuccess?: boolean, closeDialogRef?: Ref<boolean> }) {

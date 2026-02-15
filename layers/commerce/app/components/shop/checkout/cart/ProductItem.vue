@@ -45,11 +45,11 @@ watch(quantity, (val) => {
       </div>
     </div>
     <div v-if="cartItem.productVariant.stockOnHand" class="flex flex-1 items-end justify-between text-sm">
-      <input v-model="quantity" type="number" :min="1" :max="maxQty" name="quantity" aria-label="Cart item quantity" class="w-18 mt-1 inline-block py-2 px-3 border border-secondary-300 bg-white rounded-md shadow-sm" />
+      <v-text-field v-model="quantity" type="number" :min="1" :max="maxQty" name="quantity" aria-label="Cart item quantity" class="w-18 mt-1 inline-block py-2 px-3 border border-secondary-300 bg-white rounded-md shadow-sm" />
       <div class="flex">
-        <button v-if="isRemovable" type="button" class="font-medium text-dark bg-transparent" @click="removeCartItem">
+        <v-btn v-if="isRemovable" type="v-btn" class="font-medium text-dark bg-transparent" @click="removeCartItem">
           Remove
-        </button>
+        </v-btn>
       </div>
     </div>
   </div>

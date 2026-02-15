@@ -24,13 +24,13 @@ const buttonSizeClass = computed(() => {
 </script>
 
 <template>
-  <button
+  <v-btn
     class="btn"
     :class="[buttonColorClass, buttonSecondaryClass, buttonSizeClass]"
-    type="button"
+    type="v-btn"
   >
     <slot name="default" />
-  </button>
+  </v-btn>
 </template>
 
-<style src="~/assets/css/button.css"></style>
+<style src="~/assets/css/v-btn.css"></style>

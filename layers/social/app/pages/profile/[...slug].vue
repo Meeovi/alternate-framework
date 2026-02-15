@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { useAuth, useI18n, useAsyncData, useHead } from '#imports';
-import useLocalePath from '../composables/useLocalePath';
+import useLocalePath from '~/composables/useLocalePath';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
   

@@ -9,10 +9,10 @@
             <form @submit.prevent="handleSubmit">
                 <div ref="paymentElement"></div>
 
-                <button type="submit" class="payment-button" :disabled="!stripe || loading">
+                <v-btn type="submit" class="payment-v-btn" :disabled="!stripe || loading">
                     <span v-if="loading">Processing...</span>
                     <span v-else>Pay Now</span>
-                </button>
+                </v-btn>
             </form>
         </div>
     </div>
@@ -123,7 +123,7 @@ const handleSubmit = async () => {
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .payment-button {
+    .payment-v-btn {
         background: #5469d4;
         color: #ffffff;
         border: none;
@@ -138,12 +138,12 @@ const handleSubmit = async () => {
         transition: all 0.2s ease;
     }
 
-    .payment-button:disabled {
+    .payment-v-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
 
-    .payment-button:hover:not(:disabled) {
+    .payment-v-btn:hover:not(:disabled) {
         filter: brightness(1.1);
     }
 </style>
