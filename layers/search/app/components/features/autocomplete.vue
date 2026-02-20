@@ -18,12 +18,16 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import useSearchkit from '../../composables/useSearchkit'
+import useStorefront from '../../composables/useStorefront'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const storefront = useStorefront()
 
 const props = defineProps({ placeholder: { type: String, default: 'Search...' } })
 const emits = defineEmits(['select', 'input'])
 
-const { autocomplete } = useSearchkit()
+const { autocomplete } = useStorefront()
 const input = ref('')
 const suggestions = ref<any[]>([])
 let timer: any = null
@@ -36,17 +40,26 @@ async function onInput() {
 			suggestions.value = []
 			return
 		}
-		suggestions.value = await autocomplete(input.value, 6)
+			suggestions.value = await autocomplete(input.value, 6)
 	}, 180)
 }
 
-function select(item: any) {
+async function select(item: any) {
 	emits('select', item)
 	suggestions.value = []
+	const val = typeof item === 'string' ? item : item.title || item.name || item.label || item.id || ''
+	if (!val) return
+	try {
+		storefront.query.value = val
+		await storefront.search()
+	} catch (e) {
+		// ignore
+	}
+	router.push({ path: '/results', query: { q: val } })
 }
 
 function onSelectFirst() {
-	if (suggestions.value.length) select(suggestions.value[0])
+    if (suggestions.value.length) select(suggestions.value[0])
 }
 
 watch(input, (v) => {
