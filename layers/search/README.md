@@ -1,7 +1,7 @@
 <!-- packages/search/README.md -->
 # @mframework/layer-search
 
-A modular, provider-agnostic search layer for the M Framework. It provides a unified, typed search API with pluggable adapters (Meilisearch, OpenSearch, mock adapters), lightweight bridges for UI integrations (InstantSearch / Searchkit), a small CLI for indexing/warmup, and event hooks.
+A modular, provider-agnostic search layer for the M Framework. It provides a unified, typed search API with pluggable adapters (Meilisearch, OpenSearch, mock adapters), lightweight bridges for UI integrations (InstantSearch / Storefront UI), a small CLI for indexing/warmup, and event hooks.
 
 ## Features
 
@@ -98,9 +98,9 @@ The module validates that `defaultProvider` and the referenced provider configur
 
 Note: this repository includes a top-level `.env.example` with recommended variables for Search and other providers; you can manage layer credentials from your main app's `.env` file. See `../.env.example`.
 
-## UI Integrations (InstantSearch / Searchkit)
+## UI Integrations (InstantSearch / Storefront UI)
 
-This layer includes bridges that let UI code use Algolia InstantSearch or Searchkit clients without coupling the UI to a particular backend provider. Use `createInstantSearchBridge` / `createSearchkitBridge` on the client, and `createSearchkitGraphQLHandler` on the server when exposing a GraphQL endpoint for Searchkit-server.
+This layer includes bridges that let UI code use Algolia InstantSearch or Storefront UI clients without coupling the UI to a particular backend provider. Use `createInstantSearchBridge` / `createStorefrontBridge` on the client, and `createStorefrontGraphQLHandler` on the server when exposing a GraphQL endpoint for the Storefront UI server.
 
 Example (client):
 
@@ -120,14 +120,14 @@ Example (server - Express):
 
 ```ts
 import express from 'express'
-import { createSearchkitGraphQLHandler } from '@mframework/layer-search'
+import { createStorefrontGraphQLHandler } from '@mframework/layer-search'
 
 const app = express()
 app.use(express.json())
-app.post('/graphql', createSearchkitGraphQLHandler(manager))
+app.post('/graphql', createStorefrontGraphQLHandler(manager))
 ```
 
-These bridges map InstantSearch/Searchkit request shapes into the layer's `SearchManager` and underlying adapters so UI code doesn't need to change when you swap search providers.
+These bridges map InstantSearch/Storefront UI request shapes into the layer's `SearchManager` and underlying adapters so UI code doesn't need to change when you swap search providers.
 
 ## Events
 
@@ -204,14 +204,14 @@ Environment variables supported (example for Meilisearch):
 - `MEILI_INDEX=products`
 - `MEILI_KEY=masterKey`
 
-Searchkit / Search provider environment variables
+Storefront UI / Search provider environment variables
 
-- `SEARCHKIT_HOST` or `NUXT_PUBLIC_SEARCHKIT_HOST` — full host URL (e.g. `https://search.example.com`)
+- `STOREFRONT_HOST` or `NUXT_PUBLIC_STOREFRONT_HOST` — full host URL (e.g. `https://search.example.com`)
 - Alternatively compose with:
-  - `SEARCHKIT_PROTOCOL` / `NUXT_PUBLIC_SEARCHKIT_PROTOCOL` (defaults to `http`)
-  - `SEARCHKIT_HOSTNAME` / `NUXT_PUBLIC_SEARCHKIT_HOSTNAME` (e.g. `search.example.com`)
-  - `SEARCHKIT_PORT` / `NUXT_PUBLIC_SEARCHKIT_PORT` (e.g. `9200`)
-- Optional API key: `SEARCHKIT_API_KEY` or `NUXT_PUBLIC_SEARCHKIT_API_KEY`
+  - `STOREFRONT_PROTOCOL` / `NUXT_PUBLIC_STOREFRONT_PROTOCOL` (defaults to `http`)
+  - `STOREFRONT_HOSTNAME` / `NUXT_PUBLIC_STOREFRONT_HOSTNAME` (e.g. `search.example.com`)
+  - `STOREFRONT_PORT` / `NUXT_PUBLIC_STOREFRONT_PORT` (e.g. `9200`)
+- Optional API key: `STOREFRONT_API_KEY` or `NUXT_PUBLIC_STOREFRONT_API_KEY`
 
 Notes:
 - Use the `NUXT_PUBLIC_` prefix for values that must be available in client-side code (public build). Keep API keys server-only when possible.
@@ -223,12 +223,12 @@ Layer env conventions
 - Example `.env` entries in your main app to configure the Search layer:
 
 ```
-SEARCHKIT_HOST=https://search.example.com
-SEARCHKIT_API_KEY=server-only-key
+STOREFRONT_HOST=https://search.example.com
+STOREFRONT_API_KEY=server-only-key
 # or compose:
-SEARCHKIT_PROTOCOL=https
-SEARCHKIT_HOSTNAME=search.example.com
-SEARCHKIT_PORT=9200
+STOREFRONT_PROTOCOL=https
+STOREFRONT_HOSTNAME=search.example.com
+STOREFRONT_PORT=9200
 ```
 
 Because every layer follows this `KEY` / `NUXT_PUBLIC_KEY` pattern, you can place settings in the main app's `.env` and they will be available to the layer at runtime without editing layer files.

@@ -35,7 +35,7 @@ const selectValue = computed({
     }
 })
 
-// Transform options for v-select
+// Transform options for USelect
 const items = computed(() => {
     return props.options?.choices?.map((choice: Choice) => ({
         title: choice.text,
@@ -46,7 +46,7 @@ const items = computed(() => {
 
 <template>
     <div :style="'width: ' + fieldWidth + '; display:flex; align-items:center; gap:8px'">
-        <v-select
+        <USelect
             :name="field"
             v-model="selectValue"
             :items="items"

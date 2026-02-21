@@ -1,6 +1,6 @@
 {
   "name": "@mframework/localization",
-  "version": "0.0.1",
+  "version": "0.0.1-beta.1",
   "description": "Automated localization module for the M Framework.",
   "keywords": [
     "Localization",

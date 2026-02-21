@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Reviews</h2>
-    <v-btn @click="refresh">Refresh</v-btn>
+    <UButton @click="refresh">Refresh</UButton>
     <ul>
       <li v-for="r in reviews" :key="r.id">{{ r.author || r.id }} — {{ r.rating || '' }} — {{ r.content || '' }}</li>
     </ul>

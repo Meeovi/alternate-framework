@@ -22,9 +22,9 @@
           {{ list?.status }}
         </v-chip>
 
-        <v-btn color="primary" prepend-icon="fas fa-plus" @click="showAddDialog = true">
+        <UButton color="primary" prepend-icon="fas fa-plus" @click="showAddDialog = true">
           Add Item
-        </v-btn>
+        </UButton>
 
         <!-- List Items -->
         <addList />
@@ -51,7 +51,7 @@
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
-                  <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                  <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                 </v-scale-transition>
               </div>
             </v-slide-group-item>
@@ -64,7 +64,7 @@
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
-                  <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                  <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                 </v-scale-transition>
               </div>
             </v-slide-group-item>
@@ -77,7 +77,7 @@
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
-                  <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                  <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                 </v-scale-transition>
               </div>
             </v-slide-group-item>
@@ -112,6 +112,7 @@
   import shortCard from '#social/app/components/related/short.vue'
 
   const route = useRoute()
+  const content = useContentAdapter()
   const {
     updateListItem,
     removeFromList
@@ -119,10 +120,6 @@
 
   const showAddDialog = ref(false)
 
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
 
   const slug = computed(() => {
     const s = route.params.slug
@@ -135,31 +132,31 @@
     error,
     refresh: refreshList
   } = await useAsyncData('list', () => {
-    return $directus.request(
-      $readItems('lists', {
-        fields: [
-          '*',
-          'category.categories_id.*',
-          'department.departments_id',
-          'spaces.spaces_id.*',
-          'products.products_id.*',
-          'products.products_id.image.*',
-          'vibez.shorts_id.*',
-          'list_template.templates.*',
-          'image.*',
-          'media.*',
-          'list_items.list_items_id.*',
-          'list_products.list_products_id.*',
-          'user.directus_users.*'
-        ],
-        filter: {
-          slug: {
-            _eq: slug.value
-          }
-        },
-        limit: 1
-      })
-    )
+    const opts = {
+      fields: [
+        '*',
+        'category.categories_id.*',
+        'department.departments_id',
+        'spaces.spaces_id.*',
+        'products.products_id.*',
+        'products.products_id.image.*',
+        'vibez.shorts_id.*',
+        'list_template.templates.*',
+        'image.*',
+        'media.*',
+        'list_items.list_items_id.*',
+        'list_products.list_products_id.*',
+        'user.directus_users.*'
+      ],
+      filter: { slug: { _eq: slug.value } },
+      limit: 1
+    }
+    const content = useContentAdapter()
+    if (content && typeof content.readItems === 'function') {
+      const resp = await content.readItems('lists', opts)
+      return resp?.data || resp
+    }
+    return $directus.request($readItems('lists', opts))
   })
 
   const list = computed(() => listRaw.value?.[0] || null)

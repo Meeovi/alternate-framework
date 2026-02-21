@@ -1,114 +1,114 @@
 <template>
   <div>
-    <v-card elevation="0">
+    <UCard elevation="0">
       <v-tabs v-model="tab" align-tabs="center">
         <v-tab value="account">Account Information</v-tab>
         <v-tab value="security">Security</v-tab>
         <v-tab value="preferences">Preferences</v-tab>
       </v-tabs>
 
-      <v-card-text>
+      <template #header>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item value="account">
             <v-form ref="accountForm" v-model="accountValid">
               <v-row>
                 <v-col cols="6">
-                  <v-text-field
+                  <UInput
                     v-model="customerInfo.firstname"
                     label="First Name"
                     required
                   />
                 </v-col>
                 <v-col cols="6">
-                  <v-text-field
+                  <UInput
                     v-model="customerInfo.lastname"
                     label="Last Name"
                     required
                   />
                 </v-col>
               </v-row>
-              <v-text-field
+              <UInput
                 v-model="customerInfo.email"
                 label="Email"
                 type="email"
                 required
                 disabled
               />
-              <v-text-field
+              <UInput
                 v-model="customerInfo.taxvat"
                 label="Tax/VAT Number"
               />
-              <v-btn
+              <UButton
                 color="primary"
                 @click="updateCustomerInfo"
                 :loading="updating"
                 :disabled="!accountValid"
               >
                 Save Changes
-              </v-btn>
+              </UButton>
             </v-form>
           </v-tabs-window-item>
 
           <v-tabs-window-item value="security">
             <v-form ref="passwordForm" v-model="passwordValid">
-              <v-text-field
+              <UInput
                 v-model="passwordData.current_password"
                 label="Current Password"
                 type="password"
                 required
               />
-              <v-text-field
+              <UInput
                 v-model="passwordData.new_password"
                 label="New Password"
                 type="password"
                 required
               />
-              <v-text-field
+              <UInput
                 v-model="passwordData.confirm_password"
                 label="Confirm New Password"
                 type="password"
                 required
               />
-              <v-btn
+              <UButton
                 color="primary"
                 @click="changePassword"
                 :loading="changingPassword"
                 :disabled="!passwordValid"
               >
                 Change Password
-              </v-btn>
+              </UButton>
             </v-form>
           </v-tabs-window-item>
 
           <v-tabs-window-item value="preferences">
             <v-form ref="preferencesForm" v-model="preferencesValid">
-              <v-select
+              <USelect
                 v-model="preferences.language"
                 :items="languages"
                 label="Language"
               />
-              <v-select
+              <USelect
                 v-model="preferences.currency"
                 :items="currencies"
                 label="Currency"
               />
-              <v-checkbox
+              <UCheckbox
                 v-model="preferences.newsletter"
                 label="Subscribe to Newsletter"
               />
-              <v-btn
+              <UButton
                 color="primary"
                 @click="updatePreferences"
                 :loading="updatingPreferences"
                 :disabled="!preferencesValid"
               >
                 Save Preferences
-              </v-btn>
+              </UButton>
             </v-form>
           </v-tabs-window-item>
         </v-tabs-window>
-      </v-card-text>
-    </v-card>
+      </template>
+    </UCard>
   </div>
 </template>
 

@@ -1,11 +1,11 @@
 <template>
     <v-container class="py-10">
-        <v-card elevation="2" class="pa-6">
-            <v-card-title>🎬 Your Vibez Library</v-card-title>
-            <v-card-text>
+        <UCard elevation="2" class="pa-6">
+            <template #header>🎬 Your Vibez Library</template>
+            <template #header>
                 <v-row class="mb-4" dense>
                     <v-col cols="12" sm="6" md="4">
-                        <v-select v-model="selectedVisibility" :items="visibilityOptions" label="Filter by Visibility"
+                        <USelect v-model="selectedVisibility" :items="visibilityOptions" label="Filter by Visibility"
                             clearable />
                     </v-col>
 
@@ -17,33 +17,33 @@
 
                 <v-row>
                     <v-col v-for="video in filteredVideos" :key="video.id" cols="12" sm="6" md="4">
-                        <v-card>
+                        <UCard>
                             <v-img :src="getThumbnail(video)" height="200px" cover></v-img>
-                            <v-card-title>{{ video.title }}</v-card-title>
-                            <v-card-subtitle>
+                            <template #header>{{ video.title }}</template>
+                            <UCard-subtitle>
                                 Visibility: {{ video.visibility }}
                             </v-card-subtitle>
-                            <v-card-text>
+                            <template #header>
                                 <v-chip v-for="tag in video.tags" :key="tag.id" class="ma-1" size="small"
                                     color="primary" variant="outlined">
                                     {{ tag.name }}
                                 </v-chip>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn :href="getVideoUrl(video)" target="_blank" color="primary"
+                            </template>
+                            <template>
+                                <UButton :href="getVideoUrl(video)" target="_blank" color="primary"
                                     :disabled="video.status !== 'ready'">
                                     Watch
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
+                                </UButton>
+                            </template>
+                        </UCard>
                     </v-col>
                 </v-row>
 
                 <v-alert v-if="filteredVideos.length === 0" type="info" class="mt-6">
                     No videos match your filters.
                 </v-alert>
-            </v-card-text>
-        </v-card>
+            </template>
+        </UCard>
     </v-container>
 </template>
 

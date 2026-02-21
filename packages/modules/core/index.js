@@ -15,6 +15,7 @@ export * from './src/providers/commerce';
 // Utils
 //export * from './src/utils/errors'
 export * from './src/utils/prisma';
+export * from './src/db/organization';
 // src/index.ts
 export * from './src/runtime/app';
 export * from './src/runtime/context';

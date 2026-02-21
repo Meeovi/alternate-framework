@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { GroupedAccountLike, NotificationSlot } from '#shared/types'
+import { useHumanReadableNumber } from '@mframework/localization';
 import type { mastodon } from 'masto'
+import type { Paginator } from 'masto/mastodon/paginator.js';
 // @ts-expect-error missing types
 import { DynamicScrollerItem } from 'vue-virtual-scroller'
 
 defineProps<{
-  paginator: mastodon.Paginator<mastodon.v1.Notification[], mastodon.rest.v1.ListNotificationsParams>
+  paginator: Paginator<mastodon.v1.Notification[], mastodon.rest.v1.ListNotificationsParams>
   stream?: mastodon.streaming.Subscription
 }>()
 
@@ -142,7 +144,7 @@ function groupItems(items: mastodon.v1.Notification[]): NotificationSlot[] {
 
 function removeFiltered(items: mastodon.v1.Notification[]): mastodon.v1.Notification[] {
   return items.filter(item => !item.status?.filtered?.find(
-    filter => filter.filter.filterAction === 'hide' && filter.filter.context.includes('notifications'),
+    (    filter: { filter: { filterAction: string; context: string | string[]; }; }) => filter.filter.filterAction === 'hide' && filter.filter.context.includes('notifications'),
   ))
 }
 
@@ -150,7 +152,7 @@ function preprocess(items: NotificationSlot[]): NotificationSlot[] {
   const flattenedNotifications: mastodon.v1.Notification[] = []
   for (const item of items) {
     if (item.type === 'grouped-reblogs-and-favourites') {
-      const group = item
+      const group = item as { type: 'grouped-reblogs-and-favourites'; id: string; status: mastodon.v1.Status; likes: GroupedAccountLike[] }
       for (const like of group.likes) {
         if (like.reblog)
           flattenedNotifications.push(like.reblog)
@@ -159,7 +161,8 @@ function preprocess(items: NotificationSlot[]): NotificationSlot[] {
       }
     }
     else if (item.type === 'grouped-follow') {
-      flattenedNotifications.push(...item.items)
+      const group = item as { type: 'grouped-follow'; id: string; items: mastodon.v1.Notification[] }
+      flattenedNotifications.push(...group.items)
     }
     else {
       flattenedNotifications.push(item)
@@ -182,9 +185,9 @@ const { formatNumber } = useHumanReadableNumber()
     :virtualScroller="virtualScroller"
   >
     <template #updater="{ number, update }">
-      <v-btn id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="() => { update(); clearNotifications() }">
+      <UButton id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="() => { update(); clearNotifications() }">
         {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
-      </v-btn>
+      </UButton>
     </template>
     <template #default="{ item, active }">
       <template v-if="virtualScroller">

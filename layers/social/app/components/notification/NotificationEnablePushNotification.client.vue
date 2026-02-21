@@ -30,7 +30,7 @@ const isLegacyAccount = computed(() => !currentUser.value?.vapidKey)
       <h2 id="notifications-warning" text-md font-bold w-full>
         {{ $t('settings.notifications.push_notifications.warning.enable_title') }}
       </h2>
-      <v-btn
+      <UButton
         v-if="closeableHeader"
         flex rounded-4
         type="v-btn"
@@ -40,7 +40,7 @@ const isLegacyAccount = computed(() => !currentUser.value?.vapidKey)
         @click="$emit('hide')"
       >
         <span aria-hidden="true" i-ri:close-line />
-      </v-btn>
+      </UButton>
     </header>
     <template v-if="closeableHeader">
       <p xl:hidden>
@@ -59,7 +59,7 @@ const isLegacyAccount = computed(() => !currentUser.value?.vapidKey)
     <p v-if="isLegacyAccount">
       {{ $t('settings.notifications.push_notifications.warning.re_auth') }}
     </p>
-    <v-btn
+    <UButton
       btn-outline rounded-full font-bold py4 flex="~ gap2 center" m5
       type="v-btn"
       :class="busy || isLegacyAccount ? 'border-transparent' : null"
@@ -71,7 +71,7 @@ const isLegacyAccount = computed(() => !currentUser.value?.vapidKey)
       </span>
       <span v-else aria-hidden="true" block i-ri:check-line />
       <span>{{ $t('settings.notifications.push_notifications.warning.enable_desktop') }}</span>
-    </v-btn>
+    </UButton>
     <slot name="error" />
   </div>
 </template>

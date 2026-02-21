@@ -116,6 +116,9 @@ import productCard from '~/app/components/catalog/product/productCard.vue'
 </script>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
     const route = useRoute();
     
     const {

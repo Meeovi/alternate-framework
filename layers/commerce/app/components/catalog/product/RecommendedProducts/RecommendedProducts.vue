@@ -5,7 +5,11 @@
   <ProductSlider :items="products" />
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { RecommendedProductsProps } from './types';
 
 defineProps<RecommendedProductsProps>();

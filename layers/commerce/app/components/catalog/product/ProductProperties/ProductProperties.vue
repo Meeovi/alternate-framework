@@ -37,7 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { SfChip, SfThumbnail } from '@storefront-ui/vue';
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { ProductPropertiesProps } from './types';
 import { computed } from 'vue';
 import { useProductAttribute } from '~/composables/useProductAttribute';

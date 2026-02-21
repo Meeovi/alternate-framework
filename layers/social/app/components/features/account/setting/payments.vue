@@ -1,22 +1,22 @@
 <template>
-  <v-card>
-    <v-card-title>Payment Methods</v-card-title>
-    <v-card-text>
+  <UCard>
+    <template #header>Payment Methods</template>
+    <template #header>
       <v-alert v-if="error" type="error">{{ error }}</v-alert>
       <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
       <v-list v-else>
         <v-list-item v-for="(method, index) in paymentMethods" :key="index">
           <v-list-item-title>{{ method.type }} ending in {{ method.last4 }}</v-list-item-title>
           <template v-slot:append>
-            <v-btn icon @click="removePaymentMethod(method.id)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
+            <UButton icon @click="removePaymentMethod(method.id)">
+              <UIcon>mdi-delete</UIcon>
+            </UButton>
           </template>
         </v-list-item>
       </v-list>
       <div ref="paypalButtonContainer"></div>
-    </v-card-text>
-  </v-card>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

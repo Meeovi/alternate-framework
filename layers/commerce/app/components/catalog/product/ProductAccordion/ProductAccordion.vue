@@ -25,7 +25,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { useProductReviews } from '~/composables/useProductReviews';
 import type { ProductAccordionPropsType } from './types';
 import { toRefs, ref } from 'vue';

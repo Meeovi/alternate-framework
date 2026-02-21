@@ -1,24 +1,24 @@
 <template>
-    <v-card class="mx-auto" max-width="400">
+    <UCard class="mx-auto" max-width="400">
         <img v-if="member?.avatar?.filename_disk" class="align-end auto-text" height="200" :src="getAssetUrl(member?.avatar)"  :alt="member?.first_name" />
 
         <img v-else class="align-end auto-text" height="200" src="assets/images/face7.jpg" :alt="member?.first_name" />
-            <v-card-title>{{ member?.first_name }} {{ member?.last_name }}</v-card-title>
+            <template #header>{{ member?.first_name }} {{ member?.last_name }}</template>
 
-        <v-card-subtitle class="pt-4">
+        <UCard-subtitle class="pt-4">
             {{ member?.title }}
         </v-card-subtitle>
 
-        <v-card-text>
+        <template #header>
             <div>{{ member?.language }}</div>
 
             <div>{{ member?.location }}</div>
-        </v-card-text>
+        </template>
 
-        <v-card-actions>
-            <v-btn color="orange" text="Add Friend" :href="`/user/${member?.id}`"></v-btn>
-        </v-card-actions>
-    </v-card>
+        <template>
+            <UButton color="orange" text="Add Friend" :href="`/user/${member?.id}`"></UButton>
+        </template>
+    </UCard>
 </template>
 
 <script setup>

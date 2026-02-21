@@ -43,6 +43,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
   import shorts from '@/components/placeholder/shorts.vue'
   import productCard from '@/components/catalog/product/productCard.vue'
   import relatedbrands from '@/components/catalog/product/relatedbrands.vue'

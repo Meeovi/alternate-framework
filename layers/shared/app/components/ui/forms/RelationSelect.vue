@@ -1,9 +1,9 @@
 <template>
-    <v-select v-model="internalValue" :items="options" :label="label" :multiple="multiple" item-title="display"
+    <USelect v-model="internalValue" :items="options" :label="label" :multiple="multiple" item-title="display"
         item-value="id" clearable />
 </template>
 
-<script setup>
+<script setup lang="ts">
     import {
         ref,
         onMounted,

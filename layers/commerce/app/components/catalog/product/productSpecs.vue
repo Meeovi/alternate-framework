@@ -105,6 +105,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import ratings from '../../partials/ratings.vue'
 
 const props = defineProps({

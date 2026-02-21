@@ -1,21 +1,21 @@
 <template>
   <div>
     <h2>Create Product</h2>
-    <form @submit.prevent="onSubmit">
+    <UForm @submit.prevent="onSubmit">
       <div>
         <label>Name</label>
-        <v-text-field v-model="form.name" />
+        <UInput v-model="form.name" />
       </div>
       <div>
         <label>Price</label>
-        <v-text-field v-model.number="form.price" type="number" />
+        <UInput v-model.number="form.price" type="number" />
       </div>
       <div>
         <label>Description</label>
         <textarea v-model="form.description" />
       </div>
-      <v-btn type="submit">Create</v-btn>
-    </form>
+      <UButton type="submit">Create</UButton>
+    </UForm>
   </div>
 </template>
 

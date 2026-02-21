@@ -1,12 +1,12 @@
 <template>
-  <v-card 
+  <UCard 
     :class="{ 'task-completed': task.completed }"
     class="task-item mb-2"
     variant="outlined"
   >
-    <v-card-text class="py-2">
+    <UCard-text class="py-2">
       <div class="d-flex align-center">
-        <v-checkbox
+        <UCheckbox
           :model-value="task.completed"
           @update:model-value="toggleComplete"
           hide-details
@@ -66,7 +66,7 @@
                 :key="subtask.id"
                 class="d-flex align-center py-1"
               >
-                <v-checkbox
+                <UCheckbox
                   :model-value="subtask.completed"
                   @update:model-value="toggleSubtask(subtask.id)"
                   hide-details
@@ -87,7 +87,7 @@
         <div class="task-actions">
           <v-menu>
             <template v-slot:activator="{ props }">
-              <v-btn
+              <UButton
                 icon="mdi-dots-vertical"
                 variant="text"
                 size="small"
@@ -98,14 +98,14 @@
             <v-list>
               <v-list-item @click="$emit('edit', task)">
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-pencil" />
+                  <UIcon icon="mdi-pencil" />
                 </template>
                 <v-list-item-title>Edit</v-list-item-title>
               </v-list-item>
               
               <v-list-item @click="$emit('duplicate', task)">
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-content-copy" />
+                  <UIcon icon="mdi-content-copy" />
                 </template>
                 <v-list-item-title>Duplicate</v-list-item-title>
               </v-list-item>
@@ -114,7 +114,7 @@
               
               <v-list-item @click="$emit('delete', task)" class="text-error">
                 <template v-slot:prepend>
-                  <v-icon icon="mdi-delete" color="error" />
+                  <UIcon icon="mdi-delete" color="error" />
                 </template>
                 <v-list-item-title>Delete</v-list-item-title>
               </v-list-item>
@@ -122,12 +122,14 @@
           </v-menu>
         </div>
       </div>
-    </v-card-text>
-  </v-card>
+    </template>
+  </UCard>
 </template>
 
 <script setup>
 import { format, isToday, isTomorrow, isPast } from 'date-fns'
+
+const content = useContentAdapter()
 
 const props = defineProps({
   task: {

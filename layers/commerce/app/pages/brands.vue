@@ -1,6 +1,6 @@
 <template>
   <div class="contentPage">
-    <v-card elevation="0">
+    <UCard elevation="0">
       <v-toolbar :title="brandbar?.name" color="green"></v-toolbar>
       <v-tabs v-model="tab" bg-color="green">
         <div v-for="(menu, index) in brandbar?.menus" :key="index">
@@ -8,7 +8,7 @@
       </div>
       </v-tabs>
 
-      <v-card-text>
+      <template #header>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item value="one">
             <v-row>
@@ -34,34 +34,25 @@
             </v-row>
           </v-tabs-window-item>
         </v-tabs-window>
-      </v-card-text>
-    </v-card>
+      </template>
+    </UCard>
   </div>
 </template>
 
 <script setup>
-  import {
-    ref,
-    onMounted
-  } from 'vue'
-  import brand from '~/app/components/catalog/product/brands.vue'
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+import { ref } from 'vue'
+import brand from '../components/related/brandCard.vue'
 
-  const tab = ref(null)
-  import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
-  const { readItems, readItem, getAssetUrl } = useDirectusRequest()
+const tab = ref(null)
 
-  const { data: brands } = await useAsyncData('brands', async () => {
-    const resp = await readItems('brands', { fields: ['*', { '*': ['*'] }] })
-    return resp?.data || resp || []
-  })
+const { getBrands, getMeeBrands } = useCommerceAdapter()
+const { getBrandBar } = useContentAdapter()
 
-  const { data: meebrands } = await useAsyncData('meebrands', async () => {
-    const resp = await readItems('brands', { filter: { code: { _eq: 'Mee' } }, fields: ['*', { '*': ['*'] }] })
-    return resp?.data || resp || []
-  })
+const { data: brands } = await useAsyncData('brands', getBrands)
+const { data: meebrands } = await useAsyncData('meebrands', getMeeBrands)
+const { data: brandbar } = await useAsyncData('brandbar', getBrandBar)
 
-  const { data: brandbar } = await useAsyncData('brandbar', async () => {
-    const resp = await readItem('navigation', '40', { fields: ['*', { '*': ['*'] }] })
-    return resp?.data || resp || null
-  })
 </script>

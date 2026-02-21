@@ -1,3 +1,5 @@
+import { defineNuxtRouteMiddleware, useRuntimeConfig } from "nuxt/app"
+
 export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server || !useRuntimeConfig().public.singleInstance)
     return

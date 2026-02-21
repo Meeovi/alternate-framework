@@ -1,25 +1,25 @@
 <template>
-  <v-card class="mx-auto" max-width="400">
+  <UCard class="mx-auto" max-width="400">
     <video loading="lazy" id="my-video" class="video-js" controls preload="auto"
       style="width: 100% !important; height: 50% !important;" loop>
       <source :src="getAssetUrl(short?.video)" type="video/mp4">
       Your browser does not support the video tag.
     </video>
 
-    <v-card-subtitle class="pt-4">
+    <UCard-subtitle class="pt-4">
       {{ short?.name }}
     </v-card-subtitle>
 
-    <v-card-text>
+    <template #header>
       <div>Type: {{ short?.type }}</div>
 
       <div>{{ short?.description }}</div>
-    </v-card-text>
+    </template>
 
-    <v-card-actions>
-      <v-btn color="orange" text="View" :href="`/social/vibe/${short?.id}`"></v-btn>
-    </v-card-actions>
-  </v-card>
+    <template>
+      <UButton color="orange" text="View" :href="`/social/vibe/${short?.id}`"></UButton>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

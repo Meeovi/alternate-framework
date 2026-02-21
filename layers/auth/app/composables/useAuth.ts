@@ -1,7 +1,7 @@
 import type { Subscription } from '@better-auth/stripe'
 import type { CustomerState } from '@polar-sh/sdk/models/components/customerstate.js'
 import type { BetterAuthClientOptions, InferSessionFromClient, User } from 'better-auth/client'
-import { createAuthClient } from 'better-auth/client'
+import { createAuthClient } from 'better-auth/vue'
 import { getAuthPlugins } from '../utils/plugins'
 
 export type UseAuthOptions = {
@@ -38,8 +38,8 @@ export function useAuth(options: UseAuthOptions = {}) {
   if (!client) {
     // Attempt to use adapter registry/provider if available
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const adapter = require('@mframework/adapter-betterauth')
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const adapter = require('../utils/adapter-betterauth')
       if (adapter && typeof adapter.getAuthProvider === 'function') {
         const prov = adapter.getAuthProvider()
         // Wrap provider methods into a minimal client-like interface

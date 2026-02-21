@@ -6,11 +6,11 @@
           <img :src="`${$directus.url}assets/${product?.image?.filename_disk}`" :alt="product?.name"
             class="block object-cover h-auto rounded-md aspect-square" width="300" height="300" />
         </NuxtLink>
-        <v-btn variant="flat" size="sm" square
+        <UButton variant="flat" size="sm" square
           class="absolute bottom-0 right-0 mr-2 mb-2 bg-white ring-1 ring-inset ring-neutral-200 rounded-full!"
           aria-label="Add to wishlist">
-          <v-icon icon="fas fa-heart" size="sm"></v-icon>
-        </v-btn>
+          <UIcon icon="fas fa-heart" size="sm"></UIcon>
+        </UButton>
       </div>
 
       <div class="relative" v-else>
@@ -18,11 +18,11 @@
           <img src="~/assets/images/mbr-1920x1893.png" :alt="product?.name"
             class="block object-cover h-auto rounded-md aspect-square" width="300" height="300" />
         </NuxtLink>
-        <v-btn variant="flat" size="sm" square
+        <UButton variant="flat" size="sm" square
           class="absolute bottom-0 right-0 mr-2 mb-2 bg-white ring-1 ring-inset ring-neutral-200 rounded-full!"
           aria-label="Add to wishlist">
-          <v-icon icon="fas fa-heart" size="sm"></v-icon>
-        </v-btn>
+          <UIcon icon="fas fa-heart" size="sm"></UIcon>
+        </UButton>
       </div>
       <div class="p-4 border-t border-neutral-200" style="background-color: white !important;">
         <NuxtLink :to="`/product/${product?.id}`" variant="secondary" class="no-underline"> {{ product?.name }}
@@ -46,18 +46,21 @@
           </div>
           {{ product?.price }}
         </span>
-        <!--<v-btn size="sm">
+        <!--<UButton size="sm">
           <template #prefix>
             <SfIconShoppingCart size="sm" />
           </template>
           Add to cart
-        </v-btn>-->
+        </UButton>-->
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
     const {
     $directus
   } = useNuxtApp()

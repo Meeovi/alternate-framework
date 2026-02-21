@@ -2,14 +2,20 @@
 import { deleteItem } from '@directus/sdk';
 
 export default async function deleteWebsite(websiteId) {
-    const { $directus } = useNuxtApp();
-  
-    try {
-      $directus.request(deleteItem('websites', websiteId));
-      console.log('Bookmark deleted successfully');
-    } catch (error) {
-      console.error('Error deleting bookmark:', error);
-      throw error;
+  const content = useContentAdapter()
+  const nuxt = typeof useNuxtApp !== 'undefined' ? useNuxtApp() : (globalThis && globalThis.__NUXT_APP) || {}
+
+  try {
+    if (content && typeof content.deleteItem === 'function') {
+      await content.deleteItem('websites', websiteId)
+      return true
     }
+    const { $directus, $deleteItem } = nuxt
+    await $directus.request($deleteItem('websites', websiteId))
+    return true
+  } catch (error) {
+    console.error('Error deleting bookmark:', error)
+    throw error
   }
+}
   

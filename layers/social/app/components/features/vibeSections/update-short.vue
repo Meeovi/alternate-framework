@@ -2,72 +2,72 @@
     <div>
         <v-dialog max-width="500">
             <template v-slot:activator="{ props: activatorProps }">
-                <v-btn color="primary" v-bind="activatorProps" size="medium" variant="text" class="shortUpdateBtn"
-                    text="Update" title="Update"></v-btn>
+                <UButton color="primary" v-bind="activatorProps" size="medium" variant="text" class="shortUpdateBtn"
+                    text="Update" title="Update"></UButton>
             </template>
 
             <template v-slot:default="{ isActive }">
                 <v-row justify="center">
-                    <v-card>
-                        <form @submit.prevent="handleSubmit">
+                    <UCard>
+                        <UForm @submit.prevent="handleSubmit">
                             <v-toolbar dark color="primary">
-                                <v-btn icon dark @click="dialog = false">
-                                    <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
-                                </v-btn>
-                                <v-card-title>
+                                <UButton icon dark @click="dialog = false">
+                                    <UIcon icon="fas:fa fa-circle-xmark"></UIcon>
+                                </UButton>
+                                <template #header>
                                     <span class="text-h6">Update Short</span>
-                                </v-card-title>
+                                </template>
                             </v-toolbar>
-                            <v-card-text>
+                            <template #header>
                                 <v-container>
                                     <v-row>
                                         <v-col cols="12">
-                                            <v-text-field v-model="shortData.name" id="shortName" label="Short Name*"
+                                            <UInput v-model="shortData.name" id="shortName" label="Short Name*"
                                                 required />
                                         </v-col>
                                         <v-col cols="6">
-                                            <v-select v-model="shortData.type" label="What type of short is this?"
+                                            <USelect v-model="shortData.type" label="What type of short is this?"
                                                 :items="['Default', 'Live', 'Eats']" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <v-select v-model="shortData.status"
+                                            <USelect v-model="shortData.status"
                                                 label="Is this short public or private?"
                                                 :items="['Published', 'Private', 'Draft']" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <v-select v-model="shortData.age_requirement"
+                                            <USelect v-model="shortData.age_requirement"
                                                 label="What is the Age Requirement?"
                                                 :items="['Everyone', '18+', '16+']" />
                                         </v-col>
                                         <v-col cols="12">
-                                            <v-textarea v-model="shortData.description" label="Description"
+                                            <UTextarea v-model="shortData.description" label="Description"
                                                 id="shortDescription" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <v-file-input @change="handleVideoUpload" clearable density="compact"
+                                            <UFileUpload @change="handleVideoUpload" clearable density="compact"
                                                 prepend-icon="fas:fa fa-video" accept="video/*" label="Video File"
                                                 variant="solo-inverted" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <v-file-input @change="handleThumbnailUpload" clearable density="compact"
+                                            <UFileUpload @change="handleThumbnailUpload" clearable density="compact"
                                                 prepend-icon="fas:fa fa-image" accept="image/*" label="Image for Video"
                                                 variant="solo-inverted" />
                                         </v-col>
                                     </v-row>
                                 </v-container>
                                 <small>*indicates required field</small>
-                            </v-card-text>
-                            <v-card-actions>
+                            </template>
+                            <template>
                                 <v-spacer></v-spacer>
-                                <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+                                <UButton color="blue-darken-1" variant="text" @click="dialog = false">
                                     Close
-                                </v-btn>
-                                <v-btn color="blue-darken-1" variant="text" type="submit">
+                                </UButton>
+                                <UButton color="blue-darken-1" variant="text" type="submit">
                                     Update Short
-                                </v-btn>
-                            </v-card-actions>
-                        </form>
-                    </v-card>
+                                </UButton>
+                            </template>
+                        </UForm>
+                    </UCard>
                 </v-row>
             </template>
         </v-dialog>

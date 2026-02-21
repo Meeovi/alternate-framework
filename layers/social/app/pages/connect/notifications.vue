@@ -4,7 +4,7 @@ import type { mastodon } from 'masto'
 import { NOTIFICATION_FILTER_TYPES } from '~/constants'
 
 definePageMeta({
-  middleware: 'auth',
+  middleware: ['auth'],
 })
 
 const route = useRoute()

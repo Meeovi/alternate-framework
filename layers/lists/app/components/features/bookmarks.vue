@@ -23,39 +23,31 @@
 </template>
 
 <script setup>
-    import {
-        ref
-    } from 'vue'
-    import bookmarkCard from '~/components/related/bookmark.vue'
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
+    const content = useContentAdapter()
 
-    const userStore = useUserStore()
-    const userDisplayName = computed(() => {
-        return userStore.user?.name || userStore.user?.username || 'User'
+    const { data: lists } = await useAsyncData('publicBookmarks', async () => {
+        const opts = { filter: { status: { _eq: 'Public' } } }
+        if (content && typeof content.readItems === 'function') {
+            const resp = await content.readItems('lists', opts)
+            return resp?.data || resp
+        }
+        const { $directus, $readItems } = useNuxtApp()
+        return await $directus.request($readItems('lists', opts))
     })
 
-    const model = ref(null)
-
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
-
-        const {
-        data: bookmarks
-    } = await useAsyncData('bookmarks', () => {
-        return $directus.request($readItems('lists', {
+    const { data: bookmarks } = await useAsyncData('bookmarks', async () => {
+        const opts = {
             filter: {
-                creator: {
-                    _eq: userDisplayName.value,
-                },
-                type: {
-                    _eq: "bookmark",
-                }
-            },
-        }))
+                creator: { _eq: userDisplayName?.value },
+                type: { _eq: 'bookmark' }
+            }
+        }
+        if (content && typeof content.readItems === 'function') {
+            const resp = await content.readItems('lists', opts)
+            return resp?.data || resp
+        }
+        const { $directus, $readItems } = useNuxtApp()
+        return await $directus.request($readItems('lists', opts))
     })
 
     useHead({

@@ -9,7 +9,8 @@
     "target": "ESNext",
     "strict": true,
     "jsx": "react-jsx",
-    "skipLibCheck": true, 
+    "skipLibCheck": true,
     "noEmitOnError": false
-  }
+  },
+  "exclude": ["**/__tests__/**", "dist", "node_modules"]
 }

@@ -1,19 +1,39 @@
 import {
   defineNuxtConfig
 } from 'nuxt/config'
-import { resolve } from 'pathe'
+import {
+  currentLocales
+} from '@mframework/localization'
 
 export default defineNuxtConfig({
   $meta: {
     name: 'social',
   },
 
-  runtimeConfig: {},
+  modules: [
+    '@vueuse/nuxt',
+    '@pinia/nuxt',
+  ],
 
-  // Temporarily disable PWA generation during build to avoid plugin resolution
-  // issues while producing the production bundle. Remove or set to `false` to
-  // re-enable PWA once plugin resolution is configured.
-  pwa: {
-    disable: true,
+  features: {
+    inlineStyles: false,
   },
+  experimental: {
+    payloadExtraction: false,
+    renderJsonPayloads: true,
+    // Temporary workaround to avoid hash mismatch issue
+    // ref. https://github.com/elk-zone/elk/issues/3385#issuecomment-3335167005
+    entryImportMap: false,
+  },
+
+  runtimeConfig: {
+    adminKey: '',
+    cloudflare: {
+      accountId: '',
+      namespaceId: '',
+      apiToken: '',
+    },
+  },
+
+  compatibilityDate: '2026-02-16',
 })

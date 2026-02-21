@@ -4,8 +4,7 @@
             <div class="container-fluid">
                 <div class="row justify-content-left auto-text">
                     <div v-if="page?.image?.filename_disk" class="col-12 col-md-12 col-lg-8 image-wrapper">
-                        <img class="w-100" :src="`${$directus.url}assets/${page?.image?.filename_disk}`"
-                            :alt="page?.name">
+                        <img class="w-100" :src="getAssetUrl(page?.image)" :alt="page?.name">
                     </div>
                     <div v-else class="col-12 col-md-12 col-lg-8 image-wrapper">
                         <img class="w-100" src="../../assets/images/background1.jpg" :alt="page?.name">
@@ -55,98 +54,52 @@
 </template>
 
 <script setup>
-    import {
-        ref
-    } from 'vue'
-    import listCard from '~/components/related/list.vue'
-    import RelatedLists from '~/components/related/relatedlists.vue'
-    import createList from '~/components/lists/add-list.vue'
-    import {
-        useUserStore
-    } from '../../../../auth/app/stores/user'
+import { ref, computed } from 'vue'
+import listCard from '~/components/related/list.vue'
+import RelatedLists from '~/components/related/relatedlists.vue'
+import createList from '~/components/lists/add-list.vue'
+import { useUserStore } from '../../../../auth/app/stores/user'
 
-    const userStore = useUserStore()
-    const userDisplayName = computed(() => {
-        return userStore.user?.name || userStore.user?.username || 'User'
-    })
+const userStore = useUserStore()
 
-    const model = ref(null)
+const userDisplayName = computed(() => ({
+  firstName: userStore.user?.first_name || '',
+  lastName: userStore.user?.last_name || ''
+}))
 
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
+const model = ref(null)
 
-    const {
-        data: lists
-    } = await useAsyncData('lists', () => {
-        return $directus.request($readItems('lists', {
-            filter: {
-                status: {
-                    _eq: 'Public'
-                }
-            },
-        }))
-    })
+const {
+  getPublicLists,
+  getUserLists,
+  getUserBookmarks,
+  getPage,
+  getAssetUrl
+} = useContentAdapter()
 
-    const {
-        data: myLists
-    } = await useAsyncData('myLists', () => {
-        return $directus.request($readItems('lists', {
-            filter: {
-                user: {
-                    user_id: {
-                        first_name: {
-                            _eq: `${userDisplayName.firstName.value}`
-                        },
-                        last_name: {
-                            _eq: `${userDisplayName.lastName.value}`
-                        }
-                    },
-                },
-            },
-        }))
-    })
+const { data: lists } = await useAsyncData('lists', () =>
+  getPublicLists()
+)
 
-    const {
-        data: myBookmarks
-    } = await useAsyncData('myBookmarks', () => {
-        return $directus.request($readItems('lists', {
-            filter: {
-                user: {
-                    user_id: {
-                        first_name: {
-                            _eq: `${userDisplayName.firstName.value}`
-                        },
-                        last_name: {
-                            _eq: `${userDisplayName.lastName.value}`
-                        }
-                    },
-                    lists_type: {
-                        lists_type_id: {
-                            _eq: 'Bookmarks'
-                        }
-                    }
-                },
-            },
-        }))
-    })
+const { data: myLists } = await useAsyncData('myLists', () =>
+  getUserLists(
+    userDisplayName.value.firstName,
+    userDisplayName.value.lastName
+  )
+)
 
-    const {
-        data: page
-    } = await useAsyncData('page', () => {
-        return $directus.request($readItems('pages', {
-            filter: {
-                id: {
-                    _eq: 40
-                }
-            },
-            fields: ['*'],
-            limit: 1
-        })).then(response => response?.[0]) // Get first item from response
-    })
+const { data: myBookmarks } = await useAsyncData('myBookmarks', () =>
+  getUserBookmarks(
+    userDisplayName.value.firstName,
+    userDisplayName.value.lastName
+  )
+)
 
-    useHead({
-        title: 'Meeovi Tasks'
-    })
+const { data: page } = await useAsyncData('page', () =>
+  getPage(40)
+)
+
+useHead({
+  title: 'Meeovi Tasks'
+})
 </script>

@@ -1,7 +1,7 @@
 <template>
-    <v-card>
+    <UCard>
         <v-toolbar color="" title="Product Reviews"></v-toolbar>
-        <v-card-text>
+        <template #header>
             <div v-if="reviews.length">
                 <div v-for="review in reviews" :key="review.id">
                     <p><strong>{{ review.author?.firstName }} {{ review.author?.lastName }}</strong> ({{ new Date(review.createdAt).toLocaleDateString() }})</p>
@@ -11,11 +11,15 @@
                 </div>
             </div>
             <div v-else>No reviews found.</div>
-        </v-card-text>
-    </v-card>
+        </template>
+    </UCard>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import {
         ref,
         onMounted

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn
+        <UButton
             stacked
             :icon="icon"
             :title="title"
@@ -13,7 +13,7 @@
                 <span v-if="loading">…</span>
                 <span v-else>{{ reposted ? unRepostLabel : repostLabel }}</span>
             </template>
-        </v-btn>
+        </UButton>
     </div>
 </template>
 

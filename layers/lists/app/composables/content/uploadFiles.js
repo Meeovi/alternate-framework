@@ -1,41 +1,52 @@
 import { uploadFiles } from '@mframework/directus-client';
 
 export default async function uploadFile({ imageFile, documentFile, videoFile, audioFile }) {
-    const { $directus } = useNuxtApp();
-    const uploadedFiles = {};
-  
-    try {
-      if (imageFile) {
-        const formDataImage = new FormData();
-        formDataImage.append('file', imageFile);
-        const uploadedImage = await $directus.request(uploadFiles(formDataImage));
-        uploadedFiles.imageId = uploadedImage.id;
-      }
-  
-      if (documentFile) {
-        const formDataDocument = new FormData();
-        formDataDocument.append('file', documentFile);
-        const uploadedDocument = await $directus.request(uploadFiles(formDataDocument));
-        uploadedFiles.documentId = uploadedDocument.id;
-      }
+  const content = useContentAdapter()
+  const nuxt = typeof useNuxtApp !== 'undefined' ? useNuxtApp() : (globalThis && globalThis.__NUXT_APP) || {}
+  const uploadedFiles = {}
 
-      if (videoFile) {
-        const formDataVideo = new FormData();
-        formDataVideo.append('file', videoFile);
-        const uploadedVideo = await $directus.request(uploadFiles(formDataVideo));
-        uploadedFiles.videoId = uploadedVideo.id;
+  try {
+    // helper to attempt adapter upload, fallback to directus SDK helper
+    const tryUpload = async (file) => {
+      const form = new FormData()
+      form.append('file', file)
+      if (content && typeof content.createItem === 'function') {
+        try {
+          const resp = await content.createItem('files', form)
+          return resp?.data || resp
+        } catch (e) {
+          // ignore and fallback
+        }
       }
-
-      if (audioFile) {
-        const formDataAudio = new FormData();
-        formDataAudio.append('file', audioFile);
-        const uploadedAudio = await $directus.request(uploadFiles(formDataAudio));
-        uploadedFiles.audioId = uploadedAudio.id;
+      if (nuxt && nuxt.$directus) {
+        const { uploadFiles } = await import('@mframework/directus-client').catch(() => ({}))
+        if (typeof nuxt.$directus.request === 'function' && typeof uploadFiles === 'function') {
+          return await nuxt.$directus.request(uploadFiles(form))
+        }
       }
-  
-      return uploadedFiles;
-    } catch (error) {
-      console.error('Error uploading files:', error);
-      throw error;
+      throw new Error('No available file upload mechanism')
     }
+
+    if (imageFile) {
+      const uploadedImage = await tryUpload(imageFile)
+      uploadedFiles.imageId = uploadedImage?.id || uploadedImage
+    }
+    if (documentFile) {
+      const uploadedDocument = await tryUpload(documentFile)
+      uploadedFiles.documentId = uploadedDocument?.id || uploadedDocument
+    }
+    if (videoFile) {
+      const uploadedVideo = await tryUpload(videoFile)
+      uploadedFiles.videoId = uploadedVideo?.id || uploadedVideo
+    }
+    if (audioFile) {
+      const uploadedAudio = await tryUpload(audioFile)
+      uploadedFiles.audioId = uploadedAudio?.id || uploadedAudio
+    }
+
+    return uploadedFiles
+  } catch (error) {
+    console.error('Error uploading files:', error)
+    throw error
   }
+}

@@ -21,6 +21,14 @@ export default {
     const adapter = ctx?.getAdapter ? ctx.getAdapter('search') : undefined
     if (adapter) {
       ctx.searchManager = new SearchManager(adapter)
+      // Expose to global for runtime plugins and helpers; emit event for listeners
+      try {
+        ;(globalThis as any).searchManager = ctx.searchManager
+        const bus = ctx?.eventBus
+        if (bus && typeof bus.emit === 'function') bus.emit('adapter:registered', { key: 'search' })
+      } catch (e) {
+        /* noop */
+      }
     }
 
     // Listen for app readiness or adapter registration when an event bus exists
@@ -30,6 +38,12 @@ export default {
         if (!ctx.searchManager) {
           const runtimeAdapter = ctx.getAdapter('search')
           if (runtimeAdapter) ctx.searchManager = new SearchManager(runtimeAdapter)
+          try {
+            ;(globalThis as any).searchManager = ctx.searchManager
+            if (bus && typeof bus.emit === 'function') bus.emit('adapter:registered', { key: 'search' })
+          } catch (e) {
+            /* noop */
+          }
         }
       })
 
@@ -38,6 +52,12 @@ export default {
           if (payload?.key === 'search' && !ctx.searchManager) {
             const runtimeAdapter = ctx.getAdapter('search')
             if (runtimeAdapter) ctx.searchManager = new SearchManager(runtimeAdapter)
+              try {
+                ;(globalThis as any).searchManager = ctx.searchManager
+                if (bus && typeof bus.emit === 'function') bus.emit('adapter:registered', { key: 'search' })
+              } catch (e) {
+                /* noop */
+              }
           }
         } catch (e) {
           /* noop */

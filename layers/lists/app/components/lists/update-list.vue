@@ -1,91 +1,91 @@
 <template>
     <div>
         <v-row justify="center">
-            <v-card>
-                <form @submit.prevent="handleSubmit">
+            <UCard>
+                <UForm @submit.prevent="handleSubmit">
                     <v-toolbar dark color="primary">
-                        <v-btn icon dark @click="dialog = false">
-                            <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
-                        </v-btn>
-                        <v-card-title>
+                        <UButton icon dark @click="dialog = false">
+                            <UIcon icon="fas:fa fa-circle-xmark"></UIcon>
+                        </UButton>
+                        <template #header>
                             <span class="text-h6">Create a new Space</span>
-                        </v-card-title>
+                        </template>
                     </v-toolbar>
-                    <v-card-text>
+                    <template #header>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field v-model="listData.name" label="List Name" required></v-text-field>
+                                    <UInput v-model="listData.name" label="List Name" required></UInput>
                                 </v-col>
                                 <v-col cols="6">
-                                    <v-select v-model="listData.type" label="Type"
-                                        :items="['List', 'Registry', 'Playlist', 'Todo']"></v-select>
+                                    <USelect v-model="listData.type" label="Type"
+                                        :items="['List', 'Registry', 'Playlist', 'Todo']"></USelect>
                                 </v-col>
                                 <v-col cols="6">
-                                    <v-select v-model="listData.status" label="Status"
-                                        :items="['Public', 'Private']"></v-select>
+                                    <USelect v-model="listData.status" label="Status"
+                                        :items="['Public', 'Private']"></USelect>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-file-input @change="handleImageUpload" clearable
+                                    <UFileUpload @change="handleImageUpload" clearable
                                         density="compact" prepend-icon="fas:fa fa-image" accept="image/*"
                                         label="Image for List" variant="solo-inverted" />
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-textarea v-model="listData.description" label="List Description"></v-textarea>
+                                    <UTextarea v-model="listData.description" label="List Description"></UTextarea>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-card title="Choose a Product for your List">
-                                        <v-card-text>
-                                            <v-text-field density="compact" variant="solo"
+                                    <UCard title="Choose a Product for your List">
+                                        <template #header>
+                                            <UInput density="compact" variant="solo"
                                                 label="Search Meeovi for products" append-inner-icon="fas:fa fa-search"
-                                                single-line hide-details></v-text-field>
+                                                single-line hide-details></UInput>
                                             <div class="d-flex pa-4">
-                                                <v-checkbox-btn v-model="includeFiles" class="pe-2" color="orange">
-                                                </v-checkbox-btn>
+                                                <UCheckbox-btn v-model="includeFiles" class="pe-2" color="orange">
+                                                </UCheckbox-btn>
                                                 <!--<NuxtLink :to="`/product/${products.id}`">
-                                        <v-card class="ma-4" height="580" width="250" @click="toggle">
+                                        <UCard class="ma-4" height="580" width="250" @click="toggle">
                                             <NuxtImg loading="lazy" class="align-end text-white" height="280"
                                                 :src="`${products.featuredAsset.preview}`" :alt="products.name" cover />
 
-                                            <v-card-title class="pt-4">
+                                            <UCard-title class="pt-4">
                                                 {{ products.name }}
-                                            </v-card-title>
+                                            </template>
 
-                                            <v-card-text>
+                                            <template #header>
                                                 <div>Sku: {{ products.variants.sku }}</div>
-                                            </v-card-text>
+                                            </template>
 
-                                            <v-card-actions>
-                                                <v-card-title>$ {{ products.variants.price }}
-                                                </v-card-title>
-                                            </v-card-actions>
+                                            <template>
+                                                <template #header>$ {{ products.variants.price }}
+                                                </template>
+                                            </template>
                                             <div class="d-flex fill-height align-center justify-center">
                                                 <v-scale-transition>
-                                                    <v-icon v-if="isSelected" color="white" size="48"
-                                                        icon="mdi-close-circle-outline"></v-icon>
+                                                    <UIcon v-if="isSelected" color="white" size="48"
+                                                        icon="mdi-close-circle-outline"></UIcon>
                                                 </v-scale-transition>
                                             </div>
-                                        </v-card>
+                                        </UCard>
                                     </NuxtLink>-->
                                             </div>
-                                        </v-card-text>
-                                    </v-card>
+                                        </template>
+                                    </UCard>
                                 </v-col>
                             </v-row>
                         </v-container>
                         <small>*indicates required field</small>
-                    </v-card-text>
+                    </template>
                     <v-divider class="mt-12"></v-divider>
-                    <v-card-actions>
-                        <v-btn color="blue-darken-1" variant="text" type="submit" @click="resetForm = false">
+                    <template>
+                        <UButton color="blue-darken-1" variant="text" type="submit" @click="resetForm = false">
                             Reset
-                        </v-btn>
-                        <v-btn color="blue-darken-1" variant="text" type="submit">
+                        </UButton>
+                        <UButton color="blue-darken-1" variant="text" type="submit">
                             Update
-                        </v-btn>
-                    </v-card-actions>
-                </form>
-            </v-card>
+                        </UButton>
+                    </template>
+                </UForm>
+            </UCard>
         </v-row>
     </div>
 </template>
@@ -95,6 +95,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import uploadFiles from '~//composables/uploadFiles';
 import updateList from '~/app/composables/lists/updateList';
+
+const content = useContentAdapter()
 
 const route = useRoute();
 const router = useRouter();
@@ -116,19 +118,30 @@ const loading = ref(false);
 // Function to fetch existing list data
 const fetchListData = async () => {
     try {
-        const { $directus, $readItem } = useNuxtApp();
         const listId = route.params.id; // Assuming you're passing the ID in the route
-        const response = await $directus.request(readItem('lists', listId));
-        
-        // Populate the form with existing data
-        listData.value = {
-            id: response.id,
-            name: response.name,
-            type: response.type,
-            status: response.status,
-            description: response.description,
-            image: response.image
-        };
+        if (content && typeof content.readItem === 'function') {
+            const resp = await content.readItem('lists', listId)
+            const item = resp?.data || resp || {}
+            listData.value = {
+                id: item.id,
+                name: item.name,
+                type: item.type,
+                status: item.status,
+                description: item.description,
+                image: item.image
+            }
+        } else {
+            const { $directus, $readItem } = useNuxtApp();
+            const response = await $directus.request($readItem('lists', listId));
+            listData.value = {
+                id: response.id,
+                name: response.name,
+                type: response.type,
+                status: response.status,
+                description: response.description,
+                image: response.image
+            }
+        }
     } catch (error) {
         console.error('Error fetching list:', error);
     }

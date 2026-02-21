@@ -3,11 +3,11 @@
         <div ref="galleryRef" class="audio-gallery">
             <NuxtLink v-for="item in items" :key="item.id" class="gallery-item" :data-sub-html="audioHtml(item)"
                 :href="placeholder">
-                <v-card class="audio-card">
-                    <v-card-title>
+                <UCard class="audio-card">
+                    <template #header>
                         {{ item.directus_files_id?.title || 'Audio File' }}
-                    </v-card-title>
-                </v-card>
+                    </template>
+                </UCard>
             </NuxtLink>
         </div>
     </client-only>
@@ -27,11 +27,8 @@
     })
 
     const galleryRef = ref(null)
-
-    const runtime = useRuntimeConfig()
-    const base = runtime.public.directus.url
-
-    const fileUrl = (item) => `${base}assets/${item.directus_files_id.id}`
+    import useMedia from '../../composables/useMedia'
+    const { fileUrl } = useMedia()
 
     // Transparent pixel placeholder (required by LightGallery)
     const placeholder =

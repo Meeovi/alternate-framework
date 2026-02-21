@@ -2,8 +2,8 @@
     <div>
         <v-dialog max-width="500">
             <template v-slot:activator="{ props: activatorProps }">
-                <v-btn v-bind="activatorProps" prepend-icon="fas:fa fa-plus" color="white" text="Create a List"
-                    variant="text"></v-btn>
+                <UButton v-bind="activatorProps" prepend-icon="fas:fa fa-plus" color="white" text="Create a List"
+                    variant="text"></UButton>
             </template>
 
             <template v-slot:default="{ isActive }">
@@ -32,4 +32,6 @@
             required: true
         }
     });
+
+const content = useContentAdapter()
 </script>

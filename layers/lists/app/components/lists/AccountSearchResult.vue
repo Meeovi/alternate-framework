@@ -5,6 +5,7 @@ defineProps<{
   result: SearchResult
   active: boolean
 }>()
+const content = useContentAdapter()
 </script>
 
 <template>

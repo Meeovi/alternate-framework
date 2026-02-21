@@ -14,9 +14,9 @@
             <p>Price: ${{ item.price }}</p>
             <p>Quantity: {{ item.quantity }}</p>
           </div>
-          <v-btn @click="cart.removeItem(item.id)" color="error">
+          <UButton @click="cart.removeItem(item.id)" color="error">
             Remove
-          </v-btn>
+          </UButton>
         </div>
         
         <div class="cart-total">
@@ -29,14 +29,14 @@
         </div>
 
         <div class="cart-actions mt-4">
-          <v-btn
+          <UButton
             color="primary"
             :disabled="cart.items.length === 0 || loading"
             @click="startCheckout"
           >
             <span v-if="!loading">Checkout</span>
             <span v-else>Preparing...</span>
-          </v-btn>
+          </UButton>
 
           <PayPalButtons
             @payment-success="handlePaymentSuccess"
@@ -48,6 +48,9 @@
   </template>
   
   <script setup>
+  import { useCommerceAdapter, useContentAdapter } from '#imports'
+  void useCommerceAdapter()
+  void useContentAdapter()
   import { useCartStore } from '~/stores/cart'
   
   import ShippingOptions from '../components/catalog/product/shippingOptions.vue'

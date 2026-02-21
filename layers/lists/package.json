@@ -1,9 +1,10 @@
 {
   "name": "@mframework/layer-lists",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Official Lists module for the M Framework.",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "dev": "nuxt dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -17,10 +18,11 @@
   "type": "module",
   "main": "./nuxt.config.ts",
   "dependencies": {
+    "layers": "^0.0.3",
     "list.js": "^2.3.1",
     "nanoid": "^5.1.6"
   },
   "devDependencies": {
-    "nuxt": "^4.3.0"
+    "nuxt": "^4.3.1"
   }
 }

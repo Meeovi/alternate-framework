@@ -1,80 +1,83 @@
 <template>
     <div>
-        <v-card elevation="0">
+        <UCard elevation="0">
             <v-toolbar title="Update A Showcase"></v-toolbar>
             <v-form @submit.prevent="updateShowcase">
                 <v-container>
                     <v-row>
                         <v-col cols="6">
-                            <v-text-field v-model="title" label="Showcase Name" required></v-text-field>
+                            <UInput v-model="title" label="Showcase Name" required></UInput>
                         </v-col>
                         <v-col cols="6">
                             <v-combobox v-model="type" label="Status" :items="['Public', 'Private']"></v-combobox>
                         </v-col>
                         <v-col cols="12">
-                            <v-file-input clearable label="Showcase Image"></v-file-input>
+                            <UFileUpload clearable label="Showcase Image"></UFileUpload>
                         </v-col>
                         <v-col cols="12">
-                            <v-textarea v-model="description" label="Showcase Description"></v-textarea>
+                            <UTextarea v-model="description" label="Showcase Description"></UTextarea>
                         </v-col>
                         <v-col cols="12">
-                            <v-card title="Choose a Product for your Showcase">
-                                <v-card-text>
-                                    <v-text-field density="compact" variant="solo" label="Search Meeovi for products"
+                            <UCard title="Choose a Product for your Showcase">
+                                <template #header>
+                                    <UInput density="compact" variant="solo" label="Search Meeovi for products"
                                         append-inner-icon="fas:fa fa-search" single-line hide-details
-                                        @click:append-inner="onClick"></v-text-field>
+                                        @click:append-inner="onClick"></UInput>
                                     <v-spacer></v-spacer>
                                     <div class="d-flex pa-4">
-                                        <v-checkbox-btn v-model="includeFiles" class="pe-2" color="orange">
-                                        </v-checkbox-btn>
+                                        <UCheckbox-btn v-model="includeFiles" class="pe-2" color="orange">
+                                        </UCheckbox-btn>
                                         <!--<NuxtLink :to="`/product/${products.id}`">
-                                        <v-card class="ma-4" height="580" width="250" @click="toggle">
+                                        <UCard class="ma-4" height="580" width="250" @click="toggle">
                                             <NuxtImg loading="lazy" class="align-end text-white" height="280"
                                                 :src="`${products.featuredAsset.preview}`" :alt="products.name" cover />
 
-                                            <v-card-title class="pt-4">
+                                            <UCard-title class="pt-4">
                                                 {{ products.name }}
-                                            </v-card-title>
+                                            </template>
 
-                                            <v-card-text>
+                                            <template #header>
                                                 <div>Sku: {{ products.variants.sku }}</div>
-                                            </v-card-text>
+                                            </template>
 
-                                            <v-card-actions>
-                                                <v-card-title>$ {{ products.variants.price }}
-                                                </v-card-title>
-                                            </v-card-actions>
+                                            <template>
+                                                <template #header>$ {{ products.variants.price }}
+                                                </template>
+                                            </template>
                                             <div class="d-flex fill-height align-center justify-center">
                                                 <v-scale-transition>
-                                                    <v-icon v-if="isSelected" color="white" size="48"
-                                                        icon="mdi-close-circle-outline"></v-icon>
+                                                    <UIcon v-if="isSelected" color="white" size="48"
+                                                        icon="mdi-close-circle-outline"></UIcon>
                                                 </v-scale-transition>
                                             </div>
-                                        </v-card>
+                                        </UCard>
                                     </NuxtLink>-->
                                     </div>
-                                </v-card-text>
-                            </v-card>
+                                </template>
+                            </UCard>
                         </v-col>
                     </v-row>
                 </v-container>
 
                 <v-divider class="mt-12"></v-divider>
-                <v-card-actions>
-                    <v-btn color="blue-darken-1" variant="text" type="submit" @click.prevent="deleteShowcaseAndRefresh">
+                <template>
+                    <UButton color="blue-darken-1" variant="text" type="submit" @click.prevent="deleteShowcaseAndRefresh">
                         Delete
-                    </v-btn>
+                    </UButton>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" type="submit" @click.prevent="updateShowcaseAndRefresh">
+                    <UButton color="blue-darken-1" variant="text" type="submit" @click.prevent="updateShowcaseAndRefresh">
                         Update
-                    </v-btn>
-                </v-card-actions>
+                    </UButton>
+                </template>
             </v-form>
-        </v-card>
+        </UCard>
     </div>
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { ref } from 'vue';
 
 import { useRoute, useRouter } from 'vue-router';

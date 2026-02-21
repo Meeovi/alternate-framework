@@ -69,11 +69,11 @@
                                 </h4>
                                 <h5 class="card-text mbr-fonts-style display-7">
                                     <NuxtLink v-if="post?.author?.avatar?.filename_disk" :to="`/user/${post?.author?.id}`">
-                                        <v-avatar :image="post?.author?.avatar"></v-avatar>
+                                        <UAvatar :image="post?.author?.avatar"></UAvatar>
                                     </NuxtLink>
 
                                     <NuxtLink v-else :to="`/user/${post?.author?.id}`">
-                                        <v-avatar image="../../../assets/images/background2.jpg" size="41"></v-avatar>
+                                        <UAvatar image="../../../assets/images/background2.jpg" size="41"></UAvatar>
                                     </NuxtLink>
                                 </h5>
                             </div>

@@ -55,7 +55,7 @@ function scrollToTop() {
 				</g>
 			</svg>
 
-			<v-btn
+			<UButton
 				v-if="progress >= 0.95"
 				class="absolute inset-0 flex items-center justify-center"
 				@click="scrollToTop"
@@ -65,7 +65,7 @@ function scrollToTop() {
 					<path d="M12 4v16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 					<path d="M18 10l-6-6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 				</svg>
-			</v-btn>
+			</UButton>
 		</div>
 
 		<span
@@ -78,5 +78,5 @@ function scrollToTop() {
 </template>
 
 <style scoped>
-.text-primary\/75 { color: theme('colors.primary', '#0ea5a0'); }
+.text-primary\/75 { color: rgba(14, 165, 160, 0.75); }
 </style>

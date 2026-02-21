@@ -14,20 +14,20 @@
             </div>
         </section>
         
-        <v-card variant="text" class="lowerBar">
+        <UCard variant="text" class="lowerBar">
             <v-toolbar :style="`background-color: ${birthdayBar?.color}; color: ${birthdayBar?.colortext} !important`">
                 <v-toolbar-title>{{ birthdayBar?.name }}</v-toolbar-title>
 
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in birthdayBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text"
-                                :style="`color: ${birthdayBar?.colortext} !important`">{{ menu?.name }}</v-btn>
+                            <UButton variant="text"
+                                :style="`color: ${birthdayBar?.colortext} !important`">{{ menu?.name }}</UButton>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
         <section data-bs-version="5.1" class="header6 cid-v0GHPMn349" id="header6-k">
             <div class="mbr-overlay" style="opacity: 0.3; background-color: rgb(1, 43, 58);">
             </div>

@@ -1,19 +1,19 @@
 <template>
-    <v-card class="image-card" elevation="2" rounded="lg">
+    <UCard class="image-card" elevation="2" rounded="lg">
         <!-- IMAGE PREVIEW -->
         <v-img :src="fileUrl" :alt="media?.title || media?.filename_download || 'Image'" height="180" cover
             class="image-preview" @click="openFull" />
 
         <!-- TITLE -->
-        <v-card-text class="py-2 text-truncate">
+        <template #header class="py-2 text-truncate">
             {{ media?.title || media?.filename_download || 'Untitled image' }}
-        </v-card-text>
+        </template>
 
         <!-- ACTIONS SLOT -->
-        <v-card-actions>
+        <template>
             <slot name="actions" />
-        </v-card-actions>
-    </v-card>
+        </template>
+    </UCard>
 </template>
 
 <script setup>
@@ -28,13 +28,8 @@
         },
     })
 
-    const config = useRuntimeConfig()
-
-    // Build Directus file URL
-    const fileUrl = computed(() => {
-        if (!props.media?.id) return ''
-        return `${config.public.directus.url}/assets/${props.media.id}`
-    })
+    import useMedia from '../../composables/useMedia'
+    const { fileUrl } = useMedia()
 
     // Open full image in new tab
     function openFull() {

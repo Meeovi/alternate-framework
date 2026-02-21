@@ -24,7 +24,6 @@
   },
   "packageManager": "npm@8.5.0",
   "workspaces": [
-    "apps/*",
     "packages/*",
     "layers/*",
     "integrations/*",

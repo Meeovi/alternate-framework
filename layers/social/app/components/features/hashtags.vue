@@ -14,7 +14,7 @@
 			</div>
 		</section>
 
-        <v-card variant="text">
+        <UCard variant="text">
             <v-toolbar :style="`background-color: ${tagBar?.color}; color: ${tagBar?.colortext} !important`">
                 <v-toolbar-title>{{ tagBar?.name }}</v-toolbar-title>
 
@@ -22,13 +22,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in tagBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text" :style="`color: ${tagBar?.colortext} !important`"
-                                :href="menu?.slug">{{ menu?.name }}</v-btn>
+                            <UButton variant="text" :style="`color: ${tagBar?.colortext} !important`"
+                                :href="menu?.slug">{{ menu?.name }}</UButton>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <section data-bs-version="5.1" class="header6 cid-v0GHPMn349" id="header6-k">
             <div class="mbr-overlay" style="opacity: 0.3; background-color: rgb(1, 43, 58);">

@@ -1,27 +1,27 @@
 <template>
     <div>
-        <v-card class="mx-auto" max-width="400" height="550">
+        <UCard class="mx-auto" max-width="400" height="550">
             <img v-if="space?.image?.filename_disk" class="align-end text-white" height="200"
                 :src="getAssetUrl(space?.image)" :alt="space?.name" />
 
             <img class="align-end text-white" height="200" v-else src="assets/images/background8.jpg" :alt="space?.name" />
 
-            <v-card-title>{{ space?.name }}</v-card-title>
+            <template #header>{{ space?.name }}</template>
 
-            <v-card-subtitle class="pt-4">
+            <UCard-subtitle class="pt-4">
                 Created: {{ new Date(space?.date_created).toLocaleDateString() }}
             </v-card-subtitle>
 
-            <v-card-text>
+            <template #header>
                 <div v-dompurify-html="space?.description"></div>
-            </v-card-text>
+            </template>
 
-            <v-card-actions>
+            <template>
                 <share style="position: relative; top: 0px;" />
 
-                <v-btn color="orange" text="Explore" :href="`/space/${space?.slug}`"></v-btn>
-            </v-card-actions>
-        </v-card>
+                <UButton color="orange" text="Explore" :href="`/space/${space?.slug}`"></UButton>
+            </template>
+        </UCard>
     </div>
 </template>
 

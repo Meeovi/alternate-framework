@@ -14,9 +14,9 @@
                     <v-list-item>
                         <v-menu>
                             <template v-slot:activator="{ props }">
-                                <v-btn color="warning" v-bind="props">
+                                <UButton color="warning" v-bind="props">
                                     {{ page?.repeaterTextBox?.[2]?.description }}
-                                </v-btn>
+                                </UButton>
                             </template>
                             <v-list>
                                 <v-list-item v-for="(sites, index) in sites" :key="index" :value="index">
@@ -49,7 +49,11 @@
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     const {
         $directus,
         $readItems,

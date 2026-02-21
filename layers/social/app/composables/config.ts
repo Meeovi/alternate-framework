@@ -7,7 +7,8 @@ export interface SocialConfig {
 
 let config: SocialConfig = {
   provider: 'memory',
-  baseUrl: '',
+  // Default to local proxy endpoint provided by the auth layer
+  baseUrl: '/api/masto',
   apiKey: ''
 }
 

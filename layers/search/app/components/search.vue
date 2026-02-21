@@ -1,5 +1,5 @@
 <template>
-  <form ref="referenceRef" role="search" class="relative" @submit.prevent="submit">
+  <UForm ref="referenceRef" role="search" class="relative" @submit.prevent="submit">
     <div class="flex relative">
       <SfInput
         ref="inputRef"
@@ -12,7 +12,7 @@
       >
         <template #prefix><SfIconSearch /></template>
         <template #suffix>
-          <button
+          <UButton
             v-if="inputModel"
             type="button"
             aria-label="Reset search"
@@ -20,7 +20,7 @@
             @click="reset"
           >
             <SfIconCancel />
-          </button>
+          </UButton>
         </template>
       </SfInput>
       <SfButton type="submit" square aria-label="Search for a specific phrase on the page" class="absolute right-0">
@@ -43,7 +43,7 @@
           <SfListItem
             tag="button"
             type="button"
-            class="flex justify-start !py-4 sm:!py-2"
+            class="flex justify-start py-4! sm:!py-2"
             @click="() => selectValue(product.name)"
             @keydown.enter.space.prevent="selectValue(product.name)"
           >
@@ -56,7 +56,7 @@
         </li>
       </ul>
     </div>
-  </form>
+  </UForm>
 </template>
 
 <script lang="ts" setup>

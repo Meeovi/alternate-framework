@@ -1,12 +1,15 @@
 <template>
     <div>
-      <v-btn color="primary" @click="redirectToCheckout">
+      <UButton color="primary" @click="redirectToCheckout">
         Proceed to Payment
-      </v-btn>
+      </UButton>
     </div>
   </template>
   
   <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
   import getActiveOrderQuery from '#graphql/app/commerce/queries/activeOrder.gql';
 
   const nuxtApp = useNuxtApp();

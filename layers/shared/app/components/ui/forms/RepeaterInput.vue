@@ -77,7 +77,7 @@ const onJsonInput = (e: Event) => {
   <div :style="'width: ' + (props.width === 'full' ? '100%' : '50%')">
     <label style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
       <span>{{ props.label || props.field }}</span>
-      <v-btn type="v-btn" @click="toggleJson" style="font-size:12px">{{ jsonMode ? 'Edit Items' : 'Edit JSON' }}</v-btn>
+      <UButton type="v-btn" @click="toggleJson" style="font-size:12px">{{ jsonMode ? 'Edit Items' : 'Edit JSON' }}</UButton>
     </label>
 
     <div v-if="!jsonMode">
@@ -93,17 +93,17 @@ const onJsonInput = (e: Event) => {
           </template>
           <template v-else>
             <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
-              <v-text-field type="text" v-model="items[idx]" @input="updateItem(idx, items[idx])" style="flex:1;padding:8px" />
+              <UInput type="text" v-model="items[idx]" @input="updateItem(idx, items[idx])" style="flex:1;padding:8px" />
             </div>
           </template>
         </div>
 
         <div style="display:flex;justify-content:flex-end;margin-top:8px">
-          <v-btn type="v-btn" @click="removeItem(idx)" style="padding:6px">Remove</v-btn>
+          <UButton type="v-btn" @click="removeItem(idx)" style="padding:6px">Remove</UButton>
         </div>
       </div>
 
-      <v-btn type="v-btn" @click="addItem" style="padding:6px">Add item</v-btn>
+      <UButton type="v-btn" @click="addItem" style="padding:6px">Add item</UButton>
     </div>
 
     <div v-else>

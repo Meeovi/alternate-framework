@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { GroupedLikeNotifications } from '#shared/types'
+import { useTimeAgoOptions } from '@mframework/localization';
+import { usePreferences } from '~/composables/settings';
 
 const { group } = defineProps<{
   group: GroupedLikeNotifications

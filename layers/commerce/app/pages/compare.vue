@@ -25,12 +25,12 @@
         />
         
         <div class="mt-8 flex justify-between">
-          <v-btn 
+          <UButton 
             @click="clearCompareList" 
             class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           >
             Clear Compare List
-          </v-btn>
+          </UButton>
           <NuxtLink 
             to="/" 
             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -44,6 +44,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { ref, onMounted, computed } from 'vue';
 import { useQuery, useMutation } from '@vue/apollo-composable';
 import gql from 'graphql-tag';

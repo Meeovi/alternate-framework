@@ -1,12 +1,12 @@
 <template>
-    <v-card elevation="0">
+    <UCard elevation="0">
         <v-toolbar class="text-white" image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
             <v-toolbar-title><h3>{{ space?.name }}</h3></v-toolbar-title>
 
             <v-toolbar-items>
-                    <v-btn class="text-white" variant="plain">{{ space?.status }} Space</v-btn>
+                    <UButton class="text-white" variant="plain">{{ space?.status }} Space</UButton>
 
-                    <v-btn class="text-white" variant="plain">Members: {{ space?.numberOfMembers }}</v-btn>
+                    <UButton class="text-white" variant="plain">Members: {{ space?.numberOfMembers }}</UButton>
             </v-toolbar-items>
         </v-toolbar>
 
@@ -106,7 +106,7 @@
                 </v-tabs-window-item>
             </v-tabs-window>
         </v-sheet>
-    </v-card>
+    </UCard>
 </template>
 
 <script setup>

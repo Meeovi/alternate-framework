@@ -122,6 +122,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { computed } from 'vue';
 import { SfIconClose } from '@storefront-ui/vue';
 import addToCartBtn from '~/components/partials/commerce/addToCartBtn.vue';

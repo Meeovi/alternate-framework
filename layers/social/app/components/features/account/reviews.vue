@@ -3,7 +3,7 @@
         <!---->
         <v-toolbar color="transparent" density="compact" title="My Reviews">
             <v-spacer />
-            <v-text-field
+            <UInput
                 v-model="search"
                 append-icon="fas:fa fa-search"
                 label="Search Reviews"
@@ -14,13 +14,13 @@
             />
         </v-toolbar>
 
-        <v-card>
+        <UCard>
             <v-tabs v-model="tab" bg-color="transparent">
                 <v-tab value="written">Reviews Written</v-tab>
                 <v-tab value="pending">Pending Reviews</v-tab>
             </v-tabs>
 
-            <v-card-text>
+            <template #header>
                 <v-tabs-window v-model="tab">
                     <v-tabs-window-item value="written">
                         <v-table>
@@ -65,13 +65,13 @@
                                         </v-chip>
                                     </td>
                                     <td>
-                                        <v-btn
+                                        <UButton
                                             icon="fas:fa fa-edit"
                                             color="primary"
                                             size="small"
                                             @click="editReview(review)"
                                         />
-                                        <v-btn
+                                        <UButton
                                             icon="fas:fa fa-trash"
                                             color="error"
                                             size="small"
@@ -107,35 +107,35 @@
                                     </td>
                                     <td>{{ formatDate(order.created_at) }}</td>
                                     <td>
-                                        <v-btn
+                                        <UButton
                                             color="primary"
                                             size="small"
                                             @click="writeReview(order)"
                                         >
                                             Write Review
-                                        </v-btn>
+                                        </UButton>
                                     </td>
                                 </tr>
                             </tbody>
                         </v-table>
                     </v-tabs-window-item>
                 </v-tabs-window>
-            </v-card-text>
+            </template>
 
             <v-pagination
                 v-model="page"
                 :length="totalPages"
                 @update:model-value="loadReviews"
             />
-        </v-card>
+        </UCard>
 
         <!-- Review Dialog -->
         <v-dialog v-model="showReviewDialog" max-width="600px">
-            <v-card>
-                <v-card-title>
+            <UCard>
+                <template #header>
                     {{ editingReview ? 'Edit Review' : 'Write Review' }}
-                </v-card-title>
-                <v-card-text>
+                </template>
+                <template #header>
                     <v-form ref="reviewForm" v-model="reviewValid">
                         <DirectusFormElement 
                             v-for="field in reviewFields" 
@@ -144,20 +144,20 @@
                             v-model="reviewForm[field.field]"
                         />
                     </v-form>
-                </v-card-text>
-                <v-card-actions>
+                </template>
+                <template>
                     <v-spacer />
-                    <v-btn color="error" @click="showReviewDialog = false">Cancel</v-btn>
-                    <v-btn
+                    <UButton color="error" @click="showReviewDialog = false">Cancel</UButton>
+                    <UButton
                         color="primary"
                         @click="saveReview"
                         :loading="saving"
                         :disabled="!reviewValid"
                     >
                         Save Review
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+                    </UButton>
+                </template>
+            </UCard>
         </v-dialog>
     </div>
 </template>
@@ -207,7 +207,7 @@
         try {
             const fieldsResp = await readFieldsByCollection('reviews')
             const fields = fieldsResp?.data || fieldsResp || []
-            reviewFields.value = fields.filter((field: any) => ['rating', 'title', 'detail'].includes(field.field))
+            reviewFields.value = fields.filter(field => ['rating', 'title', 'detail'].includes(field.field))
         } catch (error) {
             console.error('Failed to load review fields:', error)
         }

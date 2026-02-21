@@ -12,5 +12,8 @@
 </template>
 
 <script setup lang="ts">
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
   const props = defineProps<{ assets: Array<{ id: string; preview: string }> }>();
 </script>

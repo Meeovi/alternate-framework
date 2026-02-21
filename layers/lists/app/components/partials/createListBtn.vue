@@ -2,20 +2,20 @@
   <div>
     <v-dialog v-model="dialogOpen" justify="center">
       <template v-slot:activator="{ props }">
-        <v-btn size="m" variant="tertiary" v-bind="props">
+        <UButton size="m" variant="tertiary" v-bind="props">
           <SfIconFavorite size="m" />
           Add to list
-        </v-btn>
+        </UButton>
       </template>
 
-      <v-card max-width="500px">
+      <UCard max-width="500px">
         <v-tabs v-model="tab" bg-color="info">
           <v-tab value="one">Your Lists</v-tab>
           <!--<v-tab value="two">Create a List</v-tab>
           <v-tab value="three">Item Three</v-tab>-->
         </v-tabs>
 
-        <v-card-text>
+        <template #header>
           <v-tabs-window v-model="tab">
             <v-tabs-window-item value="one">
               <v-row>
@@ -24,12 +24,12 @@
                     <p style="text-align: center;">Save</p>
                   </strong>
                   <v-list lines="two">
-                    <v-list-item :title="list?.name" :subtitle="list?.type"
-                      :prepend-avatar="`${$directus.url}/assets/${list?.image?.filename_disk}`"
+                        <v-list-item :title="list?.name" :subtitle="list?.type"
+                          :prepend-avatar="content.getAssetUrl(list?.image)"
                       @click="saveProductToList(list.id)" style="cursor: pointer;" :disabled="loading">
                       <template v-slot:append>
                         <v-progress-circular v-if="loading" indeterminate size="24"></v-progress-circular>
-                        <v-icon v-else icon="fas:fa fa-plus"></v-icon>
+                        <UIcon v-else icon="fas:fa fa-plus"></UIcon>
                       </template>
                     </v-list-item>
                   </v-list>
@@ -46,46 +46,46 @@
               Three
             </v-tabs-window-item>
           </v-tabs-window>
-        </v-card-text>
-      </v-card>
+        </template>
+      </UCard>
     </v-dialog>
   </div>
 </template>
 
 <script setup>
-  import {
-    ref,
-    onMounted
-  } from 'vue'
-  import {
-    
-    SfIconFavorite
-  } from '@storefront-ui/vue'
-  import list from '../features/lists.vue'
-  import createlist from '../lists/add-list.vue'
+import { ref } from 'vue'
 
-  const loading = ref(false)
+const content = useContentAdapter()
 
-  const route = useRoute();
-  const dialogOpen = ref(false);
-  const tab = ref(null);
-  const {
-    $directus,
-    $readItems,
-    $createItem
-  } = useNuxtApp()
+const { data: lists } = await useAsyncData('lists', async () => {
+  const opts = { filter: { status: { _eq: 'Public' } } }
+  if (content && typeof content.readItems === 'function') {
+    const resp = await content.readItems('lists', opts)
+    return resp?.data || resp
+  }
+  const { $directus, $readItems } = useNuxtApp()
+  return $directus.request($readItems('lists', opts))
+})
 
-  const {
-    data: lists
-  } = await useAsyncData('lists', () => {
-    return $directus.request($readItems('lists', {
-      filter: {
-        status: {
-          _eq: 'Public'
-        }
-      }
-    }))
-  })
+const loading = ref(false)
+
+const saveProductToList = async (listId) => {
+  loading.value = true
+  try {
+    // Adapter create hook or fallback can be used here when product data is available
+    if (content && typeof content.createItem === 'function') {
+      // noop - actual item payload depends on caller/context
+      await content.createItem('list_items', { list: listId })
+    } else {
+      const { $directus, $createItem } = useNuxtApp()
+      await $directus.request($createItem('list_items', { list: listId }))
+    }
+  } catch (err) {
+    console.error('Failed to save product to list', err)
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <style scoped>

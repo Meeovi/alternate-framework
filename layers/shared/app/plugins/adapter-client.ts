@@ -1,5 +1,5 @@
 // src/plugins/adapter.client.ts
-import { defineNuxtPlugin, useRuntimeConfig } from '#app'
+import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
 import { registerAdapter } from '../lib/sdk'
 import { createAdapter } from '../lib/adapter-loader'
 

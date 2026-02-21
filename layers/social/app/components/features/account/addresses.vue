@@ -1,18 +1,18 @@
 <template>
     <div>
         <v-toolbar color="transparent" density="compact" title="My Addresses">
-            <v-btn color="primary" @click="showAddAddress = true">
+            <UButton color="primary" @click="showAddAddress = true">
                 Add New Address
-            </v-btn>
+            </UButton>
         </v-toolbar>
 
-        <v-card>
+        <UCard>
             <v-tabs v-model="tab" bg-color="transparent">
                 <v-tab value="billing">Billing Addresses</v-tab>
                 <v-tab value="shipping">Shipping Addresses</v-tab>
             </v-tabs>
 
-            <v-card-text>
+            <template #header>
                 <v-tabs-window v-model="tab">
                     <v-tabs-window-item value="billing">
                         <v-table fixed-header>
@@ -42,8 +42,8 @@
                                     <td>{{ address.country_id }}</td>
                                     <td>{{ address.telephone }}</td>
                                     <td>
-                                        <v-btn icon="fas:fa fa-edit" color="primary" size="small" @click="editAddress(address)" />
-                                        <v-btn icon="fas:fa fa-trash" color="error" size="small" @click="deleteAddress(address.id)" />
+                                        <UButton icon="fas:fa fa-edit" color="primary" size="small" @click="editAddress(address)" />
+                                        <UButton icon="fas:fa fa-trash" color="error" size="small" @click="deleteAddress(address.id)" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -78,64 +78,64 @@
                                     <td>{{ address.country_id }}</td>
                                     <td>{{ address.telephone }}</td>
                                     <td>
-                                        <v-btn icon="fas:fa fa-edit" color="primary" size="small" @click="editAddress(address)" />
-                                        <v-btn icon="fas:fa fa-trash" color="error" size="small" @click="deleteAddress(address.id)" />
+                                        <UButton icon="fas:fa fa-edit" color="primary" size="small" @click="editAddress(address)" />
+                                        <UButton icon="fas:fa fa-trash" color="error" size="small" @click="deleteAddress(address.id)" />
                                     </td>
                                 </tr>
                             </tbody>
                         </v-table>
                     </v-tabs-window-item>
                 </v-tabs-window>
-            </v-card-text>
-        </v-card>
+            </template>
+        </UCard>
 
         <!-- Add/Edit Address Dialog -->
         <v-dialog v-model="showAddAddress" max-width="600px">
-            <v-card>
-                <v-card-title>
+            <UCard>
+                <template #header>
                     {{ editingAddress ? 'Edit Address' : 'Add New Address' }}
-                </v-card-title>
-                <v-card-text>
+                </template>
+                <template #header>
                     <v-form ref="form" v-model="valid">
                         <v-row>
                             <v-col cols="6">
-                                <v-text-field
+                                <UInput
                                     v-model="addressForm.firstname"
                                     label="First Name"
                                     required
                                 />
                             </v-col>
                             <v-col cols="6">
-                                <v-text-field
+                                <UInput
                                     v-model="addressForm.lastname"
                                     label="Last Name"
                                     required
                                 />
                             </v-col>
                         </v-row>
-                        <v-text-field
+                        <UInput
                             v-model="addressForm.company"
                             label="Company"
                         />
-                        <v-text-field
+                        <UInput
                             v-model="addressForm.street[0]"
                             label="Street Address"
                             required
                         />
-                        <v-text-field
+                        <UInput
                             v-model="addressForm.street[1]"
                             label="Street Address Line 2"
                         />
                         <v-row>
                             <v-col cols="6">
-                                <v-text-field
+                                <UInput
                                     v-model="addressForm.city"
                                     label="City"
                                     required
                                 />
                             </v-col>
                             <v-col cols="6">
-                                <v-text-field
+                                <UInput
                                     v-model="addressForm.postcode"
                                     label="Postal Code"
                                     required
@@ -144,7 +144,7 @@
                         </v-row>
                         <v-row>
                             <v-col cols="6">
-                                <v-select
+                                <USelect
                                     v-model="addressForm.country_id"
                                     :items="countries"
                                     label="Country"
@@ -152,29 +152,29 @@
                                 />
                             </v-col>
                             <v-col cols="6">
-                                <v-text-field
+                                <UInput
                                     v-model="addressForm.telephone"
                                     label="Phone Number"
                                     required
                                 />
                             </v-col>
                         </v-row>
-                        <v-checkbox
+                        <UCheckbox
                             v-model="addressForm.default_billing"
                             label="Set as default billing address"
                         />
-                        <v-checkbox
+                        <UCheckbox
                             v-model="addressForm.default_shipping"
                             label="Set as default shipping address"
                         />
                     </v-form>
-                </v-card-text>
-                <v-card-actions>
+                </template>
+                <template>
                     <v-spacer />
-                    <v-btn color="error" @click="showAddAddress = false">Cancel</v-btn>
-                    <v-btn color="primary" @click="saveAddress" :disabled="!valid">Save</v-btn>
-                </v-card-actions>
-            </v-card>
+                    <UButton color="error" @click="showAddAddress = false">Cancel</UButton>
+                    <UButton color="primary" @click="saveAddress" :disabled="!valid">Save</UButton>
+                </template>
+            </UCard>
         </v-dialog>
     </div>
 </template>

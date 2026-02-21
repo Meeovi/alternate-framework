@@ -1,15 +1,15 @@
 <template>
-  <v-card>
-    <v-card-title>Security Settings</v-card-title>
-    <v-card-text>
+  <UCard>
+    <template #header>Security Settings</template>
+    <template #header>
       <v-switch v-model="twoFactorAuth" label="Enable Two-Factor Authentication"
         @change="toggleTwoFactorAuth"></v-switch>
       <!--<v-row>
-        <v-col><v-btn @click="viewLoginHistory" class="mb-4">View Login History</v-btn></v-col>
-        <v-col><v-btn @click="manageActiveSessions" color="warning">Manage Active Sessions</v-btn></v-col>
+        <v-col><UButton @click="viewLoginHistory" class="mb-4">View Login History</UButton></v-col>
+        <v-col><UButton @click="manageActiveSessions" color="warning">Manage Active Sessions</UButton></v-col>
       </v-row>-->
-    </v-card-text>
-  </v-card>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

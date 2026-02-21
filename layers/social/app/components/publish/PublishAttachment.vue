@@ -40,9 +40,9 @@ function toggleApply() {
       </div>
     </div>
     <div absolute right-2 bottom-2>
-      <v-btn class="bg-black/75" text-white px2 py1 rounded-2 @click="isEditDialogOpen = true">
+      <UButton class="bg-black/75" text-white px2 py1 rounded-2 @click="isEditDialogOpen = true">
         {{ $t('action.edit') }}
-      </v-btn>
+      </UButton>
     </div>
     <ModalDialog
       v-model="isEditDialogOpen"
@@ -60,13 +60,13 @@ function toggleApply() {
             <div flex flex-row-reverse>
               <PublishCharacterCounter :length="description.length" :max="maxDescriptionLength" />
             </div>
-            <v-btn btn-outline :disabled="description.length > maxDescriptionLength" @click="toggleApply">
+            <UButton btn-outline :disabled="description.length > maxDescriptionLength" @click="toggleApply">
               {{ $t('action.apply') }}
-            </v-btn>
+            </UButton>
           </div>
-          <v-btn btn-outline @click="isEditDialogOpen = false">
+          <UButton btn-outline @click="isEditDialogOpen = false">
             {{ $t('action.close') }}
-          </v-btn>
+          </UButton>
         </div>
         <StatusAttachment :attachment="attachment" w-full is-preview />
       </div>

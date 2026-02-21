@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Products</h2>
-    <v-btn @click="refresh">Refresh</v-btn>
+    <UButton @click="refresh">Refresh</UButton>
     <ul>
       <li v-for="p in products" :key="p.id">{{ p.title || p.name || p.id }}</li>
     </ul>

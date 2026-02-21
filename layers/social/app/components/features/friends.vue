@@ -14,19 +14,19 @@
 			</div>
 		</section>
 
-        <v-card variant="text">
+        <UCard variant="text">
             <v-toolbar :style="`background-color: ${friendBar?.color}; color: ${friendBar?.colortext} !important`">
 
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in friendBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text" :style="`color: ${friendBar?.colortext} !important`"
-                                :href="menu?.slug">{{ menu?.name }}</v-btn>
+                            <UButton variant="text" :style="`color: ${friendBar?.colortext} !important`"
+                                :href="menu?.slug">{{ menu?.name }}</UButton>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="friendBar?.menus?.[0]?.value">

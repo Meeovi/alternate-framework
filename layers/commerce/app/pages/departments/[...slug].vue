@@ -7,26 +7,28 @@
         </div>
 
         <div v-else>
-            <v-card variant="text">
+            <UCard variant="text">
                 <v-toolbar :style="`background-color: ${department?.color}; color: ${department?.colortext}`"
                     :title="department?.name">
                     <v-slide-group show-arrows v-if="department?.categories?.length">
                         <v-slide-group-item v-slot="{ isSelected, toggle }">
                             <v-menu>
                                 <template v-slot:activator="{ props }">
-                                    <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
+                                    <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
                                         v-bind="props" append-icon="fas:fa fa-caret-down" variant="text">
                                         Categories
-                                    </v-btn>
+                                    </UButton>
                                 </template>
                                 <v-list class="departmentMenu">
                                     <v-row>
                                         <v-col cols="3" v-for="categories in department?.categories"
                                             :key="categories?.id">
                                             <v-list-item>
-                                                <v-chip><NuxtLink
-                                                    :to="`/departments/category/${categories?.categories_id?.slug}`">
-                                                    {{ categories?.categories_id?.name }}</NuxtLink></v-chip>
+                                                <v-chip>
+                                                    <NuxtLink
+                                                        :to="`/departments/category/${categories?.categories_id?.slug}`">
+                                                        {{ categories?.categories_id?.name }}</NuxtLink>
+                                                </v-chip>
                                             </v-list-item>
                                         </v-col>
                                     </v-row>
@@ -36,10 +38,10 @@
 
                         <v-slide-group-item v-if="department?.menus?.length" v-for="menu in department?.menus"
                             :key="menu" v-slot="{ isSelected, toggle }">
-                            <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
+                            <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
                                 :href="`${menu?.url}`">
                                 {{ menu?.name }}
-                            </v-btn>
+                            </UButton>
                         </v-slide-group-item>
                     </v-slide-group>
                 </v-toolbar>
@@ -82,8 +84,7 @@
                                 </div>
                             </div>
 
-                            <v-sheet
-                                class="mx-auto col-lg-6" style="background-color: transparent; box-shadow: none;">
+                            <v-sheet class="mx-auto col-lg-6" style="background-color: transparent; box-shadow: none;">
                                 <h4 style="left: 15px; position: relative;">{{ callouts?.menus?.[1]?.name }}</h4>
                                 <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
                                     <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
@@ -92,8 +93,8 @@
                                             @click="toggle" />
                                         <div class="d-flex fill-height align-center justify-center">
                                             <v-scale-transition>
-                                                <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                                    size="48"></v-icon>
+                                                <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                                    size="48"></UIcon>
                                             </v-scale-transition>
                                         </div>
                                     </v-slide-group-item>
@@ -104,7 +105,8 @@
                 </section>
 
                 <!--Department Content Section-->
-                <section data-bs-version="5.1" class="gallery2 shopm5 cid-uW1BojE78S" id="agallery2-0" v-if="department?.shorts?.length && department?.products?.products_id?.type === 'department'"
+                <section data-bs-version="5.1" class="gallery2 shopm5 cid-uW1BojE78S" id="agallery2-0"
+                    v-if="department?.shorts?.length && department?.products?.products_id?.type === 'department'"
                     :style="`background-image: url(${getAssetUrl(department?.image)})`">
                     <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(255, 255, 255);">
                     </div>
@@ -121,8 +123,8 @@
                                             @click="toggle" />
                                         <div class="d-flex fill-height align-center justify-center">
                                             <v-scale-transition>
-                                                <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                                    size="48"></v-icon>
+                                                <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                                    size="48"></UIcon>
                                             </v-scale-transition>
                                         </div>
                                     </v-slide-group-item>
@@ -143,8 +145,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></v-icon>
+                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></UIcon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -161,8 +163,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></v-icon>
+                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></UIcon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -178,8 +180,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></v-icon>
+                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></UIcon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -198,8 +200,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></v-icon>
+                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></UIcon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -218,21 +220,24 @@
                                 <spaces :space="spaces?.spaces_id" :class="['ma-4', selectedClass]" @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></v-icon>
+                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></UIcon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
                         </v-slide-group>
                     </v-sheet>
                 </v-row>
-            </v-card>
+            </UCard>
         </div>
     </div>
 </template>
 
 <script setup>
-        import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
     import travel from '@/components/categories/travel.vue'
     import deals from '@/components/categories/deals.vue'
     import timeComponent from '@/components/categories/time/time.vue'
@@ -240,15 +245,21 @@
 
     const route = useRoute()
     const model = ref(null)
-import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
-const { readItems, readItem, getAssetUrl } = useDirectusRequest()
+    import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
+    const {
+        readItems,
+        readItem,
+        getAssetUrl
+    } = useDirectusRequest()
 
     const slug = computed(() => {
         const s = route.params.slug
         return Array.isArray(s) ? s[0] : s
     })
 
-    const { data: departmentRaw } = await useAsyncData('department', async () => {
+    const {
+        data: departmentRaw
+    } = await useAsyncData('department', async () => {
         const resp = await readItems('departments', {
             fields: [
                 '*',
@@ -260,7 +271,11 @@ const { readItems, readItem, getAssetUrl } = useDirectusRequest()
                 'shops.shops_id.*',
                 'image.*'
             ],
-            filter: { slug: { _eq: slug.value } },
+            filter: {
+                slug: {
+                    _eq: slug.value
+                }
+            },
             limit: 1
         })
         return resp?.data || resp || []
@@ -268,56 +283,52 @@ const { readItems, readItem, getAssetUrl } = useDirectusRequest()
 
     const department = computed(() => departmentRaw.value?.[0] || null)
 
-    const { data: introProducts } = await useAsyncData('introProducts', async () => {
-        const resp = await readItems('departments', { fields: ['*', { '*': ['*'] }], limit: 2 })
+    const {
+        data: introProducts
+    } = await useAsyncData('introProducts', async () => {
+        const resp = await readItems('departments', {
+            fields: ['*', {
+                '*': ['*']
+            }],
+            limit: 2
+        })
         return resp?.data || resp || []
     })
 
-    const { data: best } = await useAsyncData('best', async () => {
+    const {
+        data: best
+    } = await useAsyncData('best', async () => {
         const resp = await readItems('departments', {
             fields: ['*', 'products.products_id.*', 'images.*'],
             limit: 10,
-            filter: { showcases: { showcases_id: { name: { _eq: 'Best Sellers' } } } }
+            filter: {
+                showcases: {
+                    showcases_id: {
+                        name: {
+                            _eq: 'Best Sellers'
+                        }
+                    }
+                }
+            }
         })
         return resp?.data || resp || []
     })
 
     const {
         data: latestProducts
-    } = await useAsyncData('latestProducts', () => {
-        return $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'images.*'
-            ],
+    } = await useAsyncData('latestProducts', async () => {
+        const resp = await readItems('departments', {
+            fields: ['*', 'products.products_id.*', 'images.*'],
             limit: 10,
             filter: {
                 products: {
                     products_id: {
-                        const { data: latestProducts } = await useAsyncData('latestProducts', async () => {
-                            const resp = await readItems('departments', {
-                                fields: ['*', 'products.products_id.*', 'images.*'],
-                                limit: 10,
-                                filter: {
-        data: limitProducts
-    } = await useAsyncData('limitProducts', () => {
-        return $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'images.*'
-            ],
-                                }
-                            })
-                            return resp?.data || resp || []
-                        })
-                    products_id: {
-                        status: {
-                            _eq: "published"
-                        }
+                        status: { _eq: 'published' }
                     }
-                },
+                }
             }
-        }))
+        })
+        return resp?.data || resp || []
     })
 
     const {

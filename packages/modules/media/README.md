@@ -1,6 +1,6 @@
 # Media module
 
-This module provides an automatic Video.js player attachment utility with dynamic plugin loading, per-namespace plugin mapping, and merged plugin options.
+This module provides an automatic Video.js player attachment utility with dynamic plugin loading, per-namespace plugin mapping, and merged plugin options plus numerous other media related extensions for your project.
 
 ## Features
 
@@ -9,6 +9,7 @@ This module provides an automatic Video.js player attachment utility with dynami
 - Per-namespace `pluginsMap` to resolve plugin specifiers to remote `src`, `name`, and `defaultOptions`.
 - Merge plugin default options with per-element options specified via `data-plugins-options`.
 - Observe DOM mutations and auto-initialize newly added media elements.
+- Integrated @nuxt/image
 
 ## API
 

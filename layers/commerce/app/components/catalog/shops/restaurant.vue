@@ -48,6 +48,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
     import {
         useRuntimeConfig
     } from '#imports';

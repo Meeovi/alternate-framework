@@ -45,12 +45,12 @@ function chooseLanguage(language: string) {
 <template>
   <div relative of-x-hidden>
     <div p2>
-      <v-text-field
+      <input
         v-model="languageKeyword"
         :placeholder="t('language.search')"
         p2 border-rounded w-full bg-transparent
         outline-none border="~ base"
-      />
+      >
     </div>
     <div max-h-40vh overflow-auto>
       <template v-if="!languageKeyword.trim()">

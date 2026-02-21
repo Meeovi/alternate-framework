@@ -5,26 +5,26 @@
                 <v-toolbar title="Your Subscriptions" subtitle=""></v-toolbar>
                 <v-row class="accountRow">
                     <v-col cols="3" v-for="(subscriptions, index) in mySubscriptions" :key="index">
-                        <v-card class="mx-auto" max-width="400">
+                        <UCard class="mx-auto" max-width="400">
                             <img loading="lazy" class="align-end text-white" height="200"
                             :src="subscriptions?.image?.filename_disk" :alt="subscriptions?.name" cover />
-                                <v-card-title>{{subscriptions?.name}}</v-card-title>
-                            <v-card-subtitle class="pt-4">
+                                <template #header>{{subscriptions?.name}}</template>
+                            <UCard-subtitle class="pt-4">
                                 Status: {{ subscriptions?.status }}
                             </v-card-subtitle>
 
-                            <v-card-text>
+                            <template #header>
                                 <div>Start Date: {{ subscriptions?.start_date }}</div>
 
                                 <div>End Date: {{ subscriptions?.end_date }}</div>
-                            </v-card-text>
+                            </template>
 
-                            <v-card-actions>
-                                <v-btn color="red" :href="`/commerce/subscriptions/${subscriptions?.id}`">
+                            <template>
+                                <UButton color="red" :href="`/commerce/subscriptions/${subscriptions?.id}`">
                                     Manage subscription
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
+                                </UButton>
+                            </template>
+                        </UCard>
                     </v-col>
                 </v-row>
             </v-col>
@@ -33,27 +33,27 @@
                 <v-toolbar title="Available Subscriptions" subtitle=""></v-toolbar>
                 <v-row class="accountRow">
                     <v-col cols="3" v-for="(subscriptions, index) in subscriptions" :key="index">
-                        <v-card class="mx-auto" max-width="400">
+                        <UCard class="mx-auto" max-width="400">
                             <NuxtImg loading="lazy" class="align-end text-white" height="200"
                             :src="subscriptions?.image?.filename_disk" :alt="subscriptions?.name" cover />
-                                <v-card-title>{{subscriptions?.name}}</v-card-title>
+                                <template #header>{{subscriptions?.name}}</template>
 
-                            <v-card-subtitle class="pt-4">
+                            <UCard-subtitle class="pt-4">
                                 Status: {{ subscriptions?.status }}
                             </v-card-subtitle>
 
-                            <v-card-text>
+                            <template #header>
                                 <div>Start Date: {{ subscriptions?.start_date }}</div>
 
                                 <div>End Date: {{ subscriptions?.end_date }}</div>
-                            </v-card-text>
+                            </template>
 
-                            <v-card-actions>
-                                <v-btn color="red">
+                            <template>
+                                <UButton color="red">
                                     Add to Cart
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
+                                </UButton>
+                            </template>
+                        </UCard>
                     </v-col>
                 </v-row>
             </v-col>
@@ -61,7 +61,11 @@
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import productCard from '~/components/related/post.vue'
     import { computed, unref } from 'vue'
     // BetterAuth `useAuth()` fallback

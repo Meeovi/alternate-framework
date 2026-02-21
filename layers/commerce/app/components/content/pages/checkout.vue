@@ -1,21 +1,25 @@
 <template>
   <div>
-    <form id="payment-form">
+    <UForm id="payment-form">
       <div id="payment-element">
         <!-- Stripe Elements will inject the payment form here -->
       </div>
-      <v-btn id="submit" :disabled="isLoading">
+      <UButton id="submit" :disabled="isLoading">
         <span v-if="isLoading">Processing...</span>
         <span v-else>Pay now</span>
-      </v-btn>
+      </UButton>
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
-    </form>
+    </UForm>
   </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 const { $stripe } = useNuxtApp()
 const elements = ref(null)
 const isLoading = ref(false)

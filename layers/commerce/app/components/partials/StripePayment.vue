@@ -6,19 +6,23 @@
         </div>
 
         <div v-if="stripe && clientSecret" class="payment-form">
-            <form @submit.prevent="handleSubmit">
+            <UForm @submit.prevent="handleSubmit">
                 <div ref="paymentElement"></div>
 
-                <v-btn type="submit" class="payment-v-btn" :disabled="!stripe || loading">
+                <UButton type="submit" class="payment-v-btn" :disabled="!stripe || loading">
                     <span v-if="loading">Processing...</span>
                     <span v-else>Pay Now</span>
-                </v-btn>
-            </form>
+                </UButton>
+            </UForm>
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import {
     ref,
     onMounted

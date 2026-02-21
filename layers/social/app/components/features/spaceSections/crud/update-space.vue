@@ -1,77 +1,77 @@
 <template>
   <div>
       <v-row justify="center">
-          <v-card>
-            <form @submit.prevent="handleSubmit">
+          <UCard>
+            <UForm @submit.prevent="handleSubmit">
                   <v-toolbar dark color="primary">
-                      <v-card-title>
+                      <template #header>
                           <span class="text-h6">Update Space</span>
-                      </v-card-title>
+                      </template>
                   </v-toolbar>
-                  <v-card-text>
+                  <template #header>
                       <v-container>
                           <v-row>
                               <v-col cols="12">
-                                  <v-text-field v-model="spaceData.name" id="spaceName" label="Space Name*" required />
+                                  <UInput v-model="spaceData.name" id="spaceName" label="Space Name*" required />
                               </v-col>
                               <v-col cols="6">
-                                  <v-select v-model="spaceData.type" label="What type of space is this?"
+                                  <USelect v-model="spaceData.type" label="What type of space is this?"
                                       :items="['Default', 'Audio', 'Video']" />
                               </v-col>
                               <v-col cols="6">
-                                  <v-select v-model="spaceData.status" label="Is this space public or private?"
+                                  <USelect v-model="spaceData.status" label="Is this space public or private?"
                                       :items="['Public', 'Private', 'Hidden']" />
                               </v-col>
                               <v-col cols="12">
-                                  <v-textarea v-model="spaceData.description" label="Description" id="spaceDescription" />
+                                  <UTextarea v-model="spaceData.description" label="Description" id="spaceDescription" />
                               </v-col>
                               <v-col cols="6">
-                                  <v-file-input @change="handleImageUpload" clearable density="compact"
+                                  <UFileUpload @change="handleImageUpload" clearable density="compact"
                                       prepend-icon="fas fa-image" accept="image/*" label="Image for Cover"
                                       variant="solo-inverted" />
                               </v-col>
                               <v-col cols="6">
-                                  <v-file-input @change="handleAvatarUpload" clearable density="compact"
+                                  <UFileUpload @change="handleAvatarUpload" clearable density="compact"
                                       prepend-icon="fas fa-image" accept="image/*" label="Image for Avatar"
                                       variant="solo-inverted" />
                               </v-col>
                           </v-row>
                       </v-container>
                       <small>*indicates required field</small>
-                  </v-card-text>
-                  <v-card-actions>
+                  </template>
+                  <template>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue-darken-1" variant="text" @click="confirmDelete" :loading="deleteLoading">
+                      <UButton color="blue-darken-1" variant="text" @click="confirmDelete" :loading="deleteLoading">
                           Delete
-                      </v-btn>
-                      <v-btn color="blue-darken-1" variant="text" @click="resetForm = false">
+                      </UButton>
+                      <UButton color="blue-darken-1" variant="text" @click="resetForm = false">
                           Reset
-                      </v-btn>
-                      <v-btn color="blue-darken-1" variant="text" type="submit">
+                      </UButton>
+                      <UButton color="blue-darken-1" variant="text" type="submit">
                           Update Space
-                      </v-btn>
-                  </v-card-actions>
-              </form>
-          </v-card>
+                      </UButton>
+                  </template>
+              </UForm>
+          </UCard>
       </v-row>
 
       <!-- Delete Confirmation Dialog -->
     <v-dialog v-model="deleteDialog" max-width="500px">
-            <v-card>
-                <v-card-title class="text-h5">Delete Space</v-card-title>
-                <v-card-text>
+            <UCard>
+                <UCard-title class="text-h5">Delete Space</template>
+                <template #header>
                     Are you sure you want to delete this space? This action cannot be undone.
-                </v-card-text>
-                <v-card-actions>
+                </template>
+                <template>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="deleteDialog = false">
+                    <UButton color="blue-darken-1" variant="text" @click="deleteDialog = false">
                         Cancel
-                    </v-btn>
-                    <v-btn color="error" variant="text" @click="deleteSpace" :loading="deleteLoading">
+                    </UButton>
+                    <UButton color="error" variant="text" @click="deleteSpace" :loading="deleteLoading">
                         Delete
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+                    </UButton>
+                </template>
+            </UCard>
         </v-dialog>
   </div>
 </template>
@@ -131,7 +131,7 @@ onMounted(() => {
 });
 
 const handleImageUpload = (event) => {
-    // v-file-input may provide files directly or an event; normalize
+    // UFileUpload may provide files directly or an event; normalize
     imageFile.value = event?.target?.files?.[0] || (Array.isArray(event) ? event[0] : event)
 };
 

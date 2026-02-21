@@ -12,8 +12,8 @@
                     </NuxtLink>
                 </div>
             </div>
-            <div class="item-img" v-if="list?.image?.filename_disk">
-                <img :src="`${$directus.url}assets/${list?.image?.filename_disk}`" :alt="list?.name" >
+            <div class="item-img" v-if="list?.image">
+                <img :src="content.getAssetUrl(list?.image)" :alt="list?.name" >
             </div>
 
             <div class="item-img" v-else>
@@ -30,4 +30,5 @@
             required: true,
         },
     });
+    const content = useContentAdapter()
 </script>

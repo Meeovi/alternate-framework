@@ -21,17 +21,17 @@
         </div>
 
         <!-- Default Category Layout -->
-        <v-card variant="text" v-else>
+        <UCard variant="text" v-else>
             <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`">
                 <v-toolbar-title><NuxtLink :to="`/departments/${category?.departments?.[0]?.departments_id?.name}`">Meeovi {{ category?.departments?.[0]?.departments_id?.name }}</NuxtLink> - {{ category?.name }}</v-toolbar-title>
                 <v-slide-group show-arrows v-if="category?.categories?.length">
                     <v-slide-group-item v-slot="{ isSelected, toggle }">
                         <v-menu>
                             <template #activator="{ props }">
-                                <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" v-bind="props"
+                                <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" v-bind="props"
                                     variant="text">
                                     Categories
-                                </v-btn>
+                                </UButton>
                             </template>
 
                             <v-list class="departmentMenu">
@@ -49,13 +49,13 @@
                     </v-slide-group-item>
 
                     <v-slide-group-item v-for="menu in category.menus" :key="menu.id" v-slot="{ isSelected, toggle }">
-                        <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" :href="menu.url">
+                        <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" :href="menu.url">
                             {{ menu.name }}
-                        </v-btn>
+                        </UButton>
                     </v-slide-group-item>
                 </v-slide-group>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <!-- Product List -->
         <v-row>
@@ -73,6 +73,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
     import charts from '~/components/categories/charts.vue'
     import stations from '~/components/categories/stations.vue'
     import eats from '~/components/categories/eats.vue'

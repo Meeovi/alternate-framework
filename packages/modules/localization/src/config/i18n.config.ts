@@ -4,6 +4,7 @@ import {
   numberFormats,
   pluralRules,
 } from './i18n'
+import { defineI18nConfig } from "@nuxtjs/i18n/dist/runtime/composables/defineI18nConfig"
 
 export default defineI18nConfig(() => {
   return {

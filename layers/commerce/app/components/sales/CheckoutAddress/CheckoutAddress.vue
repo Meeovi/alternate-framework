@@ -40,7 +40,11 @@
     </UiModal>
   </div>
 </template>
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { SfButton, SfIconClose, useDisclosure } from '@storefront-ui/vue';
 import { CheckoutAddressProps } from './types';
 

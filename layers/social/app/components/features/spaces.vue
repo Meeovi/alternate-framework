@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <v-card variant="text">
+        <UCard variant="text">
             <v-toolbar :style="`background-color: ${spacesPage?.color}; color: ${spacesPage?.colortext} !important`">
                 <v-toolbar-title>{{ spacesPage?.name }}</v-toolbar-title>
 
@@ -25,11 +25,11 @@
 
                     <!--<v-menu v-if="tabsList?.length">
                         <template v-slot:activator="{ props }">
-                            <v-btn class="align-self-center me-4" height="100%" rounded="0" variant="plain"
+                            <UButton class="align-self-center me-4" height="100%" rounded="0" variant="plain"
                                 v-bind="props">
                                 Filter
-                                <v-icon icon="mdi-menu-down" end></v-icon>
-                            </v-btn>
+                                <UIcon icon="mdi-menu-down" end></UIcon>
+                            </UButton>
                         </template>
 
                         <v-list class="bg-grey-lighten-3">
@@ -51,7 +51,7 @@
                     <component :is="contentComponents[index] || null" />
                 </v-tabs-window-item>
             </v-tabs-window>
-        </v-card>
+        </UCard>
     </div>
 </template>
 

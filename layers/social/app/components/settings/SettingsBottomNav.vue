@@ -77,7 +77,7 @@ function save() {
     <h2 id="interface-bn" font-medium>
       {{ $t('settings.interface.bottom_nav') }}
     </h2>
-    <form aria-labelledby="interface-bn" aria-describedby="interface-bn-desc" @submit.prevent="save">
+    <UForm aria-labelledby="interface-bn" aria-describedby="interface-bn-desc" @submit.prevent="save">
       <p id="interface-bn-desc" pb-2>
         {{ $t('settings.interface.bottom_nav_instructions') }}
       </p>
@@ -94,7 +94,7 @@ function save() {
 
       <!-- v-btn selection -->
       <div flex="~ gap4 wrap" py4>
-        <v-btn
+        <UButton
           v-for="{ name, label, icon } in availableNavButtons"
           :key="name"
           btn-text flex="~ gap-2" items-center p2 border="~ base rounded" bg-base ws-nowrap
@@ -106,11 +106,11 @@ function save() {
         >
           <span :class="icon" />
           {{ label ? $t(label) : 'More menu' }}
-        </v-btn>
+        </UButton>
       </div>
 
       <div flex="~ col" gap-y-4 gap-x-2 py-1 sm="~ justify-end flex-row">
-        <v-btn
+        <UButton
           btn-outline font-bold py2 full-w sm-wa flex="~ gap2 center"
           type="v-btn"
           :disabled="selectedNavButtonNames.length === 0"
@@ -119,23 +119,23 @@ function save() {
         >
           <span aria-hidden="true" class="block i-ri:delete-bin-line" />
           {{ $t('action.clear') }}
-        </v-btn>
-        <v-btn
+        </UButton>
+        <UButton
           btn-outline font-bold py2 full-w sm-wa flex="~ gap2 center"
           type="reset"
           @click="reset"
         >
           <span aria-hidden="true" class="block i-ri:repeat-line" />
           {{ $t('action.reset') }}
-        </v-btn>
-        <v-btn
+        </UButton>
+        <UButton
           btn-solid font-bold py2 full-w sm-wa flex="~ gap2 center"
           :disabled="!canSave"
         >
           <span aria-hidden="true" i-ri:save-2-fill />
           {{ $t('action.save') }}
-        </v-btn>
+        </UButton>
       </div>
-    </form>
+    </UForm>
   </section>
 </template>

@@ -35,10 +35,13 @@
 </template>
 
 <script setup>
-  const props = defineProps({
-    incentive: {
-      type: Object,
-      required: true,
-    },
-  });
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+    const props = defineProps({
+        incentive: {
+            type: Object,
+            required: true,
+        },
+    });
 </script>

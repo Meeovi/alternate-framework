@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "types": ["node", "vitest"],
+    "types": ["node", "vitest", "vue", "nuxt"],
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",
@@ -10,17 +10,19 @@
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["ES2017", "DOM"],
-    "strict": true,
+    "lib": ["ES2017", "DOM", "DOM.Iterable"],
+    "strict": false,
+    "noImplicitAny": false,
     "jsx": "react-jsx",
     "skipLibCheck": true,
     "noEmitOnError": false
     ,
     "paths": {
-      "@mframework/adapter-betterauth": ["../../packages/adapters/adapter-betterauth/src/index.ts"],
-      "@mframework/adapter-betterauth/*": ["../../packages/adapters/adapter-betterauth/src/*"]
-      ,
-      "@mframework/core": ["../../packages/modules/core/src/index.ts"]
+      "@mframework/adapter-betterauth": ["app/utils/adapter-betterauth/index.ts"],
+      "@mframework/adapter-betterauth/": ["app/utils/adapter-betterauth/index.ts"],
+      "@mframework/adapter-betterauth/*": ["app/utils/adapter-betterauth/*"],
+      "@mframework/core": ["types/mframework-core.d.ts", "../../packages/modules/core/src/index.ts"],
+      "#shared/*": ["../social/shared/*"]
     }
   }
   ,
@@ -30,6 +32,7 @@
   ],
   "include": [
     "app/**/*",
-    "server/**/*"
+    "server/**/*",
+    "types/**/*.d.ts"
   ]
 }

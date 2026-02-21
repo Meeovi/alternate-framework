@@ -1,9 +1,9 @@
 <template>
-  <v-card class="mb-4" elevation="2">
-    <v-card-title class="d-flex align-center">
-      <v-avatar size="40" class="mr-3">
+  <UCard class="mb-4" elevation="2">
+    <UCard-title class="d-flex align-center">
+      <UAvatar size="40" class="mr-3">
         <v-img :src="short?.creator_avatar || '/default-avatar.png'" :alt="short?.creator" />
-      </v-avatar>
+      </UAvatar>
       <div>
         <div class="font-weight-bold">{{ short?.creator || 'Anonymous' }}</div>
         <div class="text-caption text-grey">{{ formatDate(short?.date_created) }}</div>
@@ -11,7 +11,7 @@
       <v-spacer />
       <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props" />
+          <UButton icon="mdi-dots-vertical" variant="text" v-bind="props" />
         </template>
         <v-list>
           <v-list-item @click="shareVibe">
@@ -22,7 +22,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-    </v-card-title>
+    </template>
 
     <video 
       ref="videoRef"
@@ -33,7 +33,7 @@
       @click="togglePlay"
     />
 
-    <v-card-text>
+    <template #header>
       <h4 v-if="short?.name" class="mb-2">{{ short.name }}</h4>
       <p v-if="short?.description">{{ short.description }}</p>
       
@@ -50,28 +50,28 @@
           #{{ tag }}
         </v-chip>
       </div>
-    </v-card-text>
+    </template>
 
-    <v-card-actions>
-      <v-btn icon="mdi-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
+    <template>
+      <UButton icon="mdi-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
       <span class="text-caption">{{ short?.likes_count || 0 }}</span>
       
-      <v-btn icon="mdi-comment" variant="text" @click="toggleComments" />
+      <UButton icon="mdi-comment" variant="text" @click="toggleComments" />
       <span class="text-caption">{{ short?.comments_count || 0 }}</span>
       
-      <v-btn icon="fas:fa:fa share-nodes" variant="text" @click="shareVibe" />
+      <UButton icon="fas:fa:fa share-nodes" variant="text" @click="shareVibe" />
       <span class="text-caption">{{ short?.shares_count || 0 }}</span>
       
       <v-spacer />
-      <v-btn :to="`/social/vibe/${short?.id}`" variant="text" size="small">View Vibe</v-btn>
-    </v-card-actions>
+      <UButton :to="`/social/vibe/${short?.id}`" variant="text" size="small">View Vibe</UButton>
+    </template>
 
     <!-- Comments Section -->
     <v-expand-transition>
       <div v-show="showComments">
         <v-divider />
-        <v-card-text>
-          <v-text-field
+        <template #header>
+          <UInput
             v-model="newComment"
             label="Add a comment..."
             variant="outlined"
@@ -83,9 +83,9 @@
           
           <div v-for="comment in vibeComments" :key="comment.id" class="mb-2">
             <div class="d-flex align-start">
-              <v-avatar size="32" class="mr-2">
+              <UAvatar size="32" class="mr-2">
                 <v-img :src="comment.user_avatar || '/default-avatar.png'" />
-              </v-avatar>
+              </UAvatar>
               <div>
                 <div class="font-weight-bold text-caption">{{ comment.username }}</div>
                 <div class="text-body-2">{{ comment.content }}</div>
@@ -93,10 +93,10 @@
               </div>
             </div>
           </div>
-        </v-card-text>
+        </template>
       </div>
     </v-expand-transition>
-  </v-card>
+  </UCard>
 </template>
 
 <script setup>

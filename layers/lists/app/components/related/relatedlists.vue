@@ -19,25 +19,19 @@
   } from 'vue'
   import listCard from '~/components/related/list.vue'
 
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
-
+  const content = useContentAdapter()
   const model = ref(null)
 
-  const {
-    data: lists
-  } = await useAsyncData('lists', () => {
-    return $directus.request($readItems('lists', {
-      fields: ['*', {
-        '*': ['*']
-      }],
-      filter: {
-        status: {
-          _eq: 'Public'
-        }
-      },
-    }))
+  const { data: lists } = await useAsyncData('lists', async () => {
+    const opts = {
+      fields: ['*', { '*': ['*'] }],
+      filter: { status: { _eq: 'Public' } }
+    }
+    if (content && typeof content.readItems === 'function') {
+      const resp = await content.readItems('lists', opts)
+      return resp?.data || resp
+    }
+    const { $directus, $readItems } = useNuxtApp()
+    return await $directus.request($readItems('lists', opts))
   })
 </script>

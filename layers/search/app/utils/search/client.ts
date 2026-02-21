@@ -13,12 +13,12 @@ export function getIndexName(): string {
 }
 
 function buildHostFromParts(): string | null {
-  const explicit = getEnv('SEARCHKIT_HOST')
+  const explicit = getEnv('STOREFRONT_HOST') || getEnv('SEARCHKIT_HOST')
   if (explicit) return explicit
 
-  const protocol = (getEnv('SEARCHKIT_PROTOCOL') || 'http').replace(/:\/\//, '')
-  const hostname = getEnv('SEARCHKIT_HOSTNAME')
-  const port = getEnv('SEARCHKIT_PORT')
+  const protocol = (getEnv('STOREFRONT_PROTOCOL') || getEnv('SEARCHKIT_PROTOCOL') || 'http').replace(/:\/\//, '')
+  const hostname = getEnv('STOREFRONT_HOSTNAME') || getEnv('SEARCHKIT_HOSTNAME')
+  const port = getEnv('STOREFRONT_PORT') || getEnv('SEARCHKIT_PORT')
 
   if (!hostname) return null
 
@@ -29,7 +29,7 @@ export function getSearchClient(): SearchClient {
   const host = buildHostFromParts()
 
   if (!host) {
-    console.warn('[search] Searchkit host not configured — returning fallback client')
+    console.warn('[search] Storefront UI host not configured — returning fallback client')
     return createFallbackClient()
   }
 
@@ -37,8 +37,8 @@ export function getSearchClient(): SearchClient {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     mod = require('@searchkit/instantsearch-client')
-  } catch (err) {
-    console.warn('[search] @searchkit/instantsearch-client not installed or failed to load — returning fallback client', err?.message || err)
+  } catch (err: any) {
+    console.warn('[search] @searchkit/instantsearch-client (Storefront UI bridge) not installed or failed to load — returning fallback client', err?.message || err)
     return createFallbackClient()
   }
 
@@ -57,12 +57,12 @@ export function getSearchClient(): SearchClient {
 
   try {
     const opts: any = { host }
-    const apiKey = getEnv('SEARCHKIT_API_KEY')
+    const apiKey = getEnv('STOREFRONT_API_KEY') || getEnv('SEARCHKIT_API_KEY')
     if (apiKey) opts.apiKey = apiKey
 
     return candidate(opts)
   } catch (e: any) {
-    console.warn('[search] Failed to create Searchkit client — returning fallback client:', e?.message || e)
+    console.warn('[search] Failed to create Storefront UI client — returning fallback client:', e?.message || e)
     return createFallbackClient()
   }
 }

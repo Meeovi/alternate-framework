@@ -19,9 +19,8 @@
     })
 
     const galleryRef = ref(null)
-
-    const fileUrl = (item) =>
-        `${useRuntimeConfig().public.directus.url}assets/${item.directus_files_id.id}`
+    import useMedia from '../../composables/useMedia'
+    const { fileUrl } = useMedia()
 
     onMounted(async () => {
         const lg = await import('lightgallery')

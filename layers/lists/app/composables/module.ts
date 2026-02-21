@@ -1,5 +1,7 @@
 import { getListsConfig } from './config'
 import { registerListsProviderRuntime } from './registry'
+import { registerContentProviderRuntime } from './content/registry'
+import { directusContentAdapter } from './content/providers/directus'
 
 // Minimal runtime-safe module: translate a runtime adapter (if present)
 // into the local provider registry. Avoids importing framework-specific
@@ -37,4 +39,11 @@ export default function ListsModule(runtimeCtx?: any) {
     id: 'lists',
     config: getListsConfig()
   }
+}
+
+// Register default content provider for the layer
+try {
+  registerContentProviderRuntime('directus', directusContentAdapter)
+} catch (e) {
+  // noop — runtime may not have composables available at build time
 }

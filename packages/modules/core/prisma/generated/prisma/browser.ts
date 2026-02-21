@@ -13,10 +13,10 @@
  * 🟢 You can import this file directly.
  */
 
-import * as Prisma from './internal/prismaNamespaceBrowser'
+import * as Prisma from './internal/prismaNamespaceBrowser.js'
 export { Prisma }
-export * as $Enums from './enums'
-export * from './enums';
+export * as $Enums from './enums.js'
+export * from './enums.js';
 /**
  * Model audit_log_entries
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

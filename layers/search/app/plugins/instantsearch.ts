@@ -1,9 +1,9 @@
 // layers/search/plugins/instantsearch.client.ts
 import { h } from 'vue'
-import { defineNuxtPlugin } from '#imports'
+import { defineNuxtPlugin } from 'nuxt/app'
 import InstantSearch, { AisInstantSearch } from 'vue-instantsearch/vue3/es'
 
-export default defineNuxtPlugin(nuxtApp => {
+export default defineNuxtPlugin((nuxtApp: any) => {
   // Register InstantSearch (client-only)
   nuxtApp.vueApp.use(InstantSearch)
 
@@ -17,7 +17,7 @@ export default defineNuxtPlugin(nuxtApp => {
   const AisInstantSearchWrapper = {
     name: 'AisInstantSearch',
     inheritAttrs: false,
-    setup(_, { attrs, slots }) {
+    setup(_: any, { attrs, slots }: any) {
       const mergedAttrs = {
         ...attrs,
         future: {

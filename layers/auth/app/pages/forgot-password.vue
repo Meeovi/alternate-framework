@@ -7,15 +7,15 @@
       <div class="mbr-section-btn">
         <div class="request-reset-form">
           <p>Enter your email address to receive a password reset link.</p>
-          <form class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
-            <v-text-field v-model="state.email" type="email" label="Email" required></v-text-field>
+          <UForm class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
+            <UInput v-model="state.email" type="email" label="Email" required></UInput>
             <div class="mb-3">
               <div ref="turnstileRef"></div>
             </div>
-            <v-btn class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
+            <UButton class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
               Send Reset Link
-            </v-btn>
-          </form>
+            </UButton>
+          </UForm>
         </div>
 
         <v-alert v-if="message" :type="messageType" class="mt-4" variant="tonal" closable>

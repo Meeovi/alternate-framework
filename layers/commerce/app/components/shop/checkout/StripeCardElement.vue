@@ -4,59 +4,63 @@
     <div v-if="cardError" class="stripe-error" role="alert">{{ cardError }}</div>
     <v-row class="stripe-details">
       <v-col cols="12" md="6">
-        <v-text-field v-model="billingDetails.name" label="Name on Card" required autocomplete="cc-name" outlined />
+        <UInput v-model="billingDetails.name" label="Name on Card" required autocomplete="cc-name" outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="billingDetails.email" label="Email" type="email" required autocomplete="email" outlined />
+        <UInput v-model="billingDetails.email" label="Email" type="email" required autocomplete="email" outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="billingDetails.phone" label="Phone" type="tel" autocomplete="tel" outlined />
+        <UInput v-model="billingDetails.phone" label="Phone" type="tel" autocomplete="tel" outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-select v-model="billingDetails.address.country" :items="countryOptions" label="Country" required outlined />
+        <USelect v-model="billingDetails.address.country" :items="countryOptions" label="Country" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="billingDetails.address.line1" label="Address" required outlined />
+        <UInput v-model="billingDetails.address.line1" label="Address" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="billingDetails.address.city" label="City" required outlined />
+        <UInput v-model="billingDetails.address.city" label="City" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="billingDetails.address.state" label="State" required outlined />
+        <UInput v-model="billingDetails.address.state" label="State" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="billingDetails.address.postal_code" label="Postal Code" required outlined />
+        <UInput v-model="billingDetails.address.postal_code" label="Postal Code" required outlined />
       </v-col>
     </v-row>
     <v-row class="stripe-details">
       <v-col cols="12" md="6">
-        <v-text-field v-model="shippingDetails.name" label="Shipping Name" required outlined />
+        <UInput v-model="shippingDetails.name" label="Shipping Name" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-select v-model="shippingDetails.address.country" :items="countryOptions" label="Shipping Country" required outlined />
+        <USelect v-model="shippingDetails.address.country" :items="countryOptions" label="Shipping Country" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="shippingDetails.address.line1" label="Shipping Address" required outlined />
+        <UInput v-model="shippingDetails.address.line1" label="Shipping Address" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="shippingDetails.address.city" label="Shipping City" required outlined />
+        <UInput v-model="shippingDetails.address.city" label="Shipping City" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="shippingDetails.address.state" label="Shipping State" required outlined />
+        <UInput v-model="shippingDetails.address.state" label="Shipping State" required outlined />
       </v-col>
       <v-col cols="12" md="6">
-        <v-text-field v-model="shippingDetails.address.postal_code" label="Shipping Postal Code" required outlined />
+        <UInput v-model="shippingDetails.address.postal_code" label="Shipping Postal Code" required outlined />
       </v-col>
     </v-row>
-    <v-checkbox v-model="saveCard" label="Save card for future payments (secure)" class="mb-4" />
-    <v-btn type="submit" :disabled="loading || !cardReady" aria-busy="loading">
+    <UCheckbox v-model="saveCard" label="Save card for future payments (secure)" class="mb-4" />
+    <UButton type="submit" :disabled="loading || !cardReady" aria-busy="loading">
       <span v-if="loading">Processing...</span>
       <span v-else>Pay</span>
-    </v-btn>
+    </UButton>
   </v-form>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import { v-btn } from '@storefront-ui/vue';
 import { useUserStore } from '../../stores/user';

@@ -4,7 +4,7 @@
       <legend class="text-neutral-900 text-lg font-bold mb-4">{{ $t('checkoutPayment.heading') }}</legend>
       <div class="grid gap-4 grid-cols-2">
         <label v-for="{ value, disabled, imgSrc, imgAlt } in paymentMethods" :key="value" class="relative">
-          <v-text-field
+          <UInput
             type="radio"
             name="payment_method"
             class="peer sr-only"
@@ -29,7 +29,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { SfIconCreditCard } from '@storefront-ui/vue';
 import { CheckoutPaymentProps, CheckoutPaymentEmits, PaymentMethod } from './types';
 import { useI18n } from 'vue-i18n';

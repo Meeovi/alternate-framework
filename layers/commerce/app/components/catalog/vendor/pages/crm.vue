@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <UCard>
         <v-toolbar color="primary" title="Customer Relationship Management"></v-toolbar>
         <v-tabs v-model="tab" bg-color="primary">
             <div v-for="(nav, index) in crm" :key="index">
@@ -7,7 +7,7 @@
             </div>
         </v-tabs>
 
-        <v-card-text>
+        <template #header>
             <v-tabs-window v-model="tab">
                 <v-tabs-window-item value="one">
                     One
@@ -33,11 +33,15 @@
                     Three
                 </v-tabs-window-item>
             </v-tabs-window>
-        </v-card-text>
-    </v-card>
+        </template>
+    </UCard>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import {
         ref
     } from 'vue'

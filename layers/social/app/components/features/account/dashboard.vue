@@ -1,13 +1,13 @@
 <template>
     <div class="contentPage">
-        <v-card>
+        <UCard>
             <v-layout>
                 <v-toolbar color="primary">
                     <v-toolbar-title>{{ page?.name }}</v-toolbar-title>
                     <v-toolbar-items>
-                        <v-btn prepend-icon="fas:fa fa-th" color="white" @click.stop="drawer = !drawer">
+                        <UButton prepend-icon="fas:fa fa-th" color="white" @click.stop="drawer = !drawer">
                             {{ customerInfo?.firstname }} {{ customerInfo?.lastname }}
-                        </v-btn>
+                        </UButton>
                     </v-toolbar-items>
                 </v-toolbar>
 
@@ -25,49 +25,49 @@
                     <v-main style="height: 100vh">
                         <v-tabs-window v-model="tab" style="width: 100%;">
                             <v-tabs-window-item value="orders">
-                                <v-card flat>
-                                    <v-card-text>
+                                <UCard flat>
+                                    <template #header>
                                         <orders />
-                                    </v-card-text>
-                                </v-card>
+                                    </template>
+                                </UCard>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="addresses">
-                                <v-card flat>
-                                    <v-card-text>
+                                <UCard flat>
+                                    <template #header>
                                         <addresses />
-                                    </v-card-text>
-                                </v-card>
+                                    </template>
+                                </UCard>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="settings">
-                                <v-card flat>
-                                    <v-card-text>
+                                <UCard flat>
+                                    <template #header>
                                         <settings />
-                                    </v-card-text>
-                                </v-card>
+                                    </template>
+                                </UCard>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="downloads">
-                                <v-card flat>
-                                    <v-card-text>
+                                <UCard flat>
+                                    <template #header>
                                         <downloads />
-                                    </v-card-text>
-                                </v-card>
+                                    </template>
+                                </UCard>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="reviews">
-                                <v-card flat>
-                                    <v-card-text>
+                                <UCard flat>
+                                    <template #header>
                                         <reviews />
-                                    </v-card-text>
-                                </v-card>
+                                    </template>
+                                </UCard>
                             </v-tabs-window-item>
                         </v-tabs-window>
                     </v-main>
                 </div>
             </v-layout>
-        </v-card>
+        </UCard>
     </div>
 </template>
 

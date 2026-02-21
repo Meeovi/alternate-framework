@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     'nuxt-security',
     'vuetify-nuxt-module',
     '@nuxt/image',
+    '@nuxt/ui'
   ],
 
   image: {
@@ -42,24 +43,15 @@ export default defineNuxtConfig({
   },
 
   vuetify: {
-    moduleOptions: {
-      includeTransformAssetsUrls: {
-        'v-card': [
-          'image',
-          'prepend-avatar',
-          'append-avatar',
-        ],
-      },
-      ssrClientHints: {
-        reloadOnFirstRequest: false,
-        prefersColorScheme: true,
-        prefersColorSchemeOptions: {
-          useBrowserThemeOnly: false,
-        },
-        viewportSize: true,
-      },
-      // styles: { configFile: 'assets/custom-vuetify.scss' },
-    },
+    vuetifyOptions: {
+      icons: {
+        defaultSet: 'fa-svg',
+        sets: [{
+          name: 'mdi',
+          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
+        }]
+      }
+    }
   },
 
   vite: {
@@ -95,7 +87,7 @@ export default defineNuxtConfig({
   features: {
     devLogs: false,
   },
-  
+
   experimental: {
     payloadExtraction: false,
     typedPages: false,
@@ -104,4 +96,20 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true,
   },
+
+  components: {
+    dirs: [{
+      path: 'components',
+      global: true,
+      // Ignore files with bracketed names (e.g. [collection].vue) to avoid
+      // generating invalid JS identifiers in the auto-generated components plugin.
+      ignore: [
+        'app/components/ui/forms/[collection].vue',
+        'components/ui/forms/[collection].vue',
+        '**/[[]*.vue'
+      ]
+    }]
+  },
+
+  build: {},
 })

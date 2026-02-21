@@ -2,21 +2,21 @@
   <div>
     <h2>Edit Product</h2>
     <div v-if="loading">Loading...</div>
-    <form v-else @submit.prevent="onSubmit">
+    <UForm v-else @submit.prevent="onSubmit">
       <div>
         <label>Name</label>
-        <v-text-field v-model="form.name" />
+        <UInput v-model="form.name" />
       </div>
       <div>
         <label>Price</label>
-        <v-text-field v-model.number="form.price" type="number" />
+        <UInput v-model.number="form.price" type="number" />
       </div>
       <div>
         <label>Description</label>
         <textarea v-model="form.description" />
       </div>
-      <v-btn type="submit">Save</v-btn>
-    </form>
+      <UButton type="submit">Save</UButton>
+    </UForm>
   </div>
 </template>
 

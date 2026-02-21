@@ -1,5 +1,5 @@
 <template>
-  <v-card class="media-player">
+  <UCard class="media-player">
     <div v-if="currentMedia">
       <!-- Video Player -->
       <video
@@ -43,31 +43,31 @@
     </div>
 
     <!-- Controls -->
-    <v-card-actions class="px-4 py-2">
-      <v-btn
+    <template class="px-4 py-2">
+      <UButton
         icon
         @click="previousTrack"
         :disabled="currentIndex === 0"
       >
-        <v-icon>mdi-skip-previous</v-icon>
-      </v-btn>
+        <UIcon>mdi-skip-previous</UIcon>
+      </UButton>
       
-      <v-btn
+      <UButton
         icon
         @click="togglePlayPause"
         color="primary"
         size="large"
       >
-        <v-icon>{{ isPlaying ? 'mdi-pause' : 'mdi-play' }}</v-icon>
-      </v-btn>
+        <UIcon>{{ isPlaying ? 'mdi-pause' : 'mdi-play' }}</UIcon>
+      </UButton>
       
-      <v-btn
+      <UButton
         icon
         @click="nextTrack"
         :disabled="currentIndex === playlist.length - 1"
       >
-        <v-icon>mdi-skip-next</v-icon>
-      </v-btn>
+        <UIcon>mdi-skip-next</UIcon>
+      </UButton>
       
       <v-spacer />
       
@@ -84,26 +84,26 @@
       
       <v-spacer />
       
-      <v-btn
+      <UButton
         icon
         @click="toggleShuffle"
         :color="shuffle ? 'primary' : 'default'"
       >
-        <v-icon>mdi-shuffle</v-icon>
-      </v-btn>
+        <UIcon>mdi-shuffle</UIcon>
+      </UButton>
       
-      <v-btn
+      <UButton
         icon
         @click="toggleRepeat"
         :color="repeat !== 'none' ? 'primary' : 'default'"
       >
-        <v-icon>{{ repeatIcon }}</v-icon>
-      </v-btn>
+        <UIcon>{{ repeatIcon }}</UIcon>
+      </UButton>
       
-      <v-btn icon @click="showPlaylist = !showPlaylist">
-        <v-icon>mdi-playlist-music</v-icon>
-      </v-btn>
-    </v-card-actions>
+      <UButton icon @click="showPlaylist = !showPlaylist">
+        <UIcon>mdi-playlist-music</UIcon>
+      </UButton>
+    </template>
 
     <!-- Playlist -->
     <v-expand-transition>
@@ -137,7 +137,7 @@
         </v-list>
       </div>
     </v-expand-transition>
-  </v-card>
+  </UCard>
 </template>
 
 <script setup>
@@ -151,6 +151,8 @@ const props = defineProps({
     default: false
   }
 })
+
+const content = useContentAdapter()
 
 const currentIndex = ref(0)
 const isPlaying = ref(false)

@@ -10,6 +10,9 @@
 </template>
 
 <script setup lang="ts">
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 

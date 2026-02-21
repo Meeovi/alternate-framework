@@ -6,11 +6,11 @@
 				Enter your information to create an account
 			</v-toolbar-subtitle>
 		</v-toolbar>
-		<v-card>
+		<UCard>
 			<div class="grid gap-4">
 				<div class="grid grid-cols-2 gap-4">
 					<div class="grid gap-2">
-						<v-text-field
+						<UInput
 							id="first-name"
 							placeholder="Max"
               label="First Name"
@@ -19,7 +19,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<v-text-field
+						<UInput
 							id="last-name"
 							placeholder="Robinson"
               label="Last Name"
@@ -28,7 +28,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<v-text-field
+						<UInput
 							id="email"
 							type="email"
 							placeholder="m@example.com"
@@ -38,7 +38,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<v-text-field
+						<UInput
 							id="password"
 							type="password"
 							placeholder="Password"
@@ -48,7 +48,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<v-text-field
+						<UInput
 							id="password_confirmation"
 							type="password"
 							autocomplete="new-password"
@@ -58,7 +58,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<v-text-field
+						<UInput
               label="Profile Image (optional)"
 						/>
 						<div class="flex items-end gap-4">
@@ -70,7 +70,7 @@
 								/>
 							</div>
 							<div class="flex items-center gap-2 w-full">
-								<v-text-field
+								<UInput
 									id="image"
 									type="file"
 									accept="image/*"
@@ -84,7 +84,7 @@
 							</div>
 						</div>
 					</div>
-					<v-btn
+					<UButton
 						type="submit"
 						class="w-full"
 						:disabled="loading"
@@ -92,10 +92,10 @@
 					>
 						<Loader2 size="16" class="animate-spin" v-if="loading" />
 						<span v-else>Create your account</span>
-					</v-btn>
+					</UButton>
 				</div>
 			</div>
-		</v-card>
+		</UCard>
 	</div>
 </template>
 

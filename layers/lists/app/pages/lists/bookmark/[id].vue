@@ -1,27 +1,27 @@
 <template>
     <v-row class="contentPage">
         <v-col cols="12">
-            <v-card class="mx-auto" max-width="800px" elevation="0">
-                <NuxtImg loading="lazy" class="align-end text-white" height="200" :src="`${$directus.url}/assets/${website?.image?.filename_disk}`" :alt="website?.name" cover />
-                <v-card-title>{{ website?.name }}</v-card-title>
+            <UCard class="mx-auto" max-width="800px" elevation="0">
+                <NuxtImg loading="lazy" class="align-end text-white" height="200" :src="content.getAssetUrl(website?.image)" :alt="website?.name" cover />
+                <template #header>{{ website?.name }}</template>
 
-                <v-card-subtitle class="pt-4">
+                <UCard-subtitle class="pt-4">
                     Created: {{ new Date(website?.created_at).toLocaleDateString() }}
                 </v-card-subtitle>
 
-                <v-card-text>
+                <template #header>
                     <div>Type: {{ website?.type }}</div>
 
                     <div>{{ website?.note }}</div>
-                </v-card-text>
+                </template>
 
-                <v-card-actions>
+                <template>
                     <updatebookmark />
 
                     <v-spacer></v-spacer>
-                    <v-btn color="orange" text="Visit" :href="website?.url"></v-btn>
-                </v-card-actions>
-            </v-card>
+                    <UButton color="orange" text="Visit" :href="website?.url"></UButton>
+                </template>
+            </UCard>
         </v-col>
 
         <v-divider></v-divider>
@@ -32,45 +32,21 @@
 </template>
 
 <script setup>
-    import {
-        ref,
-        computed
-    } from 'vue'
-    import updatebookmark from '#lists/app/components/lists/update-bookmark.vue'
-    import createListBtn from '#lists/app/components/partials/createListBtn.vue'
-    import comments from '#social/app/components/comments.vue'
+import { ref, computed } from 'vue'
+import updatebookmark from '#lists/app/components/lists/update-bookmark.vue'
+import createListBtn from '#lists/app/components/partials/createListBtn.vue'
+import comments from '#social/app/components/comments.vue'
 
-    const route = useRoute();
+const route = useRoute()
+const content = useContentAdapter()
 
-    const {
-        $directus,
-        $readItem
-    } = useNuxtApp()
-
-    const {
-        data: website
-    } = await useAsyncData('website', () => {
-        return $directus.request($readItem('websites', route.params.id, {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
-    })
-
-
-    // Add this debug log
-    watchEffect(() => {
-        if (website.value) {
-            console.log('Fetched website data:', website.value)
-        }
-    })
-
-
-    useHead({
-        title: computed(() => website?.value?.name || 'Bookmark Page')
-    })
-
-    definePageMeta({
-        middleware: ['authenticated'],
-    })
+const { data: website } = await useAsyncData('website', async () => {
+  const opts = { fields: ['*', { '*': ['*'] }] }
+  if (content && typeof content.readItem === 'function') {
+    const resp = await content.readItem('websites', route.params.id, opts)
+    return resp?.data || resp
+  }
+  const { $directus, $readItem } = useNuxtApp()
+  return $directus.request($readItem('websites', route.params.id, opts))
+})
 </script>

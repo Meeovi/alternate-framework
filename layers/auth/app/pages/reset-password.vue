@@ -5,16 +5,16 @@
       <h1 class="mbr-section-title mbr-fonts-style display-1">Reset Password</h1>
 
       <div class="reset-password-form">
-        <form class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
-          <v-text-field v-model="state.password" type="password" label="New Password" required></v-text-field>
-          <v-text-field v-model="state.confirmPassword" type="password" label="Confirm Password" required></v-text-field>
+        <UForm class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
+          <UInput v-model="state.password" type="password" label="New Password" required></UInput>
+          <UInput v-model="state.confirmPassword" type="password" label="Confirm Password" required></UInput>
           <div class="mb-3">
             <div ref="turnstileRef"></div>
           </div>
-          <v-btn class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
+          <UButton class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
             Reset Password
-          </v-btn>
-        </form>
+          </UButton>
+        </UForm>
       </div>
 
       <v-alert v-if="message" :type="messageType" class="mt-4" variant="tonal">

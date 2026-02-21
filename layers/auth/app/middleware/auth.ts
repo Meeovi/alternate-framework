@@ -1,4 +1,7 @@
+import { currentUser, currentServer } from '../composables/users'
+import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app'
 import type { RouteLocationNormalized } from 'vue-router'
+import { onHydrated, isHydrated } from '../composables/vue'
 
 export default defineNuxtRouteMiddleware((to) => {
   if (import.meta.server)

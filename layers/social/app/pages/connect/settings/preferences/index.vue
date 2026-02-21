@@ -6,6 +6,20 @@ useHydratedHead({
 })
 
 const userSettings = useUserSettings()
+function getPreferences(settings: UserSettings, key: keyof UserSettings['preferences']) {
+  return settings.preferences?.[key] ?? false
+}
+
+function togglePreferences(key: keyof UserSettings['preferences']) {
+  const currentValue = getPreferences(userSettings.value, key)
+  userSettings.value = {
+    ...userSettings.value,
+    preferences: {
+      ...userSettings.value?.preferences,
+      [key]: !currentValue,
+    },
+  }
+}
 </script>
 
 <template>

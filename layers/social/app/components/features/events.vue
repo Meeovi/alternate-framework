@@ -14,20 +14,20 @@
 			</div>
 		</section>
 
-        <v-card variant="text" class="lowerBar">
+        <UCard variant="text" class="lowerBar">
             <v-toolbar :style="`background-color: ${eventsBar?.color}; color: ${eventsBar?.colortext} !important`">
                 <v-toolbar-title>{{ eventsBar?.name }}</v-toolbar-title>
 
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in eventsBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text"
-                                :style="`color: ${eventsBar?.colortext} !important`">{{ menu?.name }}</v-btn>
+                            <UButton variant="text"
+                                :style="`color: ${eventsBar?.colortext} !important`">{{ menu?.name }}</UButton>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="eventsBar?.menus?.[0]?.value">

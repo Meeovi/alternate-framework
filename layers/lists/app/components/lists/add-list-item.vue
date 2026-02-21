@@ -1,14 +1,14 @@
 <template>
     <div>
         <div v-if="list?.items?.length === 0" class="text-center py-8">
-            <v-icon size="64" color="grey-lighten-1">{{ getListIcon(list?.type) }}</v-icon>
+            <UIcon size="64" color="grey-lighten-1">{{ getListIcon(list?.type) }}</UIcon>
             <h3 class="text-h6 mt-4 mb-2">No items yet</h3>
             <p class="text-body-2 text-medium-emphasis mb-4">
                 Add your first item to get started
             </p>
-            <v-btn color="primary" @click="showAddDialog = true">
+            <UButton color="primary" @click="showAddDialog = true">
                 Add Item
-            </v-btn>
+            </UButton>
         </div>
 
         <div v-else>
@@ -48,15 +48,16 @@
   })
 
   const dialog = ref(false)
-  const {
-    $directus,
-    $readFieldsByCollection
-  } = useNuxtApp()
+  const content = useContentAdapter()
 
   const {
     data,
     error
   } = await useAsyncData('listItemsFields', async () => {
+    if (content && typeof content.readFieldsByCollection === 'function') {
+      return await content.readFieldsByCollection('list_items')
+    }
+    const { $directus, $readFieldsByCollection } = useNuxtApp()
     return $directus.request($readFieldsByCollection('list_items'))
   })
 

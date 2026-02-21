@@ -199,7 +199,7 @@ function getMinimumScheduledTime(now: Date): Date {
 
 function getDatetimeInputFormat(time: Date) {
   // Returns string in 'YYYY-MM-DDTHH:MM' format using local time components
-  // This is the format expected by the <v-text-field type="datetime-local"> element.
+  // This is the format expected by the <input type="datetime-local"> element.
   const year = time.getFullYear()
   const month = (time.getMonth() + 1).toString().padStart(2, '0')
   const day = time.getDate().toString().padStart(2, '0')
@@ -221,7 +221,7 @@ const characterCount = computed(() => {
   const countableMentionRegex = /(^|[^/\w])@((\w+)@[a-z0-9.-]+[a-z0-9])/gi
 
   // maximum of 23 chars per link
-  // https://github.com/mframework-zone/mframework/issues/1651
+  // https://github.com/elk-zone/elk/issues/1651
   const maxLength = 23
 
   for (const [fullMatch] of text.matchAll(linkRegex))
@@ -413,22 +413,22 @@ const detectLanguage = useDebounceFn(async () => {
           <!-- This `w-0` style is used to avoid overflow problems in flex layouts，so don't remove it unless you know what you're doing -->
           <div
             ref="dropZoneRef" flex w-0 flex-col gap-3 flex-1 border="2 dashed transparent"
-            :class="[isSending ? 'pointer-events-none' : '', isOverDropZone ? 'border-primary!' : '']"
+            :class="[isSending ? 'pointer-events-none' : '', isOverDropZone ? '!border-primary' : '']"
           >
             <ContentMentionGroup v-if="draft.mentions?.length && shouldExpanded" replying>
-              <v-btn
+              <UButton
                 v-for="m, i of draft.mentions" :key="m" text-primary hover:color-red
                 @click="draft.mentions?.splice(i, 1)"
               >
                 {{ accountToShortHandle(m) }}
-              </v-btn>
+              </UButton>
             </ContentMentionGroup>
 
             <div v-if="draft.params.sensitive">
-              <v-text-field
+              <input
                 v-model="publishSpoilerText" type="text" :placeholder="$t('placeholder.content_warning')" p2
                 border-rounded w-full bg-transparent outline-none border="~ base"
-              ></v-text-field>
+              >
             </div>
 
             <CommonErrorMessage v-if="failedMessages.length > 0" described-by="publish-failed">
@@ -438,12 +438,12 @@ const detectLanguage = useDebounceFn(async () => {
                   <p>{{ $t('state.publish_failed') }}</p>
                 </div>
                 <CommonTooltip placement="bottom" :content="$t('action.clear_publish_failed')">
-                  <v-btn
+                  <UButton
                     flex rounded-4 p1 hover:bg-active cursor-pointer transition-100
                     :aria-label="$t('action.clear_publish_failed')" @click="failedMessages = []"
                   >
                     <span aria-hidden="true" w="1.75em" h="1.75em" i-ri:close-line />
-                  </v-btn>
+                  </UButton>
                 </CommonTooltip>
               </header>
               <ol ps-2 sm:ps-1>
@@ -463,13 +463,13 @@ const detectLanguage = useDebounceFn(async () => {
                   placement="bottom"
                   :content="scheduledTime ? $t('action.clear_schedule_failed') : $t('action.clear_publish_failed')"
                 >
-                  <v-btn
+                  <UButton
                     flex rounded-4 p1 hover:bg-active cursor-pointer transition-100
                     :aria-label="scheduledTime ? $t('action.clear_schedule_failed') : $t('action.clear_publish_failed')"
                     @click="failedMessages = []"
                   >
                     <span aria-hidden="true" w="1.75em" h="1.75em" i-ri:close-line />
-                  </v-btn>
+                  </UButton>
                 </CommonTooltip>
               </header>
               <ol ps-2 sm:ps-1>
@@ -518,12 +518,12 @@ const detectLanguage = useDebounceFn(async () => {
                   <p>{{ $t('state.upload_failed') }}</p>
                 </div>
                 <CommonTooltip placement="bottom" :content="$t('action.clear_upload_failed')">
-                  <v-btn
+                  <UButton
                     flex rounded-4 p1 hover:bg-active cursor-pointer transition-100
                     :aria-label="$t('action.clear_upload_failed')" @click="failedAttachments = []"
                   >
                     <span aria-hidden="true" w="1.75em" h="1.75em" i-ri:close-line />
-                  </v-btn>
+                  </UButton>
                 </CommonTooltip>
               </header>
               <div v-if="isExceedingAttachmentLimit" id="uploads-per-post" ps-2 sm:ps-1 text-small>
@@ -548,22 +548,22 @@ const detectLanguage = useDebounceFn(async () => {
         </div>
 
         <div flex="~ col 1" max-w-full>
-          <form v-if="isExpanded && draft.params.poll" my-4 flex="~ 1 col" gap-3 m="s--1">
+          <UForm v-if="isExpanded && draft.params.poll" my-4 flex="~ 1 col" gap-3 m="s--1">
             <div v-for="(option, index) in draft.params.poll.options" :key="index" flex="~ row" gap-3>
-              <v-text-field
+              <input
                 :value="option" bg-base border="~ base" flex-1 h10 pe-4 rounded-2 w-full flex="~ row" items-center
                 relative focus-within:box-shadow-outline gap-3 px-4 py-2
                 :placeholder="$t('polls.option_placeholder', { current: index + 1, max: currentInstance?.configuration?.polls.maxOptions })"
                 class="option-input" @input="editPollOptionDraft($event, index)"
-              ></v-text-field>
-              <CommonTooltip placement="top" :content="$t('polls.remove_option')" class="delete-v-btn">
-                <v-btn
+              >
+              <CommonTooltip placement="top" :content="$t('polls.remove_option')" class="delete-button">
+                <UButton
                   btn-action-icon class="hover:bg-red/75"
                   :disabled="index === draft.params.poll!.options.length - 1 && (index + 1 !== currentInstance?.configuration?.polls.maxOptions || draft.params.poll!.options[index].length === 0)"
                   @click.prevent="deletePollOption(index)"
                 >
                   <div i-ri:delete-bin-line />
-                </v-btn>
+                </UButton>
               </CommonTooltip>
               <span
                 v-if="currentInstance?.configuration?.polls.maxCharactersPerOption" class="char-limit-radial"
@@ -573,11 +573,11 @@ const detectLanguage = useDebounceFn(async () => {
                 draft.params.poll!.options[index].length
               }}</span>
             </div>
-          </form>
+          </UForm>
 
           <template v-if="hasQuote">
             <div flex justify-end mt-2>
-              <v-btn
+              <UButton
                 text-sm px-2 py-1 rounded-3 hover:bg-gray-300
                 flex="~ gap1" items-center
                 :aria-label="$t('action.remove_quote')"
@@ -585,7 +585,7 @@ const detectLanguage = useDebounceFn(async () => {
               >
                 <div i-ri:close-line />
                 {{ $t('action.remove_quote') }}
-              </v-btn>
+              </UButton>
             </div>
             <blockquote v-if="quotedStatus" b="~ base 1" rounded-lg overflow-hidden my-3>
               <StatusCard
@@ -603,43 +603,43 @@ const detectLanguage = useDebounceFn(async () => {
           <!-- toolbar -->
           <div v-if="shouldExpanded" flex="~ gap-1 1 wrap" m="s--1" pt-2 justify="end" max-w-full border="t base">
             <PublishEmojiPicker @select="insertEmoji" @select-custom="insertCustomEmoji">
-              <v-btn btn-action-icon :title="$t('tooltip.emojis')" :aria-label="$t('tooltip.add_emojis')">
+              <UButton btn-action-icon :title="$t('tooltip.emojis')" :aria-label="$t('tooltip.add_emojis')">
                 <div i-ri:emotion-line />
-              </v-btn>
+              </UButton>
             </PublishEmojiPicker>
 
             <CommonTooltip
               v-if="draft.params.poll === undefined" placement="top" :content="$t('tooltip.add_media')"
             >
-              <v-btn btn-action-icon :aria-label="$t('tooltip.add_media')" @click="pickAttachments">
+              <UButton btn-action-icon :aria-label="$t('tooltip.add_media')" @click="pickAttachments">
                 <div i-ri:image-add-line />
-              </v-btn>
+              </UButton>
             </CommonTooltip>
 
             <template v-if="draft.attachments.length === 0">
               <CommonTooltip v-if="!draft.params.poll" placement="top" :content="$t('polls.create')">
-                <v-btn
+                <UButton
                   btn-action-icon :aria-label="$t('polls.create')"
                   @click="draft.params.poll = { options: [''], expiresIn: expiresInOptions[expiresInDefaultOptionIndex].seconds }"
                 >
                   <div i-ri:chat-poll-line />
-                </v-btn>
+                </UButton>
               </CommonTooltip>
               <div v-else rounded-full b-1 border-dark flex="~ row" gap-1>
                 <CommonTooltip placement="top" :content="$t('polls.cancel')">
-                  <v-btn
+                  <UButton
                     btn-action-icon b-r border-dark :aria-label="$t('polls.cancel')"
                     @click="draft.params.poll = undefined"
                   >
                     <div i-ri:close-line />
-                  </v-btn>
+                  </UButton>
                 </CommonTooltip>
                 <CommonDropdown placement="top">
                   <CommonTooltip placement="top" :content="$t('polls.settings')">
-                    <v-btn :aria-label="$t('polls.settings')" btn-action-icon w-12>
+                    <UButton :aria-label="$t('polls.settings')" btn-action-icon w-12>
                       <div i-ri:list-settings-line />
                       <div i-ri:arrow-down-s-line text-sm text-secondary me--1 />
-                    </v-btn>
+                    </UButton>
                   </CommonTooltip>
                   <template #popper>
                     <div flex="~ col" gap-1 p-2>
@@ -662,10 +662,10 @@ const detectLanguage = useDebounceFn(async () => {
                 </CommonDropdown>
                 <CommonDropdown placement="bottom">
                   <CommonTooltip placement="top" :content="$t('polls.expiration')">
-                    <v-btn :aria-label="$t('polls.expiration')" btn-action-icon w-12>
+                    <UButton :aria-label="$t('polls.expiration')" btn-action-icon w-12>
                       <div i-ri:hourglass-line />
                       <div i-ri:arrow-down-s-line text-sm text-secondary me--1 />
-                    </v-btn>
+                    </UButton>
                   </CommonTooltip>
                   <template #popper>
                     <CommonDropdownItem
@@ -682,18 +682,18 @@ const detectLanguage = useDebounceFn(async () => {
             <PublishEditorTools v-if="editor" :editor="editor" />
             <CommonDropdown placement="bottom" @click="setInitialScheduledTime">
               <CommonTooltip placement="top" :content="$t('tooltip.schedule_post')" no-auto-focus>
-                <v-btn btn-action-icon :aria-label="$t('tooltip.schedule_post')">
+                <UButton btn-action-icon :aria-label="$t('tooltip.schedule_post')">
                   <div i-ri:calendar-schedule-line :class="scheduledTime !== '' ? 'text-primary' : ''" />
-                </v-btn>
+                </UButton>
               </CommonTooltip>
               <template #popper>
-                <v-text-field
+                <input
                   v-model="scheduledTime"
                   p2
                   type="datetime-local"
                   name="schedule-datetime"
                   :min="getDatetimeInputFormat(minimumScheduledTime)"
-                ></v-text-field>
+                >
               </template>
             </CommonDropdown>
 
@@ -703,11 +703,11 @@ const detectLanguage = useDebounceFn(async () => {
 
             <CommonTooltip placement="top" :content="$t('tooltip.change_language')">
               <CommonDropdown placement="bottom" auto-boundary-max-size>
-                <v-btn btn-action-icon :aria-label="$t('tooltip.change_language')" w-max mr1>
+                <UButton btn-action-icon :aria-label="$t('tooltip.change_language')" w-max mr1>
                   <span v-if="postLanguageDisplay" text-secondary text-sm ml1>{{ postLanguageDisplay }}</span>
                   <div v-else i-ri:translate-2 />
                   <div i-ri:arrow-down-s-line text-sm text-secondary me--1 />
-                </v-btn>
+                </UButton>
 
                 <template #popper>
                   <PublishLanguagePicker v-model="draft.params.language" min-w-80 />
@@ -716,33 +716,33 @@ const detectLanguage = useDebounceFn(async () => {
             </CommonTooltip>
 
             <CommonTooltip placement="top" :content="$t('tooltip.add_content_warning')">
-              <v-btn btn-action-icon :aria-label="$t('tooltip.add_content_warning')" @click="toggleSensitive">
+              <UButton btn-action-icon :aria-label="$t('tooltip.add_content_warning')" @click="toggleSensitive">
                 <div v-if="draft.params.sensitive" i-ri:alarm-warning-fill text-orange />
                 <div v-else i-ri:alarm-warning-line />
-              </v-btn>
+              </UButton>
             </CommonTooltip>
 
             <PublishVisibilityPicker v-model="draft.params.visibility" :editing="!!draft.editingStatus">
               <template #default="{ visibility }">
-                <v-btn
+                <UButton
                   :disabled="!!draft.editingStatus" :aria-label="$t('tooltip.change_content_visibility')"
                   btn-action-icon :class="{ 'w-12': !draft.editingStatus }"
                 >
                   <div :class="visibility.icon" />
                   <div v-if="!draft.editingStatus" i-ri:arrow-down-s-line text-sm text-secondary me--1 />
-                </v-btn>
+                </UButton>
               </template>
             </PublishVisibilityPicker>
 
             <PublishQuoteApprovalPicker v-if="hasQuote" v-model="draft.params.quoteApprovalPolicy" :editing="!!draft.editingStatus">
               <template #default="{ quoteApprovalPolicy }">
-                <v-btn
+                <UButton
                   :disabled="!!draft.editingStatus" :aria-label="$t('tooltip.change_content_visibility')"
                   btn-action-icon :class="{ 'w-12': !draft.editingStatus }"
                 >
                   <div :class="quoteApprovalPolicy.icon" />
                   <div v-if="!draft.editingStatus" i-ri:arrow-down-s-line text-sm text-secondary me--1 />
-                </v-btn>
+                </UButton>
               </template>
             </PublishQuoteApprovalPicker>
 
@@ -752,7 +752,7 @@ const detectLanguage = useDebounceFn(async () => {
               v-if="failedMessages.length > 0" id="publish-failed-tooltip" placement="top"
               :content="scheduledTime ? $t('state.schedule_failed') : $t('tooltip.publish_failed')"
             >
-              <v-btn
+              <UButton
                 btn-danger rounded-3 text-sm w-full flex="~ gap1" items-center md:w-fit
                 aria-describedby="publish-failed-tooltip"
               >
@@ -760,16 +760,16 @@ const detectLanguage = useDebounceFn(async () => {
                   <div block i-carbon:face-dizzy-filled />
                 </span>
                 <span>{{ scheduledTime ? $t('state.schedule_failed') : $t('state.publish_failed') }}</span>
-              </v-btn>
+              </UButton>
             </CommonTooltip>
 
             <CommonTooltip
               v-else id="publish-tooltip" placement="top" :content="$t('tooltip.add_publishable_content')"
               :disabled="!(isPublishDisabled || isExceedingCharacterLimit)"
             >
-              <v-btn
+              <UButton
                 v-if="!threadIsActive || isFinalItemOfThread"
-                btn-solid rounded-3 text-sm w-full flex="~ gap1" items-center md:w-fit class="publish-v-btn"
+                btn-solid rounded-3 text-sm w-full flex="~ gap1" items-center md:w-fit class="publish-button"
                 :aria-disabled="isPublishDisabled || isExceedingCharacterLimit || threadIsSending || !isValidScheduledTime"
                 aria-describedby="publish-tooltip"
                 :disabled="isPublishDisabled || isExceedingCharacterLimit || threadIsSending || !isValidScheduledTime"
@@ -792,7 +792,7 @@ const detectLanguage = useDebounceFn(async () => {
                   <span v-else-if="draft.params.inReplyToId">{{ $t('action.reply') }}</span>
                   <span v-else>{{ !isSending ? $t('action.publish') : $t('state.publishing') }}</span>
                 </template>
-              </v-btn>
+              </UButton>
             </CommonTooltip>
           </div>
         </div>
@@ -802,22 +802,22 @@ const detectLanguage = useDebounceFn(async () => {
 </template>
 
 <style scoped>
-.publish-v-btn[aria-disabled=true] {
+.publish-button[aria-disabled=true] {
   cursor: not-allowed;
   background-color: var(--c-bg-btn-disabled);
   color: var(--c-text-btn-disabled);
 }
 
-.publish-v-btn[aria-disabled=true]:hover {
+.publish-button[aria-disabled=true]:hover {
   background-color: var(--c-bg-btn-disabled);
   color: var(--c-text-btn-disabled);
 }
 
-.option-input:focus + .delete-v-btn {
+.option-input:focus + .delete-button {
   display: none;
 }
 
-.option-input:not(:focus) + .delete-v-btn + .char-limit-radial {
+.option-input:not(:focus) + .delete-button + .char-limit-radial {
   display: none;
 }
 

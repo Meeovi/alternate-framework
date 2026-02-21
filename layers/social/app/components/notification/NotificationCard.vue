@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTimeAgoOptions } from '@mframework/localization';
 import type { mastodon } from 'masto'
 
 // Add undocumented 'annual_report' type introduced in v4.3

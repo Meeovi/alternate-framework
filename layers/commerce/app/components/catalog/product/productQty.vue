@@ -7,21 +7,25 @@
     <v-col cols="12">
       <div class="d-flex align-center mb-4">
         <div class="d-flex align-center">
-          <v-btn square variant="secondary" :disabled="count <= min" @click="dec()" size="sm">
+          <UButton square variant="secondary" :disabled="count <= min" @click="dec()" size="sm">
             <SfIconRemove />
-          </v-btn>
-          <v-text-field :id="inputId" type="number" :min="min" :max="max" class="mx-2 w-16 text-center" :value="count"
+          </UButton>
+          <UInput :id="inputId" type="number" :min="min" :max="max" class="mx-2 w-16 text-center" :value="count"
             @change="handleOnChange" :disabled="!isValidProduct" />
-          <v-btn square variant="secondary" :disabled="count >= max" @click="inc()" size="sm">
+          <UButton square variant="secondary" :disabled="count >= max" @click="inc()" size="sm">
             <SfIconAdd />
-          </v-btn>
+          </UButton>
         </div>
       </div>
     </v-col>
   </v-row>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
   import {
     SfIconRemove,
     SfIconAdd,

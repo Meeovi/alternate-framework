@@ -1,6 +1,6 @@
 <template>
   <div class="contentPage">
-    <v-card elevation="0">
+    <UCard elevation="0">
       <v-toolbar :title="showcasebar?.name" :color="showcasebar?.color"></v-toolbar>
 
       <v-tabs v-model="tab" bg-color="purple">
@@ -9,7 +9,7 @@
         </div>
       </v-tabs>
 
-      <v-card-text>
+      <template #header>
         <v-tabs-window v-model="tab">
           <!--Bundle Products List-->
           <v-window-item :value="showcasebar?.menus[0]?.value">
@@ -38,12 +38,15 @@
             </v-row>
           </v-window-item>
         </v-tabs-window>
-      </v-card-text>
-    </v-card>
+      </template>
+    </UCard>
   </div>
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
   import {
     ref,
     computed

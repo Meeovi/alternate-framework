@@ -2,9 +2,9 @@
   <v-sheet class="pa-4" elevation="2">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-semibold">Your Cart ({{ cartStore.itemCount }})</h3>
-      <v-btn color="primary" variant="tonal" @click="proceedToCheckout" :disabled="cartStore.isEmpty || cartStore.loading">
+      <UButton color="primary" variant="tonal" @click="proceedToCheckout" :disabled="cartStore.isEmpty || cartStore.loading">
         Proceed to Checkout
-      </v-btn>
+      </UButton>
     </div>
 
     <v-divider />
@@ -41,6 +41,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { ref, watch, computed, onMounted } from 'vue'
 import { useCartStore } from '~/stores/cart'
 import { useRouter } from 'vue-router'

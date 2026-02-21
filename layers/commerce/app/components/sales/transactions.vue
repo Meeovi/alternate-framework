@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <v-card variant="text">
+        <UCard variant="text">
             <v-toolbar
                 :style="`background-color: ${transactionBar?.color}; color: ${transactionBar?.colortext} !important`">
                 <v-toolbar-title>{{ transactionBar?.name }}</v-toolbar-title>
@@ -23,13 +23,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in transactionBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text"
-                                :style="`color: ${transactionBar?.colortext} !important`">{{ menu?.name }}</v-btn>
+                            <UButton variant="text"
+                                :style="`color: ${transactionBar?.colortext} !important`">{{ menu?.name }}</UButton>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <v-tabs-window v-model="tab">
             <!--Transactions-->
@@ -47,7 +47,11 @@
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import {
         ref,
         computed

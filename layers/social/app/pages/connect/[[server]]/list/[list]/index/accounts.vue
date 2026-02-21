@@ -74,7 +74,7 @@ function removeAccount(account: mastodon.v1.Account) {
 <template>
   <!-- Search Accounts You Follow -->
   <div ref="el" relative group>
-    <form
+    <UForm
       border="t base"
       p-4 w-full
       flex="~ wrap" relative gap-3
@@ -100,11 +100,11 @@ function removeAccount(account: mastodon.v1.Account) {
           @keydown.esc.prevent="inputRef?.blur()"
           @keydown.enter.prevent
         >
-        <button v-if="query.length" btn-action-icon text-secondary @click="query = ''; inputRef?.focus()">
+        <UButton v-if="query.length" btn-action-icon text-secondary @click="query = ''; inputRef?.focus()">
           <span aria-hidden="true" class="i-ri:close-line" />
-        </button>
+        </UButton>
       </div>
-    </form>
+    </UForm>
 
     <!-- Results -->
     <div left-0 top-18 absolute w-full z-10 group-focus-within="pointer-events-auto visible" invisible pointer-events-none>
@@ -128,7 +128,7 @@ function removeAccount(account: mastodon.v1.Account) {
                 :tabindex="focused ? 0 : -1"
               />
               <CommonTooltip :content="isInCurrentList(result.id) ? $t('list.remove_account') : $t('list.add_account')">
-                <button
+                <UButton
                   text-sm p2 border-1 transition-colors
                   border-dark
                   btn-action-icon
@@ -137,7 +137,7 @@ function removeAccount(account: mastodon.v1.Account) {
                   @click=" () => isInCurrentList(result.id) ? removeAccount(result.data) : addAccount(result.data) "
                 >
                   <span :class="isInCurrentList(result.id) ? 'i-ri:user-unfollow-line' : 'i-ri:user-add-line'" />
-                </button>
+                </UButton>
               </CommonTooltip>
             </div>
           </template>

@@ -1,18 +1,18 @@
 <template>
-  <v-card>
-    <v-card-title>Privacy and Data</v-card-title>
-    <v-card-text>
+  <UCard>
+    <template #header>Privacy and Data</template>
+    <template #header>
       <!--<v-switch
         v-model="dataSharing"
         label="Allow Data Sharing for Personalized Experiences"
         @change="updateDataSharingPreference"
       ></v-switch>-->
       <v-row>
-        <v-col><v-btn @click="requestDataReport" class="mb-4">Request Personal Data Report</v-btn></v-col>
-        <v-col><v-btn @click="deleteAccount" color="error">Delete Account</v-btn></v-col>
+        <v-col><UButton @click="requestDataReport" class="mb-4">Request Personal Data Report</UButton></v-col>
+        <v-col><UButton @click="deleteAccount" color="error">Delete Account</UButton></v-col>
       </v-row>
-    </v-card-text>
-  </v-card>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

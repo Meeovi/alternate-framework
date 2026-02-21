@@ -1,4 +1,4 @@
-import { useNuxtApp } from '#imports'
+import { useNuxtApp } from 'nuxt/app'
 
 /**
  * Composable wrapper for the shared `videojs` Nuxt plugin.

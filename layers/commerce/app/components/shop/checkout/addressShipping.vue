@@ -13,59 +13,63 @@
         <h2 class="text-h4 font-weight-bold mb-4">Shipping Address</h2>
         <v-row>
             <v-col cols="12" md="6">
-                <v-text-field v-model="shippingAddress.fullName" :error-messages="errors.fullName" label="Full Name"
-                    name="fullName" autocomplete="name" required variant="outlined"></v-text-field>
+                <UInput v-model="shippingAddress.fullName" :error-messages="errors.fullName" label="Full Name"
+                    name="fullName" autocomplete="name" required variant="outlined"></UInput>
             </v-col>
             <v-col cols="12" md="6">
-                <v-text-field v-model="shippingAddress.phoneNumber" :error-messages="errors.phoneNumber" label="Phone"
-                    name="phone" type="tel" autocomplete="tel" required variant="outlined"></v-text-field>
+                <UInput v-model="shippingAddress.phoneNumber" :error-messages="errors.phoneNumber" label="Phone"
+                    name="phone" type="tel" autocomplete="tel" required variant="outlined"></UInput>
             </v-col>
             <v-col cols="12">
-                <v-select v-model="shippingAddress.countryCode" :error-messages="errors.countryCode" label="Country"
+                <USelect v-model="shippingAddress.countryCode" :error-messages="errors.countryCode" label="Country"
                     name="country" :items="countries" item-title="name" item-value="code"
                     autocomplete="country-name" required variant="outlined"
-                    @update:model-value="updateRegions"></v-select>
+                    @update:model-value="updateRegions"></USelect>
             </v-col>
             <v-col cols="12" md="8">
-                <v-text-field v-model="shippingAddress.streetLine1" :error-messages="errors.streetLine1" label="Street Line 1"
+                <UInput v-model="shippingAddress.streetLine1" :error-messages="errors.streetLine1" label="Street Line 1"
                     name="streetLine1" autocomplete="address-line1" required variant="outlined"
-                    hint="Street address or P.O. Box"></v-text-field>
+                    hint="Street address or P.O. Box"></UInput>
             </v-col>
             <v-col cols="12" md="4">
-                <v-text-field v-model="shippingAddress.streetLine2" label="Street Line 2" name="streetLine2"
-                    variant="outlined" hint="Optional"></v-text-field>
+                <UInput v-model="shippingAddress.streetLine2" label="Street Line 2" name="streetLine2"
+                    variant="outlined" hint="Optional"></UInput>
             </v-col>
             <v-col cols="12" md="4">
-                <v-text-field v-model="shippingAddress.city" :error-messages="errors.city" label="City" name="city"
-                    autocomplete="address-level2" required variant="outlined"></v-text-field>
+                <UInput v-model="shippingAddress.city" :error-messages="errors.city" label="City" name="city"
+                    autocomplete="address-level2" required variant="outlined"></UInput>
             </v-col>
             <v-col cols="12" md="4">
-                <v-select v-model="shippingAddress.province" :error-messages="errors.province" label="State" name="state"
+                <USelect v-model="shippingAddress.province" :error-messages="errors.province" label="State" name="state"
                     :items="regions" item-title="name" item-value="code" autocomplete="address-level1" required
-                    variant="outlined"></v-select>
+                    variant="outlined"></USelect>
             </v-col>
             <v-col cols="12" md="4">
-                <v-text-field v-model="shippingAddress.postalCode" :error-messages="errors.postalCode" label="ZIP Code"
+                <UInput v-model="shippingAddress.postalCode" :error-messages="errors.postalCode" label="ZIP Code"
                     name="zipCode" placeholder="eg. 12345" autocomplete="postal-code" required
-                    variant="outlined"></v-text-field>
+                    variant="outlined"></UInput>
             </v-col>
             <v-col cols="12">
-                <v-checkbox v-model="useAsShippingAddress" label="Use as shipping address"
-                    name="useAsShippingAddress"></v-checkbox>
+                <UCheckbox v-model="useAsShippingAddress" label="Use as shipping address"
+                    name="useAsShippingAddress"></UCheckbox>
             </v-col>
             <v-col cols="12" class="d-flex justify-end gap-4">
-                <v-btn variant="outlined" type="reset" color="primary" @click="handleReset">
+                <UButton variant="outlined" type="reset" color="primary" @click="handleReset">
                     Clear all
-                </v-btn>
-                <v-btn color="primary" type="submit" :loading="loading" :disabled="loading">
+                </UButton>
+                <UButton color="primary" type="submit" :loading="loading" :disabled="loading">
                     Save
-                </v-btn>
+                </UButton>
             </v-col>
         </v-row>
     </v-form>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { ref, reactive, onMounted, onErrorCaptured } from 'vue';
 import { useVendureMutation } from '../../composables/useVendureMutation';
 import setOrderShippingAddressMutation from '#graphql/app/commerce/mutations/setOrderShippingAddress.gql';

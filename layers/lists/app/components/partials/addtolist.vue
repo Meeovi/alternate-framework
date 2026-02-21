@@ -2,24 +2,24 @@
     <div class="text-center">
         <v-dialog v-model="dialog" max-width="600">
             <template v-slot:activator="{ props: activatorProps }">
-                <v-btn prepend-icon="fas:fa fa-plus" text="Add to List" color="primary" size="large"
-                    v-bind="activatorProps"></v-btn>
+                <UButton prepend-icon="fas:fa fa-plus" text="Add to List" color="primary" size="large"
+                    v-bind="activatorProps"></UButton>
             </template>
 
-            <v-card>
+            <UCard>
                 <v-tabs v-model="tab" bg-color="primary">
                     <v-tab value="one">Add to List</v-tab>
                     <v-tab value="two">Create List</v-tab>
                 </v-tabs>
 
-                <v-card-text>
+                <template #header>
                     <v-tabs-window v-model="tab">
                         <v-tabs-window-item value="one">
-                            <v-card>
-                                <v-card-title class="text-h6">
+                            <UCard>
+                                <UCard-title class="text-h6">
                                     Add this Product to your List
-                                </v-card-title>
-                                <v-card-text>
+                                </template>
+                                <template #header>
                                     <v-row dense>
                                         <v-col cols="12" sm="6">
                                             <v-autocomplete 
@@ -50,14 +50,14 @@
                                     >
                                         {{ error }}
                                     </v-alert>
-                                </v-card-text>
+                                </template>
 
                                 <v-divider></v-divider>
 
-                                <v-card-actions>
+                                <template>
                                     <v-spacer></v-spacer>
-                                    <v-btn text="Close" variant="plain" @click="closeDialog"></v-btn>
-                                    <v-btn 
+                                    <UButton text="Close" variant="plain" @click="closeDialog"></UButton>
+                                    <UButton 
                                         color="primary" 
                                         text="Save" 
                                         variant="tonal" 
@@ -66,17 +66,17 @@
                                         :disabled="loading || selectedLists.length === 0"
                                     >
                                         Save
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
+                                    </UButton>
+                                </template>
+                            </UCard>
                         </v-tabs-window-item>
 
                         <v-tabs-window-item value="two">
                             <createlist @list-created="handleListCreated" />
                         </v-tabs-window-item>
                     </v-tabs-window>
-                </v-card-text>
-            </v-card>
+                </template>
+            </UCard>
         </v-dialog>
     </div>
 </template>
@@ -97,8 +97,9 @@ const props = defineProps({
 
 const emit = defineEmits(['item-added']);
 
-const { $directus } = useNuxtApp();
 const user = useSupabaseAuth();
+
+const content = useContentAdapter();
 
 const dialog = ref(false);
 const tab = ref('one');
@@ -113,17 +114,15 @@ const fetchLists = async () => {
     
     loading.value = true;
     error.value = null;
-    
+
     try {
-        const response = await $directus.items('lists').readItems({
+        const resp = await content.readItems('lists', {
             filter: {
-                user: {
-                    _eq: user.value.id
-                }
+                user: { _eq: user.value.id }
             },
             fields: ['id', 'name', 'description']
         });
-        lists.value = response.data;
+        lists.value = resp && resp.data ? resp.data : resp;
     } catch (err) {
         console.error('Error fetching lists:', err);
         error.value = 'Failed to load your lists. Please try again.';
@@ -159,7 +158,7 @@ const saveToLists = async () => {
 
         // Create list items for each selected list
         const promises = newLists.map(listId => {
-            return $directus.items('list_items').createItem({
+            return content.createItem('list_items', {
                 list: listId,
                 magento_product_uid: props.product.uid,
                 magento_product_sku: props.product.sku,
@@ -212,13 +211,14 @@ const productPreview = computed(() => {
 
 const isProductInList = async (listId, productUid) => {
     try {
-        const response = await $directus.items('list_items').readItems({
+        const resp = await content.readItems('list_items', {
             filter: {
                 list: { _eq: listId },
                 magento_product_uid: { _eq: productUid }
             }
         });
-        return response.data.length > 0;
+        const items = resp && resp.data ? resp.data : resp;
+        return Array.isArray(items) && items.length > 0;
     } catch (error) {
         console.error('Error checking product in list:', error);
         return false;

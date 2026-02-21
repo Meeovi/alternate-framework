@@ -15,7 +15,7 @@
         </v-col>
 
         <v-col cols="12">
-          <v-card elevation="0">
+          <UCard elevation="0">
             <v-tabs v-model="tab" :bg-color="productbar?.color">
               <div v-for="(menu, index) in productbar?.menus" :key="index">
                 <v-tab v-if="menu?.active === 'Active'" :value="menu?.value">{{ menu?.name }}</v-tab>
@@ -28,13 +28,13 @@
               <v-tab value="nine" v-if="product?.product_types?.product_types_id?.name === 'Gift Card'">Redeem</v-tab>
             </v-tabs>
 
-            <v-card-text>
+            <template #header>
               <v-window v-model="tab">
                 <!--Product Description-->
                 <v-window-item :value="productbar?.menus[0]?.value">
-                  <v-card variant="text">
-                    <v-card-text style="font-size: 20px;" v-dompurify-html="product?.content"></v-card-text>
-                  </v-card>
+                  <UCard variant="text">
+                    <UCard-text style="font-size: 20px;" v-dompurify-html="product?.content"></template>
+                  </UCard>
                 </v-window-item>
 
                 <!--Product Reviews-->
@@ -127,8 +127,8 @@
                   </v-row>
                 </v-window-item>
               </v-window>
-            </v-card-text>
-          </v-card>
+            </template>
+          </UCard>
         </v-col>
 
         <v-col cols="12">
@@ -142,7 +142,7 @@
                 <productCard :product="crossSell?.products_id" :class="['ma-4', selectedClass]" @click="toggle" />
                 <div class="d-flex fill-height align-center justify-center">
                   <v-scale-transition>
-                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                    <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                   </v-scale-transition>
                 </div>
               </v-slide-group-item>
@@ -160,7 +160,7 @@
                     @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>
@@ -181,7 +181,7 @@
                   <shop :shop="shops?.shops_id" :class="['ma-4', selectedClass]" @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>
@@ -202,7 +202,7 @@
                   <short :short="shorts?.shorts_id" :class="['ma-4', selectedClass]" @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>
@@ -223,7 +223,7 @@
                   <spaces :space="spaces?.spaces_id" :class="['ma-4', selectedClass]" @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>
@@ -241,6 +241,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
   import {
     ref,
     computed,

@@ -42,3 +42,11 @@ export interface ListsProvider {
   searchItems?(listId: string, query: string): Promise<ListItem[]>
   archiveList?(listId: string): Promise<void>
 }
+
+export interface ContentAdapter {
+  readItem(collection: string, id: any, opts?: Record<string, any>): Promise<any>
+  readItems(collection: string, opts?: Record<string, any>): Promise<any>
+  createItem(collection: string, data: any): Promise<any>
+  updateItem(collection: string, id: any, data: any): Promise<any>
+  deleteItem(collection: string, id: any): Promise<any>
+}

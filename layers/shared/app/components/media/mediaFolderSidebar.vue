@@ -14,9 +14,9 @@
             <v-divider class="my-3" />
 
             <v-list-item>
-                <v-btn block color="primary" @click="createNewFolder">
+                <UButton block color="primary" @click="createNewFolder">
                     New Folder
-                </v-btn>
+                </UButton>
             </v-list-item>
         </v-list>
     </v-navigation-drawer>

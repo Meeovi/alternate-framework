@@ -116,7 +116,7 @@
           <img src="../../assets/images/background2.jpg" :alt="order?.id">
       </section>
 
-      <v-card title="Order Items" flat>
+      <UCard title="Order Items" flat>
           <div class="container">
               <v-data-table :headers="headers" :items="order?.products" :items-per-page="5" class="elevation-1">
                   <template v-slot:[`item.name`]="{ item }">
@@ -152,7 +152,7 @@
                   </template>
               </v-data-table>
           </div>
-      </v-card>
+      </UCard>
       <section data-bs-version="5.1" class="pricing1 lodgem5 cid-uhBqGPVpcI" id="apricing1-9s">
           <div class="container">
               <div class="row">
@@ -296,6 +296,9 @@
 </script>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
     const route = useRoute();
     
     const {

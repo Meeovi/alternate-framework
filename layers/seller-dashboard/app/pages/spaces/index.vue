@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Spaces</h2>
-    <v-btn @click="refresh">Refresh</v-btn>
+    <UButton @click="refresh">Refresh</UButton>
     <ul>
       <li v-for="sp in spaces" :key="sp.id">{{ sp.name || sp.id }}</li>
     </ul>

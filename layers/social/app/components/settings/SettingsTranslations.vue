@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ISO6391 from 'iso-639-1'
+import { useUserSettings } from '~/composables/settings'
 
 const supportedTranslationLanguages = ISO6391.getLanguages([...supportedTranslationCodes])
 const userSettings = useUserSettings()
@@ -38,9 +39,9 @@ function removeDisabledTranslation(code: string) {
         <ul>
           <li v-for="langCode in userSettings.disabledTranslationLanguages" :key="langCode" class="flex items-center">
             <div>{{ ISO6391.getNativeName(langCode) }}</div>
-            <v-btn class="btn-text" type="v-btn" :title="$t('settings.language.translations.remove')" @click.prevent="removeDisabledTranslation(langCode)">
+            <UButton class="btn-text" type="v-btn" :title="$t('settings.language.translations.remove')" @click.prevent="removeDisabledTranslation(langCode)">
               <span class="block i-ri:close-line" aria-hidden="true" />
-            </v-btn>
+            </UButton>
           </li>
         </ul>
 
@@ -53,9 +54,9 @@ function removeDisabledTranslation(code: string) {
               {{ availableOption.nativeName }}
             </option>
           </select>
-          <v-btn class="btn-text shrink-0" @click="addDisabledTranslation">
+          <UButton class="btn-text shrink-0" @click="addDisabledTranslation">
             {{ $t('settings.language.translations.add') }}
-          </v-btn>
+          </UButton>
         </div>
       </div>
     </div>

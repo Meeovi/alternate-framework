@@ -1,12 +1,12 @@
 <template>
     <client-only>
         <div id="gallery-videojs">
-            <NuxtLink data-lg-size="1280-720"
-                data-video='{"source": [{"src":"/videos/video1.mp4", "type":"video/mp4"}], "attributes": {"preload": false, "controls": true}}'
-                data-poster="/images/demo/youtube-video-poster.jpg"
-                data-sub-html="<h4>'Peck Pocketed' by Kevin Herron | Disney Favorite</h4>">
-                <img width="300" height="100" class="img-responsive" src="../../assets/images/demo/youtube-video-poster.jpg" />
-            </NuxtLink>
+                <NuxtLink v-for="item in props.items" :key="item.id" :data-lg-size="'1280-720'"
+                    :data-video="JSON.stringify(playerOptions(item))"
+                    :data-poster="thumbnailUrl(item)"
+                    :data-sub-html="`<h4>${item.title || ''}</h4>`">
+                    <img width="300" height="100" class="img-responsive" :src="thumbnailUrl(item)" />
+                </NuxtLink>
         </div>
     </client-only>
 </template>
@@ -25,24 +25,8 @@
     })
 
     const galleryRef = ref(null)
-
-    const runtime = useRuntimeConfig()
-    const base = runtime.public.directus.url
-
-    const fileUrl = (item) => `${base}assets/${item.directus_files_id.id}`
-    const thumbnail = (item) => `${base}assets/${item.directus_files_id.id}?key=thumbnail`
-
-    const videoConfig = (item) =>
-        JSON.stringify({
-            source: [{
-                src: fileUrl(item),
-                type: 'video/mp4',
-            }, ],
-            attributes: {
-                preload: false,
-                controls: true,
-            },
-        })
+    import useMedia from '../../composables/useMedia'
+    const { fileUrl, thumbnailUrl, playerOptions } = useMedia()
 
     onMounted(async () => {
         const lg = await import('lightgallery')

@@ -1,19 +1,19 @@
 <template>
   <v-row justify="center">
-      <v-card>
-        <v-card-title>
+      <UCard>
+        <template #header>
           <h4>Create New Note</h4>
-        </v-card-title>
+        </template>
 
-        <v-card-text>
+        <template #header>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <form @submit.prevent="submitForm">
+          <UForm @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in postFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <v-btn type="submit">Post</v-btn>
-          </form>
-        </v-card-text>
-      </v-card>
+            <UButton type="submit">Post</UButton>
+          </UForm>
+        </template>
+      </UCard>
   </v-row>
 </template>
 

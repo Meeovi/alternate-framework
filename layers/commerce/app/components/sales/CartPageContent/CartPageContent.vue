@@ -28,7 +28,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { SfButton } from '@storefront-ui/vue';
 import { resolveComponent } from 'vue';
 import { useCart } from '~/composables/useCart';

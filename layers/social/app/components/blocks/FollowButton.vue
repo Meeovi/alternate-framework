@@ -1,5 +1,5 @@
 <template>
-  <v-btn
+  <UButton
     class="follow-btn"
     :class="{ following: !!following }"
     @click="onClick"
@@ -8,7 +8,7 @@
   >
     <span v-if="loading">…</span>
     <span v-else>{{ following ? unfollowLabel : followLabel }}</span>
-  </v-btn>
+  </UButton>
 </template>
 
 <script setup lang="ts">

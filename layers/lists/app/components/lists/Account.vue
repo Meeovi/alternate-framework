@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useContentAdapter } from '~/composables/useContentAdapter'
 
 const { account, list } = defineProps<{
   account: mastodon.v1.Account
@@ -9,12 +10,14 @@ const { account, list } = defineProps<{
 
 cacheAccount(account)
 
+const { useMastoClient } = useContentAdapter()
 const client = useMastoClient()
 
 const isRemoved = ref(false)
 
 async function edit() {
   try {
+    if (!client) return
     if (isRemoved.value)
       await client.v1.lists.$select(list).accounts.create({ accountIds: [account.id] })
     else
@@ -41,7 +44,7 @@ async function edit() {
         :content="isRemoved ? $t('list.add_account') : $t('list.remove_account')"
         :hover="isRemoved ? 'text-green' : 'text-red'"
       >
-        <v-btn
+        <UButton
           text-sm p2 border-1 transition-colors
           border-dark
           bg-base
@@ -49,7 +52,7 @@ async function edit() {
           @click="edit"
         >
           <span :class="isRemoved ? 'i-ri:user-add-line' : 'i-ri:user-unfollow-line'" />
-        </v-btn>
+        </UButton>
       </CommonTooltip>
     </div>
   </div>

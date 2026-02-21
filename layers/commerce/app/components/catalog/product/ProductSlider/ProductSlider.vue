@@ -20,7 +20,11 @@
   </SfScrollable>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { SfScrollable } from '@storefront-ui/vue';
 import type { ProductSliderProps } from './types';
 

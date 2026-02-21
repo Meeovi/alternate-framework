@@ -12,7 +12,11 @@
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import biggestcustomers from '~/components/vendor/sales/biggestcustomers.vue'
 import lowestselling from '~/components/vendor/sales/lowestselling.vue'
 import topcategories from '~/components/vendor/sales/topcategories.vue'

@@ -1,20 +1,20 @@
 <template>
-  <v-card>
-    <v-card-title>Language and Localization</v-card-title>
-    <v-card-text>
-      <v-select
+  <UCard>
+    <template #header>Language and Localization</template>
+    <template #header>
+      <USelect
         v-model="selectedLanguage"
         :items="languages"
         label="Preferred Language"
         item-title="label"
         item-value="value"
         :loading="loading"
-      ></v-select>
-      <v-btn @click="saveLanguagePreference" color="primary" :loading="saving">
+      ></USelect>
+      <UButton @click="saveLanguagePreference" color="primary" :loading="saving">
         Save Language Preference
-      </v-btn>
-    </v-card-text>
-  </v-card>
+      </UButton>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

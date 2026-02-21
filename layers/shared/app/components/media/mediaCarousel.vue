@@ -24,10 +24,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import imageCard from '#shared/app/components/media/imageCard.vue'
-import mediaCard from '#shared/app/components/media/mediaCard.vue'
-import mediaPlayer from '#shared/app/components/media/mediaPlayer.vue'
-import FullscreenMediaModal from '#shared/app/components/media/FullscreenMediaModal.vue'
+import imageCard from './imageCard.vue'
+import mediaCard from './mediaCard.vue'
+import mediaPlayer from './mediaPlayer.vue'
+import FullscreenMediaModal from './fullscreenMediaModal.vue'
 
 const props = defineProps({
   items: { type: Array, default: () => [] },

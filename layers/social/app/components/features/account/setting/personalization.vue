@@ -1,8 +1,8 @@
 <template>
-  <v-card>
-    <v-card-title>Personalization</v-card-title>
-    <v-card-text>
-      <v-select
+  <UCard>
+    <template #header>Personalization</template>
+    <template #header>
+      <USelect
         v-model="preferredCategories"
         :items="categories"
         item-title="title"
@@ -11,8 +11,8 @@
         multiple
         chips
         :loading="!categories.length"
-      ></v-select>
-      <v-select
+      ></USelect>
+      <USelect
         v-model="preferredBrands"
         :items="brands"
         item-title="title"
@@ -21,22 +21,22 @@
         multiple
         chips
         :loading="!brands.length"
-      ></v-select>
+      ></USelect>
       <v-switch
         v-model="enableRecommendations"
         label="Enable Product Recommendations"
       ></v-switch>
-      <v-btn @click="savePersonalization" color="primary" :loading="loading">
+      <UButton @click="savePersonalization" color="primary" :loading="loading">
         Save Preferences
-      </v-btn>
+      </UButton>
       <v-alert v-if="successMessage" type="success" class="mt-3">
         {{ successMessage }}
       </v-alert>
       <v-alert v-if="errorMessage" type="error" class="mt-3">
         {{ errorMessage }}
       </v-alert>
-    </v-card-text>
-  </v-card>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

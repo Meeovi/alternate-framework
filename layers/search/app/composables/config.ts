@@ -6,7 +6,7 @@ export interface SearchConfig {
 }
 
 let config: SearchConfig = {
-  searchProvider: 'searchkit',
+  searchProvider: 'storefront',
   searchUrl: '',
   apiKey: ''
 }

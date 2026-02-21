@@ -1,26 +1,26 @@
 <template>
     <div>
-        <v-btn class="btn btn-sm btn-black-outline display-4" @click="dialog = true" prepend-icon="fas fa-flag"
-            title="Flag this content" variant="flat"></v-btn>
+        <UButton class="btn btn-sm btn-black-outline display-4" @click="dialog = true" prepend-icon="fas fa-flag"
+            title="Flag this content" variant="flat"></UButton>
 
         <v-dialog v-model="dialog" max-width="800" transition="dialog-bottom-transition">
             <template v-slot:default="{ isActive }">
-                <v-card class="pa-4">
+                <UCard class="pa-4">
                     <h1>New Report</h1>
                     <div v-if="formError" class="error">{{ formError }}</div>
                     <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                    <form @submit.prevent="submitForm">
+                    <UForm @submit.prevent="submitForm">
                         <DirectusFormElement v-for="field in reportFields" :key="field.field" :field="field"
                             v-model="form[field.field]" />
-                        <v-btn type="submit">Submit</v-btn>
-                    </form>
+                        <UButton type="submit">Submit</UButton>
+                    </UForm>
 
-                    <v-card-actions>
+                    <template>
                         <v-spacer></v-spacer>
 
-                        <v-btn text="Close" variant="text" @click="isActive.value = false"></v-btn>
-                    </v-card-actions>
-                </v-card>
+                        <UButton text="Close" variant="text" @click="isActive.value = false"></UButton>
+                    </template>
+                </UCard>
             </template>
         </v-dialog>
     </div>

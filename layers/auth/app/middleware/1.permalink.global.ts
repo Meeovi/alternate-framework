@@ -1,3 +1,9 @@
+import { computed } from "vue"
+import { defineNuxtRouteMiddleware, useRuntimeConfig } from "nuxt/app"
+import { useAuth } from "../composables/useAuth"
+import { currentUser, currentServer, loginTo } from "../composables/users"
+import { useMasto } from "../composables/masto"
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
   if (import.meta.server)
     return
@@ -6,12 +12,24 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return
 
   const server = to.params.server as string || currentServer.value
+
+  // Ensure BetterAuth session is loaded so we can rely on the shared
+  // `currentUser` / `currentServer` state provided by the app.
+  try {
+    const auth: any = typeof useAuth !== 'undefined' ? useAuth() : null
+    if (auth && typeof auth.fetchSession === 'function')
+      await auth.fetchSession()
+  }
+  catch (e) {
+    // ignore; best-effort
+  }
+
   const user = currentUser.value
-  const masto = useMasto()
+  const masto = typeof useMasto !== 'undefined' ? useMasto() : null
   if (!user) {
     const fromServer = from.params.server || currentServer.value
-    if (fromServer !== server)
-      loginTo(masto, { server })
+    if (fromServer !== server && typeof loginTo === 'function' && masto)
+      await loginTo(masto, { server })
     return
   }
 
@@ -44,7 +62,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     // If we're logged in, search for the local id the account or status corresponds to
     const paginator = masto.client.value.v2.search.list({ q: `https:/${to.fullPath}`, resolve: true, limit: 1 })
-    const { accounts, statuses } = (await paginator.values().next()).value ?? { accounts: [], statuses: [] }
+    const result = await paginator.values().next()
+    const { accounts, statuses } = result.value ?? { accounts: [], statuses: [] }
 
     if (statuses[0])
       return getStatusRoute(statuses[0])
@@ -58,3 +77,40 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   return '/home'
 })
+
+function getStatusRoute(status: any) {
+  return {
+    name: 'status',
+    params: {
+      server: currentServer.value,
+      account: status.account.acct,
+      status: status.id,
+    },
+  }
+}
+
+function getAccountRoute(account: any) {
+  return {
+    name: 'account',
+    params: {
+      server: currentServer.value,
+      account: account.acct,
+    },
+  }
+}
+
+async function fetchAccountByHandle(handle: string) {
+  const masto = typeof useMasto !== 'undefined' ? useMasto() : null
+  if (!masto)
+    return null
+
+  const paginator = masto.client.value.v2.search.list({
+    q: handle,
+    resolve: true,
+    limit: 1,
+  })
+  const result = await paginator.values().next()
+  const { accounts } = result.value ?? { accounts: [], statuses: [] }
+  return accounts[0] ?? null
+}
+

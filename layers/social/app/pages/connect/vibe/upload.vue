@@ -2,24 +2,24 @@
   <div class="upload-page">
     <h1>Upload Your Vibez 🎥</h1>
 
-    <form @submit.prevent="handleUpload">
+    <UForm @submit.prevent="handleUpload">
       <label>
         Title:
-        <v-text-field v-model="name" type="text" placeholder="My awesome video" />
+        <UInput v-model="name" type="text" placeholder="My awesome video" />
       </label>
 
       <label>
         Video File:
-        <v-text-field type="file" accept="video/*" @change="handleFile" />
+        <UInput type="file" accept="video/*" @change="handleFile" />
       </label>
 
-      <v-btn :disabled="loading">
+      <UButton :disabled="loading">
         {{ loading ? 'Uploading...' : 'Upload Vibez' }}
-      </v-btn>
+      </UButton>
 
       <p v-if="error" class="error">{{ error }}</p>
       <p v-if="success" class="success">Upload successful! 🎉</p>
-    </form>
+    </UForm>
   </div>
 </template>
 

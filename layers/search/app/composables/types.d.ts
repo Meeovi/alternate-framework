@@ -10,3 +10,9 @@ declare module '@searchkit/client' {
   }
   export type SearchkitClientConfig = { url?: string; host?: string }
 }
+
+declare module 'vue-instantsearch/vue3/es' {
+  const InstantSearch: any
+  export default InstantSearch
+  export const AisInstantSearch: any
+}

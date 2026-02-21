@@ -49,7 +49,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { SfButton, SfInput } from '@storefront-ui/vue';
 import { OrderSummaryPropsType } from './types';
 

@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import useVideojs from '~/composables/media/useVideojs'
+import useVideojs from '../../composables/media/useVideojs'
 
 defineOptions({ name: 'VideoPlayer' })
 

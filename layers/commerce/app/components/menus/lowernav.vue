@@ -1,18 +1,18 @@
 <template>
     <div>
-        <v-card variant="text" class="lowerBar">
+        <UCard variant="text" class="lowerBar">
             <v-tabs v-model="tab" :bg-color="lowerbar?.color" :color="lowerbar?.colortext" align-tabs="center">
                 <v-tab>
                     <NuxtLink style="color: black;" to="/">{{ lowerbar?.name }}</NuxtLink>
                 </v-tab>
                 <div v-for="(menu, index) in lowerbar?.menus" :key="index">
                     <v-tab :value="menu?.value">
-                        <v-btn variant="text" :style="`color: ${lowerbar?.colortext} !important`"
-                            :href="menu?.slug">{{ menu?.name }}</v-btn>
+                        <UButton variant="text" :style="`color: ${lowerbar?.colortext} !important`"
+                            :href="menu?.slug">{{ menu?.name }}</UButton>
                     </v-tab>
                 </div>
 
-                <v-btn variant="text" prepend-icon="fas fa-plus" class="lowerBarBtn">
+                <UButton variant="text" prepend-icon="fas fa-plus" class="lowerBarBtn">
                     Add
 
                     <v-menu activator="parent">
@@ -26,9 +26,9 @@
                             </v-list-item>
                         </v-list>
                     </v-menu>
-                </v-btn>
+                </UButton>
             </v-tabs>
-        </v-card>
+        </UCard>
 
         <!--<v-tabs-window v-model="tab">
             <v-tabs-window-item :value="lowerbar?.menus?.[0]?.value">
@@ -48,6 +48,9 @@
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
     import {
         ref
     } from 'vue'

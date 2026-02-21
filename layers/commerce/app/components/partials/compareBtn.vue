@@ -8,6 +8,9 @@
 </template>
 
 <script setup lang="ts">
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
   import { computed } from 'vue';
   import { useCompareStore } from '../../stores/compare';
   import { useNuxtApp } from '#imports';

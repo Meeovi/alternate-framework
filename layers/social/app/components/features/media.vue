@@ -10,17 +10,17 @@
         </v-toolbar>
 
         <!-- NAVIGATION TABS -->
-        <v-card variant="text">
+        <UCard variant="text">
             <v-toolbar :style="`background-color: ${mediaBar?.color}; color: ${mediaBar?.colortext} !important`">
                 <v-tabs v-model="tab" align-tabs="center">
                     <v-tab v-for="(menu, index) in mediaBar?.menus" :key="index" :value="menu.value">
-                        <v-btn variant="text" :style="`color: ${mediaBar?.colortext} !important`">
+                        <UButton variant="text" :style="`color: ${mediaBar?.colortext} !important`">
                             {{ menu.name }}
-                        </v-btn>
+                        </UButton>
                     </v-tab>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <!-- TAB CONTENT -->
         <v-tabs-window v-model="tab">

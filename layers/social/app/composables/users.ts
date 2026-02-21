@@ -13,7 +13,7 @@ import {
   STORAGE_KEY_NOTIFICATION,
   STORAGE_KEY_NOTIFICATION_POLICY,
   STORAGE_KEY_SERVERS,
-} from '~/constants'
+} from '../../../shared/app/constants'
 
 const mock = process.mock
 

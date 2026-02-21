@@ -1,7 +1,7 @@
 <template>
-  <v-card>
-    <v-card-title>Accessibility Settings</v-card-title>
-    <v-card-text>
+  <UCard>
+    <template #header>Accessibility Settings</template>
+    <template #header>
       <v-switch
         v-model="highContrast"
         label="High Contrast Mode"
@@ -14,8 +14,8 @@
         step="2"
         thumb-label
       ></v-slider>
-    </v-card-text>
-  </v-card>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

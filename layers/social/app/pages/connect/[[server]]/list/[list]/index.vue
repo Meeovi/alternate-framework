@@ -2,7 +2,7 @@
 import type { CommonRouteTabOption } from '#shared/types'
 
 definePageMeta({
-  middleware: 'auth',
+  middleware: ['auth'],
 })
 
 const route = useRoute()

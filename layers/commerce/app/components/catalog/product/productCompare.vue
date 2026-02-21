@@ -7,7 +7,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCompareStore } from '~/stores/compare'

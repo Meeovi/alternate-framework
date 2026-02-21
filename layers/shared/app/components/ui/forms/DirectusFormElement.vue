@@ -1,13 +1,13 @@
 <template>
   <div v-if="loading">Loading form…</div>
 
-  <form v-else @submit.prevent="submit" class="space-y-4">
+  <UForm v-else @submit.prevent="submit" class="space-y-4">
     <FormField v-for="field in schema" :key="field.key" :field="field" :form="engine.form" />
 
-    <v-btn type="submit" class="btn-primary">
+    <UButton type="submit" class="btn-primary">
       {{ submitLabel || 'Submit' }}
-    </v-btn>
-  </form>
+    </UButton>
+  </UForm>
 </template>
 
 <script setup lang="ts">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { maxAccountFieldCount } from '~/composables/settings/metadata'
 
 const form = defineModel<{
   fieldsAttributes: NonNullable<mastodon.rest.v1.UpdateCredentialsParams['fieldsAttributes']>
@@ -41,9 +42,9 @@ function chooseIcon(i: number, text: string) {
       <div v-for="i in fieldCount" :key="i" flex="~ gap3" items-center>
         <CommonDropdown ref="dropdown" placement="left">
           <CommonTooltip :content="$t('tooltip.pick_an_icon')">
-            <v-btn type="v-btn" btn-action-icon>
+            <UButton type="v-btn" btn-action-icon>
               <div :class="fieldIcons[i - 1] || 'i-ri:question-mark'" />
-            </v-btn>
+            </UButton>
           </CommonTooltip>
           <template #popper>
             <div flex="~ wrap gap-1" max-w-60 m2 me1>
@@ -53,21 +54,21 @@ function chooseIcon(i: number, text: string) {
                 :content="text"
               >
                 <template v-if="text !== 'Joined'">
-                  <v-btn type="v-btn" btn-action-icon @click="chooseIcon(i - 1, text)">
+                  <UButton type="v-btn" btn-action-icon @click="chooseIcon(i - 1, text)">
                     <div text-xl :class="icon" />
-                  </v-btn>
+                  </UButton>
                 </template>
               </CommonTooltip>
             </div>
           </template>
         </CommonDropdown>
-        <v-text-field
+        <UInput
           v-model="form.fieldsAttributes[i - 1].name"
           type="text" placeholder-text-secondary
           :placeholder="$t('settings.profile.appearance.profile_metadata_label')"
           input-base
         />
-        <v-text-field
+        <UInput
           v-model="form.fieldsAttributes[i - 1].value"
           type="text" placeholder-text-secondary
           :placeholder="$t('settings.profile.appearance.profile_metadata_value')"

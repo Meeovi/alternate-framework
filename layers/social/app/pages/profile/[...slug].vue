@@ -52,11 +52,22 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth, useI18n, useAsyncData, useHead } from '#imports';
-import useLocalePath from '~/composables/useLocalePath';
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-  
+  import {
+    useAuth,
+    useI18n,
+    useAsyncData,
+    useHead
+  } from '#imports';
+  import useLocalePath from '~/composables/useLocalePath';
+  import {
+    onMounted,
+    ref
+  } from 'vue';
+  import {
+    useRoute
+  } from 'vue-router';
+  import Toast from 'vue-toastification';
+
   const route = useRoute();
   const tab = ref(null);
   const {
@@ -64,29 +75,32 @@ import { useRoute } from 'vue-router';
     session,
     client
   } = useAuth()
-  const toast = useToast()
+  const toast = Toast()
   const {
     t
   } = useI18n()
   const localePath = useLocalePath()
   const {
     data: accounts
-  } = await useAsyncData<any>('/accounts', () => client.listAccounts())
+  } = await useAsyncData < any > ('/accounts', () => client.listAccounts())
 
   function hasProvider(provider: string) {
     const list = (accounts.value as any)?.data ?? (accounts.value as any)
-    return list?.some((account: { provider: string }) => account.provider === provider)
+    return list?.some((account: {
+      provider: string
+    }) => account.provider === provider)
   }
 
   const error = useRoute().query?.error
   onMounted(() => {
     if (error) {
-      toast.error({ message: String(error) })
+      toast.error({
+        message: String(error)
+      })
     }
   })
 
   useHead({
     title: user?.value?.username || 'User Profile',
   })
-
 </script>

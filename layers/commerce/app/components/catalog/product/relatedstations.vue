@@ -18,6 +18,9 @@
     ref,
   } from 'vue';
   import stations from './radiostation.vue'
+    import { useCommerceAdapter, useContentAdapter } from '#imports'
+    void useCommerceAdapter()
+    void useContentAdapter()
 
   const model = ref(null);
   const {

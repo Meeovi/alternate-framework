@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ThemeColors } from '~/composables/settings'
+import { useUserSettings, type ThemeColors } from '~/composables/settings'
 import { THEME_COLORS } from '~/constants'
 
 const themes = await import('~/constants/themes.json').then((r) => {
@@ -49,7 +49,7 @@ function updateTheme(theme: ThemeColors) {
       {{ $t('settings.interface.theme_color') }}
     </h2>
     <div flex="~ gap4 wrap" p2 role="group" aria-labelledby="interface-tc">
-      <v-btn
+      <UButton
         v-for="[key, theme] in useThemes" :key="key"
         :style="{
           '--rgb-primary': theme['--rgb-primary'],

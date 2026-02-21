@@ -23,9 +23,13 @@
         </div>
         <p v-else>No stores found.</p>
     </div>
+
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
     import {
         useRuntimeConfig
     } from '#imports';

@@ -2,9 +2,9 @@
   <aside class="w-full md:max-w-[376px]">
     <div class="flex justify-between mb-4">
       <h4 class="px-2 font-bold typography-headline-4">List settings</h4>
-      <button type="button" class="sm:hidden text-neutral-500" aria-label="Close filters panel">
+      <UButton type="button" class="sm:hidden text-neutral-500" aria-label="Close filters panel">
         <SfIconClose />
-      </button>
+      </UButton>
     </div>
     <h5
       class="px-4 py-2 mb-6 font-bold tracking-widest uppercase bg-neutral-100 typography-headline-6 text-neutral-900 md:rounded-md"
@@ -146,7 +146,7 @@
                 :key="id"
                 tag="label"
                 size="sm"
-                class="!items-center py-4 md:py-1 px-1.5 bg-transparent hover:bg-transparent"
+                class="items-center! py-4 md:py-1 px-1.5 bg-transparent hover:bg-transparent"
               >
                 <template #prefix>
                   <SfRadio

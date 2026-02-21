@@ -5,7 +5,7 @@
         </v-col>
 
         <v-col cols="12">
-            <v-select v-model="selectedSize" :items="sizes" label="Select Size" item-value="id" item-title="name" single-line variant="solo" />
+            <USelect v-model="selectedSize" :items="sizes" label="Select Size" item-value="id" item-title="name" single-line variant="solo" />
         </v-col>
     </v-row>
 </template>
@@ -15,6 +15,9 @@ import { ref, onMounted, watch } from 'vue'
 const emit = defineEmits(['size-selected'])
 const sizes = ref([])
 const selectedSize = ref(null)
+        import { useCommerceAdapter, useContentAdapter } from '#imports'
+        void useCommerceAdapter()
+        void useContentAdapter()
 
 
 const nuxtApp = useNuxtApp()

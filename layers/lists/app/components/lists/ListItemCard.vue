@@ -1,5 +1,5 @@
 <template>
-  <v-card class="list-item-card" :class="`item-type-${item.content.type}`">
+  <UCard class="list-item-card" :class="`item-type-${item.content.type}`">
     <!-- Media Item -->
     <div v-if="item.content.type === 'media'">
       <v-img
@@ -14,15 +14,15 @@
         </div>
       </v-img>
       
-      <v-card-title class="text-truncate">{{ item.content.title }}</v-card-title>
-      <v-card-subtitle v-if="item.content.metadata?.artist">
+      <UCard-title class="text-truncate">{{ item.content.title }}</template>
+      <UCard-subtitle v-if="item.content.metadata?.artist">
         {{ item.content.metadata.artist }}
       </v-card-subtitle>
     </div>
 
     <!-- Bookmark Item -->
     <div v-else-if="item.content.type === 'bookmark'">
-      <v-card-title class="d-flex align-center">
+      <UCard-title class="d-flex align-center">
         <v-img
           :src="item.content.favicon || '/default-favicon.png'"
           width="16"
@@ -30,9 +30,9 @@
           class="me-2"
         />
         <span class="text-truncate">{{ item.content.title }}</span>
-      </v-card-title>
+      </template>
       
-      <v-card-text>
+      <template #header>
         <p class="text-body-2 text-truncate">{{ item.content.description }}</p>
         <div class="d-flex align-center mt-2">
           <v-chip
@@ -52,7 +52,7 @@
             Read
           </v-chip>
         </div>
-      </v-card-text>
+      </template>
     </div>
 
     <!-- Product/Wishlist Item -->
@@ -73,8 +73,8 @@
         </div>
       </v-img>
       
-      <v-card-title class="text-truncate">{{ item.content.title }}</v-card-title>
-      <v-card-subtitle v-if="item.content.price">
+      <UCard-title class="text-truncate">{{ item.content.title }}</template>
+      <UCard-subtitle v-if="item.content.price">
         ${{ item.content.price }}
       </v-card-subtitle>
     </div>
@@ -88,15 +88,15 @@
         cover
       />
       
-      <v-card-title class="text-truncate">{{ item.content.title }}</v-card-title>
-      <v-card-text v-if="item.content.description">
+      <UCard-title class="text-truncate">{{ item.content.title }}</template>
+      <UCard-text v-if="item.content.description">
         <p class="text-body-2">{{ item.content.description }}</p>
-      </v-card-text>
+      </template>
     </div>
 
     <!-- Actions -->
-    <v-card-actions>
-      <v-btn
+    <template>
+      <UButton
         v-if="item.content.url"
         :href="item.content.url"
         target="_blank"
@@ -105,13 +105,13 @@
         prepend-icon="mdi-open-in-new"
       >
         Open
-      </v-btn>
+      </UButton>
       
       <v-spacer />
       
       <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn
+          <UButton
             icon="mdi-dots-vertical"
             variant="text"
             size="small"
@@ -122,7 +122,7 @@
         <v-list>
           <v-list-item @click="$emit('edit', item)">
             <template v-slot:prepend>
-              <v-icon icon="mdi-pencil" />
+              <UIcon icon="mdi-pencil" />
             </template>
             <v-list-item-title>Edit</v-list-item-title>
           </v-list-item>
@@ -131,14 +131,14 @@
           
           <v-list-item @click="$emit('delete', item.id)" class="text-error">
             <template v-slot:prepend>
-              <v-icon icon="mdi-delete" color="error" />
+              <UIcon icon="mdi-delete" color="error" />
             </template>
             <v-list-item-title>Delete</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
-    </v-card-actions>
-  </v-card>
+    </template>
+  </UCard>
 </template>
 
 <script setup>
@@ -154,6 +154,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['edit', 'delete'])
+
+const content = useContentAdapter()
 
 const getPriorityColor = (priority) => {
   const colors = {

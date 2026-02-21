@@ -1,5 +1,5 @@
 <template>
-    <v-text-field v-model="query" label="Search media" prepend-inner-icon="mdi-magnify" clearable @input="emitSearch" />
+    <UInput v-model="query" label="Search media" prepend-inner-icon="mdi-magnify" clearable @input="emitSearch" />
 </template>
 
 <script setup>

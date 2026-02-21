@@ -1,14 +1,18 @@
 <template>
   <div>
     <h1>Checkout</h1>
-    <v-btn @click="startCheckout" :disabled="loading || !clientSecret">
+    <UButton @click="startCheckout" :disabled="loading || !clientSecret">
       Pay with Stripe
-    </v-btn>
+    </UButton>
     <StripeCardElement v-if="clientSecret" :clientSecret="clientSecret" @payment-success="onPaymentSuccess" />
   </div>
 </template>
 
-<script setup lang="ts">
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
 import { ref } from 'vue';
 import { v-btn } from '@storefront-ui/vue';
 import { useVendureQuery } from '@/app/composables/useVendureQuery';

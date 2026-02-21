@@ -23,39 +23,31 @@
 </template>
 
 <script setup>
-    import {
-        ref
-    } from 'vue'
-    import listCard from '~/components/related/list.vue'
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
+    const content = useContentAdapter()
 
-    const userStore = useUserStore()
-    const userDisplayName = computed(() => {
-        return userStore.user?.name || userStore.user?.username || 'User'
+    const { data: lists } = await useAsyncData('starredLists', async () => {
+        const opts = { filter: { status: { _eq: 'Public' } } }
+        if (content && typeof content.readItems === 'function') {
+            const resp = await content.readItems('lists', opts)
+            return resp?.data || resp
+        }
+        const { $directus, $readItems } = useNuxtApp()
+        return await $directus.request($readItems('lists', opts))
     })
 
-    const model = ref(null)
-
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
-
-        const {
-        data: starred
-    } = await useAsyncData('starred', () => {
-        return $directus.request($readItems('lists', {
+    const { data: starred } = await useAsyncData('starred', async () => {
+        const opts = {
             filter: {
-                user: {
-                    _eq: userDisplayName.value,
-                },
-                favorite: {
-                    _eq: "yes",
-                }
-            },
-        }))
+                user: { _eq: userDisplayName?.value },
+                favorite: { _eq: 'yes' }
+            }
+        }
+        if (content && typeof content.readItems === 'function') {
+            const resp = await content.readItems('lists', opts)
+            return resp?.data || resp
+        }
+        const { $directus, $readItems } = useNuxtApp()
+        return await $directus.request($readItems('lists', opts))
     })
 
     useHead({

@@ -1,7 +1,7 @@
 <template>
-  <v-card>
-    <v-card-title>Communication Preferences</v-card-title>
-    <v-card-text>
+  <UCard>
+    <template #header>Communication Preferences</template>
+    <template #header>
       <!-- Newsletter subscriptions -->
       <v-list v-if="newsletters.length">
         <v-list-subheader>Your Newsletter Subscriptions:</v-list-subheader>
@@ -22,13 +22,13 @@
         label="Receive SMS Notifications"
         @change="updateSmsNotifications"
       ></v-switch>
-      <v-text-field
+      <UInput
         v-if="smsNotifications.enabled"
         v-model="smsNotifications.phoneNumber"
         label="Phone Number for SMS"
         placeholder="Enter your phone number"
         @input="updateSmsNotifications"
-      ></v-text-field>
+      ></UInput>
 
       <!-- Push Notifications -->
       <v-switch
@@ -37,9 +37,9 @@
         @change="updatePushNotifications"
       ></v-switch>
       
-      <v-btn @click="savePreferences" color="primary">Save Preferences</v-btn>
-    </v-card-text>
-  </v-card>
+      <UButton @click="savePreferences" color="primary">Save Preferences</UButton>
+    </template>
+  </UCard>
 </template>
 
 <script setup>

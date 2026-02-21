@@ -34,10 +34,13 @@
 </template>
 
 <script setup>
-  const props = defineProps({
-    invoice: {
-      type: Object,
-      required: true,
-    },
-  });
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+    const props = defineProps({
+        invoice: {
+            type: Object,
+            required: true,
+        },
+    });
 </script>

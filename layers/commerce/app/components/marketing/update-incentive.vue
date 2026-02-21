@@ -11,21 +11,21 @@
 
             <!-- Current Balance Card -->
             <v-col cols="12" md="6">
-                <v-card class="mb-4">
-                    <v-card-title>Current Balance</v-card-title>
-                    <v-card-text>
+                <UCard class="mb-4">
+                    <template #header>Current Balance</template>
+                    <template #header>
                         <div class="text-h4 text-primary">
                             {{ currentBalance }} Points
                         </div>
-                    </v-card-text>
-                </v-card>
+                    </template>
+                </UCard>
             </v-col>
 
             <!-- Active Rewards Card -->
             <v-col cols="12" md="6">
-                <v-card class="mb-4">
-                    <v-card-title>Active Cart Rewards</v-card-title>
-                    <v-card-text>
+                <UCard class="mb-4">
+                    <template #header>Active Cart Rewards</template>
+                    <template #header>
                         <v-list v-if="activeRewards.length">
                             <v-list-item v-for="reward in activeRewards" :key="reward.cartId">
                                 <v-list-item-content>
@@ -33,66 +33,66 @@
                                     <v-list-item-subtitle>Points: {{ reward.points }}</v-list-item-subtitle>
                                 </v-list-item-content>
                                 <v-list-item-action>
-                                    <v-btn color="error" small @click="removeReward(reward.cartId)"
+                                    <UButton color="error" small @click="removeReward(reward.cartId)"
                                         :loading="removingReward === reward.cartId">
                                         Remove
-                                    </v-btn>
+                                    </UButton>
                                 </v-list-item-action>
                             </v-list-item>
                         </v-list>
                         <v-alert v-else type="info" text="No active rewards"></v-alert>
-                    </v-card-text>
-                </v-card>
+                    </template>
+                </UCard>
             </v-col>
 
             <!-- Modify Rewards Form -->
             <v-col cols="12">
-                <v-card>
-                    <v-card-title>Modify Rewards</v-card-title>
-                    <v-card-text>
+                <UCard>
+                    <template #header>Modify Rewards</template>
+                    <template #header>
                         <v-form ref="form" v-model="valid" @submit.prevent="handleModify">
                             <v-row>
                                 <v-col cols="12" md="6">
-                                    <v-select v-model="formData.cartId" :items="activeRewards" item-text="cartId"
+                                    <USelect v-model="formData.cartId" :items="activeRewards" item-text="cartId"
                                         item-value="cartId" label="Select Cart" required
-                                        :rules="[v => !!v || 'Cart is required']"></v-select>
+                                        :rules="[v => !!v || 'Cart is required']"></USelect>
                                 </v-col>
 
                                 <v-col cols="12" md="6">
-                                    <v-text-field v-model="formData.points" label="New Points Amount" type="number"
+                                    <UInput v-model="formData.points" label="New Points Amount" type="number"
                                         required :rules="[
                         v => !!v || 'Points are required',
                         v => v >= 0 || 'Points must be non-negative'
-                      ]"></v-text-field>
+                      ]"></UInput>
                                 </v-col>
 
                                 <v-col cols="12">
-                                    <v-textarea v-model="formData.reason" label="Modification Reason" rows="3" required
-                                        :rules="[v => !!v || 'Reason is required']"></v-textarea>
+                                    <UTextarea v-model="formData.reason" label="Modification Reason" rows="3" required
+                                        :rules="[v => !!v || 'Reason is required']"></UTextarea>
                                 </v-col>
                             </v-row>
 
                             <!-- Action Buttons -->
                             <v-row>
                                 <v-col cols="12" class="text-right">
-                                    <v-btn color="error" class="mr-4" @click="resetForm">
+                                    <UButton color="error" class="mr-4" @click="resetForm">
                                         Reset
-                                    </v-btn>
-                                    <v-btn color="primary" type="submit" :loading="loading" :disabled="!valid">
+                                    </UButton>
+                                    <UButton color="primary" type="submit" :loading="loading" :disabled="!valid">
                                         Update Rewards
-                                    </v-btn>
+                                    </UButton>
                                 </v-col>
                             </v-row>
                         </v-form>
-                    </v-card-text>
-                </v-card>
+                    </template>
+                </UCard>
             </v-col>
 
             <!-- Modification History -->
             <v-col cols="12">
-                <v-card>
-                    <v-card-title>Modification History</v-card-title>
-                    <v-card-text>
+                <UCard>
+                    <template #header>Modification History</template>
+                    <template #header>
                         <v-data-table :headers="historyHeaders" :items="modificationHistory" :loading="loadingHistory"
                             class="elevation-1">
                             <template v-slot:item.points_change="{ item }">
@@ -104,8 +104,8 @@
                                 {{ formatDate(item.modified_at) }}
                             </template>
                         </v-data-table>
-                    </v-card-text>
-                </v-card>
+                    </template>
+                </UCard>
             </v-col>
         </v-row>
 
@@ -113,15 +113,19 @@
         <v-snackbar v-model="snackbar.show" :color="snackbar.color">
             {{ snackbar.message }}
             <template v-slot:action="{ attrs }">
-                <v-btn text v-bind="attrs" @click="snackbar.show = false">
+                <UButton text v-bind="attrs" @click="snackbar.show = false">
                     Close
-                </v-btn>
+                </UButton>
             </template>
         </v-snackbar>
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import {
         ref,
         onMounted

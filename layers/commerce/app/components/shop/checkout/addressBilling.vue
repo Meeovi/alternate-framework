@@ -25,7 +25,7 @@
       <h2 class="text-h4 font-weight-bold mb-4">Billing Address</h2>
       <v-row>
         <v-col cols="12" md="6">
-          <v-text-field
+          <UInput
             v-model="billingAddress.fullName"
             :error-messages="errors.fullName"
             label="Full Name"
@@ -33,10 +33,10 @@
             autocomplete="name"
             required
             variant="outlined"
-          ></v-text-field>
+          ></UInput>
         </v-col>
         <v-col cols="12" md="6">
-          <v-text-field
+          <UInput
             v-model="billingAddress.phoneNumber"
             :error-messages="errors.phoneNumber"
             label="Phone"
@@ -45,10 +45,10 @@
             autocomplete="tel"
             required
             variant="outlined"
-          ></v-text-field>
+          ></UInput>
         </v-col>
         <v-col cols="12">
-          <v-select
+          <USelect
             v-model="billingAddress.countryCode"
             :error-messages="errors.countryCode"
             label="Country"
@@ -60,10 +60,10 @@
             required
             variant="outlined"
             @update:model-value="updateRegions"
-          ></v-select>
+          ></USelect>
         </v-col>
         <v-col cols="12" md="8">
-          <v-text-field
+          <UInput
             v-model="billingAddress.streetLine1"
             :error-messages="errors.streetLine1"
             label="Street Address 1"
@@ -72,19 +72,19 @@
             required
             variant="outlined"
             hint="Street address or P.O. Box"
-          ></v-text-field>
+          ></UInput>
         </v-col>
         <v-col cols="12" md="4">
-          <v-text-field
+          <UInput
             v-model="billingAddress.streetLine2"
             label="Street Address 2"
             name="streetLine2"
             variant="outlined"
             hint="Optional"
-          ></v-text-field>
+          ></UInput>
         </v-col>
         <v-col cols="12" md="4">
-          <v-text-field
+          <UInput
             v-model="billingAddress.city"
             :error-messages="errors.city"
             label="City"
@@ -92,10 +92,10 @@
             autocomplete="address-level2"
             required
             variant="outlined"
-          ></v-text-field>
+          ></UInput>
         </v-col>
         <v-col cols="12" md="4">
-          <v-select
+          <USelect
             v-model="billingAddress.province"
             :error-messages="errors.province"
             label="State/Province"
@@ -106,10 +106,10 @@
             autocomplete="address-level1"
             required
             variant="outlined"
-          ></v-select>
+          ></USelect>
         </v-col>
         <v-col cols="12" md="4">
-          <v-text-field
+          <UInput
             v-model="billingAddress.postalCode"
             :error-messages="errors.postalCode"
             label="ZIP/Postal Code"
@@ -118,38 +118,42 @@
             autocomplete="postal-code"
             required
             variant="outlined"
-          ></v-text-field>
+          ></UInput>
         </v-col>
         <v-col cols="12">
-          <v-checkbox
+          <UCheckbox
             v-model="useAsShippingAddress"
             label="Use as shipping address"
             name="useAsShippingAddress"
-          ></v-checkbox>
+          ></UCheckbox>
         </v-col>
         <v-col cols="12" class="d-flex justify-end gap-4">
-          <v-btn
+          <UButton
             variant="outlined"
             type="reset"
             color="primary"
             @click="handleReset"
           >
             Clear all
-          </v-btn>
-          <v-btn
+          </UButton>
+          <UButton
             color="primary"
             type="submit"
             :loading="loading"
             :disabled="loading"
           >
             Save
-          </v-btn>
+          </UButton>
         </v-col>
       </v-row>
     </v-form>
   </template>
   
-  <script setup lang="ts">
+  
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
   import { ref, reactive, onMounted, onErrorCaptured } from 'vue';
   import { useVendureMutation } from '../../composables/useVendureMutation';
   import setOrderBillingAddressMutation from '#graphql/app/commerce/mutations/setOrderBillingAddress.gql';

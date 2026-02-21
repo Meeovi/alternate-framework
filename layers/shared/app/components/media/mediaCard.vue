@@ -1,28 +1,28 @@
 <template>
-    <v-card class="media-card" elevation="2" rounded="lg" @click="emit('open', media)">
+    <UCard class="media-card" elevation="2" rounded="lg" @click="emit('open', media)">
         <!-- THUMBNAIL -->
         <div class="thumb-wrapper">
             <component :is="thumbnailComponent" :media="media" class="thumb" />
         </div>
 
         <!-- TITLE -->
-        <v-card-text class="py-2 text-truncate">
+        <template #header class="py-2 text-truncate">
             {{ media?.title || media?.filename_download || 'Untitled file' }}
-        </v-card-text>
+        </template>
 
         <!-- OPTIONAL ACTIONS -->
-        <v-card-actions v-if="$slots.actions">
+        <template v-if="$slots.actions">
             <slot name="actions" />
-        </v-card-actions>
-    </v-card>
+        </template>
+    </UCard>
 </template>
 
 <script setup>
     import {
         computed
     } from 'vue'
-    import imageCard from '#shared/app/components/media/imageCard.vue'
-    import mediaPlayer from '#shared/app/components/media/mediaPlayer.vue'
+    import imageCard from './imageCard.vue'
+    import mediaPlayer from './mediaPlayer.vue'
 
     const props = defineProps({
         media: {
@@ -41,7 +41,7 @@
         return {
             template: `
       <div class="generic-thumb">
-        <v-icon size="48">mdi-file</v-icon>
+        <UIcon size="48">mdi-file</UIcon>
       </div>
     `,
         }

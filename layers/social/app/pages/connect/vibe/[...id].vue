@@ -1,12 +1,12 @@
 <template>
   <v-container class="py-10">
-    <v-card elevation="2" class="pa-6">
-      <v-card-title>{{ video?.title }}</v-card-title>
-      <v-card-subtitle>
+    <UCard elevation="2" class="pa-6">
+      <template #header>{{ video?.title }}</template>
+      <UCard-subtitle>
         {{ video?.visibility }} • {{ formatDuration(video?.duration) }} • 👁️ {{ video?.view_count }}
       </v-card-subtitle>
 
-      <v-card-text>
+      <template #header>
         <video
           v-if="video?.status === 'ready'"
           controls
@@ -25,34 +25,34 @@
           {{ tag.name }}
         </v-chip>
 
-        <v-btn
+        <UButton
           icon
           @click="toggleLike"
           :color="liked ? 'red' : 'grey'"
           class="ml-2"
         >
-          <v-icon>{{ liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
-        </v-btn>
+          <UIcon>{{ liked ? 'mdi-heart' : 'mdi-heart-outline' }}</UIcon>
+        </UButton>
         <span>{{ reactionCount }}</span>
-      </v-card-text>
+      </template>
 
       <v-divider class="my-6" />
       <h2 class="text-h6 mb-4">💬 Comments</h2>
 
-      <v-textarea
+      <UTextarea
         v-model="newComment"
         label="Add a comment"
         auto-grow
         outlined
       />
-      <v-btn color="primary" class="mt-2" @click="postComment">Post</v-btn>
+      <UButton color="primary" class="mt-2" @click="postComment">Post</UButton>
 
       <v-list>
         <v-list-item v-for="comment in comments" :key="comment.id">
           <v-list-item-content>
             <v-list-item-title>{{ comment.content }}</v-list-item-title>
             <v-list-item-subtitle>{{ formatDate(comment.created_at) }}</v-list-item-subtitle>
-            <v-btn size="small" @click="replyTo(comment)">Reply</v-btn>
+            <UButton size="small" @click="replyTo(comment)">Reply</UButton>
 
             <v-list-item
               v-for="reply in comment.replies"
@@ -67,14 +67,14 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </v-card>
+    </UCard>
 
     <!-- Floating Emoji Bar -->
     <v-bottom-navigation grow fixed app>
-      <v-btn icon @click="react('🔥')"><span>🔥</span></v-btn>
-      <v-btn icon @click="react('😂')"><span>😂</span></v-btn>
-      <v-btn icon @click="react('❤️')"><span>❤️</span></v-btn>
-      <v-btn icon @click="react('👏')"><span>👏</span></v-btn>
+      <UButton icon @click="react('🔥')"><span>🔥</span></UButton>
+      <UButton icon @click="react('😂')"><span>😂</span></UButton>
+      <UButton icon @click="react('❤️')"><span>❤️</span></UButton>
+      <UButton icon @click="react('👏')"><span>👏</span></UButton>
     </v-bottom-navigation>
   </v-container>
 </template>

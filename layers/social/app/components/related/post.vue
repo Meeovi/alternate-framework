@@ -2,8 +2,8 @@
     <div>
         <div>
             <div class="wrap feedPost">
-                <v-card class="card__wrap" height="550">
-                    <v-card-title class="postTitle">{{ post?.title }}</v-card-title>
+                <UCard class="card__wrap" height="550">
+                    <UCard-title class="postTitle">{{ post?.title }}</template>
                     <div class="image">
                         <div v-if="post?.file">
                             <video :src="getAssetUrl(post?.file)"></video>
@@ -32,23 +32,23 @@
                         <v-spacer></v-spacer>
                         
                         <NuxtLink v-if="post?.author?.avatar" :to="`/user/${post?.author?.id}`" class="postAvatar">
-                            <v-avatar :image="getAssetUrl(post?.author?.avatar)" size="x-small"></v-avatar>
+                            <UAvatar :image="getAssetUrl(post?.author?.avatar)" size="x-small"></UAvatar>
                         </NuxtLink>
 
                         <NuxtLink v-else :to="`/user/${post?.author?.id}`" class="postAvatar">
-                            <v-avatar image="/images/background4.jpg" size="x-small"></v-avatar>
+                            <UAvatar image="/images/background4.jpg" size="x-small"></UAvatar>
                         </NuxtLink>
                     </v-toolbar>
 
                     <p v-dompurify-html="post?.content" class="postContent"></p>
 
-                    <v-card-actions>
+                    <template>
                         <!--Reactions-->
                         <v-col class="mbr-section-btn">
                             <v-menu>
                                 <template v-slot:activator="{ props }">
-                                    <v-btn class="btn btn-sm btn-black-outline display-4" icon="fas fa-thumbs-up"
-                                        v-bind="props" variant="text" size="small"></v-btn>
+                                    <UButton class="btn btn-sm btn-black-outline display-4" icon="fas fa-thumbs-up"
+                                        v-bind="props" variant="text" size="small"></UButton>
                                 </template>
                                 <v-list>
                                     <reactions :contentId="post?.reactions?.reactions_id" :contentType="post?.type" />
@@ -58,9 +58,9 @@
 
                         <!--Comments-->
                         <v-col class="mbr-section-btn">
-                            <v-btn prepend-icon="fas fa-comment" title="Comment on this post" variant="text"
+                            <UButton prepend-icon="fas fa-comment" title="Comment on this post" variant="text"
                                 class="btn btn-sm btn-black-outline display-4"
-                                :href="`/connect/post/${post?.slug}`"></v-btn>
+                                :href="`/connect/post/${post?.slug}`"></UButton>
                         </v-col>
 
                         <v-col class="mbr-section-btn">
@@ -71,8 +71,8 @@
                         <v-col>
                             <share />
                         </v-col>
-                    </v-card-actions>
-                </v-card>
+                    </template>
+                </UCard>
             </div>
         </div>
     </div>

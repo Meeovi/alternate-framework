@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FontSize } from '~/composables/settings'
+import { useUserSettings, type FontSize } from '~/composables/settings'
 import { DEFAULT_FONT_SIZE } from '~/constants'
 
 const userSettings = useUserSettings()
@@ -20,7 +20,7 @@ function setFontSize(e: Event) {
     <div flex items-center space-x-4 select-settings>
       <span text-xs text-secondary>Aa</span>
       <div flex-1 relative flex items-center>
-        <v-text-field
+        <UInput
           aria-labelledby="interface-fs"
           :value="sizes.indexOf(userSettings.fontSize)"
           :aria-valuetext="`${userSettings.fontSize}${userSettings.fontSize === DEFAULT_FONT_SIZE ? ` ${$t('settings.interface.default')}` : ''}`"
@@ -48,7 +48,7 @@ function setFontSize(e: Event) {
             />
           </div>
         </div>
-        </v-text-field>
+        </UInput>
       </div>
       <span text-xl text-secondary>Aa</span>
     </div>

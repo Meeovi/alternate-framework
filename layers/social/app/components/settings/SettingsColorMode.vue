@@ -32,7 +32,7 @@ const modes = [
       {{ $t('settings.interface.color_mode') }}
     </h2>
     <div flex="~ gap4 wrap" w-full role="group" aria-labelledby="interface-cm">
-      <v-btn
+      <UButton
         v-for="{ icon, label, mode } in modes"
         :key="mode"
         type="v-btn"
@@ -43,7 +43,7 @@ const modes = [
       >
         <span :class="`${icon}`" />
         {{ $t(label) }}
-      </v-btn>
+      </UButton>
     </div>
   </section>
 </template>

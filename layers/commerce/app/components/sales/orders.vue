@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <v-card variant="text">
+        <UCard variant="text">
             <v-toolbar :style="`background-color: ${orderBar?.color}; color: ${orderBar?.colortext} !important`">
                 <v-toolbar-title>{{ orderBar?.name }}</v-toolbar-title>
 
@@ -22,13 +22,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in orderBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text"
-                                :style="`color: ${orderBar?.colortext} !important`">{{ menu?.name }}</v-btn>
+                            <UButton variant="text"
+                                :style="`color: ${orderBar?.colortext} !important`">{{ menu?.name }}</UButton>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <v-tabs-window v-model="tab">
             <!--Orders-->
@@ -155,7 +155,11 @@
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import {
         ref,
         computed

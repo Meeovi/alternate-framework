@@ -56,7 +56,7 @@ const fileInputValue = computed({
 
 <template>
     <div :style="'width: ' + fieldWidth + '; display:flex; align-items:center; gap:8px'">
-        <v-file-input 
+        <UFileUpload 
             ref="fileInput"
             clearable 
             density="compact" 

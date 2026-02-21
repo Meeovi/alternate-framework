@@ -1,7 +1,7 @@
 <template>
-    <v-btn :color="color" class="m-btn" v-bind="$attrs">
+    <UButton :color="color" class="m-btn" v-bind="$attrs">
         <slot />
-    </v-btn>
+    </UButton>
 </template>
 
 <script setup lang="ts">

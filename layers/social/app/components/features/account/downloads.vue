@@ -2,7 +2,7 @@
   <div>
     <v-toolbar color="transparent" density="compact" title="My Downloads">
       <v-spacer />
-      <v-text-field
+      <UInput
         v-model="search"
         append-icon="fas:fa fa-search"
         label="Search Downloads"
@@ -13,7 +13,7 @@
       />
     </v-toolbar>
 
-    <v-card>
+    <UCard>
       <v-table>
         <thead>
           <tr>
@@ -40,7 +40,7 @@
             </td>
             <td>{{ download.downloads_remaining }}</td>
             <td>
-              <v-btn
+              <UButton
                 v-if="download.status === 'available'"
                 color="primary"
                 size="small"
@@ -48,7 +48,7 @@
                 :loading="downloading === download.id"
               >
                 Download
-              </v-btn>
+              </UButton>
             </td>
           </tr>
         </tbody>
@@ -59,7 +59,7 @@
         :length="totalPages"
         @update:model-value="loadDownloads"
       />
-    </v-card>
+    </UCard>
   </div>
 </template>
 

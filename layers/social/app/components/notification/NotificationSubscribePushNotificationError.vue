@@ -23,14 +23,14 @@ const modelValue = defineModel<boolean>({ required: true })
         <p>{{ title ?? $t('settings.notifications.push_notifications.subscription_error.title') }}</p>
       </div>
       <CommonTooltip placement="bottom" :content="$t('settings.notifications.push_notifications.subscription_error.clear_error')">
-        <v-btn
+        <UButton
           flex rounded-4 p1
           hover:bg-active cursor-pointer transition-100
           :aria-label="$t('settings.notifications.push_notifications.subscription_error.clear_error')"
           @click="modelValue = false"
         >
           <span aria-hidden="true" w="1.75em" h="1.75em" i-ri:close-line />
-        </v-btn>
+        </UButton>
       </CommonTooltip>
     </header>
     <p>{{ message }}</p>

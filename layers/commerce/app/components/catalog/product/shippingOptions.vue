@@ -5,14 +5,17 @@
         </v-col>
 
         <v-col cols="12">
-            <v-select v-model="selected" :items="shippingOptions" item-title="name" item-value="id"
+            <USelect v-model="selected" :items="shippingOptions" item-title="name" item-value="id"
                 label="Select Delivery Method" single-line variant="solo" :loading="loading"
-                :disabled="loading || shippingOptions.length === 0"></v-select>
+                :disabled="loading || shippingOptions.length === 0"></USelect>
         </v-col>
     </v-row>
 </template>
 
 <script setup>
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { onMounted, watch } from 'vue'
 import { useShippingSelection } from '~/app/composables/cart/useShippingSelection'
 

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
 import { useVendureQuery } from "../../../composables/useVendureQuery";
 import getProductReviewsQuery from "#graphql/app/commerce/queries/getProductReviews.gql";
 

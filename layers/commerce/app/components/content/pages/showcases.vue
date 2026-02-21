@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card variant="text">
+        <UCard variant="text">
             <v-toolbar
                 :style="`background-color: ${showcasePage?.color}; color: ${showcasePage?.colortext} !important`">
                 <v-toolbar-title>{{ showcasePage?.name }}</v-toolbar-title>
@@ -19,7 +19,7 @@
                     <component :is="contentComponents[index] || null" />
                 </v-tabs-window-item>
             </v-tabs-window>
-        </v-card>
+        </UCard>
 
         <section data-bs-version="5.1" class="features03 flavorm5 cid-uHg490M3EL" id="features03-at">
             <div class="container">
@@ -33,7 +33,11 @@
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import createshowcase from '@/components/catalog/product/add-showcase.vue'
     import listShowcases from '#lists/app/components/related/list.vue'
 

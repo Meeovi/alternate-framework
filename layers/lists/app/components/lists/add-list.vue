@@ -2,24 +2,24 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" class="rightAddBtn">
-          <v-icon start icon="fas:fa fa-plus"></v-icon>Create a List
-        </v-btn>
+        <UButton v-bind="props" class="rightAddBtn">
+          <UIcon start icon="fas:fa fa-plus"></UIcon>Create a List
+        </UButton>
       </template>
-      <v-card class="b-1">
-        <v-card-title>
+      <UCard class="b-1">
+        <template #header>
           <h3>Create New List</h3>
-        </v-card-title>
+        </template>
 
-        <v-card-text>
+        <template #header>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <form @submit.prevent="submitForm">
+          <UForm @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in listFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <v-btn type="submit">Submit</v-btn>
-          </form>
-        </v-card-text>
-      </v-card>
+            <UButton type="submit">Submit</UButton>
+          </UForm>
+        </template>
+      </UCard>
     </v-dialog>
   </v-row>
 </template>
@@ -30,9 +30,13 @@ import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormEle
 import { useDirectusForm } from '../../composables/globals/useDirectusForm'
 
 const dialog = ref(false)
-const { $directus, $readFieldsByCollection } = useNuxtApp()
+const content = useContentAdapter()
 
 const { data, error } = await useAsyncData('listsFields', async () => {
+  if (content && typeof content.readFieldsByCollection === 'function') {
+    return await content.readFieldsByCollection('lists')
+  }
+  const { $directus, $readFieldsByCollection } = useNuxtApp()
   return $directus.request($readFieldsByCollection('lists'))
 })
 

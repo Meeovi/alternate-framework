@@ -1,22 +1,22 @@
 <template>
     <v-dialog max-width="500">
         <template v-slot:activator="{ props: activatorProps }">
-            <v-btn color="primary" v-bind="activatorProps" icon="fas fa-gear" size="medium"
-                title="Upload Media"></v-btn>
+            <UButton color="primary" v-bind="activatorProps" icon="fas fa-gear" size="medium"
+                title="Upload Media"></UButton>
         </template>
 
         <template v-slot:default="{ isActive }">
-            <v-card title="Dialog">
-                <v-card-text>
+            <UCard title="Dialog">
+                <template #header>
                     <div v-if="formError" class="error">{{ formError }}</div>
                     <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                    <form @submit.prevent="submitForm">
+                    <UForm @submit.prevent="submitForm">
                         <DirectusFormElement v-for="field in mediaFields" :key="field.field" :field="field"
                             v-model="form[field.field]" />
-                        <v-btn type="submit">Post</v-btn>
-                    </form>
-                </v-card-text>
-            </v-card>
+                        <UButton type="submit">Post</UButton>
+                    </UForm>
+                </template>
+            </UCard>
         </template>
     </v-dialog>
 </template>
@@ -25,11 +25,9 @@
     import {
         ref
     } from 'vue'
-    import DirectusFormElement from '~/components/ui/forms/DirectusFormElement.vue'
-    import {
-        useDirectusForm
-    } from '~/composables/globals/useDirectusForm'
-    import { useDirectusSchema } from '~/composables/globals/useDirectusSchema'
+    import DirectusFormElement from '../ui/forms/DirectusFormElement.vue'
+        import { useDirectusForm } from '../../composables/useDirectusForm'
+        import { useDirectusSchema } from '../../composables/useDirectusSchema'
     const dialog = ref(false)
     const {
         data,

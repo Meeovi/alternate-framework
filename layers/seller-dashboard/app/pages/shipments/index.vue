@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Shipments</h2>
-    <v-btn @click="refresh">Refresh</v-btn>
+    <UButton @click="refresh">Refresh</UButton>
     <ul>
       <li v-for="s in shipments" :key="s.id">Shipment #{{ s.id }} — {{ s.status }}</li>
     </ul>

@@ -1,6 +1,6 @@
 {
   "name": "@mframework/core",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "The core and robust API module serving as a wrapper around Prisma for the M Framework.",
   "license": "MIT",
   "main": "dist/index.js",

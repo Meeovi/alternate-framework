@@ -12,8 +12,8 @@
                                 @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                        size="48"></v-icon>
+                                    <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                        size="48"></UIcon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -31,8 +31,8 @@
                                 @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                        size="48"></v-icon>
+                                    <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                        size="48"></UIcon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -43,7 +43,11 @@
     </div>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import productCard from '~/components/catalog/product/productCard.vue'
     import {
         ref,

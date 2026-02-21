@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card variant="text" class="lowerBar">
+        <UCard variant="text" class="lowerBar">
             <v-toolbar :style="`background-color: transparent; color: black !important`">
                 <v-toolbar-title>Your Events</v-toolbar-title>
 
@@ -8,12 +8,12 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in eventBar?.submenus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text" :style="`color: black !important`">{{ menu?.name }}</v-btn>
+                            <UButton variant="text" :style="`color: black !important`">{{ menu?.name }}</UButton>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </v-card>
+        </UCard>
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="eventBar?.submenus?.[0]?.value">

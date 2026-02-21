@@ -2,24 +2,24 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" class="rightAddBtn">
-          <v-icon start icon="fas:fa fa-plus"></v-icon>Create a Space
-        </v-btn>
+        <UButton v-bind="props" class="rightAddBtn">
+          <UIcon start icon="fas:fa fa-plus"></UIcon>Create a Space
+        </UButton>
       </template>
-      <v-card class="b-1">
-        <v-card-title>
+      <UCard class="b-1">
+        <template #header>
           <h3>Create New Space</h3>
-        </v-card-title>
+        </template>
 
-        <v-card-text>
+        <template #header>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <form @submit.prevent="submitForm">
+          <UForm @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in spaceFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <v-btn type="submit">Create</v-btn>
-          </form>
-        </v-card-text>
-      </v-card>
+            <UButton type="submit">Create</UButton>
+          </UForm>
+        </template>
+      </UCard>
     </v-dialog>
   </v-row>
 </template>

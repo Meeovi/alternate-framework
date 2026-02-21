@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <UCard>
         <v-toolbar color="" title="Stores"></v-toolbar>
         <v-tabs v-model="tab" bg-color="primary">
             <v-tab value="one">My Stores</v-tab>
@@ -7,7 +7,7 @@
             <v-tab value="three">Item Three</v-tab>-->
         </v-tabs>
 
-        <v-card-text>
+        <template #header>
             <v-tabs-window v-model="tab">
                 <v-tabs-window-item value="one">
                     One
@@ -21,11 +21,15 @@
                     Three
                 </v-tabs-window-item>
             </v-tabs-window>
-        </v-card-text>
-    </v-card>
+        </template>
+    </UCard>
 </template>
 
-<script setup>
+
+import { useCommerceAdapter, useContentAdapter } from '#imports'
+void useCommerceAdapter()
+void useContentAdapter()
+
     import {
         ref
     } from 'vue'
