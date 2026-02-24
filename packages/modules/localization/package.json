@@ -22,11 +22,12 @@
     "cleanup-translations": "tsx src/scripts/cleanup-translations.ts",
     "prepare-translation-status": "tsx src/scripts/prepare-translation-status.ts",
     "generate-pwa-icons": "tsx src/scripts/generate-pwa-icons.ts",
-    "postinstall": "tsx src/scripts/prepare-translation-status.ts"
+    "postinstall": "node -e \"try{require('flat')}catch(e){console.warn('Skipping @mframework/localization postinstall (missing deps)'); process.exit(0)}\" && node -e \"try{require('tsx')}catch(e){console.warn('Skipping @mframework/localization postinstall (tsx missing)'); process.exit(0)}\" && tsx src/scripts/prepare-translation-status.ts"
   },
   "dependencies": {
     "@intlify/core-base": "^11.2.8",
     "@nuxtjs/i18n": "^10.2.3",
+    "flat": "^6.0.1",
     "iso-639-1": "^3.0.0"
   }
 }
