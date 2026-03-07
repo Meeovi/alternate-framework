@@ -1,4 +1,4 @@
-import type { BlockButton } from './block-button.js';
+import type { BlockButton } from './block-button';
 
 export interface BlockButtonGroup {
 	id: string;

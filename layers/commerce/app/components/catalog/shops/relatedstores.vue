@@ -30,7 +30,7 @@ void useContentAdapter()
     import {
         ref,
         onMounted
-    } from 'vue'
+    } from '#imports'
     import store from '~/components/catalog/product/stores.vue'
 
     const model = ref(null)

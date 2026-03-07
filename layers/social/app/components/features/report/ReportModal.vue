@@ -97,9 +97,9 @@ function resetModal() {
         <b text-primary>@{{ account.acct }}</b>
       </i18n-t>
     </h2>
-    <UButton ref="dismissButton" btn-action-icon absolute top--8 right-0 m1 :aria-label="$t('action.close')" @click="emit('close')">
+    <v-btn ref="dismissButton" btn-action-icon absolute top--8 right-0 m1 :aria-label="$t('action.close')" @click="emit('close')">
       <div i-ri:close-line />
-    </UButton>
+    </v-btn>
 
     <template v-if="step === 'selectCategory'">
       <h1 mxa text-4xl mb4>
@@ -170,13 +170,13 @@ function resetModal() {
         </div>
       </div>
 
-      <UButton
+      <v-btn
         btn-solid mxa mt-10
         :disabled="!reportReason || (reportReason === 'violation' && selectedRuleIds.length < 1)"
         @click="categoryChosen()"
       >
         {{ $t('action.next') }}
-      </UButton>
+      </v-btn>
     </template>
 
     <template v-else-if="step === 'selectStatuses'">
@@ -203,12 +203,12 @@ function resetModal() {
           </td>
         </tr>
       </table>
-      <UButton
+      <v-btn
         btn-solid mxa mt-5
         @click="submitReport()"
       >
         {{ $t('report.submit') }}
-      </UButton>
+      </v-btn>
     </template>
 
     <template v-else-if="step === 'furtherActions'">
@@ -220,32 +220,32 @@ function resetModal() {
       </p>
 
       <div v-if="useRelationship(account).value?.following">
-        <UButton btn-outline mxa mt-4 mb-2 @click="unfollow()">
+        <v-btn btn-outline mxa mt-4 mb-2 @click="unfollow()">
           <i18n-t keypath="menu.unfollow_account">
             <b>@{{ account.acct }}</b>
           </i18n-t>
-        </UButton><br>
+        </v-btn><br>
         {{ $t('report.unfollow_desc') }}
       </div>
       <div v-if="!useRelationship(account).value?.muting">
-        <UButton btn-outline mxa mt-4 mb-2 @click="mute()">
+        <v-btn btn-outline mxa mt-4 mb-2 @click="mute()">
           <i18n-t keypath="menu.mute_account">
             <b>@{{ account.acct }}</b>
           </i18n-t>
-        </UButton><br>
+        </v-btn><br>
         {{ $t('report.mute_desc') }}
       </div>
       <div v-if="!useRelationship(account).value?.blocking">
-        <UButton btn-outline mxa mt-4 mb-2 @click="block()">
+        <v-btn btn-outline mxa mt-4 mb-2 @click="block()">
           <i18n-t keypath="menu.block_account">
             <b>@{{ account.acct }}</b>
           </i18n-t>
-        </UButton><br>
+        </v-btn><br>
         {{ $t('report.block_desc') }}
       </div>
-      <UButton btn-solid mxa mt-10 @click="emit('close')">
+      <v-btn btn-solid mxa mt-10 @click="emit('close')">
         {{ $t('action.done') }}
-      </UButton>
+      </v-btn>
     </template>
   </div>
 </template>

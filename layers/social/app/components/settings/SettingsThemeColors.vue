@@ -49,7 +49,7 @@ function updateTheme(theme: ThemeColors) {
       {{ $t('settings.interface.theme_color') }}
     </h2>
     <div flex="~ gap4 wrap" p2 role="group" aria-labelledby="interface-tc">
-      <UButton
+      <v-btn
         v-for="[key, theme] in useThemes" :key="key"
         :style="{
           '--rgb-primary': theme['--rgb-primary'],

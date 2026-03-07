@@ -1,9 +1,9 @@
 import { Ref } from 'vue'
-import type { Product } from '../_types'
-import type { Maybe } from '../_types'
+import type { SfProduct } from '../models'
+import type { Maybe } from '../models'
 
 export type GetProducts = {
-  items: Product[]
+  items: SfProduct[]
   total?: number
 }
 
@@ -20,3 +20,7 @@ export interface UseProducts {
 }
 
 export type UseProductsReturn = () => UseProducts
+
+export interface ProductProvider {
+  getProducts(): Promise<GetProducts>
+}

@@ -13,7 +13,7 @@
       >
         <SfIconRemove />
       </SfButton>
-      <UInput
+      <v-text-field
         :id="inputId"
         v-model="count"
         type="number"

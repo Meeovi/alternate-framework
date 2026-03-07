@@ -19,7 +19,7 @@ function emojiCode(emoji: mastodon.v1.FedibirdEmojiReaction) {
 
 <template>
   <div flex flex-wrap gap-1 class="status-actions">
-    <UButton
+    <v-btn
       v-for="(emoji, i) in status.emojiReactions ?? []"
       :key="i"
       flex gap-1 p="block-1 inline-2" text-secondary btn-base rounded-1
@@ -33,6 +33,6 @@ function emojiCode(emoji: mastodon.v1.FedibirdEmojiReaction) {
         <img v-bind="getEmojiAttributes(emoji.name)" :alt="emojiCode(emoji)">
       </picture>
       <CommonLocalizedNumber :keypath="emoji.count.toString()" :count="emoji.count" />
-    </UButton>
+    </v-btn>
   </div>
 </template>

@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useHumanReadableNumber } from 'packages/modules/localization/dist';
+import { computed } from '#imports';
 // @ts-expect-error missing types
 import { DynamicScrollerItem } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import { getServerName } from '~/composables/masto/account';
+import { usePreferences } from '~/composables/settings';
+import { currentUser, currentServer } from '~/composables/users';
 
 const { account, buffer = 10, endMessage = true } = defineProps<{
   paginator: mastodon.Paginator<mastodon.v1.ScheduledStatus[], mastodon.DefaultPaginationParams>
@@ -25,9 +30,9 @@ const showOriginSite = computed(() =>
 <template>
   <CommonPaginator v-bind="{ paginator, stream, preprocess, buffer, endMessage }" :virtual-scroller="virtualScroller">
     <template #updater="{ number, update }">
-      <UButton id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="update">
+      <v-btn id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="update">
         {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
-      </UButton>
+      </v-btn>
     </template>
     <template #default="{ item, older, newer, active }">
       <component

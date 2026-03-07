@@ -2,26 +2,26 @@
   <div>
     <h2>Edit Product</h2>
     <div v-if="loading">Loading...</div>
-    <UForm v-else @submit.prevent="onSubmit">
+    <v-form v-else @submit.prevent="onSubmit">
       <div>
         <label>Name</label>
-        <UInput v-model="form.name" />
+        <v-text-field v-model="form.name" />
       </div>
       <div>
         <label>Price</label>
-        <UInput v-model.number="form.price" type="number" />
+        <v-text-field v-model.number="form.price" type="number" />
       </div>
       <div>
         <label>Description</label>
         <textarea v-model="form.description" />
       </div>
-      <UButton type="submit">Save</UButton>
-    </UForm>
+      <v-btn type="submit">Save</v-btn>
+    </v-form>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted } from '#imports'
 import { useRoute, useRouter } from '#imports'
 import { useSellerProducts } from '~/layers/seller-dashboard/app/composables/useSellerProducts'
 

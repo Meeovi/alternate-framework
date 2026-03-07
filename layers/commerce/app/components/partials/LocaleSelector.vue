@@ -14,7 +14,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
+import { ref, computed } from '#imports';
 
 const { locale, availableLocales, t } = useI18n();
 const currentLocale = computed(() => locale.value);

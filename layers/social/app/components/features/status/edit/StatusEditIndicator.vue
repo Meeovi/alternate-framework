@@ -23,7 +23,7 @@ const formatted = useFormattedDateTime(editedAt)
     </CommonTooltip>
 
     <CommonDropdown v-else>
-      <slot />
+      <NuxtPage />
 
       <template #popper>
         <div text-sm p2>

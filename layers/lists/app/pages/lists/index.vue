@@ -7,7 +7,7 @@
                         <img class="w-100" :src="getAssetUrl(page?.image)" :alt="page?.name">
                     </div>
                     <div v-else class="col-12 col-md-12 col-lg-8 image-wrapper">
-                        <img class="w-100" src="../../assets/images/background1.jpg" :alt="page?.name">
+                        <img class="w-100" src="https://via.placeholder.com/1200x400" :alt="page?.name">
                     </div>
                     <div class="col-12 col-lg col-md-12">
                         <div class="text-wrapper align-left rightTextColumn">
@@ -54,18 +54,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from '#imports'
 import listCard from '~/components/related/list.vue'
 import RelatedLists from '~/components/related/relatedlists.vue'
 import createList from '~/components/lists/add-list.vue'
-import { useUserStore } from '../../../../auth/app/stores/user'
+import { useUser } from '~/composables/user'
 
-const userStore = useUserStore()
-
-const userDisplayName = computed(() => ({
-  firstName: userStore.user?.first_name || '',
-  lastName: userStore.user?.last_name || ''
-}))
+const { userDisplayName } = useUser()
 
 const model = ref(null)
 

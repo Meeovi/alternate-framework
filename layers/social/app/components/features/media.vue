@@ -10,17 +10,17 @@
         </v-toolbar>
 
         <!-- NAVIGATION TABS -->
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar :style="`background-color: ${mediaBar?.color}; color: ${mediaBar?.colortext} !important`">
                 <v-tabs v-model="tab" align-tabs="center">
                     <v-tab v-for="(menu, index) in mediaBar?.menus" :key="index" :value="menu.value">
-                        <UButton variant="text" :style="`color: ${mediaBar?.colortext} !important`">
+                        <v-btn variant="text" :style="`color: ${mediaBar?.colortext} !important`">
                             {{ menu.name }}
-                        </UButton>
+                        </v-btn>
                     </v-tab>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <!-- TAB CONTENT -->
         <v-tabs-window v-model="tab">
@@ -75,7 +75,7 @@
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import ImageGallery from '#shared/app/components/media/imageGallery.vue'
     import VideoGallery from '#shared/app/components/media/videoGallery.vue'
     import AudioGallery from '#shared/app/components/media/audioGallery.vue'

@@ -6,14 +6,14 @@
         </div>
 
         <div v-if="stripe && clientSecret" class="payment-form">
-            <UForm @submit.prevent="handleSubmit">
+            <v-form @submit.prevent="handleSubmit">
                 <div ref="paymentElement"></div>
 
-                <UButton type="submit" class="payment-v-btn" :disabled="!stripe || loading">
+                <v-btn type="submit" class="payment-v-btn" :disabled="!stripe || loading">
                     <span v-if="loading">Processing...</span>
                     <span v-else>Pay Now</span>
-                </UButton>
-            </UForm>
+                </v-btn>
+            </v-form>
         </div>
     </div>
 </template>
@@ -26,7 +26,7 @@ void useContentAdapter()
 import {
     ref,
     onMounted
-} from 'vue'
+} from '#imports'
 import type {
     Stripe,
     StripeElements

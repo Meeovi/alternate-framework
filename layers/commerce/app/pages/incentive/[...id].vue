@@ -38,7 +38,7 @@ void useContentAdapter()
     import {
         ref,
         onMounted
-    } from 'vue';
+    } from '#imports';
     const route = useRoute();
     const {
         $directus,

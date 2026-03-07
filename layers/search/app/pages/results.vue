@@ -33,10 +33,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useRuntimeConfig } from '#imports'
-import Client from '@searchkit/instantsearch-client'
 import { getSearchClient, getIndexName } from '../utils/search/client'
 import 'instantsearch.css/themes/satellite-min.css'
 

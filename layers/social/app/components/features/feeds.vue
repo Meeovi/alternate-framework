@@ -14,7 +14,7 @@
 			</div>
 		</section>
 
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar :style="`background-color: ${feedBar?.color}; color: ${feedBar?.colortext} !important`">
                 <v-toolbar-title>{{ feedBar?.name }}</v-toolbar-title>
 
@@ -22,13 +22,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in feedBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text"
-                                :style="`color: ${feedBar?.colortext} !important`">{{ menu?.name }}</UButton>
+                            <v-btn variant="text"
+                                :style="`color: ${feedBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="feedBar?.menus?.[0]?.value">
@@ -78,7 +78,7 @@
     import {
         ref,
         computed
-    } from 'vue'
+    } from '#imports'
     import postCard from '~/components/related/post.vue'
 
     const user = useSupabaseUser()

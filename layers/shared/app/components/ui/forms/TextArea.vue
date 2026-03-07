@@ -10,7 +10,7 @@
 <script setup lang="ts">
     import {
         computed
-    } from 'vue'
+    } from '#imports'
     import TiptapEditor from './TiptapEditor.vue'
 
     const props = withDefaults(defineProps < {

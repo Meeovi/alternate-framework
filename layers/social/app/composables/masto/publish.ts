@@ -1,4 +1,4 @@
-import type { DraftItem } from '#shared/types'
+import type { DraftItem } from '@mframework/core/shared/types'
 import type { mastodon } from 'masto'
 import type { Ref } from 'vue'
 import { fileOpen } from 'browser-fs-access'

@@ -16,7 +16,7 @@ void useContentAdapter()
     ref,
     onMounted,
     watch
-  } from 'vue'
+  } from '#imports'
   import {
     useCurrencyStore
   } from '~/stores/currency'

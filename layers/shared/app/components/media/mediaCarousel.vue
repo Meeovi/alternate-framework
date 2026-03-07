@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from '#imports'
 import imageCard from './imageCard.vue'
 import mediaCard from './mediaCard.vue'
 import mediaPlayer from './mediaPlayer.vue'

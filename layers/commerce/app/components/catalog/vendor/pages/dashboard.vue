@@ -23,7 +23,7 @@ import topcategories from '~/components/vendor/sales/topcategories.vue'
 import topproducts from '~/components/vendor/sales/topproducts.vue'
     import {
         ref
-    } from 'vue'
+    } from '#imports'
 
     const tab = ref(null);
 

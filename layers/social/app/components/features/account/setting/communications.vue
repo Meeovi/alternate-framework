@@ -1,5 +1,5 @@
 <template>
-  <UCard>
+  <v-card>
     <template #header>Communication Preferences</template>
     <template #header>
       <!-- Newsletter subscriptions -->
@@ -22,13 +22,13 @@
         label="Receive SMS Notifications"
         @change="updateSmsNotifications"
       ></v-switch>
-      <UInput
+      <v-text-field
         v-if="smsNotifications.enabled"
         v-model="smsNotifications.phoneNumber"
         label="Phone Number for SMS"
         placeholder="Enter your phone number"
         @input="updateSmsNotifications"
-      ></UInput>
+      ></v-text-field>
 
       <!-- Push Notifications -->
       <v-switch
@@ -37,13 +37,13 @@
         @change="updatePushNotifications"
       ></v-switch>
       
-      <UButton @click="savePreferences" color="primary">Save Preferences</UButton>
+      <v-btn @click="savePreferences" color="primary">Save Preferences</v-btn>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from '#imports';
 
 const { $magento } = useNuxtApp();
 

@@ -1,5 +1,5 @@
 <template>
-    <UCard>
+    <v-card>
         <v-toolbar color="primary" title="Customer Relationship Management"></v-toolbar>
         <v-tabs v-model="tab" bg-color="primary">
             <div v-for="(nav, index) in crm" :key="index">
@@ -34,7 +34,7 @@
                 </v-tabs-window-item>
             </v-tabs-window>
         </template>
-    </UCard>
+    </v-card>
 </template>
 
 
@@ -44,7 +44,7 @@ void useContentAdapter()
 
     import {
         ref
-    } from 'vue'
+    } from '#imports'
 
     const tab = ref(null);
 

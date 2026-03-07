@@ -1,5 +1,5 @@
-import type { Folder } from './folder.js';
-import type { User } from './user.js';
+import type { Folder } from './folder';
+import type { User } from './user';
 
 export interface File {
 	/** Unique identifier for the file. */

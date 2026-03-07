@@ -13,7 +13,7 @@
   </template>
 
   <script setup>
-  import { ref } from 'vue'
+  import { ref } from '#imports'
   import shortsCard from '~/components/related/short.vue'
 
   const model = ref(null)

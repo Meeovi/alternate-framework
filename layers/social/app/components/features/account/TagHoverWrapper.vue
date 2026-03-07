@@ -35,7 +35,7 @@ const userSettings = useUserSettings()
       :close-on-content-click="false"
       no-auto-focus
     >
-      <slot />
+      <NuxtPage />
       <template #popper>
         <TagCardSkeleton v-if="!tag" />
         <TagCard v-else :tag="tag" />

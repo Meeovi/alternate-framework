@@ -1,5 +1,5 @@
 <template>
-  <UCard>
+  <v-card>
     <template #header>Privacy and Data</template>
     <template #header>
       <!--<v-switch
@@ -8,15 +8,15 @@
         @change="updateDataSharingPreference"
       ></v-switch>-->
       <v-row>
-        <v-col><UButton @click="requestDataReport" class="mb-4">Request Personal Data Report</UButton></v-col>
-        <v-col><UButton @click="deleteAccount" color="error">Delete Account</UButton></v-col>
+        <v-col><v-btn @click="requestDataReport" class="mb-4">Request Personal Data Report</v-btn></v-col>
+        <v-col><v-btn @click="deleteAccount" color="error">Delete Account</v-btn></v-col>
       </v-row>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from '#imports';
 import { useUserStore } from '#auth/app/stores/user';
 
 const customerStore = useUserStore();

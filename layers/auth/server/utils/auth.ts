@@ -109,10 +109,10 @@ export const createBetterAuth = () => betterAuth({
         targetType: 'email',
         targetId: user.email,
         status: response.error ? 'failure' : 'success',
-        details: response.error?.message
+        details: (response as any).error?.message
       })
       if (response.error) {
-        console.error(`Failed to send reset password email: ${response.error.message}`)
+        console.error(`Failed to send reset password email: ${(response as any).error.message}`)
         throw createError({
           statusCode: 500,
           statusMessage: 'Internal Server Error'
@@ -137,10 +137,10 @@ export const createBetterAuth = () => betterAuth({
         targetType: 'email',
         targetId: user.email,
         status: response.error ? 'failure' : 'success',
-        details: response.error?.message
+        details: (response as any).error?.message
       })
       if (response.error) {
-        console.error(`Failed to send verification email: ${response.error.message}`)
+        console.error(`Failed to send verification email: ${(response as any).error.message}`)
         throw createError({
           statusCode: 500,
           statusMessage: 'Internal Server Error'

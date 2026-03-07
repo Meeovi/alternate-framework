@@ -7,14 +7,14 @@
     <v-col cols="12">
       <div class="d-flex align-center mb-4">
         <div class="d-flex align-center">
-          <UButton square variant="secondary" :disabled="count <= min" @click="dec()" size="sm">
+          <v-btn square variant="secondary" :disabled="count <= min" @click="dec()" size="sm">
             <SfIconRemove />
-          </UButton>
-          <UInput :id="inputId" type="number" :min="min" :max="max" class="mx-2 w-16 text-center" :value="count"
+          </v-btn>
+          <v-text-field :id="inputId" type="number" :min="min" :max="max" class="mx-2 w-16 text-center" :value="count"
             @change="handleOnChange" :disabled="!isValidProduct" />
-          <UButton square variant="secondary" :disabled="count >= max" @click="inc()" size="sm">
+          <v-btn square variant="secondary" :disabled="count >= max" @click="inc()" size="sm">
             <SfIconAdd />
-          </UButton>
+          </v-btn>
         </div>
       </div>
     </v-col>

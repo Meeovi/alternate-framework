@@ -1,7 +1,7 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, SfProduct } from '../_types';
+import type { Maybe, SfProduct } from '../models';
 import { useAsyncData, useState } from 'nuxt/app';
 import type {
   UseProductRecommendedReturn,
@@ -15,7 +15,7 @@ import { useHandleError } from '../useHandleError';
  * Composable for getting recommended products data
  * @param {string} slug Product slug
  */
-export const useProductRecommended: UseProductRecommendedReturn = (slug) => {
+export const useProductRecommended: UseProductRecommendedReturn = (slug: string) => {
   const state = useState<UseProductRecommendedState>(`useProductRecommended-${slug}`, () => ({
     data: null,
     loading: false,

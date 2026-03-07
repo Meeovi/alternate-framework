@@ -1,6 +1,6 @@
 <template>
     <div>
-        <UButton
+        <v-btn
             stacked
             :icon="icon"
             :title="title"
@@ -13,7 +13,7 @@
                 <span v-if="loading">…</span>
                 <span v-else>{{ reposted ? unRepostLabel : repostLabel }}</span>
             </template>
-        </UButton>
+        </v-btn>
     </div>
 </template>
 
@@ -21,7 +21,7 @@
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 import useRepost from '../../composables/useRepost'
 
 const props = defineProps({

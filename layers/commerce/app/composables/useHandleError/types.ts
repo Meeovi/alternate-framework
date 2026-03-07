@@ -1,4 +1,4 @@
-import type { Maybe } from '../_types';
+import type { Maybe } from '../models/shared';
 import { H3Error } from 'h3';
 
 export type ErrorParams = Maybe<

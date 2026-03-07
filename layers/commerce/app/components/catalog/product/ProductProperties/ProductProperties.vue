@@ -41,7 +41,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 import { ProductPropertiesProps } from './types';
-import { computed } from 'vue';
+import { computed } from '#imports';
 import { useProductAttribute } from '~/composables/useProductAttribute';
 
 const props = defineProps<ProductPropertiesProps>();

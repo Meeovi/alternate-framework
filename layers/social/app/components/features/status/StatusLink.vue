@@ -48,6 +48,6 @@ function go(evt: MouseEvent | KeyboardEvent) {
     @click="onclick"
     @keydown.enter="onclick"
   >
-    <slot />
+    <NuxtPage />
   </div>
 </template>

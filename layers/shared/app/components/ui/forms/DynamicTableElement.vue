@@ -2,7 +2,7 @@
   import {
     ref,
     onMounted
-  } from 'vue';
+  } from '#imports';
   // Resolve directus helpers at runtime (provided by a higher-level layer)
   const useVueDirectus = (globalThis as any).useVueDirectus ?? (() => ({ client: { request: async () => [] }, readFieldsByCollection: () => '', readItems: () => [] }))
   const generateTableSchema = (globalThis as any).generateTableSchema ?? ((fields: any[]) => [])

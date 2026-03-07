@@ -1,32 +1,32 @@
 <template>
     <div>
-        <UCard class="mx-auto" max-width="400" height="550">
+        <v-card class="mx-auto" max-width="400" height="550">
             <img v-if="space?.image?.filename_disk" class="align-end text-white" height="200"
                 :src="getAssetUrl(space?.image)" :alt="space?.name" />
 
-            <img class="align-end text-white" height="200" v-else src="assets/images/background8.jpg" :alt="space?.name" />
+            <img class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
 
             <template #header>{{ space?.name }}</template>
 
-            <UCard-subtitle class="pt-4">
+            <v-card-text class="pt-4">
                 Created: {{ new Date(space?.date_created).toLocaleDateString() }}
-            </v-card-subtitle>
+            </v-card-text>
 
-            <template #header>
+            <v-card-text>
                 <div v-dompurify-html="space?.description"></div>
-            </template>
+            </v-card-text>
 
             <template>
                 <share style="position: relative; top: 0px;" />
 
-                <UButton color="orange" text="Explore" :href="`/space/${space?.slug}`"></UButton>
+                <v-btn color="orange" text="Explore" :href="`/space/${space?.slug}`"></v-btn>
             </template>
-        </UCard>
+        </v-card>
     </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { ref } from '#imports'
     import share from '../blocks/share.vue'
     import useAdapterRequest from '~/composables/useAdapterRequest'
     const { getAssetUrl } = useAdapterRequest()

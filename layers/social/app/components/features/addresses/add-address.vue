@@ -2,16 +2,16 @@
     <v-row justify="center">
         <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
             <template v-slot:activator="{ props }">
-                <UButton v-bind="props" class="rightAddBtn">
-                    <UIcon start icon="fas:fa fa-plus"></UIcon>Create Address
-                </UButton>
+                <v-btn v-bind="props" class="rightAddBtn">
+                    <v-icon start icon="fas:fa fa-plus"></v-icon>Create Address
+                </v-btn>
             </template>
-            <UCard>
-                <UForm @submit.prevent="createAddress">
+            <v-card>
+                <v-form @submit.prevent="createAddress">
                     <v-toolbar dark color="primary">
-                        <UButton icon dark @click="dialog = false">
-                            <UIcon icon="fas:fa fa-circle-xmark"></UIcon>
-                        </UButton>
+                        <v-btn icon dark @click="dialog = false">
+                            <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
+                        </v-btn>
                         <template #header>
                             <span class="text-h6">Create new Address</span>
                         </template>
@@ -20,57 +20,57 @@
                         <v-container>
                             <v-row>
                                 <v-col cols="6">
-                                    <UCheckbox v-model="default_shipping" label="Default Shipping?"></UCheckbox>
+                                    <v-checkbox v-model="default_shipping" label="Default Shipping?"></v-checkbox>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UCheckbox v-model="default_billing" label="Default Billing?"></UCheckbox>
+                                    <v-checkbox v-model="default_billing" label="Default Billing?"></v-checkbox>
                                 </v-col>
                                 <v-col cols="4">
-                                    <UInput v-model="firstname" id="firstName" label="First Name*" required>
-                                    </UInput>
+                                    <v-text-field v-model="firstname" id="firstName" label="First Name*" required>
+                                    </v-text-field>
                                 </v-col>
                                 <v-col cols="4">
-                                    <UInput v-model="middlename" id="middleName" label="Middle Name*" required>
-                                    </UInput>
+                                    <v-text-field v-model="middlename" id="middleName" label="Middle Name*" required>
+                                    </v-text-field>
                                 </v-col>
                                 <v-col cols="4">
-                                    <UInput v-model="lastname" id="lastName" label="Last Name*" required>
-                                    </UInput>
+                                    <v-text-field v-model="lastname" id="lastName" label="Last Name*" required>
+                                    </v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="prefix" label="Address Prefix" id="addressName">
-                                    </UInput>
+                                    <v-text-field v-model="prefix" label="Address Prefix" id="addressName">
+                                    </v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <UTextarea v-model="street" label="Street" id="addressStreet">
-                                    </UTextarea>
+                                    <v-textarea v-model="street" label="Street" id="addressStreet">
+                                    </v-textarea>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="suffix" label="Address Suffix"></UInput>
+                                    <v-text-field v-model="suffix" label="Address Suffix"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="city" label="City"></UInput>
+                                    <v-text-field v-model="city" label="City"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="postcode" label="Postcode"></UInput>
+                                    <v-text-field v-model="postcode" label="Postcode"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="company" label="Company"></UInput>
+                                    <v-text-field v-model="company" label="Company"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="telephone" label="Phone Number"></UInput>
+                                    <v-text-field v-model="telephone" label="Phone Number"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="fax" label="Fax"></UInput>
+                                    <v-text-field v-model="fax" label="Fax"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="country_code" label="Country Code"></UInput>
+                                    <v-text-field v-model="country_code" label="Country Code"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="vat_id" label="Vat ID"></UInput>
+                                    <v-text-field v-model="vat_id" label="Vat ID"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="region" label="Region"></UInput>
+                                    <v-text-field v-model="region" label="Region"></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -78,15 +78,15 @@
                     </template>
                     <template>
                         <v-spacer></v-spacer>
-                        <UButton color="blue-darken-1" variant="text" @click="dialog = false">
+                        <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
                             Close
-                        </UButton>
-                        <UButton color="blue-darken-1" variant="text" @click="createAddressAndRefresh">
+                        </v-btn>
+                        <v-btn color="blue-darken-1" variant="text" @click="createAddressAndRefresh">
                             Create Address
-                        </UButton>
+                        </v-btn>
                     </template>
-                </UForm>
-            </UCard>
+                </v-form>
+            </v-card>
         </v-dialog>
     </v-row>
 </template>
@@ -94,7 +94,7 @@
 <script setup>
     import {
         ref
-    } from 'vue';
+    } from '#imports';
     import {
         useApolloClient
     } from '@vue/apollo-composable';

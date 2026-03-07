@@ -73,3 +73,35 @@ export interface SfAddress {
 }
 
 export type SfCurrency = string;
+
+export type SfLocale = string;
+
+export type SfLanguage = string;
+
+export type SfCountry = string;
+
+export type SfRegion = string;
+
+export type SfZipCode = string;
+
+export type SfPhoneNumber = string;
+
+export type SfEmail = string;
+
+export type SfPassword = string;
+
+export type SfSlug = string;
+
+export type SfName = string;
+
+export interface SfProductReviewCustom extends InferCustom<"normalizeProductReview"> {}
+
+export interface SfProductReview {
+  id: SfId;
+  rating: number;
+  title: string;
+  comment: string;
+  authorName: string;
+  date: string;
+  $custom?: SfProductReviewCustom;
+}

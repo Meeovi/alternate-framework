@@ -20,10 +20,10 @@ const originalUrl = computed(() => {
       <div>{{ $t('error.status_not_found') }}</div>
 
       <NuxtLink v-if="originalUrl" :to="originalUrl" external target="_blank">
-        <UButton btn-solid flex="~ center gap-2" text-sm px2 py1>
+        <v-btn btn-solid flex="~ center gap-2" text-sm px2 py1>
           <div i-ri:arrow-right-up-line />
           {{ $t('status.try_original_site') }}
-        </UButton>
+        </v-btn>
       </NuxtLink>
     </div>
   </CommonNotFound>

@@ -3,7 +3,7 @@
         <!---->
         <v-toolbar color="transparent" density="compact" title="My Reviews">
             <v-spacer />
-            <UInput
+            <v-text-field
                 v-model="search"
                 append-icon="fas:fa fa-search"
                 label="Search Reviews"
@@ -14,7 +14,7 @@
             />
         </v-toolbar>
 
-        <UCard>
+        <v-card>
             <v-tabs v-model="tab" bg-color="transparent">
                 <v-tab value="written">Reviews Written</v-tab>
                 <v-tab value="pending">Pending Reviews</v-tab>
@@ -65,13 +65,13 @@
                                         </v-chip>
                                     </td>
                                     <td>
-                                        <UButton
+                                        <v-btn
                                             icon="fas:fa fa-edit"
                                             color="primary"
                                             size="small"
                                             @click="editReview(review)"
                                         />
-                                        <UButton
+                                        <v-btn
                                             icon="fas:fa fa-trash"
                                             color="error"
                                             size="small"
@@ -107,13 +107,13 @@
                                     </td>
                                     <td>{{ formatDate(order.created_at) }}</td>
                                     <td>
-                                        <UButton
+                                        <v-btn
                                             color="primary"
                                             size="small"
                                             @click="writeReview(order)"
                                         >
                                             Write Review
-                                        </UButton>
+                                        </v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -127,11 +127,11 @@
                 :length="totalPages"
                 @update:model-value="loadReviews"
             />
-        </UCard>
+        </v-card>
 
         <!-- Review Dialog -->
         <v-dialog v-model="showReviewDialog" max-width="600px">
-            <UCard>
+            <v-card>
                 <template #header>
                     {{ editingReview ? 'Edit Review' : 'Write Review' }}
                 </template>
@@ -147,17 +147,17 @@
                 </template>
                 <template>
                     <v-spacer />
-                    <UButton color="error" @click="showReviewDialog = false">Cancel</UButton>
-                    <UButton
+                    <v-btn color="error" @click="showReviewDialog = false">Cancel</v-btn>
+                    <v-btn
                         color="primary"
                         @click="saveReview"
                         :loading="saving"
                         :disabled="!reviewValid"
                     >
                         Save Review
-                    </UButton>
+                    </v-btn>
                 </template>
-            </UCard>
+            </v-card>
         </v-dialog>
     </div>
 </template>
@@ -167,7 +167,7 @@
         ref,
         computed,
         onMounted
-    } from 'vue'
+    } from '#imports'
 
     import useAdapterRequest from '~/composables/useAdapterRequest'
     const { readFieldsByCollection, readItems, createItem, updateItem, deleteItem } = useAdapterRequest()

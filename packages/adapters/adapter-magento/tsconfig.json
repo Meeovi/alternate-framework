@@ -17,10 +17,6 @@
       "schema": "./schema.graphql"
     }],
     "paths": {
-      "@mframework/core": ["../../../packages/modules/core/src"],
-      "@mframework/core/*": ["../../../packages/modules/core/src/*"],
-      "@mframework/core": ["../../../packages/modules/sdk/src"],
-      "@mframework/core/*": ["../../../packages/modules/sdk/src/*"],
       "@mframework/layer-commerce": ["../../../layers/commerce"],
       "@mframework/layer-commerce/*": ["../../../layers/commerce/*"]
     }

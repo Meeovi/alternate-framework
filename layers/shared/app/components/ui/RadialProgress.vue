@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from '#imports';
+
 const props = defineProps({
 	radius: {
 		type: Number,
@@ -26,7 +28,7 @@ const strokeDashoffset = computed(() => {
 		<circle
 			stroke="currentColor"
 			:stroke-dasharray="circumference + ' ' + circumference"
-			:style="{ strokeDashoffset: strokeDashoffset }"
+			:style="{ 'stroke-dashoffset': strokeDashoffset } as any"
 			:stroke-width="stroke"
 			fill="transparent"
 			:r="normalizedRadius"

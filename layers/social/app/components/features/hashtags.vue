@@ -14,7 +14,7 @@
 			</div>
 		</section>
 
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar :style="`background-color: ${tagBar?.color}; color: ${tagBar?.colortext} !important`">
                 <v-toolbar-title>{{ tagBar?.name }}</v-toolbar-title>
 
@@ -22,13 +22,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in tagBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text" :style="`color: ${tagBar?.colortext} !important`"
-                                :href="menu?.slug">{{ menu?.name }}</UButton>
+                            <v-btn variant="text" :style="`color: ${tagBar?.colortext} !important`"
+                                :href="menu?.slug">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <section data-bs-version="5.1" class="header6 cid-v0GHPMn349" id="header6-k">
             <div class="mbr-overlay" style="opacity: 0.3; background-color: rgb(1, 43, 58);">
@@ -54,7 +54,7 @@
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import TagChip from '~/components/related/tag.vue'
 
     import useDirectusRequest from '~/composables/useDirectusRequest'

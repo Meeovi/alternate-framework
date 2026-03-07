@@ -24,6 +24,7 @@
   "type": "module",
   "dependencies": {
     "@graphql-codegen/typescript-graphql-request": "^6.4.0",
+    "@mframework/core": "file:../../modules/core",
     "graphql-request": "^7.4.0",
     "typescript": "^5.9.3"
   },

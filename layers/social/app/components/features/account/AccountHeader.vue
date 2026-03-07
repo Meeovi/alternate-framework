@@ -137,9 +137,9 @@ async function copyAccountName() {
     <div p4 mt--18 flex flex-col gap-4>
       <div relative>
         <div flex justify-between>
-          <UButton shrink-0 h-full :class="{ 'rounded-full': !isSelf, 'squircle': isSelf }" p1 bg-base border-bg-base z-2 @click="previewAvatar">
+          <v-btn shrink-0 h-full :class="{ 'rounded-full': !isSelf, 'squircle': isSelf }" p1 bg-base border-bg-base z-2 @click="previewAvatar">
             <AccountAvatar :square="isSelf" :account="account" hover:opacity-90 transition-opacity w-28 h-28 />
-          </UButton>
+          </v-btn>
           <div inset-ie-0 flex="~ wrap row-reverse" gap-2 items-center pt18 justify-start>
             <!-- Edit profile -->
             <NuxtLink
@@ -158,7 +158,7 @@ async function copyAccountName() {
                 @remove-note="() => { isEditingPersonalNote = false; personalNoteDraft = '' }"
               />
               <CommonTooltip v-if="!isSelf && relationship?.following" :content="getNotificationIconTitle()">
-                <UButton
+                <v-btn
                   :aria-pressed="isNotifiedOnPost"
                   :aria-label="t('account.notifications_on_post_enable', { username: `@${account.username}` })"
                   rounded-full text-sm p2 border-1 transition-colors
@@ -167,17 +167,17 @@ async function copyAccountName() {
                 >
                   <span v-if="isNotifiedOnPost" i-ri:notification-4-fill block text-current />
                   <span v-else i-ri-notification-4-line block text-current />
-                </UButton>
+                </v-btn>
               </CommonTooltip>
               <CommonTooltip :content="$t('list.modify_account')">
                 <VDropdown v-if="!isSelf && relationship?.following">
-                  <UButton
+                  <v-btn
                     :aria-label="$t('list.modify_account')"
                     rounded-full text-sm p2 border-1 transition-colors
                     border-base hover:text-primary
                   >
                     <span i-ri:play-list-add-fill block text-current />
-                  </UButton>
+                  </v-btn>
                   <template #popper>
                     <ListLists :user-id="account.id" />
                   </template>
@@ -196,9 +196,9 @@ async function copyAccountName() {
           <div flex items-center gap-1>
             <AccountHandle :account="account" overflow-unset line-clamp-unset />
             <CommonTooltip placement="bottom" :content="$t('account.copy_account_name')" flex>
-              <UButton text-secondary-light text-sm :class="isCopied ? 'i-ri:check-fill text-green' : 'i-ri:file-copy-line'" @click="copyAccountName">
+              <v-btn text-secondary-light text-sm :class="isCopied ? 'i-ri:check-fill text-green' : 'i-ri:file-copy-line'" @click="copyAccountName">
                 <span sr-only>{{ $t('account.copy_account_name') }}</span>
-              </UButton>
+              </v-btn>
             </CommonTooltip>
           </div>
           <div self-start mt-1>

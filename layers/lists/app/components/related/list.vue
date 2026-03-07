@@ -17,7 +17,7 @@
             </div>
 
             <div class="item-img" v-else>
-                <img src="images/image10.jpg" :alt="list?.name" />
+                <img src="https://via.placeholder.com/400x300" :alt="list?.name" />
             </div>
         </div>
     </div>

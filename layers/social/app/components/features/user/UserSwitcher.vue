@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import type { UserLogin } from '#shared/types'
+import { useRouter } from 'nuxt/app';
+import { computed } from '#imports';
+import { openSigninDialog } from '~/composables/dialog';
+import { getFullHandle } from '~/composables/masto/account';
+import { getAccountRoute } from '~/composables/masto/routes';
+import { useSignIn } from '~/composables/sign-in';
+import { useUsers, currentUser, switchUser, signOut } from '~/composables/users';
+import { isHydrated } from '~/composables/vue';
 
 const emit = defineEmits<{
   (event: 'click'): void
@@ -33,7 +41,7 @@ function processSignIn() {
 <template>
   <div sm:min-w-80 max-w-100vw mxa py2 flex="~ col" @click="emit('click')">
     <template v-for="user of sorted" :key="user.id">
-      <UButton
+      <v-btn
         flex rounded px4 py3 text-left
         hover:bg-active cursor-pointer transition-100
         :aria-label="$t('action.switch_account')"
@@ -42,7 +50,7 @@ function processSignIn() {
         <AccountInfo :account="user.account" :hover-card="false" square />
         <div flex-auto />
         <div v-if="user.token === currentUser?.token" i-ri:check-line text-primary mya text-2xl />
-      </UButton>
+      </v-btn>
     </template>
     <div border="t base" pt2>
       <CommonDropdownItem

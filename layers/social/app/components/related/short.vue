@@ -1,31 +1,29 @@
 <template>
-  <UCard class="mx-auto" max-width="400">
+  <v-card class="mx-auto" max-width="400">
     <video loading="lazy" id="my-video" class="video-js" controls preload="auto"
       style="width: 100% !important; height: 50% !important;" loop>
       <source :src="getAssetUrl(short?.video)" type="video/mp4">
       Your browser does not support the video tag.
     </video>
 
-    <UCard-subtitle class="pt-4">
-      {{ short?.name }}
-    </v-card-subtitle>
-
     <template #header>
+      {{ short?.name }}
+    </template>
+
+    <template>
       <div>Type: {{ short?.type }}</div>
 
       <div>{{ short?.description }}</div>
     </template>
 
     <template>
-      <UButton color="orange" text="View" :href="`/social/vibe/${short?.id}`"></UButton>
+      <v-btn color="orange" text="View" :href="`/social/vibe/${short?.id}`"></v-btn>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import videojs from 'video.js'
-
+import { ref, onMounted } from '#imports'
 import useAdapterRequest from '~/composables/useAdapterRequest'
 const { getAssetUrl } = useAdapterRequest()
     
@@ -40,13 +38,20 @@ const props = defineProps({
 })
 const { short } = props
 
-onMounted(() => {
-  player.value = videojs('my-video', {
-    controls: true,
-    autoplay: false,
-    preload: 'auto',
-    fluid: true
-  })
+onMounted(async () => {
+  try {
+    const importFn = new Function('return import("video.js")')
+    const mod = await importFn()
+    const videojs = mod?.default || mod
+    player.value = videojs('my-video', {
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      fluid: true
+    })
+  } catch (e) {
+    console.warn('video.js not available or failed to load at runtime:', e)
+  }
 })
 
 // Clean up on component unmount

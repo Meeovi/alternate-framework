@@ -1,14 +1,14 @@
 <template>
     <div>
         <div v-if="list?.items?.length === 0" class="text-center py-8">
-            <UIcon size="64" color="grey-lighten-1">{{ getListIcon(list?.type) }}</UIcon>
+            <v-icon size="64" color="grey-lighten-1">{{ getListIcon(list?.type) }}</v-icon>
             <h3 class="text-h6 mt-4 mb-2">No items yet</h3>
             <p class="text-body-2 text-medium-emphasis mb-4">
                 Add your first item to get started
             </p>
-            <UButton color="primary" @click="showAddDialog = true">
+            <v-btn color="primary" @click="showAddDialog = true">
                 Add Item
-            </UButton>
+            </v-btn>
         </div>
 
         <div v-else>
@@ -34,11 +34,11 @@
   import {
     ref,
     computed
-  } from 'vue'
+  } from '#imports'
   //import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
   import {
     useDirectusForm
-  } from '../../composables/globals/useDirectusForm'
+  } from '../../../../shared/app/composables/useDirectusForm'
   import ListItemCard from './ListItemCard.vue'
 
   const props = defineProps({

@@ -2,8 +2,8 @@
   <v-container class="text-center">
     <v-row justify="center">
       <v-col cols="12" md="8">
-        <UCard class="pa-6">
-          <UIcon color="success" size="64" class="mb-4">mdi-check-circle</UIcon>
+        <v-card class="pa-6">
+          <v-icon color="success" size="64" class="mb-4">mdi-check-circle</v-icon>
           <h1 class="text-h4 mb-4">Thank You for Your Purchase!</h1>
           <p class="text-body-1 mb-4">
             Your order has been successfully placed. We've sent a confirmation email to your registered email address.
@@ -11,20 +11,20 @@
           <p class="text-body-1 mb-6">
             Order ID: {{ orderId }}
           </p>
-          <UButton
+          <v-btn
             color="primary"
             @click="router.push('/')"
             class="mr-4"
           >
             Continue Shopping
-          </UButton>
-          <UButton
+          </v-btn>
+          <v-btn
             color="secondary"
             @click="router.push('/orders')"
           >
             View Orders
-          </UButton>
-        </UCard>
+          </v-btn>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -35,7 +35,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from '#imports';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();

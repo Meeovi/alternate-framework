@@ -40,5 +40,5 @@ import type { HeroProps } from '~/components/ui/Hero/types';
 
 defineProps<HeroProps>();
 
-const NuxtLink = resolveComponent('NuxtLink');
+
 </script>

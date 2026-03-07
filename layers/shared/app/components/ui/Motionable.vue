@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useMotions } from '@vueuse/motion';
+import { ref, watch } from '#imports';
 
 interface MotionableProps {
 	as?: string | object;
@@ -40,6 +41,6 @@ watch(
 </script>
 <template>
 	<component :is="as" v-if="show || !leaved" v-motion="name">
-		<slot />
+		<NuxtPage />
 	</component>
 </template>

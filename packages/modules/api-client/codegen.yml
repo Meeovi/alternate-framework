@@ -1,0 +1,8 @@
+schema: ${MAPI_SCHEMA_ENDPOINT:http://localhost:3000/api/graphql}
+documents: "src/**/*.ts"
+generates:
+  ./src/client/generated-types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-graphql-request

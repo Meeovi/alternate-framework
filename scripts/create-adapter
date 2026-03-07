@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Convenience wrapper to create adapters from the repo root.
-# Usage: ./scripts/create-adapter --name shop --desc "..." --layers commerce,auth
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-
-node "$ROOT_DIR/packages/adapters/starter-adapter/scripts/create-adapter-cli.cjs" "$@"

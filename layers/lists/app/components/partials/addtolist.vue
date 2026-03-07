@@ -2,11 +2,11 @@
     <div class="text-center">
         <v-dialog v-model="dialog" max-width="600">
             <template v-slot:activator="{ props: activatorProps }">
-                <UButton prepend-icon="fas:fa fa-plus" text="Add to List" color="primary" size="large"
-                    v-bind="activatorProps"></UButton>
+                <v-btn prepend-icon="fas:fa fa-plus" text="Add to List" color="primary" size="large"
+                    v-bind="activatorProps"></v-btn>
             </template>
 
-            <UCard>
+            <v-card>
                 <v-tabs v-model="tab" bg-color="primary">
                     <v-tab value="one">Add to List</v-tab>
                     <v-tab value="two">Create List</v-tab>
@@ -15,8 +15,8 @@
                 <template #header>
                     <v-tabs-window v-model="tab">
                         <v-tabs-window-item value="one">
-                            <UCard>
-                                <UCard-title class="text-h6">
+                            <v-card>
+                                <template #title class="text-h6">
                                     Add this Product to your List
                                 </template>
                                 <template #header>
@@ -56,8 +56,8 @@
 
                                 <template>
                                     <v-spacer></v-spacer>
-                                    <UButton text="Close" variant="plain" @click="closeDialog"></UButton>
-                                    <UButton 
+                                    <v-btn text="Close" variant="plain" @click="closeDialog"></v-btn>
+                                    <v-btn 
                                         color="primary" 
                                         text="Save" 
                                         variant="tonal" 
@@ -66,9 +66,9 @@
                                         :disabled="loading || selectedLists.length === 0"
                                     >
                                         Save
-                                    </UButton>
+                                    </v-btn>
                                 </template>
-                            </UCard>
+                            </v-card>
                         </v-tabs-window-item>
 
                         <v-tabs-window-item value="two">
@@ -76,13 +76,13 @@
                         </v-tabs-window-item>
                     </v-tabs-window>
                 </template>
-            </UCard>
+            </v-card>
         </v-dialog>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from '#imports';
 
 // Define props with Magento product structure
 const props = defineProps({

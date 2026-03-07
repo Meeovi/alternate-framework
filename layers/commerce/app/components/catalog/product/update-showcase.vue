@@ -1,38 +1,38 @@
 <template>
     <div>
-        <UCard elevation="0">
+        <v-card elevation="0">
             <v-toolbar title="Update A Showcase"></v-toolbar>
             <v-form @submit.prevent="updateShowcase">
                 <v-container>
                     <v-row>
                         <v-col cols="6">
-                            <UInput v-model="title" label="Showcase Name" required></UInput>
+                            <v-text-field v-model="title" label="Showcase Name" required></v-text-field>
                         </v-col>
                         <v-col cols="6">
                             <v-combobox v-model="type" label="Status" :items="['Public', 'Private']"></v-combobox>
                         </v-col>
                         <v-col cols="12">
-                            <UFileUpload clearable label="Showcase Image"></UFileUpload>
+                            <v-file-upload clearable label="Showcase Image"></v-file-upload>
                         </v-col>
                         <v-col cols="12">
-                            <UTextarea v-model="description" label="Showcase Description"></UTextarea>
+                            <v-textarea v-model="description" label="Showcase Description"></v-textarea>
                         </v-col>
                         <v-col cols="12">
-                            <UCard title="Choose a Product for your Showcase">
+                            <v-card title="Choose a Product for your Showcase">
                                 <template #header>
-                                    <UInput density="compact" variant="solo" label="Search Meeovi for products"
+                                    <v-text-field density="compact" variant="solo" label="Search Meeovi for products"
                                         append-inner-icon="fas:fa fa-search" single-line hide-details
-                                        @click:append-inner="onClick"></UInput>
+                                        @click:append-inner="onClick"></v-text-field>
                                     <v-spacer></v-spacer>
                                     <div class="d-flex pa-4">
-                                        <UCheckbox-btn v-model="includeFiles" class="pe-2" color="orange">
-                                        </UCheckbox-btn>
+                                        <v-checkbox-btn v-model="includeFiles" class="pe-2" color="orange">
+                                        </v-checkbox-btn>
                                         <!--<NuxtLink :to="`/product/${products.id}`">
-                                        <UCard class="ma-4" height="580" width="250" @click="toggle">
+                                        <v-card class="ma-4" height="580" width="250" @click="toggle">
                                             <NuxtImg loading="lazy" class="align-end text-white" height="280"
                                                 :src="`${products.featuredAsset.preview}`" :alt="products.name" cover />
 
-                                            <UCard-title class="pt-4">
+                                            <template #title class="pt-4">
                                                 {{ products.name }}
                                             </template>
 
@@ -46,31 +46,31 @@
                                             </template>
                                             <div class="d-flex fill-height align-center justify-center">
                                                 <v-scale-transition>
-                                                    <UIcon v-if="isSelected" color="white" size="48"
-                                                        icon="mdi-close-circle-outline"></UIcon>
+                                                    <v-icon v-if="isSelected" color="white" size="48"
+                                                        icon="mdi-close-circle-outline"></v-icon>
                                                 </v-scale-transition>
                                             </div>
-                                        </UCard>
+                                        </v-card>
                                     </NuxtLink>-->
                                     </div>
                                 </template>
-                            </UCard>
+                            </v-card>
                         </v-col>
                     </v-row>
                 </v-container>
 
                 <v-divider class="mt-12"></v-divider>
                 <template>
-                    <UButton color="blue-darken-1" variant="text" type="submit" @click.prevent="deleteShowcaseAndRefresh">
+                    <v-btn color="blue-darken-1" variant="text" type="submit" @click.prevent="deleteShowcaseAndRefresh">
                         Delete
-                    </UButton>
+                    </v-btn>
                     <v-spacer></v-spacer>
-                    <UButton color="blue-darken-1" variant="text" type="submit" @click.prevent="updateShowcaseAndRefresh">
+                    <v-btn color="blue-darken-1" variant="text" type="submit" @click.prevent="updateShowcaseAndRefresh">
                         Update
-                    </UButton>
+                    </v-btn>
                 </template>
             </v-form>
-        </UCard>
+        </v-card>
     </div>
 </template>
 
@@ -78,7 +78,7 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-import { ref } from 'vue';
+import { ref } from '#imports';
 
 import { useRoute, useRouter } from 'vue-router';
 /*import { UPDATE_SHOWCASE, DELETE_SHOWCASE } from '#graphql/cms/queries/showcases'

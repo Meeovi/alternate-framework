@@ -14,9 +14,9 @@
             <v-divider class="my-3" />
 
             <v-list-item>
-                <UButton block color="primary" @click="createNewFolder">
+                <v-btn block color="primary" @click="createNewFolder">
                     New Folder
-                </UButton>
+                </v-btn>
             </v-list-item>
         </v-list>
     </v-navigation-drawer>
@@ -26,7 +26,7 @@
     import {
         ref,
         watch
-    } from 'vue'
+    } from '#imports'
 
     const props = defineProps({
         folders: {

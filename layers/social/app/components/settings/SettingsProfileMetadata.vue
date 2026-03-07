@@ -42,9 +42,9 @@ function chooseIcon(i: number, text: string) {
       <div v-for="i in fieldCount" :key="i" flex="~ gap3" items-center>
         <CommonDropdown ref="dropdown" placement="left">
           <CommonTooltip :content="$t('tooltip.pick_an_icon')">
-            <UButton type="v-btn" btn-action-icon>
+            <v-btn type="v-btn" btn-action-icon>
               <div :class="fieldIcons[i - 1] || 'i-ri:question-mark'" />
-            </UButton>
+            </v-btn>
           </CommonTooltip>
           <template #popper>
             <div flex="~ wrap gap-1" max-w-60 m2 me1>
@@ -54,21 +54,21 @@ function chooseIcon(i: number, text: string) {
                 :content="text"
               >
                 <template v-if="text !== 'Joined'">
-                  <UButton type="v-btn" btn-action-icon @click="chooseIcon(i - 1, text)">
+                  <v-btn type="v-btn" btn-action-icon @click="chooseIcon(i - 1, text)">
                     <div text-xl :class="icon" />
-                  </UButton>
+                  </v-btn>
                 </template>
               </CommonTooltip>
             </div>
           </template>
         </CommonDropdown>
-        <UInput
+        <v-text-field
           v-model="form.fieldsAttributes[i - 1].name"
           type="text" placeholder-text-secondary
           :placeholder="$t('settings.profile.appearance.profile_metadata_label')"
           input-base
         />
-        <UInput
+        <v-text-field
           v-model="form.fieldsAttributes[i - 1].value"
           type="text" placeholder-text-secondary
           :placeholder="$t('settings.profile.appearance.profile_metadata_value')"

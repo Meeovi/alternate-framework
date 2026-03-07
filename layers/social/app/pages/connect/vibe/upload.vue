@@ -2,29 +2,29 @@
   <div class="upload-page">
     <h1>Upload Your Vibez 🎥</h1>
 
-    <UForm @submit.prevent="handleUpload">
+    <v-form @submit.prevent="handleUpload">
       <label>
         Title:
-        <UInput v-model="name" type="text" placeholder="My awesome video" />
+        <v-text-field v-model="name" type="text" placeholder="My awesome video" />
       </label>
 
       <label>
         Video File:
-        <UInput type="file" accept="video/*" @change="handleFile" />
+        <v-text-field type="file" accept="video/*" @change="handleFile" />
       </label>
 
-      <UButton :disabled="loading">
+      <v-btn :disabled="loading">
         {{ loading ? 'Uploading...' : 'Upload Vibez' }}
-      </UButton>
+      </v-btn>
 
       <p v-if="error" class="error">{{ error }}</p>
       <p v-if="success" class="success">Upload successful! 🎉</p>
-    </UForm>
+    </v-form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from '#imports'
 import { useDirectusAuth } from '~/composables/useDirectus'
 
 const { user } = useDirectusAuth()

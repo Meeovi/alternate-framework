@@ -16,7 +16,7 @@
 <script setup>
   import {
     ref
-  } from 'vue'
+  } from '#imports'
   import listCard from '~/components/related/list.vue'
 
   const content = useContentAdapter()

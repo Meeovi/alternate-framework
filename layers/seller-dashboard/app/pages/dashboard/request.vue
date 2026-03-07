@@ -1,9 +1,9 @@
 <template>
     <div v-if="!user.isSeller">
         <p>Your seller account is pending approval.</p>
-        <UButton v-if="!user.profile?.seller_requested" @click="requestSeller">
+        <v-btn v-if="!user.profile?.seller_requested" @click="requestSeller">
             Request Seller Access
-        </UButton>
+        </v-btn>
     </div>
 </template>
 

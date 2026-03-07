@@ -1,24 +1,24 @@
 <template>
   <v-row justify="center">
-      <UCard>
-        <template #header>
+      <v-card>
+        <v-toolbar color="primary" dark>
           <h4>Create New Note</h4>
-        </template>
+        </v-toolbar>
 
-        <template #header>
+        <v-card>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <UForm @submit.prevent="submitForm">
+          <v-form @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in postFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <UButton type="submit">Post</UButton>
-          </UForm>
-        </template>
-      </UCard>
+            <v-btn type="submit">Post</v-btn>
+          </v-form>
+        </v-card>
+      </v-card>
   </v-row>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
 import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
 import useAdapterRequest from '~/composables/useAdapterRequest'

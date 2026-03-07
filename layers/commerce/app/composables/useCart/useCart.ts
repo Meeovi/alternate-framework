@@ -1,8 +1,9 @@
-import type { SfCart } from '../_types';
+import type { SfCart } from '../models';
+import { getCartProvider } from './registry'
 import { toRefs } from '@vueuse/shared';
 import type { UseCartReturn, UseCartState, FetchCard } from './types';
 import { getCommerceClient } from '../../utils/client';
-import { useAsyncData, useState } from 'nuxt/app';
+import { useAsyncData, useState, useRuntimeConfig } from 'nuxt/app';
 import { useHandleError } from '../useHandleError';
 import { ref } from 'vue';
 
@@ -13,6 +14,9 @@ import { ref } from 'vue';
  * const { data, loading } = useCart();
  */
 export const useCart: UseCartReturn = () => {
+  const _cfg: any = (typeof (useRuntimeConfig as any) === 'function') ? (useRuntimeConfig as any)() : (useRuntimeConfig || { public: {} })
+  const providerName = (_cfg && _cfg.public && _cfg.public.cartProvider) ? _cfg.public.cartProvider : 'directus'
+  const provider = getCartProvider(providerName)
   const state = useState<UseCartState>('useCart', () => ({
     data: null,
     loading: false,
@@ -42,5 +46,9 @@ export const useCart: UseCartReturn = () => {
   return {
     fetchCard,
     ...toRefs(state.value),
+    getCart: provider.getCart,
+    addItem: provider.addItem,
+    removeItem: provider.removeItem,
+    clearCart: provider.clearCart
   };
 };

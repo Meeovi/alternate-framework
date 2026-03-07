@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue'
+    import { ref } from '#imports'
     import postsCard from '~/components/related/post.vue'
     
     const user = useSupabaseUser()

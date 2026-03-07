@@ -1,5 +1,5 @@
 <template>
-    <UCard class="image-card" elevation="2" rounded="lg">
+    <v-card class="image-card" elevation="2" rounded="lg">
         <!-- IMAGE PREVIEW -->
         <v-img :src="fileUrl" :alt="media?.title || media?.filename_download || 'Image'" height="180" cover
             class="image-preview" @click="openFull" />
@@ -13,13 +13,13 @@
         <template>
             <slot name="actions" />
         </template>
-    </UCard>
+    </v-card>
 </template>
 
 <script setup>
     import {
         computed
-    } from 'vue'
+    } from '#imports'
 
     const props = defineProps({
         media: {

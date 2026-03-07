@@ -1,12 +1,12 @@
 <template>
   <v-dialog :model-value="modelValue" max-width="960" @update:model-value="$emit('update:model-value', $event)">
-    <UCard v-if="item">
+    <v-card v-if="item">
       <v-toolbar density="comfortable">
         <v-toolbar-title>
           {{ file?.title || file?.filename_download || 'Media' }}
         </v-toolbar-title>
         <v-spacer />
-        <UButton icon="mdi-close" @click="$emit('update:model-value', false)" />
+        <v-btn icon="mdi-close" @click="$emit('update:model-value', false)" />
       </v-toolbar>
 
       <template #header>
@@ -24,19 +24,19 @@
 
         <div v-else class="viewer">
           <p>Preview not available for this file type.</p>
-          <UButton color="primary" :href="sourceUrl" target="_blank">
+          <v-btn color="primary" :href="sourceUrl" target="_blank">
             Open file
-          </UButton>
+          </v-btn>
         </div>
       </template>
-    </UCard>
+    </v-card>
   </v-dialog>
 </template>
 
 <script setup>
   import {
     computed
-  } from 'vue'
+  } from '#imports'
 
   const props = defineProps({
     modelValue: Boolean,

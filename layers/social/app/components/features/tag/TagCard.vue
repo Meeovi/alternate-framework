@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useRouter } from 'nuxt/app';
+import { computed } from '#imports';
 
 const { tag } = defineProps<{
   tag: mastodon.v1.Tag

@@ -1,4 +1,4 @@
-import type { DraftItem, DraftKey } from '#shared/types'
+import type { DraftItem, DraftKey } from '@mframework/core/shared/types'
 import type { mastodon } from 'masto'
 
 const maxThreadLength = 99

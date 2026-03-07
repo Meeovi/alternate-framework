@@ -3,11 +3,11 @@
         <div ref="galleryRef" class="audio-gallery">
             <NuxtLink v-for="item in items" :key="item.id" class="gallery-item" :data-sub-html="audioHtml(item)"
                 :href="placeholder">
-                <UCard class="audio-card">
+                <v-card class="audio-card">
                     <template #header>
                         {{ item.directus_files_id?.title || 'Audio File' }}
                     </template>
-                </UCard>
+                </v-card>
             </NuxtLink>
         </div>
     </client-only>
@@ -17,7 +17,7 @@
     import {
         ref,
         onMounted
-    } from 'vue'
+    } from '#imports'
 
     const props = defineProps({
         items: {

@@ -1,6 +1,6 @@
 # @mframework/layer-lists
 
-This layer provides first-class lists and task management functionality for the M Framework. It's provider-driven: you can plug in different backends (Directus, memory, ATProto, etc.) without changing UI code. The default production-ready fallback is the `@mframework/directus-client` provider.
+This layer provides first-class lists and task management functionality for the M Framework. It's provider-driven: you can plug in different backends (Directus, memory, ATProto, etc.) without changing UI code. The default production-ready fallback is the `@mframework/adapter-directus` provider.
 
 Key goals:
 - Provider-agnostic API used by the UI (`useLists()` composable).
@@ -14,7 +14,7 @@ Install the layer into your project (monorepo/local install):
 ```bash
 npm install @mframework/layer-lists
 # also install your chosen provider (Directus example)
-npm install @mframework/directus-client
+npm install @mframework/adapter-directus
 ```
 
 Register the layer and configure the provider in your M Framework app (Directus example):

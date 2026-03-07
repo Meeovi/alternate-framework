@@ -13,7 +13,7 @@
   </template>
 
   <script setup>
-  import { ref } from 'vue'
+  import { ref } from '#imports'
   import postCard from '~/components/related/post.vue'
 
   const model = ref(null)

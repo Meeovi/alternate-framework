@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { useForm } from 'slimeform'
-import { useContentAdapter } from '~/composables/useContentAdapter'
+import { computed, ref, nextTick, onDeactivated } from 'vue';
+import { useI18n } from 'vue-i18n'
+import { useMastoClient } from '../../composables/masto'
+import { openConfirmDialog } from '../../composables/dialog'
+
+// Alias the mastodon List type to avoid naming conflicts
+type MastodonList = mastodon.v1.List
 
 const emit = defineEmits<{
-  (e: 'listUpdated', list: mastodon.v1.List): void
+  (e: 'listUpdated', list: MastodonList): void
   (e: 'listRemoved', id: string): void
 }>()
-const list = defineModel<mastodon.v1.List>({ required: true })
+const listModel = defineModel<MastodonList>({ required: true })
 
 const { t } = useI18n()
-const { useMastoClient } = useContentAdapter()
 const client = useMastoClient()
-
-const { form, isDirty, submitter, reset } = useForm({
-  form: () => ({ ...list.value }),
-})
+const editTitle = ref('')
+const submitting = ref(false)
+const isDirty = computed(() => editTitle.value.trim() !== (listModel.value.title ?? '').trim())
 
 const isEditing = ref<boolean>(false)
 const deleting = ref<boolean>(false)
@@ -28,24 +31,28 @@ const deleteBtn = ref<HTMLButtonElement>()
 async function prepareEdit() {
   isEditing.value = true
   actionError.value = undefined
+  editTitle.value = listModel.value.title
   await nextTick()
   input.value?.focus()
 }
 async function cancelEdit() {
   isEditing.value = false
   actionError.value = undefined
+  editTitle.value = listModel.value.title
 
   await nextTick()
-  reset()
   editBtn.value?.focus()
 }
 
-const { submit, submitting } = submitter(async () => {
+async function submit() {
+  if (submitting.value)
+    return
   try {
-    list.value = await client.v1.lists.$select(form.id).update({
-      title: form.title,
+    submitting.value = true
+    listModel.value = await client.v1.lists.$select(listModel.value.id).update({
+      title: editTitle.value,
     })
-    cancelEdit()
+    await cancelEdit()
   }
   catch (err) {
     console.error(err)
@@ -53,7 +60,10 @@ const { submit, submitting } = submitter(async () => {
     await nextTick()
     input.value?.focus()
   }
-})
+  finally {
+    submitting.value = false
+  }
+}
 
 async function removeList() {
   if (deleting.value)
@@ -61,7 +71,7 @@ async function removeList() {
 
   const confirmDelete = await openConfirmDialog({
     title: t('confirm.delete_list.title'),
-    description: t('confirm.delete_list.description', [list.value.title]),
+    description: t('confirm.delete_list.description', [listModel.value.title]),
     confirm: t('confirm.delete_list.confirm'),
     cancel: t('confirm.delete_list.cancel'),
   })
@@ -73,8 +83,8 @@ async function removeList() {
   if (confirmDelete.choice === 'confirm') {
     await nextTick()
     try {
-      await client.v1.lists.$select(list.value.id).remove()
-      emit('listRemoved', list.value.id)
+      await client.v1.lists.$select(listModel.value.id).remove()
+      emit('listRemoved', listModel.value.id)
     }
     catch (err) {
       console.error(err)
@@ -104,9 +114,9 @@ onDeactivated(cancelEdit)
 </script>
 
 <template>
-  <UForm
+  <v-form
     hover:bg-active flex justify-between items-center gap-x-2
-    :aria-describedby="actionError ? `action-list-error-${list.id}` : undefined"
+    :aria-describedby="actionError ? `action-list-error-${listModel.id}` : undefined"
     :class="actionError ? 'border border-base border-rounded rounded-be-is-0 rounded-be-ie-0 border-b-unset border-$c-danger-active' : null"
     @submit.prevent="submit"
   >
@@ -115,31 +125,31 @@ onDeactivated(cancelEdit)
       bg-base border="~ base" h10 m2 ps-1 pe-4 rounded-3 w-full flex="~ row"
       items-center relative focus-within:box-shadow-outline gap-3
     >
-      <CommonTooltip v-if="isEditing" :content="$t('list.cancel_edit')">
-        <UButton
+      <CommonTooltip v-if="isEditing" :content="t('list.cancel_edit')">
+        <v-btn
           type="v-btn"
           rounded-full text-sm p2 transition-colors
           hover:text-primary
           @click="cancelEdit()"
         >
           <span block text-current i-ri:close-fill />
-        </UButton>
+        </v-btn>
       </CommonTooltip>
-      <UInput
+      <v-text-field
         ref="input"
-        v-model="form.title"
+        v-model="editTitle"
         rounded-3 w-full bg-transparent
         outline="focus:none" pe-4 pb="1px"
         flex-1 placeholder-text-secondary
         @keydown.esc="cancelEdit()"
-      ></UInput>
+      ></v-text-field>
     </div>
-    <NuxtLink v-else :to="`list/${list.id}`" block grow p4>
-      {{ form.title }}
+    <NuxtLink v-else :to="`list/${listModel.id}`" block grow p4>
+      {{ listModel.title }}
     </NuxtLink>
     <div mr4 flex gap2>
-      <CommonTooltip v-if="isEditing" :content="$t('list.save')">
-        <UButton
+      <CommonTooltip v-if="isEditing" :content="t('list.save')">
+        <v-btn
           type="submit"
           text-sm p2 border-1 transition-colors
           border-dark hover:text-primary
@@ -152,10 +162,10 @@ onDeactivated(cancelEdit)
             </span>
             <span v-else block text-current i-ri:save-2-fill class="rtl-flip" />
           </template>
-        </UButton>
+        </v-btn>
       </CommonTooltip>
-      <CommonTooltip v-else :content="$t('list.edit')">
-        <UButton
+      <CommonTooltip v-else :content="t('list.edit')">
+        <v-btn
           ref="editBtn"
           type="v-btn"
           text-sm p2 border-1 transition-colors
@@ -164,10 +174,10 @@ onDeactivated(cancelEdit)
           @click.prevent="prepareEdit"
         >
           <span block text-current i-ri:edit-2-line class="rtl-flip" />
-        </UButton>
+        </v-btn>
       </CommonTooltip>
-      <CommonTooltip :content="$t('list.delete')">
-        <UButton
+      <CommonTooltip :content="t('list.delete')">
+        <v-btn
           type="v-btn"
           text-sm p2 border-1 transition-colors
           border-dark hover:text-primary
@@ -179,33 +189,33 @@ onDeactivated(cancelEdit)
             <span block i-ri:loader-2-fill aria-hidden="true" />
           </span>
           <span v-else block text-current i-ri:delete-bin-2-line class="rtl-flip" />
-        </UButton>
+        </v-btn>
       </CommonTooltip>
     </div>
-  </UForm>
+  </v-form>
   <CommonErrorMessage
     v-if="actionError"
-    :id="`action-list-error-${list.id}`"
-    :described-by="`action-list-failed-${list.id}`"
+    :id="`action-list-error-${listModel.id}`"
+    :described-by="`action-list-failed-${listModel.id}`"
     class="rounded-bs-is-0 rounded-bs-ie-0 border-t-dashed m-b-2"
   >
-    <header :id="`action-list-failed-${list.id}`" flex justify-between>
+    <header :id="`action-list-failed-${listModel.id}`" flex justify-between>
       <div flex items-center gap-x-2 font-bold>
         <div aria-hidden="true" i-ri:error-warning-fill />
-        <p>{{ $t(`list.${isEditing ? 'edit_error' : 'delete_error'}`) }}</p>
+        <p>{{ t(`list.${isEditing ? 'edit_error' : 'delete_error'}`) }}</p>
       </div>
-      <CommonTooltip placement="bottom" :content="$t('list.clear_error')">
-        <UButton
-          flex rounded-4 p1 hover:bg-active cursor-pointer transition-100 :aria-label="$t('list.clear_error')"
+      <CommonTooltip placement="bottom" :content="t('list.clear_error')">
+        <v-btn
+          flex rounded-4 p1 hover:bg-active cursor-pointer transition-100 :aria-label="t('list.clear_error')"
           @click="clearError"
         >
           <span aria-hidden="true" w="1.75em" h="1.75em" i-ri:close-line />
-        </UButton>
+        </v-btn>
       </CommonTooltip>
     </header>
     <ol ps-2 sm:ps-1>
       <li flex="~ col sm:row" gap-y-1 sm:gap-x-2>
-        <strong sr-only>{{ $t('list.error_prefix') }}</strong>
+        <strong sr-only>{{ t('list.error_prefix') }}</strong>
         <span>{{ actionError }}</span>
       </li>
     </ol>

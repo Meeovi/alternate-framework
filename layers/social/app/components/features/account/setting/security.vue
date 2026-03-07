@@ -1,21 +1,21 @@
 <template>
-  <UCard>
+  <v-card>
     <template #header>Security Settings</template>
     <template #header>
       <v-switch v-model="twoFactorAuth" label="Enable Two-Factor Authentication"
         @change="toggleTwoFactorAuth"></v-switch>
       <!--<v-row>
-        <v-col><UButton @click="viewLoginHistory" class="mb-4">View Login History</UButton></v-col>
-        <v-col><UButton @click="manageActiveSessions" color="warning">Manage Active Sessions</UButton></v-col>
+        <v-col><v-btn @click="viewLoginHistory" class="mb-4">View Login History</v-btn></v-col>
+        <v-col><v-btn @click="manageActiveSessions" color="warning">Manage Active Sessions</v-btn></v-col>
       </v-row>-->
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
   import {
     ref
-  } from 'vue';
+  } from '#imports';
 
   const config = useRuntimeConfig();
   const twoFactorAuth = ref(false);

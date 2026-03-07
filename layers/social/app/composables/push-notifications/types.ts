@@ -1,4 +1,4 @@
-import type { UserLogin } from '#shared/types'
+import type { UserLogin } from '@mframework/core/shared/types'
 
 import type { mastodon } from 'masto'
 

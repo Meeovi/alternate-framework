@@ -20,9 +20,7 @@
     "paths": {
       "@mframework/adapter-betterauth": ["app/utils/adapter-betterauth/index.ts"],
       "@mframework/adapter-betterauth/": ["app/utils/adapter-betterauth/index.ts"],
-      "@mframework/adapter-betterauth/*": ["app/utils/adapter-betterauth/*"],
-      "@mframework/core": ["types/mframework-core.d.ts", "../../packages/modules/core/src/index.ts"],
-      "#shared/*": ["../social/shared/*"]
+      "@mframework/adapter-betterauth/*": ["app/utils/adapter-betterauth/*"]
     }
   }
   ,

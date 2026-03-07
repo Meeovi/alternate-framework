@@ -73,7 +73,7 @@ const buttonStyle = computed(() => {
 </script>
 
 <template>
-  <UButton
+  <v-btn
     v-if="enable"
     gap-1 items-center group
     border-1
@@ -110,5 +110,5 @@ const buttonStyle = computed(() => {
         <span>{{ account.locked ? $t('account.request_follow') : $t('account.follow') }}</span>
       </template>
     </template>
-  </UButton>
+  </v-btn>
 </template>

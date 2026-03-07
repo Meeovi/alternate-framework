@@ -1,0 +1,9 @@
+{
+  "name": "mframework",
+  "description": "Monorepo with Vue and Nuxt, sharing a UI Library",
+  "maintainedByCoreTeam": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Meeovi/Meeovi-Starter-Template"
+  }
+}

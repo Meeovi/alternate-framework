@@ -8,7 +8,7 @@ const { disabled = false } = defineProps<{
 </script>
 
 <template>
-  <UButton
+  <v-btn
     exact-active-class="text-primary"
     block w-full group focus:outline-none text-start
     role="checkbox" :aria-checked="checked"
@@ -44,5 +44,5 @@ const { disabled = false } = defineProps<{
       </span>
       <span text-lg :class="checked ? 'i-ri-checkbox-line text-primary' : 'i-ri-checkbox-blank-line text-secondary'" />
     </span>
-  </UButton>
+  </v-btn>
 </template>

@@ -1,3 +1,5 @@
+import { Page as GrapesJsPage } from 'grapesjs'
+
 // Core
 export * from './core/result'
 export * from './core/utility'
@@ -6,40 +8,9 @@ export * from './core/id'
 export { Maybe } from './core/common'
 export * from './core/error'
 
-// Auth
-export * from './auth/user'
-export * from './auth/session'
-export * from './auth/providers'
-export * from './auth/inputs'
-export * from './auth/adapter'
-
-// Commerce
-export * from './commerce/product'
-export * from './commerce/cart'
-export * from './commerce/order'
-export * from './commerce/adapter'
-
-// Search
-export * from './search/query'
-export * from './search/result'
-export * from './search/facet'
-export * from './search/result'
-export * from './search/opensearch'
-export * from './search/adapter'
-
-// UI
-export * from './ui/form'
-export * from './ui/state'
-export * from './ui/pagination'
-export * from './ui/component'
-export * from './ui/blocks'
-export * from './ui/content'
-export * from './ui/meta'
-export * from './ui/system'
-export * from './ui/help'
-export * from './ui/os'
-export * from './ui/schema'
-export * from './ui/api/global-search'
+// Navigation
+export * from './navigation'
+export type { Page } from './navigation'
 
 // SDK
 export * from './sdk/errors'
@@ -49,9 +20,40 @@ export * from './sdk/response'
 export * from './sdk/adapter'
 
 // Compatibility exports (legacy names expected by existing packages)
-export { AuthUser as User } from './auth/user'
-export { AuthSession as Session } from './auth/session'
-export { CommerceProduct as Product } from './commerce/product'
-export { CommerceCart as Cart, CommerceCartItem as CartItem } from './commerce/cart'
 export type SearchResultGeneric<T = unknown> = { items: T[]; total: number }
 export type { Result } from './core/result'
+export { Result as SearchResult } from './core/result'
+export { Maybe as Optional } from './core/common'
+export { Result as ApiResult } from './core/result'
+export { Result as ServiceResult } from './core/result'
+
+// Additional UI types - placeholders for types that may be defined elsewhere
+export interface PageBlock {
+	collection?: string | null
+	id?: string
+	item?: any
+	hide_block?: boolean | null
+}
+
+export interface OsProposal {
+	id?: string
+	[key: string]: any
+}
+
+export type BlockType =
+	| 'block_hero'
+	| 'block_faqs'
+	| 'block_richtext'
+	| 'block_testimonials'
+	| 'block_quote'
+	| 'block_cta'
+	| 'block_form'
+	| 'block_logocloud'
+	| 'block_team'
+	| 'block_html'
+	| 'block_video'
+	| 'block_gallery'
+	| 'block_steps'
+	| 'block_columns'
+	| 'block_divider'
+

@@ -11,7 +11,7 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-  import { computed } from 'vue';
+  import { computed } from '#imports';
   import { useCompareStore } from '../../stores/compare';
   import { useNuxtApp } from '#imports';
   import type { Product } from '../../types/product';

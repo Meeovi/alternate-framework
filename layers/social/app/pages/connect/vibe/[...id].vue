@@ -1,12 +1,12 @@
 <template>
   <v-container class="py-10">
-    <UCard elevation="2" class="pa-6">
-      <template #header>{{ video?.title }}</template>
-      <UCard-subtitle>
+    <v-card elevation="2" class="pa-6">
+      <v-card-title>{{ video?.title }}</v-card-title>
+      <v-card-subtitle>
         {{ video?.visibility }} • {{ formatDuration(video?.duration) }} • 👁️ {{ video?.view_count }}
       </v-card-subtitle>
 
-      <template #header>
+      <v-card-text>
         <video
           v-if="video?.status === 'ready'"
           controls
@@ -14,45 +14,49 @@
           style="width: 100%; max-height: 500px;"
         />
 
-        <v-chip
-          v-for="tag in video?.tags"
-          :key="tag.id"
-          class="ma-1"
-          size="small"
-          color="primary"
-          variant="outlined"
-        >
-          {{ tag.name }}
-        </v-chip>
+        <div class="mt-4">
+          <v-chip
+            v-for="tag in video?.tags"
+            :key="tag.id"
+            class="ma-1"
+            size="small"
+            color="primary"
+            variant="outlined"
+          >
+            {{ tag.name }}
+          </v-chip>
+        </div>
 
-        <UButton
-          icon
-          @click="toggleLike"
-          :color="liked ? 'red' : 'grey'"
-          class="ml-2"
-        >
-          <UIcon>{{ liked ? 'mdi-heart' : 'mdi-heart-outline' }}</UIcon>
-        </UButton>
-        <span>{{ reactionCount }}</span>
-      </template>
+        <div class="mt-4">
+          <v-btn
+            icon
+            @click="toggleLike"
+            :color="liked ? 'red' : 'grey'"
+            class="ml-2"
+          >
+            <v-icon>{{ liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+          </v-btn>
+          <span>{{ reactionCount }}</span>
+        </div>
+      </v-card-text>
 
       <v-divider class="my-6" />
       <h2 class="text-h6 mb-4">💬 Comments</h2>
 
-      <UTextarea
+      <v-textarea
         v-model="newComment"
         label="Add a comment"
         auto-grow
         outlined
       />
-      <UButton color="primary" class="mt-2" @click="postComment">Post</UButton>
+      <v-btn color="primary" class="mt-2" @click="postComment">Post</v-btn>
 
       <v-list>
         <v-list-item v-for="comment in comments" :key="comment.id">
           <v-list-item-content>
             <v-list-item-title>{{ comment.content }}</v-list-item-title>
             <v-list-item-subtitle>{{ formatDate(comment.created_at) }}</v-list-item-subtitle>
-            <UButton size="small" @click="replyTo(comment)">Reply</UButton>
+            <v-btn size="small" @click="replyTo(comment)">Reply</v-btn>
 
             <v-list-item
               v-for="reply in comment.replies"
@@ -67,21 +71,21 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </UCard>
+    </v-card>
 
     <!-- Floating Emoji Bar -->
     <v-bottom-navigation grow fixed app>
-      <UButton icon @click="react('🔥')"><span>🔥</span></UButton>
-      <UButton icon @click="react('😂')"><span>😂</span></UButton>
-      <UButton icon @click="react('❤️')"><span>❤️</span></UButton>
-      <UButton icon @click="react('👏')"><span>👏</span></UButton>
+      <v-btn icon @click="react('🔥')"><span>🔥</span></v-btn>
+      <v-btn icon @click="react('😂')"><span>😂</span></v-btn>
+      <v-btn icon @click="react('❤️')"><span>❤️</span></v-btn>
+      <v-btn icon @click="react('👏')"><span>👏</span></v-btn>
     </v-bottom-navigation>
   </v-container>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from '#imports'
 
 const route = useRoute()
 const client = useDirectusClient()

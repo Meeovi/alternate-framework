@@ -21,17 +21,17 @@
         </div>
 
         <!-- Default Category Layout -->
-        <UCard variant="text" v-else>
+        <v-card variant="text" v-else>
             <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`">
                 <v-toolbar-title><NuxtLink :to="`/departments/${category?.departments?.[0]?.departments_id?.name}`">Meeovi {{ category?.departments?.[0]?.departments_id?.name }}</NuxtLink> - {{ category?.name }}</v-toolbar-title>
                 <v-slide-group show-arrows v-if="category?.categories?.length">
                     <v-slide-group-item v-slot="{ isSelected, toggle }">
                         <v-menu>
                             <template #activator="{ props }">
-                                <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" v-bind="props"
+                                <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" v-bind="props"
                                     variant="text">
                                     Categories
-                                </UButton>
+                                </v-btn>
                             </template>
 
                             <v-list class="departmentMenu">
@@ -49,13 +49,13 @@
                     </v-slide-group-item>
 
                     <v-slide-group-item v-for="menu in category.menus" :key="menu.id" v-slot="{ isSelected, toggle }">
-                        <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" :href="menu.url">
+                        <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" :href="menu.url">
                             {{ menu.name }}
-                        </UButton>
+                        </v-btn>
                     </v-slide-group-item>
                 </v-slide-group>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <!-- Product List -->
         <v-row>
@@ -83,7 +83,7 @@ void useContentAdapter()
     import productCard from '~/components/catalog/product/productCard.vue'
 
     const route = useRoute()
-import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
+import useDirectusRequest from '~/composables/useDirectusRequest'
 const { readItems, readItem } = useDirectusRequest()
 
     const slug = computed(() => {

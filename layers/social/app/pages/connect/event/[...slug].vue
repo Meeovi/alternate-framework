@@ -65,7 +65,7 @@
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import AboutEvent from '~/components/blocks/events/about.vue'
     //import DiscussionEvent from '~/components/blocks/events/discussion.vue'
 

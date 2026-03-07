@@ -44,12 +44,12 @@
         <p data-testid="total">${{ cart.totalPrice.amount }}</p>
       </div>
       <UiDivider class="my-4 w-auto" />
-      <slot />
+      <NuxtPage />
     </div>
   </div>
 </template>
 
-
+<script lang="ts" setup>
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()

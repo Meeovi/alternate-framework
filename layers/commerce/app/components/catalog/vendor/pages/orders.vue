@@ -1,5 +1,5 @@
 <template>
-    <UCard>
+    <v-card>
         <v-toolbar color="" title="Orders"></v-toolbar>
         <v-tabs v-model="tab" bg-color="primary">
             <v-tab value="one">Orders</v-tab>
@@ -22,7 +22,7 @@
                 </v-tabs-window-item>
             </v-tabs-window>
         </template>
-    </UCard>
+    </v-card>
 </template>
 
 
@@ -33,7 +33,7 @@ void useContentAdapter()
     import {
         ref,
         onMounted
-    } from 'vue';
+    } from '#imports';
     import {
         useVendureQuery
     } from '@/app/composables/useVendureQuery';

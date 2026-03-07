@@ -2,8 +2,8 @@
     <div>
         <div>
             <div class="wrap feedPost">
-                <UCard class="card__wrap" height="550">
-                    <UCard-title class="postTitle">{{ post?.title }}</template>
+                <v-card class="card__wrap" height="550">
+                    <template #title class="postTitle">{{ post?.title }}</template>
                     <div class="image">
                         <div v-if="post?.file">
                             <video :src="getAssetUrl(post?.file)"></video>
@@ -19,7 +19,7 @@
                         </div>
 
                         <div v-else>
-                            <img loading="lazy" src="assets/images/background4.jpg" :alt="post?.title || 'No Title'" />
+                            <img loading="lazy" src="https://via.placeholder.com/800x450" :alt="post?.title || 'No Title'" />
                         </div>
                     </div>
 
@@ -36,7 +36,7 @@
                         </NuxtLink>
 
                         <NuxtLink v-else :to="`/user/${post?.author?.id}`" class="postAvatar">
-                            <UAvatar image="/images/background4.jpg" size="x-small"></UAvatar>
+                            <UAvatar image="https://via.placeholder.com/40" size="x-small"></UAvatar>
                         </NuxtLink>
                     </v-toolbar>
 
@@ -47,8 +47,8 @@
                         <v-col class="mbr-section-btn">
                             <v-menu>
                                 <template v-slot:activator="{ props }">
-                                    <UButton class="btn btn-sm btn-black-outline display-4" icon="fas fa-thumbs-up"
-                                        v-bind="props" variant="text" size="small"></UButton>
+                                    <v-btn class="btn btn-sm btn-black-outline display-4" icon="fas fa-thumbs-up"
+                                        v-bind="props" variant="text" size="small"></v-btn>
                                 </template>
                                 <v-list>
                                     <reactions :contentId="post?.reactions?.reactions_id" :contentType="post?.type" />
@@ -58,9 +58,9 @@
 
                         <!--Comments-->
                         <v-col class="mbr-section-btn">
-                            <UButton prepend-icon="fas fa-comment" title="Comment on this post" variant="text"
+                            <v-btn prepend-icon="fas fa-comment" title="Comment on this post" variant="text"
                                 class="btn btn-sm btn-black-outline display-4"
-                                :href="`/connect/post/${post?.slug}`"></UButton>
+                                :href="`/connect/post/${post?.slug}`"></v-btn>
                         </v-col>
 
                         <v-col class="mbr-section-btn">
@@ -72,7 +72,7 @@
                             <share />
                         </v-col>
                     </template>
-                </UCard>
+                </v-card>
             </div>
         </div>
     </div>
@@ -86,7 +86,7 @@
         toRef,
         onMounted,
         computed
-    } from 'vue'
+    } from '#imports'
     import {
         useReactionsStore
     } from '~/stores/reactions'

@@ -1,20 +1,20 @@
 <template>
   <div v-if="loading">Loading form…</div>
 
-  <UForm v-else @submit.prevent="submit" class="space-y-4">
+  <v-form v-else @submit.prevent="submit" class="space-y-4">
     <FormField v-for="field in schema" :key="field.key" :field="field" :form="engine.form" />
 
-    <UButton type="submit" class="btn-primary">
+    <v-btn type="submit" class="btn-primary">
       {{ submitLabel || 'Submit' }}
-    </UButton>
-  </UForm>
+    </v-btn>
+  </v-form>
 </template>
 
 <script setup lang="ts">
   import {
     ref,
     onMounted
-  } from 'vue';
+  } from '#imports';
   // Resolve directus helpers at runtime (provided by a higher-level layer)
   const useVueDirectus = (globalThis as any).useVueDirectus ?? (() => ({ client: { request: async () => [] }, readFieldsByCollection: () => '', readItems: () => [] }))
   const generateFieldSchema = (globalThis as any).generateFieldSchema ?? ((fields: any[]) => [])
@@ -37,7 +37,7 @@
       directus.readFieldsByCollection(props.collection)
     );
 
-    schema.value = generateFormSchema(fields);
+    schema.value = generateFieldSchema(fields);
 
     engine.value = createFormEngine(
       props.collection,

@@ -1,4 +1,6 @@
 import type { mastodon } from 'masto'
+import { currentUser } from './users'
+import { useUserSettings, getPreferences } from './settings'
 
 const maxDistance = 10
 const maxSteps = 1000

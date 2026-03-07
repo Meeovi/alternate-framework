@@ -80,15 +80,15 @@ async function importTokens() {
           </div>
         </div>
         <div my4 border="t base" />
-        <UButton btn-text flex="~ gap-2" items-center @click="exportTokens">
+        <v-btn btn-text flex="~ gap-2" items-center @click="exportTokens">
           <span block i-ri-download-2-line />
           {{ $t('settings.users.export') }}
-        </UButton>
+        </v-btn>
       </template>
-      <UButton btn-text flex="~ gap-2" items-center @click="importTokens">
+      <v-btn btn-text flex="~ gap-2" items-center @click="importTokens">
         <span block i-ri-upload-2-line />
         {{ $t('settings.users.import') }}
-      </UButton>
+      </v-btn>
     </div>
   </MainContent>
 </template>

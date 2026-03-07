@@ -1,5 +1,5 @@
 <template>
-  <UCard>
+  <v-card>
     <template #header>Payment Methods</template>
     <template #header>
       <v-alert v-if="error" type="error">{{ error }}</v-alert>
@@ -8,19 +8,19 @@
         <v-list-item v-for="(method, index) in paymentMethods" :key="index">
           <v-list-item-title>{{ method.type }} ending in {{ method.last4 }}</v-list-item-title>
           <template v-slot:append>
-            <UButton icon @click="removePaymentMethod(method.id)">
-              <UIcon>mdi-delete</UIcon>
-            </UButton>
+            <v-btn icon @click="removePaymentMethod(method.id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
           </template>
         </v-list-item>
       </v-list>
       <div ref="paypalButtonContainer"></div>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from '#imports';
 import { useRuntimeConfig } from '#imports'
 
 const config = useRuntimeConfig()

@@ -1,4 +1,4 @@
-import type { File } from '../system/index.js';
+import type { File } from '../system/index';
 
 export interface Globals {
 	address_country?: string | null;

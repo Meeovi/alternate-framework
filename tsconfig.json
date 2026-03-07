@@ -14,8 +14,10 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "paths": {
-      "@mframework/core": ["packages/modules/core/src"],
+      "@mframework/core": ["packages/modules/core/index.ts"],
       "@mframework/core/*": ["packages/modules/core/src/*"],
+      "#shared/*": ["packages/modules/core/src/shared/*"],
+      "#shared": ["packages/modules/core/src/shared"],
       
       "~/*": [
         "./layers/commerce/app/*",

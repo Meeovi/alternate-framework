@@ -39,24 +39,24 @@ async function rejectFollowRequest() {
   <div flex gap-4>
     <template v-if="relationship?.requestedBy">
       <CommonTooltip :content="$t('account.authorize')">
-        <UButton
+        <v-btn
           type="button"
           rounded-full text-sm p2 border-1
           hover:text-green transition-colors
           @click="authorizeFollowRequest"
         >
           <span block text-current i-ri:check-fill />
-        </UButton>
+        </v-btn>
       </CommonTooltip>
       <CommonTooltip :content="$t('account.reject')">
-        <UButton
+        <v-btn
           type="button"
           rounded-full text-sm p2 border-1
           hover:text-red transition-colors
           @click="rejectFollowRequest"
         >
           <span block text-current i-ri:close-fill />
-        </UButton>
+        </v-btn>
       </CommonTooltip>
     </template>
     <template v-else>

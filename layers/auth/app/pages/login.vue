@@ -7,7 +7,7 @@
       </v-toolbar-subtitle>
     </v-toolbar>
 
-    <UCard>
+    <v-card>
       <div class="grid gap-4">
         <div class="grid gap-2">
           <Label for="email">Email</Label>
@@ -28,19 +28,19 @@
           <Checkbox id="remember" v-model="rememberMe" />
           <Label for="remember">Remember me</Label>
         </div>
-        <UButton type="submit" class="w-full" :disabled="loading" @click="handleSignIn">
+        <v-btn type="submit" class="w-full" :disabled="loading" @click="handleSignIn">
           <Loader2 size="16" class="animate-spin" v-if="loading" />
           <p v-else>Login</p>
-        </UButton>
-        <UButton variant="secondary" :disabled="loading" class="gap-2" @click="handlePasskey">
+        </v-btn>
+        <v-btn variant="secondary" :disabled="loading" class="gap-2" @click="handlePasskey">
           <Key size="16" />
           Sign-in with Passkey
-        </UButton>
+        </v-btn>
         <div :class="cn(
 					'w-full gap-2 flex items-center',
 					'justify-between flex-col'
 				)">
-          <UButton variant="outlined" :class="cn(
+          <v-btn variant="outlined" :class="cn(
 							'w-full gap-2'
 						)" :disabled="loading" @click="handleSocialSignIn('github')">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -49,16 +49,16 @@
               </path>
             </svg>
             Sign in with Github
-          </UButton>
-          <UButton variant="outlined" :class="cn(
+          </v-btn>
+          <v-btn variant="outlined" :class="cn(
 							'w-full gap-2'
 						)" :disabled="loading" @click="handleSocialSignIn('microsoft')">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
               <path fill="#00A4EF" d="M2 3h9v9H2zm9 19H2v-9h9zM21 3v9h-9V3zm0 19h-9v-9h9z"></path>
             </svg>
             Sign in with Microsoft
-          </UButton>
-          <UButton variant="outlined" :class="cn(
+          </v-btn>
+          <v-btn variant="outlined" :class="cn(
 							'w-full gap-2'
 						)" :disabled="loading" @click="handleSocialSignIn('twitter')">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 448 512">
@@ -67,17 +67,17 @@
               </path>
             </svg>
             Sign in with Twitter
-          </UButton>
+          </v-btn>
         </div>
       </div>
-    </UCard>
+    </v-card>
   </div>
 </template>
 
 <script setup>
   import {
     ref
-  } from "vue";
+  } from '#imports';
   import { useAuth } from "../composables/useAuth";
 
   const { signIn } = useAuth();

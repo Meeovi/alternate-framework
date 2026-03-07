@@ -1,5 +1,5 @@
 <template>
-  <UCard class="media-player">
+  <v-card class="media-player">
     <div v-if="currentMedia">
       <!-- Video Player -->
       <video
@@ -44,30 +44,30 @@
 
     <!-- Controls -->
     <template class="px-4 py-2">
-      <UButton
+      <v-btn
         icon
         @click="previousTrack"
         :disabled="currentIndex === 0"
       >
-        <UIcon>mdi-skip-previous</UIcon>
-      </UButton>
+        <v-icon>mdi-skip-previous</v-icon>
+      </v-btn>
       
-      <UButton
+      <v-btn
         icon
         @click="togglePlayPause"
         color="primary"
         size="large"
       >
-        <UIcon>{{ isPlaying ? 'mdi-pause' : 'mdi-play' }}</UIcon>
-      </UButton>
+        <v-icon>{{ isPlaying ? 'mdi-pause' : 'mdi-play' }}</v-icon>
+      </v-btn>
       
-      <UButton
+      <v-btn
         icon
         @click="nextTrack"
         :disabled="currentIndex === playlist.length - 1"
       >
-        <UIcon>mdi-skip-next</UIcon>
-      </UButton>
+        <v-icon>mdi-skip-next</v-icon>
+      </v-btn>
       
       <v-spacer />
       
@@ -84,25 +84,25 @@
       
       <v-spacer />
       
-      <UButton
+      <v-btn
         icon
         @click="toggleShuffle"
         :color="shuffle ? 'primary' : 'default'"
       >
-        <UIcon>mdi-shuffle</UIcon>
-      </UButton>
+        <v-icon>mdi-shuffle</v-icon>
+      </v-btn>
       
-      <UButton
+      <v-btn
         icon
         @click="toggleRepeat"
         :color="repeat !== 'none' ? 'primary' : 'default'"
       >
-        <UIcon>{{ repeatIcon }}</UIcon>
-      </UButton>
+        <v-icon>{{ repeatIcon }}</v-icon>
+      </v-btn>
       
-      <UButton icon @click="showPlaylist = !showPlaylist">
-        <UIcon>mdi-playlist-music</UIcon>
-      </UButton>
+      <v-btn icon @click="showPlaylist = !showPlaylist">
+        <v-icon>mdi-playlist-music</v-icon>
+      </v-btn>
     </template>
 
     <!-- Playlist -->
@@ -137,7 +137,7 @@
         </v-list>
       </div>
     </v-expand-transition>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>

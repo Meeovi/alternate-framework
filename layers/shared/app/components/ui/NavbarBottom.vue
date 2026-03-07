@@ -1,63 +1,51 @@
 <template>
-  <nav class="w-full fixed bottom-0 left-0 flex flex-row items-stretch md:hidden" data-testid="navbar-bottom">
+  <nav class="max-w-[500px] bottom-0 w-full left-0 fixed flex flex-row items-stretch bg-white text-primary-700">
     <SfButton
-      v-for="{ label, icon, link } in items"
-      :key="label"
+      v-for="item in items"
+      :key="item.label"
       variant="tertiary"
       :class="[
-        '!p-1 !pt-3 flex flex-col h-full w-full rounded-none bg-primary-700 text-white hover:text-white hover:bg-primary-800 active:text-white active:bg-primary-900 !text-xs !font-base',
-        { 'text-white bg-primary-900': $route.path === link },
+        'pt-3 pb-1 gap-0.5 flex flex-col h-full w-full rounded-none hover:text-primary-800 hover:bg-primary-100 active:text-primary-900 active:bg-primary-200',
+        { 'text-primary-900 bg-primary-200': selectedItem === item.label },
       ]"
-      size="sm"
-      :tag="NuxtLink"
-      :to="link"
+      @click="onClickHandler(item.label)"
     >
       <template #prefix>
-        <div class="relative">
-          <component :is="icon" />
-          <SfBadge
-            v-if="label === 'cart'"
-            :content="cartLineItemsCount"
-            class="outline-white bg-white !text-neutral-900 translate-x-[5px] translate-y-[-3px]"
-          />
-        </div>
+        <Component :is="item.icon" />
       </template>
-      {{ label }}
+      {{ item.label }}
     </SfButton>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { SfButton, SfBadge, SfIconShoppingCart, SfIconHome, SfIconMenu, SfIconPerson } from '@storefront-ui/vue';
-
-const { t } = useI18n();
-const { data: cart } = useCart();
+import { ref } from '#imports';
+import { SfButton, SfIconHome, SfIconMenu, SfIconShoppingCart, SfIconFavorite, SfIconPerson } from '@storefront-ui/vue';
 
 const items = [
   {
-    label: t('home'),
+    label: 'Home',
     icon: SfIconHome,
-    link: paths.home,
   },
   {
-    label: t('products'),
+    label: 'Products',
     icon: SfIconMenu,
-    link: paths.category,
   },
   {
-    label: t('cart'),
+    label: 'Cart',
     icon: SfIconShoppingCart,
-    link: paths.cart,
   },
   {
-    label: t('account.navBarBottomHeading'),
+    label: 'Watchlist',
+    icon: SfIconFavorite,
+  },
+  {
+    label: 'Account',
     icon: SfIconPerson,
-    link: paths.account,
   },
 ];
-
-const cartLineItemsCount = computed(
-  () => cart.value?.lineItems.reduce((total, { quantity }) => total + quantity, 0) ?? 0,
-);
-const NuxtLink = resolveComponent('NuxtLink');
+const selectedItem = ref('');
+function onClickHandler(itemLabel: string) {
+  selectedItem.value = itemLabel;
+}
 </script>

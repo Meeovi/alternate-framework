@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useMasto } from '~/composables/masto/masto';
+
 const { client } = useMasto()
 const paginator = client.value.v1.domainBlocks.list()
 

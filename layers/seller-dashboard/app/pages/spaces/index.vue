@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Spaces</h2>
-    <UButton @click="refresh">Refresh</UButton>
+    <v-btn @click="refresh">Refresh</v-btn>
     <ul>
       <li v-for="sp in spaces" :key="sp.id">{{ sp.name || sp.id }}</li>
     </ul>
@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 import { useSellerSpaces } from '~/layers/seller-dashboard/app/composables/useSellerSpaces'
 
 const spaces = ref([])

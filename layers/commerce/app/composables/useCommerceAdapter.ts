@@ -1,5 +1,5 @@
-import { useProducts } from './products/useProducts'
-import { useCart } from './cart/useCart'
+import { useProducts } from './useProducts/useProducts'
+import { useCart } from './useCart/useCart'
 import { useOrders } from './orders'
 
 export function useCommerceAdapter(): any {

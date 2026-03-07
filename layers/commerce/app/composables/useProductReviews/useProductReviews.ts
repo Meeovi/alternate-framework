@@ -1,7 +1,7 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, SfProductReview } from '../_types';
+import type { Maybe, SfProductReview } from '../models';
 import type {
   UseProductReviews,
   UseProductReviewsState,

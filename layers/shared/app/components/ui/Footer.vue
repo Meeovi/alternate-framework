@@ -12,11 +12,11 @@
           <SfListItem
             v-for="{ key: subcategoryKey, link } in subcategories"
             :key="subcategoryKey"
-            class="py-2 !bg-transparent typography-text-sm font-body"
+            class="py-2 bg-transparent! typography-text-sm font-body"
           >
             <SfLink
               :tag="NuxtLink"
-              class="no-underline text-neutral-600 hover:underline hover:!text-neutral-900 active:underline active:!text-neutral-900"
+              class="no-underline text-neutral-600 hover:underline hover:text-neutral-900! active:underline active:text-neutral-900!"
               variant="secondary"
               :to="link"
             >
@@ -33,7 +33,7 @@
         <p class="py-1 my-2 font-medium typography-text-lg font-body">
           <SfLink
             :tag="NuxtLink"
-            class="no-underline text-neutral-600 hover:underline hover:!text-neutral-900 active:underline active:!text-neutral-900"
+            class="no-underline text-neutral-600 hover:underline hover:text-neutral-900! active:underline active:text-neutral-900!"
             variant="secondary"
             :to="link"
           >
@@ -56,7 +56,7 @@
             :title="$t('socialLabel', { label })"
             square
             variant="tertiary"
-            class="text-white active:text-white hover:text-white hover:!bg-neutral-500 active:!bg-transparent"
+            class="text-white active:text-white hover:text-white hover:bg-neutral-500! active:bg-transparent!"
             :data-testid="label"
           >
             <component :is="icon" />
@@ -88,5 +88,7 @@
 import { SfButton, SfLink, SfListItem } from '@storefront-ui/vue';
 import { bottomLinks, categories, companyName, contactOptions, socialMedia } from '~/mocks';
 
-const NuxtLink = resolveComponent('NuxtLink');
+// Use string 'NuxtLink' to defer resolution - this works without auto-imports
+const NuxtLink = 'NuxtLink';
+
 </script>

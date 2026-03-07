@@ -7,7 +7,7 @@
             <div>
               <div class="shadow">
                 <img v-if="!user?.image" :src="user?.image" :alt="user?.name" class="align">
-                <img v-else src="assets/images/team1.jpg" :alt="user?.name" class="align">
+                <img v-else src="https://via.placeholder.com/200" :alt="user?.name" class="align">
                 <h5 class="card-title mbr-fonts-style display-2">
                   <strong>{{ user?.name }}</strong>
                 </h5>
@@ -62,11 +62,10 @@
   import {
     onMounted,
     ref
-  } from 'vue';
+  } from '#imports';
   import {
     useRoute
   } from 'vue-router';
-  import Toast from 'vue-toastification';
 
   const route = useRoute();
   const tab = ref(null);
@@ -75,7 +74,7 @@
     session,
     client
   } = useAuth()
-  const toast = Toast()
+  const toast = useToast()
   const {
     t
   } = useI18n()

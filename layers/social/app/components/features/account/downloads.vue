@@ -2,7 +2,7 @@
   <div>
     <v-toolbar color="transparent" density="compact" title="My Downloads">
       <v-spacer />
-      <UInput
+      <v-text-field
         v-model="search"
         append-icon="fas:fa fa-search"
         label="Search Downloads"
@@ -13,7 +13,7 @@
       />
     </v-toolbar>
 
-    <UCard>
+    <v-card>
       <v-table>
         <thead>
           <tr>
@@ -40,7 +40,7 @@
             </td>
             <td>{{ download.downloads_remaining }}</td>
             <td>
-              <UButton
+              <v-btn
                 v-if="download.status === 'available'"
                 color="primary"
                 size="small"
@@ -48,7 +48,7 @@
                 :loading="downloading === download.id"
               >
                 Download
-              </UButton>
+              </v-btn>
             </td>
           </tr>
         </tbody>
@@ -59,12 +59,12 @@
         :length="totalPages"
         @update:model-value="loadDownloads"
       />
-    </UCard>
+    </v-card>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from '#imports'
 import { useMagentoApi } from '#commerce/app/composables/useMagentoApi'
 
 const downloads = ref([])

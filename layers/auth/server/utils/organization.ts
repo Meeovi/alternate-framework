@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth"
 import { organization } from "better-auth/plugins"
-import prisma from '@mframework/core'
+import { prisma } from '@mframework/core'
 
 function makeErr(err: unknown) {
   return { ok: false, error: (err as Error)?.message ?? String(err) }
@@ -131,10 +131,10 @@ export const organizationAuth = betterAuth({
     organization({
       allowUserToCreateOrganization: async (user: any) => {
         if (!user?.id) return false
-        const res = await coreListOrganizationsForUser(user.id)
+        const res = await listOrganizationsForUser(user.id)
         if (!res.ok) return true
         // limit organizations per user to 5 by default
-        return (res.data || []).length < 5
+        return ((res as any).data || []).length < 5
       },
 
       validateOrganizationCreation: async (payload: any, _user: any) => {
@@ -152,13 +152,13 @@ export const organizationAuth = betterAuth({
       },
 
       listOrganizationsForUser: async (user: any) => {
-        const res = await coreListOrganizationsForUser(user.id)
-        return res.ok ? res.data : []
+        const res = await listOrganizationsForUser(user.id)
+        return res.ok ? (res as any).data : []
       },
 
       getOrganizationById: async (id: string) => {
         const res = await getOrganizationById(id)
-        return res.ok ? res.data : null
+        return res.ok ? (res as any).data : null
       },
 
       canInviteMember: async (_organization: any, inviter: any, _inviteeEmail: string) => {
@@ -168,37 +168,37 @@ export const organizationAuth = betterAuth({
 
       sendInvite: async (organization: any, inviter: any, inviteeEmail: string) => {
         const res = await createInvite(organization.id, inviter.id, inviteeEmail)
-        return res.ok ? res.data : { ok: false, error: res.error }
+        return res.ok ? (res as any).data : { ok: false, error: (res as any).error }
       },
 
       acceptInvite: async (code: string, user: any) => {
-        const res = await coreAcceptInvite(code, user.id)
-        return res.ok ? { success: true, organizationId: res.data?.organizationId } : { success: false, error: res.error }
+        const res = await acceptInvite(code, user.id)
+        return res.ok ? { success: true, organizationId: (res as any).data?.organizationId } : { success: false, error: (res as any).error }
       },
 
       removeMember: async (organizationId: string, memberId: string) => {
-        const res = await coreRemoveMember(organizationId, memberId)
-        return res.ok ? { success: true } : { success: false, error: res.error }
+        const res = await removeMember(organizationId, memberId)
+        return res.ok ? { success: true } : { success: false, error: (res as any).error }
       },
 
       updateOrganization: async (organizationId: string, updates: any) => {
-        const res = await coreUpdateOrganization(organizationId, updates)
-        return res.ok ? { success: true, organization: res.data } : { success: false, error: res.error }
+        const res = await updateOrganization(organizationId, updates)
+        return res.ok ? { success: true, organization: (res as any).data } : { success: false, error: (res as any).error }
       },
 
       deleteOrganization: async (organizationId: string) => {
-        const res = await coreDeleteOrganization(organizationId)
-        return res.ok ? { success: true } : { success: false, error: res.error }
+        const res = await deleteOrganization(organizationId)
+        return res.ok ? { success: true } : { success: false, error: (res as any).error }
       },
 
       listMembers: async (organizationId: string) => {
-        const res = await coreListMembers(organizationId)
-        return res.ok ? res.data : []
+        const res = await listMembers(organizationId)
+        return res.ok ? (res as any).data : []
       },
 
       changeMemberRole: async (organizationId: string, memberId: string, role: string) => {
-        const res = await coreChangeMemberRole(organizationId, memberId, role)
-        return res.ok ? { success: true } : { success: false, error: res.error }
+        const res = await changeMemberRole(organizationId, memberId, role)
+        return res.ok ? { success: true } : { success: false, error: (res as any).error }
       },
     }),
   ],

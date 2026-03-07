@@ -30,7 +30,7 @@ void useContentAdapter()
     import {
         ref,
         onMounted
-    } from 'vue'
+    } from '#imports'
 
     const props = defineProps({
         brand: {

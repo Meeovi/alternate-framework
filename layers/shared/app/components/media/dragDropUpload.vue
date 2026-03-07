@@ -1,22 +1,22 @@
 <template>
     <v-dialog max-width="500">
         <template v-slot:activator="{ props: activatorProps }">
-            <UButton color="primary" v-bind="activatorProps" icon="fas fa-gear" size="medium"
-                title="Upload Media"></UButton>
+            <v-btn color="primary" v-bind="activatorProps" icon="fas fa-gear" size="medium"
+                title="Upload Media"></v-btn>
         </template>
 
         <template v-slot:default="{ isActive }">
-            <UCard title="Dialog">
+            <v-card title="Dialog">
                 <template #header>
                     <div v-if="formError" class="error">{{ formError }}</div>
                     <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                    <UForm @submit.prevent="submitForm">
+                    <v-form @submit.prevent="submitForm">
                         <DirectusFormElement v-for="field in mediaFields" :key="field.field" :field="field"
                             v-model="form[field.field]" />
-                        <UButton type="submit">Post</UButton>
-                    </UForm>
+                        <v-btn type="submit">Post</v-btn>
+                    </v-form>
                 </template>
-            </UCard>
+            </v-card>
         </template>
     </v-dialog>
 </template>
@@ -24,7 +24,7 @@
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import DirectusFormElement from '../ui/forms/DirectusFormElement.vue'
         import { useDirectusForm } from '../../composables/useDirectusForm'
         import { useDirectusSchema } from '../../composables/useDirectusSchema'

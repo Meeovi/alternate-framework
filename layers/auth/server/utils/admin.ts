@@ -8,9 +8,9 @@ export const adminAuth = betterAuth({
         adminPlugin({
             ac,
             roles: {
-                admin,
-                user,
-                myCustomRole
+                admin: admin as any,
+                user: user as any,
+                myCustomRole: myCustomRole as any
             }
         }),
     ],

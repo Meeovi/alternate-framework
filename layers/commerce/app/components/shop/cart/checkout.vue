@@ -1,6 +1,6 @@
 <template>
     <div class="checkout-form">
-        <UForm @submit.prevent="handleSubmit">
+        <v-form @submit.prevent="handleSubmit">
             <div v-if="error" class="error-message">
                 {{ error }}
             </div>
@@ -11,7 +11,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="shipping-firstname">First Name*</label>
-                        <UInput 
+                        <v-text-field 
                             id="shipping-firstname"
                             v-model="shippingAddress.firstname"
                             type="text"
@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group">
                         <label for="shipping-lastname">Last Name*</label>
-                        <UInput 
+                        <v-text-field 
                             id="shipping-lastname"
                             v-model="shippingAddress.lastname"
                             type="text"
@@ -30,7 +30,7 @@
                 </div>
                 <div class="form-group">
                     <label for="shipping-street">Street Address*</label>
-                    <UInput 
+                    <v-text-field 
                         id="shipping-street"
                         v-model="shippingAddress.street[0]"
                         type="text"
@@ -40,7 +40,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="shipping-city">City*</label>
-                        <UInput 
+                        <v-text-field 
                             id="shipping-city"
                             v-model="shippingAddress.city"
                             type="text"
@@ -49,7 +49,7 @@
                     </div>
                     <div class="form-group">
                         <label for="shipping-postcode">Postcode*</label>
-                        <UInput 
+                        <v-text-field 
                             id="shipping-postcode"
                             v-model="shippingAddress.postcode"
                             type="text"
@@ -73,7 +73,7 @@
                     </div>
                     <div class="form-group">
                         <label for="shipping-telephone">Phone Number*</label>
-                        <UInput 
+                        <v-text-field 
                             id="shipping-telephone"
                             v-model="shippingAddress.telephone"
                             type="tel"
@@ -93,7 +93,7 @@
             <div class="form-section">
                 <h3>Billing Address</h3>
                 <div class="form-check">
-                    <UInput 
+                    <v-text-field 
                         type="checkbox"
                         id="same-as-shipping"
                         v-model="sameAsShipping"
@@ -105,7 +105,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="billing-firstname">First Name*</label>
-                            <UInput 
+                            <v-text-field 
                                 id="billing-firstname"
                                 v-model="billingAddress.firstname"
                                 type="text"
@@ -114,7 +114,7 @@
                         </div>
                         <div class="form-group">
                             <label for="billing-lastname">Last Name*</label>
-                            <UInput 
+                            <v-text-field 
                                 id="billing-lastname"
                                 v-model="billingAddress.lastname"
                                 type="text"
@@ -155,11 +155,11 @@
                 </div>
             </div>
 
-            <UButton class="submit-v-btn" type="submit" :disabled="loading">
+            <v-btn class="submit-v-btn" type="submit" :disabled="loading">
                 <span v-if="loading">Processing...</span>
                 <span v-else>Pay {{ formatPrice(cart.total) }}</span>
-            </UButton>
-        </UForm>
+            </v-btn>
+        </v-form>
     </div>
 </template>
 
@@ -168,7 +168,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch } from '#imports'
 import { loadStripe } from '@stripe/stripe-js'
 import { useCartStore } from '~/stores/cart'
 import ShippingOptions from '../../catalog/product/shippingOptions.vue'

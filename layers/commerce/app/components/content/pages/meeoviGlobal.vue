@@ -14,9 +14,9 @@
                     <v-list-item>
                         <v-menu>
                             <template v-slot:activator="{ props }">
-                                <UButton color="warning" v-bind="props">
+                                <v-btn color="warning" v-bind="props">
                                     {{ page?.repeaterTextBox?.[2]?.description }}
-                                </UButton>
+                                </v-btn>
                             </template>
                             <v-list>
                                 <v-list-item v-for="(sites, index) in sites" :key="index" :value="index">

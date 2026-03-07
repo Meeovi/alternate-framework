@@ -1,4 +1,4 @@
-import { SfShippingMethods, Maybe } from '../_types';
+import type { SfShippingMethods, Maybe } from '../models';
 import type { Ref } from 'vue';
 
 export interface UseCartShippingMethodsState {

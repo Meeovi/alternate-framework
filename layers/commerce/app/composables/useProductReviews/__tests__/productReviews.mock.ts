@@ -1,4 +1,4 @@
-import type { SfProductReview } from '../_types';
+import type { SfProductReview } from '../../models';
 
 export const mockProductReviews: SfProductReview[] = [
   {

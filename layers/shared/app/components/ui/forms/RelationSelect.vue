@@ -1,5 +1,5 @@
 <template>
-    <USelect v-model="internalValue" :items="options" :label="label" :multiple="multiple" item-title="display"
+    <v-select v-model="internalValue" :items="options" :label="label" :multiple="multiple" item-title="display"
         item-value="id" clearable />
 </template>
 
@@ -8,7 +8,7 @@
         ref,
         onMounted,
         computed
-    } from "vue";
+    } from '#imports';
 
     const props = defineProps({
         modelValue: {

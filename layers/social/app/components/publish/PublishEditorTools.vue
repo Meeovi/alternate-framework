@@ -9,43 +9,43 @@ defineProps<{
 <template>
   <CommonTooltip placement="top" :content="$t('tooltip.open_editor_tools')">
     <VDropdown v-if="editor" placement="bottom">
-      <UButton
+      <v-btn
         btn-action-icon
         :aria-label="$t('tooltip.open_editor_tools')"
       >
         <div i-ri:font-size-2 />
-      </UButton>
+      </v-btn>
       <template #popper>
         <div flex gap-1>
           <CommonTooltip placement="top" :content="$t('tooltip.toggle_code_block')">
-            <UButton
+            <v-btn
               btn-action-icon
               :aria-label="$t('tooltip.toggle_code_block')"
               :class="editor.isActive('codeBlock') ? 'text-primary' : ''"
               @click="editor?.chain().focus().toggleCodeBlock().run()"
             >
               <div i-ri:code-s-slash-line />
-            </UButton>
+            </v-btn>
           </CommonTooltip>
           <CommonTooltip placement="top" :content="$t('tooltip.toggle_bold')">
-            <UButton
+            <v-btn
               btn-action-icon
               :aria-label="$t('tooltip.toggle_bold')"
               :class="editor.isActive('bold') ? 'text-primary' : ''"
               @click="editor?.chain().focus().toggleBold().run()"
             >
               <div i-ri:bold />
-            </UButton>
+            </v-btn>
           </CommonTooltip>
           <CommonTooltip placement="top" :content="$t('tooltip.toggle_italic')">
-            <UButton
+            <v-btn
               btn-action-icon
               :aria-label="$t('tooltip.toggle_italic')"
               :class="editor.isActive('italic') ? 'text-primary' : ''"
               @click="editor?.chain().focus().toggleItalic().run()"
             >
               <div i-ri:italic />
-            </UButton>
+            </v-btn>
           </CommonTooltip>
         </div>
       </template>

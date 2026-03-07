@@ -1,4 +1,4 @@
-import { uploadFiles } from '@mframework/directus-client';
+import { uploadFiles } from '@mframework/adapter-directus';
 
 export default async function uploadFile({ imageFile, documentFile, videoFile, audioFile }) {
   const content = useContentAdapter()
@@ -19,7 +19,7 @@ export default async function uploadFile({ imageFile, documentFile, videoFile, a
         }
       }
       if (nuxt && nuxt.$directus) {
-        const { uploadFiles } = await import('@mframework/directus-client').catch(() => ({}))
+        const { uploadFiles } = await import('@mframework/adapter-directus').catch(() => ({}))
         if (typeof nuxt.$directus.request === 'function' && typeof uploadFiles === 'function') {
           return await nuxt.$directus.request(uploadFiles(form))
         }

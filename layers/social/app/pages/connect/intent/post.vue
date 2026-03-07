@@ -21,6 +21,6 @@ onMounted(async () => {
 
 <template>
   <div>
-    <slot />
+    <NuxtPage />
   </div>
 </template>

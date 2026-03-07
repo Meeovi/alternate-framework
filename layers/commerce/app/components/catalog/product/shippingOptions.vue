@@ -5,9 +5,9 @@
         </v-col>
 
         <v-col cols="12">
-            <USelect v-model="selected" :items="shippingOptions" item-title="name" item-value="id"
+            <v-select v-model="selected" :items="shippingOptions" item-title="name" item-value="id"
                 label="Select Delivery Method" single-line variant="solo" :loading="loading"
-                :disabled="loading || shippingOptions.length === 0"></USelect>
+                :disabled="loading || shippingOptions.length === 0"></v-select>
         </v-col>
     </v-row>
 </template>
@@ -16,8 +16,8 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-import { onMounted, watch } from 'vue'
-import { useShippingSelection } from '~/app/composables/cart/useShippingSelection'
+import { onMounted, watch } from '#imports'
+import { useShippingSelection } from '../../../composables/cart/useShippingSelection'
 
 const props = defineProps({
     modelValue: { type: [String, Number, null], default: null }

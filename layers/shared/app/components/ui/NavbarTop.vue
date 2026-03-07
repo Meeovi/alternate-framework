@@ -13,7 +13,7 @@
       <NuxtLink :to="paths.home" aria-label="Sf Homepage" class="h-6 md:h-7 -mt-1.5">
         <UiVsfLogo />
       </NuxtLink>
-      <slot />
+      <NuxtPage />
     </div>
   </header>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Picker } from 'emoji-mart'
-import importEmojiLang from 'virtual:emoji-mart-lang-importer'
+// Fallback for build-time when the virtual emoji-mart lang importer is unavailable
+const importEmojiLang = async (_lang: string) => ({})
 
 const emit = defineEmits<{
   (e: 'select', code: string): void
@@ -61,7 +62,7 @@ function hideEmojiPicker() {
       @apply-show="openEmojiPicker()"
       @apply-hide="hideEmojiPicker()"
     >
-      <slot />
+      <NuxtPage />
 
       <template #popper>
         <div ref="el" min-w-10 min-h-10 />

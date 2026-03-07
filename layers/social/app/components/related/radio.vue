@@ -1,17 +1,17 @@
 <template>
     <div>
-        <UCard color="#b02564">
+        <v-card color="#b02564">
             <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
-                    <UCard-title class="text-h5">
+                    <template #title class="text-h5">
                         {{ radio?.name }}
                     </template>
 
-                    <UCard-subtitle>{{ radio?.description }}</v-card-subtitle>
+                    <v-card #header>{{ radio?.description }}</v-card>
 
                     <template>
-                        <UButton class="ms-2" size="small" text="LISTEN" variant="outlined"
-                            :href="`/departments/categories/station/${radio?.id}`"></UButton>
+                        <v-btn class="ms-2" size="small" text="LISTEN" variant="outlined"
+                            :href="`/departments/categories/station/${radio?.id}`"></v-btn>
                     </template>
                 </div>
 
@@ -19,7 +19,7 @@
                     <NuxtImg :src="getAssetUrl(radio?.image)" />
                 </UAvatar>
             </div>
-        </UCard>
+        </v-card>
     </div>
 </template>
 

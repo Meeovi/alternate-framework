@@ -3,7 +3,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 
-import { ref, computed } from 'vue';
+import { ref, computed } from '#imports';
 import { useVendureMutation } from '../../../composables/useVendureMutation';
 import adjustOrderLineMutation from '#graphql/app/commerce/mutations/adjustOrderLine.gql';
 import removeOrderLineMutation from '#graphql/app/commerce/mutations/removeOrderLine.gql';
@@ -48,9 +48,9 @@ const removeItem = async () => {
     </div>
     <div class="flex flex-1 items-end justify-end text-sm">
       <div class="flex">
-        <UButton v-if="isRemovable" type="v-btn" class="font-medium text-dark bg-transparent" @click="removeItem">
+        <v-btn v-if="isRemovable" type="v-btn" class="font-medium text-dark bg-transparent" @click="removeItem">
           Remove
-        </UButton>
+        </v-btn>
       </div>
     </div>
   </div>

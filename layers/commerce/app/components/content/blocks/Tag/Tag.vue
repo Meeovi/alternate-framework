@@ -8,7 +8,7 @@
     ]"
     data-testid="tag"
   >
-    <slot />
+    <NuxtPage />
   </div>
 </template>
 <script setup lang="ts">

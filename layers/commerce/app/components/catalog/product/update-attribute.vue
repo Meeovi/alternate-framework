@@ -2,16 +2,16 @@
     <v-row justify="center">
         <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
             <template v-slot:activator="{ props }">
-                <UButton v-bind="props" class="rightAddBtn">
-                    <UIcon start icon="fas:fa fa-plus"></UIcon>Add Attribute
-                </UButton>
+                <v-btn v-bind="props" class="rightAddBtn">
+                    <v-icon start icon="fas:fa fa-plus"></v-icon>Add Attribute
+                </v-btn>
             </template>
-            <UCard>
-                <UForm method="post" @v-on:submit.prevent="addAttribute()">
+            <v-card>
+                <v-form method="post" @v-on:submit.prevent="addAttribute()">
                     <v-toolbar dark color="primary">
-                        <UButton icon dark @click="dialog = false">
-                            <UIcon icon="fas:fa fa-circle-xmark"></UIcon>
-                        </UButton>
+                        <v-btn icon dark @click="dialog = false">
+                            <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
+                        </v-btn>
                         <template #header>
                             <span class="text-h6">Create new Attribute</span>
                         </template>
@@ -20,20 +20,20 @@
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <UInput v-model="name" id="addressName" label="Attribute Name*" required></UInput>
+                                    <v-text-field v-model="name" id="addressName" label="Attribute Name*" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <UTextarea v-model="content" label="Description" id="addressDescription">
-                                    </UTextarea>
+                                    <v-textarea v-model="content" label="Description" id="addressDescription">
+                                    </v-textarea>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="meta_title" label="Meta Name" id="addressName"></UInput>
+                                    <v-text-field v-model="meta_title" label="Meta Name" id="addressName"></v-text-field>
                                 </v-col>
                                 <v-col cols="6">
-                                    <UInput v-model="meta_keywords" label="Meta Keywords"></UInput>
+                                    <v-text-field v-model="meta_keywords" label="Meta Keywords"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <UTextarea v-model="meta_description" label="Meta Description" id="addressDescription"></UTextarea>
+                                    <v-textarea v-model="meta_description" label="Meta Description" id="addressDescription"></v-textarea>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -41,15 +41,15 @@
                     </template>
                     <template>
                         <v-spacer></v-spacer>
-                        <UButton color="blue-darken-1" variant="text" @click="dialog = false">
+                        <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
                             Close
-                        </UButton>
-                        <UButton color="blue-darken-1" variant="text" @click="dialog = false">
+                        </v-btn>
+                        <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
                             Save
-                        </UButton>
+                        </v-btn>
                     </template>
-                </UForm>
-            </UCard>
+                </v-form>
+            </v-card>
         </v-dialog>
     </v-row>
 </template>
@@ -60,7 +60,7 @@ void useCommerceAdapter()
 void useContentAdapter()
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     
 
     const config = useRuntimeConfig();

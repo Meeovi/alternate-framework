@@ -72,5 +72,5 @@ const toggle = () => {
   dropdownOpened.value = !dropdownOpened.value;
 };
 
-const NuxtLink = resolveComponent('NuxtLink');
+
 </script>

@@ -7,17 +7,17 @@
         </div>
 
         <div v-else>
-            <UCard variant="text">
+            <v-card variant="text">
                 <v-toolbar :style="`background-color: ${department?.color}; color: ${department?.colortext}`"
                     :title="department?.name">
                     <v-slide-group show-arrows v-if="department?.categories?.length">
                         <v-slide-group-item v-slot="{ isSelected, toggle }">
                             <v-menu>
                                 <template v-slot:activator="{ props }">
-                                    <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
+                                    <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
                                         v-bind="props" append-icon="fas:fa fa-caret-down" variant="text">
                                         Categories
-                                    </UButton>
+                                    </v-btn>
                                 </template>
                                 <v-list class="departmentMenu">
                                     <v-row>
@@ -38,10 +38,10 @@
 
                         <v-slide-group-item v-if="department?.menus?.length" v-for="menu in department?.menus"
                             :key="menu" v-slot="{ isSelected, toggle }">
-                            <UButton :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
+                            <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
                                 :href="`${menu?.url}`">
                                 {{ menu?.name }}
-                            </UButton>
+                            </v-btn>
                         </v-slide-group-item>
                     </v-slide-group>
                 </v-toolbar>
@@ -93,8 +93,8 @@
                                             @click="toggle" />
                                         <div class="d-flex fill-height align-center justify-center">
                                             <v-scale-transition>
-                                                <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                                    size="48"></UIcon>
+                                                <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                                    size="48"></v-icon>
                                             </v-scale-transition>
                                         </div>
                                     </v-slide-group-item>
@@ -123,8 +123,8 @@
                                             @click="toggle" />
                                         <div class="d-flex fill-height align-center justify-center">
                                             <v-scale-transition>
-                                                <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                                    size="48"></UIcon>
+                                                <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                                    size="48"></v-icon>
                                             </v-scale-transition>
                                         </div>
                                     </v-slide-group-item>
@@ -145,8 +145,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></UIcon>
+                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></v-icon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -163,8 +163,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></UIcon>
+                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></v-icon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -180,8 +180,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></UIcon>
+                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></v-icon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -200,8 +200,8 @@
                                     @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></UIcon>
+                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></v-icon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
@@ -220,15 +220,15 @@
                                 <spaces :space="spaces?.spaces_id" :class="['ma-4', selectedClass]" @click="toggle" />
                                 <div class="d-flex fill-height align-center justify-center">
                                     <v-scale-transition>
-                                        <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                            size="48"></UIcon>
+                                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            size="48"></v-icon>
                                     </v-scale-transition>
                                 </div>
                             </v-slide-group-item>
                         </v-slide-group>
                     </v-sheet>
                 </v-row>
-            </UCard>
+            </v-card>
         </div>
     </div>
 </template>
@@ -237,7 +237,7 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+    import productCard from '../../components/catalog/product/productCard.vue'
     import travel from '@/components/categories/travel.vue'
     import deals from '@/components/categories/deals.vue'
     import timeComponent from '@/components/categories/time/time.vue'
@@ -245,7 +245,7 @@ void useContentAdapter()
 
     const route = useRoute()
     const model = ref(null)
-    import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
+    import useDirectusRequest from '~/composables/useDirectusRequest'
     const {
         readItems,
         readItem,

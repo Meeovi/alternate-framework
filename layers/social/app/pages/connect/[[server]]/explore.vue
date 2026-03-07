@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CommonRouteTabOption } from '#shared/types'
+import type { CommonRouteTabOption } from '@mframework/core/shared/types'
 
 const { t } = useI18n()
 

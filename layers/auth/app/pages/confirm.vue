@@ -4,7 +4,7 @@
 
 <script setup>
 import { navigateTo } from '#app'
-import { watch } from 'vue'
+import { watch } from '#imports'
 import { useUserStore } from '../stores/user'
 
 const store = useUserStore()

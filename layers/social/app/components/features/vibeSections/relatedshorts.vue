@@ -16,7 +16,7 @@
 <script setup>
   import {
     ref,
-  } from 'vue';
+  } from '#imports';
   import shorts from './shorts.vue'
 
   const model = ref(null);

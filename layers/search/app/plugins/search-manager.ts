@@ -39,7 +39,9 @@ export default defineNuxtPlugin((nuxtApp: any) => {
 
   // Fallback: short poll for the manager (useful when module registers it slightly later)
   // Only run polling in the browser to avoid server-side timers.
-  if (!nuxtApp.$searchManager && typeof window !== 'undefined' && !import.meta.env.SSR) {
+  // Use a safe, typed access pattern for `import.meta.env` so TypeScript doesn't error
+  const isSSR = ((import.meta as any).env && (import.meta as any).env.SSR) || false
+  if (!nuxtApp.$searchManager && typeof window !== 'undefined' && !isSSR) {
     let attempts = 0
     let id: any = null
     id = setInterval(() => {

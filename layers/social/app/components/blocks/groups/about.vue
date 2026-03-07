@@ -100,6 +100,6 @@ const backgroundImage = computed(() => {
     }
 
     // fallback image from /assets
-    return new URL('@/assets/images/background2.jpg', import.meta.url).href
+    return 'https://via.placeholder.com/800x450'
 })
 </script>

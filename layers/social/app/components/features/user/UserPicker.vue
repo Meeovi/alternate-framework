@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { UserLogin } from '#shared/types'
+import { useRouter } from 'nuxt/app'
+import { getAccountRoute } from '~/composables/masto/routes'
+import { useUsers, currentUser, switchUser } from '~/composables/users'
 
 const all = useUsers()
 const router = useRouter()
@@ -17,7 +20,7 @@ function clickUser(user: UserLogin) {
     <div flex="~ wrap-reverse" gap-5>
       <template v-for="user of all" :key="user.id">
         <CommonTooltip :distance="8" :delay="{ show: 300, hide: 100 }">
-          <UButton
+          <v-btn
             flex rounded
             cursor-pointer
             :aria-label="$t('action.switch_account')"
@@ -26,7 +29,7 @@ function clickUser(user: UserLogin) {
             @click="clickUser(user)"
           >
             <AccountAvatar w-13 h-13 :account="user.account" square />
-          </UButton>
+          </v-btn>
 
           <template #popper>
             <div text-center>

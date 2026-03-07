@@ -5,13 +5,13 @@
                 <v-toolbar title="Your Subscriptions" subtitle=""></v-toolbar>
                 <v-row class="accountRow">
                     <v-col cols="3" v-for="(subscriptions, index) in mySubscriptions" :key="index">
-                        <UCard class="mx-auto" max-width="400">
+                        <v-card class="mx-auto" max-width="400">
                             <img loading="lazy" class="align-end text-white" height="200"
                             :src="subscriptions?.image?.filename_disk" :alt="subscriptions?.name" cover />
                                 <template #header>{{subscriptions?.name}}</template>
-                            <UCard-subtitle class="pt-4">
+                            <v-card #header class="pt-4">
                                 Status: {{ subscriptions?.status }}
-                            </v-card-subtitle>
+                            </v-card>
 
                             <template #header>
                                 <div>Start Date: {{ subscriptions?.start_date }}</div>
@@ -20,11 +20,11 @@
                             </template>
 
                             <template>
-                                <UButton color="red" :href="`/commerce/subscriptions/${subscriptions?.id}`">
+                                <v-btn color="red" :href="`/commerce/subscriptions/${subscriptions?.id}`">
                                     Manage subscription
-                                </UButton>
+                                </v-btn>
                             </template>
-                        </UCard>
+                        </v-card>
                     </v-col>
                 </v-row>
             </v-col>
@@ -33,14 +33,14 @@
                 <v-toolbar title="Available Subscriptions" subtitle=""></v-toolbar>
                 <v-row class="accountRow">
                     <v-col cols="3" v-for="(subscriptions, index) in subscriptions" :key="index">
-                        <UCard class="mx-auto" max-width="400">
+                        <v-card class="mx-auto" max-width="400">
                             <NuxtImg loading="lazy" class="align-end text-white" height="200"
                             :src="subscriptions?.image?.filename_disk" :alt="subscriptions?.name" cover />
                                 <template #header>{{subscriptions?.name}}</template>
 
-                            <UCard-subtitle class="pt-4">
+                            <v-card #header class="pt-4">
                                 Status: {{ subscriptions?.status }}
-                            </v-card-subtitle>
+                            </v-card>
 
                             <template #header>
                                 <div>Start Date: {{ subscriptions?.start_date }}</div>
@@ -49,11 +49,11 @@
                             </template>
 
                             <template>
-                                <UButton color="red">
+                                <v-btn color="red">
                                     Add to Cart
-                                </UButton>
+                                </v-btn>
                             </template>
-                        </UCard>
+                        </v-card>
                     </v-col>
                 </v-row>
             </v-col>
@@ -67,7 +67,7 @@ void useCommerceAdapter()
 void useContentAdapter()
 
     import productCard from '~/components/related/post.vue'
-    import { computed, unref } from 'vue'
+    import { computed, unref } from '#imports'
     // BetterAuth `useAuth()` fallback
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const auth: any = (globalThis as any).$useAuth ?? (typeof useAuth !== 'undefined' ? useAuth() : null)

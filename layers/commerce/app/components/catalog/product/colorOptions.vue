@@ -8,9 +8,9 @@
             <v-container>
                 <v-row>
                     <v-col cols="auto" v-for="color in colors" :key="color.id">
-                        <UButton density="compact" :style="`background-color: ${color.value || color.hex || color.name}`" :title="color.name"
+                        <v-btn density="compact" :style="`background-color: ${color.value || color.hex || color.name}`" :title="color.name"
                             @click="selectColor(color)">
-                        </UButton>
+                        </v-btn>
                     </v-col>
                 </v-row>
             </v-container>
@@ -22,7 +22,7 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 const emit = defineEmits(['color-selected'])
 const colors = ref([])
 const selectedColor = ref(null)

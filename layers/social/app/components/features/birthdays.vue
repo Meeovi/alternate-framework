@@ -14,20 +14,20 @@
             </div>
         </section>
         
-        <UCard variant="text" class="lowerBar">
+        <v-card variant="text" class="lowerBar">
             <v-toolbar :style="`background-color: ${birthdayBar?.color}; color: ${birthdayBar?.colortext} !important`">
                 <v-toolbar-title>{{ birthdayBar?.name }}</v-toolbar-title>
 
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in birthdayBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text"
-                                :style="`color: ${birthdayBar?.colortext} !important`">{{ menu?.name }}</UButton>
+                            <v-btn variant="text"
+                                :style="`color: ${birthdayBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
         <section data-bs-version="5.1" class="header6 cid-v0GHPMn349" id="header6-k">
             <div class="mbr-overlay" style="opacity: 0.3; background-color: rgb(1, 43, 58);">
             </div>
@@ -68,7 +68,7 @@
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import MembersList from '~/components/related/membersList.vue'
 
     import useDirectusRequest from '~/composables/useDirectusRequest'

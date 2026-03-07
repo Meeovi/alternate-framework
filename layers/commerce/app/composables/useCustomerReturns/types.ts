@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import { Maybe } from '../_types';
+import { Maybe } from '../models/shared';
 
 export interface UseCustomerReturnsState {
   data: Maybe<unknown[]>;

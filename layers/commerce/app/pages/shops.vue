@@ -1,6 +1,6 @@
 <template>
   <div class="contentPage">
-    <UCard elevation="0">
+    <v-card elevation="0">
       <v-toolbar title="Shops on Meeovi" color="green"></v-toolbar>
       <v-tabs v-model="tab" bg-color="green" align-tabs="center">
         <v-tab v-if="shopbar?.active === 'Active'" v-for="(menu, index) in shopbar?.menus" :key="index">
@@ -47,7 +47,7 @@
           </v-tabs-window-item>
         </v-tabs-window>
       </template>
-    </UCard>
+    </v-card>
   </div>
 </template>
 
@@ -55,7 +55,7 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-  import { ref } from 'vue'
+  import { ref } from '#imports'
   import { useHead, useNuxtApp, useAsyncData } from '~/types'
   import store from '../components/catalog/shops/stores.vue'
 

@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import useStreaming from '@mframework/core/composables/useStreaming';
+import { useMastoClient } from '@mframework/core/index';
+import { useLocalStorage } from '@vueuse/core';
 import type { mastodon } from 'masto'
+import { useRoute } from 'nuxt/app';
+import { onActivated } from '#imports';
+import { useNotifications } from '~/composables/globals/useNotifications';
 import { STORAGE_KEY_LAST_ACCESSED_NOTIFICATION_ROUTE } from '~/constants'
 
 const { filter } = defineProps<{
@@ -18,9 +24,8 @@ const stream = useStreaming(client => client.user.notification.subscribe())
 
 lastAccessedNotificationRoute.value = route.path.replace(/\/notifications\/?/, '')
 
-const { clearNotifications } = useNotifications()
+const notifications = useNotifications()
 onActivated(() => {
-  clearNotifications()
   lastAccessedNotificationRoute.value = route.path.replace(/\/notifications\/?/, '')
 })
 </script>
