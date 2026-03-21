@@ -1,22 +1,61 @@
 <script setup lang="ts">
-import type { Page, OsProposal, PageBlock, BlockType } from '~/types';
+import { computed, unref, resolveComponent } from '#imports';
 
-const componentMap: Record<BlockType, any> = {
-	block_hero: resolveComponent('BlocksHero'),
-	block_faqs: resolveComponent('BlocksFaqs'),
-	block_richtext: resolveComponent('BlocksRichText'),
-	block_testimonials: resolveComponent('BlocksTestimonials'),
-	block_quote: resolveComponent('BlocksQuote'),
-	block_cta: resolveComponent('BlocksCta'),
-	block_form: resolveComponent('BlocksForm'),
-	block_logocloud: resolveComponent('BlocksLogoCloud'),
-	block_team: resolveComponent('BlocksTeam'),
-	block_html: resolveComponent('BlocksRawHtml'),
-	block_video: resolveComponent('BlocksVideo'),
-	block_gallery: resolveComponent('BlocksGallery'),
-	block_steps: resolveComponent('BlocksSteps'),
-	block_columns: resolveComponent('BlocksColumns'),
-	block_divider: resolveComponent('BlocksDivider'),
+// Define types locally since module resolution has issues
+interface Page {
+	id?: string;
+	permalink?: string;
+	blocks?: PageBlock[];
+	[key: string]: any;
+}
+
+interface OsProposal {
+	id?: string;
+	blocks?: any[];
+	[key: string]: any;
+}
+
+interface PageBlock {
+	collection?: BlockType | null;
+	id?: string;
+	item?: any;
+	hide_block?: boolean | null;
+}
+
+type BlockType =
+	| 'block_hero'
+	| 'block_faqs'
+	| 'block_richtext'
+	| 'block_testimonials'
+	| 'block_quote'
+	| 'block_cta'
+	| 'block_form'
+	| 'block_logocloud'
+	| 'block_team'
+	| 'block_html'
+	| 'block_video'
+	| 'block_gallery'
+	| 'block_steps'
+	| 'block_columns'
+	| 'block_divider';
+
+// Use component name strings so Vue resolves them at render/setup time
+const componentMap: Record<BlockType, string> = {
+	block_hero: 'BlocksHero',
+	block_faqs: 'BlocksFaqs',
+	block_richtext: 'BlocksRichText',
+	block_testimonials: 'BlocksTestimonials',
+	block_quote: 'BlocksQuote',
+	block_cta: 'BlocksCta',
+	block_form: 'BlocksForm',
+	block_logocloud: 'BlocksLogoCloud',
+	block_team: 'BlocksTeam',
+	block_html: 'BlocksRawHtml',
+	block_video: 'BlocksVideo',
+	block_gallery: 'BlocksGallery',
+	block_steps: 'BlocksSteps',
+	block_columns: 'BlocksColumns',
+	block_divider: 'BlocksDivider',
 };
 
 const props = defineProps<{
@@ -29,11 +68,33 @@ const blocks = computed(() => {
 		return block.hide_block !== true;
 	});
 });
+
+// Helper to safely resolve components
+const getComponent = (componentName: string | null | undefined) => {
+	if (!componentName) return undefined;
+	try {
+		return resolveComponent(componentName);
+	} catch {
+		console.warn(`Component ${componentName} not found`);
+		return undefined;
+	}
+};
+
+// Compute resolved components for each block
+const resolvedBlocks = computed(() => {
+	return blocks.value.map((block) => {
+		const componentName = block.collection ? componentMap[block.collection as BlockType] : null;
+		return {
+			...block,
+			component: componentName ? getComponent(componentName) : undefined,
+		};
+	});
+});
 </script>
 <template>
 	<div id="content" class="mx-auto">
-		<template v-for="block in blocks" :key="block.id">
-			<component :is="componentMap[block.collection]" v-if="block && block.collection" :data="block.item" />
+		<template v-for="block in resolvedBlocks" :key="block.id">
+			<component :is="block.component" v-if="block && block.component" :data="block.item" />
 		</template>
 	</div>
 </template>

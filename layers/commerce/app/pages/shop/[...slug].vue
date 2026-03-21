@@ -54,7 +54,7 @@
       </div>
     </section>
 
-    <UCard elevation="0">
+    <v-card elevation="0">
       <v-tabs v-model="tab" bg-color="info" align-tabs="center">
         <v-tab v-for="(menu, index) in shopbar?.menus" :key="index">
           <NuxtLink :to="menu?.url">{{ menu?.name }}</NuxtLink>
@@ -95,7 +95,7 @@
           </v-tabs-window-item>
         </v-tabs-window>
       </template>
-    </UCard>
+    </v-card>
   </div>
 </template>
 
@@ -103,7 +103,7 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-  import { ref } from 'vue'
+  import { ref } from '#imports'
   import showcases from '~/components/catalog/product/relatedproducts.vue'
   import productCard from '~/components/catalog/product/productCard.vue'
   import comments from '@/components/placeholders/Comments.vue'

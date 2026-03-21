@@ -120,7 +120,7 @@ onActivated(() => (busy.value = false))
         </h3>
         <template v-if="isSupported">
           <div v-if="isSubscribed" flex="~ col">
-            <UForm flex="~ col" gap-y-2 px6 pb4 @submit.prevent="saveSettings">
+            <v-form flex="~ col" gap-y-2 px6 pb4 @submit.prevent="saveSettings">
               <p id="pn-instructions" text-sm pb2 aria-hidden="true">
                 {{ $t('settings.notifications.push_notifications.instructions') }}
               </p>
@@ -140,7 +140,7 @@ onActivated(() => (busy.value = false))
                 <CommonRadio v-model="pushNotificationData.policy" hover value="none" :label="$t('settings.notifications.push_notifications.policy.none')" />
               </fieldset>
               <div flex="~ col" gap-y-4 gap-x-2 py-1 sm="~ justify-between flex-row">
-                <UButton
+                <v-btn
                   btn-solid font-bold py2 full-w sm-wa flex="~ gap2 center"
                   :class="busy || !saveEnabled ? 'border-transparent' : null"
                   :disabled="busy || !saveEnabled"
@@ -150,8 +150,8 @@ onActivated(() => (busy.value = false))
                   </span>
                   <span v-else block aria-hidden="true" i-ri:save-2-fill />
                   {{ $t('settings.notifications.push_notifications.save_settings') }}
-                </UButton>
-                <UButton
+                </v-btn>
+                <v-btn
                   btn-outline font-bold py2 full-w sm-wa flex="~ gap2 center"
                   type="v-btn"
                   :class="busy || !saveEnabled ? 'border-transparent' : null"
@@ -160,12 +160,12 @@ onActivated(() => (busy.value = false))
                 >
                   <span aria-hidden="true" class="block i-material-symbols:undo-rounded" />
                   {{ $t('settings.notifications.push_notifications.undo_settings') }}
-                </UButton>
+                </v-btn>
               </div>
-            </UForm>
-            <UForm flex="~ col" mt-4 @submit.prevent="removeSubscription">
+            </v-form>
+            <v-form flex="~ col" mt-4 @submit.prevent="removeSubscription">
               <span border="b base 2px" class="bg-$c-text-secondary" />
-              <UButton
+              <v-btn
                 btn-outline rounded-full font-bold py-4 flex="~ gap2 center" m5
                 :class="busy ? 'border-transparent' : null"
                 :disabled="busy"
@@ -175,8 +175,8 @@ onActivated(() => (busy.value = false))
                 </span>
                 <span v-else block aria-hidden="true" i-material-symbols:cancel-rounded />
                 {{ $t('settings.notifications.push_notifications.unsubscribe') }}
-              </UButton>
-            </UForm>
+              </v-btn>
+            </v-form>
           </div>
           <template v-else>
             <NotificationEnablePushNotification

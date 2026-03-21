@@ -1,21 +1,21 @@
 <template>
-    <UCard variant="text" class="lowerBar">
+    <v-card variant="text" class="lowerBar">
         <v-tabs v-model="tab" :bg-color="lowerbar?.color" :color="lowerbar?.colortext" align-tabs="center">
             <v-tab><NuxtLink style="color: white;" to="/">{{ lowerbar?.name }}</NuxtLink></v-tab>
             <div v-for="(menu, index) in lowerbar?.menus" :key="index">
                 <v-tab :value="menu?.value">
-                    <UButton variant="text" :style="`color: ${lowerbar?.colortext} !important`"
-                        :href="menu?.slug">{{ menu?.name }}</UButton>
+                    <v-btn variant="text" :style="`color: ${lowerbar?.colortext} !important`"
+                        :href="menu?.slug">{{ menu?.name }}</v-btn>
                 </v-tab>
             </div>
         </v-tabs>
-    </UCard>
+    </v-card>
 </template>
 
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import useDirectusRequest from '~/composables/useDirectusRequest'
 
     const { readItem } = useDirectusRequest()

@@ -5,16 +5,16 @@
       <h1 class="mbr-section-title mbr-fonts-style display-1">Reset Password</h1>
 
       <div class="reset-password-form">
-        <UForm class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
-          <UInput v-model="state.password" type="password" label="New Password" required></UInput>
-          <UInput v-model="state.confirmPassword" type="password" label="Confirm Password" required></UInput>
+        <v-form class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
+          <v-text-field v-model="state.password" type="password" label="New Password" required></v-text-field>
+          <v-text-field v-model="state.confirmPassword" type="password" label="Confirm Password" required></v-text-field>
           <div class="mb-3">
             <div ref="turnstileRef"></div>
           </div>
-          <UButton class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
+          <v-btn class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
             Reset Password
-          </UButton>
-        </UForm>
+          </v-btn>
+        </v-form>
       </div>
 
       <v-alert v-if="message" :type="messageType" class="mt-4" variant="tonal">
@@ -32,7 +32,7 @@
 import { useHead, useRoute, useRuntimeConfig, navigateTo } from '#app'
 import { definePageMeta } from '#imports'
 import { z } from 'zod'
-import { reactive, ref } from 'vue'
+import { reactive, ref } from '#imports'
 import { useAuth } from '../composables/useAuth'
 import { useI18n } from 'vue-i18n'
 import useLocalePath from '../composables/useLocalePath'

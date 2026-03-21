@@ -1,17 +1,17 @@
 <template>
   <div>
-    <UForm id="payment-form">
+    <v-form id="payment-form">
       <div id="payment-element">
         <!-- Stripe Elements will inject the payment form here -->
       </div>
-      <UButton id="submit" :disabled="isLoading">
+      <v-btn id="submit" :disabled="isLoading">
         <span v-if="isLoading">Processing...</span>
         <span v-else>Pay now</span>
-      </UButton>
+      </v-btn>
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
-    </UForm>
+    </v-form>
   </div>
 </template>
 

@@ -77,7 +77,7 @@ onDeactivated(() => clearError(false))
       />
     </template>
     <template #done>
-      <UForm
+      <v-form
         border="t base"
         p-4 w-full
         flex="~ wrap" relative gap-3
@@ -103,15 +103,15 @@ onDeactivated(() => clearError(false))
           >
         </div>
         <div flex="~ col" gap-y-4 gap-x-2 sm="~ justify-between flex-row">
-          <UButton flex="~ row" gap-x-2 items-center btn-solid :disabled="!enableSubmit || busy">
+          <v-btn flex="~ row" gap-x-2 items-center btn-solid :disabled="!enableSubmit || busy">
             <span v-if="busy" aria-hidden="true" block animate animate-spin preserve-3d class="rtl-flip">
               <span block i-ri:loader-2-fill aria-hidden="true" />
             </span>
             <span v-else aria-hidden="true" block i-material-symbols:playlist-add-rounded class="rtl-flip" />
             {{ $t('list.create') }}
-          </UButton>
+          </v-btn>
         </div>
-      </UForm>
+      </v-form>
       <CommonErrorMessage
         v-if="actionError"
         id="create-list-error"
@@ -124,12 +124,12 @@ onDeactivated(() => clearError(false))
             <p>{{ $t('list.error') }}</p>
           </div>
           <CommonTooltip placement="bottom" :content="$t('list.clear_error')">
-            <UButton
+            <v-btn
               flex rounded-4 p1 hover:bg-active cursor-pointer transition-100 :aria-label="$t('list.clear_error')"
               @click="clearError(true)"
             >
               <span aria-hidden="true" w="1.75em" h="1.75em" i-ri:close-line />
-            </UButton>
+            </v-btn>
           </CommonTooltip>
         </header>
         <ol ps-2 sm:ps-1>

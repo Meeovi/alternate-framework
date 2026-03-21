@@ -1,26 +1,26 @@
 <template>
     <div>
-        <UButton class="btn btn-sm btn-black-outline display-4" @click="dialog = true" prepend-icon="fas fa-flag"
-            title="Flag this content" variant="flat"></UButton>
+        <v-btn class="btn btn-sm btn-black-outline display-4" @click="dialog = true" prepend-icon="fas fa-flag"
+            title="Flag this content" variant="flat"></v-btn>
 
         <v-dialog v-model="dialog" max-width="800" transition="dialog-bottom-transition">
             <template v-slot:default="{ isActive }">
-                <UCard class="pa-4">
+                <v-card class="pa-4">
                     <h1>New Report</h1>
                     <div v-if="formError" class="error">{{ formError }}</div>
                     <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                    <UForm @submit.prevent="submitForm">
+                    <v-form @submit.prevent="submitForm">
                         <DirectusFormElement v-for="field in reportFields" :key="field.field" :field="field"
                             v-model="form[field.field]" />
-                        <UButton type="submit">Submit</UButton>
-                    </UForm>
+                        <v-btn type="submit">Submit</v-btn>
+                    </v-form>
 
                     <template>
                         <v-spacer></v-spacer>
 
-                        <UButton text="Close" variant="text" @click="isActive.value = false"></UButton>
+                        <v-btn text="Close" variant="text" @click="isActive.value = false"></v-btn>
                     </template>
-                </UCard>
+                </v-card>
             </template>
         </v-dialog>
     </div>
@@ -29,11 +29,11 @@
 <script setup>
     import {
         ref
-    } from 'vue'
-    import DirectusFormElement from '../../../../shared/app/components/ui/forms/DirectusFormElement.vue'
+    } from '#imports'
+    import DirectusFormElement from '~/components/ui/forms/DirectusFormElement.vue'
     import {
         useDirectusForm
-    } from '../../../../../packages/adapters/adapter-directus/src/composables/useDirectusForm'
+    } from '~/composables/useDirectusForm'
 
     const dialog = ref(false)
     import useAdapterRequest from '~/composables/useAdapterRequest'

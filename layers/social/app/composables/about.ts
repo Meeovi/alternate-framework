@@ -1,4 +1,4 @@
-import type { BuildInfo } from '#shared/types'
+import type { BuildInfo } from '@mframework/core/shared/types'
 
 export interface Team {
   github: string

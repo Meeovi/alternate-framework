@@ -1,6 +1,6 @@
 <template>
   <div class="contentPage">
-    <UCard elevation="0">
+    <v-card elevation="0">
       <v-toolbar :title="showcasebar?.name" :color="showcasebar?.color"></v-toolbar>
 
       <v-tabs v-model="tab" bg-color="purple">
@@ -39,7 +39,7 @@
           </v-window-item>
         </v-tabs-window>
       </template>
-    </UCard>
+    </v-card>
   </div>
 </template>
 
@@ -50,7 +50,7 @@ void useContentAdapter()
   import {
     ref,
     computed
-  } from 'vue'
+  } from '#imports'
   import productCard from '~/components/catalog/product/productCard.vue'
 
   const tab = ref(null);

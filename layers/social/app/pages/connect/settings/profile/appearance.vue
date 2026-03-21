@@ -106,7 +106,7 @@ onReactivated(refreshInfo)
       </MainTitle>
     </template>
 
-    <UForm space-y-5 @submit.prevent="submit">
+    <v-form space-y-5 @submit.prevent="submit">
       <div v-if="account">
         <!-- banner -->
         <div of-hidden bg="gray-500/20" aspect="3">
@@ -182,7 +182,7 @@ onReactivated(refreshInfo)
 
         <!-- actions -->
         <div flex="~ gap2" justify-end>
-          <UButton
+          <v-btn
             type="button"
             btn-text text-sm
             flex gap-x-2 items-center
@@ -191,9 +191,9 @@ onReactivated(refreshInfo)
           >
             <div aria-hidden="true" i-ri:eraser-line />
             {{ $t('action.reset') }}
-          </UButton>
+          </v-btn>
 
-          <UButton
+          <v-btn
             v-if="failedMessages.length === 0"
             type="submit"
             btn-solid rounded-full text-sm
@@ -205,9 +205,9 @@ onReactivated(refreshInfo)
             </span>
             <span v-else aria-hidden="true" block i-ri:save-line />
             {{ $t('action.save') }}
-          </UButton>
+          </v-btn>
 
-          <UButton
+          <v-btn
             v-else
             type="submit"
             btn-danger rounded-full text-sm
@@ -217,7 +217,7 @@ onReactivated(refreshInfo)
               aria-hidden="true" block i-carbon:face-dizzy-filled
             />
             <span>{{ $t('state.save_failed') }}</span>
-          </UButton>
+          </v-btn>
         </div>
 
         <CommonErrorMessage v-if="failedMessages.length > 0" described-by="save-failed">
@@ -227,12 +227,12 @@ onReactivated(refreshInfo)
               <p>{{ $t('state.save_failed') }}</p>
             </div>
             <CommonTooltip placement="bottom" :content="$t('action.clear_save_failed')">
-              <UButton
+              <v-btn
                 flex rounded-4 p1 hover:bg-active cursor-pointer transition-100 :aria-label="$t('action.clear_save_failed')"
                 @click="failedMessages = []"
               >
                 <span aria-hidden="true" w="1.75em" h="1.75em" i-ri:close-line />
-              </UButton>
+              </v-btn>
             </CommonTooltip>
           </header>
           <ol ps-2 sm:ps-1>
@@ -243,6 +243,6 @@ onReactivated(refreshInfo)
           </ol>
         </CommonErrorMessage>
       </div>
-    </UForm>
+    </v-form>
   </MainContent>
 </template>

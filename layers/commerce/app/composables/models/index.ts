@@ -37,14 +37,76 @@ import type {
   SfMoneyCustom,
 } from "./shared";
 
-export * from "./cart";
-export * from "./category";
-export * from "./checkout";
-export * from "./customer";
-export * from "./facets";
-export * from "./product";
-export * from "./shared";
-export * from "./order";
+export type {
+  SfCart,
+  SfCartCoupon,
+  SfCartCouponCustom,
+  SfCartLineItem,
+  SfCartLineItemCustom,
+} from "./cart";
+export type {
+  SfCategory,
+  SfCategoryCustom,
+} from "./category";
+export type {
+  SfShippingMethod,
+  SfShippingMethodCustom,
+  SfShippingMethods,
+} from "./checkout";
+export type {
+  SfCustomer,
+  SfCustomerAddress,
+  SfCustomerCustom,
+} from "./customer";
+export type {
+  SfFacet,
+  SfFacetCustom,
+  SfFacetItem,
+  SfFacetType,
+  SfFacetTypes,
+} from "./facets";
+export type {
+  SfPagination,
+  SfPaginationCustom,
+  SfProduct,
+  SfProductCatalogItem,
+  SfProductCatalogItemCustom,
+  SfProductCustom,
+  SfProductReview,
+  SfProductReviewCustom,
+  SfProductVariant,
+} from "./product";
+export type {
+  SfAddress,
+  SfAddressCustom,
+  SfAttribute,
+  SfAttributeCustom,
+  SfCreateAddressBody,
+  SfCurrency,
+  SfDiscountablePrice,
+  SfDiscountablePriceCustom,
+  SfEmail,
+  SfId,
+  SfImage,
+  SfImageCustom,
+  SfLanguage,
+  SfLocale,
+  SfMoney,
+  SfMoneyCustom,
+  SfPassword,
+  SfPhoneNumber,
+  SfRegion,
+  SfZipCode,
+  Maybe,
+} from "./shared";
+export type {
+  SfOrder,
+  SfOrderCustom,
+  SfOrderLineItem,
+  SfOrderLineItemCustom,
+  SfOrderListItem,
+  SfOrderListItemCustom,
+} from "./order";
 
 export interface SfContract {
   SfCartLineItemCustom: SfCartLineItemCustom;

@@ -37,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            <img src="../../assets/images/background10.jpg" :alt="transaction?.id">
+            <img src="https://via.placeholder.com/1200x400" :alt="transaction?.id">
         </section>
     </div>
 </template>

@@ -12,7 +12,7 @@
     import {
         onMounted,
         ref
-    } from 'vue'
+    } from '#imports'
 
     const props = defineProps({
         items: Array,

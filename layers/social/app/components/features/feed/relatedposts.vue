@@ -14,7 +14,7 @@
 <script setup>
   import {
     ref
-  } from 'vue'
+  } from '#imports'
   import post from '~/components/feeds/posts.vue'
   import {
     useQuery

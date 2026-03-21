@@ -2,9 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "#shared/*": ["../shared/*"],
-      "@mframework/core": ["../../packages/core/index.ts"],
-      "@mframework/core/*": ["../../packages/core/*"]
+      "#shared/*": ["../shared/*"]
     },
     "declaration": true,
     "emitDeclarationOnly": false,

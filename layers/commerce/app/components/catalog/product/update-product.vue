@@ -1,6 +1,6 @@
 <template>
     <div>
-        <UForm>
+        <v-form>
             <v-toolbar dark color="rgb(var(--v-theme-primary))!important">
                 <template #header>
                     <span class="text-h6">Update Product</span>
@@ -10,45 +10,45 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <UInput v-model="searchSku" label="Search Product by SKU" append-icon="mdi-magnify"
-                                @click:append="fetchProduct(searchSku)"></UInput>
+                            <v-text-field v-model="searchSku" label="Search Product by SKU" append-icon="mdi-magnify"
+                                @click:append="fetchProduct(searchSku)"></v-text-field>
                         </v-col>
                         <v-col cols="12">
                             <h5>Basic Information</h5>
                         </v-col>
                         <v-divider></v-divider>
                         <v-col cols="6">
-                            <USelect v-model="status" :items="['Enable', 'Disable']" label="Status*"></USelect>
+                            <v-select v-model="status" :items="['Enable', 'Disable']" label="Status*"></v-select>
                         </v-col>
                         <v-col cols="6">
-                            <USelect v-model="type" :items="['simple', 'configurable', 'virtual', 'downloadable']"
-                                label="Product Type*"></USelect>
+                            <v-select v-model="type" :items="['simple', 'configurable', 'virtual', 'downloadable']"
+                                label="Product Type*"></v-select>
                         </v-col>
                         <v-col cols="12">
-                            <UInput v-model="name" label="Product Name*" required></UInput>
+                            <v-text-field v-model="name" label="Product Name*" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <UInput v-model="sku" type="number" label="SKU*" required></UInput>
+                            <v-text-field v-model="sku" type="number" label="SKU*" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                            <UInput v-model="price" type="number" label="Price*" required></UInput>
+                            <v-text-field v-model="price" type="number" label="Price*" required></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <USelect v-model="tax_class" :items="[
+                            <v-select v-model="tax_class" :items="[
     { text: 'None', value: 0 },
     { text: 'Taxable Goods', value: 2 },
     { text: 'Shipping', value: 4 }
-]" label="Tax Class"></USelect>
+]" label="Tax Class"></v-select>
 
                         </v-col>
                         <v-col cols="6">
-                            <UInput v-model="quantity_per_source" type="number" label="Quantity"></UInput>
+                            <v-text-field v-model="quantity_per_source" type="number" label="Quantity"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <UInput v-model="weight" type="number" label="Weight"></UInput>
+                            <v-text-field v-model="weight" type="number" label="Weight"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <UInput v-model="height" type="number" label="Height"></UInput>
+                            <v-text-field v-model="height" type="number" label="Height"></v-text-field>
                         </v-col>
                         <v-col cols="6">
                             <v-autocomplete v-model="catalog_visibility" :items="['public', 'private']"
@@ -68,8 +68,8 @@
                             </v-autocomplete>
                         </v-col>
                         <v-col cols="6">
-                            <USelect v-model="tax_status" :items="['0-17']" label="Tags">
-                            </USelect>
+                            <v-select v-model="tax_status" :items="['0-17']" label="Tags">
+                            </v-select>
                         </v-col>
 
                         <v-col cols="12">
@@ -78,7 +78,7 @@
                         <v-divider></v-divider>
 
                         <v-col cols="12">
-                            <UTextarea v-model="short_description" label="Short Description*"></UTextarea>
+                            <v-textarea v-model="short_description" label="Short Description*"></v-textarea>
                         </v-col>
                         <v-col cols="12">
                             <h6>Description</h6>
@@ -91,13 +91,13 @@
                         <v-divider></v-divider>
 
                         <v-col cols="12">
-                            <UFileUpload label="Product Image*" multiple required></UFileUpload>
+                            <v-file-upload label="Product Image*" multiple required></v-file-upload>
                         </v-col>
                         <v-col cols="12">
-                            <UFileUpload label="Product Thumbnails" multiple></UFileUpload>
+                            <v-file-upload label="Product Thumbnails" multiple></v-file-upload>
                         </v-col>
                         <v-col cols="12">
-                            <UFileUpload label="Product Files" multiple></UFileUpload>
+                            <v-file-upload label="Product Files" multiple></v-file-upload>
                         </v-col>
 
                         <v-col cols="12">
@@ -106,8 +106,8 @@
                         <v-divider></v-divider>
 
                         <v-col cols="12">
-                            <USelect v-model="related_ids" :items="['0-17']" label="Related Products">
-                            </USelect>
+                            <v-select v-model="related_ids" :items="['0-17']" label="Related Products">
+                            </v-select>
                         </v-col>
 
                         <v-col cols="12">
@@ -116,11 +116,11 @@
                         <v-divider></v-divider>
 
                         <v-col cols="6">
-                            <UInput v-model="width" type="number" label="Part Number"></UInput>
+                            <v-text-field v-model="width" type="number" label="Part Number"></v-text-field>
                         </v-col>
                         <v-col cols="6">
-                            <UInput v-model="manufacturer_part_number" type="number"
-                                label="Manufacturer Part Number"></UInput>
+                            <v-text-field v-model="manufacturer_part_number" type="number"
+                                label="Manufacturer Part Number"></v-text-field>
                         </v-col>
 
                         <v-col cols="12">
@@ -129,8 +129,8 @@
                         <v-divider></v-divider>
 
                         <v-col cols="6">
-                            <USelect v-model="format" :items="['Downloadable', 'Not Downloadable']" label="format">
-                            </USelect>
+                            <v-select v-model="format" :items="['Downloadable', 'Not Downloadable']" label="format">
+                            </v-select>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -138,18 +138,18 @@
             </template>
             <template>
                 <v-spacer></v-spacer>
-                <UButton color="red-darken-1" variant="text" @click="deleteProduct">
+                <v-btn color="red-darken-1" variant="text" @click="deleteProduct">
                     Delete
-                </UButton>
-                <UButton color="blue-darken-1" variant="text" @click="dialog = false">
+                </v-btn>
+                <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
                     Close
-                </UButton>
-                <UButton color="blue-darken-1" variant="text" @click="updateProduct">
+                </v-btn>
+                <v-btn color="blue-darken-1" variant="text" @click="updateProduct">
                     Update Product
-                </UButton>
+                </v-btn>
             </template>
 
-        </UForm>
+        </v-form>
     </div>
 </template>
 
@@ -159,7 +159,7 @@ void useCommerceAdapter()
 void useContentAdapter()
     import {
         ref
-    } from 'vue'
+    } from '#imports'
 
     import editor from '~/components/partials/globals/editor.vue'
 

@@ -1,19 +1,19 @@
 <template>
-  <UCard class="pa-4" elevation="1">
+  <v-card class="pa-4" elevation="1">
     <template #header>Device Authorization</template>
     <template #header>
       <v-switch label="Allow Device Flow" v-model="form.allowDeviceFlow" />
     </template>
     <template>
       <v-spacer />
-      <UButton :loading="saving" color="primary" @click="save">Save</UButton>
+      <v-btn :loading="saving" color="primary" @click="save">Save</v-btn>
       <div v-if="message" class="ml-3">{{ message }}</div>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 
 const form = ref({ allowDeviceFlow: false })
 const saving = ref(false)

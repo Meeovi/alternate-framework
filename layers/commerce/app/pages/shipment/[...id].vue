@@ -110,10 +110,10 @@
                     </div>
                 </div>
             </div>
-            <img src="../../assets/images/background2.jpg" alt="Shipments">
+            <img src="https://via.placeholder.com/1200x400" alt="Shipments">
         </section>
 
-        <UCard title="Shipment Items" flat>
+        <v-card title="Shipment Items" flat>
             <div class="container">
                 <v-data-table :headers="headers" :items="shipment?.items" :items-per-page="5" class="elevation-1">
                     <template v-slot:[`item.name`]="{ item }">
@@ -124,7 +124,7 @@
                     </template>
                 </v-data-table>
             </div>
-        </UCard>
+        </v-card>
     </div>
 </template>
 

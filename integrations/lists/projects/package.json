@@ -16,9 +16,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@mframework/core": "^0.0.13",
-    "@mframework/localization": "^0.0.1",
-    "@mframework/media": "^0.0.2",
+    "@mframework/core": "file:../../../packages/modules/core",
+    "@mframework/localization": "file:../../../packages/modules/localization",
+    "@mframework/media": "file:../../../packages/modules/media",
     "list.js": "^2.3.1"
   }
 }

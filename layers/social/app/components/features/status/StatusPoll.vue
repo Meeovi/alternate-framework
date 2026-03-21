@@ -64,15 +64,15 @@ const votersCount = computed(() => poll.votersCount ?? poll.votesCount ?? 0)
 
 <template>
   <div flex flex-col w-full items-stretch gap-2 py3 dir="auto" class="poll-wrapper">
-    <UForm v-if="!poll.voted && !poll.expired" flex="~ col gap3" accent-primary @click.stop="noop" @submit.prevent="vote">
+    <v-form v-if="!poll.voted && !poll.expired" flex="~ col gap3" accent-primary @click.stop="noop" @submit.prevent="vote">
       <label v-for="(option, index) of poll.options" :key="index" flex="~ gap2" items-center>
         <input name="choices" :value="index" :type="poll.multiple ? 'checkbox' : 'radio'" cursor-pointer>
         {{ option.title }}
       </label>
-      <UButton btn-solid mt-1>
+      <v-btn btn-solid mt-1>
         {{ $t('action.vote') }}
-      </UButton>
-    </UForm>
+      </v-btn>
+    </v-form>
     <template v-else>
       <div
         v-for="(option, index) of poll.options"
@@ -107,10 +107,10 @@ const votersCount = computed(() => poll.votersCount ?? poll.votesCount ?? 0)
         </div>
       </div>
       <div v-if="!poll.expired">
-        <UButton whitespace-nowrap flex gap-1 items-center hover:text-primary @click="refresh">
+        <v-btn whitespace-nowrap flex gap-1 items-center hover:text-primary @click="refresh">
           <div text-xs :class="loading ? 'animate-spin' : ''" i-ri:loop-right-line />
           {{ $t('status.poll.update') }}
-        </UButton>
+        </v-btn>
       </div>
     </div>
   </div>

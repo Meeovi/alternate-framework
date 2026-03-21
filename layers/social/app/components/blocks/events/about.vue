@@ -129,7 +129,7 @@
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import LeafletMap from '~/components/blocks/LeafletMap.vue'
 
     const model = ref(null)

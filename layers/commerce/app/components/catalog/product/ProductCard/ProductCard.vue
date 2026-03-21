@@ -51,5 +51,5 @@ withDefaults(defineProps<ProductCardProps>(), {
   imageAlt: '',
 });
 
-const NuxtLink = resolveComponent('NuxtLink');
+
 </script>

@@ -16,11 +16,7 @@
   "author": "M Framework",
   "license": "MIT",
   "type": "module",
-  "devDependencies": {
-    "nuxt": "^4.3.1"
-  },
   "dependencies": {
-    "layers": "^0.0.3",
-    "typescript": "^5.9.3"
+    "@mframework/adapter-rocketchat": "file:../../packages/adapters/adapter-rocketchat"
   }
 }

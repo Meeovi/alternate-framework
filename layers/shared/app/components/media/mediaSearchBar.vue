@@ -1,11 +1,11 @@
 <template>
-    <UInput v-model="query" label="Search media" prepend-inner-icon="mdi-magnify" clearable @input="emitSearch" />
+    <v-text-field v-model="query" label="Search media" prepend-inner-icon="mdi-magnify" clearable @input="emitSearch" />
 </template>
 
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
 
     const query = ref('')
     const emit = defineEmits(['search'])

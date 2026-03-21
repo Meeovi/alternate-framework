@@ -8,10 +8,10 @@
 
       <v-col cols="12">
         <v-row>
-          <v-col cols="6"><UInput class="giftcardfield"
-              :label="callouts?.menus?.[4]?.name"></UInput></v-col>
-          <v-col cols="6"><UButton class="giftcardbtn" color="orange" size="x-large" type="submit"
-              variant="elevated">{{ callouts?.menus?.[5]?.name }}</UButton></v-col>
+          <v-col cols="6"><v-text-field class="giftcardfield"
+              :label="callouts?.menus?.[4]?.name"></v-text-field></v-col>
+          <v-col cols="6"><v-btn class="giftcardbtn" color="orange" size="x-large" type="submit"
+              variant="elevated">{{ callouts?.menus?.[5]?.name }}</v-btn></v-col>
         </v-row>
 
         <v-expansion-panels>

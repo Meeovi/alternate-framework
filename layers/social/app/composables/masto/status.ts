@@ -1,4 +1,6 @@
 import type { mastodon } from 'masto'
+import { cacheStatus } from './statusCache'
+import { checkLogin, currentUser } from '../users'
 
 type Action = 'reblogged' | 'favourited' | 'bookmarked' | 'pinned' | 'muted'
 type CountField = 'reblogsCount' | 'favouritesCount' | 'quotesCount'

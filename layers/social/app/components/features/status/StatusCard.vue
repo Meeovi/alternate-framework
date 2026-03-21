@@ -154,10 +154,10 @@ const forceShow = ref(false)
             {{ $t('status.account.suspended_message') }}
           </p>
           <div>
-            <UButton p-0 flex="~ center" gap-2 text-sm btn-text @click="forceShow = true">
+            <v-btn p-0 flex="~ center" gap-2 text-sm btn-text @click="forceShow = true">
               <div i-ri:eye-line />
               <span>{{ $t('status.account.suspended_show') }}</span>
-            </UButton>
+            </v-btn>
           </div>
         </div>
       </template>

@@ -5,7 +5,7 @@ import { FetchProducts, UseProductsReturn, UseProductsState } from './types';
 import { getCommerceClient } from '../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
 import { useHandleError } from '../useHandleError';
-import type { Maybe } from '../_types';
+import type { Maybe } from '../models/shared';
 
 /**
  * @description Composable for managing products.

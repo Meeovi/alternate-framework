@@ -1,11 +1,12 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, Product } from '../_types';
+import type { Maybe, SfProduct } from '../models';
 import type { UseProductReturn, UseProductState, FetchProduct } from './types';
 import { getCommerceClient } from '../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
 import { useHandleError } from '../useHandleError';
+import { Product } from '@mframework/core';
 
 /**
  * @description Composable managing product data
@@ -16,7 +17,7 @@ import { useHandleError } from '../useHandleError';
  */
 export const useProduct: UseProductReturn = (slug) => {
   const state = useState<UseProductState>(`useProduct-${slug}`, () => ({
-    data: null,
+    data: null as Maybe<SfProduct>,
     loading: false,
   }));
 
@@ -30,9 +31,9 @@ export const useProduct: UseProductReturn = (slug) => {
     const client = getCommerceClient();
     const { data, error } = await useAsyncData(() => client.getProduct?.(slug) ?? client.fetchProduct?.(slug));
     useHandleError(error.value);
-    state.value.data = data.value as unknown as Maybe<Product>;
+    state.value.data = data.value as unknown as Maybe<SfProduct>;
     state.value.loading = false;
-    return computed(() => state.value.data) as unknown as Ref<Maybe<Product>>;
+    return computed(() => state.value.data) as Ref<Maybe<SfProduct>>;
   };
 
   return {

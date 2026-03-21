@@ -1,5 +1,5 @@
 <template>
-    <UCard class="media-card" elevation="2" rounded="lg" @click="emit('open', media)">
+    <v-card class="media-card" elevation="2" rounded="lg" @click="emit('open', media)">
         <!-- THUMBNAIL -->
         <div class="thumb-wrapper">
             <component :is="thumbnailComponent" :media="media" class="thumb" />
@@ -14,13 +14,13 @@
         <template v-if="$slots.actions">
             <slot name="actions" />
         </template>
-    </UCard>
+    </v-card>
 </template>
 
 <script setup>
     import {
         computed
-    } from 'vue'
+    } from '#imports'
     import imageCard from './imageCard.vue'
     import mediaPlayer from './mediaPlayer.vue'
 
@@ -41,7 +41,7 @@
         return {
             template: `
       <div class="generic-thumb">
-        <UIcon size="48">mdi-file</UIcon>
+        <v-icon size="48">mdi-file</v-icon>
       </div>
     `,
         }

@@ -1,5 +1,4 @@
-import type { UserLogin } from '#shared/types'
-import type { Overwrite } from '#shared/types/utils'
+import type { UserLogin, Overwrite } from '@mframework/core/shared/types'
 import type { RemovableRef } from '@vueuse/core'
 import type { mastodon } from 'masto'
 import type { EffectScope, MaybeRefOrGetter, Ref } from 'vue'
@@ -13,7 +12,7 @@ import {
   STORAGE_KEY_NOTIFICATION,
   STORAGE_KEY_NOTIFICATION_POLICY,
   STORAGE_KEY_SERVERS,
-} from '../../../shared/app/constants'
+} from '../constants'
 
 const mock = process.mock
 

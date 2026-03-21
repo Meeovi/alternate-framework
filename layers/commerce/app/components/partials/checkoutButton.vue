@@ -1,8 +1,8 @@
 <template>
     <div>
-      <UButton color="primary" @click="redirectToCheckout">
+      <v-btn color="primary" @click="redirectToCheckout">
         Proceed to Payment
-      </UButton>
+      </v-btn>
     </div>
   </template>
   

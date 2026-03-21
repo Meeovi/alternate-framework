@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import { getPreferences, useUserSettings } from '@mframework/core/index';
+import { noop } from '@vueuse/shared';
 import type { mastodon } from 'masto'
+import { inject } from '#imports';
+import { navigateToStatus } from '~/composables/masto/routes';
+import { useStatusActions } from '~/composables/masto/status';
+import { usePreferences } from '~/composables/settings';
+import { checkLogin } from '~/composables/users';
 
 const { details, command, ...props } = defineProps<{
   status: mastodon.v1.Status

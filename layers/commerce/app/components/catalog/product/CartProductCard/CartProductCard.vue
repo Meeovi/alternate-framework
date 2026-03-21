@@ -62,5 +62,5 @@ import type { CartProductCardProps } from '~/components/ui/CartProductCard/types
 
 defineProps<CartProductCardProps>();
 
-const NuxtLink = resolveComponent('NuxtLink');
+
 </script>

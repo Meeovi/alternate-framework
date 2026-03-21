@@ -44,9 +44,10 @@ export default defineEventHandler(async (event) => {
           const result = await attempt()
           // If it didn't throw, assume success
           return true
-        } catch (e) {
+        } catch (e: unknown) {
           // Try next signature
-          console.warn(`session creation attempt failed for ${name}:`, e?.message ?? e)
+          const message = e instanceof Error ? e.message : String(e)
+          console.warn(`session creation attempt failed for ${name}:`, message)
         }
       }
     }
@@ -68,13 +69,15 @@ export default defineEventHandler(async (event) => {
           update: { raw_user_meta_data: account, updated_at: new Date() } as any,
           create: { id: userId, raw_user_meta_data: account, created_at: new Date() } as any,
         } as any)
-      } catch (e) {
-        console.warn('prisma upsert failed after session creation', e?.message ?? e)
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e)
+        console.warn('prisma upsert failed after session creation', message)
       }
       return { ok: true }
     }
-  } catch (e) {
-    console.warn('session creation via BetterAuth API failed', e?.message ?? e)
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e)
+    console.warn('session creation via BetterAuth API failed', message)
   }
 
   // If session creation didn't work, fall back to DB upsert (best-effort)
@@ -85,8 +88,9 @@ export default defineEventHandler(async (event) => {
       create: { id: userId, raw_user_meta_data: account, created_at: new Date() } as any,
     } as any)
     return { ok: true }
-  } catch (err: any) {
-    console.warn('prisma upsert failed', err?.message ?? err)
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.warn('prisma upsert failed', message)
     // Return success false but don't leak internals
     event.node.res.statusCode = 500
     return { error: 'failed to persist user' }

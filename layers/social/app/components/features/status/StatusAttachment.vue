@@ -124,7 +124,7 @@ watch(shouldLoadAttachment, () => {
 <template>
   <div relative ma flex :gap="isAudio ? '2' : ''">
     <template v-if="type === 'video'">
-      <UButton
+      <v-btn
         type="button"
         relative
         @click="!shouldLoadAttachment ? loadAttachment() : null"
@@ -161,10 +161,10 @@ watch(shouldLoadAttachment, () => {
           pointer-events-none
           i-ri:video-download-line
         />
-      </UButton>
+      </v-btn>
     </template>
     <template v-else-if="type === 'gifv'">
-      <UButton
+      <v-btn
         type="button"
         relative
         @click="!shouldLoadAttachment ? loadAttachment() : openMediaPreview(attachments ? attachments : [attachment], attachments?.indexOf(attachment) || 0)"
@@ -198,7 +198,7 @@ watch(shouldLoadAttachment, () => {
           pointer-events-none
           i-ri:video-download-line
         />
-      </UButton>
+      </v-btn>
     </template>
     <template v-else-if="type === 'audio'">
       <audio controls h-15>
@@ -206,7 +206,7 @@ watch(shouldLoadAttachment, () => {
       </audio>
     </template>
     <template v-else>
-      <UButton
+      <v-btn
         type="button"
         focus:outline-none
         focus:ring="2 primary inset"
@@ -248,7 +248,7 @@ watch(shouldLoadAttachment, () => {
           pointer-events-none
           i-ri:file-download-line
         />
-      </UButton>
+      </v-btn>
     </template>
     <div
       :class="isAudio ? [] : [
@@ -258,7 +258,7 @@ watch(shouldLoadAttachment, () => {
       flex gap-col-2
     >
       <VDropdown v-if="attachment.description && !getPreferences(userSettings, 'hideAltIndicatorOnPosts')" :distance="6" placement="bottom-start">
-        <UButton
+        <v-btn
           font-bold text-sm
           :class="isAudio
             ? 'rounded-full h-15 w-15 btn-outline border-base text-secondary hover:bg-active hover:text-active'
@@ -268,16 +268,16 @@ watch(shouldLoadAttachment, () => {
             {{ $t('status.img_alt.read', [attachment.type]) }}
           </div>
           {{ $t('status.img_alt.ALT') }}
-        </UButton>
+        </v-btn>
         <template #popper>
           <div p4 flex flex-col gap-2 max-w-130>
             <div flex justify-between>
               <h2 font-bold text-xl text-secondary>
                 {{ $t('status.img_alt.desc') }}
               </h2>
-              <UButton v-close-popper text-sm btn-outline py0 px2 text-secondary border-base>
+              <v-btn v-close-popper text-sm btn-outline py0 px2 text-secondary border-base>
                 {{ $t('status.img_alt.dismiss') }}
-              </UButton>
+              </v-btn>
             </div>
             <p whitespace-pre-wrap>
               {{ attachment.description }}
@@ -286,12 +286,12 @@ watch(shouldLoadAttachment, () => {
         </template>
       </VDropdown>
       <div v-if="isGif && !getPreferences(userSettings, 'hideGifIndicatorOnPosts')">
-        <UButton
+        <v-btn
           aria-hidden font-bold text-sm
           rounded-1 bg-black:65 text-white px1.2 py0.2 pointer-events-none
         >
           {{ $t('status.gif') }}
-        </UButton>
+        </v-btn>
       </div>
     </div>
   </div>

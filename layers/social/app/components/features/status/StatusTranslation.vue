@@ -32,7 +32,7 @@ async function toggleTranslation() {
 
 <template>
   <div v-if="showButton">
-    <UButton
+    <v-btn
       p-0 flex="~ center" gap-2 text-sm
       :disabled="translating" disabled-bg-transparent btn-text class="disabled-text-$c-text-btn-disabled-deeper" @click="toggleTranslation"
     >
@@ -41,7 +41,7 @@ async function toggleTranslation() {
       </span>
       <div v-else i-ri:translate />
       {{ translation.visible ? $t('menu.show_untranslated') : $t('menu.translate_post') }}
-    </UButton>
+    </v-btn>
   </div>
 </template>
 

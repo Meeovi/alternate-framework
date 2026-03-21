@@ -13,28 +13,28 @@
             'flex pt-1 border-t-4 border-transparent',
             { 'font-medium border-t-4 border-primary-500!': selectedPage === 1 },
           ]">
-                    <UButton type="button"
-                        class="min-w-[38px] px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
+                    <v-btn type="button"
+                        class="min-w-9.5 px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
                         :aria-current="selectedPage === 1" @click="setPage(1)">
                         1
-                    </UButton>
+                    </v-btn>
                 </div>
             </li>
             <li v-if="startPage > 2">
                     <div class="flex pt-1 border-t-4 border-transparent">
-                    <UButton type="button" disabled aria-hidden="true"
+                    <v-btn type="button" disabled aria-hidden="true"
                         class="px-4 py-3 md:w-12 rounded-md text-neutral-500">
                         ...
-                    </UButton>
+                    </v-btn>
                 </div>
             </li>
             <li v-if="maxVisiblePages === 1 && selectedPage === totalPages">
                     <div class="flex pt-1 border-t-4 border-transparent">
-                    <UButton type="button"
-                        class="min-w-[38px] px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
+                    <v-btn type="button"
+                        class="min-w-9.5 px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
                         :aria-current="endPage - 1 === selectedPage" @click="setPage(endPage - 1)">
                         {{ endPage - 1 }}
-                    </UButton>
+                    </v-btn>
                 </div>
             </li>
             <li v-for="page in pages" :key="`page-${page}`">
@@ -42,30 +42,30 @@
             'flex pt-1 border-t-4 border-transparent',
             { 'font-medium border-t-4 border-primary-700!': selectedPage === page },
           ]">
-                    <UButton type="button" :class="[
-              'min-w-[38px] px-3 sm:px-4 py-3 md:w-12 text-neutral-500 rounded-md hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900',
+                    <v-btn type="button" :class="[
+              'min-w-9.5 px-3 sm:px-4 py-3 md:w-12 text-neutral-500 rounded-md hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900',
               { 'text-neutral-900! hover:text-primary-800! active:text-primary-900!': selectedPage === page },
             ]" :aria-label="`Page ${page} of ${totalPages}`" :aria-current="selectedPage === page"
                         @click="setPage(page)">
                         {{ page }}
-                    </UButton>
+                    </v-btn>
                 </div>
             </li>
             <li v-if="maxVisiblePages === 1 && selectedPage === 1">
                     <div class="flex pt-1 border-t-4 border-transparent">
-                    <UButton type="button"
-                        class="min-w-[38px] px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
+                    <v-btn type="button"
+                        class="min-w-9.5 px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
                         :aria-label="`Page 2 of ${totalPages}`" @click="setPage(2)">
                         2
-                    </UButton>
+                    </v-btn>
                 </div>
             </li>
             <li v-if="Number(endPage) < Number(totalPages) - 1">
                     <div class="flex pt-1 border-t-4 border-transparent">
-                    <UButton type="button" disabled aria-hidden="true"
+                    <v-btn type="button" disabled aria-hidden="true"
                         class="px-4 py-3 md:w-12 rounded-md text-neutral-500">
                         ...
-                    </UButton>
+                    </v-btn>
                 </div>
             </li>
             <li v-if="!pages.includes(totalPages)">
@@ -73,11 +73,11 @@
             'flex pt-1 border-t-4 border-transparent',
             { 'font-medium border-t-4 border-primary-500!': selectedPage === totalPages },
           ]">
-                    <UButton type="button"
-                        class="min-w-[38px] px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
+                    <v-btn type="button"
+                        class="min-w-9.5 px-3 sm:px-4 py-3 md:w-12 rounded-md text-neutral-500 hover:bg-primary-100 hover:text-primary-800 active:bg-primary-200 active:text-primary-900"
                         :aria-current="totalPages === selectedPage" @click="setPage(totalPages)">
                         {{ totalPages }}
-                    </UButton>
+                    </v-btn>
                 </div>
             </li>
         </ul>
@@ -94,7 +94,7 @@
 <script lang="ts" setup>
 import { SfButton, SfIconChevronLeft, SfIconChevronRight } from '@storefront-ui/vue';
 import useStorefront from '../../composables/useStorefront'
-import { computed, unref, ref } from 'vue'
+import { computed, unref, ref } from '#imports'
 
 const storefront = useStorefront()
 

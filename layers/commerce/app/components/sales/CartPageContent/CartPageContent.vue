@@ -28,18 +28,12 @@
   </div>
 </template>
 
-
+<script lang="ts" setup>
 import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
-
 import { SfButton } from '@storefront-ui/vue';
-import { resolveComponent } from 'vue';
 import { useCart } from '~/composables/useCart';
 
 const { data: cart } = useCart();
-
-const NuxtLink = resolveComponent('NuxtLink');
 
 const paths = {
   checkout: '/checkout'

@@ -17,7 +17,7 @@
   </template>
 
   <script setup>
-  import { ref } from 'vue'
+  import { ref } from '#imports'
   import userCard from '~/components/related/memberList.vue'
 
   const model = ref(null)

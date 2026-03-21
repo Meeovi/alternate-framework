@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed } from '#imports'
 
 const props = withDefaults(defineProps<{
     defaultValue?: string
@@ -56,7 +56,7 @@ const fileInputValue = computed({
 
 <template>
     <div :style="'width: ' + fieldWidth + '; display:flex; align-items:center; gap:8px'">
-        <UFileUpload 
+        <v-file-upload 
             ref="fileInput"
             clearable 
             density="compact" 

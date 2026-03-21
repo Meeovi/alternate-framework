@@ -16,7 +16,7 @@
 <script setup>
   import {
     ref,
-  } from 'vue';
+  } from '#imports';
   import stations from './radiostation.vue'
     import { useCommerceAdapter, useContentAdapter } from '#imports'
     void useCommerceAdapter()

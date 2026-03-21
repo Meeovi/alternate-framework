@@ -60,7 +60,7 @@ const userSettings = useUserSettings()
       :close-on-content-click="false"
       no-auto-focus
     >
-      <slot />
+      <NuxtPage />
       <template #popper>
         <AccountHoverCard v-if="account" :account="account" />
       </template>

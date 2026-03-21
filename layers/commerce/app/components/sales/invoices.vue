@@ -14,20 +14,20 @@
             </div>
         </section>
 
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar :style="`background-color: ${invoiceBar?.color}; color: ${invoiceBar?.colortext} !important`">
                 <v-toolbar-title>{{ invoiceBar?.name }}</v-toolbar-title>
 
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in invoiceBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text"
-                                :style="`color: ${invoiceBar?.colortext} !important`">{{ menu?.name }}</UButton>
+                            <v-btn variant="text"
+                                :style="`color: ${invoiceBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <v-tabs-window v-model="tab">
             <!--Invoices-->
@@ -53,7 +53,7 @@ void useContentAdapter()
     import {
         ref,
         computed
-    } from 'vue'
+    } from '#imports'
     import invoiceCard from '~/components/related/invoiceCard.vue'
     import {
         useUserStore

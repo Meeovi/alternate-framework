@@ -4,7 +4,7 @@
       <legend class="text-neutral-900 text-lg font-bold mb-4">{{ $t('checkoutPayment.heading') }}</legend>
       <div class="grid gap-4 grid-cols-2">
         <label v-for="{ value, disabled, imgSrc, imgAlt } in paymentMethods" :key="value" class="relative">
-          <UInput
+          <v-text-field
             type="radio"
             name="payment_method"
             class="peer sr-only"

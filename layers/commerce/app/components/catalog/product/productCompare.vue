@@ -12,7 +12,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 
-import { onMounted } from 'vue'
+import { onMounted } from '#imports'
 import { useRouter } from 'vue-router'
 import { useCompareStore } from '~/stores/compare'
 import { useMetaStore } from '~/stores/meta'

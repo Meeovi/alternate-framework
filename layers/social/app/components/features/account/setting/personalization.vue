@@ -1,8 +1,8 @@
 <template>
-  <UCard>
+  <v-card>
     <template #header>Personalization</template>
     <template #header>
-      <USelect
+      <v-select
         v-model="preferredCategories"
         :items="categories"
         item-title="title"
@@ -11,8 +11,8 @@
         multiple
         chips
         :loading="!categories.length"
-      ></USelect>
-      <USelect
+      ></v-select>
+      <v-select
         v-model="preferredBrands"
         :items="brands"
         item-title="title"
@@ -21,14 +21,14 @@
         multiple
         chips
         :loading="!brands.length"
-      ></USelect>
+      ></v-select>
       <v-switch
         v-model="enableRecommendations"
         label="Enable Product Recommendations"
       ></v-switch>
-      <UButton @click="savePersonalization" color="primary" :loading="loading">
+      <v-btn @click="savePersonalization" color="primary" :loading="loading">
         Save Preferences
-      </UButton>
+      </v-btn>
       <v-alert v-if="successMessage" type="success" class="mt-3">
         {{ successMessage }}
       </v-alert>
@@ -36,11 +36,11 @@
         {{ errorMessage }}
       </v-alert>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from '#imports';
 import { useRuntimeConfig } from '#imports';
 
 const config = useRuntimeConfig();

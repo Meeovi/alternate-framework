@@ -1,6 +1,6 @@
 <template>
 	<div class="autocomplete">
-		<UInput
+		<v-text-field
 			v-model="input"
 			@input="onInput"
 			@keydown.enter.prevent="onSelectFirst"
@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch } from '#imports'
 import useStorefront from '../../composables/useStorefront'
 import { useRouter } from 'vue-router'
 

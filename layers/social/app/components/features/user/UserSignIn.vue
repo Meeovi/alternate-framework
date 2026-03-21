@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { onClickOutside } from '@vueuse/core'
 import Fuse from 'fuse.js'
+import { ref, shallowRef, computed, onMounted } from '#imports'
+import { useSignIn } from '~/composables/sign-in'
 
 const input = ref<HTMLInputElement | undefined>()
 const knownServers = ref<string[]>([])
@@ -97,7 +100,7 @@ onClickOutside(input, () => {
 </script>
 
 <template>
-  <UForm text-center justify-center items-center max-w-150 py6 flex="~ col gap-3" @submit.prevent="oauth">
+  <v-form text-center justify-center items-center max-w-150 py6 flex="~ col gap-3" @submit.prevent="oauth">
     <div flex="~ center" items-end mb2 gap-x-2>
       <img :src="`/${''}logo.svg`" w-12 h-12 mxa height="48" width="48" :alt="$t('app_logo')" class="rtl-flip">
       <div text-3xl>
@@ -142,7 +145,7 @@ onClickOutside(input, () => {
           overflow-y-auto
           class="max-h-[8rem]"
         >
-          <UButton
+          <v-btn
             v-for="(name, idx) in filteredServers"
             :id="toSelector(name)"
             :key="name"
@@ -152,7 +155,7 @@ onClickOutside(input, () => {
             @click="select(idx)"
           >
             {{ name }}
-          </UButton>
+          </v-btn>
         </div>
       </div>
       <div min-h-4>
@@ -171,12 +174,12 @@ onClickOutside(input, () => {
         </i18n-t>
       </span>
     </div>
-    <UButton flex="~ row" gap-x-2 items-center btn-solid mt2 :disabled="!server || busy">
+    <v-btn flex="~ row" gap-x-2 items-center btn-solid mt2 :disabled="!server || busy">
       <span v-if="busy" aria-hidden="true" block animate animate-spin preserve-3d class="rtl-flip">
         <span block i-ri:loader-2-fill aria-hidden="true" />
       </span>
       <span v-else aria-hidden="true" block i-ri:login-circle-line class="rtl-flip" />
       {{ $t('action.sign_in') }}
-    </UButton>
-  </UForm>
+    </v-btn>
+  </v-form>
 </template>

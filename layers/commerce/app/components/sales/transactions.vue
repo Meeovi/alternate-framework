@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar
                 :style="`background-color: ${transactionBar?.color}; color: ${transactionBar?.colortext} !important`">
                 <v-toolbar-title>{{ transactionBar?.name }}</v-toolbar-title>
@@ -23,13 +23,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in transactionBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text"
-                                :style="`color: ${transactionBar?.colortext} !important`">{{ menu?.name }}</UButton>
+                            <v-btn variant="text"
+                                :style="`color: ${transactionBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <v-tabs-window v-model="tab">
             <!--Transactions-->
@@ -55,7 +55,7 @@ void useContentAdapter()
     import {
         ref,
         computed
-    } from 'vue'
+    } from '#imports'
     import postCard from '~/components/related/post.vue'
     import {
         useUserStore

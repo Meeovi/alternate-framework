@@ -54,7 +54,7 @@ void useContentAdapter()
   } from '~/types';
 
   const route = useRoute();
-import useDirectusRequest from '#shared/app/composables/useDirectusRequest'
+import useDirectusRequest from '~/composables/useDirectusRequest'
 const { readItems, readItem, getAssetUrl } = useDirectusRequest()
 
     const slug = computed(() => {

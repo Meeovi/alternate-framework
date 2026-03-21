@@ -1,5 +1,5 @@
 <template>
-  <UButton variant="flat" @click="signOut">Logout</UButton>
+  <v-btn variant="flat" @click="signOut">Logout</v-btn>
 </template>
 
 <script setup>

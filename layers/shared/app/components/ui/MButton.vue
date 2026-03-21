@@ -1,7 +1,7 @@
 <template>
-    <UButton :color="color" class="m-btn" v-bind="$attrs">
-        <slot />
-    </UButton>
+    <v-btn :color="color" class="m-btn" v-bind="$attrs">
+        <NuxtPage />
+    </v-btn>
 </template>
 
 <script setup lang="ts">

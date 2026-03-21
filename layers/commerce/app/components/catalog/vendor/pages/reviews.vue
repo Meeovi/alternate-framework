@@ -1,5 +1,5 @@
 <template>
-    <UCard>
+    <v-card>
         <v-toolbar color="" title="Product Reviews"></v-toolbar>
         <template #header>
             <div v-if="reviews.length">
@@ -12,7 +12,7 @@
             </div>
             <div v-else>No reviews found.</div>
         </template>
-    </UCard>
+    </v-card>
 </template>
 
 
@@ -23,7 +23,7 @@ void useContentAdapter()
     import {
         ref,
         onMounted
-    } from 'vue'
+    } from '#imports'
     import {
         useVendureQuery
     } from '@/app/composables/useVendureQuery';

@@ -41,7 +41,7 @@ void useContentAdapter()
     import {
         ref,
         onMounted
-    } from 'vue';
+    } from '#imports';
     import {
         useVendureQuery
     } from '../../composables/useVendureQuery';

@@ -1,5 +1,5 @@
 <template>
-  <UCard>
+  <v-card>
     <template #header>Accessibility Settings</template>
     <template #header>
       <v-switch
@@ -15,7 +15,7 @@
         thumb-label
       ></v-slider>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>

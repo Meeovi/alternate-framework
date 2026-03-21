@@ -2,13 +2,13 @@
   <div>
     <v-dialog v-model="dialogOpen" justify="center">
       <template v-slot:activator="{ props }">
-        <UButton size="m" variant="tertiary" v-bind="props">
+        <v-btn size="m" variant="tertiary" v-bind="props">
           <SfIconFavorite size="m" />
           Add to list
-        </UButton>
+        </v-btn>
       </template>
 
-      <UCard max-width="500px">
+      <v-card max-width="500px">
         <v-tabs v-model="tab" bg-color="info">
           <v-tab value="one">Your Lists</v-tab>
           <!--<v-tab value="two">Create a List</v-tab>
@@ -29,7 +29,7 @@
                       @click="saveProductToList(list.id)" style="cursor: pointer;" :disabled="loading">
                       <template v-slot:append>
                         <v-progress-circular v-if="loading" indeterminate size="24"></v-progress-circular>
-                        <UIcon v-else icon="fas:fa fa-plus"></UIcon>
+                        <v-icon v-else icon="fas:fa fa-plus"></v-icon>
                       </template>
                     </v-list-item>
                   </v-list>
@@ -47,13 +47,13 @@
             </v-tabs-window-item>
           </v-tabs-window>
         </template>
-      </UCard>
+      </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from '#imports'
 
 const content = useContentAdapter()
 

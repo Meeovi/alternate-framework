@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import type { Maybe, SfAddress } from '../_types';
+import type { Maybe, SfAddress } from '../models/shared';
 
 export interface UseCustomerAddressState {
   data: Maybe<SfAddress>;

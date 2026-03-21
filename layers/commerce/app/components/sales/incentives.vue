@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar
                 :style="`background-color: ${incentiveBar?.color}; color: ${incentiveBar?.colortext} !important`">
                 <v-toolbar-title>{{ incentiveBar?.name }}</v-toolbar-title>
@@ -23,13 +23,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in incentiveBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text"
-                                :style="`color: ${incentiveBar?.colortext} !important`">{{ menu?.name }}</UButton>
+                            <v-btn variant="text"
+                                :style="`color: ${incentiveBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <v-tabs-window v-model="tab">
             <!--Coupons-->
@@ -107,7 +107,7 @@ void useContentAdapter()
     import {
         ref,
         computed
-    } from 'vue'
+    } from '#imports'
     import incentiveCard from '~/components/related/post.vue'
 
     const user = useSupabaseUser()

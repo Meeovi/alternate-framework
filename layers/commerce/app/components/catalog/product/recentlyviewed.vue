@@ -16,7 +16,7 @@
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
-                  <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
+                  <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
                 </v-scale-transition>
               </div>
             </v-slide-group-item>
@@ -35,7 +35,7 @@ void useContentAdapter()
 
   const model = ref(null)
 
-  import { onMounted } from 'vue'
+  import { onMounted } from '#imports'
   import { useRecentlyViewed } from '#commerce/app/composables/products/useRecentlyViewed'
 
   const { products: recentlyViewed, load } = useRecentlyViewed()

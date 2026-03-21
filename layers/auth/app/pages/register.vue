@@ -6,11 +6,11 @@
 				Enter your information to create an account
 			</v-toolbar-subtitle>
 		</v-toolbar>
-		<UCard>
+		<v-card>
 			<div class="grid gap-4">
 				<div class="grid grid-cols-2 gap-4">
 					<div class="grid gap-2">
-						<UInput
+						<v-text-field
 							id="first-name"
 							placeholder="Max"
               label="First Name"
@@ -19,7 +19,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<UInput
+						<v-text-field
 							id="last-name"
 							placeholder="Robinson"
               label="Last Name"
@@ -28,7 +28,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<UInput
+						<v-text-field
 							id="email"
 							type="email"
 							placeholder="m@example.com"
@@ -38,7 +38,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<UInput
+						<v-text-field
 							id="password"
 							type="password"
 							placeholder="Password"
@@ -48,7 +48,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<UInput
+						<v-text-field
 							id="password_confirmation"
 							type="password"
 							autocomplete="new-password"
@@ -58,7 +58,7 @@
 						/>
 					</div>
 					<div class="grid gap-2">
-						<UInput
+						<v-text-field
               label="Profile Image (optional)"
 						/>
 						<div class="flex items-end gap-4">
@@ -70,7 +70,7 @@
 								/>
 							</div>
 							<div class="flex items-center gap-2 w-full">
-								<UInput
+								<v-text-field
 									id="image"
 									type="file"
 									accept="image/*"
@@ -84,7 +84,7 @@
 							</div>
 						</div>
 					</div>
-					<UButton
+					<v-btn
 						type="submit"
 						class="w-full"
 						:disabled="loading"
@@ -92,16 +92,16 @@
 					>
 						<Loader2 size="16" class="animate-spin" v-if="loading" />
 						<span v-else>Create your account</span>
-					</UButton>
+					</v-btn>
 				</div>
 			</div>
-		</UCard>
+		</v-card>
 	</div>
 </template>
 
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from '#imports'
 import { definePageMeta, useHead, useRouter } from '#imports'
 import { useAuth } from '../composables/useAuth'
 

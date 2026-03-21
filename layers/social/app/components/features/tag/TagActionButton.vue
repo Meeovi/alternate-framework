@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useMasto } from '~/composables/masto/masto';
 
 const { tag } = defineProps<{
   tag: mastodon.v1.Tag
@@ -34,7 +35,7 @@ async function toggleFollowTag() {
 </script>
 
 <template>
-  <UButton
+  <v-btn
     rounded group focus:outline-none
     hover:text-primary focus-visible:text-primary
     :aria-label="tag.following ? $t('tag.unfollow_label', [tag.name]) : $t('tag.follow_label', [tag.name])"
@@ -45,5 +46,5 @@ async function toggleFollowTag() {
         <div :class="[tag.following ? 'i-ri:star-fill' : 'i-ri:star-line']" />
       </div>
     </CommonTooltip>
-  </UButton>
+  </v-btn>
 </template>

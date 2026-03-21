@@ -3,7 +3,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch } from '#imports';
 import { useVendureMutation } from '../../../composables/useVendureMutation';
 import adjustOrderLineMutation from '#graphql/app/commerce/mutations/adjustOrderLine.gql';
 import removeOrderLineMutation from '#graphql/app/commerce/mutations/removeOrderLine.gql';
@@ -49,11 +49,11 @@ watch(quantity, (val) => {
       </div>
     </div>
     <div v-if="cartItem.productVariant.stockOnHand" class="flex flex-1 items-end justify-between text-sm">
-      <UInput v-model="quantity" type="number" :min="1" :max="maxQty" name="quantity" aria-label="Cart item quantity" class="w-18 mt-1 inline-block py-2 px-3 border border-secondary-300 bg-white rounded-md shadow-sm" />
+      <v-text-field v-model="quantity" type="number" :min="1" :max="maxQty" name="quantity" aria-label="Cart item quantity" class="w-18 mt-1 inline-block py-2 px-3 border border-secondary-300 bg-white rounded-md shadow-sm" />
       <div class="flex">
-        <UButton v-if="isRemovable" type="v-btn" class="font-medium text-dark bg-transparent" @click="removeCartItem">
+        <v-btn v-if="isRemovable" type="v-btn" class="font-medium text-dark bg-transparent" @click="removeCartItem">
           Remove
-        </UButton>
+        </v-btn>
       </div>
     </div>
   </div>

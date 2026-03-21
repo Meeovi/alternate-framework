@@ -22,9 +22,9 @@
           {{ list?.status }}
         </v-chip>
 
-        <UButton color="primary" prepend-icon="fas fa-plus" @click="showAddDialog = true">
+        <v-btn color="primary" prepend-icon="fas fa-plus" @click="showAddDialog = true">
           Add Item
-        </UButton>
+        </v-btn>
 
         <!-- List Items -->
         <addList />
@@ -51,7 +51,7 @@
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
-                  <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
+                  <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
                 </v-scale-transition>
               </div>
             </v-slide-group-item>
@@ -64,7 +64,7 @@
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
-                  <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
+                  <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
                 </v-scale-transition>
               </div>
             </v-slide-group-item>
@@ -77,7 +77,7 @@
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
-                  <UIcon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></UIcon>
+                  <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
                 </v-scale-transition>
               </div>
             </v-slide-group-item>
@@ -98,13 +98,13 @@
   import {
     ref,
     computed
-  } from 'vue'
+  } from '#imports'
   import {
     useRoute
   } from 'vue-router'
   import {
     useLists
-  } from '@/composables/lists/useLists'
+  } from '../../../composables/useLists'
   import listItem from '@/components/lists/add-list-item.vue'
   import addList from '@/components/lists/add-list.vue'
   import productCard from '#commerce/app/components/catalog/product/productCard.vue'
@@ -153,11 +153,11 @@
     }
     const content = useContentAdapter()
     if (content && typeof content.readItems === 'function') {
-      const resp = await content.readItems('lists', opts)
+      const resp = content.readItems('lists', opts)
       return resp?.data || resp
     }
     return $directus.request($readItems('lists', opts))
-  })
+  }, { server: true })
 
   const list = computed(() => listRaw.value?.[0] || null)
 

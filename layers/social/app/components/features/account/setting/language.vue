@@ -1,24 +1,24 @@
 <template>
-  <UCard>
+  <v-card>
     <template #header>Language and Localization</template>
     <template #header>
-      <USelect
+      <v-select
         v-model="selectedLanguage"
         :items="languages"
         label="Preferred Language"
         item-title="label"
         item-value="value"
         :loading="loading"
-      ></USelect>
-      <UButton @click="saveLanguagePreference" color="primary" :loading="saving">
+      ></v-select>
+      <v-btn @click="saveLanguagePreference" color="primary" :loading="saving">
         Save Language Preference
-      </UButton>
+      </v-btn>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from '#imports';
 
 const config = useRuntimeConfig();
 const baseUrl = config.public.vendureUrl; // Magento API base URL

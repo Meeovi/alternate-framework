@@ -9,7 +9,7 @@
                                 <img :alt="tag?.name" :src="getAssetUrl(tag?.image)" cover />
                             </div>
 
-                            <div v-else><img src="../../../assets/images/backgraund-trend.jpg" :alt="tag?.name"></div>
+                            <div v-else><img src="https://via.placeholder.com/800x200" :alt="tag?.name"></div>
                         </div>
                         <div class="left-side col-12 col-md">
                             <h3 class="mbr-section-title mbr-fonts-style l1 display-5">{{ tag?.name }}

@@ -26,18 +26,16 @@
     "@better-auth/scim": "^1.4.15",
     "@better-auth/sso": "^1.4.12",
     "@better-auth/stripe": "^1.4.15",
-    "@mframework/core": "^0.0.13",
+    "@mframework/core": "file:../../packages/modules/core",
     "@polar-sh/better-auth": "^1.6.3",
-    "@vercel/mcp-adapter": "^0.3.2",
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
     "better-auth": "^1.4.12",
-    "typescript": "^5.9.3",
+    "pg": "^8.18.0",
     "viem": "^2.46.1"
   },
   "devDependencies": {
-    "@mframework/layer-shared": "^0.0.6-beta.21",
-    "@mframework/layer-social": "^0.0.3-beta.2",
     "@types/node": "^25.0.9",
-    "@types/uuid": "^10.0.0",
-    "nuxt": "^4.3.1"
+    "@types/uuid": "^10.0.0"
   }
 }

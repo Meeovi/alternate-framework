@@ -3,73 +3,73 @@
         <v-row justify="center">
             <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition" @show="fetchBookmarkData">
                 <template v-slot:activator="{ props }">
-                    <UButton v-bind="props">
-                        <UIcon start icon="fas:fa fa-plus"></UIcon>Update Address
-                    </UButton>
+                    <v-btn v-bind="props">
+                        <v-icon start icon="fas:fa fa-plus"></v-icon>Update Address
+                    </v-btn>
                 </template>
-                <UCard>
-                    <UForm @submit.prevent="handleSubmit">
-                        <UCard>
+                <v-card>
+                    <v-form @submit.prevent="handleSubmit">
+                        <v-card>
                             <template #header>
                                 <v-row>
-                                    <v-col cols="6"><UInput v-model="bookmarkData.name" id="bookmarkName"
+                                    <v-col cols="6"><v-text-field v-model="bookmarkData.name" id="bookmarkName"
                                             label="Bookmark Name*" required /></v-col>
-                                    <v-col cols="6"><UInput v-model="bookmarkData.url" id="bookmarkUrl"
+                                    <v-col cols="6"><v-text-field v-model="bookmarkData.url" id="bookmarkUrl"
                                             label="Bookmark Url*" required /></v-col>
                                     <v-col cols="6">
-                                        <USelect v-model="bookmarkData.type" label="What type of bookmark is this?"
+                                        <v-select v-model="bookmarkData.type" label="What type of bookmark is this?"
                                             :items="['Website', 'Password']" />
                                     </v-col>
                                     <v-col cols="6">
-                                        <USelect v-model="bookmarkData.status"
+                                        <v-select v-model="bookmarkData.status"
                                             label="Is this bookmark public or private?"
                                             :items="['Public', 'Private']" />
                                     </v-col>
                                     <v-col cols="12">
-                                        <UFileUpload @change="handleImageUpload" clearable density="compact"
+                                        <v-file-upload @change="handleImageUpload" clearable density="compact"
                                             prepend-icon="fas:fa fa-image" accept="image/*" label="Image"
                                             variant="solo-inverted" />
                                     </v-col>
-                                    <v-col cols="12"><UTextarea v-model="bookmarkData.note" label="Note"
-                                            variant="outlined"></UTextarea></v-col>
+                                    <v-col cols="12"><v-textarea v-model="bookmarkData.note" label="Note"
+                                            variant="outlined"></v-textarea></v-col>
                                 </v-row>
                             </template>
                             <v-divider class="mt-12"></v-divider>
                             <template>
-                                <UButton color="blue-darken-1" variant="text" @click="isActive.value = false">
+                                <v-btn color="blue-darken-1" variant="text" @click="isActive.value = false">
                                     Close
-                                </UButton>
+                                </v-btn>
                                 <v-spacer></v-spacer>
-                                <UButton color="blue-darken-1" variant="text" type="submit" @click="confirmDelete"
+                                <v-btn color="blue-darken-1" variant="text" type="submit" @click="confirmDelete"
                                     :loading="deleteLoading">
                                     Delete Bookmark
-                                </UButton>
-                                <UButton color="blue-darken-1" variant="text" type="submit">
+                                </v-btn>
+                                <v-btn color="blue-darken-1" variant="text" type="submit">
                                     Update Bookmark
-                                </UButton>
+                                </v-btn>
                             </template>
-                        </UCard>
-                    </UForm>
+                        </v-card>
+                    </v-form>
 
                     <!-- Delete Confirmation Dialog -->
                     <v-dialog v-model="deleteDialog" max-width="500px">
-                        <UCard>
-                            <UCard-title class="text-h5">Delete Bookmark</template>
+                        <v-card>
+                            <template #title class="text-h5">Delete Bookmark</template>
                             <template #header>
                                 Are you sure you want to delete this bookmark? This action cannot be undone.
                             </template>
                             <template>
                                 <v-spacer></v-spacer>
-                                <UButton color="blue-darken-1" variant="text" @click="deleteDialog = false">
+                                <v-btn color="blue-darken-1" variant="text" @click="deleteDialog = false">
                                     Cancel
-                                </UButton>
-                                <UButton color="error" variant="text" @click="deleteBookmark" :loading="deleteLoading">
+                                </v-btn>
+                                <v-btn color="error" variant="text" @click="deleteBookmark" :loading="deleteLoading">
                                     Delete
-                                </UButton>
+                                </v-btn>
                             </template>
-                        </UCard>
+                        </v-card>
                     </v-dialog>
-                </UCard>
+                </v-card>
             </v-dialog>
         </v-row>
     </div>
@@ -91,20 +91,20 @@
         onMounted,
         watch,
         computed
-    } from 'vue';
+    } from '#imports';
     import {
         useRoute,
         useRouter
     } from 'vue-router';
-    import uploadFiles from '~/app/composables/content/uploadFiles';
-    import updateBookmark from '~/app/composables/bookmarks/updateBookmark';
+    import uploadFiles from '../../composables/content/uploadFiles';
+    import updateBookmark from '../../composables/bookmarks/updateBookmark';
     import {
         updateItem,
         deleteItem
-    } from '@mframework/directus-client';
+    } from '@mframework/adapter-directus';
     import {
         useUserStore
-    } from '#auth/app/stores/user'
+    } from '../../../../auth/app/stores/user'
 
     const content = useContentAdapter()
 

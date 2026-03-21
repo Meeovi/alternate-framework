@@ -1,7 +1,7 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, SfShippingMethods } from '../_types';
+import type { Maybe, SfShippingMethods } from '../models';
 import type {
   UseCartShippingMethodsState,
   UseCartShippingMethodsReturn,

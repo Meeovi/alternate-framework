@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-2">
-    <UButton size="lg" class="w-full xs:ml-4" :disabled="loading || hasItemInCart" @click="addToCart">
+    <v-btn size="lg" class="w-full xs:ml-4" :disabled="loading || hasItemInCart" @click="addToCart">
       <template #prefix>
         <SfIconShoppingCart size="sm" />
       </template>
       Add to Cart
-    </UButton>
+    </v-btn>
     <compareBtn />
   </div>
 </template>

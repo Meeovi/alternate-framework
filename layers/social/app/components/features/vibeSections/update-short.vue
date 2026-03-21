@@ -2,18 +2,18 @@
     <div>
         <v-dialog max-width="500">
             <template v-slot:activator="{ props: activatorProps }">
-                <UButton color="primary" v-bind="activatorProps" size="medium" variant="text" class="shortUpdateBtn"
-                    text="Update" title="Update"></UButton>
+                <v-btn color="primary" v-bind="activatorProps" size="medium" variant="text" class="shortUpdateBtn"
+                    text="Update" title="Update"></v-btn>
             </template>
 
             <template v-slot:default="{ isActive }">
                 <v-row justify="center">
-                    <UCard>
-                        <UForm @submit.prevent="handleSubmit">
+                    <v-card>
+                        <v-form @submit.prevent="handleSubmit">
                             <v-toolbar dark color="primary">
-                                <UButton icon dark @click="dialog = false">
-                                    <UIcon icon="fas:fa fa-circle-xmark"></UIcon>
-                                </UButton>
+                                <v-btn icon dark @click="dialog = false">
+                                    <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
+                                </v-btn>
                                 <template #header>
                                     <span class="text-h6">Update Short</span>
                                 </template>
@@ -22,34 +22,34 @@
                                 <v-container>
                                     <v-row>
                                         <v-col cols="12">
-                                            <UInput v-model="shortData.name" id="shortName" label="Short Name*"
+                                            <v-text-field v-model="shortData.name" id="shortName" label="Short Name*"
                                                 required />
                                         </v-col>
                                         <v-col cols="6">
-                                            <USelect v-model="shortData.type" label="What type of short is this?"
+                                            <v-select v-model="shortData.type" label="What type of short is this?"
                                                 :items="['Default', 'Live', 'Eats']" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <USelect v-model="shortData.status"
+                                            <v-select v-model="shortData.status"
                                                 label="Is this short public or private?"
                                                 :items="['Published', 'Private', 'Draft']" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <USelect v-model="shortData.age_requirement"
+                                            <v-select v-model="shortData.age_requirement"
                                                 label="What is the Age Requirement?"
                                                 :items="['Everyone', '18+', '16+']" />
                                         </v-col>
                                         <v-col cols="12">
-                                            <UTextarea v-model="shortData.description" label="Description"
+                                            <v-textarea v-model="shortData.description" label="Description"
                                                 id="shortDescription" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <UFileUpload @change="handleVideoUpload" clearable density="compact"
+                                            <v-file-upload @change="handleVideoUpload" clearable density="compact"
                                                 prepend-icon="fas:fa fa-video" accept="video/*" label="Video File"
                                                 variant="solo-inverted" />
                                         </v-col>
                                         <v-col cols="6">
-                                            <UFileUpload @change="handleThumbnailUpload" clearable density="compact"
+                                            <v-file-upload @change="handleThumbnailUpload" clearable density="compact"
                                                 prepend-icon="fas:fa fa-image" accept="image/*" label="Image for Video"
                                                 variant="solo-inverted" />
                                         </v-col>
@@ -59,15 +59,15 @@
                             </template>
                             <template>
                                 <v-spacer></v-spacer>
-                                <UButton color="blue-darken-1" variant="text" @click="dialog = false">
+                                <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
                                     Close
-                                </UButton>
-                                <UButton color="blue-darken-1" variant="text" type="submit">
+                                </v-btn>
+                                <v-btn color="blue-darken-1" variant="text" type="submit">
                                     Update Short
-                                </UButton>
+                                </v-btn>
                             </template>
-                        </UForm>
-                    </UCard>
+                        </v-form>
+                    </v-card>
                 </v-row>
             </template>
         </v-dialog>
@@ -77,7 +77,7 @@
 <script setup>
     import {
         ref
-    } from 'vue';
+    } from '#imports';
     import useDirectusRequest from '~/composables/useDirectusRequest'
     const { readItem, updateItem } = useDirectusRequest()
     import {

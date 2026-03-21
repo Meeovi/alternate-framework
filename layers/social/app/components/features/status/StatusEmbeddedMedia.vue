@@ -58,7 +58,7 @@ const card = ref(status.card)
           justify-center
           flex-items-center
         >
-          <UButton
+          <v-btn
             absolute
             bg-primary
             opacity-85
@@ -77,7 +77,7 @@ const card = ref(status.card)
               pointer-events-none
               i-ri:play-circle-line
             />
-          </UButton>
+          </v-btn>
         </div>
       </div>
       <CommonBlurhash

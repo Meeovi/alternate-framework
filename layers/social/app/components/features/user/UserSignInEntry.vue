@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { openSigninDialog } from '~/composables/dialog';
+import { useSignIn } from '~/composables/sign-in';
+import { currentServer } from '~/composables/users';
+import { isHydrated } from '~/composables/vue';
+
 const { busy, oauth, singleInstanceServer } = useSignIn()
 </script>
 
@@ -12,7 +17,7 @@ const { busy, oauth, singleInstanceServer } = useSignIn()
     <p text-sm text-secondary>
       {{ $t(singleInstanceServer ? 'user.single_instance_sign_in_desc' : 'user.sign_in_desc') }}
     </p>
-    <UButton
+    <v-btn
       v-if="singleInstanceServer"
       flex="~ row" gap-x-2 items-center justify-center btn-solid text-center rounded-3
       :disabled="busy"
@@ -23,9 +28,9 @@ const { busy, oauth, singleInstanceServer } = useSignIn()
       </span>
       <span v-else aria-hidden="true" block i-ri:login-circle-line class="rtl-flip" />
       {{ $t('action.sign_in') }}
-    </UButton>
-    <UButton v-else btn-solid rounded-3 text-center mt-2 select-none @click="openSigninDialog()">
+    </v-btn>
+    <v-btn v-else btn-solid rounded-3 text-center mt-2 select-none @click="openSigninDialog()">
       {{ $t('action.sign_in') }}
-    </UButton>
+    </v-btn>
   </div>
 </template>

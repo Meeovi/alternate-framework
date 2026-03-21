@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GroupedNotifications } from '#shared/types'
+import type { GroupedNotifications } from '@mframework/core/shared/types'
 import { useTimeAgoOptions } from '@mframework/localization';
 
 const { items } = defineProps<{

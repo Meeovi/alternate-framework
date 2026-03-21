@@ -1,20 +1,20 @@
 <template>
-  <UCard class="pa-4" elevation="1">
+  <v-card class="pa-4" elevation="1">
     <template #header>SCIM Settings</template>
     <template>
       <v-switch label="SCIM Enabled" v-model="form.scimEnabled" />
-      <UInput label="Admin IDs (comma separated)" v-model="form.scimAdminIds" />
+      <v-text-field label="Admin IDs (comma separated)" v-model="form.scimAdminIds" />
     </template>
     <template>
       <v-spacer />
-      <UButton :loading="saving" color="primary" @click="save">Save</UButton>
+      <v-btn :loading="saving" color="primary" @click="save">Save</v-btn>
       <div v-if="message" class="ml-3">{{ message }}</div>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 
 const form = ref({ scimEnabled: false, scimAdminIds: '' })
 const saving = ref(false)

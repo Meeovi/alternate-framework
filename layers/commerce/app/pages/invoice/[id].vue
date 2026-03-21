@@ -113,10 +113,10 @@
                     </div>
                 </div>
             </div>
-            <img src="../../assets/images/background2.jpg" alt="Invoices">
+              <img src="https://via.placeholder.com/1200x400" alt="Invoices">
         </section>
 
-        <UCard title="Invoice Items" flat>
+        <v-card title="Invoice Items" flat>
             <div class="container">
                 <v-data-table :headers="headers" :items="invoice?.items" :items-per-page="5" class="elevation-1">
                     <template v-slot:[`item.name`]="{ item }">
@@ -142,7 +142,7 @@
                     </template>
                 </v-data-table>
             </div>
-        </UCard>
+        </v-card>
         <section data-bs-version="5.1" class="pricing1 lodgem5 cid-uhBqGPVpcI" id="apricing1-9s">
             <div class="container">
                 <div class="row">

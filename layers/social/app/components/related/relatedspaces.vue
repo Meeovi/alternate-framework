@@ -13,7 +13,7 @@
   </template>
 
   <script setup>
-  import { ref } from 'vue'
+  import { ref } from '#imports'
   import spaceCard from '~/components/related/space.vue'
 
   const model = ref(null)

@@ -1,4 +1,4 @@
-import type { SfProduct } from '../../_types';
+import type { SfProduct } from '../../models';
 
 export const mockProduct: SfProduct = {
   id: '1',

@@ -2,32 +2,32 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
       <template v-slot:activator="{ props }">
-        <UButton v-bind="props" class="rightAddBtn">
-          <UIcon start icon="fas:fa fa-plus"></UIcon>Create a List
-        </UButton>
+        <v-btn v-bind="props" class="rightAddBtn">
+          <v-icon start icon="fas:fa fa-plus"></v-icon>Create a List
+        </v-btn>
       </template>
-      <UCard class="b-1">
+      <v-card class="b-1">
         <template #header>
           <h3>Create New List</h3>
         </template>
 
-        <template #header>
+        <template>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <UForm @submit.prevent="submitForm">
+          <v-form @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in listFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <UButton type="submit">Submit</UButton>
-          </UForm>
+            <v-btn type="submit">Submit</v-btn>
+          </v-form>
         </template>
-      </UCard>
+      </v-card>
     </v-dialog>
   </v-row>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '../../composables/globals/useDirectusForm'
+import { useDirectusForm } from '../../../../shared/app/composables/useDirectusForm'
 
 const dialog = ref(false)
 const content = useContentAdapter()

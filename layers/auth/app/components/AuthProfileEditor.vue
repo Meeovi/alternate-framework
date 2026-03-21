@@ -1,7 +1,7 @@
 <template>
   <section class="auth-profile-editor">
     <h3>Profile</h3>
-    <UForm @submit.prevent="save">
+    <v-form @submit.prevent="save">
       <label>
         Name
         <input v-model="form.name" type="text" />
@@ -11,15 +11,15 @@
         <input v-model="form.email" type="email" />
       </label>
       <div class="actions">
-        <UButton type="submit" :disabled="saving">Save</UButton>
+        <v-btn type="submit" :disabled="saving">Save</v-btn>
         <span v-if="message" class="message">{{ message }}</span>
       </div>
-    </UForm>
+    </v-form>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 
 const form = ref({ name: '', email: '' })
 const saving = ref(false)

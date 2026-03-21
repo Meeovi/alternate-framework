@@ -20,18 +20,15 @@
   },
   "dependencies": {
     "@searchkit/instantsearch-client": "^4.14.1",
-    "@types/react": "^19.2.9",
-    "graphql": "^16.8.0",
+    "@types/react": "^19.2.14",
+    "graphql": "^16.12.0",
     "instantsearch.css": "^7.4.5",
-    "layers": "^0.0.3",
-    "react": "^19.2.3",
+    "react": "^19.2.4",
     "searchkit": "^4.15.0",
     "typescript": "^5.9.3",
-    "vue": "^3.2.47",
-    "vue-instantsearch": "^4.22.8"
+    "vue-instantsearch": "^4.24.0"
   },
   "devDependencies": {
-    "@types/node": "^25.0.10",
-    "nuxt": "^4.3.1"
+    "@types/node": "^25.0.10"
   }
 }

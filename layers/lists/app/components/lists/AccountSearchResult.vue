@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import type { SearchResult } from '~/composables/masto/search'
+import useContentAdapter from 'app/composables/useContentAdapter';
+import type { mastodon } from 'masto'
+
+type SearchResult = {
+  type: 'account'
+  data: mastodon.v1.Account
+}
 
 defineProps<{
   result: SearchResult

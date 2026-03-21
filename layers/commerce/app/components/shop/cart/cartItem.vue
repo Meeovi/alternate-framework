@@ -27,24 +27,24 @@
                                     <div class="mbr-section-btn">
                                         <div class="flex border border-neutral-300 rounded-md">
                                             <!-- Decrease Quantity -->
-                                            <UButton variant="tertiary" :disabled="count <= min" square
+                                            <v-btn variant="tertiary" :disabled="count <= min" square
                                                 class="rounded-r-none p-3" :aria-controls="inputId"
                                                 aria-label="Decrease quantity" @click="handleDecrease">
                                                 <SfIconRemove />
-                                            </UButton>
+                                            </v-btn>
 
                                             <!-- Quantity Input -->
-                                            <UInput :id="inputId" v-model="count" type="number"
+                                            <v-text-field :id="inputId" v-model="count" type="number"
                                                 class="grow appearance-none mx-2 w-8 text-center bg-transparent font-medium"
                                                 :min="min" :max="max" @change="handleQuantityChange"
                                                 aria-label="Product quantity" />
 
                                             <!-- Increase Quantity -->
-                                            <UButton variant="tertiary" :disabled="count >= max" square
+                                            <v-btn variant="tertiary" :disabled="count >= max" square
                                                 class="rounded-l-none p-3" :aria-controls="inputId"
                                                 aria-label="Increase quantity" @click="handleIncrease">
                                                 <SfIconAdd />
-                                            </UButton>
+                                            </v-btn>
                                         </div>
                                         <!-- Stock Information -->
                                         <p class="self-center mt-1 mb-4 text-xs text-neutral-500 xs:mb-0">
@@ -70,7 +70,7 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch } from '#imports';
 import {  SfIconAdd, SfIconRemove, useId } from '@storefront-ui/vue';
 import { useVendureMutation } from '../../composables/useVendureMutation';
 import adjustOrderLineMutation from '#graphql/app/commerce/mutations/adjustOrderLine.gql';

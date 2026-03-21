@@ -8,12 +8,12 @@ export function getMastoConfig() {
   }
 }
 
-export async function proxyMastodonRequest(path, method = 'GET', headers = {}, body = undefined) {
+export async function proxyMastodonRequest(path: string, method = 'GET', headers = {}, body = undefined) {
   const { baseUrl, apiKey } = getMastoConfig()
   if (!baseUrl) throw new Error('Mastodon base URL not configured')
 
   const url = `${baseUrl.replace(/\/$/, '')}${path}`
-  const fetchHeaders = {
+  const fetchHeaders: Record<string, string> = {
     'content-type': 'application/json',
     ...headers
   }
@@ -31,7 +31,7 @@ export async function proxyMastodonRequest(path, method = 'GET', headers = {}, b
   return { status: res.status, headers: Object.fromEntries(res.headers.entries()), data }
 }
 
-export async function createMastoClientForUser(userId) {
+export async function createMastoClientForUser(userId: string) {
   // Try to read stored access token from prisma (if available)
   try {
     const user = await prisma.users.findUnique({ where: { id: userId } })
@@ -39,10 +39,13 @@ export async function createMastoClientForUser(userId) {
     const instance = (user && user.mastodonInstance) || undefined
     if (!token) return null
     const { createRestAPIClient, createStreamingAPIClient } = await import('masto')
-    const url = instance ? `https://${instance}` : (getMastoConfig().baseUrl || undefined)
+    const baseUrl = getMastoConfig().baseUrl
+    const url: string = instance ? `https://${instance}` : (baseUrl || 'https://mastodon.social')
     const client = createRestAPIClient({ url, accessToken: token })
-    const streamingClient = (client && client.v2 && client.v2.instance && client.v2.instance.configuration && client.v2.instance.configuration.urls && client.v2.instance.configuration.urls.streaming)
-      ? createStreamingAPIClient({ streamingApiUrl: client.v2.instance.configuration.urls.streaming, accessToken: token, implementation: globalThis.WebSocket })
+    const cfg = (client as any)?.v2?.instance?.configuration
+    const streamingUrl = cfg?.urls?.streaming
+    const streamingClient = streamingUrl
+      ? createStreamingAPIClient({ streamingApiUrl: streamingUrl, accessToken: token, implementation: (globalThis as any).WebSocket })
       : undefined
     return { client, streamingClient }
   } catch (e) {

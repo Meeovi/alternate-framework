@@ -11,19 +11,19 @@
 
             <!-- Current Balance Card -->
             <v-col cols="12" md="6">
-                <UCard class="mb-4">
+                <v-card class="mb-4">
                     <template #header>Current Balance</template>
                     <template #header>
                         <div class="text-h4 text-primary">
                             {{ currentBalance }} Points
                         </div>
                     </template>
-                </UCard>
+                </v-card>
             </v-col>
 
             <!-- Active Rewards Card -->
             <v-col cols="12" md="6">
-                <UCard class="mb-4">
+                <v-card class="mb-4">
                     <template #header>Active Cart Rewards</template>
                     <template #header>
                         <v-list v-if="activeRewards.length">
@@ -33,64 +33,64 @@
                                     <v-list-item-subtitle>Points: {{ reward.points }}</v-list-item-subtitle>
                                 </v-list-item-content>
                                 <v-list-item-action>
-                                    <UButton color="error" small @click="removeReward(reward.cartId)"
+                                    <v-btn color="error" small @click="removeReward(reward.cartId)"
                                         :loading="removingReward === reward.cartId">
                                         Remove
-                                    </UButton>
+                                    </v-btn>
                                 </v-list-item-action>
                             </v-list-item>
                         </v-list>
                         <v-alert v-else type="info" text="No active rewards"></v-alert>
                     </template>
-                </UCard>
+                </v-card>
             </v-col>
 
             <!-- Modify Rewards Form -->
             <v-col cols="12">
-                <UCard>
+                <v-card>
                     <template #header>Modify Rewards</template>
                     <template #header>
                         <v-form ref="form" v-model="valid" @submit.prevent="handleModify">
                             <v-row>
                                 <v-col cols="12" md="6">
-                                    <USelect v-model="formData.cartId" :items="activeRewards" item-text="cartId"
+                                    <v-select v-model="formData.cartId" :items="activeRewards" item-text="cartId"
                                         item-value="cartId" label="Select Cart" required
-                                        :rules="[v => !!v || 'Cart is required']"></USelect>
+                                        :rules="[v => !!v || 'Cart is required']"></v-select>
                                 </v-col>
 
                                 <v-col cols="12" md="6">
-                                    <UInput v-model="formData.points" label="New Points Amount" type="number"
+                                    <v-text-field v-model="formData.points" label="New Points Amount" type="number"
                                         required :rules="[
                         v => !!v || 'Points are required',
                         v => v >= 0 || 'Points must be non-negative'
-                      ]"></UInput>
+                      ]"></v-text-field>
                                 </v-col>
 
                                 <v-col cols="12">
-                                    <UTextarea v-model="formData.reason" label="Modification Reason" rows="3" required
-                                        :rules="[v => !!v || 'Reason is required']"></UTextarea>
+                                    <v-textarea v-model="formData.reason" label="Modification Reason" rows="3" required
+                                        :rules="[v => !!v || 'Reason is required']"></v-textarea>
                                 </v-col>
                             </v-row>
 
                             <!-- Action Buttons -->
                             <v-row>
                                 <v-col cols="12" class="text-right">
-                                    <UButton color="error" class="mr-4" @click="resetForm">
+                                    <v-btn color="error" class="mr-4" @click="resetForm">
                                         Reset
-                                    </UButton>
-                                    <UButton color="primary" type="submit" :loading="loading" :disabled="!valid">
+                                    </v-btn>
+                                    <v-btn color="primary" type="submit" :loading="loading" :disabled="!valid">
                                         Update Rewards
-                                    </UButton>
+                                    </v-btn>
                                 </v-col>
                             </v-row>
                         </v-form>
                     </template>
-                </UCard>
+                </v-card>
             </v-col>
 
             <!-- Modification History -->
             <v-col cols="12">
-                <UCard>
+                <v-card>
                     <template #header>Modification History</template>
                     <template #header>
                         <v-data-table :headers="historyHeaders" :items="modificationHistory" :loading="loadingHistory"
@@ -105,7 +105,7 @@
                             </template>
                         </v-data-table>
                     </template>
-                </UCard>
+                </v-card>
             </v-col>
         </v-row>
 
@@ -113,9 +113,9 @@
         <v-snackbar v-model="snackbar.show" :color="snackbar.color">
             {{ snackbar.message }}
             <template v-slot:action="{ attrs }">
-                <UButton text v-bind="attrs" @click="snackbar.show = false">
+                <v-btn text v-bind="attrs" @click="snackbar.show = false">
                     Close
-                </UButton>
+                </v-btn>
             </template>
         </v-snackbar>
     </div>
@@ -129,7 +129,7 @@ void useContentAdapter()
     import {
         ref,
         onMounted
-    } from 'vue';
+    } from '#imports';
     import {
         getRewardBalance,
         useRewardPoints,

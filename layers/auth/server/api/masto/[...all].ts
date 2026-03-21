@@ -25,8 +25,9 @@ export default defineEventHandler(async (event) => {
       try { event.node.res.setHeader(k, String(v)) } catch (e) { /* ignore */ }
     }
     return result.data
-  } catch (e: any) {
+  } catch (e: unknown) {
     event.node.res.statusCode = 502
-    return { error: String(e?.message || e) }
+    const message = e instanceof Error ? e.message : String(e)
+    return { error: message }
   }
 })

@@ -73,7 +73,7 @@
                                     </NuxtLink>
 
                                     <NuxtLink v-else :to="`/user/${post?.author?.id}`">
-                                        <UAvatar image="../../../assets/images/background2.jpg" size="41"></UAvatar>
+                                           <UAvatar image="https://via.placeholder.com/41" size="41"></UAvatar>
                                     </NuxtLink>
                                 </h5>
                             </div>
@@ -166,7 +166,7 @@
         onMounted,
         computed,
         ref
-    } from 'vue'
+    } from '#imports'
     import {
         useReactionsStore
     } from '~/stores/reactions'

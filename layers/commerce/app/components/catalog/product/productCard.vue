@@ -6,23 +6,24 @@
           <img :src="`${$directus.url}assets/${product?.image?.filename_disk}`" :alt="product?.name"
             class="block object-cover h-auto rounded-md aspect-square" width="300" height="300" />
         </NuxtLink>
-        <UButton variant="flat" size="sm" square
+        <v-btn variant="flat" size="sm" square
           class="absolute bottom-0 right-0 mr-2 mb-2 bg-white ring-1 ring-inset ring-neutral-200 rounded-full!"
           aria-label="Add to wishlist">
-          <UIcon icon="fas fa-heart" size="sm"></UIcon>
-        </UButton>
+          <v-icon icon="fas fa-heart" size="sm"></v-icon>
+        </v-btn>
       </div>
 
       <div class="relative" v-else>
         <NuxtLink :to="`/product/${product?.id}`" class="block">
-          <img src="~/assets/images/mbr-1920x1893.png" :alt="product?.name"
-            class="block object-cover h-auto rounded-md aspect-square" width="300" height="300" />
+          <div class="block object-cover h-auto rounded-md aspect-square bg-gray-200 flex items-center justify-center" style="width: 300px; height: 300px;">
+            <span class="text-gray-400">No Image</span>
+          </div>
         </NuxtLink>
-        <UButton variant="flat" size="sm" square
+        <v-btn variant="flat" size="sm" square
           class="absolute bottom-0 right-0 mr-2 mb-2 bg-white ring-1 ring-inset ring-neutral-200 rounded-full!"
           aria-label="Add to wishlist">
-          <UIcon icon="fas fa-heart" size="sm"></UIcon>
-        </UButton>
+          <v-icon icon="fas fa-heart" size="sm"></v-icon>
+        </v-btn>
       </div>
       <div class="p-4 border-t border-neutral-200" style="background-color: white !important;">
         <NuxtLink :to="`/product/${product?.id}`" variant="secondary" class="no-underline"> {{ product?.name }}
@@ -46,12 +47,12 @@
           </div>
           {{ product?.price }}
         </span>
-        <!--<UButton size="sm">
+        <!--<v-btn size="sm">
           <template #prefix>
             <SfIconShoppingCart size="sm" />
           </template>
           Add to cart
-        </UButton>-->
+        </v-btn>-->
       </div>
     </div>
   </div>

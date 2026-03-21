@@ -77,7 +77,7 @@ function loadAttachment() {
           w-full h-full object-cover
           :class="!shouldLoadAttachment ? 'brightness-60' : ''"
         />
-        <UButton
+        <v-btn
           v-if="!shouldLoadAttachment"
           type="button"
           absolute
@@ -96,7 +96,7 @@ function loadAttachment() {
             gap-3 w-6 h-6
             i-ri:file-download-line
           />
-        </UButton>
+        </v-btn>
       </div>
       <div
         v-else

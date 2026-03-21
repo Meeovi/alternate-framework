@@ -3,17 +3,11 @@ import {
 } from 'nuxt/config'
 
 export default defineNuxtConfig({
+  // Shared Layer Configuration
+  // https://nuxt.com/docs/guide/going-further/layers
   $meta: {
     name: 'shared',
-  },
-
-  app: {
-    baseURL: '/',
-    head: {
-      meta: [{
-        charset: 'utf-8'
-      }, ],
-    },
+    description: 'Shared UI components and utilities',
   },
 
   modules: [
@@ -21,13 +15,24 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-security',
-    'vuetify-nuxt-module',
     '@nuxt/image',
-    '@nuxt/ui'
+    'vuetify-nuxt-module'
   ],
 
   image: {
     provider: process.env.IMAGE_PROVIDER || 'netlify',
+  },
+
+  vuetify: {
+    vuetifyOptions: {
+      icons: {
+        defaultSet: 'fa',
+        sets: [{
+          name: 'mdi',
+          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
+        }]
+      }
+    }
   },
 
   security: {
@@ -42,74 +47,20 @@ export default defineNuxtConfig({
     }
   },
 
-  vuetify: {
-    vuetifyOptions: {
-      icons: {
-        defaultSet: 'fa-svg',
-        sets: [{
-          name: 'mdi',
-          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
-        }]
-      }
-    }
-  },
-
-  vite: {
-    clearScreen: false,
-    define: {
-      'process.env.DEBUG': false,
-    },
     build: {
-      target: 'esnext',
-    },
-    vue: {
-      // template: { transformAssetUrls },
-      script: {
-        propsDestructure: true,
-      },
-    },
-  },
-
-  routeRules: {
-    '/no-ssr': {
-      ssr: false
-    },
+    transpile: [
+      'vuetify',
+    ],
   },
 
   nitro: {
-    esbuild: {
-      options: {
-        target: 'esnext',
-      },
+    prerender: {
+      enabled: true,
+      crawlLinks: true,
+      routes: [],
     },
+    compressPublicAssets: true,
   },
 
-  features: {
-    devLogs: false,
-  },
-
-  experimental: {
-    payloadExtraction: false,
-    typedPages: false,
-  },
-
-  devtools: {
-    enabled: true,
-  },
-
-  components: {
-    dirs: [{
-      path: 'components',
-      global: true,
-      // Ignore files with bracketed names (e.g. [collection].vue) to avoid
-      // generating invalid JS identifiers in the auto-generated components plugin.
-      ignore: [
-        'app/components/ui/forms/[collection].vue',
-        'components/ui/forms/[collection].vue',
-        '**/[[]*.vue'
-      ]
-    }]
-  },
-
-  build: {},
+  runtimeConfig: {}
 })

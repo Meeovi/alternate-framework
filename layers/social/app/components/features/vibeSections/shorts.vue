@@ -1,6 +1,6 @@
 <template>
-  <UCard class="mb-4" elevation="2">
-    <UCard-title class="d-flex align-center">
+  <v-card class="mb-4" elevation="2">
+    <template #title class="d-flex align-center">
       <UAvatar size="40" class="mr-3">
         <v-img :src="short?.creator_avatar || '/default-avatar.png'" :alt="short?.creator" />
       </UAvatar>
@@ -11,7 +11,7 @@
       <v-spacer />
       <v-menu>
         <template v-slot:activator="{ props }">
-          <UButton icon="mdi-dots-vertical" variant="text" v-bind="props" />
+          <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props" />
         </template>
         <v-list>
           <v-list-item @click="shareVibe">
@@ -53,17 +53,17 @@
     </template>
 
     <template>
-      <UButton icon="mdi-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
+      <v-btn icon="mdi-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
       <span class="text-caption">{{ short?.likes_count || 0 }}</span>
       
-      <UButton icon="mdi-comment" variant="text" @click="toggleComments" />
+      <v-btn icon="mdi-comment" variant="text" @click="toggleComments" />
       <span class="text-caption">{{ short?.comments_count || 0 }}</span>
       
-      <UButton icon="fas:fa:fa share-nodes" variant="text" @click="shareVibe" />
+      <v-btn icon="fas:fa:fa share-nodes" variant="text" @click="shareVibe" />
       <span class="text-caption">{{ short?.shares_count || 0 }}</span>
       
       <v-spacer />
-      <UButton :to="`/social/vibe/${short?.id}`" variant="text" size="small">View Vibe</UButton>
+      <v-btn :to="`/social/vibe/${short?.id}`" variant="text" size="small">View Vibe</v-btn>
     </template>
 
     <!-- Comments Section -->
@@ -71,7 +71,7 @@
       <div v-show="showComments">
         <v-divider />
         <template #header>
-          <UInput
+          <v-text-field
             v-model="newComment"
             label="Add a comment..."
             variant="outlined"
@@ -96,11 +96,11 @@
         </template>
       </div>
     </v-expand-transition>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from '#imports'
 
 const props = defineProps({
   short: {

@@ -1,26 +1,26 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
-      <UCard class="b-1">
+      <v-card class="b-1">
         <template #header>
           <h3>Create New Vibe</h3>
         </template>
 
-        <template #header>
+        <template #default>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <UForm @submit.prevent="submitForm">
+          <v-form @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in shortFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <UButton type="submit">Create</UButton>
-          </UForm>
+            <v-btn type="submit">Create</v-btn>
+          </v-form>
         </template>
-      </UCard>
+      </v-card>
     </v-dialog>
   </v-row>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
 import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
 import useAdapterRequest from '~/composables/useAdapterRequest'

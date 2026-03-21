@@ -7,34 +7,34 @@
 
       <!-- Search and Filter Section -->
       <v-col cols="12" class="mb-4">
-        <UCard>
+        <v-card>
           <template #header>
             <v-row>
               <v-col cols="4">
-                <UInput v-model="searchAddress" label="Search by address"
-                  @keyup.enter="searchByAddress"></UInput>
+                <v-text-field v-model="searchAddress" label="Search by address"
+                  @keyup.enter="searchByAddress"></v-text-field>
               </v-col>
               <v-col cols="3">
-                <USelect v-model="selectedRadius" :items="radiusOptions" label="Search radius"></USelect>
+                <v-select v-model="selectedRadius" :items="radiusOptions" label="Search radius"></v-select>
               </v-col>
               <v-col cols="2">
-                <UButton color="primary" @click="searchByAddress">Search</UButton>
+                <v-btn color="primary" @click="searchByAddress">Search</v-btn>
               </v-col>
             </v-row>
           </template>
-        </UCard>
+        </v-card>
       </v-col>
 
       <!-- Locations List -->
       <v-col cols="4">
         <template v-if="pickupLocations.length">
-          <UCard class="mx-auto mb-4" prepend-icon="$vuetify" :subtitle="pickupBlocks?.content?.[0]?.url_name"
+          <v-card class="mx-auto mb-4" prepend-icon="$vuetify" :subtitle="pickupBlocks?.content?.[0]?.url_name"
             width="100%" v-for="location in pickupLocations" :key="location?.id" @click="selectLocation(location)">
             <template v-slot:title>
               <span class="font-weight-black">{{ location?.name }}</span>
             </template>
 
-            <UCard-text class="bg-surface-light pt-4">
+            <v-card-text class="bg-surface-light pt-4">
               <div>{{ pickupBlocks?.menus?.[0]?.name }} {{ location?.street }}</div>
               <div>{{ pickupBlocks?.menus?.[1]?.name }} {{ location?.city }}</div>
               <div>{{ pickupBlocks?.menus?.[2]?.name }} {{ location?.postcode }}</div>
@@ -44,14 +44,14 @@
               <div>{{ pickupBlocks?.menus?.[6]?.name }} {{ location?.description }}</div>
               <div v-if="location.distance">Distance: {{ formatDistance(location.distance) }}</div>
             </template>
-          </UCard>
+          </v-card>
         </template>
         <template v-else>
-          <UCard class="mx-auto mb-4" width="100%" elevation="0">
-            <UCard-text class="text-center">
+          <v-card class="mx-auto mb-4" width="100%" elevation="0">
+            <v-card-text class="text-center">
               <p class="text-h6" v-dompurify-html="pickupBlocks?.content?.[0]?.content"></p>
             </template>
-          </UCard>
+          </v-card>
         </template>
       </v-col>
 
@@ -88,7 +88,7 @@ void useContentAdapter()
     ref,
     computed,
     onMounted
-  } from 'vue';
+  } from '#imports';
   import latestproducts from '#commerce/app/components/catalog/product/latestproducts.vue';
 
   // State

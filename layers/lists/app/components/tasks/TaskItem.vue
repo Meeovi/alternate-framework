@@ -1,12 +1,12 @@
 <template>
-  <UCard 
+  <v-card 
     :class="{ 'task-completed': task.completed }"
     class="task-item mb-2"
     variant="outlined"
   >
-    <UCard-text class="py-2">
+    <v-card-text class="py-2">
       <div class="d-flex align-center">
-        <UCheckbox
+        <v-checkbox
           :model-value="task.completed"
           @update:model-value="toggleComplete"
           hide-details
@@ -66,7 +66,7 @@
                 :key="subtask.id"
                 class="d-flex align-center py-1"
               >
-                <UCheckbox
+                <v-checkbox
                   :model-value="subtask.completed"
                   @update:model-value="toggleSubtask(subtask.id)"
                   hide-details
@@ -87,7 +87,7 @@
         <div class="task-actions">
           <v-menu>
             <template v-slot:activator="{ props }">
-              <UButton
+              <v-btn
                 icon="mdi-dots-vertical"
                 variant="text"
                 size="small"
@@ -98,14 +98,14 @@
             <v-list>
               <v-list-item @click="$emit('edit', task)">
                 <template v-slot:prepend>
-                  <UIcon icon="mdi-pencil" />
+                  <v-icon icon="mdi-pencil" />
                 </template>
                 <v-list-item-title>Edit</v-list-item-title>
               </v-list-item>
               
               <v-list-item @click="$emit('duplicate', task)">
                 <template v-slot:prepend>
-                  <UIcon icon="mdi-content-copy" />
+                  <v-icon icon="mdi-content-copy" />
                 </template>
                 <v-list-item-title>Duplicate</v-list-item-title>
               </v-list-item>
@@ -114,7 +114,7 @@
               
               <v-list-item @click="$emit('delete', task)" class="text-error">
                 <template v-slot:prepend>
-                  <UIcon icon="mdi-delete" color="error" />
+                  <v-icon icon="mdi-delete" color="error" />
                 </template>
                 <v-list-item-title>Delete</v-list-item-title>
               </v-list-item>
@@ -122,8 +122,8 @@
           </v-menu>
         </div>
       </div>
-    </template>
-  </UCard>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup>

@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { useContentAdapter } from '~/composables/useContentAdapter'
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n'
+import { cacheAccount } from '../../composables/accounts'
+import { useMastoClient } from '../../composables/masto'
+import { getAccountRoute } from '../../composables/routes'
 
 const { account, list } = defineProps<{
   account: mastodon.v1.Account
@@ -10,8 +14,8 @@ const { account, list } = defineProps<{
 
 cacheAccount(account)
 
-const { useMastoClient } = useContentAdapter()
 const client = useMastoClient()
+const { t } = useI18n()
 
 const isRemoved = ref(false)
 
@@ -41,10 +45,10 @@ async function edit() {
     />
     <div>
       <CommonTooltip
-        :content="isRemoved ? $t('list.add_account') : $t('list.remove_account')"
+        :content="isRemoved ? t('list.add_account') : t('list.remove_account')"
         :hover="isRemoved ? 'text-green' : 'text-red'"
       >
-        <UButton
+        <v-btn
           text-sm p2 border-1 transition-colors
           border-dark
           bg-base
@@ -52,7 +56,7 @@ async function edit() {
           @click="edit"
         >
           <span :class="isRemoved ? 'i-ri:user-add-line' : 'i-ri:user-unfollow-line'" />
-        </UButton>
+        </v-btn>
       </CommonTooltip>
     </div>
   </div>

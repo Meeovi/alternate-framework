@@ -1,4 +1,4 @@
-import type { ConfirmDialogChoice, ConfirmDialogOptions, DraftItem, DraftKey, ErrorDialogData } from '#shared/types'
+import type { ConfirmDialogChoice, ConfirmDialogOptions, DraftItem, DraftKey, ErrorDialogData } from '@mframework/core/shared/types'
 import type { mastodon } from 'masto'
 
 export const confirmDialogChoice = ref<ConfirmDialogChoice>()

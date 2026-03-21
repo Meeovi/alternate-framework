@@ -125,7 +125,7 @@
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-import { computed } from 'vue';
+import { computed } from '#imports';
 import { SfIconClose } from '@storefront-ui/vue';
 import addToCartBtn from '~/components/partials/commerce/addToCartBtn.vue';
 import Ratings from '~/components/partials/commerce/ratings.vue';

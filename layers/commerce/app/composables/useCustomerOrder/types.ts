@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import type { Maybe, SfAddress, SfProduct } from '../_types';
+import type { Maybe, SfAddress, SfProduct } from '../models';
 
 export type OrderData = {
   id: string;

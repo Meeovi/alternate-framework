@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar :style="`background-color: ${spacesPage?.color}; color: ${spacesPage?.colortext} !important`">
                 <v-toolbar-title>{{ spacesPage?.name }}</v-toolbar-title>
 
@@ -25,11 +25,11 @@
 
                     <!--<v-menu v-if="tabsList?.length">
                         <template v-slot:activator="{ props }">
-                            <UButton class="align-self-center me-4" height="100%" rounded="0" variant="plain"
+                            <v-btn class="align-self-center me-4" height="100%" rounded="0" variant="plain"
                                 v-bind="props">
                                 Filter
-                                <UIcon icon="mdi-menu-down" end></UIcon>
-                            </UButton>
+                                <v-icon icon="mdi-menu-down" end></v-icon>
+                            </v-btn>
                         </template>
 
                         <v-list class="bg-grey-lighten-3">
@@ -51,7 +51,7 @@
                     <component :is="contentComponents[index] || null" />
                 </v-tabs-window-item>
             </v-tabs-window>
-        </UCard>
+        </v-card>
     </div>
 </template>
 
@@ -62,7 +62,7 @@
         watch,
         defineAsyncComponent,
         markRaw
-    } from 'vue'
+    } from '#imports'
     import createspace from '~/components/features/spaceSections/crud/add-space.vue'
     import { componentMap } from '~/types/componentMap'
 

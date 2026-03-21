@@ -1,8 +1,8 @@
 <template>
   <div>
       <v-row justify="center">
-          <UCard>
-            <UForm @submit.prevent="handleSubmit">
+          <v-card>
+            <v-form @submit.prevent="handleSubmit">
                   <v-toolbar dark color="primary">
                       <template #header>
                           <span class="text-h6">Update Space</span>
@@ -12,26 +12,26 @@
                       <v-container>
                           <v-row>
                               <v-col cols="12">
-                                  <UInput v-model="spaceData.name" id="spaceName" label="Space Name*" required />
+                                  <v-text-field v-model="spaceData.name" id="spaceName" label="Space Name*" required />
                               </v-col>
                               <v-col cols="6">
-                                  <USelect v-model="spaceData.type" label="What type of space is this?"
+                                  <v-select v-model="spaceData.type" label="What type of space is this?"
                                       :items="['Default', 'Audio', 'Video']" />
                               </v-col>
                               <v-col cols="6">
-                                  <USelect v-model="spaceData.status" label="Is this space public or private?"
+                                  <v-select v-model="spaceData.status" label="Is this space public or private?"
                                       :items="['Public', 'Private', 'Hidden']" />
                               </v-col>
                               <v-col cols="12">
-                                  <UTextarea v-model="spaceData.description" label="Description" id="spaceDescription" />
+                                  <v-textarea v-model="spaceData.description" label="Description" id="spaceDescription" />
                               </v-col>
                               <v-col cols="6">
-                                  <UFileUpload @change="handleImageUpload" clearable density="compact"
+                                  <v-file-upload @change="handleImageUpload" clearable density="compact"
                                       prepend-icon="fas fa-image" accept="image/*" label="Image for Cover"
                                       variant="solo-inverted" />
                               </v-col>
                               <v-col cols="6">
-                                  <UFileUpload @change="handleAvatarUpload" clearable density="compact"
+                                  <v-file-upload @change="handleAvatarUpload" clearable density="compact"
                                       prepend-icon="fas fa-image" accept="image/*" label="Image for Avatar"
                                       variant="solo-inverted" />
                               </v-col>
@@ -41,43 +41,43 @@
                   </template>
                   <template>
                       <v-spacer></v-spacer>
-                      <UButton color="blue-darken-1" variant="text" @click="confirmDelete" :loading="deleteLoading">
+                      <v-btn color="blue-darken-1" variant="text" @click="confirmDelete" :loading="deleteLoading">
                           Delete
-                      </UButton>
-                      <UButton color="blue-darken-1" variant="text" @click="resetForm = false">
+                      </v-btn>
+                      <v-btn color="blue-darken-1" variant="text" @click="resetForm = false">
                           Reset
-                      </UButton>
-                      <UButton color="blue-darken-1" variant="text" type="submit">
+                      </v-btn>
+                      <v-btn color="blue-darken-1" variant="text" type="submit">
                           Update Space
-                      </UButton>
+                      </v-btn>
                   </template>
-              </UForm>
-          </UCard>
+              </v-form>
+          </v-card>
       </v-row>
 
       <!-- Delete Confirmation Dialog -->
     <v-dialog v-model="deleteDialog" max-width="500px">
-            <UCard>
-                <UCard-title class="text-h5">Delete Space</template>
+            <v-card>
+                <template #title class="text-h5">Delete Space</template>
                 <template #header>
                     Are you sure you want to delete this space? This action cannot be undone.
                 </template>
                 <template>
                     <v-spacer></v-spacer>
-                    <UButton color="blue-darken-1" variant="text" @click="deleteDialog = false">
+                    <v-btn color="blue-darken-1" variant="text" @click="deleteDialog = false">
                         Cancel
-                    </UButton>
-                    <UButton color="error" variant="text" @click="deleteSpace" :loading="deleteLoading">
+                    </v-btn>
+                    <v-btn color="error" variant="text" @click="deleteSpace" :loading="deleteLoading">
                         Delete
-                    </UButton>
+                    </v-btn>
                 </template>
-            </UCard>
+            </v-card>
         </v-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from '#imports';
 import useAdapterRequest from '~/composables/useAdapterRequest'
 const { readItem, deleteItem, updateItem, uploadFiles } = useAdapterRequest()
 import updateSpace from '~/composables/spaces/updateSpace';
@@ -131,7 +131,7 @@ onMounted(() => {
 });
 
 const handleImageUpload = (event) => {
-    // UFileUpload may provide files directly or an event; normalize
+    // v-file-upload may provide files directly or an event; normalize
     imageFile.value = event?.target?.files?.[0] || (Array.isArray(event) ? event[0] : event)
 };
 

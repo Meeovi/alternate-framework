@@ -25,6 +25,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@mframework/core": "file:../../modules/core",
     "typescript": "^5.9.3"
   }
 }

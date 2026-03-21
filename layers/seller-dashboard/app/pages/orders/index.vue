@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Orders</h2>
-    <UButton @click="refresh">Refresh</UButton>
+    <v-btn @click="refresh">Refresh</v-btn>
     <ul>
       <li v-for="o in orders" :key="o.id">Order #{{ o.id }} — {{ o.status }}</li>
     </ul>
@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 import { useSellerOrders } from '~/layers/seller-dashboard/app/composables/useSellerOrders'
 
 const orders = ref([])

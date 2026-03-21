@@ -1,6 +1,6 @@
 <template>
     <div>
-        <UCard variant="text" class="lowerBar">
+        <v-card variant="text" class="lowerBar">
             <v-toolbar :style="`background-color: transparent; color: black !important`">
                 <v-toolbar-title>Your Events</v-toolbar-title>
 
@@ -8,12 +8,12 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in eventBar?.submenus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text" :style="`color: black !important`">{{ menu?.name }}</UButton>
+                            <v-btn variant="text" :style="`color: black !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="eventBar?.submenus?.[0]?.value">
@@ -85,7 +85,7 @@
 <script setup>
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     import eventCard from '#commerce/app/components/catalog/productCard.vue'
 
     import useAdapterRequest from '~/composables/useAdapterRequest'

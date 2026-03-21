@@ -39,9 +39,9 @@ function removeDisabledTranslation(code: string) {
         <ul>
           <li v-for="langCode in userSettings.disabledTranslationLanguages" :key="langCode" class="flex items-center">
             <div>{{ ISO6391.getNativeName(langCode) }}</div>
-            <UButton class="btn-text" type="v-btn" :title="$t('settings.language.translations.remove')" @click.prevent="removeDisabledTranslation(langCode)">
+            <v-btn class="btn-text" type="v-btn" :title="$t('settings.language.translations.remove')" @click.prevent="removeDisabledTranslation(langCode)">
               <span class="block i-ri:close-line" aria-hidden="true" />
-            </UButton>
+            </v-btn>
           </li>
         </ul>
 
@@ -54,9 +54,9 @@ function removeDisabledTranslation(code: string) {
               {{ availableOption.nativeName }}
             </option>
           </select>
-          <UButton class="btn-text shrink-0" @click="addDisabledTranslation">
+          <v-btn class="btn-text shrink-0" @click="addDisabledTranslation">
             {{ $t('settings.language.translations.add') }}
-          </UButton>
+          </v-btn>
         </div>
       </div>
     </div>

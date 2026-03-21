@@ -1,30 +1,39 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT_DIR"
+# TypeScript type checking script
+# Runs tsc on all workspace packages with tsconfig.json
 
-TSFILES=$(git ls-files "**/tsconfig.json" || true)
-if [ -z "$TSFILES" ]; then
-  echo "No tsconfig.json files found."
-  exit 0
-fi
+set -e
 
-STATUS=0
-echo "Found tsconfig files:"\n$TSFILES
+workspaces=$(npm ls -wa --depth=0 2>/dev/null | grep -v '^mframework' | tr -d ' ' | grep -v '^$' || true)
 
-for f in $TSFILES; do
-  DIR=$(dirname "$f")
-  echo "\n== Typechecking: $DIR =="
-  if ! npx -y -p typescript tsc -p "$DIR" --noEmit; then
-    STATUS=1
+errors=0
+failed_packages=""
+
+echo "🔍 Running TypeScript checks across workspaces..."
+echo ""
+
+for workspace in $workspaces; do
+  tsconfig="$workspace/tsconfig.json"
+  
+  if [ -f "$tsconfig" ]; then
+    echo "📦 Checking $workspace..."
+    if npx tsc --project "$tsconfig" --noEmit; then
+      echo "✅ $workspace OK"
+    else
+      echo "❌ $workspace FAILED"
+      errors=$((errors + 1))
+      failed_packages="$failed_packages\n  - $workspace"
+    fi
+    echo ""
   fi
 done
 
-if [ $STATUS -ne 0 ]; then
-  echo "\nTypecheck finished: issues found." >&2
+if [ $errors -gt 0 ]; then
+  echo "❌ TypeScript check failed in $errors workspace(s):"
+  echo -e "$failed_packages"
   exit 1
+else
+  echo "✅ All workspaces passed TypeScript checks!"
+  exit 0
 fi
-
-echo "\nTypecheck finished: no issues." 
-exit 0

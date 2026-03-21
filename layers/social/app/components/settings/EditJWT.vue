@@ -1,19 +1,19 @@
 <template>
-  <UCard class="pa-4" elevation="1">
+  <v-card class="pa-4" elevation="1">
     <template #header>JWT Settings</template>
     <template #header>
-      <UTextarea label="Signing Key" v-model="form.jwtKey" rows="4" />
+      <v-textarea label="Signing Key" v-model="form.jwtKey" rows="4" />
     </template>
     <template>
       <v-spacer />
-      <UButton :loading="saving" color="primary" @click="save">Save</UButton>
+      <v-btn :loading="saving" color="primary" @click="save">Save</v-btn>
       <div v-if="message" class="ml-3">{{ message }}</div>
     </template>
-  </UCard>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 
 const form = ref({ jwtKey: '' })
 const saving = ref(false)

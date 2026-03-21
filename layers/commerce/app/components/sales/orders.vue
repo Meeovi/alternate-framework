@@ -14,7 +14,7 @@
             </div>
         </section>
 
-        <UCard variant="text">
+        <v-card variant="text">
             <v-toolbar :style="`background-color: ${orderBar?.color}; color: ${orderBar?.colortext} !important`">
                 <v-toolbar-title>{{ orderBar?.name }}</v-toolbar-title>
 
@@ -22,13 +22,13 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in orderBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <UButton variant="text"
-                                :style="`color: ${orderBar?.colortext} !important`">{{ menu?.name }}</UButton>
+                            <v-btn variant="text"
+                                :style="`color: ${orderBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
             </v-toolbar>
-        </UCard>
+        </v-card>
 
         <v-tabs-window v-model="tab">
             <!--Orders-->
@@ -163,7 +163,7 @@ void useContentAdapter()
     import {
         ref,
         computed
-    } from 'vue'
+    } from '#imports'
     import orderCard from '~/components/related/order.vue'
     import {
         useUserStore

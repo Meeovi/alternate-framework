@@ -1,6 +1,6 @@
 <template>
   <div>
-    <UCard elevation="0">
+    <v-card elevation="0">
       <v-tabs v-model="tab" align-tabs="center">
         <v-tab value="account">Account Information</v-tab>
         <v-tab value="security">Security</v-tab>
@@ -13,107 +13,107 @@
             <v-form ref="accountForm" v-model="accountValid">
               <v-row>
                 <v-col cols="6">
-                  <UInput
+                  <v-text-field
                     v-model="customerInfo.firstname"
                     label="First Name"
                     required
                   />
                 </v-col>
                 <v-col cols="6">
-                  <UInput
+                  <v-text-field
                     v-model="customerInfo.lastname"
                     label="Last Name"
                     required
                   />
                 </v-col>
               </v-row>
-              <UInput
+              <v-text-field
                 v-model="customerInfo.email"
                 label="Email"
                 type="email"
                 required
                 disabled
               />
-              <UInput
+              <v-text-field
                 v-model="customerInfo.taxvat"
                 label="Tax/VAT Number"
               />
-              <UButton
+              <v-btn
                 color="primary"
                 @click="updateCustomerInfo"
                 :loading="updating"
                 :disabled="!accountValid"
               >
                 Save Changes
-              </UButton>
+              </v-btn>
             </v-form>
           </v-tabs-window-item>
 
           <v-tabs-window-item value="security">
             <v-form ref="passwordForm" v-model="passwordValid">
-              <UInput
+              <v-text-field
                 v-model="passwordData.current_password"
                 label="Current Password"
                 type="password"
                 required
               />
-              <UInput
+              <v-text-field
                 v-model="passwordData.new_password"
                 label="New Password"
                 type="password"
                 required
               />
-              <UInput
+              <v-text-field
                 v-model="passwordData.confirm_password"
                 label="Confirm New Password"
                 type="password"
                 required
               />
-              <UButton
+              <v-btn
                 color="primary"
                 @click="changePassword"
                 :loading="changingPassword"
                 :disabled="!passwordValid"
               >
                 Change Password
-              </UButton>
+              </v-btn>
             </v-form>
           </v-tabs-window-item>
 
           <v-tabs-window-item value="preferences">
             <v-form ref="preferencesForm" v-model="preferencesValid">
-              <USelect
+              <v-select
                 v-model="preferences.language"
                 :items="languages"
                 label="Language"
               />
-              <USelect
+              <v-select
                 v-model="preferences.currency"
                 :items="currencies"
                 label="Currency"
               />
-              <UCheckbox
+              <v-checkbox
                 v-model="preferences.newsletter"
                 label="Subscribe to Newsletter"
               />
-              <UButton
+              <v-btn
                 color="primary"
                 @click="updatePreferences"
                 :loading="updatingPreferences"
                 :disabled="!preferencesValid"
               >
                 Save Preferences
-              </UButton>
+              </v-btn>
             </v-form>
           </v-tabs-window-item>
         </v-tabs-window>
       </template>
-    </UCard>
+    </v-card>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 import { useMagentoApi } from '#commerce/app/composables/useMagentoApi'
 
 const tab = ref('account')

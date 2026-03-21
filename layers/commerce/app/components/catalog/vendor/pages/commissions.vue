@@ -1,5 +1,5 @@
 <template>
-    <UCard>
+    <v-card>
         <v-toolbar color="" title=""></v-toolbar>
         <v-tabs v-model="tab" bg-color="primary">
             <v-tab value="one">Item One</v-tab>
@@ -22,7 +22,7 @@
                 </v-tabs-window-item>
             </v-tabs-window>
         </template>
-    </UCard>
+    </v-card>
 </template>
 
 
@@ -32,7 +32,7 @@ void useContentAdapter()
 
     import {
         ref
-    } from 'vue'
+    } from '#imports'
 
     const tab = ref(null);
 

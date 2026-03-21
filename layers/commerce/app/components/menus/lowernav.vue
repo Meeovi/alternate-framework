@@ -1,18 +1,18 @@
 <template>
     <div>
-        <UCard variant="text" class="lowerBar">
+        <v-card variant="text" class="lowerBar">
             <v-tabs v-model="tab" :bg-color="lowerbar?.color" :color="lowerbar?.colortext" align-tabs="center">
                 <v-tab>
                     <NuxtLink style="color: black;" to="/">{{ lowerbar?.name }}</NuxtLink>
                 </v-tab>
                 <div v-for="(menu, index) in lowerbar?.menus" :key="index">
                     <v-tab :value="menu?.value">
-                        <UButton variant="text" :style="`color: ${lowerbar?.colortext} !important`"
-                            :href="menu?.slug">{{ menu?.name }}</UButton>
+                        <v-btn variant="text" :style="`color: ${lowerbar?.colortext} !important`"
+                            :href="menu?.slug">{{ menu?.name }}</v-btn>
                     </v-tab>
                 </div>
 
-                <UButton variant="text" prepend-icon="fas fa-plus" class="lowerBarBtn">
+                <v-btn variant="text" prepend-icon="fas fa-plus" class="lowerBarBtn">
                     Add
 
                     <v-menu activator="parent">
@@ -26,9 +26,9 @@
                             </v-list-item>
                         </v-list>
                     </v-menu>
-                </UButton>
+                </v-btn>
             </v-tabs>
-        </UCard>
+        </v-card>
 
         <!--<v-tabs-window v-model="tab">
             <v-tabs-window-item :value="lowerbar?.menus?.[0]?.value">
@@ -53,7 +53,7 @@ void useCommerceAdapter()
 void useContentAdapter()
     import {
         ref
-    } from 'vue'
+    } from '#imports'
     //import addList from '~/components/related/add-list.vue'
     //import addBookmark from '~/components/related/add-bookmark.vue'
     //import myLists from '~/components/features/lists.vue'

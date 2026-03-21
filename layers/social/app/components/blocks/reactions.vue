@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted } from '#imports'
 
 const props = defineProps({
   contentId: {

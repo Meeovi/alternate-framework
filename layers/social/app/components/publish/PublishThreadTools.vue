@@ -36,10 +36,10 @@ const label = computed(() => {
       }}</span>
     </div>
     <CommonTooltip placement="top" :content="label">
-      <UButton btn-action-icon :aria-label="label" @click="addOrRemoveItem">
+      <v-btn btn-action-icon :aria-label="label" @click="addOrRemoveItem">
         <div v-if="isRemovableItem" i-ri:chat-delete-line />
         <div v-else i-ri:chat-new-line />
-      </UButton>
+      </v-btn>
     </CommonTooltip>
   </div>
 </template>

@@ -1,7 +1,7 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe } from '../_types';
+import type { Maybe } from '../models/shared';
 import type { OrderData } from '../useCustomerOrder/types';
 import type {
   UseCustomerOrdersReturn,

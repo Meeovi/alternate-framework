@@ -1,18 +1,30 @@
 {
-  "references": [
-    {
-      "path": "./.nuxt/tsconfig.app.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.server.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.shared.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.node.json"
-    },
-    
+  "compilerOptions": {
+    "types": ["vitest", "node"],
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "outDir": "dist",
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "jsx": "react-jsx",
+    "skipLibCheck": true, 
+    "noEmitOnError": false
+  },
+  "include": [
+    "app/composables/types.ts",
+    "app/composables/registry.ts",
+    "app/composables/useContent.ts",
+    "app/composables/useDirectusRequest.ts",
+    "README.md",
+    "package.json"
+    ,"global.d.ts"
   ],
-  "files": []
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "node_modules"
+  ]
 }

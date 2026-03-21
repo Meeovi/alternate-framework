@@ -1,6 +1,20 @@
 <script setup lang="ts">
+import { useI18n, useMasto } from '@mframework/core/index';
+import { useClipboard, useShare } from '@vueuse/core';
+import { noop } from '@vueuse/shared';
 import type { mastodon } from 'masto'
-import { toggleBlockAccount, toggleMuteAccount, useRelationship } from '~/composables/masto/relationship'
+import { useRouter, useRoute } from 'nuxt/app';
+import { inject, computed } from '#imports';
+import { openConfirmDialog, openPublishDialog, lastPublishDialogStatus, openReactedByDialog, openReportDialog } from '~/composables/dialog';
+import { toggleBlockAccount, toggleMuteAccount, toggleBlockDomain, useRelationship } from '~/composables/masto/relationship'
+import { getStatusPermalinkRoute, getStatusRoute } from '~/composables/masto/routes';
+import { useStatusActions } from '~/composables/masto/status';
+import { removeCachedStatus } from '~/composables/masto/statusCache';
+import { getDraftFromStatus, getReplyDraft, mentionUser } from '~/composables/masto/statusDrafts';
+import { getServerName } from '~/composables/masto/account';
+import { getPreferences, usePreferences, useUserSettings } from '~/composables/settings';
+import { currentUser, currentServer, checkLogin } from '~/composables/users';
+import { isHydrated } from '~/composables/vue';
 
 const { details, ...props } = defineProps<{
   status: mastodon.v1.Status

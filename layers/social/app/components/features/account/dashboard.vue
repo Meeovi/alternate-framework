@@ -1,13 +1,13 @@
 <template>
     <div class="contentPage">
-        <UCard>
+        <v-card>
             <v-layout>
                 <v-toolbar color="primary">
                     <v-toolbar-title>{{ page?.name }}</v-toolbar-title>
                     <v-toolbar-items>
-                        <UButton prepend-icon="fas:fa fa-th" color="white" @click.stop="drawer = !drawer">
+                        <v-btn prepend-icon="fas:fa fa-th" color="white" @click.stop="drawer = !drawer">
                             {{ customerInfo?.firstname }} {{ customerInfo?.lastname }}
-                        </UButton>
+                        </v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
 
@@ -25,54 +25,54 @@
                     <v-main style="height: 100vh">
                         <v-tabs-window v-model="tab" style="width: 100%;">
                             <v-tabs-window-item value="orders">
-                                <UCard flat>
+                                <v-card flat>
                                     <template #header>
                                         <orders />
                                     </template>
-                                </UCard>
+                                </v-card>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="addresses">
-                                <UCard flat>
+                                <v-card flat>
                                     <template #header>
                                         <addresses />
                                     </template>
-                                </UCard>
+                                </v-card>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="settings">
-                                <UCard flat>
+                                <v-card flat>
                                     <template #header>
                                         <settings />
                                     </template>
-                                </UCard>
+                                </v-card>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="downloads">
-                                <UCard flat>
+                                <v-card flat>
                                     <template #header>
                                         <downloads />
                                     </template>
-                                </UCard>
+                                </v-card>
                             </v-tabs-window-item>
 
                             <v-tabs-window-item value="reviews">
-                                <UCard flat>
+                                <v-card flat>
                                     <template #header>
                                         <reviews />
                                     </template>
-                                </UCard>
+                                </v-card>
                             </v-tabs-window-item>
                         </v-tabs-window>
                     </v-main>
                 </div>
             </v-layout>
-        </UCard>
+        </v-card>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 import orders from '#commerce/app/components/orders/orders/my-orders.vue'
 import addresses from '~/components/account/addresses.vue'
 import settings from '~/components/account/settings.vue'

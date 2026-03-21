@@ -4,14 +4,14 @@
     <div v-if="loading">Loading...</div>
     <div v-else>
       <p>SSO provisioned: <strong>{{ profile?.ssoProvisioned ? 'Yes' : 'No' }}</strong></p>
-      <UButton @click="provision" :disabled="saving || profile?.ssoProvisioned">Provision Now</UButton>
+      <v-btn @click="provision" :disabled="saving || profile?.ssoProvisioned">Provision Now</v-btn>
       <span v-if="message" class="message">{{ message }}</span>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from '#imports'
 
 const loading = ref(true)
 const saving = ref(false)

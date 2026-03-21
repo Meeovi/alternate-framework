@@ -32,7 +32,7 @@ void useContentAdapter()
 
 import { useProductReviews } from '~/composables/useProductReviews';
 import type { ProductAccordionPropsType } from './types';
-import { toRefs, ref } from 'vue';
+import { toRefs, ref } from '#imports';
 
 const props = defineProps<ProductAccordionPropsType>();
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GroupedAccountLike, NotificationSlot } from '#shared/types'
+import type { GroupedAccountLike, NotificationSlot } from '@mframework/core/shared/types'
 import { useHumanReadableNumber } from '@mframework/localization';
 import type { mastodon } from 'masto'
 import type { Paginator } from 'masto/mastodon/paginator.js';
@@ -185,9 +185,9 @@ const { formatNumber } = useHumanReadableNumber()
     :virtualScroller="virtualScroller"
   >
     <template #updater="{ number, update }">
-      <UButton id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="() => { update(); clearNotifications() }">
+      <v-btn id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="() => { update(); clearNotifications() }">
         {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
-      </UButton>
+      </v-btn>
     </template>
     <template #default="{ item, active }">
       <template v-if="virtualScroller">

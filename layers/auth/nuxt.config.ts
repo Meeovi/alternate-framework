@@ -5,6 +5,7 @@ import {
 export default defineNuxtConfig({
   $meta: {
     name: 'auth',
+    description: 'Auth Layer provides functionalities for user authentication and authorization.',
   },
 
   runtimeConfig: {

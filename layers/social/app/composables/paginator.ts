@@ -1,6 +1,8 @@
-import type { PaginatorState } from '#shared/types'
+import type { PaginatorState } from '@mframework/core/shared/types'
 import type { mastodon } from 'masto'
 import type { Ref } from 'vue'
+import { cacheStatus, removeCachedStatus } from './masto/statusCache'
+import { isHydrated } from './vue'
 
 export function usePaginator<T, P, U = T>(
   paginator: mastodon.Paginator<T[], P>,

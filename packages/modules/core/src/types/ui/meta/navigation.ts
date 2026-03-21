@@ -1,5 +1,5 @@
-import type { User } from '../system/index.js';
-import type { Page } from '../content/index.js';
+import type { User } from '../system/index';
+import type { Page } from '../content/index';
 
 export interface Navigation {
 	date_created?: string | null;

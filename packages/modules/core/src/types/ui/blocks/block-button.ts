@@ -1,4 +1,4 @@
-import type { Post, Page } from '../content/index.js';
+import type { Post, Page } from '../content/index';
 
 export interface BlockButton {
 	id: string;

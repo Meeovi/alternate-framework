@@ -23,7 +23,7 @@
 <script setup>
     import {
         ref,
-    } from 'vue';
+    } from '#imports';
     import stationCard from '~/components/related/radio.vue'
 
     const model = ref(null);

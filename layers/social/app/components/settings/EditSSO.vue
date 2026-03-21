@@ -1,18 +1,18 @@
 <template>
     <div class="setting-card">
         <template>
-            <UCard class="pa-4" elevation="1">
+            <v-card class="pa-4" elevation="1">
                 <template #header>SSO Settings</template>
                 <template>
                     <v-switch label="SCIM Enabled" v-model="form.scimEnabled" />
-                    <UInput label="Admin IDs (comma separated)" v-model="form.scimAdminIds" />
+                    <v-text-field label="Admin IDs (comma separated)" v-model="form.scimAdminIds" />
                 </template>
                 <template #footer>
                     <v-spacer />
-                    <UButton :loading="saving" color="primary" @click="save">Save</UButton>
+                    <v-btn :loading="saving" color="primary" @click="save">Save</v-btn>
                     <div v-if="message" class="ml-3">{{ message }}</div>
                 </template>
-            </UCard>
+            </v-card>
         </template>
     </div>
 </template>
@@ -21,7 +21,7 @@
     import {
         ref,
         onMounted
-    } from 'vue'
+    } from '#imports'
 
     const form = ref({
         scimEnabled: false,

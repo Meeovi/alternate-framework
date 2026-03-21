@@ -1,0 +1,27 @@
+model ticketing {
+  id                           BigInt    @id @default(autoincrement())
+  created_at                   DateTime? @default(now())
+  name                         String?
+  location                     String?
+  date                         String?
+  severity                     String?
+  team                         String?
+  requester                    String?
+  requester_email              String?
+  content                      String?
+  department                   String?
+  media                        String?
+  projects                     String?
+  ticket_type                  String?
+  comment                      String?
+  products                     String?
+  priority                     String?
+  status                       String?
+  resolution                   String?
+  assigned_to                  String?
+  date_modified                DateTime? @default(now())
+  account_name                 String?
+  level                        String?
+  projects_projectsToticketing String?
+  websites                     String?
+}

@@ -5,13 +5,13 @@
         </v-col>
 
         <v-col cols="12">
-            <USelect v-model="selectedSize" :items="sizes" label="Select Size" item-value="id" item-title="name" single-line variant="solo" />
+            <v-select v-model="selectedSize" :items="sizes" label="Select Size" item-value="id" item-title="name" single-line variant="solo" />
         </v-col>
     </v-row>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from '#imports'
 const emit = defineEmits(['size-selected'])
 const sizes = ref([])
 const selectedSize = ref(null)
