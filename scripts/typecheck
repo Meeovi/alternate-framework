@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# TypeScript type checking script
+# Runs tsc on all workspace packages with tsconfig.json
+
+set -e
+
+workspaces=$(npm ls -wa --depth=0 2>/dev/null | grep -v '^mframework' | tr -d ' ' | grep -v '^$' || true)
+
+errors=0
+failed_packages=""
+
+echo "🔍 Running TypeScript checks across workspaces..."
+echo ""
+
+for workspace in $workspaces; do
+  tsconfig="$workspace/tsconfig.json"
+  
+  if [ -f "$tsconfig" ]; then
+    echo "📦 Checking $workspace..."
+    if npx tsc --project "$tsconfig" --noEmit; then
+      echo "✅ $workspace OK"
+    else
+      echo "❌ $workspace FAILED"
+      errors=$((errors + 1))
+      failed_packages="$failed_packages\n  - $workspace"
+    fi
+    echo ""
+  fi
+done
+
+if [ $errors -gt 0 ]; then
+  echo "❌ TypeScript check failed in $errors workspace(s):"
+  echo -e "$failed_packages"
+  exit 1
+else
+  echo "✅ All workspaces passed TypeScript checks!"
+  exit 0
+fi
