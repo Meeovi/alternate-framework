@@ -1,0 +1,48 @@
+.root {
+    align-items: center;
+    /* display: flex; */
+    flex-direction: column;
+    height: auto;
+    justify-content: center;
+    text-align: center;
+}
+.imgNoWishList{
+    width: 50%;
+    max-height: 350px;
+    object-fit: contain;
+    margin-inline-start: 0;
+    margin-bottom: 15px;
+}
+.noWishList{
+    text-align: start;
+}
+.title {
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .root {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        height: 50vh;
+        justify-content: center;
+    }
+    .imgNoWishList{
+        max-width: 250px;
+        max-height: unset;
+        margin-left: 0;
+    }
+    .noWishList
+    {
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 16px;
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
+   
+}

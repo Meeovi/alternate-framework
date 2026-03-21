@@ -1,0 +1,124 @@
+.root {
+    display: grid;
+    /* padding: 2rem 3rem; */
+    row-gap: 2rem;
+}
+.btnShare {
+    display: none;
+}
+
+.container {
+    /* display: flex;
+    justify-content: center; */
+    /* flex-direction: column; */
+}
+@media (min-width: 376px) and (max-width: 745px) {
+    .container {
+        display: block;
+        justify-content: center;
+        /* flex-direction: column; */
+    }
+}
+.containerSub {
+    /* min-width: 80%; */
+}
+
+.btncontainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.btncontainer > button:nth-child(1) {
+    color: #ffffff;
+    font-family: poppins;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 22px;
+    padding: 10px 20px;
+    background-color: #0058ac;
+}
+.btncontainer > button:nth-child(2) {
+    color: #ffffff;
+    font-family: poppins;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 22px;
+    padding: 10px 20px;
+    background-color: #e02020;
+}
+
+.heading {
+    /* justify-self: center; */
+    font-family: poppins;
+    font-weight: var(--venia-global-fontWeight-bold);
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 14px;
+    padding-top: 20px;
+    margin-bottom: 30px;
+    color: #333132;
+    font-family: 'Helvetica Neue';
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 25px;
+}
+@media screen and (min-width: 959px) {
+    .wrapper {
+        display: grid;
+        grid-template-columns: 20% auto;
+        grid-gap: 30px;
+    }
+}
+
+.errorContainer {
+    justify-self: center;
+}
+
+.fetchError {
+    border-left: 4px solid rgb(var(--venia-global-color-error));
+    color: rgb(var(--venia-global-color-error));
+    font-size: var(--venia-typography-body-S-fontSize);
+    font-weight: var(--venia-global-fontWeight-semibold);
+    padding: 0.625rem 0 0.625rem 1rem;
+}
+
+@media (max-width: 960px) {
+    .root {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        row-gap: 1rem;
+    }
+
+    .heading {
+        padding-bottom: 1rem;
+        justify-self: center;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .heading {
+        display: none;
+    }
+    .root {
+        padding-left: 0;
+        padding-right: 0;
+        row-gap: 0;
+        min-height: 100vh;
+        background-color: #f2f2f3;
+    }
+    .btnShare {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        inset-inline-end: 10px;
+        z-index: 5;
+        height: 55px;
+    }
+}
