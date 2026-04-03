@@ -30,8 +30,8 @@
     });
 
     const emit = defineEmits(["update:modelValue"]);
-    import useDirectusRequest from '~/composables/useDirectusRequest'
-    const { readItems } = useDirectusRequest()
+    import useContent from '~/composables/useContent'
+    const { readItems } = useContent()
 
     const internalValue = computed({
         get: () => props.modelValue,

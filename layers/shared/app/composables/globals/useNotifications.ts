@@ -1,6 +1,6 @@
 import { ref, onMounted } from 'vue'
 import { useAsyncData, useNuxtApp } from 'nuxt/app'
-import useDirectusRequest from '../useDirectusRequest'
+import useContent from '../useContent'
 
 export interface Notification {
   id: string
@@ -17,7 +17,7 @@ export function useNotifications() {
   const notifications = ref<Notification[]>([])
   const unreadCount = ref(0)
   const nuxt = useNuxtApp() as any
-  const { request, readItems, updateItem } = useDirectusRequest()
+  const { request, readItems, updateItem } = useContent()
 
   // Resolve a runtime notifications provider if one is registered by an adapter.
   // Provider shape (optional methods):

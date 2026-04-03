@@ -148,6 +148,8 @@
       </v-row>
     </v-form>
   </template>
+
+<script setup lang="ts">
   
   
 import { useCommerceAdapter, useContentAdapter } from '#imports'

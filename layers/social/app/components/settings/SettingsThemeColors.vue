@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUserSettings, type ThemeColors } from '~/composables/settings'
+import { useUserSettings, type ThemeColors } from '#social/app/composables/settings'
 import { THEME_COLORS } from '~/constants'
 
 const themes = await import('~/constants/themes.json').then((r) => {

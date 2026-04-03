@@ -17,7 +17,7 @@
 const { $directus, $readItem } = useNuxtApp()
 const route = useRoute()
 
-const { data: navAccount } = await useAsyncData('navAccount', () => {
+const { data: navAccount } = await useAsyncData('auth-myaccount-nav-account', () => {
   return $directus.request($readItem('navigation', '2'))
 })
 </script>

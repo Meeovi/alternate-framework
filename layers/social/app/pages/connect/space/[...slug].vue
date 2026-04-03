@@ -113,18 +113,18 @@
     import {
         ref
     } from '#imports'
-    import AboutSpace from '~/components/blocks/groups/about.vue'
-    import SpaceFeeds from '~/components/related/post.vue'
+    import AboutSpace from '#social/app/components/blocks/groups/about.vue'
+    import SpaceFeeds from '#social/app/components/related/post.vue'
     import photoCard from '#shared/app/components/media/imageCard.vue'
     import videoCard from '#shared/app/components/media/mediaCard.vue'
     import SpaceProducts from '#commerce/app/components/catalog/product/productCard.vue'
-    import SpaceLists from '#lists/app/components/related/list.vue'
-    import membersList from '~/components/related/memberList.vue'
-    import SpaceSettings from '@/components/features/spaceSections/crud/update-space.vue'
+    import SpaceLists from '#social/app/components/related/list.vue'
+    import membersList from '#social/app/components/related/memberList.vue'
+    import SpaceSettings from '#social/app/components/features/spaceSections/crud/update-space.vue'
 
     const route = useRoute();
     const tab = ref(null)
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { readItems, readItem } = useAdapterRequest()
 
     const { data: space } = await useAsyncData('space', async () => {

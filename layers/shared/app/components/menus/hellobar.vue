@@ -14,13 +14,16 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue'
   import { readMe } from '@directus/sdk'
-  
-  const { user, loggedIn, fetch: fetchUserSession } = useUserSession()
+  import { loggedIn, useSession } from '#auth/lib/auth-client'
+
   const {
     $directus,
     $readItem
   } = useNuxtApp()
+  const { data: session } = await useSession(useFetch)
+  const user = computed(() => session.value?.user ?? null)
 
   let authUser = null
   try {

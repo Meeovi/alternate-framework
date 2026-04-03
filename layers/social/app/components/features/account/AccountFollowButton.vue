@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { toggleFollowAccount, useRelationship } from '~/composables/masto/relationship'
+import { toggleFollowAccount, useRelationship } from '#social/app/composables/federation/masto/relationship'
 
 const { account, context, command, ...props } = defineProps<{
   account: mastodon.v1.Account

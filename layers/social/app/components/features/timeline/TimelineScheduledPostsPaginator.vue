@@ -2,12 +2,8 @@
 import type { mastodon } from 'masto'
 import { useHumanReadableNumber } from 'packages/modules/localization/dist';
 import { computed } from '#imports';
-// @ts-expect-error missing types
-import { DynamicScrollerItem } from 'vue-virtual-scroller'
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-import { getServerName } from '~/composables/masto/account';
-import { usePreferences } from '~/composables/settings';
-import { currentUser, currentServer } from '~/composables/users';
+import { getServerName } from '#social/app/composables/federation/masto/account';
+import { currentUser, currentServer } from '#social/app/composables/contacts/users';
 
 const { account, buffer = 10, endMessage = true } = defineProps<{
   paginator: mastodon.Paginator<mastodon.v1.ScheduledStatus[], mastodon.DefaultPaginationParams>
@@ -20,7 +16,6 @@ const { account, buffer = 10, endMessage = true } = defineProps<{
 }>()
 
 const { formatNumber } = useHumanReadableNumber()
-const virtualScroller = usePreferences('experimentalVirtualScroller')
 
 const showOriginSite = computed(() =>
   account && account.id !== currentUser.value?.account.id && getServerName(account) !== currentServer.value,
@@ -28,23 +23,17 @@ const showOriginSite = computed(() =>
 </script>
 
 <template>
-  <CommonPaginator v-bind="{ paginator, stream, preprocess, buffer, endMessage }" :virtual-scroller="virtualScroller">
+  <CommonPaginator v-bind="{ paginator, stream, preprocess, buffer, endMessage }" :virtual-scroller="false">
     <template #updater="{ number, update }">
       <v-btn id="elk_show_new_items" py-4 border="b base" flex="~ col" p-3 w-full text-primary font-bold @click="update">
         {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
       </v-btn>
     </template>
-    <template #default="{ item, older, newer, active }">
-      <component
-        :is="virtualScroller ? DynamicScrollerItem : 'article'"
-        :item="item"
-        :active="active"
-      >
-        <StatusCard
-          :status="item" :context="context" :older="older" :newer="newer" :account="account"
-          :actions="false" :disable-link="true"
-        />
-      </component>
+    <template #default="{ item, older, newer }">
+      <StatusCard
+        :status="item" :context="context" :older="older" :newer="newer" :account="account"
+        :actions="false" :disable-link="true"
+      />
     </template>
     <template v-if="context === 'account' " #done="{ items }">
       <div

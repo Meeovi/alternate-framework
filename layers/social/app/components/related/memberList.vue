@@ -1,8 +1,6 @@
 <template>
     <v-card class="mx-auto" max-width="400">
         <img v-if="member?.avatar?.filename_disk" class="align-end auto-text" height="200" :src="getAssetUrl(member?.avatar)"  :alt="member?.first_name" />
-
-        <img v-else class="align-end auto-text" height="200" src="https://via.placeholder.com/200" :alt="member?.first_name" />
         <template #header>{{ member?.first_name }} {{ member?.last_name }}</template>
 
         <v-card-text class="pt-4">
@@ -22,7 +20,7 @@
 </template>
 
 <script setup>
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { getAssetUrl } = useAdapterRequest()
     
     const props = defineProps({

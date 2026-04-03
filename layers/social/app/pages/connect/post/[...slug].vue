@@ -157,11 +157,11 @@
 </template>
 
 <script setup>
-    import share from '~/components/blocks/share.vue';
-    import tagCard from '~/components/related/tag.vue';
-    import flag from '~/components/blocks/flag.vue';
-    import reactions from '~/components/blocks/reactions.vue';
-    import comments from '~/components/blocks/comments.vue';
+    import share from '#social/app/components/blocks/share.vue';
+    import tagCard from '#social/app/components/related/tag.vue';
+    import flag from '#social/app/components/blocks/flag.vue';
+    import reactions from '#social/app/components/blocks/reactions.vue';
+    import comments from '#social/app/components/blocks/comments.vue';
     import {
         onMounted,
         computed,
@@ -172,7 +172,7 @@
     } from '~/stores/reactions'
 
     const route = useRoute();
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { readItems, getAssetUrl } = useAdapterRequest()
 
     const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug

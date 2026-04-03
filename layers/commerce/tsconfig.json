@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node", "vitest", "vue", "pinia"],
+    "types": ["node"],
     "baseUrl": ".",
     "paths": {
       "~/*": ["app/*", "./*"],
@@ -22,6 +22,7 @@
     "target": "ESNext",
     "strict": false,
     "jsx": "preserve",
+    "typeRoots": ["../../types", "../../packages/types", "../../node_modules/@types"],
     "skipLibCheck": true,
     "noEmitOnError": false
   },

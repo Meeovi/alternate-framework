@@ -14,6 +14,15 @@ export default defineNuxtConfig({
         login: '/login',
         home: '/'
       }
+    },
+    public: {
+      auth: {
+        cookieName: 'auth-token',
+        redirect: {
+          login: '/login',
+          home: '/'
+        }
+      }
     }
   }
 })

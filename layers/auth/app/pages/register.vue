@@ -1,177 +1,134 @@
 <template>
-	<div class="z-50 rounded-md rounded-t-none max-w-md">
-		<v-toolbar>
-			<v-toolbar-title class="text-lg md:text-xl">Sign Up</v-toolbar-title>
-			<v-toolbar-subtitle>
-				Enter your information to create an account
-			</v-toolbar-subtitle>
-		</v-toolbar>
-		<v-card>
-			<div class="grid gap-4">
-				<div class="grid grid-cols-2 gap-4">
-					<div class="grid gap-2">
-						<v-text-field
-							id="first-name"
-							placeholder="Max"
-              label="First Name"
-							required
-							v-model="firstName"
-						/>
+	<v-container class="d-flex align-center justify-center" style="min-height: 100vh">
+		<v-card class="w-100" style="max-width: 500px">
+			<v-card-title>Create Account</v-card-title>
+			<v-card-subtitle>Enter your information to create an account</v-card-subtitle>
+
+			<v-card-text>
+				<v-form class="space-y-4">
+					<div class="d-flex gap-4">
+						<v-text-field v-model="firstName" label="First Name" placeholder="Max" required
+							variant="outlined" class="grow" />
+						<v-text-field v-model="lastName" label="Last Name" placeholder="Robinson" required
+							variant="outlined" class="grow" />
 					</div>
-					<div class="grid gap-2">
-						<v-text-field
-							id="last-name"
-							placeholder="Robinson"
-              label="Last Name"
-							required
-							v-model="lastName"
-						/>
+
+					<v-text-field v-model="email" label="Email" type="email" placeholder="m@example.com" required
+						variant="outlined" />
+
+					<v-text-field v-model="password" label="Password" type="password"
+						placeholder="Enter a secure password" autocomplete="new-password" required variant="outlined" />
+
+					<v-text-field v-model="passwordConfirmation" label="Confirm Password" type="password"
+						placeholder="Confirm your password" autocomplete="new-password" required variant="outlined" />
+
+					<div>
+						<v-label class="mb-2 d-block">Profile Image (optional)</v-label>
+						<v-file-input v-model="imageFile" accept="image/*" label="Select an image" variant="outlined"
+							prepend-icon="mdi-camera" @update:model-value="handleImageChange" />
+						<v-img v-if="imagePreview" :src="imagePreview" alt="Profile preview" class="mt-3"
+							max-width="150" max-height="150" />
 					</div>
-					<div class="grid gap-2">
-						<v-text-field
-							id="email"
-							type="email"
-							placeholder="m@example.com"
-              label="Email"
-							required
-							v-model="email"
-						/>
-					</div>
-					<div class="grid gap-2">
-						<v-text-field
-							id="password"
-							type="password"
-							placeholder="Password"
-							autocomplete="new-password"
-              label="Password"
-							v-model="password"
-						/>
-					</div>
-					<div class="grid gap-2">
-						<v-text-field
-							id="password_confirmation"
-							type="password"
-							autocomplete="new-password"
-							placeholder="Confirm Password"
-              label="Confirm Password"
-							v-model="passwordConfirmation"
-						/>
-					</div>
-					<div class="grid gap-2">
-						<v-text-field
-              label="Profile Image (optional)"
-						/>
-						<div class="flex items-end gap-4">
-							<div v-if="imagePreview" class="relative w-16 h-16 rounded-sm overflow-hidden">
-								<NuxtImg
-									:src="imagePreview"
-									alt="Profile preview"
-									class="object-cover"
-								/>
-							</div>
-							<div class="flex items-center gap-2 w-full">
-								<v-text-field
-									id="image"
-									type="file"
-									accept="image/*"
-									@change="handleImageChange"
-									class="w-full"
-								/>
-								<X
-									class="cursor-pointer"
-									@click="image = null; imagePreview = null"
-								/>
-							</div>
-						</div>
-					</div>
-					<v-btn
-						type="submit"
-						class="w-full"
-						:disabled="loading"
-						@click="handleSignUp"
-					>
-						<Loader2 size="16" class="animate-spin" v-if="loading" />
-						<span v-else>Create your account</span>
+
+					<v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" @click="signUp" size="large">
+						{{ loading ? 'Creating account...' : 'Create Account' }}
 					</v-btn>
+				</v-form>
+
+				<v-divider class="my-4" />
+
+				<div class="text-center text-caption">
+					Already have an account?
+					<NuxtLink :to="localePath('/login')" class="text-decoration-none font-weight-bold">
+						Sign In
+					</NuxtLink>
 				</div>
-			</div>
+			</v-card-text>
 		</v-card>
-	</div>
+	</v-container>
 </template>
 
 
 <script setup>
-import { ref } from '#imports'
-import { definePageMeta, useHead, useRouter } from '#imports'
-import { useAuth } from '../composables/useAuth'
+	import {
+		ref
+	} from '#imports'
+	import {
+		definePageMeta,
+		useHead,
+		useRouter
+	} from '#imports'
+	import {
+		useAuth
+	} from '../composables/useAuth'
+	import useLocalePath from '../composables/useLocalePath'
+	import {
+		useAlert
+	} from '#shared/app/composables/useAlert';
 
-const { signUp } = useAuth();
+	const auth = useAuth();
 
-definePageMeta({
-  layout: false,
-  auth: {
-    only: 'guest'
-  }
-})
-
-const router = useRouter();
-const toast = useToast();
-
-const firstName = ref("");
-const lastName = ref("");
-const email = ref("");
-const password = ref("");
-const passwordConfirmation = ref("");
-const image = ref<File | null>(null);
-const imagePreview = ref<string | null>(null);
-const loading = ref(false);
-
-async function convertImageToBase64(file) {
-	return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onloadend = () => resolve(reader.result);
-		reader.onerror = reject;
-		reader.readAsDataURL(file);
-	});
-}
-
-const handleSignUp = async () => {
-	await signUp.email({
-		email: email.value,
-		password: password.value,
-		name: `${firstName.value} ${lastName.value}`,
-		image: image.value ? await convertImageToBase64(image.value) : "",
-		callbackURL: "/dashboard",
-		fetchOptions: {
-			onResponse: () => {
-				loading.value = false;
-			},
-			onRequest: () => {
-				loading.value = true;
-			},
-			onError: (ctx) => {
-				toast.error(ctx.error.message);
-			},
-			onSuccess: () => {
-				router.push("/dashboard");
-			},
-		},
+	definePageMeta({
+		layout: false,
+		auth: {
+			only: 'guest'
+		}
 	})
-};
 
-const handleImageChange = (e) => {
-	const file = (e.target)?.files?.[0];
-	if (file) {
-		image.value = file;
-		const reader = new FileReader();
-		reader.onloadend = () => {
-			imagePreview.value = reader.result;
-		};
-		reader.readAsDataURL(file);
+	const router = useRouter();
+	const alert = useAlert();
+
+	const firstName = ref("");
+	const lastName = ref("");
+	const email = ref("");
+	const password = ref("");
+	const passwordConfirmation = ref("");
+	const imageFile = ref(null);
+	const imagePreview = ref(null);
+	const loading = ref(false);
+
+	async function convertImageToBase64(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onloadend = () => resolve(reader.result);
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
 	}
-};
 
-useHead({
-  title: 'Register'
-});
+	async function signUp() {
+		if (loading.value) return
+		loading.value = true
+		const {
+			error
+		} = await auth.signUp.email({
+			email: email.value,
+			password: password.value,
+			name: `${firstName.value} ${lastName.value}`,
+			image: imageFile.value ? await convertImageToBase64(imageFile.value) : undefined,
+		})
+		if (error) {
+			alert.error(error.message);
+		} else {
+			alert.success('You have been signed up!');
+			await navigateTo('/login')
+		}
+		loading.value = false
+	}
+
+	const handleImageChange = (files) => {
+		if (files && files.length > 0) {
+			const file = files[0];
+			imageFile.value = file;
+			const reader = new FileReader();
+			reader.onloadend = () => {
+				imagePreview.value = reader.result;
+			};
+			reader.readAsDataURL(file);
+		}
+	};
+
+	useHead({
+		title: 'Register'
+	});
 </script>

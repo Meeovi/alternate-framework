@@ -86,7 +86,7 @@
 
 <script setup>
 import { ref, computed, watchEffect } from '#imports'
-import useDirectusRequest from '~/composables/useDirectusRequest'
+import useDirectusRequest from '#social/app/composables/useDirectusRequest'
 
 const { readItems, createItem, deleteItem } = useDirectusRequest()
 const config = useRuntimeConfig()

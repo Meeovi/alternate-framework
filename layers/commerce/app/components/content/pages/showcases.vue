@@ -34,12 +34,14 @@
 </template>
 
 
+
+<script setup>
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
 
     import createshowcase from '@/components/catalog/product/add-showcase.vue'
-    import listShowcases from '#lists/app/components/related/list.vue'
+    import listShowcases from '#social/app/components/related/list.vue'
 
     const {
         $directus,

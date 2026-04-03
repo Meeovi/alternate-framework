@@ -1,0 +1,1 @@
+export { client as openSearchClient } from "../src/client";

@@ -78,9 +78,9 @@
 
 <script setup>
 import { ref, onMounted } from '#imports';
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { readItem, deleteItem, updateItem, uploadFiles } = useAdapterRequest()
-import updateSpace from '~/composables/spaces/updateSpace';
+import updateSpace from '#social/app/composables/spaces/updateSpace';
 
 const route = useRoute();
 const router = useRouter();

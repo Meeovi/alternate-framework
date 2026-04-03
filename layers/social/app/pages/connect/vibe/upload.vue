@@ -25,7 +25,7 @@
 
 <script setup>
 import { ref } from '#imports'
-import { useDirectusAuth } from '~/composables/useDirectus'
+import { useDirectusAuth } from '#social/app/composables/useDirectus'
 
 const { user } = useDirectusAuth()
 

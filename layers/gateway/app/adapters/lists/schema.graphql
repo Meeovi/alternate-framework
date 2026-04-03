@@ -1,0 +1,28 @@
+extend type Query {
+  listsByOwner(ownerId: ID!): [List!]!
+  listsFediverseAuthors(identity: String!, limit: Int = 20): [String!]!
+}
+
+extend type Mutation {
+  listsCreate(input: ListCreateInput!): List!
+  listsUpdate(input: ListUpdateInput!): List!
+  listsDelete(id: ID!): Boolean!
+}
+
+type List {
+  id: ID!
+  ownerId: ID!
+  title: String!
+  items: [String!]!
+}
+
+input ListCreateInput {
+  ownerId: ID!
+  title: String!
+}
+
+input ListUpdateInput {
+  id: ID!
+  title: String
+  items: [String!]
+}

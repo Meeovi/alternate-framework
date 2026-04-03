@@ -10,7 +10,7 @@ const MAX_ARRAY_LENGTH = 50
 const MAX_STRING_LENGTH = 1000
 
 async function loadAuthModule() {
-  return import('../../../../packages/adapters/adapter-auth/src/runtime/server/utils/auth')
+  return import('#auth/server/utils/auth')
 }
 
 function getUserId(user: Record<string, any> | null | undefined) {
@@ -70,7 +70,7 @@ export function sanitizeEntityType(value: unknown) {
   return entityType
 }
 
-export function sanitizeEntityId(value: unknown, fieldName = 'entityId') {
+function sanitizeEntityId(value: unknown, fieldName = 'entityId') {
   const entityId = String(value || '').trim()
 
   if (!ENTITY_ID_PATTERN.test(entityId)) {
@@ -102,7 +102,7 @@ export function sanitizePageParam(value: unknown, fieldName: string, options: { 
   return parsed
 }
 
-export function sanitizeStructuredValue(value: unknown, depth = 0): unknown {
+function sanitizeStructuredValue(value: unknown, depth = 0): unknown {
   if (value === undefined || value === null) {
     return value
   }

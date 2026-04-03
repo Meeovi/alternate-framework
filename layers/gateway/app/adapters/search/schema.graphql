@@ -1,0 +1,35 @@
+extend type Query {
+  searchQuery(input: SearchQueryInput!): SearchResult!
+  searchFacets(query: String!): [SearchFacet!]!
+  searchFediverse(input: SearchFediverseInput!): SearchResult!
+}
+
+input SearchQueryInput {
+  query: String!
+  page: Int = 1
+  pageSize: Int = 20
+}
+
+input SearchFediverseInput {
+  identity: String!
+  query: String
+  limit: Int = 20
+}
+
+type SearchItem {
+  id: ID!
+  title: String!
+  snippet: String
+  score: Float!
+}
+
+type SearchFacet {
+  key: String!
+  count: Int!
+}
+
+type SearchResult {
+  items: [SearchItem!]!
+  facets: [SearchFacet!]!
+  total: Int!
+}

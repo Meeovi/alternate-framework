@@ -1,5 +1,5 @@
 // composables/cms/shorts/createSpace.js
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 export default async function createSpace(shortData) {
     const { createItem } = useAdapterRequest()

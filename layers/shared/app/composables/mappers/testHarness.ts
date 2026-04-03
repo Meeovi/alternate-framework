@@ -1,4 +1,4 @@
-import { MapperDefinition } from './types'
+import type { MapperDefinition } from './types'
 import { MapperError } from './errors'
 
 export interface MapperTestCase<TInput, TOutput> {

@@ -13,7 +13,7 @@ export async function fetchSpaceRegistry(nuxtApp?: { $readItems?: ReadItemsFn })
   if (nuxtApp && typeof nuxtApp.$readItems === 'function') {
     readItemsFn = nuxtApp.$readItems
   } else {
-    const mod = await import('../useAdapterRequest')
+    const mod = await import('../core/useAdapterRequest')
     const adapter = (mod && typeof (mod as any).default === 'function') ? (mod as any).default() : (mod as any)
     const { readItems } = adapter as any
     readItemsFn = readItems
@@ -46,7 +46,7 @@ export async function fetchSpaceRegistry(nuxtApp?: { $readItems?: ReadItemsFn })
  * If you call this outside of a setup/plugin/middleware you MUST pass a
  * Nuxt app instance explicitly to avoid the "called outside" error.
  */
-import useAdapterRequest from '../useAdapterRequest'
+import useAdapterRequest from '../core/useAdapterRequest'
 
 export const useSpaceRegistry = async (nuxtApp?: { $readItems?: ReadItemsFn }) => {
   const runtimeUseNuxtApp = (globalThis as any).useNuxtApp

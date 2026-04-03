@@ -16,7 +16,7 @@
     import {
         ref
     } from '#imports'
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
 
     const { readItem } = useDirectusRequest()
     const tab = ref(null);

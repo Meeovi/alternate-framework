@@ -13,6 +13,15 @@ const { locale } = useI18n()
 const el = ref<HTMLElement>()
 const picker = ref<Picker>()
 const colorMode = useColorMode()
+const emojiMenuOpen = ref(false)
+
+function onEmojiMenuToggle(value: boolean) {
+  emojiMenuOpen.value = value
+  if (value)
+    openEmojiPicker()
+  else
+    hideEmojiPicker()
+}
 
 async function openEmojiPicker() {
   await updateCustomEmojis()
@@ -57,16 +66,21 @@ function hideEmojiPicker() {
 
 <template>
   <CommonTooltip :content="$t('tooltip.add_emojis')">
-    <VDropdown
-      auto-boundary-max-size
-      @apply-show="openEmojiPicker()"
-      @apply-hide="hideEmojiPicker()"
+    <v-menu
+      v-model="emojiMenuOpen"
+      location="bottom"
+      :close-on-content-click="false"
+      @update:model-value="onEmojiMenuToggle"
     >
-      <NuxtPage />
+      <template #activator="{ props }">
+        <div v-bind="props">
+          <NuxtPage />
+        </div>
+      </template>
 
-      <template #popper>
+      <template #default>
         <div ref="el" min-w-10 min-h-10 />
       </template>
-    </VDropdown>
+    </v-menu>
   </CommonTooltip>
 </template>

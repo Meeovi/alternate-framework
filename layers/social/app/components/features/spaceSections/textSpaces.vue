@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-    import spaceCard from '~/components/related/space.vue'
+    import spaceCard from '#social/app/components/related/space.vue'
     import {
         useUserStore
     } from '#auth/app/stores/user'
@@ -31,7 +31,7 @@
     })
         
     const model = ref(null)
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
     const { readItems } = useDirectusRequest()
 
     const { data: myTextSpaces } = await useAsyncData('myTextSpaces', async () => {

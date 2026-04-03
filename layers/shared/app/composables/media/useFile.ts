@@ -1,5 +1,5 @@
 import { useNuxtApp } from 'nuxt/app'
-import useDirectusRequest from '../useDirectusRequest'
+import useContent from '../useContent'
 
 export function useFile() {
   const nuxt = useNuxtApp() as any
@@ -8,7 +8,7 @@ export function useFile() {
   if (nuxt?.$file) return nuxt.$file
 
   // Fallback: expose minimal upload helper using adapter-aware uploadFiles
-  const { uploadFiles } = useDirectusRequest()
+  const { uploadFiles } = useContent()
   return {
     upload: async (file: File) => {
       const form = new FormData()

@@ -1,0 +1,32 @@
+extend type Query {
+  socialFeed(input: SocialFeedInput!): [SocialPost!]!
+  socialNotifications(limit: Int = 20): [SocialNotification!]!
+  socialFediverseFeed(identity: String!, limit: Int = 20): JSON!
+}
+
+extend type Mutation {
+  socialPost(input: SocialPostInput!): SocialPost!
+  socialFediversePublish(protocol: String!, content: String!, actor: String): JSON!
+}
+
+input SocialFeedInput {
+  cursor: String
+  limit: Int = 20
+}
+
+input SocialPostInput {
+  body: String!
+}
+
+type SocialPost {
+  id: ID!
+  body: String!
+  authorId: ID!
+  createdAt: DateTime!
+}
+
+type SocialNotification {
+  id: ID!
+  text: String!
+  read: Boolean!
+}

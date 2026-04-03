@@ -1,4 +1,4 @@
-import { MapperDefinition, MapperFn } from './types'
+import type { MapperDefinition, MapperFn } from './types'
 
 export function createMapper<TInput, TOutput>(
   name: string,

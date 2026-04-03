@@ -1,0 +1,29 @@
+extend type Query {
+  authGetUser: AuthUser @auth(roles: ["user", "admin"])
+}
+
+extend type Mutation {
+  authLogin(input: AuthLoginInput!): AuthTokenPair!
+  authRefresh(input: AuthRefreshInput!): AuthTokenPair!
+}
+
+input AuthLoginInput {
+  email: String!
+  password: String!
+}
+
+input AuthRefreshInput {
+  refreshToken: String!
+}
+
+type AuthUser {
+  id: ID!
+  email: String!
+  roles: [String!]!
+}
+
+type AuthTokenPair {
+  accessToken: String!
+  refreshToken: String!
+  user: AuthUser!
+}

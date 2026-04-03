@@ -1,5 +1,5 @@
 // composables/deleteSpace.js
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 export default async function deleteSpace(spaceId) {
     const { deleteItem } = useAdapterRequest()

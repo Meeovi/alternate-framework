@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from '#imports';
-import { useCommand } from '~/composables/command';
-import { checkLogin } from '~/composables/users';
+import { useCommand } from '#social/app/composables/command';
+import { checkLogin } from '#social/app/composables/contacts/users';
 
 defineOptions({
   inheritAttrs: false,

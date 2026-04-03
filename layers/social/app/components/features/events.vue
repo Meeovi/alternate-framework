@@ -58,7 +58,7 @@
     import yourEvents from '../event/yourEvents.vue'
 
     const tab = ref(null);
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readItem, readItems } = useAdapterRequest()
 
     const { data: eventsBar } = await useAsyncData('eventsBar', async () => {

@@ -235,17 +235,18 @@
 
 <script setup>
 import { useCommerceAdapter, useContentAdapter } from '#imports'
+import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+import travel from '#commerce/app/components/catalog/categories/travel.vue'
+import deals from '#commerce/app/components/catalog/categories/deals.vue'
+import timeComponent from '#commerce/app/components/catalog/categories/time/time.vue'
+import weather from '#commerce/app/components/catalog/categories/weather/weather.vue'
+import useDirectusRequest from '~/composables/useDirectusRequest'
+
 void useCommerceAdapter()
 void useContentAdapter()
-    import productCard from '../../components/catalog/product/productCard.vue'
-    import travel from '@/components/categories/travel.vue'
-    import deals from '@/components/categories/deals.vue'
-    import timeComponent from '@/components/categories/time/time.vue'
-    import weather from '@/components/categories/weather/weather.vue'
 
     const route = useRoute()
     const model = ref(null)
-    import useDirectusRequest from '~/composables/useDirectusRequest'
     const {
         readItems,
         readItem,

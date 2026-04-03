@@ -1,4 +1,4 @@
-import { getSocialConfig } from '../../app/composables/config'
+import { getSocialConfig } from '../../app/composables/core/config'
 import type { FollowPayload, SocialServerAdapter, FollowersResult, FollowingResult, RepostResult } from '../../app/types/social-adapter'
 
 type Json = string | number | boolean | null | Json[] | { [key: string]: Json }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NavButtonName } from '~/composables/settings'
+import type { NavButtonName } from '#social/app/composables/settings'
 import { STORAGE_KEY_BOTTOM_NAV_BUTTONS } from '~/constants'
 
 interface NavButton {

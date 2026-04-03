@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { fetchAccountByHandle } from '~/composables/cache'
+import { fetchAccountByHandle } from '#social/app/composables/cache'
 
 type WatcherType = [acc?: mastodon.v1.Account | null, h?: string, v?: boolean]
 

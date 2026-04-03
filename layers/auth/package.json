@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nuxt dev",
-    "build": "tsc -p tsconfig.json"
+    "build": "nuxt prepare && tsc -p tsconfig.json"
   },
   "keywords": [
     "better-auth",
@@ -28,6 +28,7 @@
     "@better-auth/stripe": "^1.4.15",
     "@mframework/core": "file:../../packages/modules/core",
     "@polar-sh/better-auth": "^1.6.3",
+    "@polar-sh/checkout": "^0.2.0",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "better-auth": "^1.4.12",

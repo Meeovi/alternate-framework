@@ -1,5 +1,5 @@
 // composables/createContact.js
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 export default async function createContact(contactData) {
     const route = useRoute();

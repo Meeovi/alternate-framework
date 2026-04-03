@@ -3,15 +3,13 @@ import type { GroupedAccountLike, NotificationSlot } from '@mframework/core/shar
 import { useHumanReadableNumber } from '@mframework/localization';
 import type { mastodon } from 'masto'
 import type { Paginator } from 'masto/mastodon/paginator.js';
-// @ts-expect-error missing types
-import { DynamicScrollerItem } from 'vue-virtual-scroller'
 
 defineProps<{
   paginator: Paginator<mastodon.v1.Notification[], mastodon.rest.v1.ListNotificationsParams>
   stream?: mastodon.streaming.Subscription
 }>()
 
-const virtualScroller = false // TODO: fix flickering issue with virtual scroll
+const virtualScroller = false
 
 const groupCapacity = Number.MAX_VALUE // No limit
 
@@ -189,45 +187,23 @@ const { formatNumber } = useHumanReadableNumber()
         {{ $t('timeline.show_new_items', number, { named: { v: formatNumber(number) } }) }}
       </v-btn>
     </template>
-    <template #default="{ item, active }">
-      <template v-if="virtualScroller">
-        <DynamicScrollerItem :item="item" :active="active" tag="div">
-          <NotificationGroupedFollow
-            v-if="item.type === 'grouped-follow'"
-            :items="item"
-            border="b base"
-          />
-          <NotificationGroupedLikes
-            v-else-if="item.type === 'grouped-reblogs-and-favourites'"
-            :group="item"
-            border="b base"
-          />
-          <NotificationCard
-            v-else
-            :notification="item"
-            hover:bg-active
-            border="b base"
-          />
-        </DynamicScrollerItem>
-      </template>
-      <template v-else>
-        <NotificationGroupedFollow
-          v-if="item.type === 'grouped-follow'"
-          :items="item"
-          border="b base"
-        />
-        <NotificationGroupedLikes
-          v-else-if="item.type === 'grouped-reblogs-and-favourites'"
-          :group="item"
-          border="b base"
-        />
-        <NotificationCard
-          v-else
-          :notification="item"
-          hover:bg-active
-          border="b base"
-        />
-      </template>
+    <template #default="{ item }">
+      <NotificationGroupedFollow
+        v-if="item.type === 'grouped-follow'"
+        :items="item"
+        border="b base"
+      />
+      <NotificationGroupedLikes
+        v-else-if="item.type === 'grouped-reblogs-and-favourites'"
+        :group="item"
+        border="b base"
+      />
+      <NotificationCard
+        v-else
+        :notification="item"
+        hover:bg-active
+        border="b base"
+      />
     </template>
   </CommonPaginator>
 </template>

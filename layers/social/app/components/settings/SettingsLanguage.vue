@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { LocaleObject } from '@nuxtjs/i18n'
 import type { ComputedRef } from '#imports'
-import { useUserSettings } from '~/composables/settings';
+import { useUserSettings } from '#social/app/composables/settings';
 
 const userSettings = useUserSettings()
 

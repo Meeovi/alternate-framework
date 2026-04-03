@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { useForm } from 'slimeform'
 
 const { t } = useI18n()
 
@@ -20,41 +19,118 @@ const onlineSrc = computed(() => ({
   header: account.value?.header || '',
 }))
 
-const { form, reset, submitter, isDirty, isError } = useForm({
-  form: () => {
-    // For complex types of objects, a deep copy is required to ensure correct comparison of initial and modified values
-    const fieldsAttributes = Array.from({ length: maxAccountFieldCount.value }, (_, i) => {
-      const field = { ...account.value?.fields?.[i] || { name: '', value: '' } }
+type ProfileFieldAttribute = {
+  name: string
+  value: string
+}
 
-      field.value = convertMetadata(field.value)
+type AppearanceForm = {
+  displayName: string
+  note: string
+  avatar: File | null
+  header: File | null
+  fieldsAttributes: ProfileFieldAttribute[]
+  bot: boolean
+  locked: boolean
+}
 
-      return field
-    })
-    return {
-      displayName: account.value?.displayName ?? '',
-      note: account.value?.source.note.replaceAll('\r', '') ?? '',
+function buildFormState(): AppearanceForm {
+  const fieldsAttributes = Array.from({ length: maxAccountFieldCount.value }, (_, index) => {
+    const field = { ...account.value?.fields?.[index] || { name: '', value: '' } }
 
-      avatar: null as null | File,
-      header: null as null | File,
+    field.value = convertMetadata(field.value)
 
-      fieldsAttributes,
+    return field
+  })
 
-      bot: account.value?.bot ?? false,
-      locked: account.value?.locked ?? false,
+  return {
+    displayName: account.value?.displayName ?? '',
+    note: account.value?.source.note?.replaceAll('\r', '') ?? '',
+    avatar: null,
+    header: null,
+    fieldsAttributes,
+    bot: account.value?.bot ?? false,
+    locked: account.value?.locked ?? false,
+  }
+}
 
-      // These look more like account and privacy settings than appearance settings
-      // discoverable: false,
-      // locked: false,
-    }
-  },
+function cloneFormState(source: AppearanceForm): AppearanceForm {
+  return {
+    displayName: source.displayName,
+    note: source.note,
+    avatar: source.avatar,
+    header: source.header,
+    fieldsAttributes: source.fieldsAttributes.map(field => ({ ...field })),
+    bot: source.bot,
+    locked: source.locked,
+  }
+}
+
+function assignFormState(source: AppearanceForm) {
+  form.displayName = source.displayName
+  form.note = source.note
+  form.avatar = source.avatar
+  form.header = source.header
+  form.bot = source.bot
+  form.locked = source.locked
+  form.fieldsAttributes.splice(0, form.fieldsAttributes.length, ...source.fieldsAttributes.map(field => ({ ...field })))
+}
+
+const form = reactive<AppearanceForm>(buildFormState())
+const initialForm = ref<AppearanceForm>(cloneFormState(form))
+const submitting = ref(false)
+
+const isDirty = computed(() => {
+  return form.displayName !== initialForm.value.displayName
+    || form.note !== initialForm.value.note
+    || form.avatar !== initialForm.value.avatar
+    || form.header !== initialForm.value.header
+    || form.bot !== initialForm.value.bot
+    || form.locked !== initialForm.value.locked
+    || JSON.stringify(form.fieldsAttributes) !== JSON.stringify(initialForm.value.fieldsAttributes)
 })
 
-const isCanSubmit = computed(() => !isError.value && isDirty.value)
+const isCanSubmit = computed(() => isDirty.value)
 const failedMessages = ref<string[]>([])
 
-const { submit, submitting } = submitter(async ({ dirtyFields }) => {
+function reset() {
+  assignFormState(cloneFormState(initialForm.value))
+}
+
+function getDirtyFields(): Partial<mastodon.rest.v1.UpdateCredentialsParams> {
+  const dirtyFields: Partial<mastodon.rest.v1.UpdateCredentialsParams> = {}
+
+  if (form.displayName !== initialForm.value.displayName)
+    dirtyFields.displayName = form.displayName
+
+  if (form.note !== initialForm.value.note)
+    dirtyFields.note = form.note
+
+  if (form.avatar !== initialForm.value.avatar && form.avatar)
+    dirtyFields.avatar = form.avatar
+
+  if (form.header !== initialForm.value.header && form.header)
+    dirtyFields.header = form.header
+
+  if (JSON.stringify(form.fieldsAttributes) !== JSON.stringify(initialForm.value.fieldsAttributes))
+    dirtyFields.fieldsAttributes = form.fieldsAttributes
+
+  if (form.bot !== initialForm.value.bot)
+    dirtyFields.bot = form.bot
+
+  if (form.locked !== initialForm.value.locked)
+    dirtyFields.locked = form.locked
+
+  return dirtyFields
+}
+
+async function submit() {
   if (!isCanSubmit.value)
     return
+
+  submitting.value = true
+
+  const dirtyFields = getDirtyFields()
 
   const res = await client.value.v1.accounts.updateCredentials(dirtyFields.value as mastodon.rest.v1.UpdateCredentialsParams)
     .then(account => ({ account }))
@@ -63,6 +139,7 @@ const { submit, submitting } = submitter(async ({ dirtyFields }) => {
   if ('error' in res) {
     console.error(res.error)
     failedMessages.value.push(res.error.message)
+    submitting.value = false
     return
   }
 
@@ -73,16 +150,22 @@ const { submit, submitting } = submitter(async ({ dirtyFields }) => {
 
   cacheAccount(res.account, server, true)
   currentUser.value!.account = res.account
-  reset()
-})
+  const nextFormState = buildFormState()
+  initialForm.value = cloneFormState(nextFormState)
+  assignFormState(nextFormState)
+  submitting.value = false
+}
 
 async function refreshInfo() {
   if (!currentUser.value)
     return
   // Keep the information to be edited up to date
   await refreshAccountInfo()
-  if (!isDirty)
-    reset()
+  if (!isDirty.value) {
+    const nextFormState = buildFormState()
+    initialForm.value = cloneFormState(nextFormState)
+    assignFormState(nextFormState)
+  }
 }
 
 useDropZone(avatarInput, (files) => {

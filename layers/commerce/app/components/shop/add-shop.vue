@@ -11,7 +11,7 @@
           <h3>Create New Shop</h3>
         </template>
 
-        <template #header>
+        <template>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
           <v-form @submit.prevent="submitForm">
@@ -25,7 +25,7 @@
 
 </template>
 
-
+<script setup>
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()

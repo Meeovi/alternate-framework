@@ -78,12 +78,12 @@
     import {
         ref
     } from '#imports';
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
     const { readItem, updateItem } = useDirectusRequest()
     import {
         useRouter
     } from 'vue-router';
-    import uploadFiles from '~//composables/uploadFiles';
+    import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
     import updateShort from '../../composables/shorts/updateShort';
 
     // Make sure your props are properly defined

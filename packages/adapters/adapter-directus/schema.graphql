@@ -1,0 +1,8 @@
+extend type Query {
+  directusSchema(collection: String!): JSON
+  directusItem(collection: String!, id: ID!): JSON
+}
+
+extend type Mutation {
+  directusCreateItem(collection: String!, input: JSON!): JSON
+}

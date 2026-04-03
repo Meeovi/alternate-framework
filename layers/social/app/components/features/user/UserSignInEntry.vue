@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { openSigninDialog } from '~/composables/dialog';
-import { useSignIn } from '~/composables/sign-in';
-import { currentServer } from '~/composables/users';
-import { isHydrated } from '~/composables/vue';
+import { openSigninDialog } from '#social/app/composables/dialog';
+import { useSignIn } from '#social/app/composables/sign-in';
+import { currentServer } from '#social/app/composables/contacts/users';
+import { isHydrated } from '#social/app/composables/vue';
 
 const { busy, oauth, singleInstanceServer } = useSignIn()
 </script>

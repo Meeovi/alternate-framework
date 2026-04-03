@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { statusQuoteApprovalPolicies } from '~/composables/masto/icons'
+import { statusQuoteApprovalPolicies } from '#social/app/composables/federation/masto/icons'
 
 defineProps<{
   editing?: boolean

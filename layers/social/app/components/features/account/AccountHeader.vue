@@ -104,6 +104,7 @@ async function editNote(event: Event) {
 
 const isSelf = useSelfAccount(() => account)
 const isNotifiedOnPost = computed(() => !!relationship.value?.notifying)
+const listMenuOpen = ref(false)
 
 const personalNoteMaxLength = 2000
 
@@ -170,18 +171,21 @@ async function copyAccountName() {
                 </v-btn>
               </CommonTooltip>
               <CommonTooltip :content="$t('list.modify_account')">
-                <VDropdown v-if="!isSelf && relationship?.following">
-                  <v-btn
-                    :aria-label="$t('list.modify_account')"
-                    rounded-full text-sm p2 border-1 transition-colors
-                    border-base hover:text-primary
-                  >
-                    <span i-ri:play-list-add-fill block text-current />
-                  </v-btn>
-                  <template #popper>
+                <v-menu v-if="!isSelf && relationship?.following" v-model="listMenuOpen" location="bottom">
+                  <template #activator="{ props }">
+                    <v-btn
+                      v-bind="props"
+                      :aria-label="$t('list.modify_account')"
+                      rounded-full text-sm p2 border-1 transition-colors
+                      border-base hover:text-primary
+                    >
+                      <span i-ri:play-list-add-fill block text-current />
+                    </v-btn>
+                  </template>
+                  <template #default>
                     <ListLists :user-id="account.id" />
                   </template>
-                </VDropdown>
+                </v-menu>
               </CommonTooltip>
             </span>
           </div>

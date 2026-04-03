@@ -8,10 +8,11 @@ export interface MagentoAdapterRegistration {
 function resolveMagentoGraphqlEndpoint(): string {
   const endpoint = process.env.MAGENTO_GRAPHQL_ENDPOINT ||
     process.env.COMMERCE_GRAPHQL_ENDPOINT ||
+    process.env.MAGE_MAGENTO_GRAPHQL_URL ||
     process.env.MAPI_ENDPOINT
 
   if (!endpoint) {
-    throw new Error('No Magento GraphQL endpoint configured. Set MAGENTO_GRAPHQL_ENDPOINT, COMMERCE_GRAPHQL_ENDPOINT, or MAPI_ENDPOINT')
+    throw new Error('No Magento GraphQL endpoint configured. Set MAGENTO_GRAPHQL_ENDPOINT, COMMERCE_GRAPHQL_ENDPOINT, MAGE_MAGENTO_GRAPHQL_URL, or MAPI_ENDPOINT')
   }
 
   return endpoint
@@ -20,7 +21,8 @@ function resolveMagentoGraphqlEndpoint(): string {
 function resolveMagentoRestEndpoint(): string | undefined {
   return process.env.MAGENTO_REST_ENDPOINT ||
     process.env.COMMERCE_REST_ENDPOINT ||
-    process.env.MAGENTO_API_URL
+    process.env.MAGENTO_API_URL ||
+    process.env.MAGE_STORE_URL
 }
 
 export function getMagentoAdapterRegistration(): MagentoAdapterRegistration {
@@ -36,6 +38,9 @@ export function getMagentoAdapterRegistration(): MagentoAdapterRegistration {
       authorization: (context: any) => {
         if (process.env.COMMERCE_API_TOKEN) {
           return `Bearer ${process.env.COMMERCE_API_TOKEN}`
+        }
+        if (process.env.WEBSITE_TOKEN) {
+          return `Bearer ${process.env.WEBSITE_TOKEN}`
         }
         return context?.headers?.authorization
       },

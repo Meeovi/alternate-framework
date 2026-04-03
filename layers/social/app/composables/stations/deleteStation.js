@@ -1,5 +1,5 @@
 // composables/deleteStation.js
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 export default async function deleteStation(stationId) {
     const { deleteItem } = useAdapterRequest()

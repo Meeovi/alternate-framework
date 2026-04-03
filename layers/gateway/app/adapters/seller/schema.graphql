@@ -1,0 +1,23 @@
+extend type Query {
+  sellerProducts(storeId: ID!): [SellerProduct!]!
+  sellerOrders(storeId: ID!): [SellerOrder!]!
+  sellerAnalytics(storeId: ID!): SellerAnalytics!
+}
+
+type SellerProduct {
+  id: ID!
+  title: String!
+  inventory: Int!
+}
+
+type SellerOrder {
+  id: ID!
+  total: Float!
+  status: String!
+}
+
+type SellerAnalytics {
+  grossRevenue: Float!
+  netRevenue: Float!
+  orderCount: Int!
+}

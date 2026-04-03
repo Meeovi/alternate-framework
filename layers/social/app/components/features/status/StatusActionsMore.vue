@@ -5,16 +5,16 @@ import { noop } from '@vueuse/shared';
 import type { mastodon } from 'masto'
 import { useRouter, useRoute } from 'nuxt/app';
 import { inject, computed } from '#imports';
-import { openConfirmDialog, openPublishDialog, lastPublishDialogStatus, openReactedByDialog, openReportDialog } from '~/composables/dialog';
-import { toggleBlockAccount, toggleMuteAccount, toggleBlockDomain, useRelationship } from '~/composables/masto/relationship'
-import { getStatusPermalinkRoute, getStatusRoute } from '~/composables/masto/routes';
-import { useStatusActions } from '~/composables/masto/status';
-import { removeCachedStatus } from '~/composables/masto/statusCache';
-import { getDraftFromStatus, getReplyDraft, mentionUser } from '~/composables/masto/statusDrafts';
-import { getServerName } from '~/composables/masto/account';
-import { getPreferences, usePreferences, useUserSettings } from '~/composables/settings';
-import { currentUser, currentServer, checkLogin } from '~/composables/users';
-import { isHydrated } from '~/composables/vue';
+import { openConfirmDialog, openPublishDialog, lastPublishDialogStatus, openReactedByDialog, openReportDialog } from '#social/app/composables/dialog';
+import { toggleBlockAccount, toggleMuteAccount, toggleBlockDomain, useRelationship } from '#social/app/composables/federation/masto/relationship'
+import { getStatusPermalinkRoute, getStatusRoute } from '#social/app/composables/federation/masto/routes';
+import { useStatusActions } from '#social/app/composables/federation/masto/status';
+import { removeCachedStatus } from '#social/app/composables/federation/masto/statusCache';
+import { getDraftFromStatus, getReplyDraft, mentionUser } from '#social/app/composables/federation/masto/statusDrafts';
+import { getServerName } from '#social/app/composables/federation/masto/account';
+import { getPreferences, usePreferences, useUserSettings } from '#social/app/composables/settings';
+import { currentUser, currentServer, checkLogin } from '#social/app/composables/contacts/users';
+import { isHydrated } from '#social/app/composables/vue';
 
 const { details, ...props } = defineProps<{
   status: mastodon.v1.Status

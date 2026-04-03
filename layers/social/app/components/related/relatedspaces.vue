@@ -14,10 +14,10 @@
 
   <script setup>
   import { ref } from '#imports'
-  import spaceCard from '~/components/related/space.vue'
+  import spaceCard from '#social/app/components/related/space.vue'
 
   const model = ref(null)
-  import useAdapterRequest from '~/composables/useAdapterRequest'
+  import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
   const { readItems } = useAdapterRequest()
 
   const { data: group } = await useAsyncData('group', async () => {

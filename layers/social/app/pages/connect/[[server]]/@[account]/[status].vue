@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from '#imports'
-// @ts-expect-error missing types
-import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller'
 
 definePageMeta({
   name: 'status',
@@ -95,26 +93,16 @@ onReactivated(() => {
           />
 
           <template v-if="!pendingContext">
-            <DynamicScroller
-              v-slot="{ item, index, active }"
-              :items="context?.descendants || []"
-              :min-item-size="200"
-              :buffer="800"
-              key-field="id"
-              page-mode
-            >
-              <DynamicScrollerItem :item="item" :active="active">
-                <StatusCard
-                  :key="item.id"
-                  :status="item"
-                  context="account"
-                  :older="context?.descendants[index + 1]"
-                  :newer="index > 0 ? context?.descendants[index - 1] : status"
-                  :has-newer="index === 0"
-                  :main="status"
-                />
-              </DynamicScrollerItem>
-            </DynamicScroller>
+            <StatusCard
+              v-for="(item, index) of (context?.descendants || [])"
+              :key="item.id"
+              :status="item"
+              context="account"
+              :older="context?.descendants[index + 1]"
+              :newer="index > 0 ? context?.descendants[index - 1] : status"
+              :has-newer="index === 0"
+              :main="status"
+            />
           </template>
         </div>
       </template>

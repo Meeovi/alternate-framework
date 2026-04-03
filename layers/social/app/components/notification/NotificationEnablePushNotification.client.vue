@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMediaQuery } from '@vueuse/core'
 import { computed } from 'vue';
-import { currentUser } from '~/composables/users';
+import { currentUser } from '#social/app/composables/contacts/users';
 
 defineProps<{
   closeableHeader?: boolean

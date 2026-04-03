@@ -1,5 +1,5 @@
 // composables/updateShort.js
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 export default async function updateShort(shortId, shortData) {
     const { updateItem } = useAdapterRequest()

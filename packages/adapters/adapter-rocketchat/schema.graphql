@@ -1,0 +1,22 @@
+extend type Query {
+  rocketchatRooms: [RocketChatRoom!]!
+  rocketchatMessages(roomId: ID!, limit: Int = 50): [RocketChatMessage!]!
+}
+
+extend type Mutation {
+  rocketchatSendMessage(roomId: ID!, body: String!): RocketChatMessage!
+}
+
+type RocketChatRoom {
+  id: ID!
+  name: String
+  kind: String
+}
+
+type RocketChatMessage {
+  id: ID!
+  roomId: ID!
+  body: String!
+  senderId: ID
+  createdAt: String
+}

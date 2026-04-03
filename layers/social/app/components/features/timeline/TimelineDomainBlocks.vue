@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMasto } from '~/composables/masto/masto';
+import { useMasto } from '#social/app/composables/federation/masto/masto';
 
 const { client } = useMasto()
 const paginator = client.value.v1.domainBlocks.list()

@@ -49,7 +49,7 @@
 
 <script setup>
     import { ref, computed, onMounted } from '#imports'
-    import { useDirectusClient, useDirectusAuth } from '~/composables/useDirectus'
+    import { useDirectusClient, useDirectusAuth } from '#social/app/composables/useDirectus'
 
     const config = useRuntimeConfig()
     const directus = useDirectusClient()

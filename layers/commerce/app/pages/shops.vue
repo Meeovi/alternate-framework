@@ -53,10 +53,9 @@
 
 <script setup lang="ts">
 import { useCommerceAdapter, useContentAdapter } from '#imports'
+import { ref, useAsyncData, useHead, useNuxtApp } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
-  import { ref } from '#imports'
-  import { useHead, useNuxtApp, useAsyncData } from '~/types'
   import store from '../components/catalog/shops/stores.vue'
 
   const tab = ref(null)

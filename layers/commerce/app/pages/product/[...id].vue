@@ -44,9 +44,7 @@
                     <productReviews :review="review" />
                   </div>
                 </div>--->
-                  <comments :productName="product?.name"
-                    :productImage="`${$directus.url}/assets/${product?.image?.filename_disk}`"
-                    :productSku="product?.id" />
+                  <comments :content-id="product?.id" />
                 </v-window-item>
 
                 <!--Product Specifications-->
@@ -249,15 +247,15 @@ void useContentAdapter()
     computed,
     watch
   } from '#imports';
-  import comments from '@/components/placeholders/Comments.vue'
+  import comments from '#social/app/components/blocks/comments.vue'
 
-  import productDetails from '../../components/catalog/product/productDetails.vue'
-  import productSpecs from '../../components/catalog/product/productSpecs.vue'
-  import productCard from '../../components/catalog/product/productCard.vue'
-  import giftCard from '../../components/catalog/product/giftCard.vue'
-  import short from '@/components/placeholders/Short.vue'
-  import spaces from '@/components/placeholders/Space.vue'
-  import shop from '../../components/catalog/shops/stores.vue'
+  import productDetails from '#commerce/app/components/catalog/product/productDetails.vue'
+  import productSpecs from '#commerce/app/components/catalog/product/productSpecs.vue'
+  import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+  import giftCard from '#commerce/app/components/catalog/product/giftCard.vue'
+  import short from '#social/app/components/related/short.vue'
+  import spaces from '#social/app/components/related/space.vue'
+  import shop from '#commerce/app/components/catalog/shops/stores.vue'
 
   const tab = ref(null);
   const model = ref(null);
@@ -302,7 +300,7 @@ void useContentAdapter()
     title: computed(() => product?.value?.name || 'Product Page')
   })
 
-  import { addViewed } from '../../composables/products/useRecentlyViewed'
+  import { addViewed } from '#commerce/app/composables/products/useRecentlyViewed'
 
   watch(product, (newVal) => {
     if (process.client && newVal?.id) {

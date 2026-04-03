@@ -1,0 +1,15 @@
+extend type Query {
+  starterHealth: String!
+  starterSearch(query: String!): StarterSearchResult!
+}
+
+type StarterSearchItem {
+  id: ID!
+  title: String
+  snippet: String
+}
+
+type StarterSearchResult {
+  items: [StarterSearchItem!]!
+  total: Int!
+}

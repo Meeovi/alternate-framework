@@ -1,4 +1,4 @@
-import { ContentProvider } from "./types"
+import type { ContentProvider } from "./types"
 
 const providers: Record<string, ContentProvider> = {}
 

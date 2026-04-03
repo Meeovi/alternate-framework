@@ -23,7 +23,7 @@
 import { ref } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
 import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 const dialog = ref(false)
 const { readFieldsByCollection } = useAdapterRequest()

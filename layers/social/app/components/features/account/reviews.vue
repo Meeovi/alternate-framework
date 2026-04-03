@@ -169,7 +169,7 @@
         onMounted
     } from '#imports'
 
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readFieldsByCollection, readItems, createItem, updateItem, deleteItem } = useAdapterRequest()
 
     const reviews = ref([])

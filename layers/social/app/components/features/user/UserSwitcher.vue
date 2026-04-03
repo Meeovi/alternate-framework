@@ -2,12 +2,12 @@
 import type { UserLogin } from '#shared/types'
 import { useRouter } from 'nuxt/app';
 import { computed } from '#imports';
-import { openSigninDialog } from '~/composables/dialog';
-import { getFullHandle } from '~/composables/masto/account';
-import { getAccountRoute } from '~/composables/masto/routes';
-import { useSignIn } from '~/composables/sign-in';
-import { useUsers, currentUser, switchUser, signOut } from '~/composables/users';
-import { isHydrated } from '~/composables/vue';
+import { openSigninDialog } from '#social/app/composables/dialog';
+import { getFullHandle } from '#social/app/composables/federation/masto/account';
+import { getAccountRoute } from '#social/app/composables/federation/masto/routes';
+import { useSignIn } from '#social/app/composables/sign-in';
+import { useUsers, currentUser, switchUser, signOut } from '#social/app/composables/contacts/users';
+import { isHydrated } from '#social/app/composables/vue';
 
 const emit = defineEmits<{
   (event: 'click'): void

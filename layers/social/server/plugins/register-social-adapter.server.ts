@@ -1,6 +1,6 @@
 import mframeworkAdapter from '../adapters/mframeworkApiAdapter'
 import mastoAdapter from '../adapters/mastoAdapter'
-import { getSocialConfig } from '../../app/composables/config'
+import { getSocialConfig } from '../../app/composables/core/config'
 
 export default () => {
   // register on the server global so server handlers can use it

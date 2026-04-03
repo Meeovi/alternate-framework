@@ -1,4 +1,4 @@
-import { MapperDefinition } from './types'
+import type { MapperDefinition } from './types'
 import { MapperNotFoundError } from './errors'
 
 const registry = new Map<string, MapperDefinition<any, any>>()

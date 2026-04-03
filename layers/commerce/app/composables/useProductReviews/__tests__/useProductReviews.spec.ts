@@ -1,14 +1,5 @@
 import { vi } from 'vitest';
 import { useProductReviews } from '~/composables/useProductReviews';
-import { mockProductReviews } from './productReviews.mock';
-
-vi.mock('@mframework/core', () => ({
-  sdk: {
-    commerce: {
-      getProductReviews: vi.fn(() => mockProductReviews),
-    },
-  },
-}));
 
 describe('useProductReview', () => {
   it('should return product reviews', async () => {
@@ -17,6 +8,6 @@ describe('useProductReview', () => {
 
     await fetchProductReviews(slug);
 
-    expect(data.value).toEqual(mockProductReviews);
+    expect(data.value).toEqual([{ id: 'review-1' }]);
   });
 });

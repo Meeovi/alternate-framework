@@ -8,10 +8,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "preview": "cd apps/Meeovi && npx nuxi preview",
-    "typecheck": "bash ./scripts/typecheck",
-    "prisma:api": "node ./scripts/run-prisma-api.js",
-    "create-adapter": "./scripts/create-adapter"
+    "preview": "cd apps/Meeovi && npx nuxi preview"
   },
   "bin": {
     "meeovi-create-adapter": "packages/core/bin/create-adapter.cjs"

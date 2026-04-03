@@ -8,14 +8,17 @@ defineProps<{
 
 <template>
   <CommonTooltip placement="top" :content="$t('tooltip.open_editor_tools')">
-    <VDropdown v-if="editor" placement="bottom">
-      <v-btn
-        btn-action-icon
-        :aria-label="$t('tooltip.open_editor_tools')"
-      >
-        <div i-ri:font-size-2 />
-      </v-btn>
-      <template #popper>
+    <v-menu v-if="editor" location="bottom" :close-on-content-click="false">
+      <template #activator="{ props }">
+        <v-btn
+          v-bind="props"
+          btn-action-icon
+          :aria-label="$t('tooltip.open_editor_tools')"
+        >
+          <div i-ri:font-size-2 />
+        </v-btn>
+      </template>
+      <template #default>
         <div flex gap-1>
           <CommonTooltip placement="top" :content="$t('tooltip.toggle_code_block')">
             <v-btn
@@ -49,6 +52,6 @@ defineProps<{
           </CommonTooltip>
         </div>
       </template>
-    </VDropdown>
+    </v-menu>
   </CommonTooltip>
 </template>

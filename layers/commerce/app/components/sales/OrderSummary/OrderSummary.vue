@@ -51,11 +51,11 @@
 
 <script lang="ts" setup>
 import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
-
 import { SfButton, SfInput } from '@storefront-ui/vue';
 import { OrderSummaryPropsType } from './types';
+
+void useCommerceAdapter()
+void useContentAdapter()
 
 defineProps<OrderSummaryPropsType>();
 </script>

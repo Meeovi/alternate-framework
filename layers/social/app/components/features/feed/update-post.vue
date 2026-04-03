@@ -85,9 +85,9 @@
     import {
         ref
     } from '#imports';
-    import uploadFiles from '../../../composables/globals/uploadFiles';
-    import updatePost from '~/composables/posts/updatePost';
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
+    import updatePost from '#social/app/composables/posts/updatePost';
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     import {
         useUserStore
     } from '#auth/app/stores/user'

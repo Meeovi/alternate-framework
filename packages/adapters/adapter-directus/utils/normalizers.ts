@@ -1,0 +1,1 @@
+export const normalizeDirectusPayload = <T = unknown>(value: T): T => value;

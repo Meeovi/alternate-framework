@@ -79,9 +79,9 @@
 </template>
 
 <script setup>
-    import share from '~/components/blocks/share.vue';
-    import flag from '~/components/blocks/flag.vue';
-    import reactions from '~/components/blocks/reactions.vue';
+    import share from '#social/app/components/blocks/share.vue';
+    import flag from '#social/app/components/blocks/flag.vue';
+    import reactions from '#social/app/components/blocks/reactions.vue';
     import {
         toRef,
         onMounted,
@@ -91,7 +91,7 @@
         useReactionsStore
     } from '~/stores/reactions'
 
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
     const props = defineProps({
         post: {

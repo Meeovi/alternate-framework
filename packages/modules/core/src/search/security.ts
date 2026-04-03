@@ -60,7 +60,7 @@ export function sanitizeSearchFilters(filters: unknown): SearchFilter[] {
     return []
   }
 
-  return filters.slice(0, SEARCH_MAX_FILTERS).flatMap((entry) => {
+  return filters.slice(0, SEARCH_MAX_FILTERS).flatMap<SearchFilter>((entry) => {
     if (!entry || typeof entry !== 'object') {
       return []
     }

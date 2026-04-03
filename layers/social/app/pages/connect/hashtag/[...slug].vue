@@ -76,13 +76,13 @@
 </template>
 
 <script setup>
-    //import Hashtags from '~/components/features/hashtags.vue'
-    import postCard from '~/components/related/post.vue'
-    import spaceCard from '~/components/related/space.vue'
-    import shortsCard from '~/components/related/short.vue'
+    //import Hashtags from '#social/app/components/features/hashtags.vue'
+    import postCard from '#social/app/components/related/post.vue'
+    import spaceCard from '#social/app/components/related/space.vue'
+    import shortsCard from '#social/app/components/related/short.vue'
 
     const route = useRoute()
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { readItems, getAssetUrl } = useAdapterRequest()
 
     const { data: tag } = await useAsyncData('tag', async () => {

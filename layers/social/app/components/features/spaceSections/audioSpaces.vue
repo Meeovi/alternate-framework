@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-    import spaceCard from '~/components/related/space.vue'
+    import spaceCard from '#social/app/components/related/space.vue'
     import {
         useUserStore
     } from '#auth/app/stores/user'
@@ -31,7 +31,7 @@
     })
 
     const model = ref(null)
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readItems } = useAdapterRequest()
 
     const { data: myAudioSpaces } = await useAsyncData('myAudioSpaces', async () => {

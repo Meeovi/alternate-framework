@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Fuse from 'fuse.js'
+import { rankByQuery } from '~/utils/alternateSearch'
 
 const modelValue = defineModel<string>({ required: true })
 
@@ -8,14 +8,13 @@ const userSettings = useUserSettings()
 
 const languageKeyword = ref('')
 
-const fuse = new Fuse(languagesNameList, {
-  keys: ['code', 'nativeName', 'name'],
-  shouldSort: true,
-})
-
 const languages = computed(() =>
   languageKeyword.value.trim()
-    ? fuse.search(languageKeyword.value).map(r => r.item)
+    ? rankByQuery(
+        languagesNameList,
+        languageKeyword.value,
+        item => [item.code, item.nativeName, item.name],
+      )
     : [...languagesNameList].filter(entry => !userSettings.value.disabledTranslationLanguages.includes(entry.code)).sort(({ code: a }, { code: b }) => {
         // Put English on the top
         if (a === 'en')

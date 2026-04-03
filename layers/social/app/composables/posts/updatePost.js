@@ -1,5 +1,5 @@
 // composables/updatePost.js
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 export default async function updatePost(postId, postData) {
     const { updateItem } = useAdapterRequest()

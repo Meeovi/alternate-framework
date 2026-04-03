@@ -1,4 +1,4 @@
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 
 declare const defineNuxtPlugin: any
 

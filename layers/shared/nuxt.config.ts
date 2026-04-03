@@ -16,8 +16,15 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
-    'vuetify-nuxt-module'
+    'vuetify-nuxt-module',
+    '@storefront-ui/nuxt',
+    '@nuxtjs/seo'
   ],
+
+  site: {
+    url: `${process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'}`,
+    name: `${process.env.NUXT_PUBLIC_SITE_NAME || 'My Site'}`
+  },
 
   image: {
     provider: process.env.IMAGE_PROVIDER || 'netlify',
@@ -28,9 +35,16 @@ export default defineNuxtConfig({
       icons: {
         defaultSet: 'fa',
         sets: [{
-          name: 'mdi',
-          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
+          name: 'fa',
+          cdn: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css'
         }]
+      },
+      theme: {
+        defaultTheme: 'light',
+        themes: {
+          light: {},
+          dark: {}
+        }
       }
     }
   },
@@ -47,20 +61,17 @@ export default defineNuxtConfig({
     }
   },
 
-    build: {
-    transpile: [
-      'vuetify',
-    ],
+  runtimeConfig: {},
+
+  build: {
+    transpile: ['vuetify', '@fortawesome/vue-fontawesome'],
   },
 
   nitro: {
     prerender: {
-      enabled: true,
       crawlLinks: true,
       routes: [],
-    },
+    }, 
     compressPublicAssets: true,
-  },
-
-  runtimeConfig: {}
+  }
 })

@@ -31,7 +31,6 @@ export const HANDLED_MASTO_URLS = /^(https?:\/\/)?([\w\-]+\.)+\w+\/(@[@\w\-.]+)(
 export const NOTIFICATION_FILTER_TYPES: mastodon.v1.NotificationType[] = [
   'status',
   'reblog',
-  'quote',
   'follow',
   'follow_request',
   'favourite',

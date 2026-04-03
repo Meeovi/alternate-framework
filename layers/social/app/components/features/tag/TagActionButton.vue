@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { useMasto } from '~/composables/masto/masto';
+import { useMasto } from '#social/app/composables/federation/masto/masto';
 
 const { tag } = defineProps<{
   tag: mastodon.v1.Tag

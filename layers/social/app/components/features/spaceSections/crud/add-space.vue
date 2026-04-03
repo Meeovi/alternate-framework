@@ -30,7 +30,7 @@ import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormEle
 import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
 
 const dialog = ref(false)
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { readFieldsByCollection } = useAdapterRequest()
 
 const { data, error } = await useAsyncData('spaces', async () => {

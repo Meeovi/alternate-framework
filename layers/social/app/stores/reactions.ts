@@ -146,10 +146,10 @@ export const useReactionsStore = defineStore('reactions', () => {
       entry.likeCount = prev.likeCount
       entry.isLiked = prev.isLiked
       console.error('toggleLike failed', e)
-      // try to show toast if available
+      // try to show alert if available
       try {
-        const toast = nuxt?.$toast as any
-        if (toast && typeof toast.error === 'function') toast.error('Could not update reaction')
+        const alert = useAlert()
+        alert.error('Could not update reaction')
       } catch (_) {}
       throw e
     } finally {

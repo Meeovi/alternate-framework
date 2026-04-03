@@ -1,0 +1,23 @@
+extend type Query {
+  fediverseActivityPubInbox(actor: String!): JSON!
+  fediverseActivityPubOutbox(actor: String!, limit: Int = 20): JSON!
+  fediverseAtprotoProfile(handle: String!): JSON
+  fediverseAtprotoFeed(actor: String!, limit: Int = 20): JSON!
+  fediverseUnifiedFeed(identity: String!, limit: Int = 20): JSON!
+}
+
+extend type Mutation {
+  fediversePublish(input: FediversePublishInput!): JSON!
+  fediverseLayerFanout(input: JSON!): JSON!
+}
+
+enum FediverseProtocol {
+  activitypub
+  atproto
+}
+
+input FediversePublishInput {
+  protocol: FediverseProtocol!
+  content: String!
+  actor: String
+}

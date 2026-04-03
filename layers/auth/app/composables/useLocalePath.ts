@@ -1,4 +1,19 @@
 export default function useLocalePath() {
-  // Minimal shim for auth pages; returns identity path.
-  return (to?: string) => (to ?? '/')
+  const nuxtApp = useNuxtApp() as {
+    $localePath?: (to: string) => string
+  }
+
+  return (to?: string) => {
+    const path = to ?? '/'
+
+    if (typeof nuxtApp.$localePath === 'function') {
+      try {
+        return nuxtApp.$localePath(path)
+      } catch {
+        // Fall back to raw path when i18n is not ready.
+      }
+    }
+
+    return path
+  }
 }

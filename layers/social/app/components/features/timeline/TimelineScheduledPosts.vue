@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useMastoClient } from '@mframework/core/index'
 import type { mastodon } from 'masto'
-import { currentUser } from '~/composables/users'
+import { currentUser } from '#social/app/composables/contacts/users'
 
 const paginator = useMastoClient().v1.scheduledStatuses.list()
 

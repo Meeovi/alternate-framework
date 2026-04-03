@@ -130,7 +130,7 @@
     import {
         ref
     } from '#imports'
-    import LeafletMap from '~/components/blocks/LeafletMap.vue'
+    import LeafletMap from '#social/app/components/blocks/LeafletMap.vue'
 
     const model = ref(null)
     // Accept event prop for display in the template

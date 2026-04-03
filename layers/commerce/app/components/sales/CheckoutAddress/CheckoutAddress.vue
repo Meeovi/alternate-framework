@@ -41,6 +41,8 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { computed } from 'vue'
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()

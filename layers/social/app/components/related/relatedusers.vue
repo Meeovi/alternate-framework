@@ -18,10 +18,10 @@
 
   <script setup>
   import { ref } from '#imports'
-  import userCard from '~/components/related/memberList.vue'
+  import userCard from '#social/app/components/related/memberList.vue'
 
   const model = ref(null)
-  import useAdapterRequest from '~/composables/useAdapterRequest'
+  import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
   const { readItems } = useAdapterRequest()
 
   const { data: users } = await useAsyncData('users', async () => {

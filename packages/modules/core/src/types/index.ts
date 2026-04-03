@@ -3,7 +3,7 @@ export * from './core/result'
 export * from './core/utility'
 export * from './core/pagination'
 export * from './core/id'
-export { Maybe } from './core/common'
+export type { Maybe } from './core/common'
 export * from './core/error'
 
 // Auth
@@ -13,7 +13,7 @@ export * from './auth/providers'
 export * from './auth/inputs'
 export * from './auth/adapter'
 // Compatibility alias: expose `Session` name expected by adapters
-export { AuthSession as Session } from './auth/session'
+export type { AuthSession as Session } from './auth/session'
 
 // Commerce
 export * from './commerce/product'

@@ -79,11 +79,11 @@
         ref,
         computed
     } from '#imports'
-    import postCard from '~/components/related/post.vue'
+    import postCard from '#social/app/components/related/post.vue'
 
     const user = useSupabaseUser()
 
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readItem, readItems } = useAdapterRequest()
     const tab = ref(null);
 

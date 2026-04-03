@@ -89,7 +89,7 @@
         },
     })
 
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { getAssetUrl } = useAdapterRequest()
 
 const backgroundImage = computed(() => {

@@ -1,5 +1,5 @@
 import { auth } from "../../utils/auth";
-import { createSimpleMcpHandler } from "../../utils/mcp-handler";
+import { createSimpleMcpHandler } from "../../plugins/mcp-handler";
 import { z } from "zod";
 
 // Define available tools

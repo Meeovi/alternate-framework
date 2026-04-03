@@ -48,7 +48,7 @@ export default function useContentRequest() {
     return expandLegacyFields(opts)
   }
 
-  function normalizePayload(data: any) {
+  function normalizePayload(data: any): any {
     if (Array.isArray(data)) return data.map(normalizePayload)
     if (!data || typeof data !== 'object') return data
 
@@ -62,8 +62,8 @@ export default function useContentRequest() {
 
   function notifyFailure(message: string) {
     try {
-      const toast = nuxt?.$toast || (globalThis as any).__toast
-      if (toast && typeof toast.error === 'function') toast.error(message)
+      const alert = useAlert()
+      alert.error(message)
     } catch (_) {}
   }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ISO6391 from 'iso-639-1'
-import { useUserSettings } from '~/composables/settings'
+import { useUserSettings } from '#social/app/composables/settings'
 
 const supportedTranslationLanguages = ISO6391.getLanguages([...supportedTranslationCodes])
 const userSettings = useUserSettings()

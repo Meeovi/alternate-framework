@@ -30,13 +30,13 @@
     import {
         ref
     } from '#imports'
-    import DirectusFormElement from '~/components/ui/forms/DirectusFormElement.vue'
+    import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
     import {
         useDirectusForm
-    } from '~/composables/useDirectusForm'
+    } from '#shared/app/composables/globals/useDirectusForm'
 
     const dialog = ref(false)
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readFieldsByCollection } = useAdapterRequest()
 
     const { data, error } = await useAsyncData('report', async () => {

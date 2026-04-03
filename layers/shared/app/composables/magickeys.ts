@@ -14,11 +14,14 @@ export function useMagicSequence(keys: string[]): ComputedRef<boolean> {
   watch(
     () => magicKeys.current,
     () => {
-      if (magicKeys[keys[i.value]].value && !down) {
+      const currentKey = keys[i.value]
+      const prevKey = i.value > 0 ? keys[i.value - 1] : undefined
+
+      if (currentKey && magicKeys[currentKey]?.value && !down) {
         down = true
         i.value += 1
       }
-      else if (i.value > 0 && !magicKeys[keys[i.value - 1]].value && down) {
+      else if (prevKey && !magicKeys[prevKey]?.value && down) {
         down = false
       }
       else {

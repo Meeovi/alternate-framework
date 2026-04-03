@@ -1,18 +1,18 @@
 <template>
   <div class="authPage">
     <section data-bs-version="5.1" class="authForm">
-      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" alt="Meeovi Logo" class="authLogo" />
+      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" :alt="`${process.env.NUXT_APP_NAME}`" class="authLogo" />
       <h1 class="mbr-section-title mbr-fonts-style display-1">Forgot Password</h1>
 
       <div class="mbr-section-btn">
         <div class="request-reset-form">
           <p>Enter your email address to receive a password reset link.</p>
-          <v-form class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
+          <v-form class="mbr-section-btn" :schema="schema" :state="state">
             <v-text-field v-model="state.email" type="email" label="Email" required></v-text-field>
             <div class="mb-3">
               <div ref="turnstileRef"></div>
             </div>
-            <v-btn class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
+            <v-btn class="mt-2 btn btn-primary display-4" type="submit" block @click="handleForgetPassword" :loading="loading" :disabled="loading || !turnstileToken">
               Send Reset Link
             </v-btn>
           </v-form>
@@ -24,7 +24,7 @@
 
         <div class="mt-4 text-center">
           <p>Remember your password?
-            <NuxtLink to="/login">Sign In</NuxtLink>
+            <NuxtLink :to="localePath('/login')">Sign In</NuxtLink>
           </p>
         </div>
       </div>
@@ -34,10 +34,12 @@
 
 <script setup>
 import { useHead } from 'nuxt/app'
-import { definePageMeta, useAuth } from '#imports'
+import { definePageMeta } from '#imports'
+import { useAuth } from '../composables/useAuth'
 import useLocalePath from '../composables/useLocalePath'
 import { z } from 'zod'
 import { reactive, ref } from '#imports'
+import { forgetPassword } from "#auth/lib/auth-client";
 
 definePageMeta({
   auth: {
@@ -50,7 +52,7 @@ useHead({
 })
 
 const auth = useAuth()
-const toast = useToast()
+const alert = useAlert()
 const localePath = useLocalePath()
 
 const schema = z.object({
@@ -71,43 +73,30 @@ const messageType = ref<'info' | 'success' | 'error' | 'warning' | undefined>(un
 const turnstileRef = ref<HTMLElement | null>(null)
 const turnstileToken = ref<string | null>(null)
 
-async function onSubmit(event) {
-  event.preventDefault()
-  if (loading.value)
-    return
+const email = ref("");
 
-  loading.value = true
-  // clear previous messages
-  message.value = null
-  messageType.value = undefined
-
-  const { error } = await auth.forgetPassword({
-    email: state.email,
-    redirectTo: localePath('/reset-password')
-  })
-
-  if (error) {
-    const text = error.message || error.statusText
-    // update v-alert bindings
-    message.value = text
-    messageType.value = 'error'
-    toast.show({
-      title: text,
-      color: 'error'
-    })
-  }
-  else {
-    const successText = ('forgotPassword.success')
-    // update v-alert bindings
-    message.value = successText
-    messageType.value = 'success'
-    toast.show({
-      title: successText,
-      color: 'success'
-    })
-  }
-  loading.value = false
-}
+const handleForgetPassword = async () => {
+	if (!email.value) {
+		alert("Please enter your email address");
+		return;
+	}
+	await forgetPassword(
+		{
+			email: email.value,
+			redirectTo: "/reset-password",
+		},
+		{
+			// onSuccess find the url with token in server console. For detail check forgetPassword section: https://www.better-auth.com/docs/authentication/email-password
+			onSuccess() {
+				alert("Password reset link sent to your email");
+				window.location.href = "/login";
+			},
+			onError(context) {
+				alert(context.error.message);
+			},
+		},
+	);
+};
 </script>
 
 <style scoped>

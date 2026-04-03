@@ -1,0 +1,7 @@
+type Query {
+  _service: String!
+}
+
+type Mutation {
+  _noop: Boolean!
+}

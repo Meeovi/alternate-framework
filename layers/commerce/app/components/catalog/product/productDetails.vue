@@ -82,7 +82,7 @@ void useContentAdapter()
     } from '@vueuse/core';
     import tagCard from '#social/app/components/related/tag.vue';
     import addToCartBtn from '../../partials/addToCartBtn.vue';
-    import createListBtn from '#lists/app/components/partials/createListBtn.vue';
+    import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
 
     const {
         $directus,

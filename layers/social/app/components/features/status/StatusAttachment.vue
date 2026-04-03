@@ -96,6 +96,7 @@ useIntersectionObserver(video, (entries) => {
 }, { threshold: 0.75 })
 
 const userSettings = useUserSettings()
+const altMenuOpen = ref(false)
 
 const shouldLoadAttachment = ref(isPreview || !getPreferences(userSettings.value, 'enableDataSaving'))
 
@@ -257,25 +258,34 @@ watch(shouldLoadAttachment, () => {
       ]"
       flex gap-col-2
     >
-      <VDropdown v-if="attachment.description && !getPreferences(userSettings, 'hideAltIndicatorOnPosts')" :distance="6" placement="bottom-start">
-        <v-btn
-          font-bold text-sm
-          :class="isAudio
-            ? 'rounded-full h-15 w-15 btn-outline border-base text-secondary hover:bg-active hover:text-active'
-            : 'rounded-1 bg-black/65 text-white hover:bg-black px1.2 py0.2'"
-        >
-          <div hidden>
-            {{ $t('status.img_alt.read', [attachment.type]) }}
-          </div>
-          {{ $t('status.img_alt.ALT') }}
-        </v-btn>
-        <template #popper>
+      <v-menu
+        v-if="attachment.description && !getPreferences(userSettings, 'hideAltIndicatorOnPosts')"
+        v-model="altMenuOpen"
+        location="bottom start"
+        :offset="6"
+        :close-on-content-click="false"
+      >
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            font-bold text-sm
+            :class="isAudio
+              ? 'rounded-full h-15 w-15 btn-outline border-base text-secondary hover:bg-active hover:text-active'
+              : 'rounded-1 bg-black/65 text-white hover:bg-black px1.2 py0.2'"
+          >
+            <div hidden>
+              {{ $t('status.img_alt.read', [attachment.type]) }}
+            </div>
+            {{ $t('status.img_alt.ALT') }}
+          </v-btn>
+        </template>
+        <template #default>
           <div p4 flex flex-col gap-2 max-w-130>
             <div flex justify-between>
               <h2 font-bold text-xl text-secondary>
                 {{ $t('status.img_alt.desc') }}
               </h2>
-              <v-btn v-close-popper text-sm btn-outline py0 px2 text-secondary border-base>
+              <v-btn text-sm btn-outline py0 px2 text-secondary border-base @click="altMenuOpen = false">
                 {{ $t('status.img_alt.dismiss') }}
               </v-btn>
             </div>
@@ -284,7 +294,7 @@ watch(shouldLoadAttachment, () => {
             </p>
           </div>
         </template>
-      </VDropdown>
+      </v-menu>
       <div v-if="isGif && !getPreferences(userSettings, 'hideGifIndicatorOnPosts')">
         <v-btn
           aria-hidden font-bold text-sm

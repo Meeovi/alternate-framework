@@ -113,7 +113,7 @@
     import {
         updateAddressDetails,
         deleteCustomerAddress
-    } from '~/composables/useAddress'; // Add this import
+    } from '#social/app/composables/useAddress'; // Add this import
 
     const route = useRoute();
     const router = useRouter();

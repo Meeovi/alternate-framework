@@ -1,5 +1,5 @@
 import { defineNitroPlugin } from '#imports'
-import { setSocialConfig } from '../../app/composables/config'
+import { setSocialConfig } from '../../app/composables/core/config'
 
 export default defineNitroPlugin((nitroApp) => {
   const baseUrl = process.env.MASTO_BASE_URL || '/api/masto'

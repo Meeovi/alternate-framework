@@ -55,9 +55,9 @@
     import {
         ref
     } from '#imports'
-    import TagChip from '~/components/related/tag.vue'
+    import TagChip from '#social/app/components/related/tag.vue'
 
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
     const { readItems, readItem } = useDirectusRequest()
     const route = useRoute()
     const tab = ref(null);

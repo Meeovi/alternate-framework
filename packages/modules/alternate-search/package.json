@@ -1,0 +1,158 @@
+{
+  "name": "alternate-search",
+  "version": "1.0.0",
+  "description": "The most comprehensive search framework for TypeScript.",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://framework.meeovi.com/search",
+  "keywords": [
+    "search",
+    "full-text",
+    "typescript",
+    "nextjs",
+    "sqlite",
+    "meilisearch",
+    "typesense",
+    "elasticsearch",
+    "pgvector"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown index.ts",
+    "dev": "tsdown index.ts --watch",
+    "test": "vitest",
+    "coverage": "vitest run --coverage --coverage.provider=istanbul",
+    "demo:smoke": "./demo/smoke-test.sh",
+    "demo:smoke:nuxt": "ROUTE_PREFIX=/search ./demo/smoke-test.sh",
+    "lint:package": "publint run --strict",
+    "lint:types": "attw --profile esm-only --pack .",
+    "test:adapters": "vitest run --config vitest.config.adapters.ts",
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "dependencies": {
+    "defu": "^6.1.4",
+    "jose": "^6.1.3",
+    "kysely": "^0.28.14",
+    "nanostores": "^1.1.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@lynx-js/react": "^0.117.0",
+    "@sveltejs/kit": "^2.53.3",
+    "@tanstack/react-start": "^1.167.16",
+    "@tanstack/solid-start": "^1.167.15",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/bun": "^1.3.11",
+    "@types/google.accounts": "^0.0.18",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.14",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-trace-base": "^1.30.0",
+    "@opentelemetry/sdk-trace-node": "^1.30.0",
+    "better-sqlite3": "^12.6.2",
+    "deepmerge": "^4.3.1",
+    "happy-dom": "^20.7.0",
+    "listhen": "^1.9.0",
+    "msw": "^2.12.10",
+    "next": "^16.2.1",
+    "oauth2-mock-server": "^8.2.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "solid-js": "^1.9.12",
+    "tarn": "^3.0.2",
+    "tedious": "^18.6.2",
+    "tsdown": "^0.21.7",
+    "type-fest": "^5.4.4",
+    "typescript": "^6.0.2",
+    "vitest": "^4.0.18",
+    "vue": "^3.5.31"
+  },
+  "peerDependencies": {
+    "@lynx-js/react": "*",
+    "@prisma/client": "^5.0.0 || ^6.0.0 || ^7.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@tanstack/react-start": "^1.0.0",
+    "@tanstack/solid-start": "^1.0.0",
+    "better-sqlite3": "^12.0.0",
+    "drizzle-kit": ">=0.31.4",
+    "drizzle-orm": ">=0.41.0",
+    "mongodb": "^6.0.0 || ^7.0.0",
+    "mysql2": "^3.0.0",
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
+    "pg": "^8.0.0",
+    "prisma": "^5.0.0 || ^6.0.0 || ^7.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "solid-js": "^1.0.0",
+    "svelte": "^4.0.0 || ^5.0.0",
+    "vitest": "^2.0.0 || ^3.0.0 || ^4.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@lynx-js/react": {
+      "optional": true
+    },
+    "@prisma/client": {
+      "optional": true
+    },
+    "@sveltejs/kit": {
+      "optional": true
+    },
+    "@tanstack/react-start": {
+      "optional": true
+    },
+    "@tanstack/solid-start": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "drizzle-kit": {
+      "optional": true
+    },
+    "drizzle-orm": {
+      "optional": true
+    },
+    "mongodb": {
+      "optional": true
+    },
+    "mysql2": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
+    },
+    "prisma": {
+      "optional": true
+    },
+    "better-sqlite3": {
+      "optional": true
+    },
+    "vitest": {
+      "optional": true
+    }
+  }
+}

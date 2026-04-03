@@ -24,7 +24,7 @@ function getRoles(user: Record<string, any>): string[] {
 
 export async function requireCommerceAdminAccess(event: H3Event) {
   try {
-    const authModule = await import('../../../../packages/adapters/adapter-auth/src/runtime/server/utils/auth')
+    const authModule = await import('#auth/server/utils/auth')
     const user = await authModule.requireAuth(event)
     const roles = getRoles(user)
 

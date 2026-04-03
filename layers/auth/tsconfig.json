@@ -1,36 +1,15 @@
 {
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "types": ["node", "vitest", "vue", "nuxt"],
-    "declaration": true,
-    "emitDeclarationOnly": false,
-    "outDir": "dist",
-    "module": "ESNext",
-    "target": "ES2017",
-    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "verbatimModuleSyntax": false,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["ES2017", "DOM", "DOM.Iterable"],
-    "strict": false,
-    "noImplicitAny": false,
-    "jsx": "react-jsx",
-    "skipLibCheck": true,
-    "noEmitOnError": false
-    ,
     "paths": {
-      "@mframework/adapter-betterauth": ["app/utils/adapter-betterauth/index.ts"],
-      "@mframework/adapter-betterauth/": ["app/utils/adapter-betterauth/index.ts"],
-      "@mframework/adapter-betterauth/*": ["app/utils/adapter-betterauth/*"]
+      "@mframework/adapter-betterauth": ["./app/utils/adapter-betterauth/index.ts"],
+      "@mframework/adapter-betterauth/": ["./app/utils/adapter-betterauth/index.ts"],
+      "@mframework/adapter-betterauth/*": ["./app/utils/adapter-betterauth/*"]
     }
   }
-  ,
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
-  "include": [
-    "app/**/*",
-    "server/**/*",
-    "types/**/*.d.ts"
-  ]
 }

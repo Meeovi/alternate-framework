@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
     const { readItem } = useDirectusRequest()
 
     const { data: blocksCopyright } = await useAsyncData('blocksCopyright', () => {

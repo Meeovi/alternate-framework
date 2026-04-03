@@ -23,13 +23,13 @@
 </template>
 
 <script setup>
-	import membersCard from '~/components/related/membersList.vue'
+	import membersCard from '#social/app/components/related/membersList.vue'
 
 	useHead({
 		title: 'Members Area',
 	})
 
-	import useDirectusRequest from '~/composables/useDirectusRequest'
+	import useDirectusRequest from '#social/app/composables/useDirectusRequest'
 	const { readItem, readItems } = useDirectusRequest()
 
 	const { data: memberPage } = await useAsyncData('memberPage', () => {

@@ -11,7 +11,7 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
-  schema: process.env.MAGENTO_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql',
+  schema: process.env.MAGENTO_GRAPHQL_ENDPOINT || process.env.COMMERCE_GRAPHQL_ENDPOINT || process.env.MAGE_MAGENTO_GRAPHQL_URL || 'http://localhost:4000/graphql',
   documents: 'server/adapters/magento/operations/**/*.graphql',
   generates: {
     'server/adapters/magento/generated/types.ts': {

@@ -58,7 +58,7 @@
     useAsyncData,
     useHead
   } from '#imports';
-  import useLocalePath from '~/composables/useLocalePath';
+  import useLocalePath from '#social/app/composables/core/useLocalePath';
   import {
     onMounted,
     ref
@@ -74,7 +74,7 @@
     session,
     client
   } = useAuth()
-  const toast = useToast()
+  const alert = useAlert()
   const {
     t
   } = useI18n()
@@ -93,9 +93,7 @@
   const error = useRoute().query?.error
   onMounted(() => {
     if (error) {
-      toast.error({
-        message: String(error)
-      })
+      alert.error(String(error))
     }
   })
 

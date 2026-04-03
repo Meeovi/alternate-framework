@@ -47,7 +47,7 @@ export * from './src/adapters/lists'
 
 export * from './src/types/module'
 export * from './src/types/index'
-export { MFrameworkConfig } from './src/types/config'
+export type { MFrameworkConfig } from './src/types/config'
 export * from './src/types/events'
 
 //// Types and Utilities ////
@@ -57,7 +57,7 @@ export * from './src/types/core/result'
 export * from './src/types/core/utility'
 export * from './src/types/core/pagination'
 export * from './src/types/core/id'
-export { Maybe } from './src/types/core/common'
+export type { Maybe } from './src/types/core/common'
 export * from './src/types/core/error'
 
 // Auth
@@ -85,6 +85,7 @@ export * from './src/types/search/facet'
 export * from './src/types/search/result'
 export * from './src/types/search/opensearch'
 export type { SearchAdapter } from './src/types/search/adapter'
+export * from './src/search/security'
 
 // UI
 export * from './src/types/ui/form'

@@ -1,0 +1,34 @@
+extend type Query {
+  chatMessages(roomId: ID!, limit: Int = 50): [ChatMessage!]!
+  chatPresence(roomId: ID!): [ChatPresence!]!
+  chatFediverseInbox(actor: String!): JSON!
+}
+
+extend type Mutation {
+  chatSendMessage(input: ChatMessageInput!): ChatMessage!
+  chatTyping(input: ChatTypingInput!): Boolean!
+}
+
+input ChatMessageInput {
+  roomId: ID!
+  body: String!
+}
+
+input ChatTypingInput {
+  roomId: ID!
+  isTyping: Boolean!
+}
+
+type ChatMessage {
+  id: ID!
+  roomId: ID!
+  senderId: ID!
+  body: String!
+  createdAt: DateTime!
+}
+
+type ChatPresence {
+  userId: ID!
+  roomId: ID!
+  status: String!
+}

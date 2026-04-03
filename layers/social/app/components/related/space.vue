@@ -28,7 +28,7 @@
 <script setup>
     import { ref } from '#imports'
     import share from '../blocks/share.vue'
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { getAssetUrl } = useAdapterRequest()
 
     const model = ref(null)

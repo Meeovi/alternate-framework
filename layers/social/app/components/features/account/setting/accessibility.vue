@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { useAccessibilitySettings } from '~/composables/settings/useAccessibilitySettings'
+import { useAccessibilitySettings } from '#social/app/composables/settings/useAccessibilitySettings'
 
 const { highContrast, fontSize } = useAccessibilitySettings()
 </script>

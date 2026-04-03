@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { reactedByStatusId } from '~/composables/dialog'
+import { reactedByStatusId } from '#social/app/composables/dialog'
 
 const type = ref<'favourited-by' | 'boosted-by' | 'quoted-by'>('favourited-by')
 

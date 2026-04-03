@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
-import Fuse from 'fuse.js'
-import { ref, shallowRef, computed, onMounted } from '#imports'
-import { useSignIn } from '~/composables/sign-in'
+import { ref, computed, onMounted } from '#imports'
+import { useSignIn } from '#social/app/composables/sign-in'
+import { rankByQuery } from '~/utils/alternateSearch'
 
 const input = ref<HTMLInputElement | undefined>()
 const knownServers = ref<string[]>([])
@@ -11,13 +11,11 @@ const autocompleteShow = ref(false)
 
 const { busy, error, displayError, server, oauth } = useSignIn(input)
 
-const fuse = shallowRef(new Fuse([] as string[]))
-
 const filteredServers = computed(() => {
   if (!server.value)
     return []
 
-  const results = fuse.value.search(server.value, { limit: 6 }).map(result => result.item)
+  const results = rankByQuery(knownServers.value, server.value, entry => [entry], 6)
   if (results[0] === server.value)
     return []
 
@@ -91,7 +89,6 @@ function select(index: number) {
 onMounted(async () => {
   input?.value?.focus()
   knownServers.value = await (globalThis.$fetch as any)('/api/list-servers')
-  fuse.value = new Fuse(knownServers.value, { shouldSort: true })
 })
 
 onClickOutside(input, () => {

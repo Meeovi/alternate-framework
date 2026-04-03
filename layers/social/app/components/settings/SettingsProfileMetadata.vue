@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { maxAccountFieldCount } from '~/composables/settings/metadata'
+import { maxAccountFieldCount } from '#social/app/composables/settings/metadata'
 
 const form = defineModel<{
   fieldsAttributes: NonNullable<mastodon.rest.v1.UpdateCredentialsParams['fieldsAttributes']>

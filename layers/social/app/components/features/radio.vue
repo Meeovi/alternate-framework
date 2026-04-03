@@ -24,10 +24,10 @@
     import {
         ref,
     } from '#imports';
-    import stationCard from '~/components/related/radio.vue'
+    import stationCard from '#social/app/components/related/radio.vue'
 
     const model = ref(null);
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
     const { readItems, readItem } = useDirectusRequest()
 
     const { data: radioPage } = await useAsyncData('radioPage', () => {

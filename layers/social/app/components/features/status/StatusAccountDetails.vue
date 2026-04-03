@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { getAccountRoute } from '~/composables/masto/routes';
-import { getPreferences, useUserSettings } from '~/composables/settings';
+import { getAccountRoute } from '#social/app/composables/federation/masto/routes';
+import { getPreferences, useUserSettings } from '#social/app/composables/settings';
 
 const { link = true } = defineProps<{
   account: mastodon.v1.Account

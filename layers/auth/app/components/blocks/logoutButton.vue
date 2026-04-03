@@ -3,12 +3,14 @@
 </template>
 
 <script setup>
+import { useAuth } from '../../composables/useAuth'
+import useLocalePath from '../../composables/useLocalePath'
+
 const { logout } = useAuth()
-const router = useRouter()
+const localePath = useLocalePath()
 
 const signOut = async () => {
-  await logout()
-  await router.push('/login')
+  await logout(localePath('/login'))
 }
 </script>
 

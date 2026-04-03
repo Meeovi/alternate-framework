@@ -155,7 +155,7 @@
     </div>
 </template>
 
-
+<script setup lang="ts">
 import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()

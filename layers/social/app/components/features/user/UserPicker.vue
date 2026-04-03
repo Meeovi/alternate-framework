@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { UserLogin } from '#shared/types'
 import { useRouter } from 'nuxt/app'
-import { getAccountRoute } from '~/composables/masto/routes'
-import { useUsers, currentUser, switchUser } from '~/composables/users'
+import { getAccountRoute } from '#social/app/composables/federation/masto/routes'
+import { useUsers, currentUser, switchUser } from '#social/app/composables/contacts/users'
 
 const all = useUsers()
 const router = useRouter()

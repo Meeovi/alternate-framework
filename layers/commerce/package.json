@@ -31,13 +31,11 @@
     "history": "^5.3.0",
     "jwt-decode": "^4.0.0",
     "lodash-es": "^4.17.23",
-    "ramda": "^0.32.0",
-    "vue": "^3.5.29"
+    "ramda": "^0.32.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.11",
     "@vitest/coverage-v8": "^4.0.17",
-    "eslint": "^8.0.0",
     "jest-cucumber": "^4.5.0"
   }
 }

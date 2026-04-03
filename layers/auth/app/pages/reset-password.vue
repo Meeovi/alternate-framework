@@ -1,17 +1,17 @@
 <template>
   <div class="authPage">
     <section data-bs-version="5.1" class="authForm">
-      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" alt="Meeovi Logo" class="authLogo" />
+      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" :alt="`${process.env.NUXT_APP_NAME}`" class="authLogo" />
       <h1 class="mbr-section-title mbr-fonts-style display-1">Reset Password</h1>
 
       <div class="reset-password-form">
-        <v-form class="mbr-section-btn" :schema="schema" :state="state" @submit="onSubmit">
+        <v-form class="mbr-section-btn" :schema="schema" :state="state">
           <v-text-field v-model="state.password" type="password" label="New Password" required></v-text-field>
           <v-text-field v-model="state.confirmPassword" type="password" label="Confirm Password" required></v-text-field>
           <div class="mb-3">
             <div ref="turnstileRef"></div>
           </div>
-          <v-btn class="mt-2 btn btn-primary display-4" type="submit" block :loading="loading" :disabled="loading || !turnstileToken">
+          <v-btn class="mt-2 btn btn-primary display-4" type="submit" block @click="handleResetPassword" :loading="loading" :disabled="loading || !turnstileToken">
             Reset Password
           </v-btn>
         </v-form>
@@ -22,7 +22,7 @@
       </v-alert>
 
       <div class="mt-4 text-center">
-        <NuxtLink to="/login">Back to Login</NuxtLink>
+        <NuxtLink :to="localePath('/login')">Back to Login</NuxtLink>
       </div>
     </section>
   </div>
@@ -36,6 +36,7 @@ import { reactive, ref } from '#imports'
 import { useAuth } from '../composables/useAuth'
 import { useI18n } from 'vue-i18n'
 import useLocalePath from '../composables/useLocalePath'
+import { resetPassword } from "#auth/lib/auth-client";
 
 definePageMeta({
   auth: {
@@ -49,7 +50,7 @@ useHead({
 })
 
 const auth = useAuth()
-const toast = useToast()
+const alert = useAlert()
 const route = useRoute()
 const localePath = useLocalePath()
 const runtimeConfig = useRuntimeConfig()
@@ -75,40 +76,27 @@ const messageType = ref('info')
 const turnstileRef = ref(null)
 const turnstileToken = ref(null)
 
-async function onSubmit(event) {
-  event.preventDefault()
-  if (loading.value)
-    return
+const confirmPassword = ref("");
+const password = ref("");
 
-  // reset any previous message
-  message.value = null
-  messageType.value = 'info'
+const handleResetPassword = async () => {
+	if (confirmPassword.value !== password.value) {
+		alert("Please enter same passwords");
+		return;
+	}
 
-  loading.value = true
-  const { error } = await auth.resetPassword({
-    newPassword: state.password,
-    token: route.query.token
-  })
-
-  if (error) {
-    toast.show({
-      title: error.message,
-      color: 'error'
-    })
-    message.value = error.message
-    messageType.value = 'error'
-  } else {
-    const successMsg = t('resetPassword.success')
-    toast.show({
-      title: successMsg,
-      color: 'success'
-    })
-    message.value = successMsg
-    messageType.value = 'success'
-    navigateTo(localePath((runtimeConfig.public).auth.redirectGuestTo))
-  }
-  loading.value = false
-}
+	await resetPassword({
+		newPassword: password.value,
+		fetchOptions: {
+			onSuccess(context) {
+				window.location.href = "/login";
+			},
+			onError(context) {
+				alert(context.error.message);
+			},
+		},
+	});
+};
 </script>
 
 <style scoped>

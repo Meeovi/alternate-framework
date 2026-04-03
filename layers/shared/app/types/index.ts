@@ -5,7 +5,7 @@ export * from './core/result'
 export * from './core/utility'
 export * from './core/pagination'
 export * from './core/id'
-export { Maybe } from './core/common'
+export type { Maybe } from './core/common'
 export * from './core/error'
 
 // Navigation
@@ -22,10 +22,10 @@ export * from './sdk/adapter'
 // Compatibility exports (legacy names expected by existing packages)
 export type SearchResultGeneric<T = unknown> = { items: T[]; total: number }
 export type { Result } from './core/result'
-export { Result as SearchResult } from './core/result'
-export { Maybe as Optional } from './core/common'
-export { Result as ApiResult } from './core/result'
-export { Result as ServiceResult } from './core/result'
+export type { Result as SearchResult } from './core/result'
+export type { Maybe as Optional } from './core/common'
+export type { Result as ApiResult } from './core/result'
+export type { Result as ServiceResult } from './core/result'
 
 // Additional UI types - placeholders for types that may be defined elsewhere
 export interface PageBlock {

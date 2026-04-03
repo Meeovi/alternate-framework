@@ -14,10 +14,10 @@
 
   <script setup>
   import { ref } from '#imports'
-  import shortsCard from '~/components/related/short.vue'
+  import shortsCard from '#social/app/components/related/short.vue'
 
   const model = ref(null)
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readItems } = useAdapterRequest()
 
     const { data: vibez } = await useAsyncData('vibez', async () => {

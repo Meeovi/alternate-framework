@@ -4,8 +4,8 @@ import { useMastoClient, useMasto } from '@mframework/core/index'
 import { useNetwork } from '@vueuse/core'
 import type { mastodon } from 'masto'
 import { computed } from '#imports'
-import { filterAndReorderTimeline } from '~/composables/timeline'
-import { currentUser } from '~/composables/users'
+import { filterAndReorderTimeline } from '#social/app/composables/timeline'
+import { currentUser } from '#social/app/composables/contacts/users'
 
 const { isSupported, effectiveType } = useNetwork()
 const isSlow = computed(() => isSupported.value && effectiveType.value && ['slow-2g', '2g', '3g'].includes(effectiveType.value))

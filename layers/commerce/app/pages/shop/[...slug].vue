@@ -78,7 +78,7 @@
 
           <v-tabs-window-item :value="shopbar?.menus[3]?.value">
             <div v-for="(comments, index) in shop?.comments" :key="index">
-              <comments :comments="comments?.comments_id" />
+              <comments :content-id="comments?.comments_id" />
             </div>
           </v-tabs-window-item>
 
@@ -90,7 +90,7 @@
 
           <v-tabs-window-item :value="shopbar?.menus[5]?.value">
             <div v-for="(events, index) in shop?.events" :key="index">
-              <events :space="events?.events_id" />
+              <events :event="events?.events_id" />
             </div>
           </v-tabs-window-item>
         </v-tabs-window>
@@ -104,12 +104,12 @@ import { useCommerceAdapter, useContentAdapter } from '#imports'
 void useCommerceAdapter()
 void useContentAdapter()
   import { ref } from '#imports'
-  import showcases from '~/components/catalog/product/relatedproducts.vue'
-  import productCard from '~/components/catalog/product/productCard.vue'
-  import comments from '@/components/placeholders/Comments.vue'
-  import spaces from '@/components/placeholders/Space.vue'
-  import events from '@/components/placeholders/Event.vue'
-  import { useContentFallback } from '../../composables/useContent'
+  import showcases from '#commerce/app/components/catalog/product/relatedproducts.vue'
+  import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+  import comments from '#social/app/components/blocks/comments.vue'
+  import spaces from '#social/app/components/related/space.vue'
+  import events from '#social/app/components/blocks/events/about.vue'
+  import { useContentFallback } from '#commerce/app/composables/useContent'
 
   const route = useRoute();
   const tab = ref(null);

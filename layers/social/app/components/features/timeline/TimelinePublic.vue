@@ -2,8 +2,8 @@
 import useStreaming from '@mframework/core/composables/useStreaming'
 import { useMastoClient, useMasto } from '@mframework/core/index'
 import type { mastodon } from 'masto'
-import { filterAndReorderTimeline } from '~/composables/timeline'
-import { currentUser } from '~/composables/users'
+import { filterAndReorderTimeline } from '#social/app/composables/timeline'
+import { currentUser } from '#social/app/composables/contacts/users'
 
 const paginator = useMastoClient().v1.timelines.public.list({ limit: 30 })
 const stream = useStreaming(client => client.public.subscribe())

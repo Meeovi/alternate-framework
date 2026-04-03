@@ -15,14 +15,14 @@
   import {
     ref
   } from '#imports'
-  import post from '~/components/feeds/posts.vue'
+  import post from '#social/app/components/feeds/posts.vue'
   import {
     useQuery
   } from '@vue/apollo-composable'
     //import {posts} from '~/graphql/cms/queries/posts'  
 
     const tab = ref(null);
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readItems } = useAdapterRequest()
 
     const { data: posts } = await useAsyncData('posts', async () => {

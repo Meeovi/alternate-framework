@@ -42,7 +42,6 @@
 
 <script setup>
 import { ref, computed } from '#imports'
-import createListBtn from '~/components/partials/globals/createListBtn.vue'
 
 const model = ref(null)
 const props = defineProps({
@@ -53,6 +52,6 @@ const props = defineProps({
 });
 
 const { post } = props;
-import useAdapterRequest from '~/composables/useAdapterRequest'
+import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { getAssetUrl } = useAdapterRequest()
 </script>

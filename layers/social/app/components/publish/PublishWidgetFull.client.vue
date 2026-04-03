@@ -9,6 +9,7 @@ const timeAgoOptions = useTimeAgoOptions()
 const draftKey = ref<DraftKey>('home')
 
 const draftKeys = computed<DraftKey[]>(() => Object.keys(currentUserDrafts.value) as DraftKey[])
+const draftMenuOpen = ref(false)
 const nonEmptyDrafts = computed(() => draftKeys.value
   .filter(i => i !== draftKey.value && !isEmptyDraft(currentUserDrafts.value[i]))
   .map(i => [i, currentUserDrafts.value[i]] as const),
@@ -41,16 +42,18 @@ function firstDraftItemOf(drafts: DraftItem | Array<DraftItem>): DraftItem {
 <template>
   <div flex="~ col" pb-6>
     <div inline-flex justify-end h-8>
-      <VDropdown v-if="nonEmptyDrafts.length" placement="bottom-end">
-        <v-btn btn-text flex="inline center">
-          {{ $t('compose.drafts', nonEmptyDrafts.length, { named: { v: formatNumber(nonEmptyDrafts.length) } }) }}&#160;
-          <div aria-hidden="true" i-ri:arrow-down-s-line />
-        </v-btn>
-        <template #popper="{ hide }">
+      <v-menu v-if="nonEmptyDrafts.length" v-model="draftMenuOpen" location="bottom end">
+        <template #activator="{ props }">
+          <v-btn v-bind="props" btn-text flex="inline center">
+            {{ $t('compose.drafts', nonEmptyDrafts.length, { named: { v: formatNumber(nonEmptyDrafts.length) } }) }}&#160;
+            <div aria-hidden="true" i-ri:arrow-down-s-line />
+          </v-btn>
+        </template>
+        <template #default>
           <div flex="~ col">
             <NuxtLink
               v-for="[key, drafts] of nonEmptyDrafts" :key="key" border="b base" text-left py2 px4
-              hover:bg-active :replace="true" :to="`/compose?draft=${encodeURIComponent(key)}`" @click="hide()"
+              hover:bg-active :replace="true" :to="`/compose?draft=${encodeURIComponent(key)}`" @click="draftMenuOpen = false"
             >
               <div>
                 <div flex="~ gap-1" items-center>
@@ -68,7 +71,7 @@ function firstDraftItemOf(drafts: DraftItem | Array<DraftItem>): DraftItem {
             </NuxtLink>
           </div>
         </template>
-      </VDropdown>
+      </v-menu>
     </div>
     <div>
       <PublishWidgetList expanded class="min-h-100!" :draft-key="draftKey" />

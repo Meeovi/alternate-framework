@@ -74,10 +74,10 @@
 <script setup>
 import { ref, onMounted } from '#imports'
 import orders from '#commerce/app/components/orders/orders/my-orders.vue'
-import addresses from '~/components/account/addresses.vue'
-import settings from '~/components/account/settings.vue'
-import downloads from '~/components/account/downloads.vue'
-import reviews from '~/components/account/reviews.vue'
+import addresses from '#social/app/components/account/addresses.vue'
+import settings from '#social/app/components/account/settings.vue'
+import downloads from '#social/app/components/account/downloads.vue'
+import reviews from '#social/app/components/account/reviews.vue'
 import { useMagentoApi } from '#commerce/app/composables/useMagentoApi'
 
 const tab = ref('orders')

@@ -69,9 +69,9 @@
     import {
         ref
     } from '#imports'
-    import MembersList from '~/components/related/membersList.vue'
+    import MembersList from '#social/app/components/related/membersList.vue'
 
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
     const { readItem, readItems } = useDirectusRequest()
     const tab = ref(null);
 

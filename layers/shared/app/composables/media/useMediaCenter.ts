@@ -1,6 +1,6 @@
 import { ref, computed, unref } from 'vue'
 import { useNuxtApp } from 'nuxt/app'
-import useDirectusRequest from '../useDirectusRequest'
+import useContent from '../useContent'
 
 export function useMediaCenter() {
   // Prefer a BetterAuth `useAuth()` composable when available (provided by the auth layer).
@@ -22,7 +22,7 @@ export function useMediaCenter() {
   const userId = computed(() => user.value?.id || null)
 
   const nuxt = useNuxtApp() as any
-  const { request, readItems, createItem, uploadFiles: adapterUploadFiles } = useDirectusRequest()
+  const { request, readItems, createItem, uploadFiles: adapterUploadFiles } = useContent()
 
   // CORE MEDIA STATE
   const allMedia = ref<any[]>([])
@@ -135,9 +135,8 @@ export function useMediaCenter() {
 
       if (!userId.value) {
         try {
-          const nuxt = useNuxtApp() as any
-          const toast = nuxt?.$toast
-          if (toast && typeof toast.error === 'function') toast.error('You must be signed in to upload files')
+          const alert = useAlert()
+          alert.error('You must be signed in to upload files')
         } catch (_) {}
         throw new Error('User not authenticated')
       }
@@ -176,9 +175,8 @@ export function useMediaCenter() {
       } catch (e) {
         onProgress && onProgress({ index: i, total: files.length, status: 'error', name: file.name })
         try {
-          const nuxt = useNuxtApp() as any
-          const toast = nuxt?.$toast
-          if (toast && typeof toast.error === 'function') toast.error(`Upload failed: ${file.name}`)
+          const alert = useAlert()
+          alert.error(`Upload failed: ${file.name}`)
         } catch (_) {}
         console.error('uploadFiles failed for file', file.name, e)
       }
@@ -188,9 +186,8 @@ export function useMediaCenter() {
       // add newly created items to the beginning of allMedia
       allMedia.value.unshift(...newItems)
       try {
-        const nuxt = useNuxtApp() as any
-        const toast = nuxt?.$toast
-        if (toast && typeof toast.success === 'function') toast.success(`Uploaded ${newItems.length} file${newItems.length === 1 ? '' : 's'}`)
+        const alert = useAlert()
+        alert.success(`Uploaded ${newItems.length} file${newItems.length === 1 ? '' : 's'}`)
       } catch (_) {}
     }
 

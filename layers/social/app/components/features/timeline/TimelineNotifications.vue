@@ -5,7 +5,7 @@ import { useLocalStorage } from '@vueuse/core';
 import type { mastodon } from 'masto'
 import { useRoute } from 'nuxt/app';
 import { onActivated } from '#imports';
-import { useNotifications } from '~/composables/globals/useNotifications';
+import { useNotifications } from '#social/app/composables/globals/useNotifications';
 import { STORAGE_KEY_LAST_ACCESSED_NOTIFICATION_ROUTE } from '~/constants'
 
 const { filter } = defineProps<{

@@ -24,10 +24,10 @@
 
 <script setup>
     import { ref } from '#imports'
-    import postsCard from '~/components/related/post.vue'
+    import postsCard from '#social/app/components/related/post.vue'
     
     const user = useSupabaseUser()
-    import useDirectusRequest from '~/composables/useDirectusRequest'
+    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
     const { readItem, readItems } = useDirectusRequest()
     const route = useRoute()
     const tab = ref(null);

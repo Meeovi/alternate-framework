@@ -1,0 +1,23 @@
+extend type Query {
+  opensearchSearch(input: OpenSearchQueryInput!): OpenSearchResult!
+}
+
+input OpenSearchQueryInput {
+  query: String
+  page: Int = 1
+  pageSize: Int = 10
+}
+
+type OpenSearchItem {
+  id: ID!
+  title: String
+  snippet: String
+  score: Float
+}
+
+type OpenSearchResult {
+  items: [OpenSearchItem!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}

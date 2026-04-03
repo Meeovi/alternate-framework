@@ -11,15 +11,9 @@
 </template>
 
 <script setup>
-  import { onMounted } from 'vue'
-  
-  const { user, loggedIn, fetch: fetchUserSession } = useUserSession()
-  
-  // Initialize user on component mount
-  onMounted(async () => {
-    const currentUser = await fetchUserSession()
-    if (currentUser) {
-      user.value = currentUser
-    }
-  })
+  import { computed } from 'vue'
+  import { loggedIn, useSession } from '#auth/lib/auth-client'
+
+  const { data: session } = await useSession(useFetch)
+  const user = computed(() => session.value?.user ?? null)
 </script>
