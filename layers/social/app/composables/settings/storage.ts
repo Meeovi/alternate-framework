@@ -1,11 +1,13 @@
-import type { LocaleObject } from '@nuxtjs/i18n'
-import type { Ref } from 'vue'
-import type { FontSize, OldFontSize, PreferencesSettings, UserSettings } from './definition'
-import { STORAGE_KEY_SETTINGS } from '~/constants'
-import { oldFontSizeMap } from '~/constants/options'
+import type { LocaleObject } from 'alternate-locate'
+import { computed, unref, type Ref } from 'vue'
+import { DEFAULT__PREFERENCES_SETTINGS, getDefaultUserSettings, type FontSize, type OldFontSize, type PreferencesSettings, type UserSettings } from './definition'
+import { STORAGE_KEY_SETTINGS } from '../../constants'
+import { oldFontSizeMap } from '../../constants/options'
+import { useNuxtApp } from 'nuxt/app'
+import { useUserLocalStorage } from '../contacts/users'
 
 export function useUserSettings() {
-  const { locales } = useNuxtApp().$i18n
+  const { locales } = useNuxtApp().$i18n as { locales: Ref<LocaleObject[]> | LocaleObject[] }
   const supportLanguages = (unref(locales) as LocaleObject[]).map(locale => locale.code)
   const settingsStorage = useUserLocalStorage<UserSettings>(STORAGE_KEY_SETTINGS, () => getDefaultUserSettings(supportLanguages))
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { reactedByStatusId } from '#social/app/composables/dialog'
 
 const type = ref<'favourited-by' | 'boosted-by' | 'quoted-by'>('favourited-by')
@@ -38,7 +39,7 @@ function showQuotedBy() {
   type.value = 'quoted-by'
 }
 
-const { t } = useI18n()
+const { t } = useLocate()
 const tabs = [
   {
     name: 'favourited-by',

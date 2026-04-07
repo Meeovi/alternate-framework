@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { cacheAccount } from '../../../../composables/lists/accounts'
+import { currentUser, refreshAccountInfo } from '../../../../composables/contacts/users'
+import { onHydrated, onReactivated, useHydratedHead } from '../../../../composables/core/vue'
+import { convertMetadata, maxAccountFieldCount } from '../../../../composables/settings/metadata'
+import { useMasto } from '../../../../composables/federation/masto/masto'
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.profile.appearance.title')} | ${t('nav.settings')}`,
@@ -32,6 +38,10 @@ type AppearanceForm = {
   fieldsAttributes: ProfileFieldAttribute[]
   bot: boolean
   locked: boolean
+}
+
+type MutableUpdateCredentialsParams = {
+  -readonly [K in keyof mastodon.rest.v1.UpdateCredentialsParams]?: mastodon.rest.v1.UpdateCredentialsParams[K]
 }
 
 function buildFormState(): AppearanceForm {
@@ -97,8 +107,8 @@ function reset() {
   assignFormState(cloneFormState(initialForm.value))
 }
 
-function getDirtyFields(): Partial<mastodon.rest.v1.UpdateCredentialsParams> {
-  const dirtyFields: Partial<mastodon.rest.v1.UpdateCredentialsParams> = {}
+function getDirtyFields(): MutableUpdateCredentialsParams {
+  const dirtyFields: MutableUpdateCredentialsParams = {}
 
   if (form.displayName !== initialForm.value.displayName)
     dirtyFields.displayName = form.displayName
@@ -132,7 +142,7 @@ async function submit() {
 
   const dirtyFields = getDirtyFields()
 
-  const res = await client.value.v1.accounts.updateCredentials(dirtyFields.value as mastodon.rest.v1.UpdateCredentialsParams)
+  const res = await client.value.v1.accounts.updateCredentials(dirtyFields as mastodon.rest.v1.UpdateCredentialsParams)
     .then(account => ({ account }))
     .catch((error: Error) => ({ error }))
 

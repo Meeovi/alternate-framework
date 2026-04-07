@@ -4,7 +4,7 @@ const path = require('path')
 const readline = require('readline').promises
 const { stdin: input, stdout: output } = require('process')
 
-const AVAILABLE_LAYERS = ['auth', 'commerce', 'search', 'social', 'chat', 'analytics']
+const AVAILABLE_LAYERS = ['auth', 'commerce', 'search']
 
 async function copyAndReplace(src, dest, replacements) {
   const stat = await fs.stat(src)
@@ -133,46 +133,36 @@ async function run() {
       } catch (err) {
         // create a generic stub
         const fnName = 'create' + toPascalCase(layer) + 'Adapter'
-        const content = `import type { TransportAdapter } from '@mframework/core'\nimport type { Result } from '@mframework/core'\n\nexport const ${fnName} = (transport: TransportAdapter) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example(): Promise<Result<any>> { return { ok: false, error: 'Not implemented' } }\n})\n`
+        const content = `import type { TransportAdapter } from 'alternate-gateway/core'\nimport type { Result } from 'alternate-gateway/core'\n\nexport const ${fnName} = (transport: TransportAdapter) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example(): Promise<Result<any>> { return { ok: false, error: 'Not implemented' } }\n})\n`
         await fs.writeFile(filePath, content, 'utf8')
       }
     }
 
     // generate index.ts according to selected layers
     const settersMap = {
-      auth: { set: 'setAuthAdapter', fn: 'createAuthAdapter', import: './src/auth' },
-      commerce: { set: 'setCommerceAdapter', fn: 'createCommerceAdapter', import: './src/commerce' },
-      search: { set: 'setSearchAdapter', fn: 'createSearchAdapter', import: './src/search' },
-      social: { set: 'setSocialAdapter', fn: 'createSocialAdapter', import: './src/social' },
-      chat: { set: 'setChatAdapter', fn: 'createChatAdapter', import: './src/chat' },
-      analytics: { set: 'setAnalyticsAdapter', fn: 'createAnalyticsAdapter', import: './src/analytics' }
+      auth: { fn: 'createAuthAdapter', import: './src/auth' },
+      commerce: { fn: 'createCommerceAdapter', import: './src/commerce' },
+      search: { fn: 'createSearchAdapter', import: './src/search' }
     }
 
     const imports = new Set()
-    const creators = []
-    const setters = []
+    const layerFactoryEntries = []
 
     imports.add("import { createTransport } from './src/transport'")
+    imports.add("import { createAdapterInstaller, defineAdapterLayerFactories } from './src/patterns'")
     for (const layer of selected) {
       const map = settersMap[layer]
       if (!map) continue
       imports.add(`import { ${map.fn} } from '${map.import}'`)
-      creators.push(map.fn)
-      setters.push(map.set)
+      layerFactoryEntries.push(`  ${layer}: ${map.fn}`)
     }
-
-    const sdkSetters = setters.length ? `import { ${Array.from(new Set(setters)).join(', ')} } from '@mframework/core'` : ''
 
     let indexContent = ''
-    if (sdkSetters) indexContent += sdkSetters + '\n\n'
     indexContent += Array.from(imports).join('\n') + '\n\n'
-    indexContent += `export const installAdapter = (config: { baseUrl: string; apiKey?: string }) => {\n  const transport = createTransport(config)\n\n`
-    for (const layer of selected) {
-      const map = settersMap[layer]
-      if (!map) continue
-      indexContent += `  ${map.set}(${map.fn}(transport))\n`
-    }
-    indexContent += '}\n'
+    indexContent += 'const layerFactories = defineAdapterLayerFactories({\n'
+    indexContent += `${layerFactoryEntries.join(',\n')}\n`
+    indexContent += '})\n\n'
+    indexContent += 'export const installAdapter = createAdapterInstaller(createTransport, layerFactories)\n'
 
     await fs.writeFile(path.join(dest, 'index.ts'), indexContent, 'utf8')
     // attempt to install dependencies to verify resolution

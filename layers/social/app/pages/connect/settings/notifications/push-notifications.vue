@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { useHydratedHead } from '../../../../composables/core/vue'
+
 definePageMeta({
   middleware: ['auth', () => {
     if (!useAppConfig().pwaEnabled)
@@ -6,7 +9,7 @@ definePageMeta({
   }],
 })
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.notifications.push_notifications.label')} | ${t('settings.notifications.label')} | ${t('nav.settings')}`,

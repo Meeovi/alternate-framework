@@ -84,7 +84,7 @@ const oauthProviders = [
 		: null,
 ].filter(Boolean) as any[];
 
-export const oAuth = betterAuth({
+export const oAuth = () => betterAuth({
 	plugins: [
 		genericOAuth({
 			config: oauthProviders,

@@ -20,7 +20,7 @@
 
 <script setup lang="ts">
 import { ref } from '#imports';
-import { SfButton, SfIconHome, SfIconMenu, SfIconShoppingCart, SfIconFavorite, SfIconPerson } from '@storefront-ui/vue';
+import { SfButton, SfIconHome, SfIconMenu, SfIconShoppingCart, SfIconFavorite, SfIconPerson } from 'alternate-ui/storefront';
 
 const items = [
   {

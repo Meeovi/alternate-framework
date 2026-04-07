@@ -1,7 +1,7 @@
 <template>
   <div class="authPage">
     <section data-bs-version="5.1" class="authForm">
-      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" :alt="`${process.env.NUXT_APP_NAME}`" class="authLogo" />
+      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" :alt="appName" class="authLogo" />
       <h1 class="mbr-section-title mbr-fonts-style display-1">Reset Password</h1>
 
       <div class="reset-password-form">
@@ -28,13 +28,12 @@
   </div>
 </template>
 
-<script setup>
-import { useHead, useRoute, useRuntimeConfig, navigateTo } from '#app'
+<script setup lang="ts">
+import { useHead, useRuntimeConfig } from '#app'
 import { definePageMeta } from '#imports'
 import { z } from 'zod'
 import { reactive, ref } from '#imports'
-import { useAuth } from '../composables/useAuth'
-import { useI18n } from 'vue-i18n'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import useLocalePath from '../composables/useLocalePath'
 import { resetPassword } from "#auth/lib/auth-client";
 
@@ -44,58 +43,62 @@ definePageMeta({
   }
 })
 
-const { t } = useI18n()
+const { t } = useLocate()
 useHead({
   title: t('resetPassword.title')
 })
 
-const auth = useAuth()
 const alert = useAlert()
-const route = useRoute()
 const localePath = useLocalePath()
 const runtimeConfig = useRuntimeConfig()
+const appName = String(runtimeConfig.public?.appName || 'App')
 
 const state = reactive({
-  password: undefined,
-  confirmPassword: undefined
+  password: '',
+  confirmPassword: ''
 })
 
 const schema = z.object({
-  password: z.string().min(8, ('resetPassword.errors.minLength', { min: 8 })),
-  confirmPassword: z.string().min(8, ('resetPassword.errors.minLength', { min: 8 })).refine(val => val === state.password, {
-    message: ('resetPassword.errors.passwordMismatch')
+  password: z.string().min(8, t('resetPassword.errors.minLength', { min: 8 })),
+  confirmPassword: z.string().min(8, t('resetPassword.errors.minLength', { min: 8 })).refine(val => val === state.password, {
+    message: t('resetPassword.errors.passwordMismatch')
   })
 })
 
 const loading = ref(false)
 
 // reactive message used by the template's v-alert
-const message = ref(null)
-const messageType = ref('info')
+const message = ref<string | null>(null)
+const messageType = ref<'info' | 'success' | 'error' | 'warning'>('info')
 // ref for the Turnstile container and the token set by the widget
-const turnstileRef = ref(null)
-const turnstileToken = ref(null)
-
-const confirmPassword = ref("");
-const password = ref("");
+const turnstileRef = ref<HTMLElement | null>(null)
+const turnstileToken = ref<string | null>(null)
 
 const handleResetPassword = async () => {
-	if (confirmPassword.value !== password.value) {
+  if (state.confirmPassword !== state.password) {
 		alert("Please enter same passwords");
 		return;
 	}
 
+  loading.value = true
+  message.value = null
+
 	await resetPassword({
-		newPassword: password.value,
+    newPassword: state.password,
 		fetchOptions: {
-			onSuccess(context) {
-				window.location.href = "/login";
+      onSuccess() {
+        messageType.value = 'success'
+        message.value = 'Your password has been reset. Redirecting to login.'
+        navigateTo(localePath('/login'))
 			},
 			onError(context) {
-				alert(context.error.message);
+        messageType.value = 'error'
+        message.value = context.error.message;
 			},
 		},
 	});
+
+  loading.value = false
 };
 </script>
 

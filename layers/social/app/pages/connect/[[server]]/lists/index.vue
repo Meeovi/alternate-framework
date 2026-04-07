@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
 definePageMeta({
   middleware: ['auth'],
 })
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 const client = useMastoClient()
 

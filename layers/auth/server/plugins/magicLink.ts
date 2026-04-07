@@ -1,14 +1,14 @@
 import { betterAuth } from "better-auth";
 import { magicLink } from "better-auth/plugins";
 
-export const magicLinkAuth = betterAuth({
+export const magicLinkAuth = () => betterAuth({
     plugins: [
         magicLink({
             sendMagicLink: async ({ email, token, url }, ctx) => {
                 try {
                     // Prefer core mailer if available
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    const core = require('@mframework/core')
+                    const core = require('alternate-gateway/core')
                     if (core?.sendEmail && typeof core.sendEmail === 'function') {
                         await core.sendEmail({ to: email, subject: 'Your sign-in link', html: `Click <a href="${url}">here</a>` })
                         return

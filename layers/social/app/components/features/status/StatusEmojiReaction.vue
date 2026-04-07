@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { getEmojiAttributes } from '~~/config/emojis'
+import { getEmojiAttributes } from '../../../config/emojis'
 
 const props = defineProps<{
   status: mastodon.v1.Status

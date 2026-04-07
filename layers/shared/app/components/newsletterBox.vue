@@ -56,7 +56,7 @@
         SfLink,
         SfIconCheckCircle,
         SfIconClose
-    } from '@storefront-ui/vue';
+    } from 'alternate-ui/storefront';
 
     const inputValue = ref('');
     const showPositiveAlert = ref(false);

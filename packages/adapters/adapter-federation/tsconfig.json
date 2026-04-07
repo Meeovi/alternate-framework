@@ -10,11 +10,7 @@
     "strict": true,
     "jsx": "react-jsx",
     "skipLibCheck": true,
-    "noEmitOnError": false,
-    "plugins": [{
-      "name": "@0no-co/graphqlsp",
-      "schema": "./schema.graphql"
-    }]
+    "noEmitOnError": false
   },
-  "include": ["src", "index.ts", "tsconfig.json"]
+  "include": ["src", "utils", "index.ts", "types.ts", "resolvers.ts", "mesh-source.ts"]
 }

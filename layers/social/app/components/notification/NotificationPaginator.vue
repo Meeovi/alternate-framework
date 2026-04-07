@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GroupedAccountLike, NotificationSlot } from '@mframework/core/shared/types'
+import type { GroupedAccountLike, NotificationSlot } from 'alternate-gateway/core/shared/types'
 import { useHumanReadableNumber } from '@mframework/localization';
 import type { mastodon } from 'masto'
 import type { Paginator } from 'masto/mastodon/paginator.js';

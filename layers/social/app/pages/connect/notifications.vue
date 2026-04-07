@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import type { CommonRouteTabMoreOption, CommonRouteTabOption } from '@mframework/core/shared/types'
+import type { CommonRouteTabMoreOption, CommonRouteTabOption } from '../../../../shared/shared/types'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import type { ElkNotificationFilterType } from '../../constants'
 import type { mastodon } from 'masto'
-import { NOTIFICATION_FILTER_TYPES } from '~/constants'
+import { NOTIFICATION_FILTER_TYPES } from '../../constants'
+import { isHydrated, useHydratedHead } from '../../composables/core/vue'
+import { isNotificationFilter } from '../../composables/notifications/notification'
 
 definePageMeta({
   middleware: ['auth'],
 })
 
 const route = useRoute()
-const { t } = useI18n()
+const { t } = useLocate()
 const pwaEnabled = useAppConfig().pwaEnabled
 
 const tabs = computed<CommonRouteTabOption[]>(() => [
@@ -24,7 +28,7 @@ const tabs = computed<CommonRouteTabOption[]>(() => [
   },
 ])
 
-const filter = computed<mastodon.v1.NotificationType | undefined>(() => {
+const filter = computed<ElkNotificationFilterType | undefined>(() => {
   if (!isHydrated.value)
     return undefined
 
@@ -36,7 +40,7 @@ const filter = computed<mastodon.v1.NotificationType | undefined>(() => {
   return undefined
 })
 
-const filterIconMap: Record<mastodon.v1.NotificationType, string> = {
+const filterIconMap: Record<ElkNotificationFilterType, string> = {
   'mention': 'i-ri:at-line',
   'status': 'i-ri:account-pin-circle-line',
   'reblog': 'i-ri:repeat-fill',
@@ -55,7 +59,7 @@ const filterIconMap: Record<mastodon.v1.NotificationType, string> = {
 
 const filterText = computed(() => `${t('tab.notifications_more_tooltip')}${filter.value ? `: ${t(`tab.notifications_${filter.value}`)}` : ''}`)
 const notificationFilterRoutes = computed<CommonRouteTabOption[]>(() => NOTIFICATION_FILTER_TYPES.map(
-  name => ({
+  (name: ElkNotificationFilterType) => ({
     name,
     to: `/notifications/${name}`,
     display: t(`tab.notifications_${name}`),

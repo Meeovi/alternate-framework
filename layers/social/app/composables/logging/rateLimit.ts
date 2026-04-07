@@ -1,4 +1,4 @@
-import { RateLimitError } from "./errors";
+import { RateLimitError } from '../core/errors'
 
 export interface RateLimitConfig {
   maxRequests: number

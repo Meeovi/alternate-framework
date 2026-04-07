@@ -11,7 +11,8 @@ import {
   render,
   TEXT_NODE,
 } from 'ultrahtml'
-import { emojiRegEx, getEmojiAttributes } from '~~/config/emojis'
+import { emojiRegEx, getEmojiAttributes } from '../../config/emojis'
+import { UserLinkRE } from './misc'
 
 export interface ContentParseOptions {
   emojis?: Record<string, mastodon.v1.CustomEmoji>
@@ -343,7 +344,7 @@ function sanitize(allowedElements: Record<string, AttrSanitizers>): Transform {
 
     const attrSanitizers = allowedElements[node.name]
     const attrs = {} as Record<string, string>
-    for (const [name, func] of Object.entries(attrSanitizers)) {
+    for (const [name, func] of Object.entries(attrSanitizers || {})) {
       const value = func(node.attributes[name])
       if (value !== undefined)
         attrs[name] = value
@@ -574,7 +575,7 @@ function _markdownProcess(value: string) {
       break
 
     results.push(value.slice(start, found.match.index))
-    results.push(found.replacer(_markdownProcess(found.match[1])))
+    results.push(found.replacer(_markdownProcess(found.match[1] || '')))
     start = found.match.index! + found.match[0].length
   }
 
@@ -733,6 +734,8 @@ function hrefToHandle(href: string): string | undefined {
   const matchUser = href.match(UserLinkRE)
   if (matchUser) {
     const [, server, username] = matchUser
+    if (!server || !username)
+      return href
     return `${username}@${server.replace(/(.+\.)(.+\..+)/, '$2')}`
   }
 }

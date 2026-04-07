@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import useStreaming from '@mframework/core/composables/useStreaming';
-import { useMastoClient } from '@mframework/core/index';
+import useStreaming from 'alternate-gateway/core/composables/useStreaming';
+import { useMastoClient } from 'alternate-gateway/core/index';
 import { useLocalStorage } from '@vueuse/core';
 import type { mastodon } from 'masto'
 import { useRoute } from 'nuxt/app';

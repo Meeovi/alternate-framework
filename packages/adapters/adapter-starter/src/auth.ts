@@ -1,7 +1,7 @@
 import type {
   AuthAdapter,
   TransportAdapter
-} from '@mframework/core'
+} from 'alternate-gateway/core/adapters'
 
 import type {
   LoginInput,
@@ -9,7 +9,7 @@ import type {
   Result,
   Session,
   User
-} from '@mframework/core'
+} from 'alternate-gateway/core/types'
 
 import { unwrap } from './utils'
 
@@ -35,7 +35,7 @@ export const createStarterAuthAdapter = (
     return unwrap({ ...res, data: true })
   },
 
-  async getSession(): Promise<Result<Session>> {
+  async getSession(): Promise<Result<Session | null>> {
     const res = await transport.request<Session>('GET', '/auth/session')
     return unwrap(res)
   },

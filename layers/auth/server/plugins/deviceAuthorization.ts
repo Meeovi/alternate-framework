@@ -1,9 +1,9 @@
 import { betterAuth } from "better-auth";
 import { deviceAuthorization } from "better-auth/plugins";
 import crypto from "crypto";
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
-export const deviceAuthorizationAuth = betterAuth({
+export const deviceAuthorizationAuth = () => betterAuth({
   plugins: [
     deviceAuthorization({ 
       verificationUri: "/device", 

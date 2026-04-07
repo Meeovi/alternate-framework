@@ -1,6 +1,7 @@
 import { createActivitypubClient } from './client'
+import { defineNuxtPlugin } from '#app'
 
-export default (nuxtApp: any) => {
+export default defineNuxtPlugin((nuxtApp: any) => {
   const config: any = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : (globalThis as any).__meeovi_runtime_config || {}
   const base = config?.public?.activitypub?.server
   const client = createActivitypubClient(base)
@@ -9,4 +10,4 @@ export default (nuxtApp: any) => {
   } else {
     ;(globalThis as any).__meeovi_activitypub_client = client
   }
-}
+})

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { fetchAccountByHandle } from '../../../../../composables/core/cache'
 
 const params = useRoute().params
 const handle = computed(() => params.account as string)
 
 definePageMeta({ name: 'account-index' })
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 const account = await fetchAccountByHandle(handle.value)
 
@@ -23,8 +25,8 @@ function preprocess(items: mastodon.v1.Status[]) {
   return filterAndReorderTimeline(items, 'account')
 }
 
-const pinnedPaginator = useMastoClient().v1.accounts.$select(account.id).statuses.list({ pinned: true })
-const postPaginator = useMastoClient().v1.accounts.$select(account.id).statuses.list({ limit: 30, excludeReplies: true })
+const pinnedPaginator = account ? useMastoClient().v1.accounts.$select(account.id).statuses.list({ pinned: true }) : null
+const postPaginator = account ? useMastoClient().v1.accounts.$select(account.id).statuses.list({ limit: 30, excludeReplies: true }) : null
 
 if (account) {
   useHydratedHead({

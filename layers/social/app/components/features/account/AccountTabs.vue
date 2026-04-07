@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { CommonRouteTabOption } from '#shared/types'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
-const { t } = useI18n()
+const { t } = useLocate()
 const route = useRoute()
 
 const server = computed(() => route.params.server as string)

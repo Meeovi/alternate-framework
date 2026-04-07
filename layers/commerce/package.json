@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "@better-auth/stripe": "^1.4.15",
-    "@mframework/core": "file:../../packages/modules/core",
+    "alternate-gateway": "file:../../packages/modules/alternate-gateway",
+    "alternate-locate": "file:../../packages/modules/alternate-locate",
     "@polar-sh/sdk": "^0.42.5",
     "@tilework/opus": "^0.0.12",
     "@vue/apollo-composable": "^4.2.2",

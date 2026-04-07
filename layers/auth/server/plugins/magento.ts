@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { genericOAuth } from "better-auth/plugins"
 
-export const magentoAuth = betterAuth({
+export const magentoAuth = () => betterAuth({
 	plugins: [
 		genericOAuth({
 			config: [{

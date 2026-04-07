@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"strict": true,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"types": ["node"]
+	},
+	"include": [
+		"index.ts",
+		"src/**/*.ts",
+		"gateway.config.ts",
+		"mesh.config.ts",
+		"codegen.ts"
+	],
+	"exclude": [
+		"dist",
+		"node_modules",
+		"src/**/*.js",
+		"src/**/*.test.ts"
+	]
+}

@@ -1,6 +1,10 @@
 export class SocialError extends Error {
-  constructor(message: string, public provider?: string, public cause?: any) {
+  provider?: string
+
+  constructor(message: string, provider?: string, cause?: any) {
     super(message)
+    this.provider = provider
+    this.cause = cause
     this.name = 'SocialError'
   }
 }

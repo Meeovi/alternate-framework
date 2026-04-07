@@ -1,46 +1,13 @@
-<script setup lang="ts">
-import { computed } from '#imports';
-
-const props = defineProps({
-	radius: {
-		type: Number,
-		default: 50,
-	},
-	progress: {
-		type: Number,
-		default: 0,
-	},
-	stroke: {
-		type: Number,
-		default: 10,
-	},
-});
-
-const normalizedRadius = props.radius - props.stroke * 2;
-const circumference = normalizedRadius * 2 * Math.PI;
-
-const strokeDashoffset = computed(() => {
-	return circumference - ((props.progress * 100) / 100) * circumference;
-});
-</script>
 <template>
-	<svg :height="radius * 2" :width="radius * 2">
-		<circle
-			stroke="currentColor"
-			:stroke-dasharray="circumference + ' ' + circumference"
-			:style="{ 'stroke-dashoffset': strokeDashoffset } as any"
-			:stroke-width="stroke"
-			fill="transparent"
-			:r="normalizedRadius"
-			:cx="radius"
-			:cy="radius"
-		/>
-	</svg>
+  <AlternateUIRadialProgress v-bind="$props" />
 </template>
-<style>
-circle {
-	transition: stroke-dashoffset 0.25s;
-	transform: rotate(-90deg);
-	transform-origin: 50% 50%;
-}
-</style>
+
+<script setup lang="ts">
+import { RadialProgress as AlternateUIRadialProgress } from 'alternate-ui/shared-ui/components'
+
+defineProps<{
+  radius?: number
+  progress?: number
+  stroke?: number
+}>()
+</script>

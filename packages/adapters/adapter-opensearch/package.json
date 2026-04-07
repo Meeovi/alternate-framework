@@ -19,7 +19,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@mframework/core": "file:../../modules/core",
+    "alternate-gateway": "file:../../modules/alternate-gateway",
     "@opensearch-project/opensearch": "^3.5.1"
   }
 }

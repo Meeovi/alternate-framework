@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
 import { computed, ref, nextTick, onDeactivated } from 'vue';
-import { useI18n } from 'vue-i18n'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { useMastoClient } from '../../composables/masto'
 import { openConfirmDialog } from '../../composables/dialog'
 
@@ -14,7 +14,7 @@ const emit = defineEmits<{
 }>()
 const listModel = defineModel<MastodonList>({ required: true })
 
-const { t } = useI18n()
+const { t } = useLocate()
 const client = useMastoClient()
 const editTitle = ref('')
 const submitting = ref(false)

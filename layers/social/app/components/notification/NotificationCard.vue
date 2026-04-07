@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTimeAgoOptions } from '@mframework/localization';
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import type { mastodon } from 'masto'
 
 // Add undocumented 'annual_report' type introduced in v4.3
@@ -11,7 +12,7 @@ const { notification } = defineProps<{
   notification: Notification
 }>()
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 // list of notification types Elk currently implemented
 // type 'favourite' and 'reblog' should always rendered by NotificationGroupedLikes

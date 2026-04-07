@@ -1,7 +1,24 @@
-import type { DraftItem } from '@mframework/core/shared/types'
-import type { mastodon } from 'masto'
+import type { DraftItem } from 'alternate-gateway/core/shared/types'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import type { mastodon } from '@mframework/adapter-federation'
 import type { Ref } from 'vue'
 import { fileOpen } from 'browser-fs-access'
+import { currentInstance, currentUser, isGlitchEdition } from '../../contacts/users'
+import { htmlToText } from '../../core/content-parse'
+import { isEmptyDraft } from './statusDrafts'
+
+function formatFileSize(size: number) {
+  if (!size || size <= 0)
+    return '0 B'
+  const units = ['B', 'KB', 'MB', 'GB']
+  let value = size
+  let unit = 0
+  while (value >= 1024 && unit < units.length - 1) {
+    value /= 1024
+    unit += 1
+  }
+  return `${value >= 10 ? Math.round(value) : value.toFixed(1)} ${units[unit]}`
+}
 
 export function usePublish(options: {
   draftItem: Ref<DraftItem>
@@ -37,7 +54,7 @@ export function usePublish(options: {
   const shouldExpanded = computed(() => options.expanded.value || isExpanded.value || !isEmpty.value)
   const isPublishDisabled = computed(() => {
     const { params, attachments } = draftItem.value
-    const firstEmptyInputIndex = params.poll?.options.findIndex(option => option.trim().length === 0)
+    const firstEmptyInputIndex = params.poll?.options.findIndex((option: string) => option.trim().length === 0)
     return isEmpty.value
       || options.isUploading.value
       || isSending.value
@@ -49,10 +66,10 @@ export function usePublish(options: {
           (firstEmptyInputIndex !== -1
             && firstEmptyInputIndex !== params.poll.options.length - 1
           )
-          || params.poll.options.findLastIndex(option => option.trim().length > 0) + 1 < 2
+          || params.poll.options.findLastIndex((option: string) => option.trim().length > 0) + 1 < 2
           || (new Set(params.poll.options).size !== params.poll.options.length)
           || (currentInstance.value?.configuration?.polls.maxCharactersPerOption !== undefined
-            && params.poll.options.find(option => option.length > currentInstance.value!.configuration!.polls.maxCharactersPerOption) !== undefined
+            && params.poll.options.find((option: string) => option.length > currentInstance.value!.configuration!.polls.maxCharactersPerOption) !== undefined
           )
         ))
   })
@@ -68,7 +85,7 @@ export function usePublish(options: {
 
     let content = htmlToText(draftItem.value.params.status || '')
     if (draftItem.value.mentions?.length) {
-      content = `${draftItem.value.mentions.map(i => `@${i}`).join(' ')} ${content}`
+      content = `${draftItem.value.mentions.map((i: string) => `@${i}`).join(' ')} ${content}`
     }
 
     let poll
@@ -95,7 +112,7 @@ export function usePublish(options: {
       ...draftItem.value.params,
       spoilerText: publishSpoilerText.value,
       status: content,
-      mediaIds: draftItem.value.attachments.map(a => a.id),
+      mediaIds: draftItem.value.attachments.map((a: mastodon.v1.MediaAttachment) => a.id),
       language: draftItem.value.params.language || preferredLanguage.value,
       poll,
       scheduledAt,
@@ -126,7 +143,7 @@ export function usePublish(options: {
       else {
         status = await client.value.v1.statuses.$select(draftItem.value.editingStatus.id).update({
           ...payload,
-          mediaAttributes: draftItem.value.attachments.map(media => ({
+          mediaAttributes: draftItem.value.attachments.map((media: mastodon.v1.MediaAttachment) => ({
             id: media.id,
             description: media.description,
           })),
@@ -170,8 +187,7 @@ export type MediaAttachmentUploadError = [filename: string, message: string]
 
 export function useUploadMediaAttachment(draft: Ref<DraftItem>) {
   const { client } = useMasto()
-  const { t } = useI18n()
-  const { formatFileSize } = useFileSizeFormatter()
+  const { t } = useLocate()
 
   const isUploading = ref<boolean>(false)
   const isExceedingAttachmentLimit = ref<boolean>(false)

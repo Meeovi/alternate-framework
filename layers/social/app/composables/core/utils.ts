@@ -4,14 +4,14 @@ import { RateLimitError, SocialError } from './errors'
 import { getSocialCache } from './cache'
 import { withRetry } from './retry'
 import { scheduleBackgroundRefresh } from './swr'
-import { checkRateLimit } from './rateLimit'
+import { checkRateLimit } from '../logging/rateLimit'
 import {
   recordRequest,
   recordSuccess,
   recordFailure,
   recordCacheHit,
   recordCacheMiss
-} from './metrics'
+} from '../logging/metrics'
 
 export interface RequestOptions {
   cacheKey?: string

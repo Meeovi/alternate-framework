@@ -17,12 +17,13 @@ export default defineNuxtConfig({
     },
     public: {
       auth: {
+        backend: process.env.NUXT_PUBLIC_AUTH_BACKEND || process.env.AUTH_ADAPTER || 'better-auth',
         cookieName: 'auth-token',
         redirect: {
           login: '/login',
           home: '/'
         }
-      }
+      } as any
     }
   }
 })

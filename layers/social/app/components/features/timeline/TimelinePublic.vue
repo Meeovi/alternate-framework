@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import useStreaming from '@mframework/core/composables/useStreaming'
-import { useMastoClient, useMasto } from '@mframework/core/index'
+import useStreaming from 'alternate-gateway/core/composables/useStreaming'
+import { useMastoClient, useMasto } from 'alternate-gateway/core/index'
 import type { mastodon } from 'masto'
 import { filterAndReorderTimeline } from '#social/app/composables/timeline'
 import { currentUser } from '#social/app/composables/contacts/users'

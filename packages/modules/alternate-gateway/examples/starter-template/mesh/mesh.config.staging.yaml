@@ -1,0 +1,24 @@
+# Mesh Staging Configuration
+# 
+# Environment-specific overrides for staging environment.
+# Balances performance with introspection capabilities.
+
+serve:
+  port: 4000
+  hostname: 0.0.0.0
+  playground: true
+  introspection: true
+
+logger:
+  level: info
+
+# Staging balances performance and debuggability
+caching:
+  enabled: true
+  ttl: 1800
+
+policies:
+  - type: rbac
+    config:
+      requiresAuth: true
+      debug: false

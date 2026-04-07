@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { rankByQuery } from '~/utils/alternateSearch'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
 const modelValue = defineModel<string>({ required: true })
 
-const { t } = useI18n()
+const { t } = useLocate()
 const userSettings = useUserSettings()
 
 const languageKeyword = ref('')

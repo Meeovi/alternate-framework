@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import type { FediversePublishInput } from "./types";
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const typeDefs = readFileSync(join(currentDir, "schema.graphql"), "utf-8");
@@ -14,7 +15,7 @@ type FederationContext = {
         getAtprotoProfile: (handle: string) => Promise<unknown>;
         getAtprotoFeed: (actor: string, limit?: number) => Promise<unknown>;
         getUnifiedFeed: (identity: string, limit?: number) => Promise<unknown>;
-        publish: (input: { protocol: "activitypub" | "atproto"; content: string; actor?: string }) => Promise<unknown>;
+        publish: (input: FediversePublishInput) => Promise<unknown>;
         fanoutToLayers: (payload: unknown) => Promise<unknown>;
       };
     };
@@ -58,7 +59,7 @@ export const federationAdapter = {
         {
           input
         }: {
-          input: { protocol: "activitypub" | "atproto"; content: string; actor?: string };
+          input: FediversePublishInput;
         },
         ctx: FederationContext
       ) => ctx.adapters.federation.fediverse.publish(input),

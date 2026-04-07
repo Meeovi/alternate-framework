@@ -1,10 +1,11 @@
 import type { Ref } from 'vue'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
 export function useSignIn(input?: Ref<HTMLInputElement | undefined>) {
   const singleInstanceServer = useRuntimeConfig().public.singleInstance
   const userSettings = useUserSettings()
   const users = useUsers()
-  const { t } = useI18n()
+  const { t } = useLocate()
 
   const busy = ref(false)
   const error = ref(false)

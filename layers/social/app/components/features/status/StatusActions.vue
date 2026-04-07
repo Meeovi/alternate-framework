@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getPreferences, useUserSettings } from '@mframework/core/index';
+import { getPreferences, useUserSettings } from 'alternate-gateway/core/index';
 import { noop } from '@vueuse/shared';
 import type { mastodon } from 'masto'
 import { inject } from '#imports';

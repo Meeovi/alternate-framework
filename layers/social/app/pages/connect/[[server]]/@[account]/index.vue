@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { fetchAccountByHandle } from '../../../../composables/core/cache'
+
 definePageMeta({
   key: route => `${route.params.server ?? currentServer.value}:${route.params.account}`,
 })
@@ -6,7 +8,7 @@ definePageMeta({
 const params = useRoute().params
 const accountName = computed(() => toShortHandle(params.account as string))
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 const { data: account, pending, refresh } = await useAsyncData(() => `account-${accountName.value}`, () => fetchAccountByHandle(accountName.value).catch(() => null), { immediate: import.meta.client, default: () => shallowRef() })
 const relationship = computed(() => account.value ? useRelationship(account.value).value : undefined)

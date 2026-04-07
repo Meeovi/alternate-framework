@@ -122,9 +122,13 @@ export async function start(indexName?: string) {
   }
 }
 
-// If invoked directly from node, allow passing index name via CLI
-if (require.main === module) {
+// If invoked directly from node, allow passing index name via CLI.
+// Guard CommonJS globals so ESM importers (Nuxt/Vite SSR) do not crash.
+if (typeof require !== 'undefined' && typeof module !== 'undefined' && require.main === module) {
   const argv = process.argv.slice(2)
   const idx = argv[0]
-  start(idx).catch(() => process.exit(1))
+  start(idx).catch((err) => {
+    handleErrorResponse(err)
+    process.exitCode = 1
+  })
 }

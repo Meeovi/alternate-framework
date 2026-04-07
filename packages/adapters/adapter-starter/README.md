@@ -1,85 +1,107 @@
-Starter Adapter Template
-=========================
+# Adapter Starter
 
-This package is a template to scaffold new adapter packages that integrate with Meeovi layers.
+This package is the reference starter for building new adapters with a consistent pattern.
 
-Usage
------
+The starter now uses a reusable installer pattern:
 
-- From this package directory, run:
+- Layer factories live in one map.
+- A generic installer wires those factories into the gateway registry.
+- New adapters only need to provide transport + layer implementations.
 
-```
-npm run create -- <short-name>
-```
+## Adapter Pattern
 
-- Example:
+The core pattern is implemented in these files:
 
-```
-npm run create -- shop
-```
+- [index.ts](index.ts)
+- [src/patterns.ts](src/patterns.ts)
+- [src/transport.ts](src/transport.ts)
 
-This creates a new adapter package at `../adapter-shop` (relative to this template) with the package name `@mframework/adapter-shop`.
+`src/patterns.ts` provides:
 
-What you get
-------------
+- `defineAdapterLayerFactories(...)`
+- `createAdapterInstaller(createTransport, factories)`
 
-- A ready-to-edit adapter package with `index.ts` and `src/` files for `transport`, `auth`, `commerce`, `search`, and `utils`.
-- Placeholders in files are marked as `__PACKAGE_NAME__` and `__SHORT_NAME__` to help you customize.
+This keeps all adapters structurally similar and avoids custom installer boilerplate per adapter.
 
-How to edit
------------
+## Supported Layers
 
-1. Open the new package folder.
-2. Replace placeholder endpoints and logic in `src/*` with your adapter's API.
-3. Update `package.json` fields as needed.
-4. Run `npm run build` inside the new adapter package to compile TypeScript.
+The starter currently supports these registry-backed layers:
 
-Notes
------
+- `auth`
+- `commerce`
+- `search`
 
-- The scaffold script performs simple text replacements; review generated files before publishing.
-- This template is intentionally minimal — implement only the methods your backend supports.
+## Create a New Adapter
 
-CLI Flags
----------
+From [packages/adapters/adapter-starter](packages/adapters/adapter-starter):
 
-The starter CLI supports interactive and non-interactive modes. Flags:
-
-- `--name` / `-n`: Adapter short name (e.g. `shop`).
-- `--desc` / `-d`: Description for the generated package.
-- `--layers` / `-l`: Comma-separated list of layers to scaffold (e.g. `commerce,auth`).
-- `--dest`: Destination path for the generated package.
-- `--no-install`: Skip running `npm install` after scaffolding.
-
-Examples
---------
-
-- Interactive:
-
-```
+```bash
 npm run create:interactive
 ```
 
-- Non-interactive (with install):
+Or non-interactive:
 
-```
-npm run create:interactive -- --name shop --desc "Shop adapter" --layers commerce,auth
-```
-
-- Non-interactive (skip install):
-
-```
-npm run create:interactive -- --name shop --layers commerce --no-install
+```bash
+npm run create:interactive -- --name shop --desc "Shop adapter" --layers auth,commerce,search --no-install
 ```
 
-Repo-level wrapper
-------------------
+This scaffolds a new package at:
 
-From the repo root you can use the provided script:
+- `packages/adapters/adapter-shop`
 
+## Implement the New Adapter
+
+After scaffolding, update the generated files:
+
+1. `src/transport.ts`
+- Set base URL, auth headers, retry/error handling as needed.
+
+2. `src/auth.ts`, `src/commerce.ts`, `src/search.ts`
+- Replace placeholder endpoints with backend-specific calls.
+- Keep return types aligned with `alternate-gateway` contracts.
+
+3. `index.ts`
+- Ensure only implemented layers are present in `layerFactories`.
+
+4. `package.json`
+- Confirm package metadata and dependency versions.
+
+## Build and Verify
+
+Inside the generated adapter package:
+
+```bash
+npm install
+npm run build
 ```
-scripts/create-adapter --name shop --layers commerce --no-install
+
+## Add Adapter to an App
+
+In your app bootstrap/runtime setup:
+
+```ts
+import { installAdapter } from '@mframework/adapter-shop'
+
+installAdapter({
+	baseUrl: process.env.SHOP_API_URL!,
+	apiKey: process.env.SHOP_API_KEY,
+})
 ```
 
+## CLI Options
 
-Note: adapter credentials and endpoints can be centrally configured in your main app's `.env` file. See the repository `.env.example` for recommended variable names.
+- `--name` or `-n`: adapter short name
+- `--desc` or `-d`: package description
+- `--layers` or `-l`: comma-separated layers from `auth,commerce,search`
+- `--dest`: custom destination path
+- `--no-install`: skip `npm install` in generated package
+
+## Template Source
+
+The scaffolded files come from:
+
+- [template/index.ts](template/index.ts)
+- [template/src/patterns.ts](template/src/patterns.ts)
+- [template/src](template/src)
+
+If you improve the pattern, update template files here so future adapters get the improvement automatically.

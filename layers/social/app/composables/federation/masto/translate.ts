@@ -1,4 +1,5 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
 export interface TranslationResponse {
   translatedText: string
@@ -50,7 +51,7 @@ export function getLanguageCode() {
   let code = 'en'
   const getCode = (code: string) => code.replace(/-.*$/, '')
   if (import.meta.client) {
-    const { locale } = useI18n()
+    const { locale } = useLocate()
     code = getCode(locale.value ? locale.value : navigator.language)
   }
   return code

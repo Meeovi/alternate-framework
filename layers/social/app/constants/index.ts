@@ -1,5 +1,7 @@
 import type { mastodon } from 'masto'
 
+export type ElkNotificationFilterType = mastodon.v1.NotificationType | 'quote' | 'quoted_update'
+
 export const APP_NAME = 'Elk'
 
 export const DEFAULT_POST_CHARS_LIMIT = 500
@@ -27,7 +29,7 @@ export const STORAGE_KEY_BOTTOM_NAV_BUTTONS = 'mframework-bottom-nav-buttons'
 
 export const HANDLED_MASTO_URLS = /^(https?:\/\/)?([\w\-]+\.)+\w+\/(@[@\w\-.]+)(\/objects)?(\/\d+)?$/
 
-export const NOTIFICATION_FILTER_TYPES: mastodon.v1.NotificationType[] = [
+export const NOTIFICATION_FILTER_TYPES: ElkNotificationFilterType[] = [
   'status',
   'reblog',
   'quote',

@@ -1,16 +1,23 @@
 <script setup lang="ts">
-import type { ElkTranslationStatus } from '#shared/types/translation-status'
+import type { ElkTranslationStatus } from '../../../../../../shared/shared/types/translation-status'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { currentUser } from '../../../../composables/contacts/users'
+import { useHydratedHead } from '../../../../composables/core/vue'
 
-const { t, locale } = useI18n()
+const { t, locale } = useLocate()
 
-const translationStatus: ElkTranslationStatus = await import('~~/mframework-translation-status.json').then(m => m.default)
+const { data: translationStatus } = await useAsyncData('social-translation-status', () => {
+  return $fetch<ElkTranslationStatus>('/mframework-translation-status.json')
+    .catch(() => ({ total: 0, locales: {} }))
+})
 
 useHydratedHead({
   title: () => `${t('settings.language.label')} | ${t('nav.settings')}`,
 })
 const status = computed(() => {
-  const entry = translationStatus.locales[locale.value]
-  return t('settings.language.status', [entry.total, translationStatus.total, entry.percentage])
+  const value = translationStatus.value ?? { total: 0, locales: {} }
+  const entry = value.locales[locale.value] ?? { total: 0, percentage: '0%' }
+  return t('settings.language.status', [entry.total, value.total, entry.percentage])
 })
 </script>
 

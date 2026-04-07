@@ -1,4 +1,4 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 
 const notifications = reactive<Record<string, undefined | [Promise<mastodon.streaming.Subscription>, string[]]>>({})
 

@@ -8,10 +8,16 @@ import {
     oauthProvider
 } from "@better-auth/oauth-provider";
 
-const providersAuth = betterAuth({
+const providersAuth = () => betterAuth({
+    database: {
+        type: 'postgres',
+    },
     disabledPaths: [
         "/token",
     ],
+    session: {
+        storeSessionInDatabase: true,
+    },
     plugins: [
         jwt(),
         oauthProvider({

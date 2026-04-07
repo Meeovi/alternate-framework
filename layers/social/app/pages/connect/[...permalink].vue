@@ -7,7 +7,7 @@ definePageMeta({
       ? to.params.permalink.join('/')
       : to.params.permalink
 
-    if (hasProtocol(permalink)) {
+    if (permalink && hasProtocol(permalink)) {
       const { host, pathname } = parseURL(permalink)
 
       if (host)

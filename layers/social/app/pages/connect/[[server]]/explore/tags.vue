@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { STORAGE_KEY_HIDE_EXPLORE_TAGS_TIPS, STORAGE_KEY_LAST_ACCESSED_EXPLORE_ROUTE } from '~/constants'
+import { STORAGE_KEY_HIDE_EXPLORE_TAGS_TIPS, STORAGE_KEY_LAST_ACCESSED_EXPLORE_ROUTE } from '../../../../utils/constants'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
-const { t } = useI18n()
+const { t } = useLocate()
 const route = useRoute()
 const { client } = useMasto()
 

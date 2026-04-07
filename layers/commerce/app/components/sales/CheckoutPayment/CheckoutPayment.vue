@@ -36,12 +36,12 @@ void useContentAdapter()
 
 import { SfIconCreditCard } from '@storefront-ui/vue';
 import { CheckoutPaymentProps, CheckoutPaymentEmits, PaymentMethod } from './types';
-import { useI18n } from 'vue-i18n';
+import { useLocate } from 'alternate-locate/adapters/vue/composable';
 
 defineProps<CheckoutPaymentProps>();
 defineEmits<CheckoutPaymentEmits>();
 
-const { t } = useI18n();
+const { t } = useLocate();
 
 const paymentMethods = [
   {

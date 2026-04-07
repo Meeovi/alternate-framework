@@ -1,5 +1,9 @@
 import type { mastodon } from 'masto'
 
+// UI colour tokens are now owned by alternate-ui; re-exported here for backward compatibility.
+export { THEME_COLORS, themeColors } from 'alternate-ui/tokens'
+
+// ── App metadata ────────────────────────────────────────────────────────────
 export const APP_NAME = process.env.APP_NAME || 'Mee'
 export const APP_VERSION = process.env.APP_VERSION || '0.0.1'
 
@@ -39,11 +43,3 @@ export const NOTIFICATION_FILTER_TYPES: mastodon.v1.NotificationType[] = [
   'admin.sign_up',
   'admin.report',
 ]
-
-export const THEME_COLORS = {
-  defaultTheme: '#cc7d24',
-  themeDark: '#111111',
-  themeLight: '#fafafa',
-  backgroundDark: '#fafafa',
-  backgroundLight: '#111111',
-} as const

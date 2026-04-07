@@ -1,26 +1,11 @@
-import { wrapSocialRequest } from '../utils'
-import { getSocialConfig } from '../config'
-import { registerSocialProvider } from '../registry'
+import { createAtprotoGatewayClient } from '@mframework/adapter-federation'
+import { getSocialConfig } from '../core/config'
+import { registerSocialProvider } from '../core/registry'
+import { wrapSocialRequest } from '../core/utils'
 
-async function atprotoFetch(path: string, options: RequestInit = {}) {
+function getAtprotoClient() {
   const { baseUrl, apiKey } = getSocialConfig()
-  const res = await fetch(`${baseUrl}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
-      ...(options.headers || {})
-    }
-  })
-
-  if (!res.ok) {
-    const error: any = new Error(`ATProto error: ${res.status}`)
-    error.status = res.status
-    error.response = res
-    throw error
-  }
-
-  return res.json()
+  return createAtprotoGatewayClient({ baseUrl, token: apiKey })
 }
 
 const AtprotoProvider = {
@@ -28,7 +13,7 @@ const AtprotoProvider = {
     return wrapSocialRequest(
       'atproto',
       async () => {
-        const data = await atprotoFetch(`/xrpc/app.bsky.actor.getProfile?actor=${handle}`)
+        const data = await getAtprotoClient().getProfile(handle)
         return {
           id: data.did,
           username: data.handle,
@@ -49,7 +34,7 @@ const AtprotoProvider = {
     return wrapSocialRequest(
       'atproto',
       async () => {
-        const data = await atprotoFetch(`/xrpc/app.bsky.feed.getAuthorFeed?actor=${handle}`)
+        const data = await getAtprotoClient().getAuthorFeed(handle)
         return (data.feed || []).map((item: any) => ({
           id: item.post.uri,
           content: item.post.record?.text,

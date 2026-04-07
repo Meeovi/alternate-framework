@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import type { DraftItem } from '#shared/types'
+import type { DraftItem, DraftKey } from '#shared/types'
 import { formatTimeAgo } from '@vueuse/core'
+import { useHumanReadableNumber, useTimeAgoOptions } from '@mframework/localization'
+import { htmlToText } from '../../composables/core/content-parse'
+import { clearEmptyDrafts, currentUserDrafts, getDefaultDraftItem, isDraftKey, isEmptyDraft } from '../../composables/federation/masto/statusDrafts'
 
 const route = useRoute()
 const { formatNumber } = useHumanReadableNumber()

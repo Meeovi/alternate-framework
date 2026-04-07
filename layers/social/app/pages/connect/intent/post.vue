@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { openPublishDialog } from '../../../composables/core/dialog'
+import { getDefaultDraftItem } from '../../../composables/federation/masto/statusDrafts'
 
 const router = useRouter()
 const route = useRoute()

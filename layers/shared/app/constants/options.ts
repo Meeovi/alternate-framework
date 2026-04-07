@@ -1,7 +1,5 @@
-export const oldFontSizeMap = {
-  xs: '13px',
-  sm: '14px',
-  md: '15px',
-  lg: '16px',
-  xl: '17px',
-}
+/**
+ * @deprecated — font-size tokens are now in `alternate-ui/tokens`.
+ * This re-export keeps existing consumers working.
+ */
+export { oldFontSizeMap, legacyFontSizes } from 'alternate-ui/tokens'

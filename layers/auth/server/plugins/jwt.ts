@@ -6,7 +6,7 @@ import {
     jwt
 } from "better-auth/plugins"
 
-export const jwtAuth = betterAuth({
+export const jwtAuth = () => betterAuth({
     disabledPaths: [
         "/token",
     ],

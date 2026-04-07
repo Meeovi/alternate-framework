@@ -1,9 +1,9 @@
+import { fileURLToPath } from 'node:url'
+import { defineNuxtConfig } from 'nuxt/config'
 import {
-  defineNuxtConfig
-} from 'nuxt/config'
-import {
-  currentLocales
-} from '@mframework/localization'
+  defaultAlternateLocateLocale,
+  defaultAlternateLocateLocales,
+} from 'alternate-locate/adapters/nuxt/i18n'
 
 export default defineNuxtConfig({
   $meta: {
@@ -14,7 +14,25 @@ export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
     '@pinia/nuxt',
+    '@nuxtjs/i18n',
   ],
+
+  alias: {
+    '#social': fileURLToPath(new URL('./', import.meta.url)),
+  },
+
+  imports: {
+    dirs: [
+      './app/composables',
+      './app/composables/**',
+    ],
+  },
+
+  i18n: {
+    strategy: 'no_prefix',
+    defaultLocale: defaultAlternateLocateLocale,
+    locales: defaultAlternateLocateLocales,
+  },
 
   runtimeConfig: {
     adminKey: '',

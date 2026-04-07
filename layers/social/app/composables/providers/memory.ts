@@ -1,5 +1,5 @@
-import type { SocialProvider, SocialPost, SocialProfile } from '../types'
-import { registerSocialProvider } from '../registry'
+import type { SocialProvider, SocialPost, SocialProfile } from '../core/types'
+import { registerSocialProvider } from '../core/registry'
 
 const memoryProfiles: Record<string, SocialProfile> = {}
 const memoryPosts: Record<string, SocialPost[]> = {}

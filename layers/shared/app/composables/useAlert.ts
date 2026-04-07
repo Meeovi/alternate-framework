@@ -1,74 +1,46 @@
-import { ref, computed } from 'vue'
+import { useNuxtApp } from '#app'
 
-interface Alert {
-  message: string | null
-  type: 'success' | 'error' | 'warning' | 'info'
-  visible: boolean
-  timeout?: ReturnType<typeof setTimeout>
+type AlertLevel = 'info' | 'success' | 'warning' | 'error'
+
+type AlertCallable = ((message: string) => void) & {
+  info: (message: string) => void
+  success: (message: string) => void
+  warning: (message: string) => void
+  error: (message: string) => void
 }
 
-const alertState = ref<Alert>({
-  message: null,
-  type: 'info',
-  visible: false
-})
+function dispatch(level: AlertLevel, message: string): void {
+  const app = useNuxtApp() as any
 
-export function useAlert() {
-  const message = computed(() => alertState.value.message)
-  const type = computed(() => alertState.value.type)
-  const visible = computed(() => alertState.value.visible)
-
-  const clearAlertTimeout = () => {
-    if (alertState.value.timeout) {
-      globalThis.clearTimeout(alertState.value.timeout)
-      alertState.value.timeout = undefined
-    }
+  // If a toast plugin is present, prefer it.
+  if (typeof app?.$toast === 'function') {
+    app.$toast(message, { type: level })
+    return
   }
 
-  const show = (msg: string, alertType: 'success' | 'error' | 'warning' | 'info' = 'info', duration = 5000) => {
-    clearAlertTimeout()
-    alertState.value.message = msg
-    alertState.value.type = alertType
-    alertState.value.visible = true
-
-    if (duration > 0) {
-      alertState.value.timeout = setTimeout(() => {
-        alertState.value.visible = false
-      }, duration)
-    }
+  if (app?.$toast && typeof app.$toast[level] === 'function') {
+    app.$toast[level](message)
+    return
   }
 
-  const success = (msg: string, duration = 5000) => {
-    show(msg, 'success', duration)
+  if (app?.$snackbar && typeof app.$snackbar === 'function') {
+    app.$snackbar({ text: message, color: level })
+    return
   }
 
-  const error = (msg: string, duration = 5000) => {
-    show(msg, 'error', duration)
-  }
-
-  const warning = (msg: string, duration = 5000) => {
-    show(msg, 'warning', duration)
-  }
-
-  const info = (msg: string, duration = 5000) => {
-    show(msg, 'info', duration)
-  }
-
-  const close = () => {
-    clearAlertTimeout()
-    alertState.value.visible = false
-    alertState.value.message = null
-  }
-
-  return {
-    message,
-    type,
-    visible,
-    show,
-    success,
-    error,
-    warning,
-    info,
-    close
-  }
+  const method = level === 'error' ? 'error' : level === 'warning' ? 'warn' : 'log'
+  console[method](`[alert:${level}] ${message}`)
 }
+
+export function useAlert(): AlertCallable {
+  const call = ((message: string) => dispatch('info', message)) as AlertCallable
+
+  call.info = (message: string) => dispatch('info', message)
+  call.success = (message: string) => dispatch('success', message)
+  call.warning = (message: string) => dispatch('warning', message)
+  call.error = (message: string) => dispatch('error', message)
+
+  return call
+}
+
+export default useAlert

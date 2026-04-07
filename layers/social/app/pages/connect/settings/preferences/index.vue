@@ -1,5 +1,10 @@
 <script setup lang="ts">
-const { t } = useI18n()
+import type { UserSettings } from '../../../../composables/settings/definition'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { useHydratedHead } from '../../../../composables/core/vue'
+import { useUserSettings } from '../../../../composables/settings/storage'
+
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.preferences.label')} | ${t('nav.settings')}`,

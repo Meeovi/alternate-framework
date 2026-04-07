@@ -1,8 +1,10 @@
-import type { DraftItem, DraftKey, DraftMap } from '#shared/types'
-import type { Mutable } from '#shared/types/utils'
-import type { mastodon } from 'masto'
+import type { DraftItem, DraftKey, DraftMap, Mutable } from 'alternate-gateway/core/shared/types'
+import type { mastodon } from '@mframework/adapter-federation'
 import type { ComputedRef, Ref } from 'vue'
-import { STORAGE_KEY_DRAFTS } from '~/constants'
+import { STORAGE_KEY_DRAFTS } from '../../../utils/constants'
+import { currentUser, useUserLocalStorage } from '../../contacts/users'
+import { convertMastodonHTML, htmlToText } from '../../core/content-parse'
+import { openPublishDialog } from '../../core/dialog'
 
 export const currentUserDrafts = (import.meta.server || process.test)
   ? computed<DraftMap>(() => ({ home: [], dialog: [], intent: [], quote: [] }))
@@ -89,7 +91,7 @@ export async function getDraftFromStatus(status: mastodon.v1.Status): Promise<Dr
               expiresIn: Math.abs(new Date().getTime() - new Date(status.poll.expiresAt!).getTime()) / 1000,
               options: [...status.poll.options.map(({ title }) => title), ''],
               multiple: status.poll.multiple,
-              hideTotals: status.poll.options[0].votesCount === null,
+              hideTotals: status.poll.options[0]?.votesCount === null,
             }
           : undefined,
       })
@@ -215,6 +217,6 @@ export function clearEmptyDrafts() {
   }
 }
 
-export function isDraftKey(key: string): key is DraftKey {
-  return builtinDraftKeys.includes(key) || key.startsWith('reply-')
+export function isDraftKey(key: string | number): key is DraftKey {
+  return builtinDraftKeys.includes(String(key)) || (typeof key === 'string' && key.startsWith('reply-'))
 }

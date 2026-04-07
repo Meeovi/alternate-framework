@@ -6,12 +6,12 @@ import crypto from 'crypto'
 import {
     scim
 } from "@better-auth/scim";
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
 const userRoles = new Set(["admin"]);
 const userAdminIds = new Set(["some-admin-user-id"]);
 
-export const scimAuth = betterAuth({
+export const scimAuth = () => betterAuth({
     plugins: [
         scim({
             beforeSCIMTokenGenerated: async ({

@@ -1,4 +1,4 @@
-import type { UserLogin, Overwrite } from '@mframework/core/shared/types'
+import type { UserLogin, Overwrite } from 'alternate-gateway/core/shared/types'
 import type { RemovableRef } from '@vueuse/core'
 import type { mastodon } from 'masto'
 import type { EffectScope, MaybeRefOrGetter, Ref } from 'vue'

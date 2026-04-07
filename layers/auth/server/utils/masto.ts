@@ -1,4 +1,4 @@
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
 export function getMastoConfig() {
   // App-level defaults - override via env

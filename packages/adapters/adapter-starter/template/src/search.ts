@@ -1,17 +1,24 @@
-import type { SearchAdapter, TransportAdapter } from '@mframework/core'
-import type { SearchQuery, SearchResult, Facet, Result } from '@mframework/core'
+import type { SearchAdapter, TransportAdapter } from 'alternate-gateway/core/adapters'
+import type { SearchQuery, SearchResult, Facet, Result } from 'alternate-gateway/core/types'
 import { unwrap } from './utils'
 
 export const createSearchAdapter = (
   transport: TransportAdapter
 ): SearchAdapter => ({
-  async search<T>(query: SearchQuery): Promise<Result<SearchResult<T>>> {
+  id: 'starter-search',
+  type: 'search',
+
+  async search<T>(query: SearchQuery): Promise<SearchResult<T>> {
     const res = await transport.request<SearchResult<T>>(
       'POST',
       '/search',
       { body: query }
     )
-    return unwrap(res)
+    const result = unwrap(res)
+    if (!result.ok) {
+      throw new Error(result.error)
+    }
+    return result.data
   },
 
   async facets(query: SearchQuery): Promise<Result<Facet[]>> {

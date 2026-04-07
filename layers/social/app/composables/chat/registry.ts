@@ -1,4 +1,4 @@
-import { ChatProvider } from './types'
+import type { ChatProvider } from './types'
 
 const providers: Record<string, ChatProvider> = {}
 

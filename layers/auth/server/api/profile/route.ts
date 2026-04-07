@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from 'h3'
 import { requireAuth } from '../../utils/auth'
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
 export default defineEventHandler(async (event) => {
   const method = (event.node.req.method || 'GET').toUpperCase()

@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { emailOTP } from "better-auth/plugins"
 
-export const otpAuth = betterAuth({
+export const otpAuth = () => betterAuth({
     // ... other config options
     plugins: [
         emailOTP({ 

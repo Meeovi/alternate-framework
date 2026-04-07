@@ -25,7 +25,7 @@ export async function loginTo(masto: any, user: any) {
     if (!res.ok) throw new Error('Invalid token')
     const account = await res.json()
 
-    // Persist mapping in database via server endpoint (uses Prisma from @mframework/core)
+    // Persist mapping in database via server endpoint (uses Prisma from alternate-gateway/core)
     try {
       await fetch(`/api/auth/link-mastodon`, {
         method: 'POST',

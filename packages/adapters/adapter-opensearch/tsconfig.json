@@ -3,13 +3,18 @@
     "declaration": true,
     "emitDeclarationOnly": false,
     "outDir": "dist",
+    "baseUrl": ".",
     "moduleResolution": "bundler",
     "module": "ESNext",
     "target": "ESNext",
     "strict": true,
     "jsx": "react-jsx",
     "skipLibCheck": true, 
-    "noEmitOnError": false
+    "noEmitOnError": false,
+    "paths": {
+      "alternate-gateway/core": ["../../modules/alternate-gateway/core/index.ts"],
+      "alternate-gateway/core/*": ["../../modules/alternate-gateway/core/src/*"]
+    }
   },
   "include": ["src"]
 }

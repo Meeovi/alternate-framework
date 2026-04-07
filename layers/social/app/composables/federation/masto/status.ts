@@ -1,6 +1,6 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 import { cacheStatus } from './statusCache'
-import { checkLogin, currentUser } from '../users'
+import { checkLogin, currentUser } from '../../contacts/users'
 
 type Action = 'reblogged' | 'favourited' | 'bookmarked' | 'pinned' | 'muted'
 type CountField = 'reblogsCount' | 'favouritesCount' | 'quotesCount'

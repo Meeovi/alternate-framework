@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { LocaleObject } from '@nuxtjs/i18n'
+import type { LocaleObject } from 'alternate-locate'
 import type { ComputedRef } from '#imports'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { useUserSettings } from '#social/app/composables/settings';
 
 const userSettings = useUserSettings()
 
-const { locales } = useI18n() as { locales: ComputedRef<LocaleObject[]> }
+const { locales } = useLocate() as { locales: ComputedRef<LocaleObject[]> }
 </script>
 
 <template>

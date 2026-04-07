@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody } from 'h3'
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as any

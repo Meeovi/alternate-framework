@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { lastLoginMethod } from "better-auth/plugins"
 
-export const lastLoginAuth = betterAuth({
+export const lastLoginAuth = () => betterAuth({
     plugins: [
         lastLoginMethod({
             // Cookie configuration

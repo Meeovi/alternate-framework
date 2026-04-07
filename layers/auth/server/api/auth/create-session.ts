@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody } from 'h3'
 import { useServerAuth, auth as serverAuthInstance } from '../../utils/auth'
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event) as any

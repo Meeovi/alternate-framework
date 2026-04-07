@@ -1,9 +1,12 @@
 <script setup lang="ts">
 /* eslint-disable no-alert */
-import type { UserLogin } from '#shared/types'
+import type { UserLogin } from 'alternate-gateway/core/shared/types'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { fileOpen } from 'browser-fs-access'
+import { useHydratedHead } from '../../../../composables/core/vue'
+import { useUsers } from '../../../../composables/contacts/users'
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.users.label')} | ${t('nav.settings')}`,

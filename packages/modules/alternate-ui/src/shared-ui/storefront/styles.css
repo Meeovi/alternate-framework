@@ -1,0 +1,6 @@
+.sfui {
+  --sf-color-primary: var(--aui-color-brand-primary, #4f46e5);
+  --sf-color-secondary: var(--aui-color-brand-secondary, #64748b);
+  --sf-color-positive: var(--aui-color-success, #22c55e);
+  --sf-color-negative: var(--aui-color-error, #ef4444);
+}

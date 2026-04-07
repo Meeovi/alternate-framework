@@ -1,5 +1,7 @@
-import type { ConfirmDialogChoice, ConfirmDialogOptions, DraftItem, DraftKey, ErrorDialogData } from '@mframework/core/shared/types'
+import type { DraftItem, DraftKey, ErrorDialogData } from 'alternate-gateway/core/shared/types'
 import type { mastodon } from 'masto'
+import type { ConfirmDialogChoice, ConfirmDialogOptions } from '#shared/types'
+import { currentUserDrafts, isEmptyDraft } from '../federation/masto/statusDrafts'
 
 export const confirmDialogChoice = ref<ConfirmDialogChoice>()
 export const confirmDialogLabel = ref<ConfirmDialogOptions>()

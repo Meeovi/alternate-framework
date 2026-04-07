@@ -1,4 +1,4 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 import { withoutProtocol } from 'ufo'
 
 export function getAccountRoute(account: mastodon.v1.Account) {

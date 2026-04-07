@@ -67,6 +67,7 @@
 	} from '#shared/app/composables/useAlert';
 
 	const auth = useAuth();
+	const localePath = useLocalePath();
 
 	definePageMeta({
 		layout: false,

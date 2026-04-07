@@ -1,8 +1,8 @@
-declare module '@mframework/core' {
+declare module 'alternate-gateway/core' {
   export const prisma: any
   export default prisma
 
-  // organization helpers exported by @mframework/core
+  // organization helpers exported by alternate-gateway/core
   export function createOrganization(data: any, ownerId: string): Promise<any>
   export function getOrganizationById(id: string): Promise<any>
   export function listOrganizationsForUser(userId: string): Promise<any>

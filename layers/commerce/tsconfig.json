@@ -5,6 +5,8 @@
     "paths": {
       "~/*": ["app/*", "./*"],
       "@/*": ["app/*", "./*"],
+      "alternate-gateway/core": ["../../packages/modules/alternate-gateway/core/index.ts"],
+      "alternate-gateway/core/*": ["../../packages/modules/alternate-gateway/core/src/*"],
       "Util/*": ["app/utils/*"],
       "Query/*": ["app/types/normalizers/*"],
       "Component/*": ["app/components/*"],

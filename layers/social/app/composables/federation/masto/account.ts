@@ -1,4 +1,5 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
+import { getInstanceDomain } from '../../contacts/users'
 
 export function getDisplayName(account: mastodon.v1.Account, options?: { rich?: boolean }) {
   const displayName = account.displayName || account.username || account.acct || ''

@@ -1,12 +1,14 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 
 import type {
   CreatePushNotification,
   PushNotificationPolicy,
   PushNotificationRequest,
   SubscriptionResult,
-} from '#social/app/composables/push-notifications/types'
-import { STORAGE_KEY_NOTIFICATION, STORAGE_KEY_NOTIFICATION_POLICY } from '~/constants'
+} from './types'
+import { STORAGE_KEY_NOTIFICATION, STORAGE_KEY_NOTIFICATION_POLICY } from '../../utils/constants'
+import { currentUser, removePushNotificationData, removePushNotifications } from '../contacts/users'
+import { createPushSubscription } from './createPushSubscription'
 
 const supportsPushNotifications = typeof window !== 'undefined'
   && 'serviceWorker' in navigator

@@ -1,5 +1,6 @@
-import type { LocaleObject } from '@nuxtjs/i18n'
+import type { LocaleObject } from 'alternate-locate'
 import type { ComputedRef } from 'vue'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import type { SearchResult } from '#social/app/composables/federation/masto/search'
 import { defineStore } from 'pinia'
 import { rankByQuery } from '~/utils/alternateSearch'
@@ -229,8 +230,7 @@ export function useCommands(cmds: () => CommandProvider[]) {
 }
 
 export function provideGlobalCommands() {
-  const { locale, t } = useI18n()
-  const { locales } = useI18n() as { locales: ComputedRef<LocaleObject[]> }
+  const { locale, t, locales } = useLocate() as { locale: any; t: any; locales: ComputedRef<LocaleObject[]> }
   const users = useUsers()
   const masto = useMasto()
   const colorMode = useColorMode()

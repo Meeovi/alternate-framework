@@ -1,5 +1,4 @@
 import { consola } from 'consola'
-import { getMigrations } from 'better-auth/db'
 
 export default defineNitroPlugin(() => {
   if (!import.meta.dev) {
@@ -7,6 +6,22 @@ export default defineNitroPlugin(() => {
   }
   const migrate = async () => {
     const auth = serverAuth()
+    const adapterId = String((auth as any)?.options?.database?.id || '')
+    const isKyselyAdapter = /kysely/i.test(adapterId)
+
+    // Better Auth migrate helper supports Kysely only. This layer uses Prisma.
+    if (!isKyselyAdapter) {
+      consola.info('[better-auth] Skipping dev auto-migrations: non-kysely adapter detected.')
+      return
+    }
+
+    const dbModule = await import('better-auth/db').catch(() => null as any)
+    const getMigrations = (dbModule as any)?.getMigrations
+    if (typeof getMigrations !== 'function') {
+      consola.info('[better-auth] Skipping dev auto-migrations: getMigrations is unavailable for current better-auth version.')
+      return
+    }
+
     const { toBeCreated, toBeAdded, runMigrations } = await getMigrations(auth.options)
     if (!toBeCreated.length && !toBeAdded.length) {
       return

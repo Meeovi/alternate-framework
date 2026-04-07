@@ -16,7 +16,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@mframework/core": "file:../../../packages/modules/core",
+    "alternate-gateway": "file:../../../packages/modules/alternate-gateway",
     "@mframework/localization": "file:../../../packages/modules/localization",
     "@mframework/media": "file:../../../packages/modules/media",
     "list.js": "^2.3.1"

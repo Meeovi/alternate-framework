@@ -1,5 +1,5 @@
-import type { mastodon } from 'masto'
-import { currentServer } from '../users'
+import type { mastodon } from '@mframework/adapter-federation'
+import { currentServer } from '../../users'
 
 const statusCache = new Map<string, Map<string, mastodon.v1.Status>>()
 

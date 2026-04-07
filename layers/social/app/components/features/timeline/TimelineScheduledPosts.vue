@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMastoClient } from '@mframework/core/index'
+import { useMastoClient } from 'alternate-gateway/core/index'
 import type { mastodon } from 'masto'
 import { currentUser } from '#social/app/composables/contacts/users'
 

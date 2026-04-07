@@ -1,4 +1,5 @@
-import type { BuildInfo } from '@mframework/core/shared/types'
+import type { BuildInfo } from 'alternate-gateway/core/shared/types'
+import { useAppConfig } from 'nuxt/app'
 
 export interface Team {
   github: string

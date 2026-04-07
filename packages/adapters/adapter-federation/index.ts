@@ -3,14 +3,21 @@ export * from './src/index'
 import { activityPubGatewayClient, atprotoGatewayClient } from './utils/client'
 import { handleFederationError } from './utils/errors'
 import { normalizeActivityPubPost, normalizeAtprotoPost } from './utils/normalizers'
-import type { FederationGatewayAdapterContract, FediverseLayerAccess, FediversePost } from './types'
+import type {
+	FederationGatewayAdapterContract,
+	FediverseLayerAccess,
+	FediversePost,
+	FediversePublishInput
+} from './types'
+import { createForgeFedIssueCreateActivity } from './src/providers/activitypub/forgefed'
+import { createOStatusPost } from './src/providers/ostatus/provider'
 
 export class FederationAdapter implements FederationGatewayAdapterContract {
 	async getActivityPubInbox(actor: string): Promise<unknown> {
 		try {
 			return await activityPubGatewayClient(`/actors/${encodeURIComponent(actor)}/inbox`)
 		} catch (error) {
-			handleFederationError(error)
+			return handleFederationError(error)
 		}
 	}
 
@@ -22,7 +29,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 				normalizeActivityPubPost(entry)
 			)
 		} catch (error) {
-			handleFederationError(error)
+			return handleFederationError(error)
 		}
 	}
 
@@ -30,7 +37,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 		try {
 			return await atprotoGatewayClient.getProfile(handle)
 		} catch (error) {
-			handleFederationError(error)
+			return handleFederationError(error)
 		}
 	}
 
@@ -42,7 +49,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 				normalizeAtprotoPost(entry)
 			)
 		} catch (error) {
-			handleFederationError(error)
+			return handleFederationError(error)
 		}
 	}
 
@@ -57,15 +64,11 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 				.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 				.slice(0, limit)
 		} catch (error) {
-			handleFederationError(error)
+			return handleFederationError(error)
 		}
 	}
 
-	async publish(input: {
-		protocol: 'activitypub' | 'atproto'
-		content: string
-		actor?: string
-	}): Promise<unknown> {
+	async publish(input: FediversePublishInput): Promise<unknown> {
 		try {
 			if (input.protocol === 'activitypub') {
 				return await activityPubGatewayClient('/outbox', {
@@ -80,9 +83,37 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 				})
 			}
 
-			const repo = input.actor ?? process.env.ATPROTO_REPO
+			if (input.protocol === 'ostatus') {
+				const author = input.actor ?? String(input.metadata?.author ?? 'unknown')
+				const id = String(input.metadata?.id ?? `ostatus:${Date.now()}`)
+				const url = typeof input.metadata?.url === 'string' ? input.metadata.url : undefined
+				const createdAt = typeof input.metadata?.createdAt === 'string' ? input.metadata.createdAt : undefined
+				return createOStatusPost({
+					id,
+					author,
+					content: input.content,
+					url,
+					createdAt
+				})
+			}
+
+			if (input.protocol === 'forgefed') {
+				const actor = input.actor ?? String(input.metadata?.actor ?? '')
+				const repository = String(input.metadata?.repository ?? process.env.FORGEFED_REPOSITORY ?? '')
+				if (!actor || !repository) {
+					throw new Error('forgefed publishing requires actor and repository metadata')
+				}
+				return createForgeFedIssueCreateActivity({
+					actor,
+					repository,
+					title: String(input.metadata?.title ?? input.content.slice(0, 120)),
+					body: input.content
+				})
+			}
+
+			const repo = input.actor ?? (typeof input.metadata?.repo === 'string' ? input.metadata.repo : undefined) ?? process.env.ATPROTO_REPO
 			if (!repo) {
-				throw new Error('ATPROTO_REPO or publish input.actor is required for atproto publishing')
+				throw new Error('ATPROTO_REPO or publish input.actor/input.metadata.repo is required for atproto publishing')
 			}
 
 			return await atprotoGatewayClient.createRecord(repo, 'app.bsky.feed.post', {
@@ -91,7 +122,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 				createdAt: new Date().toISOString()
 			})
 		} catch (error) {
-			handleFederationError(error)
+			return handleFederationError(error)
 		}
 	}
 

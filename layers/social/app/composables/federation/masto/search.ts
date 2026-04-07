@@ -1,4 +1,4 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 import type { MaybeRefOrGetter } from 'vue'
 import type { RouteLocation } from 'vue-router'
 

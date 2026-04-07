@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { cacheAccount } from '../../composables/accounts'
 import { useMastoClient } from '../../composables/masto'
 import { getAccountRoute } from '../../composables/routes'
@@ -15,7 +15,7 @@ const { account, list } = defineProps<{
 cacheAccount(account)
 
 const client = useMastoClient()
-const { t } = useI18n()
+const { t } = useLocate()
 
 const isRemoved = ref(false)
 

@@ -1,21 +1,22 @@
 {
-  "name": "@mframework/adapter-activitypub",
+  "name": "@mframework/adapter-federation",
   "version": "0.0.1",
-  "description": "activitypub adapter for M Framework",
+  "description": "Federation adapter for M Framework (ActivityPub + ATProto)",
   "author": "M Framework",
   "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/types.d.mts",
-      "import": "./dist/module.mjs"
-    }
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./nuxt": "./src/module.ts"
   },
-  "main": "./dist/module.mjs",
+  "main": "./dist/index.mjs",
   "typesVersions": {
     "*": {
       ".": [
-        "./dist/types.d.mts"
+        "./dist/index.d.mts"
       ]
     }
   },
@@ -23,36 +24,44 @@
     "dist"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "build": "tsdown index.ts",
     "dev": "npm run dev:prepare && nuxi dev playground",
+    "dev:lib": "tsdown index.ts --watch",
+    "typecheck": "tsc --project tsconfig.json",
+    "prepack": "npm run build",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
     "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:adapters": "vitest run test",
     "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "demo:smoke": "bash ./demo/smoke-test.sh"
   },
   "dependencies": {
-    "@nuxt/kit": "^4.2.1"
+    "@atproto/lex-password-session": "^0.0.11",
+    "@atproto/lex": "^0.0.16",
+    "@nuxt/kit": "^4.2.1",
+    "masto": "^7.10.1",
+    "ofetch": "^1.4.1"
   },
   "devDependencies": {
+    "@atproto/common-web": "^0.4.16",
+    "@atproto/syntax": "^0.4.3",
+    "@atproto/tap": "^0.2.4",
     "@nuxt/devtools": "^3.1.1",
     "@nuxt/eslint-config": "^1.11.0",
     "@nuxt/module-builder": "^1.0.2",
     "@nuxt/schema": "^4.2.1",
     "@nuxt/test-utils": "^3.20.1",
     "@types/node": "latest",
-    "@atproto/common-web": "^0.4.16",
-    "@atproto/lex": "^0.0.16",
-    "@atproto/syntax": "^0.4.3",
-    "@atproto/tap": "^0.2.4",
-    "masto": "^7.10.1",
     "changelogen": "^0.6.2",
     "eslint": "^9.39.1",
     "nuxt": "^4.4.2",
+    "tsdown": "^0.21.7",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.14",
+    "vitest": "^3.2.4",
     "vue-tsc": "^3.1.5"
   }
 }

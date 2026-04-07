@@ -1,4 +1,4 @@
-import { Maybe } from "@mframework/core";
+import { Maybe } from "alternate-gateway/core";
 import { SfAddress } from "~/composables";
 
 export interface Address extends SfAddress {

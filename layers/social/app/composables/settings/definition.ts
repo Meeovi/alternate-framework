@@ -1,4 +1,4 @@
-import { DEFAULT_FONT_SIZE } from '~/constants'
+import { DEFAULT_FONT_SIZE } from '../../utils/constants'
 
 export type FontSize = `${number}px`
 
@@ -62,6 +62,28 @@ export interface ThemeColors {
 
   '--rgb-primary': string
   '--rgb-dark-primary': string
+}
+
+function matchLanguages(available: string[], preferred: readonly string[]): string | undefined {
+  if (!available.length || !preferred.length)
+    return undefined
+
+  const availableLower = new Map(available.map(lang => [lang.toLowerCase(), lang]))
+
+  for (const language of preferred) {
+    const exact = availableLower.get(language.toLowerCase())
+    if (exact)
+      return exact
+  }
+
+  for (const language of preferred) {
+    const base = language.toLowerCase().split('-')[0]
+    const partial = available.find(lang => lang.toLowerCase().split('-')[0] === base)
+    if (partial)
+      return partial
+  }
+
+  return undefined
 }
 
 export function getDefaultLanguage(languages: string[]) {

@@ -1,4 +1,4 @@
-import type { APIResponse, Result } from '@mframework/core'
+import type { APIResponse, Result } from 'alternate-gateway/core'
 
 export const unwrap = <T>(response: APIResponse<T>): Result<T> => {
   if ((response as any).error) {

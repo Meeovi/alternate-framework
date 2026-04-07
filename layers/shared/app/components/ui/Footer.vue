@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { SfButton, SfLink, SfListItem } from '@storefront-ui/vue';
+import { SfButton, SfLink, SfListItem } from 'alternate-ui/storefront';
 import { bottomLinks, categories, companyName, contactOptions, socialMedia } from '~/mocks';
 
 // Use string 'NuxtLink' to defer resolution - this works without auto-imports

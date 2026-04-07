@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { anonymous } from "better-auth/plugins"
 
-export const anonymousAuth = betterAuth({
+export const anonymousAuth = () => betterAuth({
     // ... other config options
     plugins: [
         anonymous({

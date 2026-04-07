@@ -1,0 +1,212 @@
+/**
+ * Shared Layer Stability Styles
+ * Provides baseline styles for CSR-resilient, accessible UI
+ *
+ * Principles:
+ * - Reserved space (no 0px heights while loading)
+ * - Predictable dimensions (fixed widths for buttons, consistent padding)
+ * - Smooth transitions (no jarring layout shifts)
+ * - Accessible defaults (works without JS)
+ * - Dark mode support (prefers-color-scheme)
+ */
+
+/* Root elements - prevent layout jank */
+:root {
+  scroll-behavior: smooth;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}
+
+/* Prevent CLS with smooth transitions */
+* {
+  transition: color var(--transition-fast);
+}
+
+/* Skeleton loaders - reserved space */
+.v-skeleton-loader {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Badge elements - prevent shift */
+.v-badge {
+  display: flex;
+  align-items: center;
+}
+
+.v-badge__badge {
+  min-width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon buttons - consistent sizing */
+.v-btn {
+  min-width: 40px;
+  min-height: 40px;
+  flex: 0 0 auto;
+}
+
+.v-btn.v-btn--icon {
+  width: 40px;
+  height: 40px;
+}
+
+/* Text fields - reserved space */
+.v-text-field {
+  min-height: 40px;
+}
+
+.v-text-field.v-input--density-compact {
+  min-height: 36px;
+}
+
+/* Spinners and loading states - don't break layout */
+.v-progress-linear {
+  height: 2px;
+}
+
+/* Menu and navigation - predictable dimensions */
+.v-app-bar {
+  flex: 0 0 auto;
+}
+
+.v-navigation-drawer {
+  position: fixed;
+}
+
+/* Forms - accessible defaults */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Prevent image layout shift */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Dark mode - smooth transition */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+
+  .v-skeleton-loader {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .v-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  label {
+    cursor: pointer;
+  }
+}
+
+/* Focus visible - accessibility */
+*:focus-visible {
+  outline: 2px solid #1f88d6;
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #1f88d6;
+  outline-offset: 2px;
+}
+
+/* Error and warning states - always visible */
+.v-alert--type-error,
+.v-alert--type-warning {
+  animation: appear 0.3s ease;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Container queries for responsive stability */
+@supports (container-type: inline-size) {
+  .responsive-container {
+    container-type: inline-size;
+  }
+
+  @container (min-width: 600px) {
+    .responsive-container .compact-mode {
+      display: none;
+    }
+  }
+
+  @container (max-width: 599px) {
+    .responsive-container .full-mode {
+      display: none;
+    }
+  }
+}

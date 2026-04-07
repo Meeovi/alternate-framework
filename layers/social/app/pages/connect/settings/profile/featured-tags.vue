@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { useHydratedHead } from '../../../../composables/core/vue'
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.profile.featured_tags.label')} | ${t('nav.settings')}`,

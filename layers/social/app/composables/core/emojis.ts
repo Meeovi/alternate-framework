@@ -1,6 +1,8 @@
 import type { mastodon } from 'masto'
-import type { CustomEmojisInfo } from './push-notifications/types'
-import { STORAGE_KEY_CUSTOM_EMOJIS } from '~/constants'
+import type { CustomEmojisInfo } from '../notifications/types'
+import { STORAGE_KEY_CUSTOM_EMOJIS } from '../../constants'
+import { currentServer, useUserLocalStorage } from '../contacts/users'
+import { emojisArrayToObject } from './misc'
 
 const TTL = 1000 * 60 * 60 * 24 // 1 day
 

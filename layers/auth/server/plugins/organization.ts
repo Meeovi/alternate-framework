@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth"
 import { organization } from "better-auth/plugins"
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
 function makeErr(err: unknown) {
   return { ok: false, error: (err as Error)?.message ?? String(err) }
@@ -126,7 +126,7 @@ async function deleteOrganization(organizationId: string) {
   }
 }
 
-export const organizationAuth = betterAuth({
+export const organizationAuth = () => betterAuth({
   plugins: [
     organization({
       allowUserToCreateOrganization: async (user: any) => {

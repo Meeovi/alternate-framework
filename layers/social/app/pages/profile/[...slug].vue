@@ -54,10 +54,10 @@
 <script setup lang="ts">
   import {
     useAuth,
-    useI18n,
     useAsyncData,
     useHead
   } from '#imports';
+  import { useLocate } from 'alternate-locate/adapters/vue/composable'
   import useLocalePath from '#social/app/composables/core/useLocalePath';
   import {
     onMounted,
@@ -77,7 +77,7 @@
   const alert = useAlert()
   const {
     t
-  } = useI18n()
+  } = useLocate()
   const localePath = useLocalePath()
   const {
     data: accounts

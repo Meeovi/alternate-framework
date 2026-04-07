@@ -6,36 +6,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { APIError, createAuthMiddleware } from 'better-auth/api'
 import { admin } from 'better-auth/plugins'
 import { v7 as uuidv7 } from 'uuid'
-import { prisma } from '@mframework/core'
-
-// Ensure app-level utils register (side-effects: providers, plugins, hooks)
-import '../plugins/providers'
-import '../plugins/deviceAuthorization'
-import '../plugins/jwt'
-import '../plugins/scim'
-import '../plugins/sso'
-import '../plugins/tokens'
-import '../plugins/mcp'
-import '../plugins/magicLink'
-import '../plugins/passkey'
-import '../plugins/apiKey'
-import '../plugins/phoneNumber'
-import '../plugins/otp'
-import '../plugins/username'
-import '../plugins/anonymous'
-import '../plugins/multiSession'
-import '../plugins/lastLogin'
-import '../plugins/organization'
-import '../plugins/captcha'
-import '../plugins/oAuth'
-import '../plugins/permissions'
-import '../plugins/pwned'
-import '../plugins/openApi'
-import '../plugins/bearer'
-import '../plugins/oneTap'
-import '../plugins/admin'
-import '../plugins/ethereum'
-import '../plugins/twoFactor'
+import { prisma } from 'alternate-gateway/core'
 
 // Minimal runtime config derived from environment to avoid external deps
 const runtimeConfig = {
@@ -91,7 +62,6 @@ export const createBetterAuth = () => betterAuth({
       }
     }
   },
-  secondaryStorage: undefined as any,
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -181,6 +151,9 @@ export const auth = (() => {
 })()
 
 export const useServerAuth = () => auth
+
+// Alias for Nitro auto-import in server plugins (e.g. plugins/auth.ts calls serverAuth())
+export const serverAuth = useServerAuth
 
 export const getAuthSession = async (event: H3Event) => {
   const headers = event.headers

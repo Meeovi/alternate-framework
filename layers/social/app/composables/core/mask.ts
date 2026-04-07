@@ -1,5 +1,5 @@
 import { h, render } from 'vue'
-import CommonMask from '#social/app/components/common/CommonMask.vue'
+import CommonMask from '../../components/common/CommonMask.vue'
 
 export interface UseMaskOptions {
   getContainer?: () => HTMLElement

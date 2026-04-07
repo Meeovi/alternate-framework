@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { toggleBlockAccount, toggleBlockDomain, toggleMuteAccount } from '#social/app/composables/federation/masto/relationship'
 
 const { account } = defineProps<{
@@ -15,7 +16,7 @@ const relationship = useRelationship(account)
 
 const isSelf = useSelfAccount(() => account)
 
-const { t } = useI18n()
+const { t } = useLocate()
 const { client } = useMasto()
 const useStarFavoriteIcon = usePreferences('useStarFavoriteIcon')
 const { share, isSupported: isShareSupported } = useShare()

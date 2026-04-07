@@ -14,10 +14,10 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "paths": {
-      "@mframework/core": ["packages/modules/core/index.ts"],
-      "@mframework/core/*": ["packages/modules/core/src/*"],
-      "#shared/*": ["packages/modules/core/src/shared/*"],
-      "#shared": ["packages/modules/core/src/shared"],
+      "alternate-gateway/core": ["packages/modules/alternate-gateway/core/index.ts"],
+      "alternate-gateway/core/*": ["packages/modules/alternate-gateway/core/src/*"],
+      "#shared/*": ["packages/modules/alternate-gateway/core/src/shared/*"],
+      "#shared": ["packages/modules/alternate-gateway/core/src/shared"],
       
       "~/*": [
         "./layers/commerce/app/*",
@@ -42,7 +42,7 @@
     "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [
-    "packages/modules/core/src/**/*",
+    "packages/modules/alternate-gateway/core/src/**/*",
     "packages/modules/api/**/*",
     "layers/shared/**/*",
     "layers/social/**/*",

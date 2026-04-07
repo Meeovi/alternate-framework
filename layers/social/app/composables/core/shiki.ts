@@ -61,7 +61,7 @@ const HTML_ENTITIES = {
 } as Record<string, string>
 
 function escapeHtml(text: string) {
-  return text.replace(/[<>&'"]/g, ch => HTML_ENTITIES[ch])
+  return text.replace(/[<>&'"]/g, ch => HTML_ENTITIES[ch] ?? ch)
 }
 
 export function highlightCode(code: string, lang: Lang) {

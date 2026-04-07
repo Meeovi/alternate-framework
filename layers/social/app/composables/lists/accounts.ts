@@ -1,11 +1,36 @@
-// Local stub implementations for account functions
-// These are no-op stubs for the lists layer
+import type { mastodon } from 'masto'
+import { useState } from 'nuxt/app'
 
-export function cacheAccount(_account: any): void {
-  // No-op: accounts are not cached in this layer
+type CachedAccount = mastodon.v1.Account | mastodon.v1.AccountCredentials
+
+function useAccountCache() {
+  return useState<Record<string, CachedAccount>>('social-account-cache', () => ({}))
 }
 
-export async function fetchAccountInfo(_id: string): Promise<any> {
-  // No-op: account fetching is handled elsewhere
-  return null
+export function cacheAccount(account: CachedAccount, server?: string, includeAcctAliases = false): void {
+  const cache = useAccountCache()
+  const keys = new Set<string>([account.id])
+
+  if (account.acct) {
+    keys.add(account.acct)
+    if (server)
+      keys.add(`${account.acct}@${server}`)
+  }
+
+  if (includeAcctAliases && account.url) {
+    try {
+      const url = new URL(account.url)
+      keys.add(`${account.username}@${url.hostname}`)
+    }
+    catch {
+      // Ignore malformed profile URLs when populating cache aliases.
+    }
+  }
+
+  for (const key of keys)
+    cache.value[key] = account
+}
+
+export async function fetchAccountInfo(id: string): Promise<CachedAccount | null> {
+  return useAccountCache().value[id] ?? null
 }

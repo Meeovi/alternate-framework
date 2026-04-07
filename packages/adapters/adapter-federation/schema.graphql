@@ -14,10 +14,13 @@ extend type Mutation {
 enum FediverseProtocol {
   activitypub
   atproto
+  ostatus
+  forgefed
 }
 
 input FediversePublishInput {
   protocol: FediverseProtocol!
   content: String!
   actor: String
+  metadata: JSON
 }

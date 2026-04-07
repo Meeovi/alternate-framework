@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth"
 import { sso } from "@better-auth/sso";
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 
 // Minimal no-op helpers for provisioning flows. In a full integration these
 // would create resources, call external APIs, and record audit events.
@@ -15,7 +15,7 @@ async function updateUserAttributes(_userId: string, _attributes: any) { return 
 async function syncWithExternalSystem(_user: any, _userInfo: any) { return }
 async function logProvisioningError(_userId: string, _err: any) { console.error(_err) }
 
-const ssoAuth = betterAuth({
+const ssoAuth = () => betterAuth({
     plugins: [
         sso({
             provisionUser: async ({ user, userInfo, token, provider }) => {

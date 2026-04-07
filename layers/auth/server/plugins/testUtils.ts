@@ -1,10 +1,10 @@
 // Test utilities for the auth layer — lightweight helpers used in development
-// These use @mframework/core when available, otherwise provide simple fallbacks.
+// These use alternate-gateway/core when available, otherwise provide simple fallbacks.
 
 export async function createTestUser(data: any = {}) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const core = require('@mframework/core')
+    const core = require('alternate-gateway/core')
     if (core?.prisma && core.prisma.user) {
       const user = await core.prisma.user.create({ data })
       return user
@@ -18,7 +18,7 @@ export async function createTestUser(data: any = {}) {
 export function resetTestData() {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const core = require('@mframework/core')
+    const core = require('alternate-gateway/core')
     if (core?.prisma) {
       // best-effort: truncate common tables if the adapter exposes them
       return Promise.all([

@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { currentUser } from '../../../../composables/contacts/users'
+import { isHydrated, useHydratedHead } from '../../../../composables/core/vue'
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.profile.label')} | ${t('nav.settings')}`,

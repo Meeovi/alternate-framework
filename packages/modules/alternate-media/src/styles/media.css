@@ -1,0 +1,14 @@
+.alt-media-player,
+.video-js {
+	width: 100%;
+	max-width: 100%;
+	aspect-ratio: 16 / 9;
+	background: #000;
+	border-radius: 0.75rem;
+	overflow: hidden;
+}
+
+.alt-media-player {
+	display: block;
+}
+

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useI18n, useMasto } from '@mframework/core/index';
+import { useMasto } from 'alternate-gateway/core/index';
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { useClipboard, useShare } from '@vueuse/core';
 import { noop } from '@vueuse/shared';
 import type { mastodon } from 'masto'
@@ -41,7 +42,7 @@ const {
 const clipboard = useClipboard()
 const router = useRouter()
 const route = useRoute()
-const { t } = useI18n()
+const { t } = useLocate()
 const userSettings = useUserSettings()
 const useStarFavoriteIcon = usePreferences('useStarFavoriteIcon')
 

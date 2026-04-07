@@ -4,9 +4,9 @@ import { generateRandomString } from "better-auth/crypto";
 import { verifyMessage, createPublicClient, http } from "viem";
 import { mainnet } from "viem/chains";
 
-export const ethereumAuth = betterAuth({
+export const ethereumAuth = () => betterAuth({
   database: {
-    // your database configuration
+    type: 'postgres',
   },
   plugins: [
     siwe({

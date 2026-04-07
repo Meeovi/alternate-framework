@@ -1,8 +1,10 @@
+import type { SearchAdapter as CoreSearchAdapter, SearchAdapterConfig } from 'alternate-gateway/core/adapters/search'
 import type {
-  SearchAdapter as CoreSearchAdapter,
   SearchQuery as CoreSearchQuery,
-  SearchResult as CoreSearchResult
-} from '@mframework/core'
+  SearchResult as CoreSearchResult,
+  Facet,
+  Result
+} from 'alternate-gateway/core/types'
 import { client } from './client'
 
 export interface OpenSearchAdapterOptions {
@@ -19,7 +21,7 @@ export function createOpenSearchAdapter(opts: OpenSearchAdapterOptions = {}): Co
   const adapter: CoreSearchAdapter<Record<string, unknown>> = {
     id,
     type: 'search',
-    config: { provider: 'opensearch' } as any,
+    config: { provider: 'opensearch' } satisfies SearchAdapterConfig,
 
     async search(query: CoreSearchQuery) {
       const page = (query as any).page && (query as any).page > 0 ? (query as any).page : 1
@@ -67,6 +69,13 @@ export function createOpenSearchAdapter(opts: OpenSearchAdapterOptions = {}): Co
       }
 
       return result
+    },
+
+    async facets(_query: CoreSearchQuery): Promise<Result<Facet[]>> {
+      return {
+        ok: true,
+        data: []
+      }
     }
   }
 

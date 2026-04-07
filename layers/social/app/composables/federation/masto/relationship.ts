@@ -1,5 +1,6 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 import type { Ref } from 'vue'
+import { openConfirmDialog } from '../../core/dialog'
 
 // Batch requests for relationships when used in the UI
 // We don't want to hold to old values, so every time a Relationship is needed it
@@ -42,7 +43,7 @@ async function fetchRelationships() {
 
 export async function toggleFollowAccount(relationship: mastodon.v1.Relationship, account: mastodon.v1.Account) {
   const { client } = useMasto()
-  const i18n = useNuxtApp().$i18n
+  const i18n = (useNuxtApp() as any).$i18n
 
   const unfollow = relationship!.following || relationship!.requested
 
@@ -73,7 +74,7 @@ export async function toggleFollowAccount(relationship: mastodon.v1.Relationship
 
 export async function toggleMuteAccount(relationship: mastodon.v1.Relationship, account: mastodon.v1.Account) {
   const { client } = useMasto()
-  const i18n = useNuxtApp().$i18n
+  const i18n = (useNuxtApp() as any).$i18n
 
   let duration = 0 // default 0 == indefinite
   let notifications = true // default true = mute notifications
@@ -103,7 +104,7 @@ export async function toggleMuteAccount(relationship: mastodon.v1.Relationship, 
 
 export async function toggleBlockAccount(relationship: mastodon.v1.Relationship, account: mastodon.v1.Account) {
   const { client } = useMasto()
-  const i18n = useNuxtApp().$i18n
+  const i18n = (useNuxtApp() as any).$i18n
 
   if (!relationship!.blocking) {
     const confirmBlock = await openConfirmDialog({
@@ -122,10 +123,10 @@ export async function toggleBlockAccount(relationship: mastodon.v1.Relationship,
 
 export async function toggleBlockDomain(relationship: mastodon.v1.Relationship, account: mastodon.v1.Account) {
   const { client } = useMasto()
-  const i18n = useNuxtApp().$i18n
+  const i18n = (useNuxtApp() as any).$i18n
+  const domain = getServerName(account)
 
   if (!relationship!.domainBlocking) {
-    const domain = getServerName(account)
     const confirmDomainBlock = await openConfirmDialog({
       title: i18n.t('confirm.block_domain.title'),
       description: i18n.t('confirm.block_domain.description', [domain]),
@@ -139,5 +140,5 @@ export async function toggleBlockDomain(relationship: mastodon.v1.Relationship, 
   }
 
   relationship!.domainBlocking = !relationship!.domainBlocking
-  await client.value.v1.domainBlocks[relationship!.domainBlocking ? 'create' : 'remove']({ domain: getServerName(account) })
+  await client.value.v1.domainBlocks[relationship!.domainBlocking ? 'create' : 'remove']({ domain: domain || '' })
 }

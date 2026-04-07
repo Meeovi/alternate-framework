@@ -1,5 +1,5 @@
 // @unocss-include
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 
 export const accountFieldIcons: Record<string, string> = Object.fromEntries(Object.entries({
   Alipay: 'i-ri:alipay-line',

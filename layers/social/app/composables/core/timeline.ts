@@ -60,19 +60,28 @@ export function reorderTimeline(items: mastodon.v1.Status[]) {
       // Check if the [i-k] item is a reply to the [i] item
       // This means that they are in the wrong order
 
-      if (areStatusesConsecutive(items[i], items[i - k])) {
+      const currentItem = items[i]
+      const previousItem = items[i - k]
+      if (!currentItem || !previousItem)
+        continue
+
+      if (areStatusesConsecutive(currentItem, previousItem)) {
         const item = items.splice(i, 1)[0]
+        if (!item)
+          continue
         items.splice(i - k, 0, item) // insert older item before the newer one
         k = 0
       }
       else if (k > 1) {
         // Check if the [i] item is a reply to the [i-k] item
         // This means that they are in the correct order but there are posts between them
-        if (areStatusesConsecutive(items[i - k], items[i])) {
+        if (areStatusesConsecutive(previousItem, currentItem)) {
           // If the next statuses are already ordered, move them all
           let j = i
           for (; j < items.length - 1; j++) {
-            if (!areStatusesConsecutive(items[j], items[j + 1]))
+            const left = items[j]
+            const right = items[j + 1]
+            if (!left || !right || !areStatusesConsecutive(left, right))
               break
           }
           const orderedCount = j - i + 1

@@ -2,18 +2,30 @@
   <div>Waiting for login...</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { navigateTo } from '#app'
-import { watch } from '#imports'
+import { onBeforeUnmount, onMounted, watch } from '#imports'
 import { useUserStore } from '../stores/user'
 
 const store = useUserStore()
+let loginRedirectTimer: ReturnType<typeof setTimeout> | null = null
 
 watch(() => store.user, (u) => {
   if (u) return navigateTo('/')
 }, { immediate: true })
 
-setTimeout(() => {
-  if (!store.user) navigateTo('/login')
-}, 3000)
+onMounted(() => {
+  loginRedirectTimer = setTimeout(() => {
+    if (!store.user) {
+      void navigateTo('/login')
+    }
+  }, 3000)
+})
+
+onBeforeUnmount(() => {
+  if (loginRedirectTimer) {
+    clearTimeout(loginRedirectTimer)
+    loginRedirectTimer = null
+  }
+})
 </script>

@@ -3,7 +3,7 @@ defineProps<{
   showLabel?: boolean
 }>()
 
-const { t } = useI18n()
+const { t } = useLocate()
 </script>
 
 <template>

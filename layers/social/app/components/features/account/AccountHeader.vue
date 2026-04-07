@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
 const { account } = defineProps<{
   account: mastodon.v1.Account
@@ -8,7 +9,7 @@ const { account } = defineProps<{
 
 const { client } = useMasto()
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 const createdAt = useFormattedDateTime(() => account.createdAt, {
   month: 'long',

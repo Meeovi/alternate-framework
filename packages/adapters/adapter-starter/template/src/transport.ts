@@ -1,4 +1,4 @@
-import type { TransportAdapter, RequestOptions, APIResponse } from '@mframework/core'
+import type { TransportAdapter, RequestOptions, APIResponse } from 'alternate-gateway/core'
 
 export const createTransport = (config: { baseUrl: string; apiKey?: string }): TransportAdapter => {
   return {

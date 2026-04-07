@@ -1,6 +1,6 @@
 // composables/usePosts.ts - use registered social provider (adapter) under the hood
-import { getSocialConfig } from '../config'
-import { getSocialProvider } from '../registry'
+import { getSocialConfig } from '../core/config'
+import { getSocialProvider } from '../core/registry'
 
 export const usePosts = () => {
   const config = getSocialConfig()

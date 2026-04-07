@@ -1,7 +1,7 @@
 // src/providers/mastodon.ts
-import type { SocialProvider, SocialProfile, SocialPost } from '../types'
-import { registerSocialProvider } from '../registry'
-import { getSocialConfig } from '../config'
+import type { SocialProvider, SocialProfile, SocialPost } from '../core/types'
+import { getSocialConfig } from '../core/config'
+import { registerSocialProvider } from '../core/registry'
 
 async function mastodonFetch(path: string, options: RequestInit = {}) {
   const { baseUrl, apiKey } = getSocialConfig()

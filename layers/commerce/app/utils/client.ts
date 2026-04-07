@@ -1,5 +1,5 @@
 import * as CommercePkg from '~/types';
-import { sdk } from '@mframework/core';
+import { sdk } from 'alternate-gateway/core';
 import imports from '../types';
 import { normalizeProductsQueryOutput, normalizeProduct } from '../types/normalizers/ProductList.type';
 import { normalizeProductsResponse } from '../types/normalizers/ProductList.query';

@@ -6,7 +6,7 @@ import type { UseProductReturn, UseProductState, FetchProduct } from './types';
 import { getCommerceClient } from '../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
 import { useHandleError } from '../useHandleError';
-import { Product } from '@mframework/core';
+import { Product } from 'alternate-gateway/core';
 
 /**
  * @description Composable managing product data

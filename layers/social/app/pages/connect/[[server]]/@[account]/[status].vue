@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from '#imports'
+import type { ComponentPublicInstance } from 'vue'
+import { getReplyDraft } from '../../../../composables/federation/masto/statusDrafts'
 
 definePageMeta({
   name: 'status',

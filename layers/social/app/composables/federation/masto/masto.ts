@@ -1,9 +1,9 @@
-import type { UserLogin } from '@mframework/core/shared/types'
+import type { UserLogin } from 'alternate-gateway/core/shared/types'
 import type { Pausable } from '@vueuse/core'
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 import type { Ref } from 'vue'
-import type { ElkInstance } from '../users'
-import { createRestAPIClient, createStreamingAPIClient, MastoHttpError } from 'masto'
+import type { ElkInstance } from '../../contacts/users'
+import { createMastodonRestClient, createMastodonStreamingClient, isMastoHttpErrorStatus } from '@mframework/adapter-federation'
 
 export function createMasto() {
   return {
@@ -29,17 +29,17 @@ export function mastoLogin(masto: ElkMasto, user: Pick<UserLogin, 'server' | 'to
   const createStreamingClient = (streamingApiUrl: string | undefined) => {
     // Only create the streaming client when there is a user session
     return streamingApiUrl && currentUser.value
-      ? createStreamingAPIClient({ streamingApiUrl, accessToken, implementation: globalThis.WebSocket })
+      ? createMastodonStreamingClient({ streamingApiUrl, accessToken, webSocketImplementation: globalThis.WebSocket })
       : undefined
   }
 
   const streamingApiUrl = instance?.configuration?.urls?.streaming
-  masto.client.value = createRestAPIClient({ url, accessToken })
+  masto.client.value = createMastodonRestClient({ url, accessToken })
   masto.streamingClient.value = createStreamingClient(streamingApiUrl)
 
   // Refetch instance info in the background on login
   masto.client.value.v2.instance.fetch().catch(error => new Promise<mastodon.v2.Instance>((resolve, reject) => {
-    if (error instanceof MastoHttpError && error.statusCode === 404) {
+    if (isMastoHttpErrorStatus(error, 404)) {
       return masto.client.value.v1.instance.fetch().then((newInstance) => {
         console.warn(`Instance ${server} on version ${newInstance.version} does not support "GET /api/v2/instance" API, try converting to v2 instance... expect some errors`)
         const v2Instance = {
@@ -135,7 +135,7 @@ export function useStreaming(
   })
 
   if (import.meta.client && !process.test)
-    useNuxtApp().$pageLifecycle.addFrozenListener(cleanup)
+    (useNuxtApp() as any).$pageLifecycle?.addFrozenListener(cleanup)
 
   tryOnBeforeUnmount(() => isActive.value = false)
 

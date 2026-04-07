@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { CommonRouteTabOption } from '@mframework/core/shared/types'
+import type { CommonRouteTabOption } from 'alternate-gateway/core/shared/types'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
 definePageMeta({
   middleware: ['auth'],
 })
 
 const route = useRoute()
-const { t } = useI18n()
+const { t } = useLocate()
 
 const list = computed(() => route.params.list as string)
 const server = computed(() => (route.params.server ?? currentServer.value) as string)

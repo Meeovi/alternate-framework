@@ -1,0 +1,55 @@
+{
+  "name": "@mframework/alternate-media",
+  "version": "0.0.6-beta.22",
+  "description": "Framework-agnostic media engine with Video.js and Vue adapter",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./createMediaEngine": "./src/createMediaEngine.ts",
+    "./analytics": "./src/analytics/index.ts",
+    "./players/videojs": "./src/players/videojs/index.ts",
+    "./players/hls": "./src/players/hls/index.ts",
+    "./adapters/vue": "./src/adapters/vue/MediaPlayer.vue",
+    "./styles/media.css": "./src/styles/media.css",
+    "./utils": "./src/utils/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "npm run typecheck",
+    "demo:smoke": "./demo/smoke-test.sh",
+    "demo:smoke:path": "DEMO_PATH=/media-demo ./demo/smoke-test.sh"
+  },
+  "dependencies": {
+    "@videojs/http-streaming": "^3.13.1",
+    "@videojs/themes": "^1.0.1",
+    "video.js": "^8.23.4",
+    "videojs-contrib-ads": "^7.1.0",
+    "videojs-contrib-quality-levels": "latest",
+    "videojs-hls-quality-selector": "^2.0.0",
+    "videojs-persist": "^0.2.0",
+    "videojs-quality-selector-hls": "^1.1.1",
+    "videojs-share": "^3.2.1",
+    "videojs-vr": "^2.0.0",
+    "videojs-wavesurfer": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/video.js": "^7.3.58",
+    "typescript": "^5.8.3",
+    "vue-tsc": "^3.1.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0"
+  },
+  "keywords": [
+    "videojs",
+    "mframework-framework",
+    "vue",
+    "react",
+    "content"
+  ],
+  "author": "M Framework",
+  "license": "MIT",
+  "type": "module"
+}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { toggleFollowAccount, useRelationship } from '#social/app/composables/federation/masto/relationship'
 
 const { account, context, command, ...props } = defineProps<{
@@ -9,7 +10,7 @@ const { account, context, command, ...props } = defineProps<{
   command?: boolean
 }>()
 
-const { t } = useI18n()
+const { t } = useLocate()
 const isSelf = useSelfAccount(() => account)
 const enable = computed(() => !isSelf.value && currentUser.value)
 const relationship = computed(() => props.relationship || useRelationship(account).value)

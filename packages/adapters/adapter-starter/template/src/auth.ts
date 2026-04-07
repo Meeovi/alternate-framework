@@ -1,7 +1,7 @@
 import type {
   AuthAdapter,
   TransportAdapter
-} from '@mframework/core'
+} from 'alternate-gateway/core'
 
 import type {
   LoginInput,
@@ -9,7 +9,7 @@ import type {
   Result,
   Session,
   User
-} from '@mframework/core'
+} from 'alternate-gateway/core'
 
 import { unwrap } from './utils'
 

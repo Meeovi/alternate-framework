@@ -1,5 +1,5 @@
-import type { CommerceAdapter, TransportAdapter } from '@mframework/core'
-import type { Product, Cart, Result } from '@mframework/core'
+import type { CommerceAdapter, TransportAdapter } from 'alternate-gateway/core'
+import type { Product, Cart, Result } from 'alternate-gateway/core'
 import { unwrap } from './utils'
 
 export const createCommerceAdapter = (

@@ -1,10 +1,17 @@
 export type FediversePost = {
   id: string;
-  protocol: "activitypub" | "atproto";
+  protocol: "activitypub" | "atproto" | "ostatus" | "forgefed";
   author: string;
   content: string;
   createdAt: string;
   url?: string;
+};
+
+export type FediversePublishInput = {
+  protocol: "activitypub" | "atproto" | "ostatus" | "forgefed";
+  content: string;
+  actor?: string;
+  metadata?: Record<string, unknown>;
 };
 
 export type FediverseLayerAccess = {
@@ -21,6 +28,6 @@ export interface FederationGatewayAdapterContract {
   getAtprotoProfile(handle: string): Promise<unknown | null>;
   getAtprotoFeed(actor: string, limit?: number): Promise<FediversePost[]>;
   getUnifiedFeed(identity: string, limit?: number): Promise<FediversePost[]>;
-  publish(input: { protocol: "activitypub" | "atproto"; content: string; actor?: string }): Promise<unknown>;
+  publish(input: FediversePublishInput): Promise<unknown>;
   fanoutToLayers(payload: unknown): Promise<{ payload: unknown; layers: FediverseLayerAccess }>;
 }

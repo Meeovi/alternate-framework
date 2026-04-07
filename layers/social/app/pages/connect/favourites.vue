@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { isHydrated, useHydratedHead } from '../../composables/core/vue'
+import { usePreferences } from '../../composables/settings/storage'
+
 definePageMeta({
   middleware: ['auth'],
 })
 
-const { t } = useI18n()
+const { t } = useLocate()
 const useStarFavoriteIcon = usePreferences('useStarFavoriteIcon')
 
 useHydratedHead({

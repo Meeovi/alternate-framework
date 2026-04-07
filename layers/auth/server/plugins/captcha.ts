@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { captcha } from "better-auth/plugins";
 
-export const captchaAuth = betterAuth({
+export const captchaAuth = () => betterAuth({
     plugins: [ 
         captcha({ 
             provider: "cloudflare-turnstile", // or google-recaptcha, hcaptcha, captchafox

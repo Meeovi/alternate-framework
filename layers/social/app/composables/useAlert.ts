@@ -1,0 +1,1 @@
+export { useAlert } from '../../../shared/app/composables/useAlert'

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const { t } = useI18n()
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { useHydratedHead } from '../../../../composables/core/vue'
+
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.interface.label')} | ${t('nav.settings')}`,

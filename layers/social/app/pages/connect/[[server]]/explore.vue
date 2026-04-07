@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { CommonRouteTabOption } from '@mframework/core/shared/types'
+import type { CommonRouteTabOption } from 'alternate-gateway/core/shared/types'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 const search = ref<{ input?: HTMLInputElement }>()
 const route = useRoute()

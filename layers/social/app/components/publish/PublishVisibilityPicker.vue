@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { statusVisibilities } from '../../composables/federation/masto/icons'
 
 defineProps<{
   editing?: boolean
@@ -10,7 +11,7 @@ const modelValue = defineModel<string>({
 })
 
 const currentVisibility = computed(() =>
-  statusVisibilities.find(v => v.value === modelValue.value) || statusVisibilities[0],
+  statusVisibilities.find((v) => v.value === modelValue.value) || statusVisibilities[0],
 )
 
 function chooseVisibility(visibility: mastodon.v1.StatusVisibility) {

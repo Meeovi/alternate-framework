@@ -1,5 +1,7 @@
-import type { DraftItem, DraftKey } from '@mframework/core/shared/types'
+import type { DraftItem, DraftKey } from 'alternate-gateway/core/shared/types'
 import type { mastodon } from 'masto'
+import { usePublish } from '../federation/masto/publish'
+import { getDefaultDraftItem, useDraft } from '../federation/masto/statusDrafts'
 
 const maxThreadLength = 99
 

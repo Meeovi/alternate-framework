@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { DraftItem } from '#shared/types'
+import type { DraftItem, DraftKey } from '#shared/types'
 import type { mastodon } from 'masto'
+import { useThreadComposer } from '../../composables/core/thread'
+import { clearEmptyDrafts, getDefaultDraftItem } from '../../composables/federation/masto/statusDrafts'
 
 const {
   draftKey,

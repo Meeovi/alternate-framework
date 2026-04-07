@@ -7,6 +7,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
+      "alternate-gateway/core": ["../../packages/modules/alternate-gateway/core/index.ts"],
+      "alternate-gateway/core/*": ["../../packages/modules/alternate-gateway/core/src/*"],
       "@mframework/adapter-betterauth": ["./app/utils/adapter-betterauth/index.ts"],
       "@mframework/adapter-betterauth/": ["./app/utils/adapter-betterauth/index.ts"],
       "@mframework/adapter-betterauth/*": ["./app/utils/adapter-betterauth/*"]

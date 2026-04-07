@@ -1,19 +1,14 @@
-import {
-  setAuthAdapter,
-  setCommerceAdapter,
-  setSearchAdapter
-} from '@mframework/core'
-
 import { createTransport } from './src/transport'
 import { createAuthAdapter } from './src/auth'
 import { createCommerceAdapter } from './src/commerce'
 import { createSearchAdapter } from './src/search'
+import { createAdapterInstaller, defineAdapterLayerFactories } from './src/patterns'
 
 // Replace __PACKAGE_NAME__ with your package name.
-export const install__SHORT_NAME__Adapter = (config: { baseUrl: string; apiKey?: string }) => {
-  const transport = createTransport(config)
+const layerFactories = defineAdapterLayerFactories({
+  auth: createAuthAdapter,
+  commerce: createCommerceAdapter,
+  search: createSearchAdapter,
+})
 
-  setAuthAdapter(createAuthAdapter(transport))
-  setCommerceAdapter(createCommerceAdapter(transport))
-  setSearchAdapter(createSearchAdapter(transport))
-}
+export const install__SHORT_NAME__Adapter = createAdapterInstaller(createTransport, layerFactories)

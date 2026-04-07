@@ -10,7 +10,7 @@ import type { Refund } from '@polar-sh/sdk/models/components/refund.js'
 import type { Subscription } from '@polar-sh/sdk/models/components/subscription.js'
 import { checkout, polar, portal, usage, webhooks } from '@polar-sh/better-auth'
 import { Polar } from '@polar-sh/sdk'
-import { prisma } from '@mframework/core'
+import { prisma } from 'alternate-gateway/core'
 type User = any
 import { logAuditEvent } from './auth'
 // runtimeConfig is not available in this isolated build; use env fallbacks

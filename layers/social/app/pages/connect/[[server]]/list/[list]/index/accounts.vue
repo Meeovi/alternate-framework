@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import AccountSearchResult from '#social/app/components/features/lists/AccountSearchResult.vue'
+import AccountSearchResult from '../../../../../../components/features/lists/AccountSearchResult.vue'
 
 definePageMeta({
   name: 'list-accounts',

@@ -13,7 +13,7 @@ const {
   subscribe,
   unsubscribe,
 } = usePushManager()
-const { t } = useI18n()
+const { t } = useLocate()
 
 const pwaEnabled = useAppConfig().pwaEnabled
 

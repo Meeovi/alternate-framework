@@ -1,6 +1,6 @@
 import { useCustomer } from '~/composables/useCustomer/useCustomer';
 
-vi.mock('@mframework/core', () => ({
+vi.mock('alternate-gateway/core', () => ({
   sdk: {
     commerce: {
       getCustomer: vi.fn(() => ({

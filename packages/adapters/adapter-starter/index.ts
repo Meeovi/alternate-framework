@@ -1,25 +1,26 @@
-import {
-  setAuthAdapter,
-  setCommerceAdapter,
-  setSearchAdapter
-} from '@mframework/core'
-
 import { createStarterTransport } from './src/transport'
 import { createStarterAuthAdapter } from './src/auth'
 import { createStarterCommerceAdapter } from './src/commerce'
 import { createStarterSearchAdapter } from './src/search'
+import {
+  createAdapterInstaller,
+  defineAdapterLayerFactories,
+} from './src/patterns'
 import { createStarterGatewayClient } from './utils/client'
 import { handleStarterAdapterError } from './utils/errors'
 import { normalizeStarterSearchResult } from './utils/normalizers'
 import type { StarterGatewayAdapterContract, StarterSearchResult } from './types'
 
-export const installStarterAdapter = (config: { baseUrl: string; apiKey?: string }) => {
-  const transport = createStarterTransport(config)
+const starterLayerFactories = defineAdapterLayerFactories({
+  auth: createStarterAuthAdapter,
+  commerce: createStarterCommerceAdapter,
+  search: createStarterSearchAdapter,
+})
 
-  setAuthAdapter(createStarterAuthAdapter(transport))
-  setCommerceAdapter(createStarterCommerceAdapter(transport))
-  setSearchAdapter(createStarterSearchAdapter(transport))
-}
+export const installStarterAdapter = createAdapterInstaller(
+  createStarterTransport,
+  starterLayerFactories,
+)
 
 export class StarterAdapter implements StarterGatewayAdapterContract {
   private readonly transport = createStarterGatewayClient()
@@ -35,7 +36,7 @@ export class StarterAdapter implements StarterGatewayAdapterContract {
       })
       return normalizeStarterSearchResult(response.data)
     } catch (error) {
-      handleStarterAdapterError(error)
+      return handleStarterAdapterError(error)
     }
   }
 }

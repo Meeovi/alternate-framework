@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Picker } from 'emoji-mart'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 // Fallback for build-time when the virtual emoji-mart lang importer is unavailable
 const importEmojiLang = async (_lang: string) => ({})
 
@@ -8,7 +9,7 @@ const emit = defineEmits<{
   (e: 'selectCustom', image: any): void
 }>()
 
-const { locale } = useI18n()
+const { locale } = useLocate()
 
 const el = ref<HTMLElement>()
 const picker = ref<Picker>()

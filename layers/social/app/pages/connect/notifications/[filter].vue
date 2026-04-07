@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { isNotification } from '../../../composables/notifications/notification'
+import { isHydrated, useHydratedHead } from '../../../composables/core/vue'
 
 const route = useRoute()
-const { t } = useI18n()
+const { t } = useLocate()
 
 const filter = computed<mastodon.v1.NotificationType | undefined>(() => {
   if (!isHydrated.value)

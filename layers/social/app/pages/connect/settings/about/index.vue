@@ -1,6 +1,12 @@
 <script setup lang="ts">
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { elkTeamMembers, useBuildInfo } from '../../../../composables/core/about'
+import { openPreviewHelp } from '../../../../composables/core/dialog'
+import { isHydrated, useHydratedHead } from '../../../../composables/core/vue'
+import { useFormattedDateTime } from '../../../../composables/useFormattedDateTime'
+
 const buildInfo = useBuildInfo()
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${t('settings.about.label')} | ${t('nav.settings')}`,

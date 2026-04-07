@@ -1,10 +1,11 @@
-import type { mastodon } from 'masto'
+import type { mastodon } from '@mframework/adapter-federation'
 import type {
   CreatePushNotification,
   PushManagerSubscriptionInfo,
   RequiredUserLogin,
-} from '#social/app/composables/push-notifications/types'
-import { PushSubscriptionError } from '#social/app/composables/push-notifications/types'
+} from './types'
+import { PushSubscriptionError } from './types'
+import { currentUser, removePushNotificationData, removePushNotifications } from '../contacts/users'
 
 export async function createPushSubscription(
   user: RequiredUserLogin,

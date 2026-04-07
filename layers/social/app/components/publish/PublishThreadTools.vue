@@ -16,7 +16,7 @@ function addOrRemoveItem() {
     addThreadItem()
 }
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 const label = computed(() => {
   if (!isRemovableItem.value && draftItemIndex === 0)

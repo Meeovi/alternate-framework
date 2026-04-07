@@ -16,7 +16,6 @@ import { Plugin } from 'prosemirror-state'
 // Fallback stubs for local tiptap extensions (present in dev builds). These provide
 // minimal shapes so the theme build can proceed; they should be replaced with
 // the real implementations where available.
-import { Extension } from '@tiptap/vue-3'
 
 const TiptapPluginCustomEmoji = Extension.create({ name: 'custom-emoji' }) as any
 const TiptapPluginEmoji = Extension.create({ name: 'emoji' }) as any

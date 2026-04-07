@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["vitest", "node"],
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "outDir": "dist",
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "noEmitOnError": false,
+    "paths": {
+      "~/*": ["app/*"],
+      "@/*": ["app/*"],
+      "#social/*": ["./*"],
+      "alternate-gateway/core": ["../../packages/modules/alternate-gateway/core/index.ts"],
+      "alternate-gateway/core/*": ["../../packages/modules/alternate-gateway/core/src/*"]
+    }
+  },
+  "include": [
+    "app/composables/useLocate.ts",
+    "app/composables/useHydratedHead.ts",
+    "app/composables/useFormattedDateTime.ts",
+    "app/composables/useBuildInfo.ts",
+    "app/composables/core/about.ts",
+    "app/composables/core/vue.ts",
+    "app/composables/settings/definition.ts",
+    "app/composables/lists/accounts.ts",
+    "app/composables/notifications/notification.ts",
+    "app/constants/index.ts",
+    "app/constants/options.ts",
+    "README.md",
+    "package.json"
+  ],
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "node_modules"
+  ]
+}

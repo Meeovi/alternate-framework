@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { currentUser } from '../../composables/contacts/users'
+import { useHydratedHead } from '../../composables/core/vue'
+
 definePageMeta({
   wideLayout: true,
 })
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => t('nav.settings'),

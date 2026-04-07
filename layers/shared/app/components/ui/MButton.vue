@@ -1,17 +1,9 @@
 <template>
-    <v-btn :color="color" class="m-btn" v-bind="$attrs">
-        <NuxtPage />
-    </v-btn>
+  <AlternateUIButton v-bind="$attrs">
+    <slot />
+  </AlternateUIButton>
 </template>
 
 <script setup lang="ts">
-    defineProps < {
-        color ? : string
-    } > ()
+import { Button as AlternateUIButton } from 'alternate-ui/shared-ui/components'
 </script>
-
-<style scoped>
-    .m-btn {
-        @apply px-4 py-2 rounded-md;
-    }
-</style>

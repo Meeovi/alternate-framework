@@ -1,7 +1,7 @@
 <template>
   <div class="authPage">
     <section data-bs-version="5.1" class="authForm">
-      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" :alt="`${process.env.NUXT_APP_NAME}`" class="authLogo" />
+      <NuxtImg loading="lazy" src="~/assets/images/logo512alpha-128x128.png" :alt="appName" class="authLogo" />
       <h1 class="mbr-section-title mbr-fonts-style display-1">Forgot Password</h1>
 
       <div class="mbr-section-btn">
@@ -32,10 +32,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useHead } from 'nuxt/app'
 import { definePageMeta } from '#imports'
-import { useAuth } from '../composables/useAuth'
+import { useRuntimeConfig } from '#imports'
 import useLocalePath from '../composables/useLocalePath'
 import { z } from 'zod'
 import { reactive, ref } from '#imports'
@@ -51,16 +51,17 @@ useHead({
   title: 'Forgot Password'
 })
 
-const auth = useAuth()
 const alert = useAlert()
 const localePath = useLocalePath()
+const runtimeConfig = useRuntimeConfig()
+const appName = String(runtimeConfig.public?.appName || 'App')
 
 const schema = z.object({
-  email: z.email(('forgotPassword.errors.invalidEmail'))
+  email: z.string().email('Invalid email address')
 })
 
-const state = reactive<Partial<Schema>>({
-  email: undefined
+const state = reactive({
+  email: ''
 })
 
 const loading = ref(false)
@@ -73,29 +74,31 @@ const messageType = ref<'info' | 'success' | 'error' | 'warning' | undefined>(un
 const turnstileRef = ref<HTMLElement | null>(null)
 const turnstileToken = ref<string | null>(null)
 
-const email = ref("");
-
 const handleForgetPassword = async () => {
-	if (!email.value) {
+  if (!state.email) {
 		alert("Please enter your email address");
 		return;
 	}
+  loading.value = true
+  message.value = null
 	await forgetPassword(
 		{
-			email: email.value,
+      email: state.email,
 			redirectTo: "/reset-password",
 		},
 		{
 			// onSuccess find the url with token in server console. For detail check forgetPassword section: https://www.better-auth.com/docs/authentication/email-password
 			onSuccess() {
-				alert("Password reset link sent to your email");
-				window.location.href = "/login";
+        messageType.value = 'success'
+        message.value = 'Password reset link sent to your email.'
 			},
 			onError(context) {
-				alert(context.error.message);
+        messageType.value = 'error'
+        message.value = context.error.message;
 			},
 		},
 	);
+  loading.value = false
 };
 </script>
 

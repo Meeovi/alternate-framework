@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { username } from "better-auth/plugins"
 
-const usernameAuth = betterAuth({
+const usernameAuth = () => betterAuth({
     emailAndPassword: {
         enabled: true,
     },

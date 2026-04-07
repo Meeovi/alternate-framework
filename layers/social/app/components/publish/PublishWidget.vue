@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import type { DraftItem, DraftKey } from '#shared/types'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import type { mastodon } from 'masto'
 import { EditorContent } from '@tiptap/vue-3'
 import { useNow } from '@vueuse/core'
 import stringLength from 'string-length'
+import { languagesNameList } from '@mframework/localization'
+import { characterLimit, currentInstance } from '../../composables/contacts/users'
+import { htmlToText } from '../../composables/core/content-parse'
+import { useTiptap } from '../../composables/core/tiptap'
+import { useThreadComposer } from '../../composables/core/thread'
+import { usePublish, useUploadMediaAttachment } from '../../composables/federation/masto/publish'
+import { getDefaultDraftItem } from '../../composables/federation/masto/statusDrafts'
+import { useWebShareTarget } from '../../composables/share/web-share-target'
 
 const {
   threadComposer,
@@ -28,7 +37,7 @@ const emit = defineEmits<{
   (evt: 'published', status: mastodon.v1.Status): void
 }>()
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 const { threadItems, threadIsActive, publishThread, threadIsSending } = threadComposer ?? useThreadComposer(draftKey)
 
@@ -92,7 +101,7 @@ const { editor } = useTiptap({
 })
 
 function trimPollOptions() {
-  const indexLastNonEmpty = draft.value.params.poll!.options.findLastIndex(option => option.trim().length > 0)
+  const indexLastNonEmpty = draft.value.params.poll!.options.findLastIndex((option: string) => option.trim().length > 0)
   const trimmedOptions = draft.value.params.poll!.options.slice(0, indexLastNonEmpty + 1)
 
   if (currentInstance.value?.configuration
@@ -232,7 +241,7 @@ const characterCount = computed(() => {
 
   if (draft.value.mentions) {
     // + 1 is needed as mentions always need a space separator at the end
-    length += draft.value.mentions.map((mention) => {
+    length += draft.value.mentions.map((mention: string) => {
       const [handle] = mention.split('@')
       return `@${handle}`
     }).join(' ').length + 1
@@ -247,7 +256,7 @@ const isExceedingCharacterLimit = computed(() => {
   return characterCount.value > characterLimit.value
 })
 
-const postLanguageDisplay = computed(() => languagesNameList.find(i => i.code === (draft.value.params.language || preferredLanguage.value))?.nativeName)
+const postLanguageDisplay = computed(() => languagesNameList.find((i: { code: string; nativeName: string }) => i.code === (draft.value.params.language || preferredLanguage.value))?.nativeName)
 
 const isDM = computed(() => draft.value.params.visibility === 'direct')
 

@@ -3,7 +3,7 @@
   "version": "0.0.3-beta.3",
   "description": "Social Layer for the M Framework",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nuxt dev --port 5314",
     "typecheck": "nuxt typecheck",
@@ -24,9 +24,11 @@
   "type": "module",
   "main": "./nuxt.config.ts",
   "dependencies": {
-    "@mframework/core": "file:../../packages/modules/core",
+    "alternate-gateway": "file:../../packages/modules/alternate-gateway",
+    "alternate-locate": "file:../../packages/modules/alternate-locate",
     "@mframework/localization": "file:../../packages/modules/localization",
     "alternate-search": "file:../../packages/modules/alternate-search",
+    "@mframework/adapter-federation": "file:../../packages/adapters/adapter-federation",
     "@mframework/adapter-rocketchat": "file:../../packages/adapters/adapter-rocketchat",
     "@vueuse/core": "^13.9.0",
     "@vueuse/nuxt": "^14.1.0",

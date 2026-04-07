@@ -1,5 +1,5 @@
-import type { SearchAdapter, TransportAdapter } from '@mframework/core'
-import type { SearchQuery, SearchResult, Facet, Result } from '@mframework/core'
+import type { SearchAdapter, TransportAdapter } from 'alternate-gateway/core/adapters'
+import type { SearchQuery, SearchResult, Facet, Result } from 'alternate-gateway/core/types'
 import { unwrap } from './utils'
 
 // Provide a starter-style adapter factory so apps using the starter-adapter
@@ -7,9 +7,16 @@ import { unwrap } from './utils'
 export const createStarterSearchAdapter = (
   transport: TransportAdapter
 ): SearchAdapter => ({
-  async search<T = unknown>(query: SearchQuery): Promise<Result<SearchResult<T>>> {
+  id: 'opensearch-starter-search',
+  type: 'search',
+
+  async search<T = unknown>(query: SearchQuery): Promise<SearchResult<T>> {
     const res = await transport.request<SearchResult<T>>('POST', '/search', { body: query })
-    return unwrap(res)
+    const result = unwrap(res)
+    if (!result.ok) {
+      throw new Error(result.error)
+    }
+    return result.data
   },
 
   async facets(query: SearchQuery): Promise<Result<Facet[]>> {

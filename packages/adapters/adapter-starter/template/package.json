@@ -10,7 +10,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@mframework/core": "file:../../../modules/core",
+    "alternate-gateway": "file:../../../modules/alternate-gateway",
     "typescript": "^5.9.3"
   }
 }

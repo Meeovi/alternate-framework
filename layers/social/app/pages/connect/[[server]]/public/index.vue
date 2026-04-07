@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => t('title.federated_timeline'),

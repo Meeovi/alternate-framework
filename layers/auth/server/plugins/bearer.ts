@@ -9,7 +9,7 @@ const bearerPlugin: any = (() => {
   }
 })()
 
-export const bearerAuth = betterAuth({
+export const bearerAuth = () => betterAuth({
   plugins: bearerPlugin ? [bearerPlugin({ scheme: 'Bearer' } as any)] : [],
 })
 

@@ -1,7 +1,9 @@
 import type { SchemaAugmentations } from '@unhead/schema'
 import type { ActiveHeadEntry, UseHeadInput, UseHeadOptions } from '@unhead/vue'
 import type { ComponentInternalInstance } from 'vue'
-import { onActivated, onDeactivated, ref } from 'vue'
+import { useHead } from 'nuxt/app'
+import { onActivated, onDeactivated, ref, toValue } from 'vue'
+import { watchOnce } from '@vueuse/core'
 
 export const isHydrated = ref(false)
 

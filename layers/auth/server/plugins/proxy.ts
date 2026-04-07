@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth"
 import { oAuthProxy } from "better-auth/plugins"
 
-export const proxyAuth = betterAuth({
+export const proxyAuth = () => betterAuth({
     plugins: [ 
         oAuthProxy({ 
             productionURL: "https://my-main-app.com", // Optional - if the URL isn't inferred correctly

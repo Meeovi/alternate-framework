@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
 
 const { actions = true, isNested = false, ...props } = defineProps<{
   status: mastodon.v1.Status
@@ -21,7 +22,7 @@ const status = computed(() => {
 
 const createdAt = useFormattedDateTime(status.value.createdAt)
 
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => `${getDisplayName(status.value.account)} ${t('common.in')} ${t('app_name')}: "${removeHTMLTags(status.value.content) || ''}"`,

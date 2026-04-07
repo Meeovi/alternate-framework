@@ -19,7 +19,10 @@ try {
     // twilio not configured or not installed — fallback to other senders
 }
 
-export const phoneNumberAuth = betterAuth({
+export const phoneNumberAuth = () => betterAuth({
+    database: {
+        type: 'postgres',
+    },
     plugins: phoneNumberPlugin
         ? [
                 phoneNumberPlugin({
@@ -39,7 +42,7 @@ export const phoneNumberAuth = betterAuth({
                 // Try core SMS sender if provided
                 try {
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    const core = require('@mframework/core')
+                    const core = require('alternate-gateway/core')
                     if (core?.sendSms && typeof core.sendSms === 'function') {
                         await core.sendSms({ to: phoneNumber, text: `Your verification code is ${code}` })
                         return
@@ -62,7 +65,7 @@ export const phoneNumberAuth = betterAuth({
                 // Example: call optional core hook if available
                 try {
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
-                    const core = require('@mframework/core')
+                    const core = require('alternate-gateway/core')
                     if (core?.onPhoneVerified) {
                         await core.onPhoneVerified({ phoneNumber, user })
                     }

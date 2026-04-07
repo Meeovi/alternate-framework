@@ -1,6 +1,8 @@
 import type { Node } from 'ultrahtml'
 import { decode } from 'tiny-decode'
 import { parse, TEXT_NODE } from 'ultrahtml'
+import { computed } from 'vue'
+import { isGlitchEdition } from '../contacts/users'
 
 export const maxAccountFieldCount = computed(() => isGlitchEdition.value ? 16 : 4)
 

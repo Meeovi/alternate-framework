@@ -15,10 +15,10 @@ cp .env.example .env.local
 # Edit .env.local if your DB credentials differ or to set BASE_URL
 ```
 
-3) (Optional) If your Prisma migrations are required, run them from the core package — example:
+3) (Optional) If your Prisma migrations are required, run them from the alternate-gateway core package — example:
 
 ```bash
-cd ../../packages/modules/core
+cd ../../packages/modules/alternate-gateway/core
 # If you have prisma/migrations set up, run migrate. If not, skip.
 # npx prisma migrate deploy --schema=./prisma/schema.prisma --preview-feature
 ```

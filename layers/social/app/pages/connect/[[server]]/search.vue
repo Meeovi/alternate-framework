@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const keys = useMagicKeys()
-const { t } = useI18n()
+const { t } = useLocate()
 
 useHydratedHead({
   title: () => t('nav.search'),
@@ -15,11 +15,14 @@ watchEffect(() => {
 onActivated(() => search.value?.input?.focus())
 onDeactivated(() => search.value?.input?.blur())
 
-watch(keys['/'], (v) => {
-  // focus on input when '/' is up to avoid '/' being typed
-  if (!v)
-    search.value?.input?.focus()
-})
+const slashKey = keys['/']
+if (slashKey) {
+  watch(slashKey, (v) => {
+    // focus on input when '/' is up to avoid '/' being typed
+    if (!v)
+      search.value?.input?.focus()
+  })
+}
 </script>
 
 <template>

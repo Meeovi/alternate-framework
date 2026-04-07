@@ -1,7 +1,10 @@
-import type { Directions, LocaleObject } from '@nuxtjs/i18n'
+import type { LocaleObject } from 'alternate-locate'
+import { useLocate } from 'alternate-locate/adapters/vue/composable'
+
+type Directions = 'ltr' | 'rtl'
 
 export function setupPageHeader() {
-  const { locale, locales, t } = useI18n()
+  const { locale, locales, t } = useLocate()
   const colorMode = useColorMode()
   const buildInfo = useBuildInfo()
   const enablePinchToZoom = usePreferences('enablePinchToZoom')
