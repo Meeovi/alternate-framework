@@ -5,7 +5,11 @@ export default defineNuxtPlugin({
     // Flag if request is cached
     nuxtApp.payload.isCached = Boolean(useRequestEvent()?.context.cache)
     if (nuxtApp.payload.serverRendered && !nuxtApp.payload.prerenderedAt && !nuxtApp.payload.isCached) {
-      await useAuth().fetchSession()
+      try {
+        await useAuth().fetchSession()
+      } catch {
+        // Session hydration should be best-effort and must not fail SSR rendering.
+      }
     }
   }
 })

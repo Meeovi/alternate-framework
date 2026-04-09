@@ -1,11 +1,13 @@
 export default defineNuxtPlugin(async (nuxtApp) => {
+  const auth = useAuth()
+
   if (!nuxtApp.payload.serverRendered) {
-    await useAuth().fetchSession()
+    await auth.fetchSession()
+    return
   }
-  else if (Boolean(nuxtApp.payload.prerenderedAt) || Boolean(nuxtApp.payload.isCached)) {
-    // To avoid hydration mismatch
-    nuxtApp.hook('app:mounted', async () => {
-      await useAuth().fetchSession()
-    })
-  }
+
+  // Revalidate on mount so browser cookies always win after restarts or stale SSR payloads.
+  nuxtApp.hook('app:mounted', async () => {
+    await auth.fetchSession()
+  })
 })

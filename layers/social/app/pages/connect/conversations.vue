@@ -8,13 +8,14 @@ definePageMeta({
 
 const { t } = useLocate()
 
-useHydratedHead({
-  title: () => t('nav.conversations'),
-})
+  useHead({
+    title: 'Conversations',
+  })
 </script>
 
 <template>
   <MainContent>
+    <v-toolbar title="Conversations"></v-toolbar>
     <template #title>
       <MainTitle as="router-link" to="/conversations" icon="i-ri:at-line">
         {{ t('nav.conversations') }}

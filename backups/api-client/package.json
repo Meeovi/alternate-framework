@@ -24,6 +24,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@graphql-mesh/compose-cli": "^1.5.14",
     "graphql": "^16.13.1"
   },
   "devDependencies": {

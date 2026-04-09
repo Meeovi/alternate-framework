@@ -1,7 +1,6 @@
 export { createActivitypubProviders, registerActivitypubProvidersRuntime } from './runtime/providers'
 export { createActivitypubClient, getActivitypubClient } from './runtime/client'
 export { default as activitypubPlugin } from './runtime/plugin'
-export { default as nuxtModule } from './module'
 export { createFederationProviders } from './providers'
 export { loginAtproto, getAtprotoCredentialsFromEnv } from './auth/auth'
 export { createAtprotoClient } from './auth/session'

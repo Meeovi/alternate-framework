@@ -36,35 +36,40 @@ export function useAuth() {
 
   const fetchSession = async () => {
     if (sessionFetching.value) {
-      console.log('already fetching session')
-      return
+      return { session: session.value, user: user.value }
     }
+
     sessionFetching.value = true
-    if (useAdapterBridge) {
-      try {
+
+    try {
+      if (useAdapterBridge) {
         const data = await $fetch<{ session?: any; user?: any }>('/api/auth/adapter/session', {
           method: 'GET',
           headers: headers as any,
         })
         session.value = data?.session || null
         user.value = data?.user || null
-      } catch {
+        return { session: session.value, user: user.value }
+      }
+
+      const { data } = await client.getSession({
+        fetchOptions: {
+          headers,
+        },
+      })
+      session.value = data?.session || null
+      user.value = data?.user || null
+      return data
+    } catch {
+      // Treat session fetch failures as unauthenticated and allow retry.
+      if (import.meta.client) {
         session.value = null
         user.value = null
       }
-      sessionFetching.value = false
       return { session: session.value, user: user.value }
+    } finally {
+      sessionFetching.value = false
     }
-
-    const { data } = await client.getSession({
-      fetchOptions: {
-        headers,
-      },
-    })
-    session.value = data?.session || null
-    user.value = data?.user || null
-    sessionFetching.value = false
-    return data
   }
 
   if (import.meta.client) {

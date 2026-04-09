@@ -8,13 +8,14 @@ definePageMeta({
 
 const { t } = useLocate()
 
-useHydratedHead({
-  title: () => t('nav.muted_users'),
-})
+  useHead({
+    title: 'Mutes',
+  })
 </script>
 
 <template>
-  <MainContent back>
+  <MainContent>
+    <v-toolbar title="Mutes"></v-toolbar>
     <template #title>
       <MainTitle>{{ $t('nav.muted_users') }}</MainTitle>
     </template>

@@ -1,17 +1,27 @@
 <script setup lang="ts">
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
-import { currentUser } from '../../composables/contacts/users'
-import { isHydrated, useHydratedHead } from '../../composables/core/vue'
+  import {
+    useLocate
+  } from 'alternate-locate/adapters/vue/composable'
+  import {
+    currentUser
+  } from '../../composables/contacts/users'
+  import {
+    isHydrated,
+    useHydratedHead
+  } from '../../composables/core/vue'
 
-const { t } = useLocate()
+  const {
+    t
+  } = useLocate()
 
-useHydratedHead({
-  title: () => t('nav.hashtags'),
-})
+  useHead({
+    title: 'Hashtags',
+  })
 </script>
 
 <template>
   <MainContent>
+    <v-toolbar title="Hashtags"></v-toolbar>
     <template #title>
       <MainTitle as="router-link" to="/hashtags" icon="i-ri:hashtag">
         {{ t('nav.hashtags') }}

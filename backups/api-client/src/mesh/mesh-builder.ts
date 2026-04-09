@@ -1,15 +1,22 @@
 /**
- * Mesh Configuration Builder  
- * 
+ * Mesh Configuration Builder
+ *
  * Dynamically generates mesh gateway configuration by loading all registered
  * adapter endpoints and creating GraphQL subgraphs. This enables backend-agnostic
  * architecture where layers don't hardcode backend URLs.
  */
 
-import type { 
-  GatewayConfig, 
-  ComposeConfig 
-} from '@mframework/api'
+import { createRequire } from 'node:module'
+
+type GatewayConfig = {
+  webhooks?: boolean
+  cache?: string
+}
+
+type ComposeConfig = {
+  subgraphs: any[]
+  plugins?: any[]
+}
 
 import {
   getAllAdapterEndpoints,
@@ -17,6 +24,8 @@ import {
   resolveAdapterRestEndpoint,
   isAdapterEnabled
 } from './adapter-registry'
+
+const require = createRequire(import.meta.url)
 
 /**
  * Build gateway configuration for the mesh
@@ -45,7 +54,7 @@ export function buildGatewayConfig(): GatewayConfig {
  * // Returns configuration with all registered adapter subgraphs
  */
 export async function buildComposeConfig(context?: any): Promise<ComposeConfig> {
-  const { loadGraphQLHTTPSubgraph } = await import('@mframework/api')
+  const { loadGraphQLHTTPSubgraph } = await import('@graphql-mesh/compose-cli')
   
   const adapters = getAllAdapterEndpoints()
   const subgraphs = []
@@ -114,7 +123,7 @@ export async function buildComposeConfig(context?: any): Promise<ComposeConfig> 
     console.warn('[MeshBuilder] No adapters loaded - mesh will have no subgraphs')
   }
   
-  const { defineConfig } = await import('@mframework/api')
+  const { defineConfig } = await import('@graphql-mesh/compose-cli')
   
   return defineConfig({
     subgraphs,
@@ -131,7 +140,7 @@ export async function buildComposeConfig(context?: any): Promise<ComposeConfig> 
  * Only uses this if no adapters are registered
  */
 export function buildFallbackComposeConfig(): ComposeConfig {
-  const { defineConfig, loadGraphQLHTTPSubgraph } = require('@mframework/api')
+  const { defineConfig, loadGraphQLHTTPSubgraph } = require('@graphql-mesh/compose-cli')
   
   const endpoint = process.env.SEARCH_ENDPOINT || 
                    process.env.AUTH_ENDPOINT || 

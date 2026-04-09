@@ -9,13 +9,14 @@ definePageMeta({
 
 const { t } = useLocate()
 
-useHydratedHead({
-  title: () => t('account.pinned'),
-})
+  useHead({
+    title: 'Pinned',
+  })
 </script>
 
 <template>
   <MainContent>
+    <v-toolbar title="Pinned"></v-toolbar>
     <template #title>
       <MainTitle as="router-link" to="/pinned" icon="i-ri:pushpin-line">
         {{ t('account.pinned') }}

@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { betterAuth } from "better-auth"
 import { anonymous } from "better-auth/plugins"
 
@@ -10,7 +11,7 @@ export const anonymousAuth = () => betterAuth({
             },
             emailDomainName: "example.com", // -> temp-{id}@example.com
             generateRandomEmail: () => { 
-                const id = crypto.randomUUID() 
+                const id = randomUUID() 
                 return `guest-${id}@example.com`
             }
         })

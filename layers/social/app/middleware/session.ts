@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(() => {
 
   if (!session.value) {
     session.value = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       date_created: new Date().toISOString(),
     } as any
   }
