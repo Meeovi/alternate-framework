@@ -1,5 +1,7 @@
 import { MFrameworkContext } from './context'
-import { MFrameworkEventBus } from '../types/events'
+import type {
+    MFrameworkEventBus
+} from '../types/events';
 
 let currentContext: MFrameworkContext | null = null
 let currentEventBus: MFrameworkEventBus | null = null

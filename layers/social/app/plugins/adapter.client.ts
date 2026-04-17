@@ -1,38 +1,66 @@
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
+import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
+import { createMeeoviDirectusClient } from '@mframework/adapter-directus'
+import { staticToken } from '@directus/sdk'
 
-declare const defineNuxtPlugin: any
+function createAdapter(url: string, token?: string) {
+  const sdk = createMeeoviDirectusClient<any>(url)
+  const client = token ? (sdk.client as any).with(staticToken(token)) : sdk.client
 
-export default defineNuxtPlugin(() => {
-  const adapter = useAdapterRequest()
+  const adapter = {
+    request: (query: any) => client.request(query),
+    readItems: (collection: string, opts?: any) => client.request(sdk.readItems(collection as any, opts)),
+    readItem: (collection: string, id: string | number, opts?: any) => client.request(sdk.readItem(collection as any, id as any, opts)),
+    readFieldsByCollection: (collection: string) => client.request(sdk.readFieldsByCollection(collection as any)),
+    createItem: (collection: string, payload: any) => client.request(sdk.createItem(collection as any, payload)),
+    updateItem: (collection: string, id: string | number, payload?: any) => client.request(sdk.updateItem(collection as any, id as any, payload)),
+    deleteItem: (collection: string, id: string | number) => client.request(sdk.deleteItem(collection as any, id as any)),
+    uploadFiles: (files: any) => client.request(sdk.uploadFiles(files)),
+    getAssetUrl: (file: any) => {
+      const fid = file?.id || file?.directus_files_id?.id || file?.filename_disk || file
+      if (!fid) return ''
+      return `${url.replace(/\/$/, '')}/assets/${fid}`
+    },
+  }
 
-  const directusUrl = (globalThis as any).__directus?.url || ''
+  return { adapter, sdk }
+}
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const existing = (nuxtApp as any).$adapter
+  if (existing && typeof existing.readItems === 'function') return {}
+
+  const config = useRuntimeConfig()
+  const publicConfig = (config.public as any) || {}
+  const directusUrl = String(publicConfig?.directus?.url || publicConfig?.directusUrl || publicConfig?.apiBase || '')
+  const directusToken = String(publicConfig?.directus?.staticToken || '')
+  if (!directusUrl) return {}
+
+  const { adapter, sdk } = createAdapter(directusUrl, directusToken || undefined)
+  ;(globalThis as any).__adapter = adapter
+  ;(globalThis as any).__directus = { ...sdk, url: directusUrl }
+
+  const canProvide = (key: string) => !(`$${key}` in (nuxtApp as any))
+  const provide: Record<string, any> = {}
+  if (canProvide('adapter')) provide.adapter = adapter
+  if (canProvide('contentClient')) provide.contentClient = adapter
+  if (canProvide('readItems')) provide.readItems = adapter.readItems
+  if (canProvide('readItem')) provide.readItem = adapter.readItem
+  if (canProvide('readFieldsByCollection')) provide.readFieldsByCollection = adapter.readFieldsByCollection
+  if (canProvide('createItem')) provide.createItem = adapter.createItem
+  if (canProvide('updateItem')) provide.updateItem = adapter.updateItem
+  if (canProvide('deleteItem')) provide.deleteItem = adapter.deleteItem
+  if (canProvide('uploadFiles')) provide.uploadFiles = adapter.uploadFiles
+  if (canProvide('directus')) {
+    provide.directus = {
+      ...sdk,
+      url: directusUrl,
+      request: adapter.request,
+    }
+  }
+
+  if (!Object.keys(provide).length) return {}
 
   return {
-    provide: {
-      readItems: (collection: string, opts?: any) => adapter.readItems(collection, opts),
-      readItem: (collection: string, id: any, opts?: any) => adapter.readItem(collection, id, opts),
-      readFieldsByCollection: (collection: string) => adapter.readFieldsByCollection(collection),
-      createItem: (collection: string, payload: any) => adapter.createItem(collection, payload),
-      updateItem: (collection: string, id: any, payload?: any) => adapter.updateItem(collection, id, payload),
-      deleteItem: (collection: string, id: any) => adapter.deleteItem(collection, id),
-      uploadFiles: (files: any) => adapter.uploadFiles(files),
-      // Provide a minimal $directus compatibility object so existing code that calls
-      // $directus.request($readItems(...)) continues to work. `request` will
-      // resolve promises or return values directly.
-      directus: {
-        url: directusUrl,
-        request: async (maybe: any) => {
-          try {
-            if (!maybe) return maybe
-            if (typeof maybe === 'function') return await maybe()
-            if (maybe && typeof maybe.then === 'function') return await maybe
-            return maybe
-          } catch (err) {
-            // fallback: return as-is
-            return maybe
-          }
-        }
-      }
-    }
+    provide,
   }
 })

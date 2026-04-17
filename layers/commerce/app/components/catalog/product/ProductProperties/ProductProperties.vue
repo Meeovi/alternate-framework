@@ -37,12 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 import { ProductPropertiesProps } from './types';
 import { computed } from '#imports';
-import { useProductAttribute } from '~/composables/useProductAttribute';
+import { useProductAttribute } from '~/composables/catalog/useProductAttribute';
 
 const props = defineProps<ProductPropertiesProps>();
 

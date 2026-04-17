@@ -29,20 +29,17 @@
 
 <script setup>
 import brandCard from '../../related/brandCard.vue'
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
   const model = ref(null)
   const {
-    $directus,
+    $dataClient,
     $readItems
   } = useNuxtApp()
 
   const {
     data: relatedbrands
   } = await useAsyncData('relatedbrands', () => {
-    return $directus.request($readItems('brands', {
+    return $dataClient.request($readItems('brands', {
       fields: ['*',
         'image.*',
       ],

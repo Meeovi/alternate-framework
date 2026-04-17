@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div v-if="product?.image?.filename_disk">
-                        <img :src="`${$directus.url}assets/${product.image.filename_disk}`" :alt="product.name"
+                        <img :src="`${$dataClient.url}assets/${product.image.filename_disk}`" :alt="product.name"
                             class="w-full rounded-md" />
                     </div>
                 </div>
@@ -13,7 +13,11 @@
                         <h1 class="mb-1 font-bold typography-headline-4"><strong>{{ product?.name }}</strong></h1>
                         <div class="price-line">
                             <span class="block pb-2 font-bold typography-text-lg">
-                                {{ product?.price }}
+                                {{ pricing?.formatted?.final || product?.price }}
+                            </span>
+                            <span v-if="pricing?.hasDiscount" class="block pb-2 text-sm text-neutral-500">
+                                <s>{{ pricing?.formatted?.regular }}</s>
+                                <span class="pl-1">{{ pricing?.discountPercent }}% off via {{ pricing?.source }}</span>
                             </span>
                         </div>
                         <p class="productRatings">
@@ -56,6 +60,11 @@
                         <div class="price-line1" v-for="tag in product?.tags" :key="tag.id">
                             <p class="desc mbr-fonts-style display-7"><strong>Tags:</strong> <tagCard :tag="tag?.tag_id" />&nbsp;</p>
                         </div>
+                        <div v-if="productRssLink" class="pt-3">
+                            <NuxtLink :to="productRssLink" target="_blank" rel="noopener" class="text-sm no-underline">
+                                Follow product feed
+                            </NuxtLink>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -64,28 +73,22 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     import {
+        computed,
         ref
     } from '#imports';
-    import {
-        SfIconAdd,
-        SfIconRemove,
-    } from '@storefront-ui/vue';
-    import {
-        clamp
-    } from '@storefront-ui/shared';
+    import { watch } from 'vue';
     import {
         useCounter
     } from '@vueuse/core';
+    import { usePrice } from '../../../composables/catalog/price/price';
+    import useContentFallback from '../../../composables/content/useContent';
     import tagCard from '#social/app/components/related/tag.vue';
     import addToCartBtn from '../../partials/addToCartBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
 
     const {
-        $directus,
+        $dataClient,
     } = useNuxtApp()
     const inputId = useId();
     const min = ref(1);
@@ -103,7 +106,7 @@ void useContentAdapter()
     function handleOnChange(event: Event) {
         const currentValue = (event.target as HTMLInputElement)?.value;
         const nextValue = Number.parseFloat(currentValue);
-        set(clamp(nextValue, min.value, max.value));
+        set(Math.min(Math.max(nextValue, min.value), max.value));
     }
 
     const props = defineProps({
@@ -112,6 +115,19 @@ void useContentAdapter()
             required: true
         },
     });
+
+    const { getProductPrice } = usePrice();
+    const { getProductRssLink } = useContentFallback();
+    const pricing = computed(() => getProductPrice(props.product || {}));
+    const productRssLink = ref<string | null>(null);
+
+    watch(
+        () => props.product,
+        async (product) => {
+            productRssLink.value = product ? await getProductRssLink(product) : null;
+        },
+        { immediate: true }
+    );
 
     const formatPrice = (amount: number) => {
         if (!amount) return '$0.00';

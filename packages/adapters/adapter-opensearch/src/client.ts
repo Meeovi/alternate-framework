@@ -1,10 +1,9 @@
 // Create a client
 import { Client } from "@opensearch-project/opensearch";
 
-const host = process.env.OPENSEARCH_HOST || "localhost";
-const protocol = process.env.OPENSEARCH_PROTOCOL || "http";
-const port = process.env.OPENSEARCH_PORT || 9200;
-const auth = process.env.OPENSEARCH_AUTH || "admin:<custom-admin-password>";
+const host = process.env.ALTERNATE_SEARCH_HOST || "localhost";
+const protocol = process.env.ALTERNATE_SEARCH_PROTOCOL || "http";
+const port = process.env.ALTERNATE_SEARCH_PORT || 9200;
 
 export const client = new Client({
     ssl: {
@@ -12,8 +11,8 @@ export const client = new Client({
     },
     node: protocol + "://" + host + ":" + port,
     auth: {
-        username: process.env.OPENSEARCH_USERNAME || 'admin',
-        password: process.env.OPENSEARCH_PASSWORD || 'admin',
+        username: process.env.ALTERNATE_SEARCH_USERNAME || 'admin',
+        password: process.env.ALTERNATE_SEARCH_PASSWORD || 'admin',
     },
     memoryCircuitBreaker: {
         enabled: true,

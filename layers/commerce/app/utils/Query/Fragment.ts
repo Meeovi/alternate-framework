@@ -13,7 +13,7 @@ import Field from './Field';
 
 /** @namespace ../../utils/../../normalizers/Fragment */
 export class Fragment extends Field {
-    __construct(name: string): void {
+    override __construct(name: string): void {
         super.__construct(name);
         (this as any).name = `... on ${name}`;
     }

@@ -16,7 +16,7 @@ type Store = any;
 
 // Re-export the concrete RootState definitions so all modules importing
 // `app/utils/Store/Store.type.ts` see the same expanded shape.
-export { ConfigReducerState, CartReducerState, MyAccountReducerState, RootState } from '../../stores/Store.type';
+export type { ConfigReducerState, CartReducerState, MyAccountReducerState, RootState } from '../../stores/Store.type';
 
 declare global {
     export type ModifiedReduxStore<S> = Store & {

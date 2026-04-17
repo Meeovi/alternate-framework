@@ -1,4 +1,7 @@
-import { BaseAdapter, BaseAdapterConfig } from './common'
+import type {
+    BaseAdapter,
+    BaseAdapterConfig
+} from './common';
 
 export interface CatalogAdapterConfig extends BaseAdapterConfig {
   provider: string

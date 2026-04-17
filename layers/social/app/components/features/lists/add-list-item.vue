@@ -38,7 +38,7 @@
   //import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
   import {
     useDirectusForm
-  } from '#shared/app/composables/globals/useDirectusForm'
+  } from '@mframework/adapter-directus'
   import ListItemCard from './ListItemCard.vue'
 
   const props = defineProps({

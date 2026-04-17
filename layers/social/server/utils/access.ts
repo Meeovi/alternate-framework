@@ -8,9 +8,13 @@ const MAX_DEPTH = 4
 const MAX_KEYS = 50
 const MAX_ARRAY_LENGTH = 50
 const MAX_STRING_LENGTH = 1000
+const COLLECTION_NAME_PATTERN = /^[a-z][a-z0-9_]{0,63}$/
+const LISTS_READABLE_COLLECTIONS = new Set(['lists', 'list_items', 'websites', 'files'])
+const LISTS_MUTABLE_COLLECTIONS = new Set(['lists', 'list_items', 'websites'])
+const LISTS_FIELD_READABLE_COLLECTIONS = new Set(['lists', 'list_items', 'websites'])
 
 async function loadAuthModule() {
-  return import('#auth/server/utils/auth')
+  return import('alternate-auth/server/utils/auth')
 }
 
 function getUserId(user: Record<string, any> | null | undefined) {
@@ -70,7 +74,7 @@ export function sanitizeEntityType(value: unknown) {
   return entityType
 }
 
-function sanitizeEntityId(value: unknown, fieldName = 'entityId') {
+export function sanitizeEntityId(value: unknown, fieldName = 'entityId') {
   const entityId = String(value || '').trim()
 
   if (!ENTITY_ID_PATTERN.test(entityId)) {
@@ -102,7 +106,12 @@ export function sanitizePageParam(value: unknown, fieldName: string, options: { 
   return parsed
 }
 
-function sanitizeStructuredValue(value: unknown, depth = 0): unknown {
+export function isListsAdminUser(user: Record<string, any> | null | undefined) {
+  const roles = Array.isArray(user?.roles) ? user.roles : []
+  return roles.includes('lists_admin')
+}
+
+export function sanitizeStructuredValue(value: unknown, depth = 0): unknown {
   if (value === undefined || value === null) {
     return value
   }
@@ -155,4 +164,120 @@ function sanitizeStructuredValue(value: unknown, depth = 0): unknown {
   }
 
   throw createError({ statusCode: 400, statusMessage: 'Unsupported request payload value' })
+}
+
+function normalizeComparableValue(value: unknown): string | null {
+  if (value === undefined || value === null) {
+    return null
+  }
+
+  if (typeof value === 'object') {
+    const objectValue = value as Record<string, unknown>
+    if (typeof objectValue.id === 'string' || typeof objectValue.id === 'number') {
+      return String(objectValue.id).trim().toLowerCase()
+    }
+
+    if (typeof objectValue.value === 'string' || typeof objectValue.value === 'number') {
+      return String(objectValue.value).trim().toLowerCase()
+    }
+
+    return null
+  }
+
+  const normalized = String(value).trim().toLowerCase()
+  return normalized.length > 0 ? normalized : null
+}
+
+function getOwnershipCandidates(user: Record<string, any> | null | undefined): Set<string> {
+  const candidates = new Set<string>()
+
+  const addCandidate = (value: unknown) => {
+    const normalized = normalizeComparableValue(value)
+    if (normalized) {
+      candidates.add(normalized)
+    }
+  }
+
+  addCandidate(user?.id)
+  addCandidate(user?.userId)
+  addCandidate(user?.sub)
+  addCandidate(user?.username)
+  addCandidate(user?.email)
+  addCandidate((user as any)?.profile?.username)
+
+  return candidates
+}
+
+export function sanitizeCollectionName(value: unknown) {
+  const collection = String(value || '').trim().toLowerCase()
+
+  if (!COLLECTION_NAME_PATTERN.test(collection)) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid collection provided' })
+  }
+
+  return collection
+}
+
+export function assertListsReadableCollection(collection: string) {
+  if (!LISTS_READABLE_COLLECTIONS.has(collection)) {
+    throw createError({ statusCode: 403, statusMessage: 'Collection is not readable' })
+  }
+}
+
+export function assertListsMutableCollection(collection: string) {
+  if (!LISTS_MUTABLE_COLLECTIONS.has(collection)) {
+    throw createError({ statusCode: 403, statusMessage: 'Collection is not writable' })
+  }
+}
+
+export function assertListsFieldReadableCollection(collection: string) {
+  if (!LISTS_FIELD_READABLE_COLLECTIONS.has(collection)) {
+    throw createError({ statusCode: 403, statusMessage: 'Collection fields are not readable' })
+  }
+}
+
+export function getPrimaryListsOwnerValue(user: Record<string, any> | null | undefined) {
+  const candidates = [user?.id, user?.userId, user?.sub]
+  const resolved = candidates.find((entry) => typeof entry === 'string' || typeof entry === 'number')
+  return resolved !== undefined && resolved !== null ? String(resolved) : null
+}
+
+export function getPreferredListsUsername(user: Record<string, any> | null | undefined) {
+  const candidates = [user?.username, user?.handle, user?.name, user?.email]
+  const resolved = candidates.find((entry) => typeof entry === 'string' && entry.trim().length > 0)
+  return resolved ? String(resolved).trim() : null
+}
+
+export function recordMatchesListsOwnership(
+  record: Record<string, any> | null | undefined,
+  user: Record<string, any> | null | undefined,
+  fields: string[],
+) {
+  if (!record || !user || fields.length === 0) {
+    return false
+  }
+
+  const ownershipCandidates = getOwnershipCandidates(user)
+  if (ownershipCandidates.size === 0) {
+    return false
+  }
+
+  for (const fieldName of fields) {
+    const value = normalizeComparableValue(record[fieldName])
+    if (value && ownershipCandidates.has(value)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+export async function requireListsUserAccess(event: H3Event) {
+  const access = await requireSocialUserAccess(event)
+  return access.user as Record<string, any>
+}
+
+export async function getOptionalListsUserAccess(event: H3Event) {
+  const access = await getOptionalSocialUser(event)
+  return (access?.user || null) as Record<string, any> | null
 }

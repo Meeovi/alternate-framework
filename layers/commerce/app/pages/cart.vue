@@ -48,9 +48,6 @@
   </template>
   
   <script setup>
-  import { useCommerceAdapter, useContentAdapter } from '#imports'
-  void useCommerceAdapter()
-  void useContentAdapter()
   import { useCartStore } from '~/stores/cart'
   
   import ShippingOptions from '../components/catalog/product/shippingOptions.vue'

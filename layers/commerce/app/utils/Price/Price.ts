@@ -9,7 +9,9 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { TierPrice } from '../../types/normalizers/ProductList.type';
+import type {
+    TierPrice
+} from '../../types/normalizers/ProductList.type';
 import { GQLCurrencyEnum } from '../../types/Graphql.type';
 
 import { CurrencyMap, HUNDRED_PERCENT } from './Price.config';
@@ -56,8 +58,14 @@ export const roundPrice = (price: number): string => price.toFixed(2);
 
 /** @namespace ../../utils/Price/getLowestPriceTiersPrice */
 export const getLowestPriceTiersPrice = (price_tiers: TierPrice[], currency: GQLCurrencyEnum): string => {
+    const [firstTier] = price_tiers;
+
+    if (!firstTier) {
+        return formatPrice(0, currency);
+    }
+
     const lowestValue = price_tiers
-        .reduce((acc, { final_price: { value } }) => (acc < value ? acc : value), price_tiers[0].final_price.value);
+        .reduce((acc, { final_price: { value } }) => (acc < value ? acc : value), firstTier.final_price.value);
 
     return formatPrice(lowestValue, currency);
 };

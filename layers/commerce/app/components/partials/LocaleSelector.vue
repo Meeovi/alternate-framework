@@ -10,9 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 import { useLocate } from 'alternate-locate/adapters/vue/composable';
 import { ref, computed } from '#imports';
 

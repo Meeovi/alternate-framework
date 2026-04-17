@@ -30,10 +30,8 @@
                                             <v-btn variant="tertiary" :disabled="count <= min" square
                                                 class="rounded-r-none p-3" :aria-controls="inputId"
                                                 aria-label="Decrease quantity" @click="handleDecrease">
-                                                <SfIconRemove />
+                                                <v-icon>mdi-minus</v-icon>
                                             </v-btn>
-
-                                            <!-- Quantity Input -->
                                             <v-text-field :id="inputId" v-model="count" type="number"
                                                 class="grow appearance-none mx-2 w-8 text-center bg-transparent font-medium"
                                                 :min="min" :max="max" @change="handleQuantityChange"
@@ -43,7 +41,7 @@
                                             <v-btn variant="tertiary" :disabled="count >= max" square
                                                 class="rounded-l-none p-3" :aria-controls="inputId"
                                                 aria-label="Increase quantity" @click="handleIncrease">
-                                                <SfIconAdd />
+                                                <v-icon>mdi-plus</v-icon>
                                             </v-btn>
                                         </div>
                                         <!-- Stock Information -->
@@ -68,13 +66,9 @@
 
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { ref, computed, watch } from '#imports';
-import {  SfIconAdd, SfIconRemove, useId } from '@storefront-ui/vue';
-import { useVendureMutation } from '../../composables/useVendureMutation';
+import { useCommerceMutation } from '../../composables/globals/useCommerceMutation';
 import adjustOrderLineMutation from '#graphql/app/commerce/mutations/adjustOrderLine.gql';
 import removeOrderLineMutation from '#graphql/app/commerce/mutations/removeOrderLine.gql';
 
@@ -88,8 +82,8 @@ const props = defineProps({
 const count = ref(props.product.quantity);
 const inputId = useId();
 
-const { mutate: adjustOrderLine } = useVendureMutation(adjustOrderLineMutation);
-const { mutate: removeOrderLine } = useVendureMutation(removeOrderLineMutation);
+const { mutate: adjustOrderLine } = useCommerceMutation(adjustOrderLineMutation);
+const { mutate: removeOrderLine } = useCommerceMutation(removeOrderLineMutation);
 
 const itemCount = computed(() => {
     return props.cart?.lines?.reduce((total: number, line: any) => total + (line.quantity || 1), 0) || 0;

@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { CancelablePromise } from './Promise.type';
+import type { CancelablePromise } from './Promise.type';
 
 /* eslint-disable prefer-promise-reject-errors */
 // Disabled due promise being reject with custom error (isCanceled)

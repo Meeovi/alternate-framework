@@ -1,153 +1,39 @@
 import type { DraftItem, DraftKey, DraftMap, Mutable } from 'alternate-gateway/core/shared/types'
-import type { mastodon } from '@mframework/adapter-federation'
+import {
+  createStatusDraftTools,
+  type StatusDraftItem,
+  type mastodon,
+} from '@mframework/adapter-federation'
 import type { ComputedRef, Ref } from 'vue'
 import { STORAGE_KEY_DRAFTS } from '../../../utils/constants'
 import { currentUser, useUserLocalStorage } from '../../contacts/users'
 import { convertMastodonHTML, htmlToText } from '../../core/content-parse'
 import { openPublishDialog } from '../../core/dialog'
 
+const statusDraftTools = createStatusDraftTools<DraftItem & StatusDraftItem>({
+  getCurrentUser: () => currentUser.value,
+  convertMastodonHTML,
+  htmlToText,
+})
+
 export const currentUserDrafts = (import.meta.server || process.test)
   ? computed<DraftMap>(() => ({ home: [], dialog: [], intent: [], quote: [] }))
   : useUserLocalStorage<DraftMap>(STORAGE_KEY_DRAFTS, () => ({ home: [], dialog: [], intent: [], quote: [] }))
 
-const ALL_VISIBILITY: readonly mastodon.v1.StatusVisibility[] = ['public', 'unlisted', 'private', 'direct'] as const
-
-function getDefaultVisibility(currentVisibility: mastodon.v1.StatusVisibility) {
-  // The default privacy only should be taken into account if it makes
-  // the post more private than the replying to post
-  const preferredVisibility = currentUser.value?.account.source.privacy || 'public'
-  return ALL_VISIBILITY.indexOf(currentVisibility)
-    > ALL_VISIBILITY.indexOf(preferredVisibility)
-    ? currentVisibility
-    : preferredVisibility
-}
-
-const ALL_QUOTE_APPROVAL_POLICY: readonly mastodon.rest.v1.QuoteApprovalPolicy[] = ['public', 'followers', 'nobody'] as const
-
-function getDefaultQuoteApprovalPolicy(currentQuoteApprovalPolicy: mastodon.rest.v1.QuoteApprovalPolicy) {
-  // The default quote policy only should be taken into account if it makes
-  // the quote permission more restricted
-  const preferredQuoteApprovalPolicy = currentUser.value?.account.source.quotePolicy || 'public'
-  return ALL_QUOTE_APPROVAL_POLICY.indexOf(currentQuoteApprovalPolicy)
-    > ALL_QUOTE_APPROVAL_POLICY.indexOf(preferredQuoteApprovalPolicy)
-    ? currentQuoteApprovalPolicy
-    : preferredQuoteApprovalPolicy
-}
-
 export function getDefaultDraftItem(options: Partial<Mutable<mastodon.rest.v1.CreateScheduledStatusParams> & Omit<DraftItem, 'params'>> = {}): DraftItem {
-  const {
-    attachments = [],
-    initialText = '',
-    status,
-    inReplyToId,
-    visibility,
-    sensitive,
-    spoilerText,
-    language,
-    mentions,
-    poll,
-    scheduledAt,
-    quotedStatusId,
-    quoteApprovalPolicy,
-  } = options
-
-  return {
-    attachments,
-    initialText,
-    params: {
-      status: status || '',
-      poll,
-      scheduledAt,
-      inReplyToId,
-      quotedStatusId,
-      quoteApprovalPolicy: getDefaultQuoteApprovalPolicy(quoteApprovalPolicy || 'public'),
-      visibility: getDefaultVisibility(visibility || 'public'),
-      sensitive: sensitive ?? false,
-      spoilerText: spoilerText || '',
-      language: language || '', // auto inferred from current language on posting
-    },
-    mentions,
-    lastUpdated: Date.now(),
-  }
+  return statusDraftTools.getDefaultDraftItem(options)
 }
 
 export async function getDraftFromStatus(status: mastodon.v1.Status): Promise<DraftItem> {
-  const info = {
-    status: await convertMastodonHTML(status.content),
-    visibility: status.visibility,
-    attachments: status.mediaAttachments,
-    sensitive: status.sensitive,
-    spoilerText: status.spoilerText,
-    language: status.language,
-    inReplyToId: status.inReplyToId,
-  }
-
-  return getDefaultDraftItem((status.mediaAttachments !== undefined && status.mediaAttachments.length > 0)
-    ? { ...info, mediaIds: status.mediaAttachments.map(att => att.id) }
-    : {
-        ...info,
-        poll: status.poll
-          ? {
-              expiresIn: Math.abs(new Date().getTime() - new Date(status.poll.expiresAt!).getTime()) / 1000,
-              options: [...status.poll.options.map(({ title }) => title), ''],
-              multiple: status.poll.multiple,
-              hideTotals: status.poll.options[0]?.votesCount === null,
-            }
-          : undefined,
-      })
-}
-
-function getAccountsToMention(status: mastodon.v1.Status) {
-  const userId = currentUser.value?.account.id
-  const accountsToMention = new Set<string>()
-  if (status.account.id !== userId)
-    accountsToMention.add(status.account.acct)
-  status.mentions
-    .filter(mention => mention.id !== userId)
-    .map(mention => mention.acct)
-    .forEach(i => accountsToMention.add(i))
-  return Array.from(accountsToMention)
+  return await statusDraftTools.getDraftFromStatus(status)
 }
 
 export function getReplyDraft(status: mastodon.v1.Status) {
-  const accountsToMention = getAccountsToMention(status)
-  return {
-    key: `reply-${status.id}` satisfies DraftKey,
-    draft: () => {
-      return getDefaultDraftItem({
-        initialText: '',
-        inReplyToId: status!.id,
-        sensitive: status.sensitive,
-        spoilerText: status.spoilerText,
-        visibility: status.visibility,
-        mentions: accountsToMention,
-        language: status.language,
-      })
-    },
-  }
+  return statusDraftTools.getReplyDraft(status) as { key: DraftKey, draft: () => DraftItem }
 }
 
 export function isEmptyDraft(drafts: Array<DraftItem> | DraftItem | null | undefined) {
-  if (!drafts)
-    return true
-
-  const draftsArray: Array<DraftItem> = Array.isArray(drafts) ? drafts : [drafts]
-
-  if (draftsArray.length === 0)
-    return true
-
-  const anyDraftHasContent = draftsArray.some((draft) => {
-    const { params, attachments } = draft
-    const status = params.status ?? ''
-    const text = htmlToText(status).trim().replace(/^(@\S+\s?)+/, '').replaceAll(/```/g, '').trim()
-    const hasQuote = !!params.quotedStatusId
-
-    return (text.length > 0)
-      || (attachments.length > 0)
-      || hasQuote
-  })
-
-  return !anyDraftHasContent
+  return statusDraftTools.isEmptyDraft(drafts)
 }
 
 export interface UseDraft {
@@ -199,12 +85,7 @@ export function privateMentionUser(account: mastodon.v1.Account) {
   }))
 }
 
-export const builtinDraftKeys = [
-  'home',
-  'dialog',
-  'intent',
-  'quote',
-]
+export const builtinDraftKeys = statusDraftTools.builtinDraftKeys
 
 export function clearEmptyDrafts() {
   for (const key in currentUserDrafts.value) {
@@ -218,5 +99,5 @@ export function clearEmptyDrafts() {
 }
 
 export function isDraftKey(key: string | number): key is DraftKey {
-  return builtinDraftKeys.includes(String(key)) || (typeof key === 'string' && key.startsWith('reply-'))
+  return statusDraftTools.isDraftKey(key)
 }

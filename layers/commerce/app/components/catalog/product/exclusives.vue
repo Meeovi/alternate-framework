@@ -28,16 +28,13 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import productCard from './productCard.vue'
 
   const model = ref(null);
-  const { $directus, $readItems, $commerce } = useNuxtApp()
+  const { $dataClient, $readItems, $commerce } = useNuxtApp()
 
   const { data: exclusives } = await useAsyncData('exclusives', async () => {
-    const refs = await $directus.request($readItems('products', {
+    const refs = await $dataClient.request($readItems('products', {
       fields: ['id', 'sku'],
       limit: 10,
       filter: {

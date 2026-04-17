@@ -33,6 +33,15 @@ export function initializePrisma(PrismaClientClass: any): PrismaClientType {
     return prismaInstance
   }
 
+  // Honor the unified database provider selector.
+  const databaseProvider = String(process.env.DATABASE_PROVIDER || 'postgresql').toLowerCase()
+  if (databaseProvider !== 'postgresql' && databaseProvider !== 'prisma-postgres') {
+    throw new Error(
+      `[alternate-gateway/core] Unsupported DATABASE_PROVIDER: ${databaseProvider}. ` +
+      'This module currently supports only postgresql/prisma-postgres via PrismaPg.'
+    )
+  }
+
   // Ensure DATABASE_URL or NUXT_DATABASE_URL is available
   const databaseUrl = process.env.DATABASE_URL || process.env.NUXT_DATABASE_URL
   if (!databaseUrl) {

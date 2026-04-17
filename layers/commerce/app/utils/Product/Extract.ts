@@ -14,28 +14,35 @@
 
 import { ProductType } from 'Component/Product/Product.config';
 import { ImageType } from 'Component/ProductGallery/ProductGallery.config';
-import {
+import type {
     GroupedProductItem,
     Money,
-    PriceRange,
+    PriceRange
 } from '../../types/normalizers/ProductList.type';
 import { GQLCurrencyEnum, GQLProductStockStatus } from '../../types/Graphql.type';
 import { decodeBase64 } from '../../utils/Base64';
-import { FieldValue } from '../../utils/Form/Form.type';
+import type {
+    FieldValue
+} from '../../utils/Form/Form.type';
 import { formatPrice } from '../../utils/Price';
-import { AdjustedPriceMap, ProductOption } from '../../utils/Product/Product.type';
+import type {
+    AdjustedPriceMap,
+    ProductOption
+} from '../../utils/Product/Product.type';
 
 import {
     DEFAULT_MAX_PRODUCTS,
     DEFAULT_MIN_PRODUCTS,
+    QtyFields
+} from './Product.type';
+import type {
     IndexedBundleItem,
     IndexedBundleOption,
     IndexedProduct,
     IndexedVariant,
     ProductExtractImage,
     ProductExtractPrice,
-    QtyFields,
-    StockCheckProduct,
+    StockCheckProduct
 } from './Product.type';
 
 // TODO unify keyof product and stockitem.
@@ -86,7 +93,13 @@ export const getQuantity = (
         return qty;
     }
 
-    const variantQty = getFieldQty(variants[configIndex], field);
+    const selectedVariant = variants[configIndex];
+
+    if (!selectedVariant) {
+        return qty;
+    }
+
+    const variantQty = getFieldQty(selectedVariant, field);
 
     return variantQty || qty;
 };
@@ -510,7 +523,7 @@ export const getAdjustedPrice = (
             (items as IndexedBundleItem[]).forEach(({ options: sldOptions = [] }) => {
                 const uidParts = decodeBase64(uid).split('/');
                 const option = Array.isArray(options) && getBundleOption(uid, sldOptions);
-                const quantity = +uidParts[uidParts.length - 1];
+                const quantity = +(uidParts[uidParts.length - 1] || 0);
 
                 if (option) {
                     const {

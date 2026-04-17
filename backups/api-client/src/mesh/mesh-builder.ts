@@ -7,6 +7,7 @@
  */
 
 import { createRequire } from 'node:module'
+import type { MeshComposeCLISubgraphConfig } from '@graphql-mesh/compose-cli'
 
 type GatewayConfig = {
   webhooks?: boolean
@@ -14,8 +15,7 @@ type GatewayConfig = {
 }
 
 type ComposeConfig = {
-  subgraphs: any[]
-  plugins?: any[]
+  subgraphs: MeshComposeCLISubgraphConfig[]
 }
 
 import {
@@ -57,7 +57,7 @@ export async function buildComposeConfig(context?: any): Promise<ComposeConfig> 
   const { loadGraphQLHTTPSubgraph } = await import('@graphql-mesh/compose-cli')
   
   const adapters = getAllAdapterEndpoints()
-  const subgraphs = []
+  const subgraphs: MeshComposeCLISubgraphConfig[] = []
   
   for (const adapter of adapters) {
     // Check if adapter is enabled
@@ -103,12 +103,12 @@ export async function buildComposeConfig(context?: any): Promise<ComposeConfig> 
         subgraphConfig.restPrefix = adapter.restPrefix
       }
       
-      const subgraph = loadGraphQLHTTPSubgraph(
+      const sourceHandler = loadGraphQLHTTPSubgraph(
         adapter.name,
         subgraphConfig
       )
       
-      subgraphs.push(subgraph)
+      subgraphs.push({ sourceHandler })
       console.info(`[MeshBuilder] Added subgraph: ${adapter.name} -> ${endpoint}`)
     } catch (error) {
       console.error(
@@ -126,12 +126,7 @@ export async function buildComposeConfig(context?: any): Promise<ComposeConfig> 
   const { defineConfig } = await import('@graphql-mesh/compose-cli')
   
   return defineConfig({
-    subgraphs,
-    plugins: [
-      // Plugins can be added here as needed:
-      // { module: '@mframework/api/plugins/auth' },
-      // { module: '@mframework/api/plugins/search' }
-    ]
+    subgraphs
   })
 }
 
@@ -149,12 +144,14 @@ export function buildFallbackComposeConfig(): ComposeConfig {
   
   return defineConfig({
     subgraphs: [
-      loadGraphQLHTTPSubgraph('DefaultGraphQL', {
-        endpoint,
-        operationHeaders: {
-          Authorization: '{context.headers["authorization"]}'
-        }
-      })
+      {
+        sourceHandler: loadGraphQLHTTPSubgraph('DefaultGraphQL', {
+          endpoint,
+          operationHeaders: {
+            Authorization: '{context.headers["authorization"]}'
+          }
+        })
+      }
     ]
   })
 }

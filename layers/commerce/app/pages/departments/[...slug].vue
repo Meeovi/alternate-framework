@@ -234,16 +234,13 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+import productCard from '../../components/catalog/product/productCard.vue'
 import travel from '#commerce/app/components/catalog/categories/travel.vue'
 import deals from '#commerce/app/components/catalog/categories/deals.vue'
 import timeComponent from '#commerce/app/components/catalog/categories/time/time.vue'
 import weather from '#commerce/app/components/catalog/categories/weather/weather.vue'
-import useDirectusRequest from '~/composables/useDirectusRequest'
+import { useDataRequest } from '~/composables/globals/useDataRequest'
 
-void useCommerceAdapter()
-void useContentAdapter()
 
     const route = useRoute()
     const model = ref(null)
@@ -251,7 +248,7 @@ void useContentAdapter()
         readItems,
         readItem,
         getAssetUrl
-    } = useDirectusRequest()
+    } = useDataRequest()
 
     const slug = computed(() => {
         const s = route.params.slug
@@ -335,7 +332,7 @@ void useContentAdapter()
     const {
         data: events
     } = await useAsyncData('events', () => {
-        return $directus.request($readItems('departments', {
+        return $dataClient.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
                 'images.*'
@@ -356,7 +353,7 @@ void useContentAdapter()
     const {
         data: callouts
     } = await useAsyncData('callouts', () => {
-        return $directus.request($readItem('callouts', '2'))
+        return $dataClient.request($readItem('callouts', '2'))
     })
 
     useHead({

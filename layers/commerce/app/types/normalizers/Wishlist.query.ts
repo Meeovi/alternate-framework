@@ -1,6 +1,6 @@
 /* eslint-disable spaced-comment */
 /**
- * ScandiPWA - Progressive Web App for Magento
+ * ScandiPWA - Progressive Web App for Commerce
  *
  * Copyright © Scandiweb, Inc. All rights reserved.
  * See LICENSE for license details.

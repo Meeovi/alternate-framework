@@ -315,7 +315,7 @@ export const PriceConfiguration = PropTypes.shape({
     containsRequiredOptionsWithPrice: PropTypes.bool,
 });
 
-export const MagentoProductType = PropTypes.shape({
+export const CommerceProductType = PropTypes.shape({
     entered_options: PropTypes.arrayOf(PropTypes.shape({
         uid: PropTypes.string,
         value: PropTypes.string,

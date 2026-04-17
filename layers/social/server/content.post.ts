@@ -13,9 +13,9 @@ import {
   sanitizeCollectionName,
   sanitizeEntityId,
   sanitizeStructuredValue,
-} from '../../utils/access'
-import { buildDirectusUrl, getListsContentConfig } from '../../utils/lists-content'
-import { createMeeoviHttpError } from '../../utils/meeovi-error'
+} from './utils/access'
+import { buildDirectusUrl, getListsContentConfig } from './utils/lists-content'
+import { createMeeoviHttpError } from './utils/meeovi-error'
 
 const WRITE_OPERATIONS = new Set(['createItem', 'updateItem', 'deleteItem'])
 const ALLOWED_OPERATIONS = new Set(['readItems', 'readItem', 'readFieldsByCollection', 'createItem', 'updateItem', 'deleteItem'])

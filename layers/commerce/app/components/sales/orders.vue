@@ -156,23 +156,20 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref,
         computed
     } from '#imports'
     import orderCard from '~/components/related/order.vue'
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
 
-    const user = useSupabaseUser()
+    const { user, fetchSession } = useAuth()
+    await fetchSession()
+    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    const currentUserId = getCurrentUserId()
 
     const {
-        $directus,
+        $dataClient,
         $readItem,
         $readItems
     } = useNuxtApp()
@@ -181,7 +178,7 @@ void useContentAdapter()
     const {
         data: orderBar
     } = await useAsyncData('orderBar', async () => {
-        const resp = await $directus.request($readItem('navigation', '84', {
+        const resp = await $dataClient.request($readItem('navigation', '84', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -192,7 +189,7 @@ void useContentAdapter()
     const {
         data: ordersPage
     } = await useAsyncData('ordersPage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $dataClient.request($readItem('pages', '86', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -202,13 +199,14 @@ void useContentAdapter()
     const {
         data: orders
     } = await useAsyncData('orders', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 }
             },
             sort: '-dated_created'
@@ -219,13 +217,14 @@ void useContentAdapter()
     const {
         data: pending
     } = await useAsyncData('pending', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'pending'
@@ -239,13 +238,14 @@ void useContentAdapter()
     const {
         data: processing
     } = await useAsyncData('processing', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'processing'
@@ -259,13 +259,14 @@ void useContentAdapter()
     const {
         data: onHold
     } = await useAsyncData('onHold', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'on-hold'
@@ -279,13 +280,14 @@ void useContentAdapter()
     const {
         data: failed
     } = await useAsyncData('failed', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'failed'
@@ -299,13 +301,14 @@ void useContentAdapter()
     const {
         data: disputed
     } = await useAsyncData('disputed', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'disputed'
@@ -319,13 +322,14 @@ void useContentAdapter()
     const {
         data: completed
     } = await useAsyncData('completed', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'completed'
@@ -339,13 +343,14 @@ void useContentAdapter()
     const {
         data: refunded
     } = await useAsyncData('refunded', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'refunded'
@@ -359,13 +364,14 @@ void useContentAdapter()
     const {
         data: cancelled
     } = await useAsyncData('cancelled', async () => {
-        const resp = await $directus.request($readItems('orders', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('orders', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 payment_status: {
                     _eq: 'cancelled'

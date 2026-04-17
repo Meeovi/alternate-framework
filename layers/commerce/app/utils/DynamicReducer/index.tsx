@@ -9,6 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
+import { createElement } from 'react';
 import type { ComponentType } from 'react';
 // Minimal reducer type alias for compatibility with legacy code.
 type Reducer = (state: any, action?: any) => any;
@@ -22,11 +23,10 @@ import { Props, WithReducersResult } from './DynamicReducer.type';
 export const withReducers = (reducers: Record<string, Reducer>) => (
     WrappedComponent: ComponentType<Props>,
 ): WithReducersResult => {
-    const injectAndExecute = (props: Props) => {
+    const injectAndExecute: WithReducersResult = (props: Props) => {
         // Reducer injection is deprecated — we no longer inject Redux reducers.
         // Keep this wrapper for API compatibility but avoid mutating the legacy store.
-        // eslint-disable-next-line @mframework/mframework-guidelines/jsx-no-props-destruction
-        return <WrappedComponent { ...props } />;
+        return createElement(WrappedComponent, props);
     };
 
     return injectAndExecute;

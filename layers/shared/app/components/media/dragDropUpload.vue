@@ -26,8 +26,7 @@
         ref
     } from '#imports'
     import DirectusFormElement from '../ui/forms/DirectusFormElement.vue'
-        import { useDirectusForm } from '../../composables/useDirectusForm'
-        import { useDirectusSchema } from '../../composables/useDirectusSchema'
+        import { useDirectusForm, useDirectusSchema } from '@mframework/adapter-directus'
     const dialog = ref(false)
     const {
         data,

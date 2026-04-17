@@ -59,14 +59,10 @@
 
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { ref, onMounted, onUnmounted, watch, computed } from '#imports';
-import { v-btn } from '@storefront-ui/vue';
 import { useUserStore } from '../../stores/user';
-import { useDirectusAuth } from '../../../../../composables/useDirectusAuth';
+import { useAuth } from '~/composables/globals/useAuth';
 import countryList from '../../utils/countryList'; // Assume this is an array of country codes/names
 
 const props = defineProps<{ clientSecret: string }>();
@@ -82,11 +78,11 @@ const saveCard = ref(false);
 const formRef = ref();
 
 const userStore = useUserStore();
-const directusAuth = useDirectusAuth();
-const directusUser = computed(() => directusAuth.user || {});
+const auth = useAuth() as any;
+const sessionUser = computed(() => auth?.user || {});
 
-// Prefer Directus user data if available, fallback to store
-const user = computed(() => Object.keys(directusUser.value).length ? directusUser.value : userStore.user || {});
+// Prefer authenticated user data if available, fallback to store
+const user = computed(() => Object.keys(sessionUser.value).length ? sessionUser.value : userStore.user || {});
 
 const countryOptions = countryList.map((c: any) => ({ text: c.name, value: c.code }));
 

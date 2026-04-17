@@ -101,16 +101,12 @@
         updateItem,
         deleteItem
     } from '@mframework/adapter-directus';
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
+    const currentUser = useCurrentUser()
 
     const content = useContentAdapter()
 
-    const userStore = useUserStore()
-
     const userDisplayName = computed(() => {
-        return userStore.user?.name || userStore.user?.username || 'User'
+        return currentUser.value?.name || currentUser.value?.username || 'User'
     })
 
     const route = useRoute();

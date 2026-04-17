@@ -9,7 +9,7 @@
  * @package mframework/mframework-theme
  * @link https://github.com/meeovi/mframework-theme
 */
-import { RootState } from '../../utils/Store/Store.type';
+import type { RootState } from '../../utils/Store/Store.type';
 
 /**
  * Lightweight compatibility layer that provides the minimal store API

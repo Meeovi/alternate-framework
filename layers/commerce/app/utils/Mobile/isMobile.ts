@@ -28,7 +28,9 @@ export const isMobile = {
 
 // https://medium.com/@galmeiri/get-ready-for-chrome-user-agent-string-phase-out-c6840da1c31e
 export const isMobileClientHints = {
-    getDeviceData: (): Promise<UADataValues> => navigator.userAgentData.getHighEntropyValues(['platform', 'model']),
+    getDeviceData: (): Promise<UADataValues> => navigator.userAgentData
+        ? navigator.userAgentData.getHighEntropyValues(['platform', 'model'])
+        : Promise.reject(new Error('User agent data is unavailable')),
 };
 
 export default isMobile;

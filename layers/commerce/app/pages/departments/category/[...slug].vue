@@ -53,15 +53,12 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-import ProductCard from '#commerce/app/components/catalog/product/productCard.vue'
-import useDirectusRequest from '~/composables/useDirectusRequest'
+import ProductCard from '../../../components/catalog/product/productCard.vue'
+import { useDataRequest } from '~/composables/globals/useDataRequest'
 
-void useCommerceAdapter()
-void useContentAdapter()
 
 const route = useRoute()
-const { readItems } = useDirectusRequest()
+const { readItems } = useDataRequest()
 
 const slug = computed(() => {
   const s = route.params.slug

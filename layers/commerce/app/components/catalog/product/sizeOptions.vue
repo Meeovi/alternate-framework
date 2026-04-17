@@ -15,17 +15,14 @@ import { ref, onMounted, watch } from '#imports'
 const emit = defineEmits(['size-selected'])
 const sizes = ref([])
 const selectedSize = ref(null)
-        import { useCommerceAdapter, useContentAdapter } from '#imports'
-        void useCommerceAdapter()
-        void useContentAdapter()
 
 
 const nuxtApp = useNuxtApp()
-const { $directus, $readItems } = nuxtApp
+const { $dataClient, $readItems } = nuxtApp
 
 const loadSizes = async () => {
     try {
-        const res = await $directus.request($readItems('attributes', {
+        const res = await $dataClient.request($readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'size' }
             },

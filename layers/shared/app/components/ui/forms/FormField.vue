@@ -1,33 +1,41 @@
 <script setup lang="ts">
-    // Resolve widget registry at runtime if provided by a higher-level layer.
-    const widgetRegistry = (globalThis as any).widgetRegistry ?? {};
+import { computed } from 'vue'
 
-    const props = defineProps < {
-        field: any;
-        form: Record < string,
-        any > ;
-    } > ();
+type FormFieldConfig = {
+    key: string
+    widget?: string
+    options?: Record<string, unknown>
+    fields?: Array<{ field: string; schema?: { default_value?: unknown } }>
+}
 
-    const widget = widgetRegistry[props.field.widget];
+const props = defineProps<{
+    field: FormFieldConfig
+    form: Record<string, unknown>
+}>()
+
+const componentName = computed(() => {
+    switch (props.field.widget) {
+        case 'SelectInput':
+            return 'SelectInput'
+        case 'RepeaterInput':
+            return 'RepeaterInput'
+        case 'FileInput':
+            return 'FileInput'
+        case 'TextInput':
+        default:
+            return 'TextInput'
+    }
+})
 </script>
 
 <template>
-    <div v-if="widget">
-        <!-- Basic text input -->
-        <TextInput v-if="widget.component === 'TextInput'" v-model="form[field.key]" :label="field.key" />
-
-        <!-- Dropdown -->
-        <SelectInput v-else-if="widget.component === 'SelectInput'" v-model="form[field.key]"
-            :options="field.options?.choices" :label="field.key" />
-
-        <!-- Repeater -->
-        <RepeaterInput v-else-if="widget.component === 'RepeaterInput'" v-model="form[field.key]" :fields="field.fields"
-            :label="field.key" />
-
-        <!-- File upload -->
-        <FileInput v-else-if="widget.component === 'FileInput'" v-model="form[field.key]" :label="field.key" />
-
-        <!-- Fallback -->
-        <TextInput v-else v-model="form[field.key]" :label="field.key" />
+    <div>
+        <component
+            :is="componentName"
+            v-model="form[field.key]"
+            :field="field.key"
+            :label="field.key"
+            :options="field.options"
+        />
     </div>
 </template>

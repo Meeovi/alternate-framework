@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { useLocate } from 'alternate-locate/adapters/vue/composable'
 import { cacheAccount } from '../../composables/accounts'
 import { useMastoClient } from '../../composables/masto'
-import { getAccountRoute } from '../../composables/routes'
+import { getAccountRoute } from '../../composables'
 
 const { account, list } = defineProps<{
   account: mastodon.v1.Account

@@ -1,12 +1,12 @@
 // stores/cartStore.ts
 import { defineStore } from 'pinia'
 import { getCommerceClient } from '../utils/client'
-import { useAuth } from '../composables/useAuth'
-import { useInventory } from '../composables/useInventory'
-import { useTax } from '../composables/useTax'
-import { useLoading } from '../composables/useLoading'
-import { useNotification } from '../composables/useNotification'
-import { useCache } from '../composables/useCache'
+import { useAuth } from '../composables/globals/useAuth'
+import { useInventory } from '../composables/catalog/useInventory'
+import { useTax } from '../composables/sales/useTax'
+import { useLoading } from '../composables/content/useLoading'
+import { useNotification } from '../composables/globals/useNotification'
+import { useCache } from '../composables/system/useCache'
 
 class CartError extends Error {
   code: string
@@ -53,7 +53,7 @@ export const useCartStore = defineStore('cart', {
           this.quoteId = await this.client.createGuestCart()
           return
         }
-        const response = await fetch(`${process.env.MAGENTO_API_URL}/guest-carts`, { method: 'POST' })
+        const response = await fetch(`${process.env.COMMERCE_API_URL}/guest-carts`, { method: 'POST' })
         this.quoteId = (await response.json()) as string
       } catch (err) {
         console.error(err)
@@ -67,7 +67,7 @@ export const useCartStore = defineStore('cart', {
           this.quoteId = await this.client.createCustomerCart(auth.token?.value)
           return
         }
-        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine`, {
+        const response = await fetch(`${process.env.COMMERCE_API_URL}/carts/mine`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${auth.token.value}` }
         })
@@ -94,7 +94,7 @@ export const useCartStore = defineStore('cart', {
           if (existing) existing.qty += product.qty
           else this.items.push({ ...product, item_id: cartItem?.item_id })
         } else {
-          const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items`, {
+          const response = await fetch(`${process.env.COMMERCE_API_URL}/carts/mine/items`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${auth.token.value}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ cartItem: { sku: product.sku, qty: product.qty, quote_id: this.quoteId } })
@@ -131,7 +131,7 @@ export const useCartStore = defineStore('cart', {
           this.items = this.items.filter(i => i.item_id !== itemId)
           await this.calculateTotal()
         } else {
-          const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items/${itemId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${auth.token.value}` } })
+          const response = await fetch(`${process.env.COMMERCE_API_URL}/carts/mine/items/${itemId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${auth.token.value}` } })
           if (!response.ok) throw new CartError('Failed to remove item from cart', 'CART_ERROR')
           this.items = this.items.filter(i => i.item_id !== itemId)
           await this.calculateTotal()
@@ -154,7 +154,7 @@ export const useCartStore = defineStore('cart', {
           this.total = totals?.grand_total || 0
           return
         }
-        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/totals`, { headers: { Authorization: `Bearer ${auth.token.value}` } })
+        const response = await fetch(`${process.env.COMMERCE_API_URL}/carts/mine/totals`, { headers: { Authorization: `Bearer ${auth.token.value}` } })
         if (!response.ok) throw new CartError('Failed to get cart totals', 'CART_ERROR')
         const totals = await response.json()
         this.total = totals.grand_total
@@ -172,7 +172,7 @@ export const useCartStore = defineStore('cart', {
           if (this.client && typeof this.client.clearCart === 'function') {
             await this.client.clearCart(this.quoteId, auth.token?.value)
           } else {
-            const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/clear`, { method: 'POST', headers: { Authorization: `Bearer ${auth.token.value}` } })
+            const response = await fetch(`${process.env.COMMERCE_API_URL}/carts/mine/clear`, { method: 'POST', headers: { Authorization: `Bearer ${auth.token.value}` } })
             if (!response.ok) throw new CartError('Failed to clear cart', 'CART_ERROR')
           }
         }
@@ -189,7 +189,7 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
-    async syncCartWithMagento() {
+    async syncCartWithCommerce() {
       try {
         const auth = useAuth()
         if (this.client && typeof this.client.listItems === 'function') {
@@ -197,7 +197,7 @@ export const useCartStore = defineStore('cart', {
           await this.calculateTotal()
           return
         }
-        const response = await fetch(`${process.env.MAGENTO_API_URL}/carts/mine/items`, { headers: { Authorization: `Bearer ${auth.token.value}` } })
+        const response = await fetch(`${process.env.COMMERCE_API_URL}/carts/mine/items`, { headers: { Authorization: `Bearer ${auth.token.value}` } })
         if (!response.ok) throw new CartError('Failed to sync cart', 'CART_ERROR')
         this.items = await response.json()
         await this.calculateTotal()
@@ -213,7 +213,7 @@ export const useCartStore = defineStore('cart', {
           const isAvailable = await inventory.checkInventory(item.sku, item.qty)
           if (!isAvailable) throw new CartError(`${item.name} is out of stock`, 'INVENTORY_ERROR')
         }
-        await this.syncCartWithMagento()
+        await this.syncCartWithCommerce()
         return true
       } catch (err) {
         console.error(err)

@@ -110,30 +110,31 @@ import productCard from '~/components/catalog/product/productCard.vue'
         components: { productCard, profilebar},
         data: () => ({
             model: null,
-            url: process.env.DIRECTUS_URL,
+            url: process.env.COMMERCE_DATA_URL,
         }),
     }
 </script>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     const route = useRoute();
     
     const {
-        $directus,
+        $dataClient,
         $readItem
     } = useNuxtApp()
-    const user = useSupabaseUser()
+    const { user, fetchSession } = useAuth()
+    await fetchSession()
+    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    const currentUserId = getCurrentUserId()
 
     const {
         data: subscription
     } = await useAsyncData('subscription', () => {
-        return $directus.request($readItem('subscriptions', route.params.id, {
+        if (!currentUserId) return null
+        return $dataClient.request($readItem('subscriptions', route.params.id, {
             filter: {
                 user: {
-                    _eq: `${user?.id}`
+                    _eq: `${currentUserId}`
                 }
             },
             limit: 1

@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import ProductAccordion from '~/components/ProductAccordion/ProductAccordion.vue';
-import { mockProduct } from '~/composables/useProductAttribute/__tests__/useProduct.mock';
+import { mockProduct } from '~/composables/catalog/useProductAttribute/__tests__/useProduct.mock';
 
 describe('<ProductAccordion />', () => {
   it('should render component', () => {

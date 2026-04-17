@@ -18,20 +18,17 @@
     ref,
   } from '#imports';
   import stations from './radiostation.vue'
-    import { useCommerceAdapter, useContentAdapter } from '#imports'
-    void useCommerceAdapter()
-    void useContentAdapter()
 
   const model = ref(null);
   const {
-    $directus,
+    $dataClient,
     $readItems
   } = useNuxtApp()
 
   const {
     data: stationSlide
   } = await useAsyncData('stationSlide', () => {
-    return $directus.request($readItems('radios', {
+    return $dataClient.request($readItems('radios', {
       fields: ['*', { '*': ['*'] }],
       filter: {
         status: {

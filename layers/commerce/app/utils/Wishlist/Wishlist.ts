@@ -9,13 +9,8 @@
 * @link https://github.com/meeovi/mframework
 */
 
-import {
-    PriceRange,
-    ProductDiscount,
-    ProductItem,
-    ProductPrice,
-} from '../../types/normalizers/ProductList.type';
-import { Product as DomainProduct } from '../../types/domain';
+import type { PriceRange, ProductDiscount, ProductItem, ProductPrice } from '../../types/normalizers/ProductList.type';
+import type { Product as DomainProduct } from '../../types/domain';
 
 /**
  * Updates wishlist item price for option based products

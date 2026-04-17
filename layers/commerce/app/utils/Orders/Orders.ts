@@ -10,12 +10,18 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import {
-    InvoiceItem, OrderItem, OrderItemProduct, RefundItem, ShipmentItemInterface,
+import type {
+    InvoiceItem,
+    OrderItem,
+    OrderItemProduct,
+    RefundItem,
+    ShipmentItemInterface
 } from '../../types/normalizers/Order.type';
 import { decodeBase64 } from '../../utils/Base64';
 
-import { OrderItemQtyArray } from './Orders.type';
+import type {
+    OrderItemQtyArray
+} from './Orders.type';
 
 /** @namespace ../../utils/Orders/getFormattedDate */
 export const getFormattedDate = (rawDate = ''): string => {

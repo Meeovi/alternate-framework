@@ -7,7 +7,7 @@ import {
 } from '../../../index'
 
 function validateEnv() {
-  const required = ['ELASTICSEARCH_URL']
+  const required = ['ALTERNATE_SEARCH_ELASTICSEARCH_URL']
   const missing = required.filter((key) => !process.env[key])
   if (missing.length > 0) {
     throw new Error(`Missing required environment variables: ${missing.join(', ')}. These should be set in .env`)
@@ -19,10 +19,10 @@ function buildMultiBackendAdapter(): SearchAdapter {
     {
       id: 'elasticsearch' as const,
       adapter: elasticsearchAdapter({
-        node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200',
+        node: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_URL || 'http://localhost:9200',
         auth: {
-          username: process.env.ELASTICSEARCH_USER || 'elastic',
-          password: process.env.ELASTICSEARCH_PASSWORD || '',
+          username: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_USER || 'elastic',
+          password: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD || '',
         },
       }),
       priority: 10,
@@ -31,12 +31,12 @@ function buildMultiBackendAdapter(): SearchAdapter {
       timeoutMs: 6000,
       maxResults: 100,
     },
-    ...(process.env.MEILISEARCH_URL
+    ...(process.env.ALTERNATE_SEARCH_MEILISEARCH_URL
       ? [{
           id: 'meilisearch' as const,
           adapter: meilisearchAdapter({
-            baseUrl: process.env.MEILISEARCH_URL,
-            apiKey: process.env.MEILISEARCH_KEY,
+            baseUrl: process.env.ALTERNATE_SEARCH_MEILISEARCH_URL,
+            apiKey: process.env.ALTERNATE_SEARCH_MEILISEARCH_KEY,
           }),
           priority: 30,
           weight: 60,

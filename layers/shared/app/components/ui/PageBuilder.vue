@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, unref, resolveComponent } from '#imports';
+import { computed, resolveComponent, unref } from 'vue';
 
 // Define types locally since module resolution has issues
 interface Page {
@@ -82,7 +82,7 @@ const getComponent = (componentName: string | null | undefined) => {
 
 // Compute resolved components for each block
 const resolvedBlocks = computed(() => {
-	return blocks.value.map((block) => {
+	return blocks.value.map((block: PageBlock) => {
 		const componentName = block.collection ? componentMap[block.collection as BlockType] : null;
 		return {
 			...block,

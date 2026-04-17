@@ -29,7 +29,13 @@ export const scrollToError = (fields: FormFields | null, validation: ValidationD
         return;
     }
 
-    const { name } = (errorFields as Array<Array<{ name: string }>>)[0][0];
+    const firstErrorField = (errorFields as Array<Array<{ name: string }>>)[0]?.[0];
+
+    if (!firstErrorField) {
+        return;
+    }
+
+    const { name } = firstErrorField;
     const errorItem = fields.find(({ name: itemName }) => itemName === name);
 
     if (!errorItem) {

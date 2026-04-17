@@ -1,7 +1,7 @@
 // stores/orders.ts - Pinia store for order management
 import { defineStore } from 'pinia'
 import { ref, computed, readonly } from 'vue'
-import { useOrders, useReturns, useTransactions, useInvoices, useCreditMemos } from '../composables/orders'
+import { useOrders, useReturns, useTransactions, useInvoices, useCreditMemos } from '../composables/sales/orders/orders'
 import type { Order as DomainOrder, PaymentIntent as DomainPaymentIntent } from '../types/domain'
 
 type Order = DomainOrder

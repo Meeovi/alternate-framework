@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Review from '~/components/ui/Review/Review.vue';
-import { mockProductReviews } from '~/composables/useProductReviews/__tests__/productReviews.mock';
+import { mockProductReviews } from '~/composables/catalog/useProductReviews/__tests__/productReviews.mock';
 
 describe('<Review />', () => {
   it('should render component', () => {

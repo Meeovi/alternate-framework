@@ -52,15 +52,12 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
 import { ref, useAsyncData, useHead, useNuxtApp } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import store from '../components/catalog/shops/stores.vue'
 
   const tab = ref(null)
   
-  import { useContentFallback } from '../composables/useContent'
+  import { useContentFallback } from '../composables/content/useContent'
   const content = useContentFallback()
 
   const { data: stores } = await useAsyncData('stores', async () => {
@@ -69,7 +66,7 @@ void useContentAdapter()
 
   const { data: shopbar } = await useAsyncData('shopbar', () => {
     const nuxtApp = useNuxtApp() as any
-    return nuxtApp.$directus ? nuxtApp.$directus.request(nuxtApp.$readItem('navigation', '55')) : null
+    return nuxtApp.$dataClient ? nuxtApp.$dataClient.request(nuxtApp.$readItem('navigation', '55')) : null
   })
 
   useHead({

@@ -2,7 +2,7 @@
 // This composable bridges Nuxt app with the active content adapter.
 
 export default function useContentRequest() {
-  const nuxt = typeof useNuxtApp === 'function' ? useNuxtApp() : (globalThis as any).__nuxtApp || {}
+  const nuxt = useNuxtApp()
 
   function normalizeResult(value: any): any {
     if (Array.isArray(value)) return value.map(normalizeResult)
@@ -66,7 +66,6 @@ export default function useContentRequest() {
     return (nuxt as any)?.$adapter
       || (nuxt as any)?.$contentClient
       || (nuxt as any)?.$meeoviAdapter
-      || (globalThis as any).__adapter
       || null
   }
 

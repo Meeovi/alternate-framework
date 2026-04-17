@@ -43,17 +43,14 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
 import shorts from '#social/app/components/related/short.vue'
-import productCard from '#commerce/app/components/catalog/product/productCard.vue'
-import relatedbrands from '#commerce/app/components/catalog/product/relatedbrands.vue'
-import useDirectusRequest from '~/composables/useDirectusRequest'
+import productCard from '../../components/catalog/product/productCard.vue'
+import relatedbrands from '../../components/catalog/product/relatedbrands.vue'
+import { useDataRequest } from '~/composables/globals/useDataRequest'
 
-void useCommerceAdapter()
-void useContentAdapter()
 
 const route = useRoute()
-const { readItems, readItem, getAssetUrl } = useDirectusRequest()
+const { readItems, readItem, getAssetUrl } = useDataRequest()
 
     const slug = computed(() => {
         const s = route.params.slug

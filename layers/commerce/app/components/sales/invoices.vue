@@ -46,23 +46,20 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref,
         computed
     } from '#imports'
     import invoiceCard from '~/components/related/invoiceCard.vue'
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
 
-    const user = useSupabaseUser()
+    const { user, fetchSession } = useAuth()
+    await fetchSession()
+    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    const currentUserId = getCurrentUserId()
 
     const {
-        $directus,
+        $dataClient,
         $readItem,
         $readItems
     } = useNuxtApp()
@@ -71,7 +68,7 @@ void useContentAdapter()
     const {
         data: invoiceBar
     } = await useAsyncData('invoiceBar', async () => {
-        const resp = await $directus.request($readItem('navigation', '118', {
+        const resp = await $dataClient.request($readItem('navigation', '118', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -82,7 +79,7 @@ void useContentAdapter()
     const {
         data: invoicePage
     } = await useAsyncData('invoicePage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $dataClient.request($readItem('pages', '86', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -92,13 +89,14 @@ void useContentAdapter()
     const {
         data: invoices
     } = await useAsyncData('invoices', async () => {
-        const resp = await $directus.request($readItems('invoices', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('invoices', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user.id
+                    _eq: currentUserId
                 }
             }
         }))

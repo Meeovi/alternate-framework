@@ -2,9 +2,9 @@ export default {
   name: "search-opensearch",
   handler: {
     graphql: {
-      endpoint: process.env.OPENSEARCH_GRAPHQL_URL,
+      endpoint: process.env.ALTERNATE_SEARCH_GRAPHQL_URL,
       operationHeaders: {
-        Authorization: `Bearer ${process.env.OPENSEARCH_TOKEN ?? ""}`
+        Authorization: `Bearer ${process.env.ALTERNATE_SEARCH_TOKEN ?? ""}`
       }
     }
   },

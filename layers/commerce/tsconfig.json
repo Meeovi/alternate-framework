@@ -1,48 +1,11 @@
 {
-  "compilerOptions": {
-    "types": ["node"],
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["app/*", "./*"],
-      "@/*": ["app/*", "./*"],
-      "alternate-gateway/core": ["../../packages/modules/alternate-gateway/core/index.ts"],
-      "alternate-gateway/core/*": ["../../packages/modules/alternate-gateway/core/src/*"],
-      "Util/*": ["app/utils/*"],
-      "Query/*": ["app/types/normalizers/*"],
-      "Component/*": ["app/components/*"],
-      "Store/*": ["app/stores/*"],
-      "Type/*": ["app/types/*"],
-      "../../routes/*": ["app/types/routes/*"],
-      "#imports": ["app/imports"],
-      "~/app/*": ["app/*"]
-    },
-    "declaration": true,
-    "emitDeclarationOnly": false,
-    "outDir": "dist",
-    "moduleResolution": "bundler",
-    "module": "ESNext",
-    "target": "ESNext",
-    "strict": false,
-    "jsx": "preserve",
-    "typeRoots": ["../../types", "../../packages/types", "../../node_modules/@types"],
-    "skipLibCheck": true,
-    "noEmitOnError": false
-  },
-  "include": [
-    "src",
-    "index.ts",
-    "app",
-    "app/**/*.vue",
-    "app/types",
-    "global.d.ts",
-    "app/utils/client.ts",
-    "app/utils/normalizers"
-  ]
-  ,
-  "exclude": [
-    "**/__tests__/**",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "node_modules"
-  ]
+ "extends": "./.nuxt/tsconfig.json",
+ "compilerOptions": {
+  "verbatimModuleSyntax": false
+ },
+ "exclude": [
+  "**/__tests__/**",
+  "**/*.spec.ts",
+  "**/*.spec.tsx"
+ ]
 }

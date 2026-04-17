@@ -2,8 +2,8 @@
 import type { Product as DomainProduct } from '../types/domain'
 import { defineStore } from 'pinia'
 import { ref, computed, readonly } from 'vue'
-import { useProducts } from '../composables/products'
-import { useFeaturedProducts } from '../composables/featured-products'
+import { useProducts } from '../composables/catalog/products'
+import { useFeaturedProducts } from '../composables/catalog/products/featured-products'
 
 export const useProductsStore = defineStore('products', () => {
   const products = ref<DomainProduct[]>([])

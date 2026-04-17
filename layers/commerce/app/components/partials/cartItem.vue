@@ -43,9 +43,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 import productCard from '../catalog/product/productCard.vue';
 import { computed } from '#imports';
 
@@ -71,15 +68,15 @@ const productForCardPrice = computed(() => productForCard.value?.price || 0);
 
 async function removeItem(orderLineId: string) {
   try {
-    // Try to delete using Directus client
+    // Try to delete using Data client
     try {
-      if (nuxtApp.$directus && nuxtApp.$directus.items) {
-        await nuxtApp.$directus.items('order_lines').delete(orderLineId);
+      if (nuxtApp.$dataClient && nuxtApp.$dataClient.items) {
+        await nuxtApp.$dataClient.items('order_lines').delete(orderLineId);
       } else if (nuxtApp.$deleteItem) {
         await nuxtApp.$deleteItem('order_lines', orderLineId);
       }
     } catch (e) {
-      console.warn('Directus delete failed, falling back to plugin helper or ignoring', e);
+      console.warn('Data delete failed, falling back to plugin helper or ignoring', e);
     }
 
     emit('cart-changed');
@@ -91,10 +88,10 @@ async function removeItem(orderLineId: string) {
 async function updateQuantity(orderLineId: string, newQuantity: number) {
   if (newQuantity < 1) return;
   try {
-    // Try to update via Directus SDK
+    // Try to update via Data SDK
     try {
-      if (nuxtApp.$directus && nuxtApp.$directus.items) {
-        await nuxtApp.$directus.items('order_lines').update(orderLineId, { quantity: newQuantity });
+      if (nuxtApp.$dataClient && nuxtApp.$dataClient.items) {
+        await nuxtApp.$dataClient.items('order_lines').update(orderLineId, { quantity: newQuantity });
       } else if (nuxtApp.$createItem) {
         // Fallback: read existing, delete and recreate with new quantity
         const existing = await nuxtApp.$readItem('order_lines', orderLineId).catch(() => null);
@@ -106,7 +103,7 @@ async function updateQuantity(orderLineId: string, newQuantity: number) {
         }
       }
     } catch (e) {
-      console.warn('Directus update fallback failed', e);
+      console.warn('Data update fallback failed', e);
     }
 
     emit('cart-changed');

@@ -24,11 +24,11 @@
         @change="$emit('selectFilter', option)"
       >
         <template #label="{ label }">
-          <!-- eslint-disable-next-line vue/no-v-html -->
+          <!-- eslint-disable-next-line vue/no-v-dompurify-html -->
           <span
             :class="{ 'display-none': !label }"
             class="sf-radio__label"
-            v-html="$dompurify(label)"
+            v-dompurify-html="$dompurify(label)"
           />
         </template>
       </SfRadio>

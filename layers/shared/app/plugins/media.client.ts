@@ -1,4 +1,4 @@
-import { createMediaEngine, type MediaEngineFactoryOptions } from '@mframework/alternate-media/createMediaEngine'
+import { createMediaEngine, type MediaEngineFactoryOptions } from 'alternate-media/createMediaEngine'
 
 export type SharedMediaProvider = {
   create: (options?: MediaEngineFactoryOptions) => ReturnType<typeof createMediaEngine>

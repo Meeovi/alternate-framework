@@ -13,9 +13,9 @@ const adapter = multiBackendProxyAdapter({
       kind: "elasticsearch",
       id: "primary-es",
       config: {
-        baseUrl: process.env.ELASTICSEARCH_URL!,
-        username: process.env.ELASTICSEARCH_USER,
-        password: process.env.ELASTICSEARCH_PASSWORD,
+        baseUrl: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_URL!,
+        username: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_USER,
+        password: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD,
       },
       priority: 10,
       weight: 100,
@@ -25,8 +25,8 @@ const adapter = multiBackendProxyAdapter({
       kind: "meilisearch",
       id: "fast-fallback",
       config: {
-        baseUrl: process.env.MEILISEARCH_URL!,
-        apiKey: process.env.MEILISEARCH_KEY,
+        baseUrl: process.env.ALTERNATE_SEARCH_MEILISEARCH_URL!,
+        apiKey: process.env.ALTERNATE_SEARCH_MEILISEARCH_KEY,
       },
       priority: 20,
       weight: 70,

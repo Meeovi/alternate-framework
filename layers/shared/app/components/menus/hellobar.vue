@@ -15,7 +15,7 @@
 
 <script setup>
   import { computed } from 'vue'
-  import { readMe } from '@directus/sdk'
+  import { readMe } from '@mframework/adapter-directus'
   import { loggedIn, useSession } from '#auth/lib/auth-client'
 
   const {

@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { Country } from '../../types/normalizers/Region.type';
+import type { Country } from '../../types/normalizers/Region.type';
 
 export interface ZippopotamResponseResult {
     city: string;

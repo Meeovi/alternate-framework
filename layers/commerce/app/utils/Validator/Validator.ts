@@ -17,11 +17,7 @@ import {
     ValidationInputTypeNumber,
 } from '../../utils/Validator/Config';
 
-import {
-    ValidationDOMOutput,
-    ValidationOutput,
-    ValidationRule,
-} from './Validator.type';
+import type { ValidationDOMOutput, ValidationOutput, ValidationRule } from './Validator.type';
 
 /**
  * Validates parameter based on rules
@@ -112,7 +108,7 @@ export const validate = (value: string | boolean, rule: ValidationRule): boolean
 
     if (fileExtension && value !== '') {
         const { accept } = fileExtension;
-        const acceptedExtensions = accept.split(', ');
+        const acceptedExtensions = accept ? accept.split(', ') : [];
         const currentFileExtension = (value as string).split('.').pop() as string;
 
         if (!acceptedExtensions.includes(currentFileExtension)) {

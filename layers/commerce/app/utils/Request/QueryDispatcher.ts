@@ -14,8 +14,8 @@ import { Query } from '@tilework/opus';
 // Minimal Dispatch type for compatibility while migrating to Pinia
 type Dispatch = (action: any) => any;
 
-import { NetworkError } from '../../types/Common.type';
-import { CancelablePromise } from '../../utils/Promise/Promise.type';
+import type { NetworkError } from '../../types/Common.type';
+import type { CancelablePromise } from '../../utils/Promise/Promise.type';
 import { prepareQuery } from '../../utils/Query';
 import { executeGet, listenForBroadCast } from '../../utils/Request/Request';
 

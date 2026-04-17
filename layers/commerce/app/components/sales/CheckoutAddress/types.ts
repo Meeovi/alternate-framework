@@ -1,5 +1,5 @@
 import { Maybe } from "alternate-gateway/core";
-import { SfAddress } from "~/composables";
+import type { SfAddress } from "~/composables/system/models";
 
 export interface Address extends SfAddress {
   streetNumber: Maybe<string>;

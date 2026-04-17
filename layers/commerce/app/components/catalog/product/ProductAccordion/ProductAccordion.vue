@@ -1,38 +1,35 @@
 <template>
   <div data-testid="product-accordion">
-    <UiAccordionItem
-      summary-class="md:rounded-md w-full hover:bg-neutral-100 py-2 pl-4 pr-3 flex justify-between items-center"
-      v-model="productDetailsOpen"
-    >
-      <template #summary>
-        <h2 class="font-bold font-headings text-lg leading-6 md:text-2xl">
-          {{ $t('productDetails') }}
-        </h2>
-      </template>
-      <p>{{ product.description }}</p>
-    </UiAccordionItem>
-    <UiDivider class="my-4" />
-    <UiAccordionItem
-      summary-class="md:rounded-md w-full hover:bg-neutral-100 py-2 pl-4 pr-3 flex justify-between items-center"
-    >
-      <template #summary>
-        <h2 class="font-bold font-headings text-lg leading-6 md:text-2xl">
-          {{ $t('customerReviews') }}
-        </h2>
-      </template>
-      <UiReview v-for="review in productReviews" :key="review.id" :review="review" class="mb-4" />
-    </UiAccordionItem>
+    <v-expansion-panels v-model="openPanels" multiple>
+      <v-expansion-panel>
+        <v-expansion-panel-title class="md:rounded-md w-full hover:bg-neutral-100 py-2 pl-4 pr-3">
+          <h2 class="font-bold font-headings text-lg leading-6 md:text-2xl">
+            {{ $t('productDetails') }}
+          </h2>
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <p>{{ product.description }}</p>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+      <v-expansion-panel>
+        <v-expansion-panel-title class="md:rounded-md w-full hover:bg-neutral-100 py-2 pl-4 pr-3">
+          <h2 class="font-bold font-headings text-lg leading-6 md:text-2xl">
+            {{ $t('customerReviews') }}
+          </h2>
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <Review v-for="review in productReviews" :key="review.id" :review="review" class="mb-4" />
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </div>
 </template>
 
 
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
-import { useProductReviews } from '~/composables/useProductReviews';
+import { useProductReviews } from '~/composables/catalog/useProductReviews';
 import type { ProductAccordionPropsType } from './types';
 import { toRefs, ref } from '#imports';
 
@@ -41,7 +38,7 @@ const props = defineProps<ProductAccordionPropsType>();
 const { product } = toRefs(props);
 const { data: productReviews, fetchProductReviews } = useProductReviews(product.value.slug);
 
-const productDetailsOpen = ref(true);
+const openPanels = ref([0]);
 
 fetchProductReviews(product.value.slug);
 </script>

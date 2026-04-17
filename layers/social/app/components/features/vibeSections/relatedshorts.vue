@@ -20,7 +20,7 @@
   import shorts from './shorts.vue'
 
   const model = ref(null);
-  import useDirectusRequest from '#social/app/composables/useDirectusRequest'
+  import { useDirectusRequest } from '@mframework/adapter-directus'
   const { readItems } = useDirectusRequest()
 
   const { data: short } = await useAsyncData('short', async () => {

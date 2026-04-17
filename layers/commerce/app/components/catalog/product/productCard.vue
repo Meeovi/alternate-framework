@@ -3,7 +3,7 @@
     <div class="border border-neutral-200 rounded-md hover:shadow-lg max-w-[300px]">
       <div class="relative" v-if="product?.image?.length > 0">
         <NuxtLink :to="`/product/${product?.id}`" class="block">
-          <img :src="`${$directus.url}assets/${product?.image?.filename_disk}`" :alt="product?.name"
+          <img :src="`${$dataClient.url}assets/${product?.image?.filename_disk}`" :alt="product?.name"
             class="block object-cover h-auto rounded-md aspect-square" width="300" height="300" />
         </NuxtLink>
         <v-btn variant="flat" size="sm" square
@@ -41,11 +41,12 @@
         <div style="display: inline-block;" v-for="brands in product?.brands" :key="brands">
           <NuxtLink :to="`/brand/${brands?.brands_id?.slug}`">{{ brands?.brands_id?.name }}</NuxtLink></div>
         </p>
-        <span class="block pb-2 font-bold typography-text-lg">
-          <div style="display: inline-block;" v-for="currency in product?.currency" :key="currency">
-            {{ currency?.currency_id?.symbol }}
-          </div>
-          {{ product?.price }}
+        <span class="block pb-1 font-bold typography-text-lg">
+          {{ pricing?.formatted?.final || product?.price }}
+        </span>
+        <span v-if="pricing?.hasDiscount" class="block pb-2 text-sm text-neutral-500">
+          <s>{{ pricing?.formatted?.regular }}</s>
+          <span class="pl-1">{{ pricing?.discountPercent }}% off</span>
         </span>
         <!--<v-btn size="sm">
           <template #prefix>
@@ -59,12 +60,14 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
-    const {
-    $directus
+  import { computed } from 'vue'
+  import { usePrice } from '../../../composables/catalog/price/price'
+
+  const {
+    $dataClient
   } = useNuxtApp()
+
+  const { getProductPrice } = usePrice()
 
   const props = defineProps({
     product: {
@@ -72,4 +75,6 @@ void useContentAdapter()
       required: true,
     },
   });
+
+  const pricing = computed(() => getProductPrice(props.product || {}))
 </script>

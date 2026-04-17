@@ -1,48 +1,39 @@
 <template>
     <client-only>
-        <div id="gallery-videojs">
-                <NuxtLink v-for="item in props.items" :key="item.id" :data-lg-size="'1280-720'"
-                    :data-video="JSON.stringify(playerOptions(item))"
-                    :data-poster="thumbnailUrl(item)"
-                    :data-sub-html="`<h4>${item.title || ''}</h4>`">
-                    <img width="300" height="100" class="img-responsive" :src="thumbnailUrl(item)" />
-                </NuxtLink>
-        </div>
+        <Gallery
+            :raw-items="items"
+            :item-mapper="mapVideoItem"
+            empty-text="No videos available."
+        />
     </client-only>
 </template>
 
 <script setup>
-    import {
-        ref,
-        onMounted
-    } from '#imports'
+        import Gallery from '../ui/Gallery.vue'
 
     const props = defineProps({
-        items: {
-            type: Array,
-            default: () => []
-        },
-    })
-
-    const galleryRef = ref(null)
-    import useMedia from '../../composables/useMedia'
-    const { fileUrl, thumbnailUrl, playerOptions } = useMedia()
-
-    onMounted(async () => {
-        const lg = await import('lightgallery')
-        const lightGallery = lg.default
-
-        const lgVideo = (await import('lg-video')).default
-
-        lightGallery(document.getElementById('gallery-videojs'), {
-            plugins: [lgVideo],
-            videojs: true,
-            videojsOptions: {
-                muted: true,
+            items: {
+                type: Array,
+                default: () => [],
             },
-        });
-
     })
+
+    import useMedia from '../../composables/useMedia'
+        const { fileUrl, thumbnailUrl } = useMedia()
+
+        const mapVideoItem = (item) => ({
+            id: item?.id,
+            src: fileUrl(item),
+            thumb: thumbnailUrl(item),
+            poster: thumbnailUrl(item),
+            size: '1280-720',
+            alt: item?.title || 'Video',
+            subHtml: `<h4>${item?.title || ''}</h4>`,
+            video: {
+                source: [{ src: fileUrl(item), type: 'video/mp4' }],
+                attributes: { preload: false, controls: true },
+            },
+        })
 </script>
 
 <style scoped>

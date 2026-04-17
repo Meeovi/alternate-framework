@@ -9,10 +9,15 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { MenuItem } from '../../types/normalizers/Menu.type';
+import type {
+    MenuItem
+} from '../../types/normalizers/Menu.type';
 import { getUrlPathname } from '../../utils/Url';
 
-import { FormattedMenuItem, MenuLocation } from './Menu.type';
+import type {
+    FormattedMenuItem,
+    MenuLocation
+} from './Menu.type';
 
 /**
  * Given an array of menu items, returns a copy of the array, sorted by their parent ID, then by their sort order (position)
@@ -75,10 +80,22 @@ export class Menu {
 
         // eslint-disable-next-line fp/no-loops
         for (i = 0; i < pathArray.length - 1; i++) {
-            tmpObj = tmpObj[pathArray[i]];
+            const currentPath = pathArray[i];
+
+            if (!currentPath) {
+                return;
+            }
+
+            tmpObj = tmpObj[currentPath];
         }
 
-        tmpObj[pathArray[i]] = value;
+        const lastPath = pathArray[i];
+
+        if (!lastPath) {
+            return;
+        }
+
+        tmpObj[lastPath] = value;
     }
 
     createItem(data: MenuItem): void {

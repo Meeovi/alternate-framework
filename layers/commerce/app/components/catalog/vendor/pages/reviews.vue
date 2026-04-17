@@ -18,24 +18,21 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref,
         onMounted
     } from '#imports'
     import {
-        useVendureQuery
-    } from '@/app/composables/useVendureQuery';
+        useCommerceQuery
+    } from '~/composables/globals/useCommerceQuery';
     import getProductReviewsQuery from '#graphql/app/commerce/queries/getProductReviews.gql';
 
     const reviews = ref([]);
     const {
         data,
         refetch
-    } = useVendureQuery(getProductReviewsQuery);
+    } = useCommerceQuery(getProductReviewsQuery);
 
     onMounted(() => {
         if (data.value?.product?.reviews?.items) {

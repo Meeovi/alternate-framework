@@ -10,7 +10,7 @@
  */
 
 import { REVIEW_POPUP_ID } from 'Component/ProductReviews/ProductReviews.config';
-import {
+import type {
     AttributeWithValue,
     AttributeWithValueOption,
     BundleItem,
@@ -24,21 +24,29 @@ import {
     ProductReviews,
     ProductStockItem,
     RatingsBreakdown,
-    VariantItem,
+    VariantItem
 } from '../../types/normalizers/ProductList.type';
-import { Product as DomainProduct } from '../../types/domain';
+import type {
+    Product as DomainProduct
+} from '../../types/domain';
 import { showNotification } from '../../stores/Notification/Notification.action';
 import { NotificationType } from '../../stores/Notification/Notification.type';
 import { showPopup } from '../../stores/Popup/Popup.action';
-import { WishlistProduct } from '../../stores/Wishlist/Wishlist.type';
+import type {
+    WishlistProduct
+} from '../../stores/Wishlist/Wishlist.type';
 import { GQLProductStockStatus } from '../../types/Graphql.type';
 import { isSignedIn } from '../../utils/Auth/IsSignedIn';
 import { decodeBase64 } from '../../utils/Base64';
-import { ConfigurableProductSelectedVariantValue } from '../../utils/Product/Product.type';
+import type {
+    ConfigurableProductSelectedVariantValue
+} from '../../utils/Product/Product.type';
 import getStore from '../../utils/Store';
-import { RootState } from '../../stores/Store.type';
+import type {
+    RootState
+} from '../../stores/Store.type';
 
-import {
+import type {
     IndexedAttributeWithValue,
     IndexedAttributeWithValueOption,
     IndexedBaseProduct,
@@ -51,7 +59,7 @@ import {
     IndexedReview,
     IndexedVariant,
     IndexedWishlistProduct,
-    RatingVote,
+    RatingVote
 } from './Product.type';
 
 export const ADD_TO_CART = 'ADD_TO_CART';
@@ -173,7 +181,13 @@ export const getIndexedSingleVariant = (
         return getIndexedVariants(variants);
     }
 
-    const indexedProduct = variants[index].product;
+    const selectedVariant = variants[index];
+
+    if (!selectedVariant) {
+        return getIndexedVariants(variants);
+    }
+
+    const indexedProduct = selectedVariant.product;
     const { attributes } = indexedProduct;
 
     return [
@@ -197,7 +211,7 @@ export const getVariantsIndexes = (
         }, []);
 
     if (inStockOnly) {
-        return result.filter((n) => variants[n].stock_status === GQLProductStockStatus.IN_STOCK);
+        return result.filter((n) => variants[n]?.stock_status === GQLProductStockStatus.IN_STOCK);
     }
 
     return result;
@@ -217,7 +231,7 @@ export const getVariantIndex = (
 ): number => {
     const indexes = getVariantsIndexes(variants, options, inStockOnly);
 
-    return indexes.length ? indexes[0] : -1;
+    return indexes[0] ?? -1;
 };
 
 /** @namespace ../../utils/Product/getIndexedCustomOption */
@@ -313,9 +327,10 @@ export const getIndexedReviews = (reviews?: ProductReviews): IndexedReview[] => 
 /** @namespace ../../utils/Product/getBundleId */
 export const getBundleId = (uid = ''): number => {
     const arrayId = decodeBase64(uid).split('/');
+    const bundleId = arrayId[2];
 
-    if (Array.isArray(arrayId) && arrayId.length > 2) {
-        return +arrayId[2];
+    if (Array.isArray(arrayId) && arrayId.length > 2 && bundleId) {
+        return +bundleId;
     }
 
     return 0;
@@ -388,7 +403,7 @@ export const getIndexedProduct = <T extends Partial<ProductItem | DomainProduct>
         variants: itemSku ? getIndexedSingleVariant(initialVariants, itemSku) : getIndexedVariants(initialVariants),
         options: getIndexedCustomOptions(initialOptions || []),
         attributes,
-        // Magento 2.4.1 review endpoint compatibility
+        // Commerce 2.4.1 review endpoint compatibility
         reviews,
         review_summary: {
             rating_summary,

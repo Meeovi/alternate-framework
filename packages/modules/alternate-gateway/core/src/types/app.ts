@@ -1,7 +1,13 @@
-import { MFrameworkConfig } from './config'
+import type {
+    MFrameworkConfig
+} from './config';
 import { MFrameworkContext } from '../runtime/context'
-import { MFrameworkEventBus } from './events'
-import { MFrameworkModule } from './module'
+import type {
+    MFrameworkEventBus
+} from './events';
+import type {
+    MFrameworkModule
+} from './module';
 
 export interface MFrameworkApp {
   context: MFrameworkContext

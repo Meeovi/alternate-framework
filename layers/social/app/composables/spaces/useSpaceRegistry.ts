@@ -34,7 +34,8 @@ export async function fetchSpaceRegistry(nuxtApp?: { $readItems?: ReadItemsFn })
   for (const s of spaces) {
     registry[s.slug] = {
       layout: s.layout_name,
-      component: () => import(/* @vite-ignore */ s.component_path)
+        // DISABLED: Dynamic @vite-ignore import causing Vite invalidation loop
+        component: () => Promise.reject(new Error('Space component loading disabled in dev mode'))
     }
   }
 

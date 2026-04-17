@@ -1,4 +1,4 @@
-import { CommerceNormalizer } from "../normalizer";
+import type { CommerceNormalizer } from "../normalizer";
 
 export const shopifyNormalizer: CommerceNormalizer = {
   normalizeProduct(data: any) {

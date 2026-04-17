@@ -3,7 +3,7 @@ import { createSearch } from "../core/search";
 import { elasticsearchAdapter } from "../adapters/elasticsearch/index";
 import type { IndexSchema } from "../core/types";
 
-const OPENSEARCH_URL = process.env.OPENSEARCH_URL ?? "https://search.meeovicms.com";
+const SEARCH_URL = process.env.ALTERNATE_SEARCH_URL ?? "https://search.meeovicms.com";
 const INDEX_NAME = `alt_search_live_${Date.now()}`;
 
 const indexSchema: IndexSchema = {
@@ -19,10 +19,10 @@ const indexSchema: IndexSchema = {
 
 const search = createSearch({
   adapter: elasticsearchAdapter({
-    baseUrl: OPENSEARCH_URL,
-    username: process.env.OPENSEARCH_USERNAME,
-    password: process.env.OPENSEARCH_PASSWORD,
-    apiKey: process.env.OPENSEARCH_API_KEY,
+    baseUrl: SEARCH_URL,
+    username: process.env.ALTERNATE_SEARCH_USERNAME,
+    password: process.env.ALTERNATE_SEARCH_PASSWORD,
+    apiKey: process.env.ALTERNATE_SEARCH_SEARCH_API_KEY,
   }),
   indexes: {
     [INDEX_NAME]: indexSchema,

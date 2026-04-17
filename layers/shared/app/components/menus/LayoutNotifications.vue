@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useNotifications } from '~/composables/globals/useNotifications'
+import { useNotifications } from '../../composables/globals/useNotifications'
 
 const drawer = ref(false)
 const {

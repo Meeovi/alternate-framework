@@ -27,7 +27,7 @@
 <script setup>
 import { ref, computed } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
+import { useDirectusForm } from '@mframework/adapter-directus'
 
 const dialog = ref(false)
 const content = useContentAdapter()

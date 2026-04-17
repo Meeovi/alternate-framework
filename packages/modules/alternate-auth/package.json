@@ -1,0 +1,55 @@
+{
+  "name": "alternate-auth",
+  "version": "1.0.0",
+  "description": "Adapter-first auth runtime and Nuxt integrations for Alternate Framework",
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./integrations/nuxt": "./integrations/nuxt.ts",
+    "./integrations/nuxt/module": "./integrations/nuxt/module.ts",
+    "./runtime/composables/useAuth": "./runtime/composables/useAuth.ts",
+    "./runtime/composables/useAuthorization": "./runtime/composables/useAuthorization.ts",
+    "./runtime/composables/useCurrentUser": "./runtime/composables/useCurrentUser.ts",
+    "./client/auth-client": "./client/auth-client.ts",
+    "./server/utils/auth": "./server/utils/auth.ts",
+    "./server/utils/adapter-auth": "./server/utils/adapter-auth.ts"
+  },
+  "scripts": {
+    "typecheck": "npx tsc --noEmit --skipLibCheck --moduleResolution bundler --module esnext --target es2022 --lib es2022 --types node types/nuxt-globals.d.ts index.ts integrations/nuxt.ts integrations/nuxt/module.ts client/auth-client.ts server/utils/auth.ts server/utils/adapter-auth.ts runtime/composables/useAuth.ts runtime/composables/useAuthorization.ts runtime/composables/useCurrentUser.ts",
+    "build": "echo \"alternate-auth is source-only\"",
+    "test": "echo \"no tests\""
+  },
+  "keywords": [
+    "auth",
+    "nuxt",
+    "alternate-framework",
+    "better-auth"
+  ],
+  "author": "M Framework",
+  "license": "MIT",
+  "dependencies": {
+    "@nuxt/kit": "^4.1.2",
+    "better-auth": "^1.4.12",
+    "defu": "^6.1.4",
+    "alternate-gateway": "file:../alternate-gateway",
+    "uuid": "^11.1.0",
+    "@better-auth/cli": "^1.4.10",
+    "@better-auth/oauth-provider": "^1.4.12",
+    "@better-auth/passkey": "^1.4.10",
+    "@better-auth/prisma-adapter": "^1.5.6",
+    "@better-auth/scim": "^1.4.15",
+    "@better-auth/sso": "^1.4.12",
+    "@better-auth/stripe": "^1.4.15",
+    "@polar-sh/better-auth": "^1.6.3",
+    "@polar-sh/checkout": "^0.2.0",
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "pg": "^8.18.0",
+    "viem": "^2.46.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "@types/uuid": "^10.0.0"
+  }
+}

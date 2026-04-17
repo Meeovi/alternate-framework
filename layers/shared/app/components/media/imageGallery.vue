@@ -1,39 +1,30 @@
 <template>
     <client-only>
-        <div ref="galleryRef" class="image-gallery">
-            <NuxtLink v-for="item in items" :key="item.id" :href="fileUrl(item)" class="gallery-item">
-                <img :src="fileUrl(item)" :alt="item.directus_files_id?.title || 'Image'" />
-            </NuxtLink>
-        </div>
+        <Gallery
+            :raw-items="items"
+            :item-mapper="mapImageItem"
+            empty-text="No images available."
+        />
     </client-only>
 </template>
 
 <script setup>
-    import {
-        onMounted,
-        ref
-    } from '#imports'
+        import Gallery from '../ui/Gallery.vue'
 
     const props = defineProps({
-        items: Array,
+            items: {
+                type: Array,
+                default: () => [],
+            },
     })
 
-    const galleryRef = ref(null)
     import useMedia from '../../composables/useMedia'
     const { fileUrl } = useMedia()
 
-    onMounted(async () => {
-        const lg = await import('lightgallery')
-        const lightGallery = lg.default
-
-        const lgThumbnail = (await import('lg-thumbnail')).default
-        const lgZoom = (await import('lg-zoom')).default
-
-        lightGallery(galleryRef.value, {
-            plugins: [lgThumbnail, lgZoom],
-            speed: 400,
-            thumbnail: true,
-            zoom: true,
+        const mapImageItem = (item) => ({
+            id: item?.id,
+            src: fileUrl(item),
+            thumb: fileUrl(item),
+            alt: item?.directus_files_id?.title || item?.title || 'Image',
         })
-    })
 </script>

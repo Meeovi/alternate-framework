@@ -68,15 +68,12 @@
 
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { ref, reactive, onMounted, onErrorCaptured } from '#imports';
-import { useVendureMutation } from '../../composables/useVendureMutation';
+import { useCommerceMutation } from '../../composables/globals/useCommerceMutation';
 import setOrderShippingAddressMutation from '#graphql/app/commerce/mutations/setOrderShippingAddress.gql';
 import getCountryListQuery from '#graphql/app/commerce/queries/getCountryList.gql';
-import { useVendureQuery } from '../../composables/useVendureQuery';
+import { useCommerceQuery } from '../../composables/globals/useCommerceQuery';
 import { useNotification } from '~//composables/useNotifications';
 
 const emit = defineEmits(['address-saved', 'address-error', 'form-reset']);
@@ -96,7 +93,7 @@ const errors = reactive({
   countryCode: '',
 });
 
-const { data: countriesResult } = useVendureQuery(getCountryListQuery);
+const { data: countriesResult } = useCommerceQuery(getCountryListQuery);
 type Province = { code: string; name: string };
 type Country = { code: string; name: string; provinces?: Province[] };
 
@@ -114,7 +111,7 @@ const shippingAddress = reactive({
   countryCode: null,
 });
 
-const { mutate: setShippingAddress } = useVendureMutation(setOrderShippingAddressMutation);
+const { mutate: setShippingAddress } = useCommerceMutation(setOrderShippingAddressMutation);
 
 const updateRegions = (countryCode: string | null) => {
   const country = countries.value.find((c: any) => c.code === countryCode);

@@ -40,9 +40,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref
@@ -51,7 +48,7 @@ void useContentAdapter()
     const tab = ref(null);
 
     const {
-        $directus,
+        $dataClient,
         $readItem
     } = useNuxtApp()
     const route = useRoute()
@@ -59,7 +56,7 @@ void useContentAdapter()
     const {
         data: crm
     } = await useAsyncData('crm', () => {
-        return $directus.request($readItem('navigation', '26'))
+        return $dataClient.request($readItem('navigation', '26'))
     })
 
     definePageMeta({

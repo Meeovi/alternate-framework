@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'vue';
-import { SfProduct } from '~/composables';
+import type { SfProduct } from '~/composables/system/models';
 
 export type ProductSliderProps = {
   items?: SfProduct[];

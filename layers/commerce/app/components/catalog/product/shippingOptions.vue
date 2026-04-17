@@ -13,11 +13,8 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 import { onMounted, watch } from '#imports'
-import { useShippingSelection } from '../../../composables/cart/useShippingSelection'
+import { useShippingSelection } from '../../../composables/sales/cart/useShippingSelection'
 
 const props = defineProps({
     modelValue: { type: [String, Number, null], default: null }

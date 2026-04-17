@@ -1,6 +1,12 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "alternate-auth": ["../../packages/modules/alternate-auth/index.ts"],
+      "alternate-auth/*": ["../../packages/modules/alternate-auth/*"]
+    }
+  },
   "exclude": [
     "**/__tests__/**",
     "**/*.spec.ts",

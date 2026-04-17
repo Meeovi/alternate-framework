@@ -1,6 +1,11 @@
-import { MFrameworkConfig } from '../types/config'
+import type {
+    MFrameworkConfig
+} from '../types/config';
 import { ModuleRegistry } from '../plugins/registry'
-import { MFrameworkAdapterKey, MFrameworkAdapterOf } from '../types/adapters'
+import type {
+    MFrameworkAdapterKey,
+    MFrameworkAdapterOf
+} from '../types/adapters';
 
 export class MFrameworkContext {
   readonly config: MFrameworkConfig

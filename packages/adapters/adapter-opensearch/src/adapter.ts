@@ -15,7 +15,7 @@ export interface OpenSearchAdapterOptions {
 
 export function createOpenSearchAdapter(opts: OpenSearchAdapterOptions = {}): CoreSearchAdapter<Record<string, unknown>> {
   const id = opts.id || 'adapter-opensearch'
-  const indexName = opts.index || process.env.OPENSEARCH_INDEX || 'movies'
+  const indexName = opts.index || process.env.ALTERNATE_SEARCH_INDEX || 'movies'
   const _client = opts.client || client
 
   const adapter: CoreSearchAdapter<Record<string, unknown>> = {

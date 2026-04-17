@@ -12,10 +12,10 @@
 import { Query } from '@tilework/opus';
 import { PureComponent } from 'react';
 
-import { NetworkError } from '../../types/Common.type';
+import type { NetworkError } from '../../types/Common.type';
 import { noopFn } from '../../utils/Common';
 import { makeCancelable } from '../../utils/Promise';
-import { CancelablePromise } from '../../utils/Promise/Promise.type';
+import type { CancelablePromise } from '../../utils/Promise/Promise.type';
 import { prepareQuery } from '../../utils/Query';
 import { hash } from '../../utils/Request/Hash';
 import { executeGet, listenForBroadCast } from '../../utils/Request/Request';
@@ -35,7 +35,7 @@ S = Record<string, unknown>,
 
     protected promise?: CancelablePromise<unknown>;
 
-    __construct(
+    override __construct(
         props: P,
         dataModelName = '',
         isShouldListenForBroadcast = true,
@@ -49,7 +49,7 @@ S = Record<string, unknown>,
         this.promise = undefined;
     }
 
-    componentWillUnmount(): void {
+    override componentWillUnmount(): void {
         if (this.promise) {
             this.promise.cancel();
         }

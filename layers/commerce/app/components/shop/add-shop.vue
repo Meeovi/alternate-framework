@@ -15,7 +15,7 @@
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
           <v-form @submit.prevent="submitForm">
-            <DirectusFormElement v-for="field in shopFields" :key="field.field" :field="field" v-model="form[field.field]" />
+            <DataFormElement v-for="field in shopFields" :key="field.field" :field="field" v-model="form[field.field]" />
             <v-btn type="submit">Submit</v-btn>
           </v-form>
         </template>
@@ -26,19 +26,16 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { ref } from '#imports'
-import DirectusFormElement from '~/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '~/composables/useDirectusForm'
+import DataFormElement from '~/components/ui/forms/DataFormElement.vue'
+import { useDataForm } from '~/composables/globals/useDataForm'
 
 const dialog = ref(false)
-const { $directus, $readFieldsByCollection } = useNuxtApp()
+const { $dataClient, $readFieldsByCollection } = useNuxtApp()
 
 const { data, error } = await useAsyncData('shops', async () => {
-  return $directus.request($readFieldsByCollection('shops'))
+  return $dataClient.request($readFieldsByCollection('shops'))
 })
 
 // guard against undefined/null data.value and empty arrays
@@ -54,5 +51,5 @@ const shopFields = data
 
 
 // use composable for form handling (validation, submit, provide context)
-const { form, formError, formSuccess, submitForm } = useDirectusForm('shops', shopFields, { clearOnSuccess: true, closeDialogRef: dialog })
+const { form, formError, formSuccess, submitForm } = useDataForm('shops', shopFields, { clearOnSuccess: true, closeDialogRef: dialog })
 </script>

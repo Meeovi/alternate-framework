@@ -1,18 +1,17 @@
 // Global shims for monorepo - picked up via tsconfig.typeRoots
 
 declare module '#shared/types' {
-  const _default: any;
-  export = _default;
+  export * from './index';
 }
 
 declare module '#shared/types/utils' {
-  const _default: any;
-  export = _default;
+  export * from './utils';
 }
 
-declare module '#shared/*' {
-  const _default: any;
-  export = _default;
+declare module '*.vue' {
+  import type { DefineComponent } from 'vue';
+  const component: DefineComponent<Record<string, unknown>, Record<string, unknown>, unknown>;
+  export default component;
 }
 
 // Common Vue / Nuxt auto-import shims
@@ -52,12 +51,5 @@ declare function mastoLogin(...args: any[]): any;
 declare function toShortHandle(s: string): string;
 declare function useRelationship(...args: any[]): any;
 declare function useFormattedDateTime(...args: any[]): any;
-
-declare module '#imports' {
-  export function useI18n(...args: any[]): any;
-  export function useHead(...args: any[]): any;
-  export function useRouter(...args: any[]): any;
-  export function useRoute(...args: any[]): any;
-}
 
 export {};

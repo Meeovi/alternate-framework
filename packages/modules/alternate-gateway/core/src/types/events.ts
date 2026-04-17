@@ -1,4 +1,6 @@
-import { MFrameworkAdapterKey } from './adapters'
+import type {
+    MFrameworkAdapterKey
+} from './adapters';
 
 export interface MFrameworkEventMap {
   'app:ready': { context: unknown }

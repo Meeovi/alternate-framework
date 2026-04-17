@@ -1,4 +1,4 @@
-import { defineConfig, loadGraphQLHTTPSubgraph } from '@graphql-mesh/compose-cli'
+import { defineConfig, loadGraphQLHTTPSubgraph } from 'alternate-gateway/mesh-compose'
  
 export const composeConfig = defineConfig({
   subgraphs: [

@@ -24,7 +24,7 @@
                             <div class="item-wrapper">
                                 <div class="item-img">
                                     <NuxtLink :to="`/shops/${restaurant?.id}`"><img loading="lazy" class="align-end text-white" v-if="restaurant?.image"
-                            :src="`${$directus.url}assets/${restaurant?.image?.filename_disk}`" :alt="restaurant?.name"></NuxtLink>
+                            :src="`${$dataClient.url}assets/${restaurant?.image?.filename_disk}`" :alt="restaurant?.name"></NuxtLink>
                                 </div>
                                 <div class="item-content">
                                     <div class="desc-wrap">
@@ -48,9 +48,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     import {
         useRuntimeConfig
     } from '#imports';

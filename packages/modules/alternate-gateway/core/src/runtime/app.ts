@@ -1,4 +1,6 @@
-import { MFrameworkConfig } from '../types/config'
+import type {
+    MFrameworkConfig
+} from '../types/config';
 import { MFrameworkContext } from './context'
 import { ModuleRegistry } from '../plugins/registry'
 import { createEventBus } from '../types/events'

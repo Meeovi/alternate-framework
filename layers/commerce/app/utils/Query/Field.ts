@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { FieldArgument } from './Query.type';
+import type { FieldArgument } from './Query.type';
 
 /**
  * Builds GraphQL query according to https://graphql.org/learn/queries/ documentation

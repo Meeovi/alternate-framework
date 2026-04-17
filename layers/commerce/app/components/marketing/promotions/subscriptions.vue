@@ -64,9 +64,6 @@
 
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import productCard from '~/components/related/post.vue'
     import { computed, unref } from '#imports'
@@ -81,7 +78,7 @@ void useContentAdapter()
     })
 
     const {
-        $directus,
+        $dataClient,
         $readItem,
         $readItems
     } = useNuxtApp()
@@ -90,7 +87,7 @@ void useContentAdapter()
     const {
         data: incentiveBar
     } = await useAsyncData('incentiveBar', async () => {
-        const resp = await $directus.request($readItem('navigation', '118', {
+        const resp = await $dataClient.request($readItem('navigation', '118', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -101,7 +98,7 @@ void useContentAdapter()
     const {
         data: incentivePage
     } = await useAsyncData('incentivePage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $dataClient.request($readItem('pages', '86', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -111,7 +108,7 @@ void useContentAdapter()
     const {
         data: subscriptions
     } = await useAsyncData('subscriptions', async () => {
-        const resp = await $directus.request($readItems('products', {
+        const resp = await $dataClient.request($readItems('products', {
             fields: ['*', {
                 '*': ['*']
             }],

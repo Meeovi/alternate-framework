@@ -9,15 +9,16 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { CustomerAddress } from '../../types/normalizers/MyAccount.type';
-import { OrderAddress } from '../../types/normalizers/Order.type';
-import { Country, Region } from '../../types/normalizers/Region.type';
-import { Store } from '../../types/normalizers/StoreInPickUp.type';
-import { CheckoutAddress } from '../../types/routes/Checkout/Checkout.type';
-import { GQLCountryCodeEnum, GQLCustomerAddressInput } from '../../types/Graphql.type';
+import type { CustomerAddress } from '../../types/normalizers/MyAccount.type';
+import type { OrderAddress } from '../../types/normalizers/Order.type';
+import type { Country, Region } from '../../types/normalizers/Region.type';
+import type { Store } from '../../types/normalizers/StoreInPickUp.type';
+import type { CheckoutAddress } from '../../types/routes/Checkout/Checkout.type';
+import { GQLCountryCodeEnum } from '../../types/Graphql.type';
+import type { GQLCustomerAddressInput } from '../../types/Graphql.type';
 import { getStoreState } from '../../utils/Store';
 
-import { CountryOption, FormattedRegion, ZippopotamResponseResult } from './Address.type';
+import type { CountryOption, FormattedRegion, ZippopotamResponseResult } from './Address.type';
 
 /** @namespace ../../utils/Address/Index/trimCustomerAddress */
 export const trimCustomerAddress = (customerAddress: Partial<CustomerAddress>): GQLCustomerAddressInput => {

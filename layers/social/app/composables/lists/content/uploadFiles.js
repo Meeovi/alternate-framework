@@ -1,30 +1,19 @@
-import { uploadFiles } from '@mframework/adapter-directus';
+import useContentAdapter from '../../useContentAdapter'
 
 export default async function uploadFile({ imageFile, documentFile, videoFile, audioFile }) {
   const content = useContentAdapter()
-  const nuxt = typeof useNuxtApp !== 'undefined' ? useNuxtApp() : (globalThis && globalThis.__NUXT_APP) || {}
   const uploadedFiles = {}
 
   try {
-    // helper to attempt adapter upload, fallback to directus SDK helper
     const tryUpload = async (file) => {
       const form = new FormData()
       form.append('file', file)
-      if (content && typeof content.createItem === 'function') {
-        try {
-          const resp = await content.createItem('files', form)
-          return resp?.data || resp
-        } catch (e) {
-          // ignore and fallback
-        }
+      if (!content || typeof content.uploadFiles !== 'function') {
+        throw new Error('No available file upload mechanism')
       }
-      if (nuxt && nuxt.$directus) {
-        const { uploadFiles } = await import('@mframework/adapter-directus').catch(() => ({}))
-        if (typeof nuxt.$directus.request === 'function' && typeof uploadFiles === 'function') {
-          return await nuxt.$directus.request(uploadFiles(form))
-        }
-      }
-      throw new Error('No available file upload mechanism')
+
+      const resp = await content.uploadFiles(form)
+      return resp?.data || resp
     }
 
     if (imageFile) {

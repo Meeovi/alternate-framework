@@ -1,79 +1,46 @@
-import type { mastodon } from '@mframework/adapter-federation'
-import { withoutProtocol } from 'ufo'
+import { createRouteTools, type mastodon } from '@mframework/adapter-federation'
+
+const routeTools = createRouteTools({
+  resolveRoute: location => useRouter().resolve(location as any),
+  currentServer: () => currentServer.value,
+  currentUserServer: () => currentUser.value?.server,
+  extractAccountHandle,
+  navigateTo: payload => navigateTo(payload),
+})
 
 export function getAccountRoute(account: mastodon.v1.Account) {
-  return useRouter().resolve({
-    name: 'account-index',
-    params: {
-      server: currentServer.value,
-      account: extractAccountHandle(account),
-    },
-  })
+  return routeTools.getAccountRoute(account)
 }
 export function getAccountFollowingRoute(account: mastodon.v1.Account) {
-  return useRouter().resolve({
-    name: 'account-following',
-    params: {
-      server: currentServer.value,
-      account: extractAccountHandle(account),
-    },
-  })
+  return routeTools.getAccountFollowingRoute(account)
 }
 export function getAccountFollowersRoute(account: mastodon.v1.Account) {
-  return useRouter().resolve({
-    name: 'account-followers',
-    params: {
-      server: currentServer.value,
-      account: extractAccountHandle(account),
-    },
-  })
+  return routeTools.getAccountFollowersRoute(account)
 }
 
 export function getReportRoute(id: string | number) {
-  return `https://${currentUser.value?.server}/admin/reports/${encodeURIComponent(id)}`
+  return routeTools.getReportRoute(id)
 }
 
 export function getStatusRoute(status: mastodon.v1.Status) {
-  return useRouter().resolve({
-    name: 'status',
-    params: {
-      server: currentServer.value,
-      account: extractAccountHandle(status.account),
-      status: status.id,
-    },
-  })
+  return routeTools.getStatusRoute(status)
 }
 
 export function getTagRoute(tag: string) {
-  return useRouter().resolve({
-    name: 'tag',
-    params: {
-      server: currentServer.value,
-      tag,
-    },
-  })
+  return routeTools.getTagRoute(tag)
 }
 
 export function getStatusPermalinkRoute(status: mastodon.v1.Status) {
-  return status.url ? withoutProtocol(status.url) : null
+  return routeTools.getStatusPermalinkRoute(status)
 }
 
 export function getStatusInReplyToRoute(status: mastodon.v1.Status) {
-  return useRouter().resolve({
-    name: 'status-by-id',
-    params: {
-      server: currentServer.value,
-      status: status.inReplyToId,
-    },
-  })
+  return routeTools.getStatusInReplyToRoute(status)
 }
 
 export function navigateToStatus({ status, focusReply = false }: {
   status: mastodon.v1.Status
   focusReply?: boolean
 }) {
-  return navigateTo({
-    path: getStatusRoute(status).href,
-    state: { focusReply },
-  })
+  return routeTools.navigateToStatus({ status, focusReply })
 }

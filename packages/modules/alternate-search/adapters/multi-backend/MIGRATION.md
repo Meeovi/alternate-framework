@@ -22,10 +22,10 @@ import { createSearch, elasticsearchAdapter } from '@mframework/alternate-search
 
 export const search = createSearch({
   adapter: elasticsearchAdapter({
-    node: process.env.ELASTICSEARCH_URL,
+    node: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_URL,
     auth: {
-      username: process.env.ELASTICSEARCH_USER,
-      password: process.env.ELASTICSEARCH_PASSWORD,
+      username: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_USER,
+      password: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD,
     },
   }),
   indexes: {
@@ -69,10 +69,10 @@ export async function getSearchInstance() {
         {
           id: 'elasticsearch',
           adapter: elasticsearchAdapter({
-            node: process.env.ELASTICSEARCH_URL,
+            node: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_URL,
             auth: {
-              username: process.env.ELASTICSEARCH_USER,
-              password: process.env.ELASTICSEARCH_PASSWORD,
+              username: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_USER,
+              password: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD,
             },
           }),
           priority: 20,
@@ -128,10 +128,10 @@ export async function getSearchInstance() {
         {
           id: 'elasticsearch',
           adapter: elasticsearchAdapter({
-            node: process.env.ELASTICSEARCH_URL,
+            node: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_URL,
             auth: {
-              username: process.env.ELASTICSEARCH_USER,
-              password: process.env.ELASTICSEARCH_PASSWORD,
+              username: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_USER,
+              password: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD,
             },
           }),
           priority: 10,
@@ -186,8 +186,8 @@ backends: [
   {
     id: 'meilisearch',
     adapter: meilisearchAdapter({
-      baseUrl: process.env.MEILISEARCH_URL || 'http://localhost:7700',
-      apiKey: process.env.MEILISEARCH_KEY,
+      baseUrl: process.env.ALTERNATE_SEARCH_MEILISEARCH_URL || 'http://localhost:7700',
+      apiKey: process.env.ALTERNATE_SEARCH_MEILISEARCH_KEY,
     }),
     priority: 20,
     weight: 60,
@@ -360,12 +360,12 @@ MAGENTO_GRAPHQL_URL=https://meeovi.com/graphql
 MAGENTO_ACCESS_TOKEN=your_token_here
 
 # Secondary backends (optional)
-ELASTICSEARCH_URL=http://localhost:9200
-ELASTICSEARCH_USER=elastic
-ELASTICSEARCH_PASSWORD=password
+ALTERNATE_SEARCH_ELASTICSEARCH_URL=http://localhost:9200
+ALTERNATE_SEARCH_ELASTICSEARCH_USER=elastic
+ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD=password
 
-MEILISEARCH_URL=http://localhost:7700
-MEILISEARCH_KEY=key_here
+ALTERNATE_SEARCH_MEILISEARCH_URL=http://localhost:7700
+ALTERNATE_SEARCH_MEILISEARCH_KEY=key_here
 ```
 
 ### Optional Debug Variables

@@ -28,15 +28,12 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import productCard from './productCard.vue'
 
   const model = ref(null)
 
   import { onMounted } from '#imports'
-  import { useRecentlyViewed } from '#commerce/app/composables/products/useRecentlyViewed'
+  import { useRecentlyViewed } from '#commerce/app/composables/catalog/products/useRecentlyViewed'
 
   const { products: recentlyViewed, load } = useRecentlyViewed()
 

@@ -9,12 +9,12 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { ShippingMethod } from '../../types/normalizers/Checkout.type';
-import { IndexedCartItem } from '../../stores/Cart/Cart.type';
-import { RootState } from '../../utils/Store/Store.type';
+import type { ShippingMethod } from '../../types/normalizers/Checkout.type';
+import type { IndexedCartItem } from '../../stores/Cart/Cart.type';
+import type { RootState } from '../../utils/Store/Store.type';
+import type { CartItemPriceProps } from './Cart.type';
 
 import {
-    CartItemPriceProps,
     DisplayCartTaxInPrice,
     DisplayCartTaxInShipping,
     DisplayCartTaxInSubTotal,

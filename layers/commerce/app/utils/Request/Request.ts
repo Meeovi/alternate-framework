@@ -10,7 +10,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { GraphQlResponse } from '@tilework/opus';
+import type { GraphQlResponse } from '@tilework/opus';
 
 import { isSignedIn } from '../../utils/Auth/IsSignedIn';
 import { getAuthorizationToken, refreshAuthorizationToken } from '../../utils/Auth/Token';
@@ -43,7 +43,7 @@ export const getStoreCodePath = (): string => {
     // eslint-disable-next-line no-undef
     const firstPathPart = path.split('/')[1];
 
-    if (window.storeList.includes(firstPathPart)) {
+    if (firstPathPart && window.storeList.includes(firstPathPart)) {
         return `/${ firstPathPart }`;
     }
 

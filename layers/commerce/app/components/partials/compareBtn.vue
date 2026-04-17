@@ -8,9 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import { computed } from '#imports';
   import { useCompareStore } from '../../stores/compare';
   import { useNuxtApp } from '#imports';
@@ -20,7 +17,7 @@ void useContentAdapter()
   const props = defineProps<{ product: Product }>();
 
   const compareStore = useCompareStore();
-  const { $directus } = useNuxtApp() as any;
+  const { $dataClient } = useNuxtApp() as any;
 
   // Check if the product is already in compare list
   const isInCompare = computed(() => {
@@ -30,7 +27,7 @@ void useContentAdapter()
   // Dynamically update v-btn text
   const buttonText = computed(() => (isInCompare.value ? 'In Compare List' : 'Add to Compare'));
 
-  // Handle Add/Remove from Compare list using Directus where possible
+  // Handle Add/Remove from Compare list using Data where possible
   const handleCompare = async () => {
     try {
       if (!props.product || !props.product.sku) {
@@ -40,26 +37,26 @@ void useContentAdapter()
       const sku = props.product.sku;
 
       if (isInCompare.value) {
-        // Remove from Directus compare_items collection if exists
+        // Remove from Data compare_items collection if exists
         try {
-          const itemsRes = await $directus.$readItems('compare_items', { filter: { sku: { _eq: sku } } });
+          const itemsRes = await $dataClient.$readItems('compare_items', { filter: { sku: { _eq: sku } } });
           const items = itemsRes?.data || itemsRes || [];
           for (const it of items) {
             const id = it.id || it._id || it.ID;
-            if (id) await $directus.$deleteItem('compare_items', id);
+            if (id) await $dataClient.$deleteItem('compare_items', id);
           }
         } catch (e) {
-          // ignore Directus errors, still update local store
-          console.warn('Directus remove compare item failed:', e);
+          // ignore Data errors, still update local store
+          console.warn('Data remove compare item failed:', e);
         }
 
         compareStore.removeComparedProduct(sku);
       } else {
-        // Add to Directus compare_items collection
+        // Add to Data compare_items collection
         try {
-          await $directus.$createItem('compare_items', { sku });
+          await $dataClient.$createItem('compare_items', { sku });
         } catch (e) {
-          console.warn('Directus create compare item failed:', e);
+          console.warn('Data create compare item failed:', e);
         }
 
         compareStore.addComparedProductSku(sku);

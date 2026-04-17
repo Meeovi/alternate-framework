@@ -35,9 +35,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     const props = defineProps({
         incentive: {
             type: Object,

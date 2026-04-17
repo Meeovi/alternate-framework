@@ -100,9 +100,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref,
@@ -110,10 +107,13 @@ void useContentAdapter()
     } from '#imports'
     import incentiveCard from '~/components/related/post.vue'
 
-    const user = useSupabaseUser()
+    const { user, fetchSession } = useAuth()
+    await fetchSession()
+    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    const currentUserId = getCurrentUserId()
 
     const {
-        $directus,
+        $dataClient,
         $readItem,
         $readItems
     } = useNuxtApp()
@@ -122,7 +122,7 @@ void useContentAdapter()
     const {
         data: incentiveBar
     } = await useAsyncData('incentiveBar', async () => {
-        const resp = await $directus.request($readItem('navigation', '118', {
+        const resp = await $dataClient.request($readItem('navigation', '118', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -133,7 +133,7 @@ void useContentAdapter()
     const {
         data: incentivePage
     } = await useAsyncData('incentivePage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $dataClient.request($readItem('pages', '86', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -143,13 +143,14 @@ void useContentAdapter()
     const {
         data: coupons
     } = await useAsyncData('coupons', async () => {
-        const resp = await $directus.request($readItems('incentives', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('incentives', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 incentive_type: {
                     name: {
@@ -164,13 +165,14 @@ void useContentAdapter()
     const {
         data: rewards
     } = await useAsyncData('rewards', async () => {
-        const resp = await $directus.request($readItems('incentives', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('incentives', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },                
                 incentive_type: {
                     name: {
@@ -185,13 +187,14 @@ void useContentAdapter()
     const {
         data: creditMemos
     } = await useAsyncData('creditMemos', async () => {
-        const resp = await $directus.request($readItems('incentives', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('incentives', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 incentive_type: {
                     name: {
@@ -206,13 +209,14 @@ void useContentAdapter()
     const {
         data: giftCards
     } = await useAsyncData('giftCards', async () => {
-        const resp = await $directus.request($readItems('products', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('products', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },                
                 incentive_type: {
                     name: {
@@ -227,13 +231,14 @@ void useContentAdapter()
     const {
         data: certificates
     } = await useAsyncData('certificates', async () => {
-        const resp = await $directus.request($readItems('products', {
+        if (!currentUserId) return []
+        const resp = await $dataClient.request($readItems('products', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: currentUserId
                 },
                 incentive_type: {
                     name: {

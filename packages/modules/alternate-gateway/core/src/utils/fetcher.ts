@@ -1,6 +1,9 @@
 
 import { getFetcher } from '../fetcher/registry'
-import { FetcherRequest, FetcherResponse } from '../fetcher/types'
+import type {
+    FetcherRequest,
+    FetcherResponse
+} from '../fetcher/types';
 
 export async function fetcher<T = any>(
   operation: string,

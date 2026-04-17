@@ -86,10 +86,13 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { ref, onMounted, onUnmounted } from '#imports'
+import { createDirectusAuthState } from '@mframework/adapter-directus'
+import useContentAdapter from '#social/app/composables/useContentAdapter'
 
 const route = useRoute()
-const client = useDirectusClient()
-const { user } = useDirectusAuth()
+const config = useRuntimeConfig()
+const client = useContentAdapter().directusClient
+const { user } = createDirectusAuthState(null)
 
 const video = ref(null)
 const comments = ref([])

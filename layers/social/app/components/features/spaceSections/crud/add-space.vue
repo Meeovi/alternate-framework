@@ -7,18 +7,18 @@
         </v-btn>
       </template>
       <v-card class="b-1">
-        <template #header>
+        <v-card-title>
           <h3>Create New Space</h3>
-        </template>
+        </v-card-title>
 
-        <template #header>
+        <v-card-text>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
           <v-form @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in spaceFields" :key="field.field" :field="field" v-model="form[field.field]" />
             <v-btn type="submit">Create</v-btn>
           </v-form>
-        </template>
+        </v-card-text>
       </v-card>
     </v-dialog>
   </v-row>
@@ -27,7 +27,7 @@
 <script setup>
 import { ref } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
+import { useDirectusForm } from '@mframework/adapter-directus'
 
 const dialog = ref(false)
 import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'

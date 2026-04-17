@@ -1,6 +1,4 @@
 // composables/deleteWebsite.js
-import { deleteItem } from '@directus/sdk';
-
 export default async function deleteWebsite(websiteId) {
   const content = useContentAdapter()
   const nuxt = typeof useNuxtApp !== 'undefined' ? useNuxtApp() : (globalThis && globalThis.__NUXT_APP) || {}

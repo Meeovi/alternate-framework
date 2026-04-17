@@ -1,4 +1,6 @@
-import { AuthSession } from "./session"
+import type {
+    AuthSession
+} from "./session";
 
 export interface AuthAdapter {
   getSession(): Promise<AuthSession | null>

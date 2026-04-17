@@ -1,6 +1,12 @@
-import { CommerceCart } from "./cart"
-import { CommerceCategory } from "./category"
-import { CommerceProduct } from "./product"
+import type {
+    CommerceCart
+} from "./cart";
+import type {
+    CommerceCategory
+} from "./category";
+import type {
+    CommerceProduct
+} from "./product";
 
 export interface CommerceAdapter {
   getProductBySlug(slug: string): Promise<CommerceProduct | null>

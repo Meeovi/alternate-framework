@@ -11,14 +11,10 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { ref } from '#imports';
-import { v-btn } from '@storefront-ui/vue';
-import { useVendureQuery } from '@/app/composables/useVendureQuery';
-import { useVendureMutation } from '@/app/composables/useVendureMutation';
+import { useCommerceQuery } from '~/composables/globals/useCommerceQuery';
+import { useCommerceMutation } from '~/composables/globals/useCommerceMutation';
 import createStripePaymentIntentMutation from '#graphql/app/commerce/mutations/createStripePaymentIntent.gql';
 import getActiveOrderQuery from '#graphql/app/commerce/queries/getActiveOrder.gql';
 import StripeCardElement from './StripeCardElement.vue';
@@ -27,15 +23,15 @@ const loading = ref(false);
 const clientSecret = ref<string | null>(null);
 
 // Get the active order (cart)
-const { data: orderData, refetch } = useVendureQuery(getActiveOrderQuery);
+const { data: orderData, refetch } = useCommerceQuery(getActiveOrderQuery);
 
-const { mutate: createStripePaymentIntent } = useVendureMutation(createStripePaymentIntentMutation);
+const { mutate: createStripePaymentIntent } = useCommerceMutation(createStripePaymentIntentMutation);
 
 const startCheckout = async () => {
   if (!orderData.value?.activeOrder) return;
   loading.value = true;
   try {
-    // Create payment intent on the server via Vendure mutation
+    // Create payment intent on the server via Commerce mutation
     const response = await createStripePaymentIntent({
       orderId: orderData.value.activeOrder.id,
     });

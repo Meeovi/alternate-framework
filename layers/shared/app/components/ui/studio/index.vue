@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from '#imports'
+import { onMounted, ref } from 'vue'
 </script>
 
 <style>

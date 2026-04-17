@@ -21,21 +21,16 @@
 
 <script setup>
     import spaceCard from '#social/app/components/related/space.vue'
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
-
-    const userStore = useUserStore()
-    const userDisplayName = computed(() => {
-        return userStore.user?.name || userStore.user?.username || 'User'
-    })
+    const currentUser = useCurrentUser()
+    const currentFirstName = computed(() => (currentUser.value as any)?.firstName || (currentUser.value as any)?.first_name || '')
+    const currentLastName = computed(() => (currentUser.value as any)?.lastName || (currentUser.value as any)?.last_name || '')
         
     const model = ref(null)
     import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readItems } = useAdapterRequest()
 
     const { data: myImageSpaces } = await useAsyncData('myImageSpaces', async () => {
-        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: userStore?.user?.firstName }, last_name: { _eq: userStore?.user?.lastName } }, space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] })
+        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] })
         return resp?.data || resp || []
     })
 

@@ -49,11 +49,12 @@
 
 <script setup>
     import { ref, computed, onMounted } from '#imports'
-    import { useDirectusClient, useDirectusAuth } from '#social/app/composables/useDirectus'
+    import { createDirectusAuthState } from '@mframework/adapter-directus'
+    import useContentAdapter from '#social/app/composables/useContentAdapter'
 
     const config = useRuntimeConfig()
-    const directus = useDirectusClient()
-    const { user } = useDirectusAuth()
+    const directus = useContentAdapter().directusClient
+    const { user } = createDirectusAuthState(null)
 
     const videos = ref([])
     const tags = ref([])

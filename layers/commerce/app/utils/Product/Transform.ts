@@ -13,28 +13,15 @@
 import { FieldType } from 'Component/Field/Field.config';
 import { ProductType } from 'Component/Product/Product.config';
 import { NONE_RADIO_OPTION } from 'Component/ProductCustomizableOption/ProductCustomizableOption.config';
-import { CustomizableSelectionValue, GroupedProductItem } from '../../types/normalizers/ProductList.type';
+import type { CustomizableSelectionValue, GroupedProductItem } from '../../types/normalizers/ProductList.type';
 import { GQLCurrencyEnum } from '../../types/Graphql.type';
 import { decodeBase64, encodeBase64 } from '../../utils/Base64';
 import { formatPrice } from '../../utils/Price';
-import { ProductOption } from '../../utils/Product/Product.type';
+import type { ProductOption } from '../../utils/Product/Product.type';
 
 import { getProductInStock } from './Extract';
 import { ADD_TO_CART } from './Product';
-import {
-    BuyRequestBundleOptions,
-    BuyRequestCustomizableOptions,
-    BuyRequestDownloadableOptions,
-    IndexedAttributeWithValue,
-    IndexedBundleOption,
-    IndexedProduct,
-    NoneRadioOption,
-    PriceLabels,
-    ProductTransformData,
-    StockCheckProduct,
-    TransformedBundleOption,
-    TransformedCustomizableOptions,
-} from './Product.type';
+import type { BuyRequestBundleOptions, BuyRequestCustomizableOptions, BuyRequestDownloadableOptions, IndexedAttributeWithValue, IndexedBundleOption, IndexedProduct, NoneRadioOption, PriceLabels, ProductTransformData, StockCheckProduct, TransformedBundleOption, TransformedCustomizableOptions } from './Product.type';
 
 export const PRICE_TYPE_PERCENT = 'PERCENT';
 
@@ -299,16 +286,16 @@ export const customizableOptionsToSelectTransform = (
 );
 
 /**
- * Generates Magento type product interface for performing
+ * Generates Commerce type product interface for performing
  * actions (add to cart, wishlist, exc.)
  * @param product
  * @param quantity
  * @param enteredOptions
  * @param selectedOptions
  * @returns {*[]}
- * @namespace ../../utils/Product/Transform/magentoProductTransform
+ * @namespace ../../utils/Product/Transform/commerceProductTransform
  */
-export const magentoProductTransform = (
+export const commerceProductTransform = (
     action: string = ADD_TO_CART,
     product: IndexedProduct,
     quantity: number | Record<string, number> = 1,

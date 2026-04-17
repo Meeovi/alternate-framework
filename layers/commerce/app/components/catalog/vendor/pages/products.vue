@@ -22,17 +22,14 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref,
         onMounted
     } from '#imports';
     import {
-        useVendureQuery
-    } from '@/app/composables/useVendureQuery';
+        useCommerceQuery
+    } from '~/composables/globals/useCommerceQuery';
     import getProductListQuery from '#graphql/app/commerce/queries/getProductList.gql';
     import addproduct from '~/components/crud/create/add-product.vue';
     import productCard from '~/components/productCard.vue';
@@ -42,7 +39,7 @@ void useContentAdapter()
     const {
         data,
         refetch
-    } = useVendureQuery(getProductListQuery);
+    } = useCommerceQuery(getProductListQuery);
 
     onMounted(() => {
         if (data.value?.products?.items) {

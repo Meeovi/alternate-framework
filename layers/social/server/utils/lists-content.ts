@@ -22,15 +22,25 @@ function appendParam(searchParams: URLSearchParams, key: string, value: unknown)
 
 export function getListsContentConfig(event: any) {
   const config = useRuntimeConfig(event) as any
-  const url = config.listsContentApi?.url
+  const url =
+    config.listsContentApi?.url
+    || process.env.LISTS_CONTENT_API_URL
+    || process.env.LISTS_API_URL
+    || process.env.DIRECTUS_URL
 
   if (!url) {
     throw createError({ statusCode: 500, statusMessage: 'Lists content API is not configured' })
   }
 
+  const apiToken =
+    config.listsContentApi?.apiToken
+    || process.env.LISTS_CONTENT_API_TOKEN
+    || process.env.LISTS_API_TOKEN
+    || process.env.DIRECTUS_API_TOKEN
+
   return {
     url: String(url).replace(/\/$/, ''),
-    apiToken: config.listsContentApi?.apiToken ? String(config.listsContentApi.apiToken) : '',
+    apiToken: apiToken ? String(apiToken) : '',
   }
 }
 

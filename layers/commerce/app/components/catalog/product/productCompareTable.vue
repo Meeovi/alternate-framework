@@ -8,7 +8,7 @@
         <div v-for="product in products" :key="product.uid" class="product-column">
           <div class="product-card">
             <div class="remove-product" @click="removeProduct(product.uid)">
-              <SfIconClose size="sm" />
+              <v-icon size="sm">mdi-close</v-icon>
             </div>
             <img :src="product.image?.url" :alt="product.name" class="product-image" />
             <h4>{{ product.name }}</h4>
@@ -122,11 +122,7 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 import { computed } from '#imports';
-import { SfIconClose } from '@storefront-ui/vue';
 import addToCartBtn from '~/components/partials/addToCartBtn.vue';
 import Ratings from '~/components/partials/ratings.vue';
 

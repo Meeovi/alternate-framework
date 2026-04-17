@@ -1,5 +1,3 @@
-import { Page as GrapesJsPage } from 'grapesjs'
-
 // Core
 export * from './core/result'
 export * from './core/utility'
@@ -27,17 +25,17 @@ export type { Maybe as Optional } from './core/common'
 export type { Result as ApiResult } from './core/result'
 export type { Result as ServiceResult } from './core/result'
 
-// Additional UI types - placeholders for types that may be defined elsewhere
+// Additional UI types used by page-builder style content.
 export interface PageBlock {
 	collection?: string | null
 	id?: string
-	item?: any
+	item?: unknown
 	hide_block?: boolean | null
 }
 
 export interface OsProposal {
 	id?: string
-	[key: string]: any
+	[key: string]: unknown
 }
 
 export type BlockType =

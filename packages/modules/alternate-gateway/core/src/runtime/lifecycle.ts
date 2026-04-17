@@ -1,6 +1,8 @@
 import { MFrameworkContext } from './context'
 import { ModuleRegistry } from '../plugins/registry'
-import { MFrameworkEventBus } from '../types/events'
+import type {
+    MFrameworkEventBus
+} from '../types/events';
 
 export async function runAppLifecycle(
   registry: ModuleRegistry,

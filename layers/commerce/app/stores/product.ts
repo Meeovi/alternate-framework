@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import type { Product as DomainProduct } from '../types/domain';
-import { useProducts } from '../composables/products'
+import { useProducts } from '../composables/catalog/products'
 
 interface ProductState {
     products: DomainProduct[]

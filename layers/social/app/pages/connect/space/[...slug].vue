@@ -117,7 +117,7 @@
     import SpaceFeeds from '#social/app/components/related/post.vue'
     import photoCard from '#shared/app/components/media/imageCard.vue'
     import videoCard from '#shared/app/components/media/mediaCard.vue'
-    import SpaceProducts from '#commerce/app/components/catalog/product/productCard.vue'
+    import SpaceProducts from '../../../../../commerce/app/components/catalog/product/productCard.vue'
     import SpaceLists from '#social/app/components/related/list.vue'
     import membersList from '#social/app/components/related/memberList.vue'
     import SpaceSettings from '#social/app/components/features/spaceSections/crud/update-space.vue'

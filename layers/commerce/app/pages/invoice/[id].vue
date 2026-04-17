@@ -278,23 +278,24 @@
 </script>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     const route = useRoute();
     const {
-        $directus,
+        $dataClient,
         $readItem
     } = useNuxtApp()
-    const user = useSupabaseUser()
+    const { user, fetchSession } = useAuth()
+    await fetchSession()
+    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    const currentUserId = getCurrentUserId()
 
     const {
         data: invoice
     } = await useAsyncData('invoice', () => {
-        return $directus.request($readItem('invoices', route.params.id, {
+        if (!currentUserId) return null
+        return $dataClient.request($readItem('invoices', route.params.id, {
             filter: {
                 user: {
-                    _eq: `${user?.id}`
+                    _eq: `${currentUserId}`
                 }
             },
             limit: 1

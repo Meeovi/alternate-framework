@@ -1,5 +1,5 @@
 /**
- * ScandiPWA - Progressive Web App for Magento
+ * ScandiPWA - Progressive Web App for Commerce
  *
  * Copyright © Scandiweb, Inc. All rights reserved.
  * See LICENSE for license details.
@@ -115,7 +115,7 @@ export class ProductListQuery {
     }
 
     _getPriceFilter(key: string, value: string): Record<string, { from?: string; to?: string }> {
-        const [from, to] = value[0].split('_');
+        const [from, to] = value.split('_');
 
         if (from === '*') {
             return { [key]: { to } };

@@ -10,7 +10,7 @@
 <script setup lang="ts">
     import {
         computed
-    } from '#imports'
+    } from 'vue'
     import TiptapEditor from './TiptapEditor.vue'
 
     const props = withDefaults(defineProps < {
@@ -38,7 +38,7 @@
         get() {
             return props.modelValue || props.defaultValue || ''
         },
-        set(value) {
+        set(value: string) {
             emit('update:modelValue', value)
         }
     })

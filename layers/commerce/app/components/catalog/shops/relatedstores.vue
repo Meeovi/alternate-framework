@@ -24,29 +24,24 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     import {
-        ref,
-        onMounted
+        ref
     } from '#imports'
     import store from '~/components/catalog/product/stores.vue'
 
     const model = ref(null)
     const {
-        $directus,
+        $dataClient,
         $readItems,
     } = useNuxtApp()
 
-    const {
-        user
-    } = useSupabaseAuth()
+    const { fetchSession } = useAuth()
+    await fetchSession()
 
     const {
         data: shops
     } = await useAsyncData('shops', () => {
-        return $directus.request($readItems('shops', {
+        return $dataClient.request($readItems('shops', {
             fields: ['*', {
                 '*': ['*']
             }]

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, readonly } from 'vue'
 import type { Product as DomainProduct } from '../types/domain'
-import { useProducts } from '../composables/products'
+import { useProducts } from '../composables/catalog/products'
 
 export const useProductListStore = defineStore('productList', () => {
   const items = ref<DomainProduct[]>([])

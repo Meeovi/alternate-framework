@@ -1,5 +1,9 @@
-import { CommerceCartItem } from "./cart"
-import { CommercePrice } from "./product"
+import type {
+    CommerceCartItem
+} from "./cart";
+import type {
+    CommercePrice
+} from "./product";
 
 export interface Order {
   id: string

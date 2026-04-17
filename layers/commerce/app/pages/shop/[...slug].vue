@@ -15,7 +15,7 @@
             <div class="card-wrapper">
               <div class="item-img">
                 <NuxtImg loading="lazy" class="align-end text-white" v-if="shop?.image"
-                  :src="`${$directus.url}/assets/${shop?.image?.filename_disk}`" :alt="shop?.name" cover />
+                  :src="`${$dataClient.url}/assets/${shop?.image?.filename_disk}`" :alt="shop?.name" cover />
                 <div class="card-box">
                   <div class="icon-wrapper">
                     <span class="mbr-iconfont mobi-mbri-contact-form mobi-mbri"></span>
@@ -100,12 +100,9 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import { ref } from '#imports'
   import showcases from '#commerce/app/components/catalog/product/relatedproducts.vue'
-  import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+  import productCard from '../../components/catalog/product/productCard.vue'
   import comments from '#social/app/components/blocks/comments.vue'
   import spaces from '#social/app/components/related/space.vue'
   import events from '#social/app/components/blocks/events/about.vue'
@@ -113,7 +110,7 @@ void useContentAdapter()
 
   const route = useRoute();
   const tab = ref(null);
-  const { $directus, $readItem } = useNuxtApp()
+  const { $dataClient, $readItem } = useNuxtApp()
 
   const slug = computed(() => {
     const s = route.params.slug
@@ -148,7 +145,7 @@ void useContentAdapter()
   const shop = computed(() => shopRaw.value?.[0] || null)
 
   const { data: shopbar } = await useAsyncData('shopbar', () => {
-    return $directus.request($readItem('navigation', '55'))
+    return $dataClient.request($readItem('navigation', '55'))
   })
 
   definePageMeta({

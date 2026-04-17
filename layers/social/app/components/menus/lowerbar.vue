@@ -16,7 +16,7 @@
     import {
         ref
     } from '#imports'
-    import useDirectusRequest from '#social/app/composables/useDirectusRequest'
+    import { useDirectusRequest } from '@mframework/adapter-directus'
 
     const { readItem } = useDirectusRequest()
     const tab = ref(null);

@@ -1,4 +1,7 @@
-import { BaseAdapter, BaseAdapterConfig } from './common'
+import type {
+    BaseAdapter,
+    BaseAdapterConfig
+} from './common';
 import type { Result, Facet, SearchQuery, SearchResult } from '../types'
 
 export interface SearchAdapterConfig extends BaseAdapterConfig {

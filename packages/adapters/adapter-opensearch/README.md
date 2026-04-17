@@ -37,5 +37,5 @@ app.context.modules.registerAdapter('search', adapter)
 
 Notes:
 
-- `createOpenSearchAdapter` uses the OpenSearch JS client and reads `OPENSEARCH_*` env vars as defaults. You can override `index` via options.
+- `createOpenSearchAdapter` uses the OpenSearch JS client and reads `ALTERNATE_SEARCH_*` env vars as defaults. You can override `index` via options.
 - `createStarterSearchAdapter` lets you plug the adapter into environments that use a `TransportAdapter` (e.g., serverless functions or a separate API layer).

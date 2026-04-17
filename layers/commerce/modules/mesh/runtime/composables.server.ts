@@ -10,7 +10,7 @@ export default defineNuxtPlugin(async () => {
   if (process.server) {
     try {
       // Dynamic import to avoid circular dependencies
-      const { getMeshInstance } = await import('../../server/mesh')
+      const { getMeshInstance } = await import('../../../server/mesh')
 
       // Initialize mesh at server startup
       const mesh = await getMeshInstance()

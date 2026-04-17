@@ -9,7 +9,9 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { ProductListOptions } from '../../types/normalizers/ProductList.type';
+import type {
+    ProductListOptions
+} from '../../types/normalizers/ProductList.type';
 import { SortDirections } from '../../types/routes/CategoryPage/CategoryPage.config';
 import ProductListDispatcher from '../../stores/ProductList/ProductList.dispatcher';
 import history from '../../utils/History';
@@ -51,6 +53,10 @@ export class CategoryPreload {
                 return acc;
             }
             const [key, value] = filter.split(':');
+
+            if (!key || value === undefined) {
+                return acc;
+            }
 
             return { ...acc, [key]: value.split(',') };
         }, {});

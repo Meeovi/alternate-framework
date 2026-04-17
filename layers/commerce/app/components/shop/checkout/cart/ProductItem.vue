@@ -1,11 +1,8 @@
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { ref, computed, watch } from '#imports';
-import { useVendureMutation } from '../../../composables/useVendureMutation';
+import { useCommerceMutation } from '../../../composables/globals/useCommerceMutation';
 import adjustOrderLineMutation from '#graphql/app/commerce/mutations/adjustOrderLine.gql';
 import removeOrderLineMutation from '#graphql/app/commerce/mutations/removeOrderLine.gql';
 
@@ -14,8 +11,8 @@ const props = defineProps({
   maxQty: { type: Number, default: 100 },
 });
 
-const { mutate: adjustOrderLine } = useVendureMutation(adjustOrderLineMutation);
-const { mutate: removeOrderLine } = useVendureMutation(removeOrderLineMutation);
+const { mutate: adjustOrderLine } = useCommerceMutation(adjustOrderLineMutation);
+const { mutate: removeOrderLine } = useCommerceMutation(removeOrderLineMutation);
 
 const quantity = ref(props.cartItem.quantity);
 const isRemovable = computed(() => true);

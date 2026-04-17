@@ -107,7 +107,7 @@
   } from '#social/app/composables/lists/useLists'
   import listItem from '#social/app/components/features/lists/add-list-item.vue'
   import addList from '#social/app/components/features/lists/add-list.vue'
-  import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+  import productCard from '../../../../../commerce/app/components/catalog/product/productCard.vue'
   import spaceCard from '#social/app/components/related/space.vue'
   import shortCard from '#social/app/components/related/short.vue'
 

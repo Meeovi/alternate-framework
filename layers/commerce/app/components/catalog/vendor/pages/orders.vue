@@ -28,17 +28,14 @@
 
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref,
         onMounted
     } from '#imports';
     import {
-        useVendureQuery
-    } from '@/app/composables/useVendureQuery';
+        useCommerceQuery
+    } from '~/composables/globals/useCommerceQuery';
     import getOrderListQuery from '#graphql/app/commerce/queries/getOrderList.gql';
 
     const tab = ref('one');
@@ -46,7 +43,7 @@ void useContentAdapter()
     const {
         data,
         refetch
-    } = useVendureQuery(getOrderListQuery);
+    } = useCommerceQuery(getOrderListQuery);
 
     onMounted(() => {
         if (data.value?.orders?.items) {

@@ -1,33 +1,29 @@
 <template>
-  <SfScrollable
-    buttons-placement="floating"
+  <v-slide-group
     class="items-center pb-4"
-    :wrapper-class="wrapperClass"
+    :class="wrapperClass"
+    show-arrows
     data-testid="product-slider"
   >
-    <UiProductCard
+    <v-slide-group-item
       v-for="product in items"
       :key="product.id"
-      class="max-w-[192px]"
-      :name="product.name ?? ''"
-      :slug="product.slug"
-      :image-url="product.primaryImage?.url ?? ''"
-      :image-alt="product.primaryImage?.alt ?? ''"
-      :price="product.price?.value.amount"
-      :rating-count="product.rating?.count"
-      :rating="product.rating?.average"
-    />
-  </SfScrollable>
+    >
+      <ProductCard
+        class="max-w-[192px] mr-4"
+        :name="product.name ?? ''"
+        :slug="product.slug"
+        :image-url="product.primaryImage?.url ?? ''"
+        :image-alt="product.primaryImage?.alt ?? ''"
+        :price="product.price?.value.amount"
+        :rating-count="product.rating?.count"
+        :rating="product.rating?.average"
+      />
+    </v-slide-group-item>
+  </v-slide-group>
 </template>
 
-
-
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
-
-import { SfScrollable } from '@storefront-ui/vue';
 import type { ProductSliderProps } from './types';
 
 defineProps<ProductSliderProps>();

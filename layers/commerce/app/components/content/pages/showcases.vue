@@ -36,15 +36,12 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import createshowcase from '@/components/catalog/product/add-showcase.vue'
     import listShowcases from '#social/app/components/related/list.vue'
 
     const {
-        $directus,
+        $dataClient,
         $readItem,
         $readItems
     } = useNuxtApp()
@@ -55,7 +52,7 @@ void useContentAdapter()
     const {
         data: showcasePage
     } = await useAsyncData('showcasePage', () => {
-        return $directus.request($readItem('pages', '115', {
+        return $dataClient.request($readItem('pages', '115', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -65,7 +62,7 @@ void useContentAdapter()
     const {
         data: lists
     } = await useAsyncData('lists', () => {
-        return $directus.request($readItems('lists', {
+        return $dataClient.request($readItems('lists', {
             fields: ['*', {
                 '*': ['*']
             }],
@@ -87,7 +84,7 @@ void useContentAdapter()
     const {
         data: showcaseBar
     } = await useAsyncData('showcaseBar', () => {
-        return $directus.request($readItem('navigation', '54', {
+        return $dataClient.request($readItem('navigation', '54', {
             fields: ['*', {
                 '*': ['*']
             }]

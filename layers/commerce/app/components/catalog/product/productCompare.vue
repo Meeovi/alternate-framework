@@ -10,9 +10,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { onMounted } from '#imports'
 import { useRouter } from 'vue-router'

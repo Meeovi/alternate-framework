@@ -44,6 +44,7 @@
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
     },
+    "./mesh-compose": "./src/mesh-compose.ts",
     "./core": "./core/index.ts",
     "./core/*": "./core/src/*"
   },
@@ -56,6 +57,7 @@
     "@graphile/depth-limit": "^0.3.1",
     "@graphql-hive/gateway": "^2.5.14",
     "@graphql-hive/router-runtime": "^1.2.1",
+    "@graphql-mesh/compose-cli": "^1.5.14",
     "@graphql-mesh/plugin-newrelic": "^0.104.36",
     "@graphql-tools/executor-http": "^3.1.1",
     "@graphql-tools/merge": "^9.1.1",

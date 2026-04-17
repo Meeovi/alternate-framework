@@ -7,9 +7,6 @@
   </template>
   
   <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import getActiveOrderQuery from '#graphql/app/commerce/queries/activeOrder.gql';
 
   const nuxtApp = useNuxtApp();
@@ -21,7 +18,7 @@ void useContentAdapter()
       const order = orderRes?.activeOrder;
       if (!order) return;
 
-      // Attempt to create a checkout session in Directus
+      // Attempt to create a checkout session in Data
       try {
         const payload = {
           orderCode: order.code,
@@ -35,7 +32,7 @@ void useContentAdapter()
           return;
         }
       } catch (e) {
-        console.warn('Directus checkout session creation failed, falling back:', e);
+        console.warn('Data checkout session creation failed, falling back:', e);
       }
 
       // Fallback: redirect to local confirmation route

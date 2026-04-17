@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Social Feed</title>
+        <link>https://example.com/feed.xml</link>
+        <description>Social Feed updates</description>
+        <lastBuildDate>Sun, 12 Apr 2026 21:51:08 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <copyright>2026 Social Feed</copyright>
+        <category>Social</category>
+    </channel>
+</rss>

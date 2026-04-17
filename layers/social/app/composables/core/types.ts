@@ -26,3 +26,10 @@ export interface SocialProvider {
   listPosts(handle: string, options?: Record<string, any>): Promise<SocialPost[]>
   createPost?(content: string, options?: Record<string, any>): Promise<SocialPost>
 }
+
+export type {
+  SocialDriver,
+  SocialDriverPost,
+  SocialDriverUser,
+  SocialTimelineType,
+} from '../../types/social-driver'

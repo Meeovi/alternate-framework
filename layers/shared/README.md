@@ -62,7 +62,8 @@ Set these variables in the consuming app:
 
 - `NUXT_PUBLIC_SITE_URL` (example: `http://localhost:3000`)
 - `NUXT_PUBLIC_SITE_NAME` (site display name)
-- `IMAGE_PROVIDER` (defaults to `netlify` when not set)
+- `IMAGE_OPTIMIZER` (preferred selector; defaults to `netlify` when not set)
+- `IMAGE_PROVIDER` (legacy alias, still supported)
 
 ## Run
 

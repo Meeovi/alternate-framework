@@ -15,14 +15,14 @@
 
 <script setup>
   const {
-    $directus,
+    $dataClient,
     $readItems
   } = useNuxtApp()
   
   const {
     data: departments
   } = await useAsyncData('departments', () => {
-    return $directus.request($readItems('departments', {
+    return $dataClient.request($readItems('departments', {
       filter: {
         active: {
           _eq: 'active'

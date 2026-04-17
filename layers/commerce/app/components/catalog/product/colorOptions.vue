@@ -19,20 +19,17 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 import { ref, onMounted } from '#imports'
 const emit = defineEmits(['color-selected'])
 const colors = ref([])
 const selectedColor = ref(null)
 
 const nuxtApp = useNuxtApp()
-const { $directus, $readItems } = nuxtApp
+const { $dataClient, $readItems } = nuxtApp
 
 const loadColors = async () => {
     try {
-        const res = await $directus.request($readItems('attributes', {
+        const res = await $dataClient.request($readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'color' }
             },

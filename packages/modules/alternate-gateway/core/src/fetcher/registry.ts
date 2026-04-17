@@ -1,5 +1,7 @@
 
-import { Fetcher } from './types'
+import type {
+    Fetcher
+} from './types';
 
 let activeFetcher: Fetcher | null = null
 

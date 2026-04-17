@@ -25,9 +25,9 @@
 
 <script setup>
 import { ref } from '#imports'
-import { useDirectusAuth } from '#social/app/composables/useDirectus'
+import { createDirectusAuthState } from '@mframework/adapter-directus'
 
-const { user } = useDirectusAuth()
+const { user } = createDirectusAuthState(null)
 
 const name = ref('')
 const file = ref(null)

@@ -1,7 +1,7 @@
 <template>
   <div class="border border-neutral-200 rounded-md hover:shadow-lg flex-auto flex-shrink-0" data-testid="product-card">
     <div class="relative">
-      <SfLink :tag="NuxtLink" :to="`${paths.product}${slug}`">
+      <NuxtLink :to="`${paths.product}${slug}`">
         <NuxtImg
           :src="imageUrl"
           :alt="imageAlt"
@@ -14,17 +14,25 @@
           :preload="priority"
           format="webp"
         />
-      </SfLink>
+      </NuxtLink>
     </div>
     <div class="p-2 border-t border-neutral-200 typography-text-sm">
-      <SfLink :tag="NuxtLink" :to="`${paths.product}${slug}`" class="no-underline" variant="secondary">
+      <NuxtLink :to="`${paths.product}${slug}`" class="no-underline text-inherit">
         {{ name }}
-      </SfLink>
+      </NuxtLink>
       <div class="flex items-center pt-1">
-        <SfRating size="xs" :value="rating ?? 0" :max="5" />
-        <SfLink to="#" variant="secondary" :tag="NuxtLink" class="ml-1 no-underline">
-          <SfCounter size="xs">{{ ratingCount }}</SfCounter>
-        </SfLink>
+        <v-rating
+          :model-value="rating ?? 0"
+          :length="5"
+          density="compact"
+          size="x-small"
+          readonly
+          half-increments
+          color="amber"
+        />
+        <NuxtLink to="#" class="ml-1 no-underline text-inherit text-xs">
+          {{ ratingCount }}
+        </NuxtLink>
       </div>
       <p class="block py-2 font-normal typography-text-xs text-neutral-700 text-justify">
         {{ description }}
@@ -32,24 +40,19 @@
       <span class="block pb-2 font-bold typography-text-sm" data-testid="product-card-vertical-price">
         ${{ price }}
       </span>
-      <SfButton size="sm">
-        <template #prefix>
-          <SfIconShoppingCart size="sm" />
-        </template>
+      <v-btn size="small" color="primary" variant="flat">
+        <v-icon size="small" class="mr-1">mdi-cart</v-icon>
         {{ $t('addToCartShort') }}
-      </SfButton>
+      </v-btn>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { SfLink, SfRating, SfCounter, SfButton, SfIconShoppingCart } from '@storefront-ui/vue';
 import type { ProductCardProps } from '~/components/ui/ProductCard/types';
 
 withDefaults(defineProps<ProductCardProps>(), {
   lazy: true,
   imageAlt: '',
 });
-
-
 </script>

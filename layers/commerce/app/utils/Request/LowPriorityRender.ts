@@ -9,11 +9,8 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import {
-    ComponentType,
-    lazy,
-    useEffect, useState,
-} from 'react';
+import { lazy, useEffect, useState } from 'react';
+import type { ComponentType } from 'react';
 
 import { EV_PRIORITY_LOAD_END } from './Config';
 import { waitForPriorityLoad } from './LowPriorityLoad';

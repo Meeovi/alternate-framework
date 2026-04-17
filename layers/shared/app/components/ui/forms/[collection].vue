@@ -1,6 +1,6 @@
 <script setup>
 import AutoForm from '~/components/forms/DynamicForm.vue'
-import { useDirectusSchema } from '@/layers/ui-app/app/composables/globals/useDirectusSchema.js'
+import { useDirectusSchema } from '@mframework/adapter-directus'
 
 const route = useRoute()
 const collection = route.params.collection

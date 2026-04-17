@@ -166,9 +166,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import { ref, onMounted, computed, watch } from '#imports'
 import { loadStripe } from '@stripe/stripe-js'
@@ -232,7 +229,7 @@ watch(sameAsShipping, (newValue) => {
 
 // We use Stripe Checkout (server-created session) instead of client Payment Element
 
-// Handle form submission: persist addresses to Directus cart record and proceed to Stripe
+// Handle form submission: persist addresses to Data cart record and proceed to Stripe
 const handleSubmit = async () => {
     try {
         loading.value = true
@@ -248,10 +245,10 @@ const handleSubmit = async () => {
                 billing_address: sameAsShipping.value ? shippingAddress.value : billingAddress.value,
                 updated_at: new Date().toISOString()
             }
-            await nuxtApp.$directus.request(nuxtApp.$updateItem('cart', cartId, payload))
+            await nuxtApp.$dataClient.request(nuxtApp.$updateItem('cart', cartId, payload))
             await cartStore.fetchCart()
         } catch (e) {
-            console.warn('Failed to persist addresses to Directus cart', e)
+            console.warn('Failed to persist addresses to Data cart', e)
         }
 
         // Create Stripe Checkout session via server API

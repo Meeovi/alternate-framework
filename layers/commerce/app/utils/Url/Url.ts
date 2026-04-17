@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { History, Location } from 'history';
+import type { History, Location } from 'history';
 type Match = any
 
 import { decodeString } from '../../utils/Common';
@@ -148,7 +148,7 @@ export const convertQueryStringToKeyValuePairs = <T extends Record<string, strin
         const pair = param.split('=');
         const [keyPair, valuePair] = pair;
 
-        if (keyPair.length > 0 && valuePair.length > 0) {
+        if (keyPair && valuePair && keyPair.length > 0 && valuePair.length > 0) {
             keyValuePairs[keyPair] = decodeURIComponent(valuePair);
         }
     });

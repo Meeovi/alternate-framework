@@ -2,7 +2,7 @@ import type { UserLogin, Overwrite } from 'alternate-gateway/core/shared/types'
 import type { RemovableRef } from '@vueuse/core'
 import type { mastodon } from 'masto'
 import type { EffectScope, MaybeRefOrGetter, Ref } from 'vue'
-import type { ElkMasto } from '../federation/masto/masto'
+import type { ElkFederation as ElkMasto } from '..'
 import type { PushNotificationPolicy, PushNotificationRequest } from '../notifications/types'
 import { withoutProtocol } from 'ufo'
 import {

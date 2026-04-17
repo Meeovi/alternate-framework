@@ -46,9 +46,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import productCard from '~/components/catalog/product/productCard.vue'
     import {
@@ -67,7 +64,7 @@ void useContentAdapter()
     })
 
     const {
-        $directus,
+        $dataClient,
         $readItems,
         $readItem
     } = useNuxtApp()
@@ -75,7 +72,7 @@ void useContentAdapter()
     const {
         data: cards
     } = await useAsyncData('cards', () => {
-        return $directus.request($readItems('products', {
+        return $dataClient.request($readItems('products', {
             fields: ['*',
                 'image.*',
                 'currency.currency_id.*'
@@ -95,7 +92,7 @@ void useContentAdapter()
     const {
         data: mycards
     } = await useAsyncData('mycards', () => {
-        return $directus.request($readItems('products', {
+        return $dataClient.request($readItems('products', {
             fields: ['*',
                 'image.*',
                 'currency.currency_id.*'
@@ -109,7 +106,7 @@ void useContentAdapter()
                     }
                 },
                 user: {
-                    directus_users: {
+                    data_users: {
                         _eq: `${userDisplayName.user.displayName}`
                     }
                 }
@@ -120,7 +117,7 @@ void useContentAdapter()
     const {
         data: callouts
     } = await useAsyncData('callouts', () => {
-        return $directus.request($readItem('callouts', '4'))
+        return $dataClient.request($readItem('callouts', '4'))
     })
 
     useHead({

@@ -41,9 +41,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 import { ref, watch, computed, onMounted } from '#imports'
 import { useCartStore } from '~/stores/cart'
 import { useRouter } from 'vue-router'
@@ -79,7 +76,7 @@ watch(cartItems, (newItems) => {
 const getImageUrl = (item) => {
   const file = item.product?.images?.[0]
   const config = useRuntimeConfig()
-  if (file && file.id) return `${config.public.directus.url}/assets/${file.id}`
+  if (file && file.id) return `${config.public.data.url}/assets/${file.id}`
   return placeholder
 }
 

@@ -1,5 +1,5 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import type { UnifiedNotification } from '#shared/notifications/schema'
+import type { UnifiedNotification } from '../../../shared/notifications/schema'
 
 export function useNotifications() {
   const notifications = ref<UnifiedNotification[]>([])
@@ -8,7 +8,7 @@ export function useNotifications() {
   const connected = ref(false)
 
   const unreadCount = computed(
-    () => notifications.value.filter((n) => !n.read).length,
+    () => notifications.value.filter((n: UnifiedNotification) => !n.read).length,
   )
 
   async function fetchNotifications() {
@@ -26,13 +26,13 @@ export function useNotifications() {
 
   async function markAsRead(id: string) {
     await $fetch(`/api/notifications/${id}/read`, { method: 'POST' })
-    const target = notifications.value.find((n) => n.id === id)
+    const target = notifications.value.find((n: UnifiedNotification) => n.id === id)
     if (target) target.read = true
   }
 
   async function markAllAsRead() {
     await $fetch('/api/notifications/read-all', { method: 'POST' })
-    notifications.value.forEach((n) => { n.read = true })
+    notifications.value.forEach((n: UnifiedNotification) => { n.read = true })
   }
 
   let eventSource: EventSource | null = null

@@ -34,24 +34,21 @@
 </template>
 
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     import {
         ref,
         onMounted
     } from '#imports';
     import {
-        useVendureQuery
-    } from '../../composables/useVendureQuery';
+        useCommerceQuery
+    } from '../../composables/globals/useCommerceQuery';
     import getCustomerShipmentsQuery from '#graphql/app/commerce/queries/getCustomerShipments.gql';
 
     const shipments = ref([]);
     const {
         data,
         refetch
-    } = useVendureQuery(getCustomerShipmentsQuery);
+    } = useCommerceQuery(getCustomerShipmentsQuery);
 
     onMounted(() => {
         if (data.value?.activeCustomer?.shipments?.items) {

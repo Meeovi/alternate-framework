@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from '#imports'
+import { ref, watch } from 'vue'
 import DirectusFormElement from './DirectusFormElement.vue'
 
 const props = withDefaults(defineProps<{
@@ -23,7 +23,7 @@ const emit = defineEmits(['update:modelValue'])
 const items = ref<Array<any>>(Array.isArray(props.modelValue) ? JSON.parse(JSON.stringify(props.modelValue)) : [])
 const jsonMode = ref(false)
 
-watch(() => props.modelValue, (v) => {
+watch(() => props.modelValue, (v: any) => {
   items.value = Array.isArray(v) ? JSON.parse(JSON.stringify(v)) : []
 })
 

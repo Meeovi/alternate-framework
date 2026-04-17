@@ -1,4 +1,6 @@
-import { CommercePrice } from "./product"
+import type {
+    CommercePrice
+} from "./product";
 
 export interface CommerceCartItem {
   id: string

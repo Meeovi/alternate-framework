@@ -1,1 +1,0 @@
-export { useAuth } from '../../../auth/app/composables/useAuth'

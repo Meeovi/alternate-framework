@@ -27,21 +27,18 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import productCard from './productCard.vue'
 
   const model = ref(null);
   const {
-    $directus,
+    $dataClient,
     $readItems
   } = useNuxtApp()
 
   const {
     data: latest
   } = await useAsyncData('latest', () => {
-    return $directus.request($readItems('products', {
+    return $dataClient.request($readItems('products', {
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',

@@ -8,7 +8,7 @@
         ref,
         onMounted,
         computed
-    } from '#imports';
+    } from 'vue';
 
     const props = defineProps({
         modelValue: {
@@ -30,15 +30,15 @@
     });
 
     const emit = defineEmits(["update:modelValue"]);
-    import useContent from '~/composables/useContent'
+    import useContent from '../../../composables/useContent'
     const { readItems } = useContent()
 
     const internalValue = computed({
         get: () => props.modelValue,
-        set: (v) => emit("update:modelValue", v),
+        set: (v: string | string[] | null) => emit("update:modelValue", v),
     });
 
-    const options = ref([]);
+    const options = ref<Array<{ id: string; display: string }>>([]);
 
     onMounted(async () => {
         try {

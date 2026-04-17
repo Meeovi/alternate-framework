@@ -1,15 +1,10 @@
-import apolloClientPkg from '@apollo/client'
 import type {
   ApolloClient as ApolloClientType,
   NormalizedCacheObject,
 } from '@apollo/client/core'
+import { ApolloClient, InMemoryCache } from '@apollo/client/core'
+import { HttpLink } from '@apollo/client/link/http'
 import fetch from 'cross-fetch'
-
-const { ApolloClient, InMemoryCache, HttpLink } = apolloClientPkg as {
-  ApolloClient: new (...args: any[]) => ApolloClientType<NormalizedCacheObject>
-  InMemoryCache: new (...args: any[]) => any
-  HttpLink: new (...args: any[]) => any
-}
 
 let client: ApolloClientType<NormalizedCacheObject> | null = null
 

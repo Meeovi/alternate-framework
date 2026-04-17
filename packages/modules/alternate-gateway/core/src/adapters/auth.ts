@@ -1,4 +1,6 @@
-import { BaseAdapterConfig } from './common'
+import type {
+    BaseAdapterConfig
+} from './common';
 import type { LoginInput, RegisterInput, Result, Session, User } from '../types'
 
 export interface AuthAdapterConfig extends BaseAdapterConfig {

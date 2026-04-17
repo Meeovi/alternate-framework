@@ -1982,7 +1982,7 @@ export interface GQLPayflowExpressInput {
 
 /**
    * A set of relative URLs that PayPal will use in response to various actions
-   * during the authorization process. Magento prepends the base URL to this value to
+   * during the authorization process. Commerce prepends the base URL to this value to
    * create a full URL. For example, if the full URL is
    * https://www.example.com/path/to/page.html, the relative URL is
    * path/to/page.html. Use this input for Payflow Link and Payments Advanced payment methods.

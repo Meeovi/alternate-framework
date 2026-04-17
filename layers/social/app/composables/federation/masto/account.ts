@@ -1,58 +1,41 @@
-import type { mastodon } from '@mframework/adapter-federation'
+import { createAccountHandleTools, type mastodon } from '@mframework/adapter-federation'
 import { getInstanceDomain } from '../../contacts/users'
 
+const accountHandleTools = createAccountHandleTools({
+  currentInstance: () => currentInstance.value,
+  currentServer: () => currentServer.value,
+  currentUser: () => currentUser.value,
+  getInstanceDomain: instance => getInstanceDomain(instance),
+})
+
 export function getDisplayName(account: mastodon.v1.Account, options?: { rich?: boolean }) {
-  const displayName = account.displayName || account.username || account.acct || ''
-  if (options?.rich)
-    return displayName
-  return displayName.replace(/:([\w-]+):/g, '')
+  return accountHandleTools.getDisplayName(account, options)
 }
 
 export function accountToShortHandle(acct: string) {
-  return `@${acct.includes('@') ? acct.split('@')[0] : acct}`
+  return accountHandleTools.accountToShortHandle(acct)
 }
 
 export function getShortHandle({ acct }: mastodon.v1.Account) {
-  if (!acct)
-    return ''
-  return accountToShortHandle(acct)
+  return accountHandleTools.getShortHandle({ acct })
 }
 
 export function getServerName(account: mastodon.v1.Account) {
-  if (account.acct?.includes('@'))
-    return account.acct.split('@')[1]
-  // We should only lack the server name if we're on the same server as the account
-  return currentInstance.value ? getInstanceDomain(currentInstance.value) : ''
+  return accountHandleTools.getServerName(account)
 }
 
 export function getFullHandle(account: mastodon.v1.Account) {
-  const handle = `@${account.acct}`
-  if (!currentUser.value || account.acct.includes('@'))
-    return handle
-  return `${handle}@${getServerName(account)}`
+  return accountHandleTools.getFullHandle(account)
 }
 
 export function toShortHandle(fullHandle: string) {
-  if (!currentUser.value)
-    return fullHandle
-  const server = currentUser.value.server
-  if (fullHandle.endsWith(`@${server}`))
-    return fullHandle.slice(0, -server.length - 1)
-  return fullHandle
+  return accountHandleTools.toShortHandle(fullHandle)
 }
 
 export function extractAccountHandle(account: mastodon.v1.Account) {
-  let handle = getFullHandle(account).slice(1)
-  const uri = currentInstance.value ? getInstanceDomain(currentInstance.value) : currentServer.value
-  if (currentInstance.value && handle.endsWith(`@${uri}`))
-    handle = handle.slice(0, -uri.length - 1)
-
-  return handle
+  return accountHandleTools.extractAccountHandle(account)
 }
 
 export function useAccountHandle(account: mastodon.v1.Account, fullServer = true) {
-  return computed(() => fullServer
-    ? getFullHandle(account)
-    : getShortHandle(account),
-  )
+  return accountHandleTools.useAccountHandle(account, fullServer)
 }

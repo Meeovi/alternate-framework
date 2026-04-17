@@ -2,7 +2,7 @@ import { client } from './client'
 
 type Doc = Record<string, unknown>
 
-const DEFAULT_INDEX = process.env.OPENSEARCH_INDEX || 'movies'
+const DEFAULT_INDEX = process.env.ALTERNATE_SEARCH_INDEX || 'movies'
 
 function printResponse(title: string, res: any) {
   console.log(`\n${title}:`)

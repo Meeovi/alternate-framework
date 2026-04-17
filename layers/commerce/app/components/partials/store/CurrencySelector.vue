@@ -9,9 +9,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import {
     ref,
     onMounted,
@@ -46,7 +43,7 @@ void useContentAdapter()
     setCurrency
   } = useCurrency()
 
-  // Fetch currency data from Magento
+  // Fetch currency data from Commerce
   const {
     result: currencyResult
   } = useQuery(CURRENCY_QUERY)

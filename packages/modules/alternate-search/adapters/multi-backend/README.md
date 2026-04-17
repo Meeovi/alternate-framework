@@ -76,10 +76,10 @@ const multiBackend = multiBackendAdapter({
     {
       id: 'elasticsearch',
       adapter: elasticsearchAdapter({
-        node: process.env.ELASTICSEARCH_URL,
+        node: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_URL,
         auth: {
-          username: process.env.ELASTICSEARCH_USER,
-          password: process.env.ELASTICSEARCH_PASSWORD,
+          username: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_USER,
+          password: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD,
         },
       }),
       priority: 20,
@@ -90,8 +90,8 @@ const multiBackend = multiBackendAdapter({
     {
       id: 'meilisearch',
       adapter: meilisearchAdapter({
-        baseUrl: process.env.MEILISEARCH_URL,
-        apiKey: process.env.MEILISEARCH_KEY,
+        baseUrl: process.env.ALTERNATE_SEARCH_MEILISEARCH_URL,
+        apiKey: process.env.ALTERNATE_SEARCH_MEILISEARCH_KEY,
       }),
       priority: 30,
       weight: 60,
@@ -312,7 +312,7 @@ import { magentoAdapter } from '@mframework/adapter-magento';
 const requiredEnv = [
   'MAGENTO_GRAPHQL_URL',
   'MAGENTO_ACCESS_TOKEN',
-  'ELASTICSEARCH_URL',
+  'ALTERNATE_SEARCH_ELASTICSEARCH_URL',
 ];
 
 for (const key of requiredEnv) {
@@ -348,10 +348,10 @@ export const searchInstance = createSearch({
       {
         id: 'elasticsearch',
         adapter: elasticsearchAdapter({
-          node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200',
+          node: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_URL || 'http://localhost:9200',
           auth: {
-            username: process.env.ELASTICSEARCH_USER || 'elastic',
-            password: process.env.ELASTICSEARCH_PASSWORD || '',
+            username: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_USER || 'elastic',
+            password: process.env.ALTERNATE_SEARCH_ELASTICSEARCH_PASSWORD || '',
           },
         }),
         priority: 20,        // Query second
@@ -363,8 +363,8 @@ export const searchInstance = createSearch({
       {
         id: 'meilisearch',
         adapter: meilisearchAdapter({
-          baseUrl: process.env.MEILISEARCH_URL || 'http://localhost:7700',
-          apiKey: process.env.MEILISEARCH_KEY,
+          baseUrl: process.env.ALTERNATE_SEARCH_MEILISEARCH_URL || 'http://localhost:7700',
+          apiKey: process.env.ALTERNATE_SEARCH_MEILISEARCH_KEY,
         }),
         priority: 30,        // Last resort
         weight: 60,          // Lower confidence

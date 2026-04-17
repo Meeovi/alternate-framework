@@ -1,4 +1,4 @@
-import { NormalizerRegistry, CommerceNormalizer } from '../utils/normalizer';
+import { NormalizerRegistry } from '../utils/normalizer';import type { CommerceNormalizer } from '../utils/normalizer';
 
 // Keep imports loose because host `@mframework/commerce` implementations may vary
 import * as CommercePkg from '~/types';

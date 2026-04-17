@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from '#imports'
+import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{
     defaultValue?: string
@@ -25,7 +25,7 @@ const dateTimeValue = computed({
     get() {
         return props.modelValue || props.defaultValue || ''
     },
-    set(value) {
+    set(value: string) {
         emit('update:modelValue', value)
     }
 })

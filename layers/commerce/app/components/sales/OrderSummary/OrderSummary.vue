@@ -25,37 +25,38 @@
       </div>
       <div v-if="!!cart.totalCouponDiscounts.amount" class="flex items-center py-4 border-t border-neutral-200">
         <p>{{ $t('promoCode') }}</p>
-        <SfButton size="sm" variant="tertiary" class="ml-auto mr-2">
+        <v-btn size="small" variant="text" class="ml-auto mr-2">
           {{ $t('remove') }}
-        </SfButton>
+        </v-btn>
         <p>${{ cart.totalCouponDiscounts.amount }}</p>
       </div>
-      <div class="flex gap-x-2 py-4 border-y border-neutral-200 mb-4">
-        <SfInput wrapper-class="grow" :placeholder="$t('promoCodePlaceholder')" />
-        <SfButton variant="secondary">{{ $t('apply') }}</SfButton>
+      <div class="flex gap-x-2 py-4 border-y border-neutral-200 mb-4 items-center">
+        <v-text-field
+          class="grow"
+          :placeholder="$t('promoCodePlaceholder')"
+          variant="outlined"
+          density="compact"
+          hide-details
+        />
+        <v-btn color="secondary" variant="flat">{{ $t('apply') }}</v-btn>
       </div>
       <div class="px-3 py-1.5 bg-secondary-100 text-secondary-700 typography-text-sm rounded-md text-center mb-4">
-        <UiAlert class="w-full" variant="secondary">
+        <v-alert class="w-full" density="compact" variant="tonal" color="secondary">
           {{ $t('savingsTag', { amount: `$${cart.totalCouponDiscounts.amount}` }) }}
-        </UiAlert>
+        </v-alert>
       </div>
       <div class="flex justify-between typography-headline-4 md:typography-headline-3 font-bold pb-4 mb-4">
         <p>{{ $t('total') }}</p>
         <p data-testid="total">${{ cart.totalPrice.amount }}</p>
       </div>
-      <UiDivider class="my-4 w-auto" />
+      <v-divider class="my-4 w-auto" />
       <NuxtPage />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-import { SfButton, SfInput } from '@storefront-ui/vue';
 import { OrderSummaryPropsType } from './types';
-
-void useCommerceAdapter()
-void useContentAdapter()
 
 defineProps<OrderSummaryPropsType>();
 </script>

@@ -1,12 +1,15 @@
 import {
   defineNuxtConfig
 } from 'nuxt/config'
+import alternateAuthModule from '../../packages/modules/alternate-auth/integrations/nuxt/module'
 
 export default defineNuxtConfig({
   $meta: {
     name: 'auth',
     description: 'Auth Layer provides functionalities for user authentication and authorization.',
   },
+
+  modules: [[alternateAuthModule, { enableRuntimeComposables: false }]],
 
   runtimeConfig: {
     auth: {

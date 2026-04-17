@@ -28,6 +28,7 @@
     "@better-auth/sso": "^1.4.12",
     "@better-auth/stripe": "^1.4.15",
     "alternate-gateway": "file:../../packages/modules/alternate-gateway",
+    "alternate-auth": "file:../../packages/modules/alternate-auth",
     "alternate-locate": "file:../../packages/modules/alternate-locate",
     "@polar-sh/better-auth": "^1.6.3",
     "@polar-sh/checkout": "^0.2.0",

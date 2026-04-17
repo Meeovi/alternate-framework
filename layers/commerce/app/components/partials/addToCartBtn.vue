@@ -1,9 +1,6 @@
 <template>
   <div class="flex flex-col gap-2">
-    <v-btn size="lg" class="w-full xs:ml-4" :disabled="loading || hasItemInCart" @click="addToCart">
-      <template #prefix>
-        <SfIconShoppingCart size="sm" />
-      </template>
+    <v-btn size="lg" class="w-full xs:ml-4" :disabled="loading || hasItemInCart" @click="addToCart" prepend-icon="mdi-cart">
       Add to Cart
     </v-btn>
     <compareBtn />
@@ -11,10 +8,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
-import { SfIconShoppingCart } from "@storefront-ui/vue";
 import compareBtn from './compareBtn.vue';
 import { useCartStore } from '~/stores/cart'
 

@@ -1,1 +1,0 @@
-export { useTheme } from '../../../../packages/modules/alternate-ui/src/shared-ui/composables/useTheme'

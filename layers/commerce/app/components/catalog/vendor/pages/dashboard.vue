@@ -15,9 +15,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 import biggestcustomers from '~/components/vendor/sales/biggestcustomers.vue'
 import lowestselling from '~/components/vendor/sales/lowestselling.vue'
@@ -30,7 +27,7 @@ import topproducts from '~/components/vendor/sales/topproducts.vue'
     const tab = ref(null);
 
     const {
-        $directus,
+        $dataClient,
         $readItem
     } = useNuxtApp()
     const route = useRoute()
@@ -38,7 +35,7 @@ import topproducts from '~/components/vendor/sales/topproducts.vue'
     const {
         data: seller
     } = await useAsyncData('seller', () => {
-        return $directus.request($readItem('navigation', '14'))
+        return $dataClient.request($readItem('navigation', '14'))
     })
 
     definePageMeta({

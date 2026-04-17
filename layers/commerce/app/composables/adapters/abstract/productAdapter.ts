@@ -1,4 +1,4 @@
-import { Product } from "../../domain/product"
+import type { Product } from '../../system/domain/product';
 
 export interface ProductAdapter {
   list(): Promise<Product[]>

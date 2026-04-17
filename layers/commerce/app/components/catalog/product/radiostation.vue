@@ -15,9 +15,9 @@
                     </template>
                 </div>
 
-                <UAvatar class="ma-3" rounded="0" size="125">
-                    <NuxtImg :src="`${$directus.url}/assets/${radio?.image?.filename_disk}`" />
-                </UAvatar>
+                <v-avatar class="ma-3" :rounded="0" size="125">
+                    <NuxtImg :src="`${$dataClient.url}/assets/${radio?.image?.filename_disk}`" />
+                </v-avatar>
             </div>
         </v-card>
     </div>
@@ -26,9 +26,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     const props = defineProps({
         radio: {

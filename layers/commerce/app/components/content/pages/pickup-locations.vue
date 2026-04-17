@@ -82,9 +82,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
   import {
     ref,
@@ -200,24 +197,24 @@ void useContentAdapter()
     }
   };
 
-  // Directus setup
+  // Data setup
   const {
-    $directus,
+    $dataClient,
     $readItem
   } = useNuxtApp();
 
   const {
     data: pickupBlocks
   } = await useAsyncData('pickupBlocks', () => {
-    return $directus.request($readItem('page_blocks', '10', {
-      fields: ['*', 'media.directus_files_id.filename_disk', 'content.*'],
+    return $dataClient.request($readItem('page_blocks', '10', {
+      fields: ['*', 'media.data_files_id.filename_disk', 'content.*'],
     }))
   });
 
   const {
     data: pickupLocations
   } = await useAsyncData('pickupLocations', () => {
-    return $directus.request($readItem('pages', '33', {
+    return $dataClient.request($readItem('pages', '33', {
       fields: ['*', 'image.*'],
     }))
   });

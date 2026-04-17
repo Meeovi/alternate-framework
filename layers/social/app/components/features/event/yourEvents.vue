@@ -86,7 +86,7 @@
     import {
         ref
     } from '#imports'
-    import eventCard from '#commerce/app/components/catalog/productCard.vue'
+    import eventCard from '../../../../../commerce/app/components/catalog/product/productCard.vue'
 
     import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { readItem, readItems } = useAdapterRequest()

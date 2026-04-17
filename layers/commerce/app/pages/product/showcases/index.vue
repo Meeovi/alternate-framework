@@ -44,9 +44,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   import {
     ref,
     computed
@@ -72,15 +69,15 @@ void useContentAdapter()
   const {
     data: productBlocks
   } = await useAsyncData('productBlocks', () => {
-    return $directus.request($readItem('page_blocks', '8', {
-      fields: ['*', 'media.directus_files_id.filename_disk', 'content.*'],
+    return $dataClient.request($readItem('page_blocks', '8', {
+      fields: ['*', 'media.data_files_id.filename_disk', 'content.*'],
     }))
   })
 
   const {
     data: showcasebar
   } = await useAsyncData('showcasebar', () => {
-    return $directus.request($readItem('navigation', '54'))
+    return $dataClient.request($readItem('navigation', '54'))
   })
 
   useHead({

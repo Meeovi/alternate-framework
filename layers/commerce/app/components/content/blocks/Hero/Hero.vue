@@ -22,12 +22,12 @@
         </h1>
         <p class="typography-text-base md:typography-text-lg">{{ description }}</p>
         <div class="flex flex-col md:flex-row gap-4 mt-6">
-          <SfButton size="lg" :tag="NuxtLink" :to="primaryButtonLink">
+          <v-btn size="large" :to="primaryButtonLink" color="primary">
             {{ primaryButtonText }}
-          </SfButton>
-          <SfButton size="lg" :tag="NuxtLink" :to="secondaryButtonLink" class="bg-white" variant="secondary">
+          </v-btn>
+          <v-btn size="large" :to="secondaryButtonLink" variant="outlined">
             {{ secondaryButtonText }}
-          </SfButton>
+          </v-btn>
         </div>
       </div>
     </div>
@@ -35,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { SfButton } from '@storefront-ui/vue';
 import type { HeroProps } from '~/components/ui/Hero/types';
 
 defineProps<HeroProps>();

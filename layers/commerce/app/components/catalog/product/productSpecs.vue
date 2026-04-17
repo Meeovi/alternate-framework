@@ -20,9 +20,28 @@
       <tr>
         <th>Price</th>
         <td>
-          <strong><div style="display: inline-block;" v-for="currency in product?.currency" :key="currency">{{ currency?.currency_id?.symbol }}</div></strong>
-          {{ product?.price }}
+          <strong>{{ pricing?.formatted?.final || product?.price }}</strong>
         </td>
+      </tr>
+      <tr v-if="pricing?.formatted?.regular">
+        <th>Regular Price</th>
+        <td>{{ pricing?.formatted?.regular }}</td>
+      </tr>
+      <tr v-if="pricing?.formatted?.special">
+        <th>Special Price</th>
+        <td>{{ pricing?.formatted?.special }}</td>
+      </tr>
+      <tr v-if="pricing?.formatted?.group">
+        <th>Group Price</th>
+        <td>{{ pricing?.formatted?.group }}</td>
+      </tr>
+      <tr v-if="pricing?.formatted?.tier">
+        <th>Tier Price</th>
+        <td>{{ pricing?.formatted?.tier }}</td>
+      </tr>
+      <tr>
+        <th>Price Source</th>
+        <td>{{ pricing?.source }}</td>
       </tr>
       <tr>
         <th>Average Rating</th>
@@ -80,9 +99,9 @@
         <th>Special to Date</th>
         <td><div style="display: inline-block;" v-for="currency in product?.currency" :key="currency">{{ currency?.currency_id?.symbol }}</div> {{ product?.special_to_date }}</td>
       </tr>
-      <tr>
-        <th>Special Price</th>
-        <td><div style="display: inline-block;" v-for="currency in product?.currency" :key="currency">{{ currency?.currency_id?.symbol }}</div> {{ product?.special_price  }}</td>
+      <tr v-if="productRssLink">
+        <th>Social Feed</th>
+        <td><a :href="productRssLink" target="_blank" rel="noopener">RSS Feed</a></td>
       </tr>
       <tr>
         <th>Is Featured</th>
@@ -105,9 +124,9 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
+import { computed, ref, watch } from 'vue'
+import { usePrice } from '../../../composables/catalog/price/price'
+import useContentFallback from '../../../composables/content/useContent'
 import ratings from '../../partials/ratings.vue'
 
 const props = defineProps({
@@ -116,4 +135,17 @@ const props = defineProps({
     required: true,
   },
 });
+
+const { getProductPrice } = usePrice()
+const { getProductRssLink } = useContentFallback()
+const pricing = computed(() => getProductPrice(props.product || {}))
+const productRssLink = ref(null)
+
+watch(
+  () => props.product,
+  async (product) => {
+    productRssLink.value = product ? await getProductRssLink(product) : null
+  },
+  { immediate: true }
+)
 </script>

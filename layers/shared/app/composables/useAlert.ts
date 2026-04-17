@@ -1,4 +1,4 @@
-import { useNuxtApp } from '#app'
+import { useNuxtApp } from 'nuxt/app'
 
 type AlertLevel = 'info' | 'success' | 'warning' | 'error'
 

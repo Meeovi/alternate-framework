@@ -1,18 +1,15 @@
 <template>
   <div class="inline-flex flex-col items-center" data-testid="quantity-selector">
-    <div class="flex border border-neutral-300 rounded-md h-full w-full">
-      <SfButton
-        variant="tertiary"
+    <div class="flex border border-neutral-300 rounded-md h-full w-full items-center">
+      <v-btn
+        variant="text"
         :disabled="count <= minValue"
-        square
-        class="rounded-r-none"
+        icon="mdi-minus"
         :aria-controls="inputId"
         :aria-label="$t('quantitySelectorDecrease')"
         data-testid="quantity-selector-decrease-v-btn"
         @click="dec()"
-      >
-        <SfIconRemove />
-      </SfButton>
+      />
       <v-text-field
         :id="inputId"
         v-model="count"
@@ -23,27 +20,26 @@
         :max="maxValue"
         data-testid="quantity-selector-input"
         :aria-label="$t('quantitySelector')"
+        variant="plain"
+        hide-details
+        density="compact"
         @input="handleOnChange"
       />
-      <SfButton
-        variant="tertiary"
+      <v-btn
+        variant="text"
         :disabled="count >= maxValue"
-        square
-        class="rounded-l-none"
+        icon="mdi-plus"
         :aria-controls="inputId"
         :aria-label="$t('quantitySelectorIncrease')"
         data-testid="quantity-selector-increase-v-btn"
         @click="inc()"
-      >
-        <SfIconAdd />
-      </SfButton>
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { clamp } from '@storefront-ui/shared';
-import { SfButton, SfIconAdd, SfIconRemove, useId } from '@storefront-ui/vue';
+import { useId } from 'vue';
 import { useCounter } from '@vueuse/core';
 import type { QuantitySelectorProps } from '~/components/ui/QuantitySelector/types';
 
@@ -56,6 +52,8 @@ const { value, minValue, maxValue } = withDefaults(defineProps<QuantitySelectorP
 const inputId = useId();
 const { count, inc, dec, set } = useCounter(value);
 
+const clampValue = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
+
 const inputClasses = computed(
   () =>
     'appearance-none flex-1 mx-2 w-8 text-center bg-transparent font-medium [&::-webkit-inner-spin-v-btn]:appearance-none [&::-webkit-inner-spin-v-btn]:display-none [&::-webkit-inner-spin-v-btn]:m-0 [&::-webkit-outer-spin-v-btn]:display-none [&::-webkit-outer-spin-v-btn]:m-0 [-moz-appearance:textfield] [&::-webkit-outer-spin-v-btn]:appearance-none disabled:placeholder-disabled-900 focus-visible:outline focus-visible:outline-offset focus-visible:rounded-sm',
@@ -64,6 +62,6 @@ const inputClasses = computed(
 const handleOnChange = (event: Event) => {
   const currentValue = (event.target as HTMLInputElement)?.value;
   const nextValue = Number.parseFloat(currentValue);
-  set(clamp(nextValue, minValue, maxValue));
+  set(clampValue(nextValue, minValue, maxValue));
 };
 </script>

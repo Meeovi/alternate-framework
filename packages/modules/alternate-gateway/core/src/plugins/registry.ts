@@ -1,11 +1,15 @@
-import { MFrameworkModule } from '../types/module'
+import type {
+    MFrameworkModule
+} from '../types/module';
 import { MFrameworkContext } from '../runtime/context'
-import {
-  MFrameworkAdapterKey,
-  MFrameworkAdapterMap,
-  MFrameworkAdapterOf
-} from '../types/adapters'
-import { MFrameworkEventBus } from '../types/events'
+import type {
+    MFrameworkAdapterKey,
+    MFrameworkAdapterMap,
+    MFrameworkAdapterOf
+} from '../types/adapters';
+import type {
+    MFrameworkEventBus
+} from '../types/events';
 
 export class ModuleRegistry {
   private modules = new Map<string, MFrameworkModule>()

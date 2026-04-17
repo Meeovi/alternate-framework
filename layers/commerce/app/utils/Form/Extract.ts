@@ -55,7 +55,7 @@ export const adjustHours = (hours: number, timeFormat: string): number => {
 };
 
 /**
- * Converts date to magento supported format
+ * Converts date to commerce supported format
  * @returns {string|*}
  * @namespace ../../utils/Form/Extract/getDateValue
  */
@@ -79,7 +79,7 @@ export const getDateValue = (dateValue: number | string | Date): number | string
 export const calcYearRangeAttributes = (startYear: number, endYear: number): YearRangeAttribute => {
     const currentYear = new Date().getFullYear();
 
-    // https://docs.magento.com/user-guide/stores/attribute-date-time-options.html
+    // https://docs.commerce.com/user-guide/stores/attribute-date-time-options.html
     // blank year range defaults to current year
     if (!startYear && !endYear) {
         return { minYear: currentYear, maxYear: currentYear };
@@ -112,8 +112,8 @@ export const getYearRangeAttributes = <IsYear extends boolean = false>(
     };
 };
 
-/** @namespace ../../utils/Form/Extract/isMagentoDateFormatValid */
-export const isMagentoDateFormatValid = (dateFieldsOrder: string): boolean => new RegExp(Array(DATE_FIELDS_COUNT)
+/** @namespace ../../utils/Form/Extract/isCommerceDateFormatValid */
+export const isCommerceDateFormatValid = (dateFieldsOrder: string): boolean => new RegExp(Array(DATE_FIELDS_COUNT)
     .fill('[dmy]').join(','))
     .test(dateFieldsOrder);
 
@@ -122,7 +122,7 @@ export const getTimeFormat = (timeFormat: string): string => (timeFormat === Tim
 
 /** @namespace ../../utils/Form/Extract/getDateFormat */
 export const getDateFormat = (dateFieldsOrder: string): string => {
-    if (!isMagentoDateFormatValid(dateFieldsOrder)) {
+    if (!isCommerceDateFormatValid(dateFieldsOrder)) {
         return 'dd/MM/yyyy';
     }
 
@@ -213,27 +213,34 @@ export const transformDateFieldsData = (
 /** @namespace ../../utils/Form/Extract/groupDateFieldsData */
 export const groupDateFieldsData = (
     fields: NodeListOf<HTMLSelectElement | HTMLInputElement>,
-): Record<string, DatesData> => Array.from(fields)
-    .reduce((prev: Record<string, DatesData>, field) => {
+): Record<string, DatesData> => {
+    const groupedFields: Record<string, DatesData> = {};
+
+    Array.from(fields).forEach((field) => {
         const dataType = field.getAttribute(DateFieldAttr.TYPE) || '';
 
         if (!Object.values<string>(FieldDateType).includes(dataType)) {
-            return prev;
+            return;
         }
 
         const { name, value } = field;
         const fieldName = field.getAttribute(DateFieldAttr.NAME) || '';
-        const { [name]: prevData } = prev;
 
-        return {
-            ...prev,
-            [name]: {
-                ...prevData,
-                type: <FieldDateType>dataType,
-                [fieldName]: value,
-            },
-        };
-    }, {});
+        if (!name || !fieldName) {
+            return;
+        }
+
+        const nextField: DatesData = groupedFields[name]
+            ? { ...groupedFields[name] }
+            : { name, type: dataType as FieldDateType };
+
+        nextField.type = dataType as FieldDateType;
+        (nextField as Record<string, string | FieldDateType>)[fieldName] = value;
+        groupedFields[name] = nextField;
+    });
+
+    return groupedFields;
+};
 
 /**
  * Returns fields values from DOM/Form

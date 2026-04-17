@@ -9,7 +9,7 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { NetworkError } from '../../types/Common.type';
+import type { NetworkError } from '../../types/Common.type';
 
 import { DEFAULT_ERROR_MESSAGE } from './Config';
 
@@ -24,7 +24,7 @@ export const getErrorMessage = (
     defaultMessage: string = DEFAULT_ERROR_MESSAGE,
 ): string => {
     if (Array.isArray(error)) {
-        return error?.[0].message || defaultMessage;
+        return error[0]?.message || defaultMessage;
     }
 
     return error?.message || defaultMessage;

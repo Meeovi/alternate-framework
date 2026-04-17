@@ -9,9 +9,13 @@
  * @link https://github.com/meeovi/mframework
  */
 
-import { MenuItem } from '../../types/normalizers/Menu.type';
+import type {
+    MenuItem
+} from '../../types/normalizers/Menu.type';
 import { CategoryDisplayMode } from '../../types/routes/CategoryPage/CategoryPage.config';
-import { Merge } from '../../types/Common.type';
+import type {
+    Merge
+} from '../../types/Common.type';
 
 export interface MenuLocation {
     pathname: string;

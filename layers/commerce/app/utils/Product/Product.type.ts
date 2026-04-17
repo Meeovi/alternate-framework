@@ -10,28 +10,12 @@
  */
 
 import { ImageType } from 'Component/ProductGallery/ProductGallery.config';
-import {
-    AttributeWithValue,
-    AttributeWithValueOption,
-    BundleItem,
-    BundleOption,
-    ConfigurableProductOptions,
-    CustomizableFieldValue,
-    CustomizableFileValue,
-    CustomizableProductFragmentOptions,
-    CustomizableSelectionValue,
-    GroupedProductItem,
-    PriceRange, ProductItem,
-    ProductReview,
-    ProductStockItem,
-    RatingsBreakdown,
-    SwatchData,
-} from '../../types/normalizers/ProductList.type';
-import { Product as DomainProduct } from '../../types/domain';
-import { WishlistProduct } from '../../stores/Wishlist/Wishlist.type';
-import { Merge } from '../../types/Common.type';
+import type { AttributeWithValue, AttributeWithValueOption, BundleItem, BundleOption, ConfigurableProductOptions, CustomizableFieldValue, CustomizableFileValue, CustomizableProductFragmentOptions, CustomizableSelectionValue, GroupedProductItem, PriceRange, ProductItem, ProductReview, ProductStockItem, RatingsBreakdown, SwatchData } from '../../types/normalizers/ProductList.type';
+import type { Product as DomainProduct } from '../../types/domain';
+import type { WishlistProduct } from '../../stores/Wishlist/Wishlist.type';
+import type { Merge } from '../../types/Common.type';
 import { GQLCurrencyEnum, GQLProductStockStatus } from '../../types/Graphql.type';
-import { DateRangeAttribute, YearRangeAttribute } from '../../utils/Form/Form.type';
+import type { DateRangeAttribute, YearRangeAttribute } from '../../utils/Form/Form.type';
 
 export enum QtyFields {
     SALABLE_QTY = 'salable_qty',

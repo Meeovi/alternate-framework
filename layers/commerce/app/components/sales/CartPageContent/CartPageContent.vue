@@ -2,7 +2,7 @@
   <div v-if="cart?.lineItems.length" class="md:grid md:grid-cols-12 md:gap-x-6" data-testid="cart-page-content">
     <div class="col-span-7 mb-10 md:mb-0">
       <div v-for="{ id, attributes, image, name, totalPrice, unitPrice, quantity, slug } in cart.lineItems" :key="id">
-        <UiCartProductCard
+        <CartProductCard
           :attributes="attributes"
           :image-url="image?.url"
           :image-alt="image?.alt"
@@ -17,9 +17,9 @@
       </div>
     </div>
     <OrderSummary :cart="cart" class="col-span-5 md:sticky md:top-20 h-fit">
-      <SfButton :tag="NuxtLink" :to="paths.checkout" size="lg" class="w-full mb-4 md:mb-0">
+      <v-btn :to="paths.checkout" size="large" color="primary" class="w-full mb-4 md:mb-0">
         {{ $t('goToCheckout') }}
-      </SfButton>
+      </v-btn>
     </OrderSummary>
   </div>
   <div v-else class="flex items-center justify-center flex-col pt-24 pb-32" data-testid="cart-page-content">
@@ -29,9 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-import { SfButton } from '@storefront-ui/vue';
-import { useCart } from '~/composables/useCart';
+import { useCart } from '~/composables/sales/useCart';
 
 const { data: cart } = useCart();
 

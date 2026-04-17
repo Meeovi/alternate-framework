@@ -86,7 +86,25 @@
 
 <script setup lang="ts">
 import { SfButton, SfLink, SfListItem } from 'alternate-ui/storefront';
-import { bottomLinks, categories, companyName, contactOptions, socialMedia } from '~/mocks';
+
+const bottomLinks = [
+  { key: 'terms', link: '/terms' },
+  { key: 'privacy', link: '/privacy' },
+];
+
+const categories = [
+  { key: 'products', subcategories: [{ key: 'all', link: '/products' }] },
+];
+
+const companyName = 'Meeovi';
+
+const contactOptions = [
+  { key: 'support', icon: 'svg-icon', link: '/support', details: ['email@example.com'] },
+];
+
+const socialMedia = [
+  { label: 'twitter', link: 'https://twitter.com', icon: 'svg-icon' },
+];
 
 // Use string 'NuxtLink' to defer resolution - this works without auto-imports
 const NuxtLink = 'NuxtLink';

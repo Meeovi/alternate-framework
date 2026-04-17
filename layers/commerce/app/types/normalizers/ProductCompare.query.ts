@@ -1,5 +1,5 @@
 /**
- * ScandiPWA - Progressive Web App for Magento
+ * ScandiPWA - Progressive Web App for Commerce
  *
  * Copyright © Scandiweb, Inc. All rights reserved.
  * See LICENSE for license details.
@@ -176,7 +176,7 @@ export class ProductCompareQuery extends ProductListQuery {
             .addField(this._getCustomizableProductFragment());
     }
 
-    _getCustomizableProductFragment(): InlineFragment<'CustomizableProductInterface', {
+    override _getCustomizableProductFragment(): InlineFragment<'CustomizableProductInterface', {
         options: CustomizableProductFragmentOptions[];
     }> {
         return new InlineFragment<'CustomizableProductInterface', {

@@ -18,9 +18,6 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
 const { $stripe } = useNuxtApp()
 const elements = ref(null)

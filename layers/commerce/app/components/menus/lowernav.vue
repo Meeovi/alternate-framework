@@ -48,9 +48,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     import {
         ref
     } from '#imports'
@@ -64,7 +61,7 @@ void useContentAdapter()
     const tab = ref(null);
 
     const {
-        $directus,
+        $dataClient,
         $readItem
     } = useNuxtApp()
     const route = useRoute()
@@ -72,7 +69,7 @@ void useContentAdapter()
     const {
         data: lowerbar
     } = await useAsyncData('lowerbar', () => {
-        return $directus.request($readItem('navigation', '46', {
+        return $dataClient.request($readItem('navigation', '46', {
             fields: ['*', {
                 '*': ['*']
             }]

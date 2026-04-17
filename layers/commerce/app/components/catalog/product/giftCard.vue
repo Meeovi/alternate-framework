@@ -35,9 +35,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
   const props = defineProps({
     gift: {
       type: String,
@@ -46,14 +43,14 @@ void useContentAdapter()
   });
 
   const {
-    $directus,
+    $dataClient,
     $readItem
   } = useNuxtApp()
 
   const {
     data: callouts
   } = await useAsyncData('callouts', () => {
-    return $directus.request($readItem('callouts', '4'))
+    return $dataClient.request($readItem('callouts', '4'))
   })
 
   useHead({

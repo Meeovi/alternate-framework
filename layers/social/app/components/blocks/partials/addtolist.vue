@@ -97,7 +97,9 @@ const props = defineProps({
 
 const emit = defineEmits(['item-added']);
 
-const user = useSupabaseAuth();
+const { user, fetchSession } = useAuth();
+await fetchSession();
+const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null;
 
 const content = useContentAdapter();
 
@@ -110,7 +112,8 @@ const error = ref(null);
 
 // Fetch user's lists from Directus
 const fetchLists = async () => {
-    if (!user.value) return;
+    const currentUserId = getCurrentUserId();
+    if (!currentUserId) return;
     
     loading.value = true;
     error.value = null;
@@ -118,7 +121,7 @@ const fetchLists = async () => {
     try {
         const resp = await content.readItems('lists', {
             filter: {
-                user: { _eq: user.value.id }
+                user: { _eq: currentUserId }
             },
             fields: ['id', 'name', 'description']
         });

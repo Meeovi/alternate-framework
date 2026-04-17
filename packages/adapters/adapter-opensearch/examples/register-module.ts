@@ -5,7 +5,7 @@ import searchModule from '~~/layers/search/app/composables/module'
 export const opensearchProviderModule = {
   id: 'search-provider-opensearch-example',
   adapters: {
-    search: createOpenSearchAdapter({ id: 'opensearch', index: process.env.OPENSEARCH_INDEX || 'products' })
+    search: createOpenSearchAdapter({ id: 'opensearch', index: process.env.ALTERNATE_SEARCH_INDEX || 'products' })
   }
 }
 

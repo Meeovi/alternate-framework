@@ -11,7 +11,7 @@
 
 import { AbstractField, Mutation, Query } from '@tilework/opus';
 
-import { QueryObject, QueryVariables } from '../../utils/Request/Request';
+import type { QueryObject, QueryVariables } from '../../utils/Request/Request';
 
 import { FieldType } from './Query.type';
 
@@ -22,7 +22,7 @@ import { FieldType } from './Query.type';
  * @namespace ../../utils/../../normalizers/PrepareDocument/prepareFieldString */
 export const prepareFieldString = <T>(
     rootField: AbstractField<string, T, boolean> | string,
-    accArgs: Record<string, [string, unknown]> = {},
+    accArgs: Record<string, Array<[string, unknown]>> = {},
 ): string => {
     // If the field is a plain string, return it directly.
     if (typeof rootField === 'string') return rootField;
@@ -41,10 +41,10 @@ export const prepareFieldString = <T>(
     ): string[] => {
         if (!accArgs[arg.name]) {
             // eslint-disable-next-line no-param-reassign
-            accArgs[arg.name] = [] as unknown as [string, unknown];
+            accArgs[arg.name] = [];
         }
 
-        const index = accArgs[arg.name].push([arg.type, arg.value]);
+        const index = accArgs[arg.name]!.push([arg.type, arg.value]);
 
         return [...acc, `${arg.name}:$${arg.name}_${index}`];
     }, [] as string[]);
@@ -80,7 +80,7 @@ export const prepareRequest = <T>(fields: AbstractField<string, T, boolean>[], t
             const variable = `${name}_${i + 1}`;
 
             acc.push(`$${variable}:${type}`);
-            variables[variable] = value;
+            variables[variable] = typeof value === 'string' ? value : String(value);
         });
 
         return acc;

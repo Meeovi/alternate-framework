@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
-import { useVendureQuery } from "../../../composables/useVendureQuery";
+import { useCommerceQuery } from "../../../composables/globals/useCommerceQuery";
 import getProductReviewsQuery from "#graphql/app/commerce/queries/getProductReviews.gql";
 
 const props = defineProps<{ productId: string }>();
-const { data } = useVendureQuery(getProductReviewsQuery, {
+const { data } = useCommerceQuery(getProductReviewsQuery, {
   productId: props.productId,
 });
 const reviews = computed(() => data.value?.product?.reviews || []);

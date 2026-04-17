@@ -5,7 +5,7 @@
                 <div class="card-wrapper">
                     <div class="img-wrapper">
                         <NuxtImg loading="lazy" class="align-end text-white" v-if="store?.image"
-                            :src="`${$directus.url}/assets/${store?.image?.filename_disk}`" :alt="store?.name || 'Store Name'"
+                            :src="`${$dataClient.url}/assets/${store?.image?.filename_disk}`" :alt="store?.name || 'Store Name'"
                             cover />
                     </div>
                     <div class="card-box align-center">
@@ -27,9 +27,6 @@
 </template>
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
     import {
         useRuntimeConfig
     } from '#imports';

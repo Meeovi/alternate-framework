@@ -4,21 +4,12 @@ import {
 import {
   defineNuxtConfig
 } from 'nuxt/config'
-import {
-  withAlternateUiNuxtConfig
-} from '../../packages/modules/alternate-ui/src/shared-ui/nuxt/index'
 import process from 'node:process'
 import {
   createRequire
 } from 'node:module'
-import type {
-  NuxtConfig
-} from 'nuxt/schema'
 import {
-  useLayers
-} from 'nuxt-layers-utils'
-import {
-  withAlternateUiNuxtConfig as applyAlternateUiNuxtConfig
+  withAlternateUiNuxtConfig
 } from 'alternate-ui/nuxt'
 import {
   defaultAlternateLocateLocale,
@@ -39,20 +30,43 @@ function hasOptionalModule(name: string): boolean {
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
 const isProd = process.env.NODE_ENV === 'production'
+const disabledDevModules = new Set(
+  String(process.env.NUXT_DEV_DISABLE_MODULES || '')
+    .split(',')
+    .map(name => name.trim())
+    .filter(Boolean)
+)
 const hasI18nModule = hasOptionalModule('@nuxtjs/i18n')
 const hasPwaNuxtModule = hasOptionalModule('@vite-pwa/nuxt')
 const hasApiClientNuxtModule = hasOptionalModule('@mframework/api-client/nuxt')
 const enablePwaModule = (pwaDevEnabled || sw) && hasPwaNuxtModule
 const resolveFromConfig = (path: string) => fileURLToPath(new URL(path, import.meta.url))
-const enableSeoModule = isProd || process.env.SEO_DEV === 'true'
+const enableSeoModule = isProd
+const disableSharedPlugins = process.env.NUXT_DEV_DISABLE_SHARED_PLUGINS === 'true'
+const disableSharedMiddleware = process.env.NUXT_DEV_DISABLE_SHARED_MIDDLEWARE === 'true'
+const useMinimalSharedConfig = process.env.NODE_ENV === 'development' && process.env.NUXT_DEV_SHARED_MINIMAL === 'true'
 
-export default defineNuxtConfig(withAlternateUiNuxtConfig({
+const minimalSharedConfig = {
+  $meta: {
+    name: 'shared-nuxt-minimal',
+    description: 'Minimal shared layer config for dev isolation',
+  },
+}
+
+const withModuleFilter = (modules: string[]) => {
+  if (process.env.NODE_ENV !== 'development' || disabledDevModules.size === 0) {
+    return modules
+  }
+  return modules.filter(moduleName => !disabledDevModules.has(moduleName))
+}
+
+export default defineNuxtConfig(useMinimalSharedConfig ? minimalSharedConfig : withAlternateUiNuxtConfig({
   $meta: {
     name: 'shared-nuxt',
     description: 'Nuxt-specific glue for alternate-* modules',
   },
 
-  modules: [
+  modules: withModuleFilter([
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-security',
@@ -62,18 +76,18 @@ export default defineNuxtConfig(withAlternateUiNuxtConfig({
     ...(hasI18nModule ? ['@nuxtjs/i18n'] : []),
     ...(enablePwaModule ? ['@vite-pwa/nuxt'] : []),
     ...(hasApiClientNuxtModule ? ['@mframework/api-client/nuxt'] : []),
-  ],
+  ]),
 
   ...(hasI18nModule ? {
     i18n: {
-      strategy: 'no_prefix',
+      strategy: 'no_prefix' as const,
       defaultLocale: defaultAlternateLocateLocale,
-      locales: defaultAlternateLocateLocales,
+      locales: defaultAlternateLocateLocales.map(locale => ({ ...locale })),
     },
   } : {}),
 
   css: [
-    '@mframework/alternate-media/styles/media.css',
+    'alternate-media/styles/media.css',
     resolveFromConfig('./assets/css/ui.css'),
     resolveFromConfig('./assets/css/media.css'),
     resolveFromConfig('./assets/css/search.css'),
@@ -86,8 +100,15 @@ export default defineNuxtConfig(withAlternateUiNuxtConfig({
     dirs: ['./runtime/composables'],
   },
 
+  ...(process.env.NODE_ENV === 'development' && (disableSharedPlugins || disableSharedMiddleware) ? {
+    ignore: [
+      ...(disableSharedPlugins ? ['./app/plugins/**'] : []),
+      ...(disableSharedMiddleware ? ['./app/middleware/**'] : []),
+    ],
+  } : {}),
+
   site: {
-    url: `${process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000'}`,
+    url: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
     name: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'}`,
     description: `${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
   },
@@ -143,6 +164,13 @@ export default defineNuxtConfig(withAlternateUiNuxtConfig({
   },
 
   security: {
+    enabled: process.env.NODE_ENV === 'production',
+    rateLimiter: process.env.NODE_ENV === 'production' ? {
+      tokensPerInterval: 150,
+      interval: 60 * 1000,
+      throwError: true,
+      headers: true,
+    } : false,
     headers: {
       contentSecurityPolicy: false as
       const,

@@ -52,12 +52,9 @@
 
 
 <script setup>
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
     const {
-        $directus,
+        $dataClient,
         $readItems,
         $readItem
     } = useNuxtApp()
@@ -65,7 +62,7 @@ void useContentAdapter()
     const {
         data: page
     } = await useAsyncData('page', () => {
-        return $directus.request($readItem('page', '46', {
+        return $dataClient.request($readItem('page', '46', {
             fields: ['*', {
                 '*': ['*']
             }]

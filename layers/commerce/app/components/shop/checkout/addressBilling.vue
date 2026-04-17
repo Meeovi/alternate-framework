@@ -152,15 +152,12 @@
 <script setup lang="ts">
   
   
-import { useCommerceAdapter, useContentAdapter } from '#imports'
-void useCommerceAdapter()
-void useContentAdapter()
 
   import { ref, reactive, onMounted, onErrorCaptured } from '#imports';
-  import { useVendureMutation } from '../../composables/useVendureMutation';
+  import { useCommerceMutation } from '../../composables/globals/useCommerceMutation';
   import setOrderBillingAddressMutation from '#graphql/app/commerce/mutations/setOrderBillingAddress.gql';
   import getCountryListQuery from '#graphql/app/commerce/queries/getCountryList.gql';
-  import { useVendureQuery } from '../../composables/useVendureQuery';
+  import { useCommerceQuery } from '../../composables/globals/useCommerceQuery';
   import { useNotification } from '~//composables/useNotifications';
   
   const emit = defineEmits(['address-saved', 'address-error', 'form-reset']);
@@ -181,7 +178,7 @@ void useContentAdapter()
     countryCode: '',
   });
   
-  const { data: countriesResult } = useVendureQuery(getCountryListQuery);
+  const { data: countriesResult } = useCommerceQuery(getCountryListQuery);
   type Country = {
     code: string;
     name: string;
@@ -202,7 +199,7 @@ void useContentAdapter()
     countryCode: '',
   });
   
-  const { mutate: setBillingAddress } = useVendureMutation(setOrderBillingAddressMutation);
+  const { mutate: setBillingAddress } = useCommerceMutation(setOrderBillingAddressMutation);
   
   const updateRegions = (countryCode: string) => {
     const country = countries.value.find((c) => c.code === countryCode);
