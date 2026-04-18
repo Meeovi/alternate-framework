@@ -25,6 +25,7 @@ type AdapterSession = {
 type AdapterSignInPayload = {
   email?: string
   password?: string
+  rememberMe?: boolean
 }
 
 type AdapterSignUpPayload = {
@@ -270,13 +271,13 @@ const getActiveAdapterProvider = async (): Promise<AdapterProvider> => {
   throw createError({ statusCode: 500, statusMessage: 'No auth adapters are registered' })
 }
 
-const attachSessionCookie = (event: H3Event, token: string) => {
+const attachSessionCookie = (event: H3Event, token: string, rememberMe = false) => {
   setCookie(event, authCookieName(), token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     path: '/',
-    maxAge: 60 * 60 * 24 * 7,
+    ...(rememberMe ? { maxAge: 60 * 60 * 24 * 7 } : {}),
   })
 }
 
@@ -303,10 +304,10 @@ export const getAdapterSession = async (event: H3Event) => {
   }
 }
 
-export const adapterSignIn = async (event: H3Event, payload: { email?: string; password?: string }) => {
+export const adapterSignIn = async (event: H3Event, payload: { email?: string; password?: string; rememberMe?: boolean }) => {
   const provider = await getActiveAdapterProvider()
   const result = await provider.signIn(payload)
-  attachSessionCookie(event, result.token)
+  attachSessionCookie(event, result.token, Boolean(payload?.rememberMe))
 
   return { session: { token: result.token }, user: result.user }
 }

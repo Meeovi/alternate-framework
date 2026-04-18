@@ -4,6 +4,9 @@ import {
   defaultAlternateLocateLocale,
   defaultAlternateLocateLocales,
 } from 'alternate-locate/adapters/nuxt/i18n'
+import {
+  withAlternateUiNuxtConfig,
+} from 'alternate-ui/nuxt'
 
 const isProd = process.env.NODE_ENV === 'production'
 const useMinimalSocialConfig = process.env.NODE_ENV === 'development' && process.env.NUXT_DEV_SOCIAL_FULL !== 'true'
@@ -45,7 +48,7 @@ const minimalSocialConfig = {
   compatibilityDate: '2026-02-16',
 }
 
-export default defineNuxtConfig(useMinimalSocialConfig ? minimalSocialConfig : {
+export default defineNuxtConfig(useMinimalSocialConfig ? minimalSocialConfig : withAlternateUiNuxtConfig({
   $meta: {
     name: 'social',
     description: 'Social Layer provides functionalities for social interactions and networking.',
@@ -99,4 +102,4 @@ export default defineNuxtConfig(useMinimalSocialConfig ? minimalSocialConfig : {
   },
 
   compatibilityDate: '2026-02-16',
-})
+}))

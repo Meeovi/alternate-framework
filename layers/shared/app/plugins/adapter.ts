@@ -21,7 +21,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   }
 
   if (process.env.NODE_ENV === 'development') {
-    console.info('[adapter] Skipping adapter initialization in dev mode (Vite invalidation fix)')
     return {}
   }
 

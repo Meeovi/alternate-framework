@@ -20,6 +20,16 @@ export interface AlternateVuetifyOptions {
   [key: string]: unknown
 }
 
+const defaultVuetifyIcons = {
+  defaultSet: 'fa',
+  sets: [
+    {
+      name: 'fa',
+      cdn: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css',
+    },
+  ],
+} as const
+
 function mergeThemes(overrides?: AlternateVuetifyOptions['theme']): AlternateVuetifyOptions['theme'] {
   if (!overrides) {
     return vuetifyTheme
@@ -56,6 +66,11 @@ function mergeThemes(overrides?: AlternateVuetifyOptions['theme']): AlternateVue
 export function createVuetifyOptions(
   overrides: Partial<AlternateVuetifyOptions> = {},
 ): AlternateVuetifyOptions {
+  const mergedIcons = {
+    ...defaultVuetifyIcons,
+    ...(overrides.icons ?? {}),
+  }
+
   return {
     components: overrides.components,
     directives: overrides.directives,
@@ -68,7 +83,7 @@ export function createVuetifyOptions(
       ...(overrides.defaults ?? {}),
     },
     theme: mergeThemes(overrides.theme),
-    icons: overrides.icons,
+    icons: mergedIcons,
     aliases: overrides.aliases,
     date: overrides.date,
     display: overrides.display,

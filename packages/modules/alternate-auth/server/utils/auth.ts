@@ -9,6 +9,15 @@ import { prisma } from 'alternate-gateway/core'
 
 type User = any
 
+const DEFAULT_SESSION_EXPIRES_IN = 60 * 60 * 24 * 7
+const DEFAULT_SESSION_FRESH_AGE = 60 * 60 * 24
+const DEFAULT_SESSION_UPDATE_AGE = 60 * 60 * 24
+
+const parseSessionSeconds = (value: string | undefined, fallback: number) => {
+  const parsed = Number.parseInt(String(value || ''), 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
+}
+
 const runtimeConfig = {
   public: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
@@ -16,6 +25,12 @@ const runtimeConfig = {
     appNotifyEmail: process.env.APP_NOTIFY_EMAIL || 'no-reply@example.com',
   },
   betterAuthSecret: process.env.BETTER_AUTH_SECRET || 'secret',
+}
+
+const betterAuthSessionConfig = {
+  expiresIn: parseSessionSeconds(process.env.AUTH_SESSION_EXPIRES_IN, DEFAULT_SESSION_EXPIRES_IN),
+  freshAge: parseSessionSeconds(process.env.AUTH_SESSION_FRESH_AGE, DEFAULT_SESSION_FRESH_AGE),
+  updateAge: parseSessionSeconds(process.env.AUTH_SESSION_UPDATE_AGE, DEFAULT_SESSION_UPDATE_AGE),
 }
 
 export const logAuditEvent = async (entry: any) => {
@@ -45,6 +60,7 @@ export const createBetterAuth = () =>
     trustedOrigins: ['http://localhost:8787', runtimeConfig.public.baseURL],
     secret: runtimeConfig.betterAuthSecret,
     database: prismaAdapter(prisma as any, { provider: 'postgresql' }),
+    session: betterAuthSessionConfig,
     advanced: {
       database: {
         generateId: () => uuidv7(),

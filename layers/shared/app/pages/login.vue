@@ -5,7 +5,7 @@
       <v-card-subtitle>Enter your email below to login to your account</v-card-subtitle>
 
       <v-card-text>
-        <v-form class="space-y-4">
+        <v-form class="space-y-4" @submit.prevent="signIn">
           <v-text-field v-model="email" label="Email" type="email" placeholder="m@example.com" required
             variant="outlined" />
 
@@ -20,7 +20,7 @@
 
           <v-checkbox v-model="rememberMe" label="Remember me" />
 
-          <v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" size="large" @click="signIn"
+          <v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" size="large"
             :text="loading ? 'Signing in...' : 'Sign In'" />
         </v-form>
 
@@ -77,12 +77,14 @@
     } = await auth.signIn.email({
       email: email.value,
       password: password.value,
+      rememberMe: rememberMe.value,
     })
     if (error) {
       alert.error(error.message);
     } else {
-      await navigateTo('/')
+      await auth.fetchSession()
       alert.success('You have been signed in!');
+      await navigateTo('/')
     }
     loading.value = false
   }

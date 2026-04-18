@@ -15,10 +15,19 @@ export default defineNuxtModule<AlternateAuthNuxtModuleOptions>({
   defaults: {
     enableRuntimeComposables: true,
   },
-  setup(options) {
-    if (!options.enableRuntimeComposables) return
-
+  setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
-    addImportsDir(resolver.resolve('../../runtime/composables'))
+    const serverDir = resolver.resolve('../../server')
+
+    nuxt.options.nitro ||= {}
+    nuxt.options.nitro.scanDirs ||= []
+
+    if (!nuxt.options.nitro.scanDirs.includes(serverDir)) {
+      nuxt.options.nitro.scanDirs.push(serverDir)
+    }
+
+    if (options.enableRuntimeComposables !== false) {
+      addImportsDir(resolver.resolve('../../runtime/composables'))
+    }
   },
 })

@@ -76,7 +76,7 @@ export function useAuth() {
     })
   }
 
-  const adapterSignInEmail = async (payload: { email: string; password: string }) => {
+  const adapterSignInEmail = async (payload: { email: string; password: string; rememberMe?: boolean }) => {
     try {
       const data = await $fetch<{ session?: any; user?: any }>('/api/auth/adapter/sign-in', {
         method: 'POST',
