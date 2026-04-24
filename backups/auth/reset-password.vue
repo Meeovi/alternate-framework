@@ -34,6 +34,7 @@ import { definePageMeta } from '#imports'
 import { z } from 'zod'
 import { reactive, ref } from '#imports'
 import { useI18n } from 'vue-i18n'
+import { useLocalePath } from 'alternate-locate'
 
 definePageMeta({
   auth: {

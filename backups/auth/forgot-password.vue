@@ -37,6 +37,7 @@ import { useHead } from 'nuxt/app'
 import { definePageMeta, useAuth } from '#imports'
 import { z } from 'zod'
 import { reactive, ref } from '#imports'
+import { useLocalePath } from 'alternate-locate'
 
 definePageMeta({
   auth: {
