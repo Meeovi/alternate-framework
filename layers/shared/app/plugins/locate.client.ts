@@ -1,4 +1,4 @@
-import { createLocate } from 'alternate-locate/createLocate'
+import { createLocate } from 'alternate-gateway/locate/createLocate'
 
 export type SharedLocateProvider = ReturnType<typeof createLocate>
 

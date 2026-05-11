@@ -1,10 +1,10 @@
-import type { SearchAdapter as CoreSearchAdapter, SearchAdapterConfig } from 'alternate-gateway/core/adapters/search'
+import type { SearchAdapter as CoreSearchAdapter, SearchAdapterConfig } from 'alternate-gateway/adapters/search'
 import type {
   SearchQuery as CoreSearchQuery,
   SearchResult as CoreSearchResult,
   Facet,
   Result
-} from 'alternate-gateway/core/types'
+} from 'alternate-gateway/types'
 import { client } from './client'
 
 export interface OpenSearchAdapterOptions {

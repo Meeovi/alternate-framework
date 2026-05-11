@@ -6,12 +6,12 @@ type ReadItemsFn = (collection: string, options?: { fields?: string[]; filter?: 
  * Use this when you are outside of a Vue setup function (for example in a page
  * async loader where you already have access to `useNuxtApp()` or in a plugin).
  */
-export async function fetchSpaceRegistry(nuxtApp?: { $readItems?: ReadItemsFn }) {
-  // Determine the readItems function: prefer nuxtApp.$readItems, fall back to adapter
+export async function fetchSpaceRegistry(nuxtApp?: { read?: ReadItemsFn }) {
+  // Determine the readItems function: prefer nuxtApp.read, fall back to adapter
   let readItemsFn: ReadItemsFn | undefined = undefined
 
-  if (nuxtApp && typeof nuxtApp.$readItems === 'function') {
-    readItemsFn = nuxtApp.$readItems
+  if (nuxtApp && typeof nuxtApp.read === 'function') {
+    readItemsFn = nuxtApp.read
   } else {
     const mod = await import('../core/useAdapterRequest')
     const adapter = (mod && typeof (mod as any).default === 'function') ? (mod as any).default() : (mod as any)
@@ -49,15 +49,15 @@ export async function fetchSpaceRegistry(nuxtApp?: { $readItems?: ReadItemsFn })
  */
 import useAdapterRequest from '../core/useAdapterRequest'
 
-export const useSpaceRegistry = async (nuxtApp?: { $readItems?: ReadItemsFn }) => {
+export const useSpaceRegistry = async (nuxtApp?: { read?: ReadItemsFn }) => {
   const runtimeUseNuxtApp = (globalThis as any).useNuxtApp
   const nuxt = nuxtApp ?? (typeof runtimeUseNuxtApp === 'function' ? runtimeUseNuxtApp() : undefined)
 
-  if (nuxt && typeof nuxt.$readItems === 'function') {
-    return fetchSpaceRegistry(nuxt as { $readItems?: ReadItemsFn })
+  if (nuxt && typeof nuxt.read === 'function') {
+    return fetchSpaceRegistry(nuxt as { read?: ReadItemsFn })
   }
 
   // fall back to adapter composable when called inside setup without a nuxtApp arg
   const { readItems } = useAdapterRequest()
-  return fetchSpaceRegistry({ $readItems: readItems })
+  return fetchSpaceRegistry({ read: readItems })
 }

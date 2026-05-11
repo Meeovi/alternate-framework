@@ -1,7 +1,0 @@
-.thumbnailRoot {
-    composes: root from './thumbnail.module.css';
-}
-
-.thumbnailImage {
-    composes: image from './thumbnail.module.css';
-}

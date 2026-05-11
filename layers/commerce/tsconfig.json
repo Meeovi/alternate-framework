@@ -1,11 +1,9 @@
 {
- "extends": "./.nuxt/tsconfig.json",
- "compilerOptions": {
-  "verbatimModuleSyntax": false
- },
- "exclude": [
-  "**/__tests__/**",
-  "**/*.spec.ts",
-  "**/*.spec.tsx"
- ]
+  "extends": "./.nuxt/tsconfig.json",
+  "include": [
+    "./**/*.ts",
+    "./**/*.d.ts",
+    "./**/*.vue",
+    ".nuxt/nuxt.d.ts"
+  ]
 }

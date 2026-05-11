@@ -14,11 +14,16 @@
   "author": "M Framework",
   "type": "module",
   "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./nuxt": "./src/module.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@nuxt/kit": "^4.4.2",
     "alternate-gateway": "file:../../modules/alternate-gateway",
     "@opensearch-project/opensearch": "^3.5.1"
   }

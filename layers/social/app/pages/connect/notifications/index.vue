@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
-import { isHydrated, useHydratedHead } from '../../../composables/core/vue'
+import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
+import { isHydrated, useHydratedHead } from '~/composables/core/vue'
 
 const { t } = useLocate()
 

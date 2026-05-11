@@ -34,7 +34,7 @@
 
 <script setup>
 
-import { ref, onMounted } from '#imports';
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();

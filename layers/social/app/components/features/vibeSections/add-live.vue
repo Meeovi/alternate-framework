@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
       <v-card class="b-1">
-        <template #header>
+        <template>
           <h3>Create New Vibe</h3>
         </template>
 

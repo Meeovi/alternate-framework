@@ -21,7 +21,11 @@
   const { readItems } = useAdapterRequest()
 
   const { data: group } = await useAsyncData('group', async () => {
-    const resp = await readItems('spaces')
-    return resp?.data || resp || []
+    try {
+      const resp = await readItems('spaces')
+      return resp?.data || resp || []
+    } catch {
+      return []
+    }
   })
 </script>

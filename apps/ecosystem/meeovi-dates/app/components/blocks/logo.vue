@@ -14,16 +14,14 @@
         ref
     } from 'vue'
 
-    const {
-        $directus,
-        $readItem
-    } = useNuxtApp()
+    const gateway = useGateway()
+    const content = gateway.content
 
     const {
         data: blocksSiteoverview
     } = await useAsyncData('blocksSiteoverview', () => {
-        return $directus.request($readItem('page_blocks', '14', {
+        return content.readItem('page_blocks', '14', {
             fields: ['*', 'media.*.*'],
-        }))
+        })
     })
 </script>

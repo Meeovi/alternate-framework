@@ -8,7 +8,7 @@
       <!-- Search and Filter Section -->
       <v-col cols="12" class="mb-4">
         <v-card>
-          <template #header>
+          <template>
             <v-row>
               <v-col cols="4">
                 <v-text-field v-model="searchAddress" label="Search by address"
@@ -199,22 +199,21 @@
 
   // Data setup
   const {
-    $dataClient,
-    $readItem
+    read
   } = useNuxtApp();
 
   const {
     data: pickupBlocks
   } = await useAsyncData('pickupBlocks', () => {
-    return $dataClient.request($readItem('page_blocks', '10', {
-      fields: ['*', 'media.data_files_id.filename_disk', 'content.*'],
+    return gateway.content(read('page_blocks', '10', {
+      fields: ['*', 'media.file.*', 'content.*'],
     }))
   });
 
   const {
     data: pickupLocations
   } = await useAsyncData('pickupLocations', () => {
-    return $dataClient.request($readItem('pages', '33', {
+    return gateway.content(read('pages', '33', {
       fields: ['*', 'image.*'],
     }))
   });

@@ -32,14 +32,13 @@ import productCard from './productCard.vue'
 
   const model = ref(null)
   const {
-    $dataClient,
-    $readItems
+    read
   } = useNuxtApp()
 
   const {
     data: deals
   } = await useAsyncData('deals', () => {
-    return $dataClient.request($readItems('products', {
+    return gateway.content(read('products', {
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',

@@ -12,7 +12,7 @@ function toList(value: any): MediaItem[] {
 
 function mediaType(item: MediaItem) {
   const mime = String(item?.mime_type || item?.type || item?.file?.type || '').toLowerCase()
-  const ext = String(item?.file?.filename_disk || item?.filename_disk || item?.extension || '').toLowerCase()
+  const ext = String(item?.file?.filename_download || item?.filename_download || item?.extension || request.getAssetUrl(item?.file || item) || '').toLowerCase()
 
   if (mime.startsWith('image/') || /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(ext)) return 'image'
   if (mime.startsWith('video/') || /\.(mp4|webm|mov|mkv|avi|m3u8)$/i.test(ext)) return 'video'
@@ -26,8 +26,10 @@ function includesToken(item: MediaItem, token: string) {
     item?.name,
     item?.description,
     item?.alt,
+    item?.file?.filename_download,
+    item?.file?.title,
     item?.filename_download,
-    item?.filename_disk,
+    request.getAssetUrl(item?.file || item),
     item?.tags,
   ]
     .filter(Boolean)

@@ -2,13 +2,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed, readonly } from 'vue'
 import { useOrders, useReturns, useTransactions, useInvoices, useCreditMemos } from '../composables/sales/orders/orders'
-import type { Order as DomainOrder, PaymentIntent as DomainPaymentIntent } from '../types/domain'
+import type { Order, PaymentIntent } from '../types/commerce.type';
 
-type Order = DomainOrder
-type Return = DomainOrder
-type Transaction = DomainPaymentIntent
-type Invoice = DomainOrder
-type CreditMemo = DomainOrder
+type Return = Order
+type Transaction = PaymentIntent
+type Invoice = Order
+type CreditMemo = Order
 type OrderFilters = any
 
 export const useOrdersStore = defineStore('orders', () => {

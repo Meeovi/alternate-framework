@@ -1,5 +1,5 @@
-import type { SearchAdapter, TransportAdapter } from 'alternate-gateway/core/adapters'
-import type { SearchQuery, SearchResult, Facet, Result } from 'alternate-gateway/core/types'
+import type { SearchAdapter, TransportAdapter } from 'alternate-gateway/adapters'
+import type { SearchQuery, SearchResult, Facet, Result } from 'alternate-gateway/types'
 import { unwrap } from './utils'
 
 export const createStarterSearchAdapter = (

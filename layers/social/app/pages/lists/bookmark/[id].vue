@@ -45,7 +45,7 @@ const { data: website } = await useAsyncData('website', async () => {
     const resp = await content.readItem('websites', route.params.id, opts)
     return resp?.data || resp
   }
-  const { $directus, $readItem } = useNuxtApp()
-  return $directus.request($readItem('websites', route.params.id, opts))
+  const { read } = useNuxtApp()
+  return gateway.content(read('websites', route.params.id, opts))
 })
 </script>

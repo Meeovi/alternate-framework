@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div v-if="image?.image?.length">
-            <photoCard :photo="image?.image?.filename_disk" />
+        <div v-if="image?.image">
+            <photoCard :media="image?.image" />
         </div>
 
-        <div v-if="visual?.media?.length">
-            <videoCard :photo="visual?.media?.filename_disk" />
+        <div v-if="visual?.media">
+            <videoCard :media="visual?.media" />
         </div>
 
         <div v-else>

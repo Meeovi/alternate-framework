@@ -1,3 +1,5 @@
+export type { Product, ProductFilter, Category, AddToCartInput, UpdateCartInput, CartItem, Cart, MagentoCommerceAdapter } from './types';
+
 import { magentoClient } from "./utils/client";
 import { handleMagentoError } from "./utils/errors";
 import { normalizeCart, normalizeCategory, normalizeProduct } from "./utils/normalizers";

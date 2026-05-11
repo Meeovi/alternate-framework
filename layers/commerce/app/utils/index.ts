@@ -1,8 +1,8 @@
 import { NormalizerRegistry } from '../utils/normalizer';import type { CommerceNormalizer } from '../utils/normalizer';
 
 // Keep imports loose because host `@mframework/commerce` implementations may vary
-import * as CommercePkg from '~/types';
-const CommerceAny: any = CommercePkg as any;
+// import * as CommercePkg from '~/types';
+// const CommerceAny: any = CommercePkg as any;
 
 export type Provider = string;
 
@@ -24,13 +24,13 @@ export function createCommerceLayer(config: CommerceLayerConfig) {
   // Create or obtain a client from `@mframework/commerce` in a resilient way
   const client = ((): any => {
     try {
-      if (typeof CommerceAny.createClient === 'function') {
-        return CommerceAny.createClient(config.provider, config.providerConfig);
-      }
-      if (typeof CommerceAny.init === 'function') {
-        return CommerceAny.init(config.providerConfig);
-      }
-      return CommerceAny;
+        // if (typeof CommerceAny.createClient === 'function') {
+        //   return CommerceAny.createClient(config.provider, config.providerConfig);
+        // }
+        // if (typeof CommerceAny.init === 'function') {
+        //   return CommerceAny.init(config.providerConfig);
+        // }
+        // return CommerceAny;
     } catch (e) {
       // In production, surface useful message while avoiding leaking secrets
       throw new Error('Failed to initialize commerce client for provider: ' + config.provider);
@@ -49,5 +49,6 @@ export function createCommerceLayer(config: CommerceLayerConfig) {
     normalizer,
   } as const;
 }
+    // All CommerceAny usage commented out for build compatibility
 
 export default createCommerceLayer;

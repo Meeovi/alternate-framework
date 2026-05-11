@@ -1,1 +1,1 @@
-export { useLocate } from 'alternate-locate/adapters/vue/composable'
+export { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'

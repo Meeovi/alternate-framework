@@ -1,2 +1,0 @@
-declare const createCommonMethods: (factoryParams: any, context: any) => any;
-export { createCommonMethods };

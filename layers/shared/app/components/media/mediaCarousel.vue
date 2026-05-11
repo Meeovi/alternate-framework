@@ -8,7 +8,7 @@
         <div class="media-carousel-item" @click="open(item)">
           <component
             :is="thumbComponent(item)"
-            :media="item.directus_files_id"
+            :media="resolveFile(item)"
           />
         </div>
       </v-slide-group-item>
@@ -35,7 +35,8 @@ const props = defineProps({
 
 const activeItem = ref(null)
 
-const mime = (item) => item?.directus_files_id?.type || ''
+const resolveFile = (item) => item?.file || item
+const mime = (item) => resolveFile(item)?.type || item?.type || ''
 
 // ⭐ THIS IS WHERE thumbComponent GOES
 const thumbComponent = (item) => {

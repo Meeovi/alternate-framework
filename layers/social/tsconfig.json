@@ -1,16 +1,14 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
-  "compilerOptions": {
-    "types": ["vitest", "node"],
-    "skipLibCheck": true,
-    "paths": {
-      "alternate-gateway/core": ["../../packages/modules/alternate-gateway/core/index.ts"],
-      "alternate-gateway/core/*": ["../../packages/modules/alternate-gateway/core/src/*"]
-    }
-  },
-  "exclude": [
-    "**/__tests__/**",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
-  ]
+ "extends": "./.nuxt/tsconfig.json",
+ "compilerOptions": {
+  "verbatimModuleSyntax": false,
+  "paths": {
+   "@mframework/adapter-prisma": ["../../packages/adapters/adapter-prisma/src/index.ts"]
+  }
+ },
+ "exclude": [
+  "**/__tests__/**",
+  "**/*.spec.ts",
+  "**/*.spec.tsx"
+ ]
 }

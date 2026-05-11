@@ -1,7 +1,7 @@
-import type { ProductProvider } from '../catalog/useProducts/types'
-import type { CartProvider } from '../sales/useCart/types'
-import { registerProductProvider } from '../catalog/useProducts/registry'
-import { registerCartProvider } from '../sales/useCart/registry'
+import type { ProductProvider } from '../catalog/products/useProducts/types'
+import type { CartProvider } from '../sales/cart/useCart/types'
+import { registerProductProvider } from '../catalog/products/registry'
+import { registerCartProvider } from '../sales/cart/useCart/registry'
 
 export interface CommerceProviderBundle {
   product?: ProductProvider
@@ -17,8 +17,8 @@ export function registerCommerceProviderRuntime(name: string, bundle: CommercePr
 }
 
 // Also re-export individual runtime helpers for convenience
-export { registerProductProviderRuntime } from '../catalog/useProducts/registry'
-export { registerCartProviderRuntime } from '../sales/useCart/registry'
-export { registerEventProviderRuntime } from '../catalog/useProducts/registry'
-export { registerGiftCardProviderRuntime } from '../catalog/useProducts/registry'
-export { registerSubscriptionProviderRuntime } from '../catalog/useProducts/registry'
+export { registerProductProviderRuntime } from '../catalog/products/registry'
+export { registerCartProviderRuntime } from '../sales/cart/useCart/registry'
+export { registerEventProviderRuntime } from '../catalog/products/registry'
+export { registerGiftCardProviderRuntime } from '../catalog/products/registry'
+export { registerSubscriptionProviderRuntime } from '../catalog/products/registry'

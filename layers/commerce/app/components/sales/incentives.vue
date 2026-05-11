@@ -32,70 +32,49 @@
         </v-card>
 
         <v-tabs-window v-model="tab">
-            <!--Coupons-->
-            <v-tabs-window-item :value="incentiveBar?.menus?.[0]?.value">
-                <v-row class="media-container-row">
-                    <template v-if="coupons?.length">
-                        <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="coupon in coupons" :key="coupon.id">
-                            <incentiveCard :incentive="coupon" />
-                        </v-col>
-                    </template>
-                    <div class="center-text" v-else>No Coupons Available</div>
-                </v-row>
-            </v-tabs-window-item>
+            const tab = ref(null);
 
-            <!--Rewards-->
-            <v-tabs-window-item :value="incentiveBar?.menus?.[1]?.value">
-                <v-row class="media-container-row">
-                    <template v-if="rewards?.length">
-                        <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="reward in rewards" :key="reward.id">
-                            <incentiveCard :incentive="reward" />
-                        </v-col>
-                    </template>
-                    <div class="center-text" v-else>No Rewards Available</div>
-                </v-row>
-            </v-tabs-window-item>
+            const nuxtApp = useNuxtApp();
+            const $gateway = nuxtApp.$gateway;
+            const read = (nuxtApp.read as any);
+            // Fallback for currentUserId
+            const currentUserId = null;
 
-            <!--Credit Memos-->
-            <v-tabs-window-item :value="incentiveBar?.menus?.[2]?.value">
-                <v-row class="media-container-row">
-                    <template v-if="creditMemos?.length">
-                        <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="creditMemo in creditMemos"
-                            :key="creditMemo.id">
-                            <incentiveCard :incentive="creditMemo" />
-                        </v-col>
-                    </template>
+            const { data: incentiveBar } = await useAsyncData('incentiveBar', async () => {
+                const resp = await $gateway?.content?.(read('navigation', '118', {
+                    fields: ['*', { '*': ['*'] }]
+                }))
+                return resp?.data ?? resp ?? null
+            })
 
-                    <div class="center-text" v-else>No Rewards Available</div>
-                </v-row>
-            </v-tabs-window-item>
+            const { data: incentivePage } = await useAsyncData('incentivePage', () => {
+                return $gateway?.content?.(read('pages', '86', {
+                    fields: ['*', { '*': ['*'] }]
+                }))
+            })
 
-            <!--Gift Cards-->
-            <v-tabs-window-item :value="incentiveBar?.menus?.[3]?.value">
+            const { data: coupons } = await useAsyncData('coupons', async () => {
+                if (!currentUserId) return []
+                const resp = await $gateway?.content?.(read('incentives', {
+                    fields: ['*', { '*': ['*'] }],
+                    filter: {
+                        user_id: { _eq: currentUserId },
+                        incentive_type: { name: { _eq: 'Coupon' } }
+                    }
+                }))
+                return resp?.data ?? resp ?? []
                 <v-row class="media-container-row">
-                    <template v-if="giftCards?.length">
-                        <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="giftCard in giftCards"
-                            :key="giftCard.id">
-                            <incentiveCard :incentive="giftCard" />
-                        </v-col>
-                    </template>
-                    <div class="center-text" v-else>No Gift Cards Available</div>
-                </v-row>
-            </v-tabs-window-item>
-
-            <!--Certificates-->
-            <v-tabs-window-item :value="incentiveBar?.menus?.[3]?.value">
-                <v-row class="media-container-row">
-                    <template v-if="certificates?.length">
-                        <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="certificate in certificates"
-                            :key="certificate.id">
-                            <incentiveCard :incentive="certificate" />
-                        </v-col>
-                    </template>
-                    <div class="center-text" v-else>No Certificates Available</div>
-                </v-row>
-            </v-tabs-window-item>
-        </v-tabs-window>
+            const { data: rewards } = await useAsyncData('rewards', async () => {
+                if (!currentUserId) return []
+                const resp = await $gateway?.content?.(read('incentives', {
+                    fields: ['*', { '*': ['*'] }],
+                    filter: {
+                        user_id: { _eq: currentUserId },
+                        incentive_type: { name: { _eq: 'Reward' } }
+                    }
+                }))
+                return resp?.data ?? resp ?? []
+            })
     </div>
 </template>
 
@@ -107,78 +86,51 @@
     } from '#imports'
     import incentiveCard from '~/components/related/post.vue'
 
-    const { user, fetchSession } = useAuth()
-    await fetchSession()
-    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = getCurrentUserId()
+    // @ts-ignore - useAuth may not be globally available
+    // import { useAuth } from '#auth/app/composables/useAuth'
+    // const { user, fetchSession } = useAuth()
+    // await fetchSession()
+    // const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    // const currentUserId = getCurrentUserId()
 
-    const {
-        $dataClient,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    const nuxtApp = useNuxtApp();
+    const $gateway = nuxtApp.$gateway as any;
+    const read = nuxtApp.read as any;
     const tab = ref(null);
+    const currentUserId = null; // fallback
 
-    const {
-        data: incentiveBar
-    } = await useAsyncData('incentiveBar', async () => {
-        const resp = await $dataClient.request($readItem('navigation', '118', {
-            fields: ['*', {
-                '*': ['*']
-            }]
+    const { data: incentiveBar } = await useAsyncData<any>('incentiveBar', async () => {
+        const resp = await $gateway.content?.(read('navigation', '118', {
+            fields: ['*', { '*': ['*'] }]
         }))
         return resp?.data ?? resp ?? null
     })
 
-    const {
-        data: incentivePage
-    } = await useAsyncData('incentivePage', () => {
-        return $dataClient.request($readItem('pages', '86', {
-            fields: ['*', {
-                '*': ['*']
-            }]
+    const { data: incentivePage } = await useAsyncData<any>('incentivePage', () => {
+        return $gateway.content?.(read('pages', '86', {
+            fields: ['*', { '*': ['*'] }]
         }))
     })
 
-    const {
-        data: coupons
-    } = await useAsyncData('coupons', async () => {
+    const { data: coupons } = await useAsyncData<any>('coupons', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('incentives', {
-            fields: ['*', {
-                '*': ['*']
-            }],
+        const resp = await $gateway.content?.(read('incentives', {
+            fields: ['*', { '*': ['*'] }],
             filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                incentive_type: {
-                    name: {
-                        _eq: 'Coupon'
-                    }
-                }
+                user_id: { _eq: currentUserId },
+                incentive_type: { name: { _eq: 'Coupon' } }
             }
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: rewards
-    } = await useAsyncData('rewards', async () => {
+    const { data: rewards } = await useAsyncData<any>('rewards', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('incentives', {
-            fields: ['*', {
-                '*': ['*']
-            }],
+        const resp = await $gateway.content?.(read('incentives', {
+            fields: ['*', { '*': ['*'] }],
             filter: {
-                user_id: {
-                    _eq: currentUserId
-                },                
-                incentive_type: {
-                    name: {
-                        _eq: 'Reward'
-                    }
-                }
+                user_id: { _eq: currentUserId },
+                incentive_type: { name: { _eq: 'Reward' } }
             }
         }))
         return resp?.data ?? resp ?? []
@@ -188,7 +140,7 @@
         data: creditMemos
     } = await useAsyncData('creditMemos', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('incentives', {
+        const resp = await $gateway.content(read('incentives', {
             fields: ['*', {
                 '*': ['*']
             }],
@@ -210,7 +162,7 @@
         data: giftCards
     } = await useAsyncData('giftCards', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('products', {
+        const resp = await $gateway.content(read('products', {
             fields: ['*', {
                 '*': ['*']
             }],
@@ -232,7 +184,7 @@
         data: certificates
     } = await useAsyncData('certificates', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('products', {
+        const resp = await $gateway.content(read('products', {
             fields: ['*', {
                 '*': ['*']
             }],

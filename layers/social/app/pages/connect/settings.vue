@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
-import { currentUser } from '../../composables/contacts/users'
-import { useHydratedHead } from '../../composables/core/vue'
+import { definePageMeta, useHead } from '~/composables/core/vue'
+import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
+import { useCurrentUser } from '~/composables/contacts/users'
+import { useHydratedHead } from '~/composables/core/vue'
 
 definePageMeta({
   wideLayout: true,

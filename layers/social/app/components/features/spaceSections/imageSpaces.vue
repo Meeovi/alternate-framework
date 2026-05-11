@@ -19,7 +19,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
     import spaceCard from '#social/app/components/related/space.vue'
     const currentUser = useCurrentUser()
     const currentFirstName = computed(() => (currentUser.value as any)?.firstName || (currentUser.value as any)?.first_name || '')

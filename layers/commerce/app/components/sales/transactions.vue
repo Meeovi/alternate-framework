@@ -55,52 +55,37 @@
     } from '#imports'
     import postCard from '~/components/related/post.vue'
 
-    const { user, fetchSession } = useAuth()
-    await fetchSession()
-    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = getCurrentUserId()
 
-    const {
-        $dataClient,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    // @ts-ignore - useAuth may not be globally available
+    // import { useAuth } from '#auth/app/composables/useAuth'
+    // const { user, fetchSession } = useAuth()
+    // await fetchSession()
+    // const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    const currentUserId = null;
+
+    const nuxtApp = useNuxtApp();
+    const $gateway = nuxtApp.$gateway as any;
+    const read = nuxtApp.read as any;
     const tab = ref(null);
 
-    const {
-        data: transactionBar
-    } = await useAsyncData('transactionBar', async () => {
-        const resp = await $dataClient.request($readItem('navigation', '118', {
-            fields: ['*', {
-                '*': ['*']
-            }]
+    const { data: transactionBar } = await useAsyncData<any>('transactionBar', async () => {
+        const resp = await $gateway.content?.(read('navigation', '118', {
+            fields: ['*', { '*': ['*'] }]
         }))
         return resp?.data ?? resp ?? null
     })
 
-    const {
-        data: transactionPage
-    } = await useAsyncData('transactionPage', () => {
-        return $dataClient.request($readItem('pages', '86', {
-            fields: ['*', {
-                '*': ['*']
-            }]
+    const { data: transactionPage } = await useAsyncData<any>('transactionPage', () => {
+        return $gateway.content?.(read('pages', '86', {
+            fields: ['*', { '*': ['*'] }]
         }))
     })
 
-    const {
-        data: transactions
-    } = await useAsyncData('transactions', async () => {
+    const { data: transactions } = await useAsyncData<any>('transactions', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('transactions', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                }
-            }
+        const resp = await $gateway.content?.(read('transactions', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId } }
         }))
         return resp?.data ?? resp ?? []
     })

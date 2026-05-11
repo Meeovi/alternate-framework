@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from '#imports'
+  import { computed } from 'vue'
   import Gallery from '#shared/app/components/ui/Gallery.vue'
 
   const props = defineProps<{ assets: Array<{ id: string; preview: string }> }>()

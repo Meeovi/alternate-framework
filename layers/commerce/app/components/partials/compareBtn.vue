@@ -8,20 +8,20 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from '#imports';
+  import { computed } from 'vue';
   import { useCompareStore } from '../../stores/compare';
-  import { useNuxtApp } from '#imports';
-  import type { Product } from '../../types/product';
+  // Minimal Product type for local use
+  type Product = { sku: string };
 
   // Define props
   const props = defineProps<{ product: Product }>();
 
   const compareStore = useCompareStore();
-  const { $dataClient } = useNuxtApp() as any;
+  const content = useContentRequest() as any;
 
   // Check if the product is already in compare list
   const isInCompare = computed(() => {
-    return compareStore.getComparedProducts.some((product: { sku: string; }) => product.sku === props.product?.sku) || compareStore.getComparedProductSkus.includes(props.product?.sku);
+    return compareStore.getComparedProductSkus.includes(props.product?.sku);
   });
 
   // Dynamically update v-btn text
@@ -39,26 +39,24 @@
       if (isInCompare.value) {
         // Remove from Data compare_items collection if exists
         try {
-          const itemsRes = await $dataClient.$readItems('compare_items', { filter: { sku: { _eq: sku } } });
+          const itemsRes = await content.readItems('compare_items', { filter: { sku: { _eq: sku } } });
           const items = itemsRes?.data || itemsRes || [];
           for (const it of items) {
             const id = it.id || it._id || it.ID;
-            if (id) await $dataClient.$deleteItem('compare_items', id);
+            if (id) await content.deleteItem('compare_items', id);
           }
         } catch (e) {
           // ignore Data errors, still update local store
           console.warn('Data remove compare item failed:', e);
         }
-
-        compareStore.removeComparedProduct(sku);
+        compareStore.productSkus = compareStore.productSkus.filter((s: string) => s !== sku);
       } else {
         // Add to Data compare_items collection
         try {
-          await $dataClient.$createItem('compare_items', { sku });
+          await content.createItem('compare_items', { sku });
         } catch (e) {
           console.warn('Data create compare item failed:', e);
         }
-
         compareStore.addComparedProductSku(sku);
       }
     } catch (error) {

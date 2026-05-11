@@ -1,132 +1,19 @@
-import { DEFAULT_FONT_SIZE } from '../../utils/constants'
-
-export type FontSize = `${number}px`
-
-// Temporary type for backward compatibility
-export type OldFontSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-
-export type ColorMode = 'light' | 'dark' | 'system'
-
-export type NavButtonName = 'home' | 'search' | 'notification' | 'mention' | 'favorite' | 'bookmark' | 'compose' | 'scheduledPosts' | 'explore' | 'local' | 'federated' | 'list' | 'hashtag' | 'setting' | 'moreMenu'
-
 export interface PreferencesSettings {
-  hideAltIndicatorOnPosts: boolean
-  hideGifIndicatorOnPosts: boolean
-  hideBoostCount: boolean
-  hideQuoteCount: boolean
-  hideReplyCount: boolean
-  hideFavoriteCount: boolean
-  hideFollowerCount: boolean
-  hideTranslation: boolean
-  hideUsernameEmojis: boolean
-  hideAccountHoverCard: boolean
-  hideTagHoverCard: boolean
-  hideNews: boolean
   hideRepliesInTimeline: boolean
   hideBoostsInTimeline: boolean
-  disableTimelineAutoloading: boolean
-  grayscaleMode: boolean
-  enableAutoplay: boolean
-  unmuteVideos: boolean
-  optimizeForLowPerformanceDevice: boolean
-  enableDataSaving: boolean
-  enablePinchToZoom: boolean
-  useStarFavoriteIcon: boolean
-  zenMode: boolean
-  experimentalVirtualScroller: boolean
-  experimentalGitHubCards: boolean
-  experimentalUserPicker: boolean
-  experimentalEmbeddedMedia: boolean
 }
 
 export interface UserSettings {
-  preferences: Partial<PreferencesSettings>
-  colorMode?: ColorMode
-  fontSize: FontSize
   language: string
-  disabledTranslationLanguages: string[]
-  themeColors?: ThemeColors
+  preferences: PreferencesSettings
 }
 
-export interface ThemeColors {
-  '--theme-color-name': string
-
-  '--c-primary': string
-  '--c-primary-active': string
-  '--c-primary-light': string
-  '--c-primary-fade': string
-  '--c-dark-primary': string
-  '--c-dark-primary-active': string
-  '--c-dark-primary-light': string
-  '--c-dark-primary-fade': string
-
-  '--rgb-primary': string
-  '--rgb-dark-primary': string
-}
-
-function matchLanguages(available: string[], preferred: readonly string[]): string | undefined {
-  if (!available.length || !preferred.length)
-    return undefined
-
-  const availableLower = new Map(available.map(lang => [lang.toLowerCase(), lang]))
-
-  for (const language of preferred) {
-    const exact = availableLower.get(language.toLowerCase())
-    if (exact)
-      return exact
-  }
-
-  for (const language of preferred) {
-    const base = language.toLowerCase().split('-')[0]
-    const partial = available.find(lang => lang.toLowerCase().split('-')[0] === base)
-    if (partial)
-      return partial
-  }
-
-  return undefined
-}
-
-export function getDefaultLanguage(languages: string[]) {
-  if (import.meta.server)
-    return 'en-US'
-  return matchLanguages(languages, navigator.languages) || 'en-US'
-}
-
-export const DEFAULT__PREFERENCES_SETTINGS: PreferencesSettings = {
-  hideAltIndicatorOnPosts: false,
-  hideGifIndicatorOnPosts: false,
-  hideBoostCount: false,
-  hideQuoteCount: false,
-  hideReplyCount: false,
-  hideFavoriteCount: false,
-  hideFollowerCount: false,
-  hideTranslation: false,
-  hideUsernameEmojis: false,
-  hideAccountHoverCard: false,
-  hideTagHoverCard: false,
-  hideNews: false,
+export const defaultPreferences: PreferencesSettings = {
   hideRepliesInTimeline: false,
   hideBoostsInTimeline: false,
-  disableTimelineAutoloading: false,
-  grayscaleMode: false,
-  enableAutoplay: false,
-  unmuteVideos: false,
-  optimizeForLowPerformanceDevice: false,
-  enableDataSaving: false,
-  enablePinchToZoom: false,
-  useStarFavoriteIcon: false,
-  zenMode: false,
-  experimentalVirtualScroller: true,
-  experimentalGitHubCards: true,
-  experimentalUserPicker: true,
-  experimentalEmbeddedMedia: false,
 }
 
-export function getDefaultUserSettings(locales: string[]): UserSettings {
-  return {
-    language: getDefaultLanguage(locales),
-    fontSize: DEFAULT_FONT_SIZE,
-    disabledTranslationLanguages: [],
-    preferences: DEFAULT__PREFERENCES_SETTINGS,
-  }
+export const defaultUserSettings: UserSettings = {
+  language: 'en',
+  preferences: defaultPreferences,
 }

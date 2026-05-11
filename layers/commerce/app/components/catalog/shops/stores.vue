@@ -5,7 +5,7 @@
                 <div class="card-wrapper">
                     <div class="img-wrapper">
                         <NuxtImg loading="lazy" class="align-end text-white" v-if="store?.image"
-                            :src="`${$dataClient.url}/assets/${store?.image?.filename_disk}`" :alt="store?.name || 'Store Name'"
+                            :src="getAssetUrl(store?.image)" :alt="store?.name || 'Store Name'"
                             cover />
                     </div>
                     <div class="card-box align-center">
@@ -27,11 +27,7 @@
 </template>
 
 <script setup>
-    import {
-        useRuntimeConfig
-    } from '#imports';
-
-    const config = useRuntimeConfig();
+    const { getAssetUrl } = useContentRequest()
     const props = defineProps({
         store: {
             type: Object,

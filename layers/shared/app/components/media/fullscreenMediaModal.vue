@@ -9,7 +9,7 @@
         <v-btn icon="mdi-close" @click="$emit('update:model-value', false)" />
       </v-toolbar>
 
-      <template #header>
+      <template>
         <div v-if="mime.startsWith('image')" class="viewer">
           <img :src="sourceUrl" :alt="file?.title || 'Image'" />
         </div>
@@ -37,6 +37,8 @@
   import {
     computed
   } from '#imports'
+  import useMedia from '../../composables/useMedia'
+  import MediaPlayer from './mediaPlayer.vue'
 
   const props = defineProps({
     modelValue: Boolean,
@@ -45,11 +47,10 @@
   defineEmits(['update:model-value'])
 
   const config = useRuntimeConfig()
-  import MediaPlayer from './mediaPlayer.vue'
 
-  const file = computed(() => props.item?.directus_files_id || null)
+  const file = computed(() => props.item?.file || props.item || null)
   const mime = computed(() => file.value?.type || '')
-  import useMedia from '../../composables/useMedia'
+
   const { fileUrl, playerOptions } = useMedia()
 
   const videoOptions = computed(() => playerOptions(file.value, 'video/mp4'))

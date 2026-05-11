@@ -2,11 +2,11 @@
     <div>
         <v-form>
             <v-toolbar dark color="rgb(var(--v-theme-primary))!important">
-                <template #header>
+                <template>
                     <span class="text-h6">Update Product</span>
                 </template>
             </v-toolbar>
-            <template #header>
+            <template>
                 <v-container>
                     <v-row>
                         <v-col cols="12">

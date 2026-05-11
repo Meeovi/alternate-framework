@@ -1,4 +1,3 @@
-import {
   createDirectus,
   rest,
   readItem,
@@ -8,7 +7,7 @@ import {
   updateItem,
   uploadFiles,
   readSingleton
-} from '@directus/sdk';
+} from '@mframework/adapter-directus';
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();

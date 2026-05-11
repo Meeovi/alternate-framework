@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { definePageMeta, useHead } from '~/composables/core/vue'
 import type { CommonRouteTabMoreOption, CommonRouteTabOption } from '../../../../shared/shared/types'
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
-import type { ElkNotificationFilterType } from '../../constants'
+import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
+import type { ElkNotificationFilterType } from '~/constants'
 import type { mastodon } from 'masto'
-import { NOTIFICATION_FILTER_TYPES } from '../../constants'
-import { isHydrated, useHydratedHead } from '../../composables/core/vue'
-import { isNotificationFilter } from '../../composables/notifications/notification'
+import { NOTIFICATION_FILTER_TYPES } from '~/constants'
+import { isHydrated, useHydratedHead } from '~/composables/core/vue'
+import { isNotificationFilter } from '~/composables/notifications/notification'
 
 definePageMeta({
   middleware: ['auth'],
@@ -34,13 +35,14 @@ const filter = computed<ElkNotificationFilterType | undefined>(() => {
 
   const rawFilter = route.params?.filter
   const actualFilter = Array.isArray(rawFilter) ? rawFilter[0] : rawFilter
-  if (isNotificationFilter(actualFilter))
+  if (typeof actualFilter === 'string' && isNotificationFilter(actualFilter))
     return actualFilter
 
   return undefined
 })
 
 const filterIconMap: Record<ElkNotificationFilterType, string> = {
+  'all': 'i-ri:notification-4-line',
   'mention': 'i-ri:at-line',
   'status': 'i-ri:account-pin-circle-line',
   'reblog': 'i-ri:repeat-fill',
@@ -94,7 +96,7 @@ const moreOptions = computed<CommonRouteTabMoreOption>(() => ({
       </NuxtLink>
     </template>
 
-    <template #header>
+    <template>
       <CommonRouteTabs replace :options="tabs" :more-options="moreOptions" />
     </template>
 

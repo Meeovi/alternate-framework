@@ -1,2 +1,0 @@
-declare const configureFactoryParams: (factoryParams: any, refs?: any) => any;
-export { configureFactoryParams };

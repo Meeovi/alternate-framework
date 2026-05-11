@@ -1,4 +1,9 @@
-import { calculateTierDiscountOverSpecialPrice } from '../../../utils/Price/Price'
+
+// Inline implementation for calculateTierDiscountOverSpecialPrice
+function calculateTierDiscountOverSpecialPrice(special: number, tier: number): number {
+	if (typeof special !== 'number' || typeof tier !== 'number' || special === 0) return 0;
+	return Math.round(((special - tier) / special) * 100);
+}
 
 type PriceInput = {
 	quantity?: number

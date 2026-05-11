@@ -33,7 +33,7 @@
                             <template v-slot:activator="{ props }">
                                 <div class="avatarBorder" v-for="(shorts, index) in short" :key="index">
                                     <v-avatar v-bind="props" size="60">
-                                        <img v-if="shorts?.thumbnail?.filename_disk" loading="lazy" :src="`${$directus.url}assets/${shorts?.thumbnail?.filename_disk}`" :alt="shorts?.name" cover />
+                                        <img v-if="hasAsset(shorts?.thumbnail)" loading="lazy" :src="getAssetUrl(shorts?.thumbnail)" :alt="shorts?.name" cover />
 
                                         <img v-else src="/images/display-2.png" :alt="shorts?.name" cover />
                                     </v-avatar>
@@ -85,16 +85,15 @@
     const createdialog = ref(false);
     const dialog = ref(false);
 
-    const {
-        $directus,
-        $readItems,
-    } = useNuxtApp()
+    const content = useContentAdapter()
+    const getAssetUrl = (file) => content.getAssetUrl(file)
+    const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const {
         data: short
     } = await useAsyncData('short', () => {
-        return $directus.request($readItems('shorts', {
+        return content.readItems('shorts', {
             fields: ['*', { '*': ['*'] }]
-        }))
+        })
     })
 </script>

@@ -39,12 +39,12 @@
 
                 <!--Media Tab-->
                 <v-tabs-window-item :value="individualSpaceBar?.menus[2]?.value">
-                    <div v-if="space?.image?.length">
-                        <photoCard :photo="space?.image?.filename_disk" />
+                    <div v-if="space?.image">
+                        <photoCard :media="space?.image" />
                     </div>
 
-                    <div v-if="space?.media?.length">
-                        <videoCard :photo="space?.media?.filename_disk" />
+                    <div v-if="space?.media">
+                        <videoCard :media="space?.media" />
                     </div>
 
                     <div v-else class="center-text">

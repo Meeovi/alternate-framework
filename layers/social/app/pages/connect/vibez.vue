@@ -1,7 +1,7 @@
 <template>
     <v-container class="py-10">
         <v-card elevation="2" class="pa-6">
-            <template #header>
+            <template>
                 <v-row align="center" justify="space-between">
                     <span>🔥 Vibez Feed</span>
                     <v-switch v-model="showMine" label="Show My Videos" inset color="primary" />
@@ -26,7 +26,7 @@
                     <v-col cols="12" sm="6" md="4">
                         <v-card>
                             <v-img src="https://your-owncast-domain.com/preview.jpg" height="200px" cover />
-                            <template #header>Live Stream</template>
+                            <template>Live Stream</template>
                             <template>
                                 <v-btn href="https://your-owncast-domain.com" target="_blank" color="red">
                                     Watch Live
@@ -41,7 +41,7 @@
                 <v-row>
                     <v-col v-for="video in filteredVideos" :key="video.id" cols="12" sm="6" md="4">
                         <v-card @click="trackView(video.id)">
-                            <template #header>{{ video.title }}</template>
+                            <template>{{ video.title }}</template>
                             <template #default>
                                 <v-img :src="getThumbnail(video)" height="200px" cover />
                                 <v-card class="mt-2" variant="outlined" density="compact">

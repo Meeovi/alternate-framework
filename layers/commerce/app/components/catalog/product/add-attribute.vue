@@ -7,11 +7,11 @@
         </v-btn>
       </template>
       <v-card class="b-1">
-        <template #header>
+        <template>
           <h3>Create New Attribute</h3>
         </template>
 
-        <template #header>
+        <template>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
           <v-form @submit.prevent="submitForm">
@@ -31,10 +31,10 @@ import DataFormElement from '~/components/ui/forms/DataFormElement.vue'
 import { useDataForm } from '~/composables/globals/useDataForm'
 
 const dialog = ref(false)
-const { $dataClient, $readFieldsByCollection } = useNuxtApp()
+const { $readFieldsByCollection } = useNuxtApp()
 
 const { data, error } = await useAsyncData('attributes', async () => {
-  return $dataClient.request($readFieldsByCollection('attributes'))
+  return gateway.content($readFieldsByCollection('attributes'))
 })
 
 // guard against undefined/null data.value and empty arrays
@@ -47,7 +47,6 @@ if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
 }
 
 const attributeFields = data
-
 
 // use composable for form handling (validation, submit, provide context)
 const { form, formError, formSuccess, submitForm } = useDataForm('attributes', attributeFields, { clearOnSuccess: true, closeDialogRef: dialog })

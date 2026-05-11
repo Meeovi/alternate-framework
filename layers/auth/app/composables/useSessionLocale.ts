@@ -1,8 +1,8 @@
-import type { InferUserFromClient, ClientOptions } from 'better-auth/client'
+import type { InferUserFromClient, BetterAuthClientOptions } from 'better-auth/client'
 
 const SESSION_LOCALE_STORAGE_PREFIX = 'auth:preferred-locale:'
 
-type AuthUser = InferUserFromClient<ClientOptions> | null | undefined
+type AuthUser = InferUserFromClient<BetterAuthClientOptions> | null | undefined
 
 const getLocaleCode = (entry: string | { code?: string } | undefined) => {
   if (!entry) {

@@ -3,7 +3,7 @@
         <section data-bs-version="5.1" class="header1 cid-v0HengyO4j" id="header01-0">
             <div class="container-fluid">
                 <div class="row justify-content-left auto-text">
-                    <div v-if="page?.image?.filename_disk" class="col-12 col-md-12 col-lg-8 image-wrapper">
+                    <div v-if="hasAsset(page?.image)" class="col-12 col-md-12 col-lg-8 image-wrapper">
                         <img class="w-100" :src="getAssetUrl(page?.image)" :alt="page?.name">
                     </div>
                     <div v-else class="col-12 col-md-12 col-lg-8 image-wrapper">
@@ -58,7 +58,7 @@ import { ref, computed } from '#imports'
 import listCard from '#social/app/components/related/list.vue'
 import RelatedLists from '#social/app/components/related/relatedlists.vue'
 import createList from '#social/app/components/features/lists/add-list.vue'
-import { useUser } from '#social/app/composables/lists/user'
+import { useUsers } from '#auth/app/composables/users'
 
 const { userDisplayName } = useUser()
 
@@ -71,6 +71,7 @@ const {
   getPage,
   getAssetUrl
 } = useContentAdapter()
+const hasAsset = (file) => Boolean(getAssetUrl(file))
 
 const { data: lists } = await useAsyncData('lists', () =>
   getPublicLists()

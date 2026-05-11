@@ -27,46 +27,9 @@
   </div>
 </template>
 
-
-
 <script setup>
+import { useProducts } from '#sdk/products'
 
-  import productCard from './productCard.vue'
-
-  const model = ref(null);
-  const {
-    $dataClient,
-    $readItems
-  } = useNuxtApp()
-
-  const {
-    data: bestsellers
-  } = await useAsyncData('bestsellers', () => {
-    return $dataClient.request($readItems('products', {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'currency.currency_id.*',
-        'brands.brands_id.*',
-        'image.*',
-      ],
-      limit: 10,
-      filter: {
-        lists: {
-          lists_id: {
-            lists_types: {
-              lists_types_id: {
-                name: {
-                  _eq: "Best Sellers"
-                }
-              }
-            }
-          }
-        },
-        status: {
-          _eq: "published"
-        }
-      }
-    }))
-  })
+const { bestsellers, fetchProducts } = useProducts()
+await fetchProducts()
 </script>

@@ -1,4 +1,4 @@
-import { getCommerceClient } from '../../utils/client'
+import { getCommerceClient } from '../../../utils/client'
 
 export function useInventory() {
   const client = getCommerceClient()

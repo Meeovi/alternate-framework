@@ -10,7 +10,7 @@
                 <v-card>
                     <v-form @submit.prevent="handleSubmit">
                         <v-card>
-                            <template #header>
+                            <template>
                                 <v-row>
                                     <v-col cols="6"><v-text-field v-model="bookmarkData.name" id="bookmarkName"
                                             label="Bookmark Name*" required /></v-col>
@@ -55,7 +55,7 @@
                     <v-dialog v-model="deleteDialog" max-width="500px">
                         <v-card>
                             <template #title class="text-h5">Delete Bookmark</template>
-                            <template #header>
+                            <template>
                                 Are you sure you want to delete this bookmark? This action cannot be undone.
                             </template>
                             <template>
@@ -156,20 +156,6 @@
                 }
                 return
             }
-            const { $directus, $readItem } = useNuxtApp()
-            const response = await $directus.request($readItem('websites', bookmarkId))
-            if (response) {
-                bookmarkData.value = {
-                    id: response.id,
-                    name: response.name || '',
-                    type: response.type || '',
-                    status: response.status || '',
-                    note: response.note || '',
-                    image: response.image || '',
-                    url: response.url || '',
-                    username: response.username || userDisplayName
-                }
-            }
         } catch (error) {
             console.error('Error fetching bookmark:', error);
         }
@@ -191,8 +177,6 @@
     const handleSubmit = async () => {
         try {
             loading.value = true;
-
-            const { $directus, $updateItem } = useNuxtApp();
 
             // Prepare update data
             const updateData = {
@@ -217,8 +201,6 @@
             if (content && typeof content.updateItem === 'function') {
                 const resp = await content.updateItem('websites', route.params.id, updateData)
                 updatedBookmark = resp?.data || resp
-            } else {
-                updatedBookmark = await $directus.request($updateItem('websites', route.params.id, updateData))
             }
 
             if (updatedBookmark) {
@@ -257,9 +239,6 @@
             deleteLoading.value = true;
             if (content && typeof content.deleteItem === 'function') {
                 await content.deleteItem('websites', route.params.id)
-            } else {
-                const { $directus, $deleteItem } = useNuxtApp()
-                await $directus.request($deleteItem('websites', route.params.id))
             }
 
             // Close the delete dialog

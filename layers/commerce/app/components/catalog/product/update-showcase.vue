@@ -19,7 +19,7 @@
                         </v-col>
                         <v-col cols="12">
                             <v-card title="Choose a Product for your Showcase">
-                                <template #header>
+                                <template>
                                     <v-text-field density="compact" variant="solo" label="Search Meeovi for products"
                                         append-inner-icon="fas:fa fa-search" single-line hide-details
                                         @click:append-inner="onClick"></v-text-field>
@@ -36,12 +36,12 @@
                                                 {{ products.name }}
                                             </template>
 
-                                            <template #header>
+                                            <template>
                                                 <div>Sku: {{ products.variants.sku }}</div>
                                             </template>
 
                                             <template>
-                                                <template #header>$ {{ products.variants.price }}
+                                                <template>$ {{ products.variants.price }}
                                                 </template>
                                             </template>
                                             <div class="d-flex fill-height align-center justify-center">
@@ -78,7 +78,7 @@
 import { ref } from '#imports';
 
 import { useRoute, useRouter } from 'vue-router';
-/*import { UPDATE_SHOWCASE, DELETE_SHOWCASE } from '#graphql/cms/queries/showcases'
+/*import { UPDATE_SHOWCASE, DELETE_SHOWCASE } from '@/legacy/cms/showcases'
 
 const route = useRoute();
 const router = useRouter();

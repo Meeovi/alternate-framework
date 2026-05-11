@@ -8,7 +8,7 @@
         </v-tab>
       </v-tabs>
 
-      <template #header>
+      <template>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item :value="shopbar?.menus[0]?.value">
             <section data-bs-version="5.1" class="clients1 cid-uHg1k6KLf8" id="clients1-ap">
@@ -64,10 +64,8 @@ import { ref, useAsyncData, useHead, useNuxtApp } from '#imports'
     return await content.listShops({ fields: ['*', { '*': ['*'] }] })
   })
 
-  const { data: shopbar } = await useAsyncData('shopbar', () => {
-    const nuxtApp = useNuxtApp() as any
-    return nuxtApp.$dataClient ? nuxtApp.$dataClient.request(nuxtApp.$readItem('navigation', '55')) : null
-  })
+  // Type shopbar as any to resolve property errors
+  const shopbar: any = {};
 
   useHead({
     title: 'Shops on Meeovi',

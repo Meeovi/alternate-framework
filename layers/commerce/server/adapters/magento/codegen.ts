@@ -8,9 +8,9 @@
  * Never edit generated files - they are auto-generated from schema.
  */
 
-import type { CodegenConfig } from '@graphql-codegen/cli'
+// import type { CodegenConfig } from '@graphql-codegen/cli'
 
-const config: CodegenConfig = {
+const config = {
   schema: process.env.MAGENTO_GRAPHQL_ENDPOINT || process.env.COMMERCE_GRAPHQL_ENDPOINT || process.env.MAGE_MAGENTO_GRAPHQL_URL || 'http://localhost:4000/graphql',
   documents: 'server/adapters/magento/operations/**/*.graphql',
   generates: {

@@ -32,7 +32,7 @@ export function getMagentoAdapterRegistration(): MagentoAdapterRegistration {
   return {
     endpoint: {
       name: 'commerce',
-      endpoint: resolveMagentoGraphqlEndpoint,
+      endpoint: resolveMagentoGraphqlEndpoint(),
       restEndpoint,
       restPrefix: '/rest/V1',
       authorization: (context: any) => {

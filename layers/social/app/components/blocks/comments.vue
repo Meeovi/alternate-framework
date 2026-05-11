@@ -48,7 +48,7 @@
   const channelName = computed(() => commentsStore.channelName)
 
   const config = useRuntimeConfig()
-  const shortname = config.public?.disqus?.shortname || 'your_shortname_disqus'
+  const shortname = ((config.public as any)?.disqus?.shortname as string | undefined) || 'your_shortname_disqus'
   const identifier = computed(() => String(props.contentId))
   const title = computed(() => (channelName.value ? `Comments: ${channelName.value}` : `Comments: ${identifier.value}`))
   const url = computed(() => (typeof window !== 'undefined' ? window.location.href : ''))

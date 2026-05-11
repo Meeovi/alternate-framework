@@ -36,16 +36,14 @@
     import {
         ref
     } from 'vue'
-    const {
-        $directus,
-        $readItem
-    } = useNuxtApp()
+    const gateway = useGateway()
+    const content = gateway.content
     const route = useRoute()
 
     const {
         data: eco
     } = await useAsyncData('eco', () => {
-        return $directus.request($readItem('navigation', '12'))
+        return content.readItem('navigation', '12')
     })
 
     const dialog = ref(false);

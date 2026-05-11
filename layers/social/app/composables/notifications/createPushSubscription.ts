@@ -2,13 +2,13 @@ import type { mastodon } from '@mframework/adapter-federation'
 import type {
   CreatePushNotification,
   PushManagerSubscriptionInfo,
-  RequiredUserLogin,
 } from './types'
 import { PushSubscriptionError } from './types'
-import { currentUser, removePushNotificationData, removePushNotifications } from '../contacts/users'
+import { useCurrentUser, removePushNotificationData, removePushNotifications } from '../contacts/users'
+import { useMasto } from '~/composables/useMasto'
 
 export async function createPushSubscription(
-  user: RequiredUserLogin,
+  user: any,
   notificationData: CreatePushNotification,
   policy: mastodon.v1.WebPushSubscriptionPolicy = 'all',
   force = false,
@@ -100,19 +100,18 @@ async function subscribe(
 }
 
 async function unsubscribeFromBackend(fromSWPushManager: boolean, removePushNotification = true) {
-  const cu = currentUser.value
+  const cu = useCurrentUser().value
   if (cu) {
     await removePushNotifications(cu)
     if (removePushNotification)
-      await removePushNotificationData(cu, fromSWPushManager)
+      await removePushNotificationData(cu)
   }
 }
 
 async function removePushNotificationDataOnError(e: Error) {
-  const cu = currentUser.value
+  const cu = useCurrentUser().value
   if (cu)
-    await removePushNotificationData(cu, true)
-
+    await removePushNotificationData(cu)
   throw e
 }
 
@@ -122,7 +121,10 @@ async function sendSubscriptionToBackend(
   policy: mastodon.v1.WebPushSubscriptionPolicy,
 ): Promise<mastodon.v1.WebPushSubscription> {
   const { endpoint, keys } = subscription.toJSON()
-  return await useMastoClient().v1.push.subscription.create({
+  const { client } = useMasto()
+  if (!client.value)
+    throw new Error('Mastodon client unavailable')
+  return await client.value.v1.push.subscription.create({
     policy,
     subscription: {
       endpoint: endpoint!,

@@ -57,8 +57,8 @@
     if (content && typeof content.readFieldsByCollection === 'function') {
       return await content.readFieldsByCollection('list_items')
     }
-    const { $directus, $readFieldsByCollection } = useNuxtApp()
-    return $directus.request($readFieldsByCollection('list_items'))
+    const { $readFieldsByCollection } = useNuxtApp()
+    return gateway.content($readFieldsByCollection('list_items'))
   })
 
   // normalize response: Directus may return { data: [...] } or an array directly

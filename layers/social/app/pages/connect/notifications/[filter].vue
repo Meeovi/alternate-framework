@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { mastodon } from 'masto'
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
-import { isNotification } from '../../../composables/notifications/notification'
-import { isHydrated, useHydratedHead } from '../../../composables/core/vue'
+import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
+import { isNotification } from '~/composables/notifications/notification'
+import { isHydrated, useHydratedHead } from '~/composables/core/vue'
 
 const route = useRoute()
 const { t } = useLocate()

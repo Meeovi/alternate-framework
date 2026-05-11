@@ -24,7 +24,7 @@
                             <div class="item-wrapper">
                                 <div class="item-img">
                                     <NuxtLink :to="`/shops/${restaurant?.id}`"><img loading="lazy" class="align-end text-white" v-if="restaurant?.image"
-                            :src="`${$dataClient.url}assets/${restaurant?.image?.filename_disk}`" :alt="restaurant?.name"></NuxtLink>
+                                :src="getAssetUrl(restaurant?.image)" :alt="restaurant?.name"></NuxtLink>
                                 </div>
                                 <div class="item-content">
                                     <div class="desc-wrap">
@@ -48,11 +48,7 @@
 </template>
 
 <script setup>
-    import {
-        useRuntimeConfig
-    } from '#imports';
-
-    const config = useRuntimeConfig();
+    const { getAssetUrl } = useContentRequest()
     const props = defineProps({
         restaurant: {
             type: Object,

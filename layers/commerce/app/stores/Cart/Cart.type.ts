@@ -22,5 +22,3 @@ export interface Cart {
   coupon_code?: string | null
   [key: string]: any
 }
-
-export default Cart

@@ -1,8 +1,0 @@
-import { Context } from '../../../../../normalizer-core/types';
-interface ContextConfiguration {
-    useVSFContext: () => Context;
-}
-declare let useVSFContext: () => Context<any, any, any>;
-declare const configureContext: (config: ContextConfiguration) => void;
-declare const generateContext: (factoryParams: any) => any;
-export { generateContext, useVSFContext, configureContext };

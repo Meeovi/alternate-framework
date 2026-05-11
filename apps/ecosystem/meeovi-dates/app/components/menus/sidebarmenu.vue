@@ -8,10 +8,11 @@
 </template>
 
 <script setup>
-const { $directus, $readItem } = useNuxtApp()
+const gateway = useGateway()
+const content = gateway.content
 const route = useRoute()
 
 const { data: sidebar } = await useAsyncData('sidebar', () => {
-  return $directus.request($readItem('navigation', '67'))
+  return content.readItem('navigation', '67')
 })
 </script>

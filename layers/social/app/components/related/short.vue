@@ -6,7 +6,7 @@
       Your browser does not support the video tag.
     </video>
 
-    <template #header>
+    <template>
       {{ short?.name }}
     </template>
 
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from '#imports'
+import { ref, onMounted } from 'vue'
 import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { getAssetUrl } = useAdapterRequest()
     

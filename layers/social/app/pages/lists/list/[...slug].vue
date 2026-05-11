@@ -156,7 +156,7 @@
       const resp = content.readItems('lists', opts)
       return resp?.data || resp
     }
-    return $directus.request($readItems('lists', opts))
+    return gateway.content(read('lists', opts))
   }, { server: true })
 
   const list = computed(() => listRaw.value?.[0] || null)
@@ -225,6 +225,6 @@
   })
 
   definePageMeta({
-    //middleware: ['authenticated']
+    //middleware: ['auth']
   })
 </script>

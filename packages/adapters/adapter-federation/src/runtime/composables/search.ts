@@ -30,7 +30,13 @@ export interface SearchToolsDeps {
   getStatusRoute: (status: mastodon.v1.Status) => RouteLocation & { href: string }
 }
 
-export function createSearchTools(deps: SearchToolsDeps) {
+export function createSearchTools(deps: SearchToolsDeps): { useSearch: (query: MaybeRefOrGetter<string>, options?: UseSearchOptions) => {
+  accounts: ReturnType<typeof ref<AccountSearchResult[]>>,
+  hashtags: ReturnType<typeof ref<HashTagSearchResult[]>>,
+  statuses: ReturnType<typeof ref<StatusSearchResult[]>>,
+  loading: ReturnType<typeof readonly<ReturnType<typeof ref<boolean>>>>,
+  next: () => Promise<void>,
+} } {
   function useSearch(query: MaybeRefOrGetter<string>, options: UseSearchOptions = {}) {
     const done = ref(false)
     const { client } = deps.useMasto()

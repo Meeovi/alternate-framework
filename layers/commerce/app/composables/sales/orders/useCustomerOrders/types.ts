@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import type { Maybe } from '../models/shared';
+import type { Maybe } from '~/composables/system/models/shared';
 import type { OrderData } from '../useCustomerOrder/types';
 
 export type OrdersData = Pick<OrderData, 'id' | 'date' | 'paymentAmount' | 'status'>[];

@@ -4,14 +4,15 @@ import {
   type TranslationResponse,
   type mastodon,
 } from '@mframework/adapter-federation'
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
+import { useUserSettings } from '../../settings/storage'
 
 export { supportedTranslationCodes }
 export type { TranslationResponse }
 
 const translationTools = createTranslationTools({
-  getTranslateApi: () => useRuntimeConfig().public.translateApi,
-  useUserSettings,
+  getTranslateApi: () => (useRuntimeConfig().public.translateApi as string | undefined),
+  useUserSettings: () => ({ value: { disabledTranslationLanguages: [] } }),
   getLocaleLanguage: () => {
     const { locale } = useLocate()
     return locale.value || navigator.language

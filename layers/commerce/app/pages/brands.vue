@@ -8,7 +8,7 @@
       </div>
       </v-tabs>
 
-      <template #header>
+      <template>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item value="one">
             <v-row>

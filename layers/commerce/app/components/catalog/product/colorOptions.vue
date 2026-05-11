@@ -19,17 +19,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from '#imports'
+import { ref, onMounted } from 'vue'
 const emit = defineEmits(['color-selected'])
 const colors = ref([])
 const selectedColor = ref(null)
 
 const nuxtApp = useNuxtApp()
-const { $dataClient, $readItems } = nuxtApp
+const { read } = nuxtApp
 
 const loadColors = async () => {
     try {
-        const res = await $dataClient.request($readItems('attributes', {
+        const res = await gateway.content(read('attributes', {
             filter: {
                 attribute_code: { _eq: 'color' }
             },

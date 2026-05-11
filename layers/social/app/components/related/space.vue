@@ -1,12 +1,12 @@
 <template>
     <div>
         <v-card class="mx-auto" max-width="400" height="550">
-            <img v-if="space?.image?.filename_disk" class="align-end text-white" height="200"
+            <img v-if="hasAsset(space?.image)" class="align-end text-white" height="200"
                 :src="getAssetUrl(space?.image)" :alt="space?.name" />
 
             <img class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
 
-            <template #header>{{ space?.name }}</template>
+            <template>{{ space?.name }}</template>
 
             <v-card-text class="pt-4">
                 Created: {{ new Date(space?.date_created).toLocaleDateString() }}
@@ -30,6 +30,7 @@
     import share from '../blocks/share.vue'
     import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     const { getAssetUrl } = useAdapterRequest()
+    const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const model = ref(null)
     const props = defineProps({

@@ -12,14 +12,14 @@
                     <v-tab value="two">Create List</v-tab>
                 </v-tabs>
 
-                <template #header>
+                <template>
                     <v-tabs-window v-model="tab">
                         <v-tabs-window-item value="one">
                             <v-card>
                                 <template #title class="text-h6">
                                     Add this Product to your List
                                 </template>
-                                <template #header>
+                                <template>
                                     <v-row dense>
                                         <v-col cols="12" sm="6">
                                             <v-autocomplete 

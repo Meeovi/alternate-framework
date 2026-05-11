@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { getCommerceClient } from '../utils/client'
-import type { Review as DomainReview } from '../types/domain'
+import type { Review } from '../types/commerce.type'
 
-type ReviewState = { reviews: DomainReview[]; isLoading: boolean }
+type ReviewState = { reviews: Review[]; isLoading: boolean }
 
 export const useReviewStore = defineStore('review', {
     state: (): ReviewState => ({
@@ -15,10 +15,10 @@ export const useReviewStore = defineStore('review', {
             try {
                 const client = getCommerceClient()
                 if (client && typeof client.listReviews === 'function') {
-                    this.reviews = await client.listReviews({ productId }) as DomainReview[]
+                    this.reviews = await client.listReviews({ productId }) as Review[]
                 } else {
-                    const response = await $fetch<DomainReview[]>(`/api/reviews?productId=${productId}`);
-                    this.reviews = (response || []) as DomainReview[]
+                    const response = await $fetch<Review[]>(`/api/reviews?productId=${productId}`);
+                    this.reviews = (response || []) as Review[]
                 }
             } catch (error) {
                 console.error('Error fetching reviews:', error);
@@ -26,7 +26,7 @@ export const useReviewStore = defineStore('review', {
                 this.isLoading = false;
             }
         },
-        addReview(review: DomainReview) {
+        addReview(review: Review) {
             this.reviews.push(review);
         }
     }

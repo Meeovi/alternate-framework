@@ -69,12 +69,10 @@
 
 <script setup lang="ts">
 
-import { ref, reactive, onMounted, onErrorCaptured } from '#imports';
-import { useCommerceMutation } from '../../composables/globals/useCommerceMutation';
-import setOrderShippingAddressMutation from '#graphql/app/commerce/mutations/setOrderShippingAddress.gql';
-import getCountryListQuery from '#graphql/app/commerce/queries/getCountryList.gql';
-import { useCommerceQuery } from '../../composables/globals/useCommerceQuery';
-import { useNotification } from '~//composables/useNotifications';
+import { ref, reactive, onMounted, onErrorCaptured } from 'vue';
+import { useCommerceMutation } from '../../../composables/globals/useCommerceMutation';
+import { useCommerceQuery } from '../../../composables/globals/useCommerceQuery';
+import { useNotification } from '../../../composables/useNotifications';
 
 const emit = defineEmits(['address-saved', 'address-error', 'form-reset']);
 const { showNotification } = useNotification();
@@ -93,7 +91,7 @@ const errors = reactive({
   countryCode: '',
 });
 
-const { data: countriesResult } = useCommerceQuery(getCountryListQuery);
+const { data: countriesResult } = useCommerceQuery('getCountryList');
 type Province = { code: string; name: string };
 type Country = { code: string; name: string; provinces?: Province[] };
 
@@ -111,7 +109,7 @@ const shippingAddress = reactive({
   countryCode: null,
 });
 
-const { mutate: setShippingAddress } = useCommerceMutation(setOrderShippingAddressMutation);
+const { mutate: setShippingAddress } = useCommerceMutation('setOrderShippingAddress');
 
 const updateRegions = (countryCode: string | null) => {
   const country = countries.value.find((c: any) => c.code === countryCode);

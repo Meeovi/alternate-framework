@@ -27,12 +27,8 @@
 
     const { data: lists } = await useAsyncData('publicBookmarks', async () => {
         const opts = { filter: { status: { _eq: 'Public' } } }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     const { data: bookmarks } = await useAsyncData('bookmarks', async () => {
@@ -42,12 +38,8 @@
                 type: { _eq: 'bookmark' }
             }
         }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     useHead({

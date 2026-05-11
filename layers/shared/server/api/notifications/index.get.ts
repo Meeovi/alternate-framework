@@ -5,7 +5,7 @@ import {
   resolveNotificationUserId,
 } from '../../utils/notifications/hub'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event: any) => {
   const userId = resolveNotificationUserId(event)
   const notifications = await getNotificationGateway().list(userId, event)
 

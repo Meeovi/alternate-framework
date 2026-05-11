@@ -1,5 +1,5 @@
-import type { CommerceAdapter, TransportAdapter } from 'alternate-gateway/core'
-import type { Product, Cart, Result } from 'alternate-gateway/core'
+import type { CommerceAdapter, TransportAdapter } from 'alternate-gateway'
+import type { Product, Cart, Result } from 'alternate-gateway'
 import { unwrap } from './utils'
 
 export const createCommerceAdapter = (

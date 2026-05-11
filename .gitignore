@@ -56,3 +56,6 @@ lib/
 # HTTPS Proxy certificates
 localhost.pem
 localhost-key.pem
+
+# Packages
+packages/adapters/adapter-prisma/generated

@@ -82,6 +82,8 @@
 </template>
 
 <script setup lang="ts">
+import { useAuth } from '~/composables/useAuth'
+import { useHead } from '~/composables/core/vue'
     import { computed, ref } from 'vue'
     import postCard from '../../components/related/post.vue'
     import useConnectFeedsData from '../../composables/useConnectFeedsData'

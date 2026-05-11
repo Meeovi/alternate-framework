@@ -10,8 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import { useLocate } from 'alternate-locate/adapters/vue/composable';
-import { ref, computed } from '#imports';
+import { useLocate } from 'alternate-gateway/media/adapters/vue/composable';
+import { ref, computed } from 'vue';
 
 const { locale, availableLocales, t } = useLocate();
 const currentLocale = computed(() => locale.value);

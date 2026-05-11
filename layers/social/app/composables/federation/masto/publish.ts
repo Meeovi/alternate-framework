@@ -1,14 +1,19 @@
-import type { DraftItem } from 'alternate-gateway/core/shared/types'
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import type { DraftItem } from '../../../../../shared/shared/types'
+import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
 import {
   createPublishTools,
   createUploadMediaAttachmentTools,
 } from '@mframework/adapter-federation'
 import type { Ref } from 'vue'
-import { fileOpen } from 'browser-fs-access'
 import { currentInstance, currentUser, isGlitchEdition } from '../../contacts/users'
 import { htmlToText } from '../../core/content-parse'
 import { isEmptyDraft } from './statusDrafts'
+import { ref } from 'vue'
+import { useDropZone } from '@vueuse/core'
+import { useFederation } from './masto'
+import { useMastoClient } from './masto'
+import { useUserSettings } from '../../settings/storage'
+import { navigateToStatus } from './routes'
 
 export function usePublish(options: {
   draftItem: Ref<DraftItem>
@@ -18,21 +23,21 @@ export function usePublish(options: {
   initialDraft: () => DraftItem
 }) {
   const publishTools = createPublishTools({
-    useFederation,
+    useFederation: () => ({ client: { value: useMastoClient() } }),
     useUserSettings,
-    getCurrentUserLanguage: () => currentUser.value?.account.source.language,
+    getCurrentUserLanguage: () => currentUser.value?.account.source.language || undefined,
     isGlitchEdition: () => isGlitchEdition.value,
     currentInstance: () => currentInstance.value,
     htmlToText,
-    isEmptyDraft: drafts => isEmptyDraft(drafts),
+    isEmptyDraft: (drafts: unknown) => isEmptyDraft(drafts as any),
     navigateToStatus,
     isDev: import.meta.dev,
-    logPayload: payload => console.info(payload),
+    logPayload: (payload: unknown) => console.info(payload),
     confirmPublish: () => confirm('[DEV] Payload logged to console, do you want to publish it?'),
-    onError: error => console.error(error),
-  })
+    onError: (error: unknown) => console.error(error),
+  } as any)
 
-  return publishTools.usePublish(options)
+  return publishTools.usePublish(options as any)
 }
 
 export type { MediaAttachmentUploadError } from '@mframework/adapter-federation'
@@ -41,11 +46,11 @@ export function useUploadMediaAttachment(draft: Ref<DraftItem>) {
   const { t } = useLocate()
   const dropZoneRef = ref<HTMLDivElement>()
   const uploadTools = createUploadMediaAttachmentTools({
-    useFederation,
+    useFederation: () => ({ client: { value: useMastoClient() } }),
     currentInstance: () => currentInstance.value,
     t,
-    onError: error => console.error(error),
-  })
+    onError: (error: unknown) => console.error(error),
+  } as any)
   const {
     isUploading,
     isExceedingAttachmentLimit,
@@ -54,17 +59,21 @@ export function useUploadMediaAttachment(draft: Ref<DraftItem>) {
     setDescription,
     removeAttachment,
   } = uploadTools.useUploadMediaAttachment({
-    draftItem: draft,
+    draftItem: draft as any,
   })
 
   async function pickAttachments() {
     if (import.meta.server)
       return
     const mimeTypes = currentInstance.value!.configuration?.mediaAttachments.supportedMimeTypes
-    const files = await fileOpen({
-      description: 'Attachments',
-      multiple: true,
-      mimeTypes,
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.multiple = true
+    if (mimeTypes?.length)
+      input.accept = mimeTypes.join(',')
+    const files = await new Promise<File[]>((resolve) => {
+      input.onchange = () => resolve(Array.from(input.files || []))
+      input.click()
     })
     await uploadAttachments(files)
   }

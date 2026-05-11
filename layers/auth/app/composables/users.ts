@@ -1,6 +1,5 @@
 import { ref, computed } from 'vue'
-
-export type UserLogin = any
+import type { UserLogin } from '../../../shared/shared/types/'
 
 export const users = ref<UserLogin[]>([])
 export const currentUser = ref<UserLogin | undefined>(undefined)
@@ -25,7 +24,7 @@ export async function loginTo(masto: any, user: any) {
     if (!res.ok) throw new Error('Invalid token')
     const account = await res.json()
 
-    // Persist mapping in database via server endpoint (uses Prisma from alternate-gateway/core)
+    // Persist mapping in database via server endpoint (uses Prisma from adapter-prisma)
     try {
       await fetch(`/api/auth/link-mastodon`, {
         method: 'POST',

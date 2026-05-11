@@ -7,7 +7,7 @@
 
         <template v-slot:default="{ isActive }">
             <v-card title="Dialog">
-                <template #header>
+                <template>
                     <div v-if="formError" class="error">{{ formError }}</div>
                     <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
                     <v-form @submit.prevent="submitForm">

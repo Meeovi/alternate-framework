@@ -1,5 +1,5 @@
 import type { SocialServerAdapter } from '../../app/types/social-adapter'
-import { prisma } from 'alternate-gateway/core'
+import { prisma } from '@mframework/adapter-prisma'
 // note: prisma types may be provided by the workspace root; avoid importing missing types here
 
 const tableFor = (entityType: any) => {

@@ -1,65 +1,66 @@
-import type { SchemaAugmentations } from '@unhead/schema'
-import type { ActiveHeadEntry, UseHeadInput, UseHeadOptions } from '@unhead/vue'
-import type { ComponentInternalInstance } from 'vue'
-import { useHead } from 'nuxt/app'
-import { onActivated, onDeactivated, ref, toValue } from 'vue'
-import { watchOnce } from '@vueuse/core'
+import {
+  computed,
+  defineComponent,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from 'vue'
+import {
+  onNuxtReady,
+  useAppConfig,
+  useAsyncData,
+  useHead,
+  useRoute,
+  useRouter,
+  useRuntimeConfig,
+} from 'nuxt/app'
 
-export const isHydrated = ref(false)
+const hydrated = ref(false)
 
-export function onHydrated(cb: () => unknown) {
-  watchOnce(isHydrated, () => cb(), { immediate: isHydrated.value as any })
+if (import.meta.client) {
+  onNuxtReady(() => {
+    hydrated.value = true
+  })
 }
 
-/**
- * ### Whether the current component is running in the background
- *
- * for handling problems caused by the keepalive function
- */
-export function useDeactivated() {
-  const deactivated = ref(false)
-  onActivated(() => deactivated.value = false)
-  onDeactivated(() => deactivated.value = true)
+export const isHydrated = hydrated
 
-  return deactivated
-}
-
-/**
- * ### When the component is restored from the background
- *
- * for handling problems caused by the keepalive function
- *
- * @param hook
- * @param target
- */
-export function onReactivated(hook: () => void, target?: ComponentInternalInstance | null): void {
-  const initial = ref(true)
-  onActivated(() => {
-    if (initial.value)
-      return
-    hook()
-  }, target)
-  onDeactivated(() => initial.value = false)
-}
-
-export function useHydratedHead<T extends SchemaAugmentations>(input: UseHeadInput<T>, options?: UseHeadOptions): ActiveHeadEntry<UseHeadInput<T>> | void {
-  if (input && typeof input === 'object' && !('value' in input)) {
-    const title = 'title' in input ? input.title : undefined
-    if (import.meta.server && title) {
-      input.meta = input.meta || []
-      if (Array.isArray(input.meta)) {
-        input.meta.push(
-          { property: 'og:title', content: (typeof input.title === 'function' ? input.title() : input.title) as string },
-        )
-      }
-    }
-    else if (title) {
-      (input as any).title = () => isHydrated.value ? typeof title === 'function' ? title() : title : ''
-    }
+export function onHydrated(cb: () => void) {
+  if (hydrated.value) {
+    cb()
+    return
   }
-  return useHead((() => {
-    if (!isHydrated.value)
-      return {}
-    return toValue(input)
-  }) as UseHeadInput<T>, options)
+
+  const stop = watch(hydrated, (value) => {
+    if (!value)
+      return
+    stop()
+    cb()
+  })
+}
+
+export function useHydratedHead(head: Parameters<typeof useHead>[0]) {
+  onHydrated(() => {
+    useHead(head)
+  })
+}
+
+export {
+  computed,
+  defineComponent,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  useAppConfig,
+  useAsyncData,
+  useHead,
+  useRoute,
+  useRouter,
+  useRuntimeConfig,
+  watch,
 }

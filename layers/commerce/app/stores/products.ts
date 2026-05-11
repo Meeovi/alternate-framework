@@ -1,27 +1,26 @@
 // stores/products.ts - Pinia store for product management
-import type { Product as DomainProduct } from '../types/domain'
+import type { Product } from '../types/commerce.type'
 import { defineStore } from 'pinia'
 import { ref, computed, readonly } from 'vue'
-import { useProducts } from '../composables/catalog/products'
-import { useFeaturedProducts } from '../composables/catalog/products/featured-products'
+// import { useProducts } from '../composables/catalog/products'
+import { useFeaturedProducts } from '../composables/catalog/products/useProducts/featured-products'
 
 export const useProductsStore = defineStore('products', () => {
-  const products = ref<DomainProduct[]>([])
-  const featuredProducts = ref<DomainProduct[]>([])
-  const currentProduct = ref<DomainProduct | null>(null)
+  const products = ref<Product[]>([])
+  const featuredProducts = ref<Product[]>([])
+  const currentProduct = ref<Product | null>(null)
   const categories = ref([])
   const loading = ref(false)
   const error = ref<string | null>(null)
   
   // Import product composables
-  const { getProducts, getProductById, getProductsByCategory, searchProducts } = useProducts()
   const { getFeaturedProducts } = useFeaturedProducts()
   
   const fetchProducts = async (options: any = {}) => {
     loading.value = true
     error.value = null
     try {
-      products.value = await getProducts(options)
+      // products.value = await getProducts(options)
     } catch (err: any) {
       error.value = err.message
       console.error('Error fetching products:', err)
@@ -29,12 +28,12 @@ export const useProductsStore = defineStore('products', () => {
       loading.value = false
     }
   }
-  
+
   const fetchProduct = async (id: string) => {
     loading.value = true
     error.value = null
     try {
-      currentProduct.value = await getProductById(id)
+      // currentProduct.value = await getProductById(id)
     } catch (err: any) {
       error.value = err.message
       console.error('Error fetching product:', err)
@@ -60,7 +59,7 @@ export const useProductsStore = defineStore('products', () => {
     loading.value = true
     error.value = null
     try {
-      products.value = await getProductsByCategory(categoryId, options)
+      await fetchProductsByCategory(categoryId, options)
     } catch (err: any) {
       error.value = err.message
       console.error('Error fetching products by category:', err)
@@ -73,7 +72,7 @@ export const useProductsStore = defineStore('products', () => {
     loading.value = true
     error.value = null
     try {
-      products.value = await searchProducts(query, options)
+      await searchForProducts(query, options)
     } catch (err: any) {
       error.value = err.message
       console.error('Error searching products:', err)
@@ -84,10 +83,10 @@ export const useProductsStore = defineStore('products', () => {
   
   // Computed properties
   const productsOnSale = computed(() => {
-    return products.value.filter((product: DomainProduct) => {
-      if (product.sale_price == null) return false
+    return products.value.filter((product: Product) => {
+      if ((product as any).sale_price == null) return false
       const priceValue = (product as any).price?.value ?? (typeof (product as any).price === 'number' ? (product as any).price : undefined)
-      return priceValue != null && product.sale_price < priceValue
+      return priceValue != null && (product as any).sale_price < priceValue
     })
   })
   

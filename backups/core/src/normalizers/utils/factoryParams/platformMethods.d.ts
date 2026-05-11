@@ -1,2 +1,0 @@
-declare const createPlatformMethods: (apiSection: any, context: any, refs: any) => any;
-export { createPlatformMethods };

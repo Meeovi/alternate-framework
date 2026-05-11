@@ -163,220 +163,117 @@
     } from '#imports'
     import orderCard from '~/components/related/order.vue'
 
-    const { user, fetchSession } = useAuth()
-    await fetchSession()
-    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = getCurrentUserId()
 
-    const {
-        $dataClient,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    // @ts-ignore - useAuth may not be globally available
+    // import { useAuth } from '#auth/app/composables/useAuth'
+    // const { user, fetchSession } = useAuth()
+    // await fetchSession()
+    // const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
+    const currentUserId = null;
+
+    const nuxtApp = useNuxtApp();
+    const $gateway = nuxtApp.$gateway as any;
+    const read = nuxtApp.read as any;
     const tab = ref(null);
 
-    const {
-        data: orderBar
-    } = await useAsyncData('orderBar', async () => {
-        const resp = await $dataClient.request($readItem('navigation', '84', {
-            fields: ['*', {
-                '*': ['*']
-            }]
+    const { data: orderBar } = await useAsyncData<any>('orderBar', async () => {
+        const resp = await $gateway.content?.(read('navigation', '84', {
+            fields: ['*', { '*': ['*'] }]
         }))
         return resp?.data ?? resp ?? null
     })
 
-    const {
-        data: ordersPage
-    } = await useAsyncData('ordersPage', () => {
-        return $dataClient.request($readItem('pages', '86', {
-            fields: ['*', {
-                '*': ['*']
-            }]
+    const { data: ordersPage } = await useAsyncData<any>('ordersPage', () => {
+        return $gateway.content?.(read('pages', '86', {
+            fields: ['*', { '*': ['*'] }]
         }))
     })
 
-    const {
-        data: orders
-    } = await useAsyncData('orders', async () => {
+    const { data: orders } = await useAsyncData<any>('orders', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: pending
-    } = await useAsyncData('pending', async () => {
+    const { data: pending } = await useAsyncData<any>('pending', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'pending'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'pending' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: processing
-    } = await useAsyncData('processing', async () => {
+    const { data: processing } = await useAsyncData<any>('processing', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'processing'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'processing' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: onHold
-    } = await useAsyncData('onHold', async () => {
+    const { data: onHold } = await useAsyncData<any>('onHold', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'on-hold'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'on-hold' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: failed
-    } = await useAsyncData('failed', async () => {
+    const { data: failed } = await useAsyncData<any>('failed', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'failed'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'failed' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: disputed
-    } = await useAsyncData('disputed', async () => {
+    const { data: disputed } = await useAsyncData<any>('disputed', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'disputed'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'disputed' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: completed
-    } = await useAsyncData('completed', async () => {
+    const { data: completed } = await useAsyncData<any>('completed', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'completed'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'completed' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: refunded
-    } = await useAsyncData('refunded', async () => {
+    const { data: refunded } = await useAsyncData<any>('refunded', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'refunded'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'refunded' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: cancelled
-    } = await useAsyncData('cancelled', async () => {
+    const { data: cancelled } = await useAsyncData<any>('cancelled', async () => {
         if (!currentUserId) return []
-        const resp = await $dataClient.request($readItems('orders', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: currentUserId
-                },
-                payment_status: {
-                    _eq: 'cancelled'
-                }
-            },
+        const resp = await $gateway.content?.(read('orders', {
+            fields: ['*', { '*': ['*'] }],
+            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'cancelled' } },
             sort: '-dated_created'
         }))
         return resp?.data ?? resp ?? []

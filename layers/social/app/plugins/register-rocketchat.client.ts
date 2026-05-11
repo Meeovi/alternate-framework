@@ -1,10 +1,10 @@
-import { defineNuxtPlugin } from '#imports'
+import { defineNuxtPlugin } from 'nuxt/app'
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   // Allow configuration via runtime config public.rocketchat or env ROCKETCHAT_URL
   const config = (nuxtApp?.$config || (globalThis as any).$config || {})
-  const rc = (config.public && config.public.rocketchat) || {}
-  const baseUrl = process.env.ROCKETCHAT_URL || rc.baseUrl
+  const rc = ((config as any).public && (config as any).public.rocketchat) || {}
+  const baseUrl = process.env.ROCKETCHAT_URL || (rc as any).baseUrl
   if (!baseUrl) return
 
   try {

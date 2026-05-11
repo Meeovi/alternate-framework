@@ -1,5 +1,6 @@
 import type { Ref } from 'vue';
-import type { SfProduct, Maybe } from '../../models';
+import type { SfProduct } from '~/composables/system/models';
+import type { Maybe } from '~/composables/system/models';
 
 export interface UseProductRecommendedState {
   data: Maybe<SfProduct[]>;

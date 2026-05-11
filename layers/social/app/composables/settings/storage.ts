@@ -1,47 +1,24 @@
-import type { LocaleObject } from 'alternate-locate'
-import { computed, unref, type Ref } from 'vue'
-import { DEFAULT__PREFERENCES_SETTINGS, getDefaultUserSettings, type FontSize, type OldFontSize, type PreferencesSettings, type UserSettings } from './definition'
-import { STORAGE_KEY_SETTINGS } from '../../constants'
-import { oldFontSizeMap } from '../../constants/options'
-import { useNuxtApp } from 'nuxt/app'
-import { useUserLocalStorage } from '../contacts/users'
+import { useStorage } from '@vueuse/core'
+import { computed } from 'vue'
+import type { PreferencesSettings, UserSettings } from './definition'
+import { defaultUserSettings } from './definition'
+
+const SETTINGS_KEY = 'social:user-settings'
 
 export function useUserSettings() {
-  const { locales } = useNuxtApp().$i18n as { locales: Ref<LocaleObject[]> | LocaleObject[] }
-  const supportLanguages = (unref(locales) as LocaleObject[]).map(locale => locale.code)
-  const settingsStorage = useUserLocalStorage<UserSettings>(STORAGE_KEY_SETTINGS, () => getDefaultUserSettings(supportLanguages))
-
-  // Backward compatibility, font size was xs, sm, md, lg, xl before
-  if (settingsStorage.value.fontSize && !settingsStorage.value.fontSize.includes('px'))
-    settingsStorage.value.fontSize = oldFontSizeMap[settingsStorage.value.fontSize as OldFontSize] as FontSize
-
-  return settingsStorage
+  return useStorage<UserSettings>(SETTINGS_KEY, { ...defaultUserSettings, preferences: { ...defaultUserSettings.preferences } }, localStorage)
 }
 
-// TODO: refactor & simplify this
-
-export function usePreferences<T extends keyof PreferencesSettings>(name: T): Ref<PreferencesSettings[T]> {
-  const userSettings = useUserSettings()
-  return computed({
-    get() {
-      return getPreferences(userSettings.value, name)
-    },
-    set(value) {
-      userSettings.value.preferences[name] = value
-    },
-  })
+export function usePreferences() {
+  const settings = useUserSettings()
+  return computed(() => settings.value.preferences)
 }
 
-export function getPreferences<T extends keyof PreferencesSettings>(userSettings: UserSettings, name: T): PreferencesSettings[T] {
-  const preference = userSettings?.preferences?.[name] ?? DEFAULT__PREFERENCES_SETTINGS[name]
-
-  if (name === 'enableAutoplay')
-    return getPreferences(userSettings, 'enableDataSaving') ? false : preference
-
-  return preference
+export function getPreferences(settings: UserSettings | undefined, key: keyof PreferencesSettings) {
+  return Boolean(settings?.preferences?.[key])
 }
 
 export function togglePreferences(key: keyof PreferencesSettings) {
-  const flag = usePreferences(key)
-  flag.value = !flag.value
+  const settings = useUserSettings()
+  settings.value.preferences[key] = !settings.value.preferences[key]
 }

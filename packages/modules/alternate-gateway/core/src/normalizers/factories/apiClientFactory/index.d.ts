@@ -1,3 +1,0 @@
-import { ApiClientFactoryParams, ApiClientConfig, ApiClientFactory } from '../../types';
-declare const apiClientFactory: <ALL_SETTINGS extends ApiClientConfig, ALL_FUNCTIONS>(factoryParams: ApiClientFactoryParams<ALL_SETTINGS, ALL_FUNCTIONS>) => ApiClientFactory;
-export { apiClientFactory };

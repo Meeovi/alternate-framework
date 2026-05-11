@@ -1,4 +1,4 @@
-import type { TransportAdapter, RequestOptions, APIResponse } from 'alternate-gateway/core'
+import type { TransportAdapter, RequestOptions, APIResponse } from 'alternate-gateway'
 
 export const createStarterTransport = (config: { baseUrl: string; apiKey?: string }): TransportAdapter => {
   return {

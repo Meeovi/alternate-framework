@@ -37,7 +37,7 @@
             id: item?.id,
             src: placeholder,
             thumb: placeholder,
-            alt: item?.directus_files_id?.title || item?.title || 'Audio file',
+          alt: item?.file?.title || item?.title || 'Audio file',
             subHtml: audioHtml(item),
         })
 </script>

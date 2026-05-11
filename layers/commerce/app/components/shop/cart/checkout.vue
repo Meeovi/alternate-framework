@@ -245,7 +245,7 @@ const handleSubmit = async () => {
                 billing_address: sameAsShipping.value ? shippingAddress.value : billingAddress.value,
                 updated_at: new Date().toISOString()
             }
-            await nuxtApp.$dataClient.request(nuxtApp.$updateItem('cart', cartId, payload))
+            await nuxtApp.gateway.content(nuxtApp.update('cart', cartId, payload))
             await cartStore.fetchCart()
         } catch (e) {
             console.warn('Failed to persist addresses to Data cart', e)

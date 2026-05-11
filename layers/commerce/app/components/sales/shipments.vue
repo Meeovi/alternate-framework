@@ -38,17 +38,16 @@
     import {
         ref,
         onMounted
-    } from '#imports';
+    } from 'vue';
     import {
         useCommerceQuery
     } from '../../composables/globals/useCommerceQuery';
-    import getCustomerShipmentsQuery from '#graphql/app/commerce/queries/getCustomerShipments.gql';
 
-    const shipments = ref([]);
+    const shipments = ref<any[]>([]);
     const {
         data,
         refetch
-    } = useCommerceQuery(getCustomerShipmentsQuery);
+    } = useCommerceQuery('getCustomerShipments');
 
     onMounted(() => {
         if (data.value?.activeCustomer?.shipments?.items) {

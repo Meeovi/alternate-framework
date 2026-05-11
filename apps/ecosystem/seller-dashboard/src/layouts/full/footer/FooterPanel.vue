@@ -4,15 +4,15 @@ import { shallowRef } from 'vue';
 const footerLink = shallowRef([
   {
     title: 'Home',
-    url: 'https://berrydashboard.io/vue/free'
+    url: 'https://meeovi.com'
   },
   {
-    title: 'Documentation',
-    url: 'https://codedthemes.gitbook.io/berry-vuetify/'
+    title: 'Developers',
+    url: 'https://meeovi.com/connect/space/developer-central/'
   },
   {
     title: 'Support',
-    url: 'https://codedthemes.support-hub.io/'
+    url: 'https://meeovi.com/connect/space/meeovi-help/'
   }
 ]);
 </script>
@@ -21,8 +21,7 @@ const footerLink = shallowRef([
     <v-row justify="center" align="center" no-gutters>
       <v-col cols="12" sm="6">
         <p class="text-body-1 mb-0 text-sm-left text-center">
-          Berry ♥ crafted by Team
-          <a href="https://themeforest.net/user/codedthemes" class="text-darkText text-decoration-none" target="_blank">Codedthemes</a>
+          <a href="https://meeovi.com" class="text-darkText text-decoration-none" target="_blank">The Meeovi Company</a>
         </p>
       </v-col>
       <v-col class="text-sm-right text-center" cols="12" sm="6">

@@ -1,7 +1,7 @@
-import type { CommerceAdapter, TransportAdapter } from 'alternate-gateway/core/adapters'
-import type { Result } from 'alternate-gateway/core/types'
-import type { CommerceProduct as Product } from 'alternate-gateway/core/types/commerce/product'
-import type { CommerceCart as Cart } from 'alternate-gateway/core/types/commerce/cart'
+import type { CommerceAdapter, TransportAdapter } from 'alternate-gateway/adapters'
+import type { Result } from 'alternate-gateway/types'
+import type { CommerceProduct as Product } from 'alternate-gateway/types/commerce/product'
+import type { CommerceCart as Cart } from 'alternate-gateway/types/commerce/cart'
 import { unwrap } from './utils'
 
 export const createStarterCommerceAdapter = (

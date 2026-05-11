@@ -7,22 +7,21 @@
         </v-btn>
       </template>
       <v-card class="b-1">
-        <template #header>
+        <v-card-title>
           <h3>Create New Product Type</h3>
-        </template>
+        </v-card-title>
 
-        <template #header>
+        <v-card-title>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
           <v-form @submit.prevent="submitForm">
             <DataFormElement v-for="field in productTypeFields" :key="field.field" :field="field" v-model="form[field.field]" />
             <v-btn type="submit">Submit</v-btn>
           </v-form>
-        </template>
+        </v-card-title>
       </v-card>
     </v-dialog>
   </v-row>
-
 </template>
 
 <script setup>
@@ -31,11 +30,7 @@ import DataFormElement from '~/components/ui/forms/DataFormElement.vue'
 import { useDataForm } from '~/composables/globals/useDataForm'
 
 const dialog = ref(false)
-const { $dataClient, $readFieldsByCollection } = useNuxtApp()
-      <script setup>
-      import { ref } from '#imports'
-      import DataFormElement from '~/components/ui/forms/DataFormElement.vue'
-      import { useDataForm } from '~/composables/globals/useDataForm'
+const { $readFieldsByCollection } = useNuxtApp()
 
 // guard against undefined/null data.value and empty arrays
 if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
@@ -47,7 +42,6 @@ if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
 }
 
 const productTypeFields = data
-
 
 // use composable for form handling (validation, submit, provide context)
 const { form, formError, formSuccess, submitForm } = useDataForm('product_types', productTypeFields, { clearOnSuccess: true, closeDialogRef: dialog })

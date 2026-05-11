@@ -27,12 +27,8 @@
 
     const { data: lists } = await useAsyncData('starredLists', async () => {
         const opts = { filter: { status: { _eq: 'Public' } } }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     const { data: starred } = await useAsyncData('starred', async () => {
@@ -42,12 +38,8 @@
                 favorite: { _eq: 'yes' }
             }
         }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     useHead({

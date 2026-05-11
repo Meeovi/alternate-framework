@@ -21,7 +21,7 @@
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted } from '#imports'
+import { ref, onMounted } from 'vue'
 import useRepost from '../../composables/useRepost'
 
 const props = defineProps({

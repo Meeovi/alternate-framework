@@ -15,14 +15,13 @@
 
 <script setup>
   const {
-    $dataClient,
-    $readItems
+    read
   } = useNuxtApp()
   
   const {
     data: outlets
   } = await useAsyncData('outlets', () => {
-    return $dataClient.request($readItems('departments', {
+    return gateway.content(read('departments', {
       filter: {
         active: {
           _eq: 'active'

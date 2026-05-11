@@ -32,23 +32,26 @@ import brandCard from '../../related/brandCard.vue'
 
   const model = ref(null)
   const {
-    $dataClient,
-    $readItems
+    read
   } = useNuxtApp()
 
   const {
     data: relatedbrands
-  } = await useAsyncData('relatedbrands', () => {
-    return $dataClient.request($readItems('brands', {
-      fields: ['*',
-        'image.*',
-      ],
-      limit: 10,
-      filter: {
-        status: {
-          _eq: "published"
+  } = await useAsyncData('relatedbrands', async () => {
+    try {
+      return await gateway.content(read('brands', {
+        fields: ['*',
+          'image.*',
+        ],
+        limit: 10,
+        filter: {
+          status: {
+            _eq: "published"
+          }
         }
-      }
-    }))
+      }))
+    } catch {
+      return null
+    }
   })
 </script>

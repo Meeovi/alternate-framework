@@ -25,6 +25,6 @@
             id: item?.id,
             src: fileUrl(item),
             thumb: fileUrl(item),
-            alt: item?.directus_files_id?.title || item?.title || 'Image',
+            alt: item?.file?.title || item?.title || 'Image',
         })
 </script>

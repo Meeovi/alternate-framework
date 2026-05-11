@@ -1,9 +1,9 @@
+
 <script setup lang="ts">
 import { useCommerceQuery } from "../../../composables/globals/useCommerceQuery";
-import getProductReviewsQuery from "#graphql/app/commerce/queries/getProductReviews.gql";
 
 const props = defineProps<{ productId: string }>();
-const { data } = useCommerceQuery(getProductReviewsQuery, {
+const { data } = useCommerceQuery('getProductReviews', {
   productId: props.productId,
 });
 const reviews = computed(() => data.value?.product?.reviews || []);
@@ -18,6 +18,9 @@ const format: Intl.DateTimeFormatOptions = {
 };
 const formatDate = (date: string) =>
   new Date(date).toLocaleDateString("en-us", format);
+
+import { useI18n } from 'vue-i18n';
+const { t: $t } = useI18n();
 </script>
 
 <template>

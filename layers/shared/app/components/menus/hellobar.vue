@@ -16,18 +16,17 @@
 <script setup>
   import { computed } from 'vue'
   import { readMe } from '@mframework/adapter-directus'
-  import { loggedIn, useSession } from '#auth/lib/auth-client'
+  import { loggedIn, useSession } from '../../lib/auth-client'
 
   const {
-    $directus,
-    $readItem
+    read
   } = useNuxtApp()
   const { data: session } = await useSession(useFetch)
   const user = computed(() => session.value?.user ?? null)
 
   let authUser = null
   try {
-    authUser = await $directus.request(readMe())
+    authUser = await gateway.content(readMe())
   } catch (error) {
     authUser = null
   }
@@ -35,6 +34,6 @@
   const {
     data: hellobar
   } = await useAsyncData('hellobar', () => {
-    return $directus.request($readItem('navigation', '50'))
+    return gateway.content(read('navigation', '50'))
   })
 </script>

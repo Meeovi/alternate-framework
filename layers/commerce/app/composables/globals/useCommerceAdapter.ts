@@ -1,5 +1,5 @@
-import { useProducts } from '../catalog/useProducts/useProducts'
-import { useCart } from '../sales/useCart/useCart'
+import { useProducts } from '../catalog/products/useProducts/useProducts'
+import { useCart } from '../sales/cart/useCart/useCart'
 import { useOrders } from '../sales/orders/orders'
 import useCatalogPriceRules from '../catalog/price/useCatalogPriceRules'
 import useCartPriceRules from '../catalog/price/useCartPriceRules'

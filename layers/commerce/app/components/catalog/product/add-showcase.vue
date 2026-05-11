@@ -7,11 +7,11 @@
         </v-btn>
       </template>
       <v-card class="b-1">
-        <template #header>
+        <template>
           <h3>Create New Showcase</h3>
         </template>
 
-        <template #header>
+        <template>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
           <v-form @submit.prevent="submitForm">
@@ -30,10 +30,10 @@ import DataFormElement from '~/components/ui/forms/DataFormElement.vue'
 import { useDataForm } from '~/composables/globals/useDataForm'
 
 const dialog = ref(false)
-const { $dataClient, $readFieldsByCollection } = useNuxtApp()
+const { $readFieldsByCollection } = useNuxtApp()
 
 const { data, error } = await useAsyncData('showcases', async () => {
-  return $dataClient.request($readFieldsByCollection('showcases'))
+  return gateway.content($readFieldsByCollection('showcases'))
 })
 
 // guard against undefined/null data.value and empty arrays

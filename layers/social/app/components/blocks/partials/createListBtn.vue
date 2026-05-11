@@ -15,7 +15,7 @@
           <v-tab value="three">Item Three</v-tab>-->
         </v-tabs>
 
-        <template #header>
+        <template>
           <v-tabs-window v-model="tab">
             <v-tabs-window-item value="one">
               <v-row>
@@ -59,12 +59,8 @@ const content = useContentAdapter()
 
 const { data: lists } = await useAsyncData('lists', async () => {
   const opts = { filter: { status: { _eq: 'Public' } } }
-  if (content && typeof content.readItems === 'function') {
-    const resp = await content.readItems('lists', opts)
-    return resp?.data || resp
-  }
-  const { $directus, $readItems } = useNuxtApp()
-  return $directus.request($readItems('lists', opts))
+  const resp = await content.readItems('lists', opts)
+  return resp?.data || resp
 })
 
 const loading = ref(false)
@@ -72,14 +68,8 @@ const loading = ref(false)
 const saveProductToList = async (listId) => {
   loading.value = true
   try {
-    // Adapter create hook or fallback can be used here when product data is available
-    if (content && typeof content.createItem === 'function') {
-      // noop - actual item payload depends on caller/context
-      await content.createItem('list_items', { list: listId })
-    } else {
-      const { $directus, $createItem } = useNuxtApp()
-      await $directus.request($createItem('list_items', { list: listId }))
-    }
+    // Payload can be extended by caller context when available.
+    await content.createItem('list_items', { list: listId })
   } catch (err) {
     console.error('Failed to save product to list', err)
   } finally {

@@ -61,15 +61,14 @@
     const tab = ref(null);
 
     const {
-        $dataClient,
-        $readItem
+        read
     } = useNuxtApp()
     const route = useRoute()
 
     const {
         data: lowerbar
     } = await useAsyncData('lowerbar', () => {
-        return $dataClient.request($readItem('navigation', '46', {
+        return gateway.content(read('navigation', '46', {
             fields: ['*', {
                 '*': ['*']
             }]

@@ -1,6 +1,6 @@
 <template>
     <div class="relative">
-        <div class="p-4 text-center bg-neutral-100 sm:p-10">
+        <v-sheet class="p-4 text-center bg-neutral-100 sm:p-10" rounded>
             <p class="font-bold typography-headline-4 sm:typography-headline-3">
                 Subscribe and get discount on your first purchase!
             </p>
@@ -9,38 +9,46 @@
             </p>
             <form class="mb-4 flex flex-col sm:flex-row gap-4 max-w-172 mx-auto"
                 @submit.prevent="subscribeNewsletter(inputValue)">
-                <SfInput v-model="inputValue" size="lg" type="email" wrapper-class="grow rounded-full"
-                    placeholder="Type your email" />
-                <SfButton type="submit" size="lg"> Subscribe to Newsletter </SfButton>
+                <v-text-field
+                    v-model="inputValue"
+                    type="email"
+                    density="comfortable"
+                    variant="outlined"
+                    hide-details
+                    class="grow"
+                    placeholder="Type your email"
+                />
+                <v-btn type="submit" size="large" color="primary">Subscribe to Newsletter</v-btn>
             </form>
             <div class="typography-text-xs text-neutral-600">
-                To learn how we process your data, visit our <SfLink href="#" class="text-neutral-600!">Privacy Notice
-                </SfLink>.
-                You can <SfLink href="#" class="text-neutral-600!">unsubscribe</SfLink> at any time without costs.
+                To learn how we process your data, visit our
+                <a href="#" class="text-neutral-600 underline">Privacy Notice</a>.
+                You can <a href="#" class="text-neutral-600 underline">unsubscribe</a> at any time without costs.
             </div>
-        </div>
+        </v-sheet>
         <div class="absolute top-0 right-0 mx-2 mt-2 sm:mr-6">
-            <div v-if="showPositiveAlert" role="alert"
-                class="flex items-start md:items-center shadow-md max-w-[600px] bg-positive-100 pr-2 pl-4 mb-2 ring-1 ring-positive-200 typography-text-sm md:typography-text-base py-1 rounded-md">
-                <SfIconCheckCircle class="my-2 mr-2 text-positive-700" />
-                <p class="py-2 mr-2">Your email has been added to the newsletter subscription.</p>
-                <button type="button"
-                    class="p-1.5 md:p-2 ml-auto rounded-md text-positive-700 hover:bg-positive-200 active:bg-positive-300 hover:text-positive-800 active:text-positive-900"
-                    aria-label="Close positive alert" @click="showPositiveAlert = false">
-                    <SfIconClose class="hidden md:block" />
-                    <SfIconClose size="sm" class="block md:hidden" />
-                </button>
-            </div>
-            <div v-if="showErrorAlert" role="alert"
-                class="flex items-start md:items-center max-w-[600px] shadow-md bg-negative-100 pr-2 pl-4 ring-1 ring-negative-300 typography-text-sm md:typography-text-base py-1 rounded-md">
-                <p class="py-2 mr-2">This email is already subscribed for our newsletter.</p>
-                <button type="button"
-                    class="p-1.5 md:p-2 ml-auto rounded-md text-negative-700 hover:bg-negative-200 active:bg-negative-300 hover:text-negative-800 active:text-negative-900"
-                    aria-label="Close error alert" @click="showErrorAlert = false">
-                    <SfIconClose class="hidden md:block" />
-                    <SfIconClose size="sm" class="block md:hidden" />
-                </button>
-            </div>
+            <v-alert
+                v-model="showPositiveAlert"
+                type="success"
+                variant="tonal"
+                density="comfortable"
+                closable
+                class="mb-2 max-w-[600px]"
+                icon="mdi-check-circle"
+            >
+                Your email has been added to the newsletter subscription.
+            </v-alert>
+            <v-alert
+                v-model="showErrorAlert"
+                type="error"
+                variant="tonal"
+                density="comfortable"
+                closable
+                class="max-w-[600px]"
+                icon="mdi-alert-circle"
+            >
+                This email is already subscribed for our newsletter.
+            </v-alert>
         </div>
     </div>
 </template>
@@ -50,18 +58,11 @@
         ref,
         type Ref
     } from 'vue';
-    import {
-        SfButton,
-        SfInput,
-        SfLink,
-        SfIconCheckCircle,
-        SfIconClose
-    } from 'alternate-ui/storefront';
 
     const inputValue = ref('');
     const showPositiveAlert = ref(false);
     const showErrorAlert = ref(false);
-    const emailDataBase: Ref < string[] > = ref([]);
+    const emailDataBase: Ref<string[]> = ref([]);
 
     const checkEmailDataBase = (email: string) => emailDataBase.value.find((element) => element === email);
 

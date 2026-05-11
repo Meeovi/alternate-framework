@@ -25,7 +25,7 @@
 import {
     ref,
     onMounted
-} from '#imports'
+} from 'vue'
 import type {
     Stripe,
     StripeElements

@@ -31,28 +31,31 @@
 
   const model = ref(null);
   const {
-    $dataClient,
-    $readItems
+    read
   } = useNuxtApp()
 
   const {
     data: latest
-  } = await useAsyncData('latest', () => {
-    return $dataClient.request($readItems('products', {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'currency.currency_id.*',
-        'brands.brands_id.*',
-        'image.*',
-      ],
-      filter: {
-        status: {
-          _eq: 'published'
-        }
-      },
-      sort: '-products_id.date_created',
-      limit: 10,
-    }))
+  } = await useAsyncData('latest', async () => {
+    try {
+      return await gateway.content(read('products', {
+        fields: ['*',
+          'products.products_id.*',
+          'products.products_id.image.*',
+          'currency.currency_id.*',
+          'brands.brands_id.*',
+          'image.*',
+        ],
+        filter: {
+          status: {
+            _eq: 'published'
+          }
+        },
+        sort: '-products_id.date_created',
+        limit: 10,
+      }))
+    } catch {
+      return null
+    }
   })
 </script>

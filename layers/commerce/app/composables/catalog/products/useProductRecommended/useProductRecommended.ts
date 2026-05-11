@@ -1,15 +1,16 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, SfProduct } from '../../models';
+import type { SfProduct } from '~/composables/system/models';
+import type { Maybe } from '~/composables/system/models';
 import { useAsyncData, useState } from 'nuxt/app';
 import type {
   UseProductRecommendedReturn,
   UseProductRecommendedState,
   FetchProductRecommended,
 } from './types';
-import { getCommerceClient } from '../../../utils/client';
-import { useHandleError } from '../../useHandleError';
+import { getCommerceClient } from '../../../../utils/client';
+import { useHandleError } from '../../../useHandleError';
 
 /**
  * Composable for getting recommended products data

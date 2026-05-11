@@ -5,6 +5,7 @@ import { directusGatewayClient } from "./utils/client";
 import { handleDirectusError } from "./utils/errors";
 import { normalizeDirectusPayload } from "./utils/normalizers";
 import type { DirectusGatewayAdapterContract } from "./types";
+export type { DirectusSchema } from './src/types';
 
 function normalizeDirectusLegacyResult(value: any): any {
   if (Array.isArray(value)) return value.map(normalizeDirectusLegacyResult)

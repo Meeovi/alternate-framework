@@ -33,7 +33,7 @@
   const model = ref(null)
 
   import { onMounted } from '#imports'
-  import { useRecentlyViewed } from '#commerce/app/composables/catalog/products/useRecentlyViewed'
+  import { useRecentlyViewed } from '#commerce/app/composables/catalog/products/useProducts/useRecentlyViewed'
 
   const { products: recentlyViewed, load } = useRecentlyViewed()
 

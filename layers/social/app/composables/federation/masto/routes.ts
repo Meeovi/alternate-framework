@@ -1,11 +1,14 @@
 import { createRouteTools, type mastodon } from '@mframework/adapter-federation'
+import { navigateTo, useRouter } from '#imports'
+import { currentServer, currentUser } from '../../contacts/users'
+import { extractAccountHandle } from './account'
 
 const routeTools = createRouteTools({
   resolveRoute: location => useRouter().resolve(location as any),
   currentServer: () => currentServer.value,
   currentUserServer: () => currentUser.value?.server,
   extractAccountHandle,
-  navigateTo: payload => navigateTo(payload),
+  navigateTo: payload => navigateTo(payload as any),
 })
 
 export function getAccountRoute(account: mastodon.v1.Account) {

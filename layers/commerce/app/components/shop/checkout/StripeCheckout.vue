@@ -13,19 +13,17 @@
 <script setup>
 
 import { ref } from '#imports';
-import { useCommerceQuery } from '~/composables/globals/useCommerceQuery';
-import { useCommerceMutation } from '~/composables/globals/useCommerceMutation';
-import createStripePaymentIntentMutation from '#graphql/app/commerce/mutations/createStripePaymentIntent.gql';
-import getActiveOrderQuery from '#graphql/app/commerce/queries/getActiveOrder.gql';
+import { useCommerceQuery } from '../../../composables/globals/useCommerceQuery';
+import { useCommerceMutation } from '../../../composables/globals/useCommerceMutation';
 import StripeCardElement from './StripeCardElement.vue';
 
 const loading = ref(false);
 const clientSecret = ref<string | null>(null);
 
 // Get the active order (cart)
-const { data: orderData, refetch } = useCommerceQuery(getActiveOrderQuery);
+const { data: orderData, refetch } = useCommerceQuery('getActiveOrder');
 
-const { mutate: createStripePaymentIntent } = useCommerceMutation(createStripePaymentIntentMutation);
+const { mutate: createStripePaymentIntent } = useCommerceMutation('createStripePaymentIntent');
 
 const startCheckout = async () => {
   if (!orderData.value?.activeOrder) return;

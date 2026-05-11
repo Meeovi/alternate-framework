@@ -1,0 +1,44 @@
+{
+  "name": "@mframework/adapter-prisma",
+  "version": "0.0.1",
+  "description": "Official M Framework Prisma Adapter connecting numerous databases",
+  "keywords": [
+    "prisma",
+    "adapter",
+    "m",
+    "framework",
+    "orm"
+  ],
+  "license": "MIT",
+  "author": "M Framework",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "build": "tsup --config tsup.config.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "prisma": "^7.8.0",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.20.0"
+  }
+}

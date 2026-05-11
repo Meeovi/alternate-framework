@@ -7,7 +7,7 @@ import type {
   FetchCustomerReturns,
 } from './types';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../useHandleError';
+import { useHandleError } from '../../useHandleError';
 
 /**
  * @description Composable managing returns data

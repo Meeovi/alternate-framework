@@ -1,21 +1,53 @@
+import type { ElkNotificationFilterType } from '~/constants'
 import type { mastodon } from 'masto'
-import type { ElkNotificationFilterType } from '../../constants'
-import { NOTIFICATION_FILTER_TYPES } from '../../constants'
 
-/**
- * Typeguard to check if an object is a valid notification filter
- * @param obj the object to be checked
- * @returns boolean and assigns type to object if true
- */
-export function isNotificationFilter(obj: unknown): obj is ElkNotificationFilterType {
-  return !!obj && NOTIFICATION_FILTER_TYPES.includes(obj as ElkNotificationFilterType)
+export interface Notification {
+  id: string
+  type: ElkNotificationFilterType
+  message: string
+  read: boolean
+  createdAt: string
+  [key: string]: any
 }
 
-/**
- * Typeguard to check if an object is a valid notification
- * @param obj the object to be checked
- * @returns boolean and assigns type to object if true
- */
-export function isNotification(obj: unknown): obj is mastodon.v1.NotificationType {
-  return !!obj && ['mention', ...NOTIFICATION_FILTER_TYPES].includes(obj as unknown as mastodon.v1.NotificationType)
+export function isNotificationFilter(filter: string): filter is ElkNotificationFilterType {
+  return [
+    'all',
+    'mention',
+    'status',
+    'update',
+    'quote',
+    'reblog',
+    'poll',
+    'favourite',
+    'quoted_update',
+    'follow',
+    'follow_request',
+    'admin.sign_up',
+    'admin.report',
+    'severed_relationships',
+    'moderation_warning',
+  ].includes(filter)
+}
+
+export function isNotification(value: string | undefined): value is mastodon.v1.NotificationType {
+  if (!value)
+    return false
+
+  return [
+    'mention',
+    'status',
+    'update',
+    'quote',
+    'reblog',
+    'poll',
+    'favourite',
+    'quoted_update',
+    'follow',
+    'follow_request',
+    'admin.sign_up',
+    'admin.report',
+    'severed_relationships',
+    'moderation_warning',
+  ].includes(value)
 }

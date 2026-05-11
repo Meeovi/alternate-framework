@@ -1,14 +1,15 @@
 {
+  "packageManager": "yarn@1.22.22",
   "name": "mframework",
   "version": "1.0.0",
   "private": true,
   "description": "M Framework — Vue + Nuxt 4 starter and integrations",
-  "main": "apps/Meeovi/nuxt.config.ts",
+  "main": "apps/ecosystem/meeovi-frontend/nuxt.config.ts",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "preview": "cd apps/Meeovi && npx nuxi preview"
+    "preview": "cd apps/ecosystem/meeovi-frontend && npx nuxi preview"
   },
   "bin": {
     "meeovi-create-adapter": "packages/core/bin/create-adapter.cjs"
@@ -23,18 +24,18 @@
   "license": "MIT",
   "devDependencies": {
     "lightningcss": "^1.31.1",
+    "prisma": "^7.8.0",
     "turbo": "^2.8.11",
     "typescript": "^5.9.3"
   },
-  "packageManager": "npm@8.5.0",
   "workspaces": [
     "packages/*",
     "layers/*",
-    "integrations/*",
     "themes/*",
     "docs/*"
   ],
   "dependencies": {
+    "@prisma/client": "^7.8.0",
     "flat": "^6.0.1"
   },
   "overrides": {

@@ -1,8 +1,9 @@
-import type { UserLogin } from 'alternate-gateway/core/shared/types'
+import type { UserLogin } from '../../../../../shared/shared/types'
 import type { Pausable } from '@vueuse/core'
 import type { mastodon } from '@mframework/adapter-federation'
 import type { Ref } from 'vue'
-import type { ElkInstance } from '../../contacts/users'
+import { tryOnBeforeUnmount } from '@vueuse/core'
+import { currentUser, getInstanceCache, instanceStorage } from '../../contacts/users'
 import {
   createFederationState,
   createStreamingTools,
@@ -18,7 +19,10 @@ export function useMasto() {
   return useNuxtApp().$masto as ElkMasto
 }
 export function useMastoClient() {
-  return useMasto().client.value
+  const client = useMasto().client.value
+  if (!client)
+    throw new Error('Mastodon client is not initialized')
+  return client
 }
 
 // ── adapter-federation branded aliases ────────────────────────────────────────
@@ -31,14 +35,14 @@ export type ElkFederation = ElkMasto
 export function mastoLogin(masto: ElkMasto, user: Pick<UserLogin, 'server' | 'token'>) {
   const instance = loginMastodonSession({
     masto,
-    user,
-    getInstanceCache,
-    instanceStorage,
+    user: { ...user, token: user.token || '' },
+    getInstanceCache: getInstanceCache as any,
+    instanceStorage: { value: instanceStorage as any },
     currentUser,
     webSocketImplementation: globalThis.WebSocket,
-  })
+  } as any)
 
-  return instance as ElkInstance
+  return instance
 }
 
 interface UseStreamingOptions<Controls extends boolean> {
@@ -77,5 +81,8 @@ export function useStreaming(
     onBeforeUnmount: cleanup => tryOnBeforeUnmount(cleanup),
   })
 
-  return streamingTools.useStreaming(cb, { immediate, controls }) as ({ stream: Ref<mastodon.streaming.Subscription | undefined> } & Pausable) | Ref<mastodon.streaming.Subscription | undefined>
+  if (controls)
+    return streamingTools.useStreaming(cb, { immediate, controls: true }) as unknown as ({ stream: Ref<mastodon.streaming.Subscription | undefined> } & Pausable)
+
+  return streamingTools.useStreaming(cb, { immediate, controls: false }) as unknown as Ref<mastodon.streaming.Subscription | undefined>
 }

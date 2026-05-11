@@ -14,7 +14,7 @@ const LISTS_MUTABLE_COLLECTIONS = new Set(['lists', 'list_items', 'websites'])
 const LISTS_FIELD_READABLE_COLLECTIONS = new Set(['lists', 'list_items', 'websites'])
 
 async function loadAuthModule() {
-  return import('alternate-auth/server/utils/auth')
+  return import('../../../auth/lib/auth')
 }
 
 function getUserId(user: Record<string, any> | null | undefined) {

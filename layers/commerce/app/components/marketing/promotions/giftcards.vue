@@ -51,7 +51,7 @@
     import {
         ref,
         onMounted
-    } from '#imports';
+    } from 'vue';
     import {
         useUserStore
     } from '#auth/app/stores/user'
@@ -64,15 +64,13 @@
     })
 
     const {
-        $dataClient,
-        $readItems,
-        $readItem
+        read
     } = useNuxtApp()
 
     const {
         data: cards
     } = await useAsyncData('cards', () => {
-        return $dataClient.request($readItems('products', {
+        return gateway.content(read('products', {
             fields: ['*',
                 'image.*',
                 'currency.currency_id.*'
@@ -92,7 +90,7 @@
     const {
         data: mycards
     } = await useAsyncData('mycards', () => {
-        return $dataClient.request($readItems('products', {
+        return gateway.content(read('products', {
             fields: ['*',
                 'image.*',
                 'currency.currency_id.*'
@@ -117,7 +115,7 @@
     const {
         data: callouts
     } = await useAsyncData('callouts', () => {
-        return $dataClient.request($readItem('callouts', '4'))
+        return gateway.content(read('callouts', '4'))
     })
 
     useHead({
@@ -125,6 +123,6 @@
     })
 
     definePageMeta({
-        middleware: ['authenticated'],
+        middleware: ['auth'],
     })
 </script>

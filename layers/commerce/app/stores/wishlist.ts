@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { getCommerceClient } from '../utils/client'
-import type { Product as DomainProduct } from '../types/domain'
+import type { Product } from '../types/commerce.type'
 
-type WishlistState = { items: string[]; isLoading: boolean; products: DomainProduct[] }
+type WishlistState = { items: string[]; isLoading: boolean; products: Product[] }
 
 export const useWishlistStore = defineStore('wishlist', {
     state: (): WishlistState => ({
@@ -27,7 +27,7 @@ export const useWishlistStore = defineStore('wishlist', {
                 if (client && typeof client.getProducts === 'function') {
                     this.products = await client.getProducts({ ids: this.items })
                 } else if (client && typeof client.getProductById === 'function') {
-                    const loaded: DomainProduct[] = []
+                    const loaded: Product[] = []
                     for (const id of this.items) {
                         try {
                             const p = await client.getProductById(id)

@@ -19,6 +19,8 @@ export * from './client/createClient';
 export * from './schema/types';
 export * from './schema/introspect';
 
+export type { DirectusSchema } from './types';
+
 export * from './utils/collections';
 export * from './utils/fields';
 
@@ -31,7 +33,10 @@ export * from './utils/visualEditing';
 export * from './utils/livePreview';
 export * from './composables';
 
-export { 
+export {
+    createDirectus,
+    rest,
+    authentication,
     readItem,
     readMe,
     readItems,
@@ -41,7 +46,7 @@ export {
     uploadFiles,
     readSingleton,
     readFieldsByCollection
- } from '@directus/sdk';
+} from '@directus/sdk';
 
 export interface DirectusAdapterOptions {
     url?: string

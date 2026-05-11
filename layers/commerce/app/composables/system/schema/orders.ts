@@ -1,4 +1,4 @@
-import { MeeoviProduct } from './product'
+import type { MeeoviProduct } from './product'
 
 export interface MeeoviOrderItem {
 	id: number

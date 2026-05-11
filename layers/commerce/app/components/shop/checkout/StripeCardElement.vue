@@ -61,9 +61,9 @@
 <script setup lang="ts">
 
 import { ref, onMounted, onUnmounted, watch, computed } from '#imports';
-import { useUserStore } from '../../stores/user';
-import { useAuth } from '~/composables/globals/useAuth';
-import countryList from '../../utils/countryList'; // Assume this is an array of country codes/names
+import { useUserStore } from '../../../stores/user';
+import { useAuth } from '../../../composables/globals/useAuth';
+import countryList from '../../../utils/countryList'; // Assume this is an array of country codes/names
 
 const props = defineProps<{ clientSecret: string }>();
 const emit = defineEmits(['payment-success', 'payment-error']);
@@ -119,7 +119,7 @@ const { $stripe } = useNuxtApp();
 
 onMounted(() => {
   if (!$stripe || !props.clientSecret) return;
-  elements = $stripe.elements({ clientSecret: props.clientSecret });
+  elements = ($stripe as any).elements({ clientSecret: props.clientSecret });
   card = elements.create('card');
   card.mount(cardElement.value);
   card.on('change', (event: any) => {
@@ -159,7 +159,7 @@ const handlePayment = async () => {
       loading.value = false;
       return;
     }
-    const { error, paymentIntent, setupIntent } = await $stripe.confirmCardPayment(props.clientSecret, {
+    const { error, paymentIntent, setupIntent } = await ($stripe as any).confirmCardPayment(props.clientSecret, {
       payment_method: {
         card: card,
         billing_details: billingDetails.value,

@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { useState } from 'nuxt/app'
 import useContentFallback from './useContent'
 
 type DotdigitalChatConfig = {
@@ -79,7 +80,7 @@ export function useDotdigitalChat() {
       const script = document.createElement('script')
       script.id = SCRIPT_ID
       script.async = true
-      script.src = config.scriptUrl
+      script.src = config.scriptUrl || ''
 
       if (config.websiteId != null) script.dataset.websiteId = String(config.websiteId)
       if (config.chatId != null) script.dataset.chatId = String(config.chatId)

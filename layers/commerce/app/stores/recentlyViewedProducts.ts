@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, readonly } from 'vue'
 import { getCommerceClient } from '../utils/client'
-import type { Product as DomainProduct } from '../types/domain'
+import type { Product } from '../types/commerce.type'
 
 export const useRecentlyViewedStore = defineStore('recentlyViewed', () => {
   const ids = ref<string[]>([])
-  const items = ref<DomainProduct[]>([])
+  const items = ref<Product[]>([])
   const isLoading = ref(false)
 
   const addViewed = (productId: string) => {
@@ -20,7 +20,7 @@ export const useRecentlyViewedStore = defineStore('recentlyViewed', () => {
     try {
       const client = getCommerceClient()
       if (client && typeof client.getProductById === 'function') {
-        const loaded: DomainProduct[] = []
+        const loaded: Product[] = []
         for (const id of ids.value) {
           try {
             const p = await client.getProductById(id)

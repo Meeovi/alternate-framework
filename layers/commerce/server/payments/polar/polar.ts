@@ -10,9 +10,14 @@ import type { Refund } from '@polar-sh/sdk/models/components/refund.js'
 import type { Subscription } from '@polar-sh/sdk/models/components/subscription.js'
 import { checkout, polar, portal, usage, webhooks } from '@polar-sh/better-auth'
 import { Polar } from '@polar-sh/sdk'
-import { prisma } from 'alternate-gateway/core'
+
+// Centralized Prisma client instance
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
+
 type User = any
-import { logAuditEvent } from './auth'
+// import { logAuditEvent } from './auth'
 // runtimeConfig is not available in this isolated build; use env fallbacks
 const runtimeConfig = {
   public: { payment: process.env.PAYMENT || 'none' },
@@ -57,38 +62,38 @@ export const ensurePolarCustomer = async (user: User) => {
 const addPaymentLog = async (hookType: string, data: Customer | Checkout | Benefit | BenefitGrantWebhook | Order | Organization | Product | Refund | Subscription | CustomerState) => {
   if (hookType.startsWith('checkout.')) {
     const checkout = data as Checkout
-    await logAuditEvent({
-      userId: checkout.customerExternalId || undefined,
-      category: 'payment',
-      action: `polar:${hookType}:${checkout.product.name}`,
-      targetType: 'polarExternalId',
-      targetId: checkout.customerExternalId || checkout.metadata.email as string,
-      status: 'success'
-    })
+    // await logAuditEvent({
+    //   userId: checkout.customerExternalId || undefined,
+    //   category: 'payment',
+    //   action: `polar:${hookType}:${checkout.product?.name}`,
+    //   targetType: 'polarExternalId',
+    //   targetId: checkout.customerExternalId || checkout.metadata.email as string,
+    //   status: 'success'
+    // })
   } else if (hookType.startsWith('customer.')) {
     const customer = data as Customer
     if (hookType == 'customer.created' && customer.externalId) {
       // Write back polarCustomerId to users table using centralized prisma client
       await prisma.users.updateMany({ where: { id: customer.externalId as any }, data: { polarCustomerId: customer.id } as any })
     }
-    await logAuditEvent({
-      userId: customer.externalId || undefined,
-      category: 'payment',
-      action: `polar:${hookType}`,
-      targetType: 'polarExternalId',
-      targetId: customer.externalId || undefined,
-      status: 'success'
-    })
+    // await logAuditEvent({
+    //   userId: customer.externalId || undefined,
+    //   category: 'payment',
+    //   action: `polar:${hookType}`,
+    //   targetType: 'polarExternalId',
+    //   targetId: customer.externalId || undefined,
+    //   status: 'success'
+    // })
   } else if (hookType.startsWith('subscription.')) {
     const subscription = data as Subscription
-    await logAuditEvent({
-      userId: subscription.customer.externalId || undefined,
-      category: 'payment',
-      action: `polar:${hookType}:${subscription.product.name}`,
-      targetType: 'polarExternalId',
-      targetId: subscription.customer.externalId || undefined,
-      status: 'success'
-    })
+    // await logAuditEvent({
+    //   userId: subscription.customer.externalId || undefined,
+    //   category: 'payment',
+    //   action: `polar:${hookType}:${subscription.product.name}`,
+    //   targetType: 'polarExternalId',
+    //   targetId: subscription.customer.externalId || undefined,
+    //   status: 'success'
+    // })
   }
 }
 

@@ -5,4 +5,5 @@ export interface FormValidationResult {
   errors?: Record<string, string[]>
 }
 
-export default FormFields
+// Type-only export default is not allowed with verbatimModuleSyntax. Remove default export.
+// export default FormFields

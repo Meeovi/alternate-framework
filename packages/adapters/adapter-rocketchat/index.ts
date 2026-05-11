@@ -17,6 +17,7 @@ export class RocketChatAdapter implements RocketChatGatewayAdapterContract {
       return (rooms ?? []).map((room: any) => normalizeRocketChatRoom(room));
     } catch (error) {
       handleRocketChatError(error);
+      throw error;
     }
   }
 
@@ -26,6 +27,7 @@ export class RocketChatAdapter implements RocketChatGatewayAdapterContract {
       return (messages ?? []).map((message: any) => normalizeRocketChatMessage(message));
     } catch (error) {
       handleRocketChatError(error);
+      throw error;
     }
   }
 
@@ -35,6 +37,7 @@ export class RocketChatAdapter implements RocketChatGatewayAdapterContract {
       return normalizeRocketChatMessage(message);
     } catch (error) {
       handleRocketChatError(error);
+      throw error;
     }
   }
 }

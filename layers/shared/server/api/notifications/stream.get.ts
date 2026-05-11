@@ -1,4 +1,4 @@
-import { defineEventHandler, setResponseHeaders } from 'h3'
+import { defineEventHandler, setResponseHeaders, type H3Event } from 'h3'
 import { toWire } from '../../../shared/notifications/schema'
 import {
   computeNotificationsEtag,
@@ -8,7 +8,7 @@ import {
 
 const STREAM_SNAPSHOT_LIMIT = 20
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event: H3Event) => {
   setResponseHeaders(event, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache, no-transform',

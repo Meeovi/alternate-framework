@@ -1,21 +1,38 @@
 import type { mastodon } from '@mframework/adapter-federation'
-
+import { computed, nextTick, ref, watch } from 'vue'
+import { useMasto } from '~/composables/useMasto'
+import { useCurrentUser, removePushNotificationData, removePushNotifications } from '~/composables/contacts/users'
+import { useLocalStorage } from '../core/utils'
+import { STORAGE_KEY_NOTIFICATION, STORAGE_KEY_NOTIFICATION_POLICY } from '~/constants'
+import { createPushSubscription } from './createPushSubscription'
 import type {
   CreatePushNotification,
   PushNotificationPolicy,
   PushNotificationRequest,
   SubscriptionResult,
 } from './types'
-import { STORAGE_KEY_NOTIFICATION, STORAGE_KEY_NOTIFICATION_POLICY } from '../../utils/constants'
-import { currentUser, removePushNotificationData, removePushNotifications } from '../contacts/users'
-import { createPushSubscription } from './createPushSubscription'
 
-const supportsPushNotifications = typeof window !== 'undefined'
-  && 'serviceWorker' in navigator
-  && 'PushManager' in window
-  && 'getKey' in PushSubscription.prototype
+function createRawSettings(
+  pushSubscription?: mastodon.v1.WebPushSubscription,
+  subscriptionPolicy?: mastodon.v1.WebPushSubscriptionPolicy,
+) {
+  return {
+    follow: pushSubscription?.alerts.follow ?? true,
+    favourite: pushSubscription?.alerts.favourite ?? true,
+    reblog: pushSubscription?.alerts.reblog ?? true,
+    mention: pushSubscription?.alerts.mention ?? true,
+    poll: pushSubscription?.alerts.poll ?? true,
+    policy: subscriptionPolicy ?? 'all',
+  }
+}
 
 export function usePushManager() {
+  const supportsPushNotifications = import.meta.client
+    && 'serviceWorker' in navigator
+    && 'PushManager' in window
+    && 'getKey' in PushSubscription.prototype
+
+  const currentUser = useCurrentUser()
   const { client } = useMasto()
   const isSubscribed = ref(false)
   const notificationPermission = ref<PermissionState | undefined>(
@@ -27,17 +44,21 @@ export function usePushManager() {
           ? 'prompt'
           : undefined,
   )
+
   const isSupported = computed(() => supportsPushNotifications)
   const hiddenNotification = useLocalStorage<PushNotificationRequest>(STORAGE_KEY_NOTIFICATION, {})
   const configuredPolicy = useLocalStorage<PushNotificationPolicy>(STORAGE_KEY_NOTIFICATION_POLICY, {})
+
   const pushNotificationData = ref(createRawSettings(
     currentUser.value?.pushSubscription,
     configuredPolicy.value[currentUser.value?.account?.acct ?? ''],
   ))
+
   const oldPushNotificationData = ref(createRawSettings(
     currentUser.value?.pushSubscription,
     configuredPolicy.value[currentUser.value?.account?.acct ?? ''],
   ))
+
   const saveEnabled = computed(() => {
     const current = pushNotificationData.value
     const previous = oldPushNotificationData.value
@@ -77,7 +98,6 @@ export function usePushManager() {
     if (!token || !server || !vapidKey)
       return 'invalid-vapid-key'
 
-    // always request permission, browsers should remember user decision
     const permission = await Promise.resolve(Notification.requestPermission()).then((p) => {
       return p === 'default' ? 'prompt' : p
     })
@@ -106,6 +126,7 @@ export function usePushManager() {
       policy ?? 'all',
       force,
     )
+
     await nextTick()
     notificationPermission.value = permission
     hiddenNotification.value[acct] = true
@@ -119,6 +140,7 @@ export function usePushManager() {
 
     await removePushNotifications(currentUser.value)
     await removePushNotificationData(currentUser.value)
+    return true
   }
 
   const saveSettings = async (policy?: mastodon.v1.WebPushSubscriptionPolicy) => {
@@ -135,11 +157,7 @@ export function usePushManager() {
       policy: current.policy,
     }
 
-    if (policy)
-      configuredPolicy.value[currentUser.value!.account.acct ?? ''] = policy
-    else
-      configuredPolicy.value[currentUser.value!.account.acct ?? ''] = pushNotificationData.value.policy
-
+    configuredPolicy.value[currentUser.value?.account?.acct ?? ''] = current.policy
     await nextTick()
   }
 
@@ -153,39 +171,36 @@ export function usePushManager() {
       poll: previous.poll,
       policy: previous.policy,
     }
-    configuredPolicy.value[currentUser.value!.account.acct ?? ''] = previous.policy
+    configuredPolicy.value[currentUser.value?.account?.acct ?? ''] = previous.policy
   }
 
   const updateSubscription = async () => {
-    if (currentUser.value) {
-      const previous = oldPushNotificationData.value
-      // const previous = history.value[0].snapshot
-      const data = {
-        alerts: {
-          follow: pushNotificationData.value.follow,
-          favourite: pushNotificationData.value.favourite,
-          reblog: pushNotificationData.value.reblog,
-          mention: pushNotificationData.value.mention,
-          poll: pushNotificationData.value.poll,
-        },
-      }
+    if (!currentUser.value || !client.value)
+      return
 
-      const policy = pushNotificationData.value.policy
-
-      const policyChanged = previous.policy !== policy
-
-      // to change policy we need to resubscribe
-      if (policyChanged)
-        await subscribe(data, policy, true)
-      else
-        currentUser.value.pushSubscription = await client.value.v1.push.subscription.update({ data })
-
-      if (policyChanged)
-        await nextTick()
-
-      // force change policy when changed: watch is resetting it on push subscription update
-      await saveSettings(policyChanged ? policy : undefined)
+    const previous = oldPushNotificationData.value
+    const data = {
+      alerts: {
+        follow: pushNotificationData.value.follow,
+        favourite: pushNotificationData.value.favourite,
+        reblog: pushNotificationData.value.reblog,
+        mention: pushNotificationData.value.mention,
+        poll: pushNotificationData.value.poll,
+      },
     }
+
+    const policy = pushNotificationData.value.policy
+    const policyChanged = previous.policy !== policy
+
+    if (policyChanged)
+      await subscribe(data, policy, true)
+    else
+      currentUser.value.pushSubscription = await client.value.v1.push.subscription.update({ data })
+
+    if (policyChanged)
+      await nextTick()
+
+    await saveSettings(policyChanged ? policy : undefined)
   }
 
   return {
@@ -199,19 +214,5 @@ export function usePushManager() {
     updateSubscription,
     subscribe,
     unsubscribe,
-  }
-}
-
-function createRawSettings(
-  pushSubscription?: mastodon.v1.WebPushSubscription,
-  subscriptionPolicy?: mastodon.v1.WebPushSubscriptionPolicy,
-) {
-  return {
-    follow: pushSubscription?.alerts.follow ?? true,
-    favourite: pushSubscription?.alerts.favourite ?? true,
-    reblog: pushSubscription?.alerts.reblog ?? true,
-    mention: pushSubscription?.alerts.mention ?? true,
-    poll: pushSubscription?.alerts.poll ?? true,
-    policy: subscriptionPolicy ?? 'all',
   }
 }

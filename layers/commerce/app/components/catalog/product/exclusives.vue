@@ -31,10 +31,10 @@
   import productCard from './productCard.vue'
 
   const model = ref(null);
-  const { $dataClient, $readItems, $commerce } = useNuxtApp()
+  const { read, $commerce } = useNuxtApp()
 
   const { data: exclusives } = await useAsyncData('exclusives', async () => {
-    const refs = await $dataClient.request($readItems('products', {
+    const refs = await gateway.content(read('products', {
       fields: ['id', 'sku'],
       limit: 10,
       filter: {

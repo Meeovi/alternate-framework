@@ -3,8 +3,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 col-md-6">
-                    <div v-if="product?.image?.filename_disk">
-                        <img :src="`${$dataClient.url}assets/${product.image.filename_disk}`" :alt="product.name"
+                    <div v-if="hasAsset(product?.image)">
+                        <img :src="getAssetUrl(product?.image)" :alt="product.name"
                             class="w-full rounded-md" />
                     </div>
                 </div>
@@ -87,9 +87,8 @@
     import addToCartBtn from '../../partials/addToCartBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
 
-    const {
-        $dataClient,
-    } = useNuxtApp()
+    const { getAssetUrl } = useContentRequest()
+    const hasAsset = (file: any) => Boolean(getAssetUrl(file))
     const inputId = useId();
     const min = ref(1);
     const max = ref(999);

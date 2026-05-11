@@ -124,7 +124,8 @@
 
 <script setup lang="ts">
 const user = useCurrentUser()
-const { fetchSession, loading } = useAuth()
+const { fetchSession } = useAuth()
+const loading = ref(false)
 const theme = useTheme()
 const config = useRuntimeConfig()
 const authConfig = (config.public as any)?.auth ?? {}
@@ -378,7 +379,7 @@ const saveProfile = async () => {
 }
 
 definePageMeta({
-  layout: 'default',
+  layout: 'nolive',
 })
 </script>
 

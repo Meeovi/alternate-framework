@@ -4,16 +4,16 @@
             <v-col cols="12">
                 <v-toolbar title="Your Subscriptions" subtitle=""></v-toolbar>
                 <v-row class="accountRow">
-                    <v-col cols="3" v-for="(subscriptions, index) in mySubscriptions" :key="index">
+                    <v-col cols="3" v-for="(subscriptions, index) in allSubscriptions" :key="index">
                         <v-card class="mx-auto" max-width="400">
                             <img loading="lazy" class="align-end text-white" height="200"
-                            :src="subscriptions?.image?.filename_disk" :alt="subscriptions?.name" cover />
-                                <template #header>{{subscriptions?.name}}</template>
-                            <v-card #header class="pt-4">
+                            :src="getAssetUrl(subscriptions?.image)" :alt="subscriptions?.name" cover />
+                                <template>{{subscriptions?.name}}</template>
+                            <v-card class="pt-4">
                                 Status: {{ subscriptions?.status }}
                             </v-card>
 
-                            <template #header>
+                            <template>
                                 <div>Start Date: {{ subscriptions?.start_date }}</div>
 
                                 <div>End Date: {{ subscriptions?.end_date }}</div>
@@ -32,17 +32,17 @@
             <v-col cols="12">
                 <v-toolbar title="Available Subscriptions" subtitle=""></v-toolbar>
                 <v-row class="accountRow">
-                    <v-col cols="3" v-for="(subscriptions, index) in subscriptions" :key="index">
+                    <v-col cols="3" v-for="(subscriptions, index) in allSubscriptions" :key="index">
                         <v-card class="mx-auto" max-width="400">
                             <NuxtImg loading="lazy" class="align-end text-white" height="200"
-                            :src="subscriptions?.image?.filename_disk" :alt="subscriptions?.name" cover />
-                                <template #header>{{subscriptions?.name}}</template>
+                            :src="getAssetUrl(subscriptions?.image)" :alt="subscriptions?.name" cover />
+                                <template>{{subscriptions?.name}}</template>
 
-                            <v-card #header class="pt-4">
+                            <v-card class="pt-4">
                                 Status: {{ subscriptions?.status }}
                             </v-card>
 
-                            <template #header>
+                            <template>
                                 <div>Start Date: {{ subscriptions?.start_date }}</div>
 
                                 <div>End Date: {{ subscriptions?.end_date }}</div>
@@ -61,60 +61,40 @@
     </div>
 </template>
 
-
-
 <script setup lang="ts">
+import productCard from '../../catalog/product/productCard.vue'
+import { computed, ref } from 'vue'
+import { useAuth } from '../../../composables/globals/useAuth'
+import { useGateway } from '../../../composables/useGateway'
+import useContentRequest from '../../../composables/content/useContentRequest'
 
-    import productCard from '~/components/related/post.vue'
-    import { computed, unref } from '#imports'
-    // BetterAuth `useAuth()` fallback
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const auth: any = (globalThis as any).$useAuth ?? (typeof useAuth !== 'undefined' ? useAuth() : null)
-    const user = computed(() => {
-        if (!auth) return null
-        if (auth.user) return unref(auth.user) || null
-        if (auth.session) return unref(auth.session)?.user || null
-        return null
-    })
+const auth = useAuth()
+const user = computed(() => (auth as any)?.user?.value || null)
+const userId = computed(() => user.value?.id || null)
 
-    const {
-        $dataClient,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
-    const tab = ref(null);
+const tab = ref(null)
+const gateway = useGateway()
+const { fetch: contentFetch, getAssetUrl } = useContentRequest()
 
-    const {
-        data: incentiveBar
-    } = await useAsyncData('incentiveBar', async () => {
-        const resp = await $dataClient.request($readItem('navigation', '118', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
-        return resp?.data ?? resp ?? null
-    })
+const { data: incentiveBar } = await useAsyncData('incentiveBar', async () => {
+    // Backend-agnostic content fetch
+    const resp = await contentFetch({ collection: 'navigation', id: '118', options: { fields: ['*', { '*': ['*'] }] } })
+    return (resp as any)?.data ?? (resp as any) ?? null
+})
 
-    const {
-        data: incentivePage
-    } = await useAsyncData('incentivePage', () => {
-        return $dataClient.request($readItem('pages', '86', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
-    })
+const { data: incentivePage } = await useAsyncData('incentivePage', async () => {
+    const resp = await contentFetch({ collection: 'pages', id: '86', options: { fields: ['*', { '*': ['*'] }] } })
+    return (resp as any)?.data ?? (resp as any) ?? null
+})
 
-    const {
-        data: subscriptions
-    } = await useAsyncData('subscriptions', async () => {
-        const resp = await $dataClient.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
+const { data: allSubscriptions } = await useAsyncData('allSubscriptions', async () => {
+    const resp = await contentFetch({
+        collection: 'products',
+        options: {
+            fields: ['*', { '*': ['*'] }],
             filter: {
                 user_id: {
-                    _eq: user?.id
+                    _eq: userId.value
                 },
                 type: {
                     name: {
@@ -122,16 +102,14 @@
                     }
                 }
             }
-        }))
-        return resp?.data ?? resp ?? []
+        }
     })
+    return (resp as any)?.data ?? (resp as any) ?? []
+})
 
 
     useHead({
         title: 'Subscriptions',
     })
 
-    definePageMeta({
-	  middleware: ['authenticated'],
-	})
 </script>

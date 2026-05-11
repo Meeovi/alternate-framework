@@ -4,29 +4,41 @@ import {
   defaultAlternateLocateLocale,
   defaultAlternateLocateLocales,
 } from 'alternate-locate/adapters/nuxt/i18n'
-import {
-  withAlternateUiNuxtConfig,
-} from 'alternate-ui/nuxt'
 
 const isProd = process.env.NODE_ENV === 'production'
-const useMinimalSocialConfig = process.env.NODE_ENV === 'development' && process.env.NUXT_DEV_SOCIAL_FULL !== 'true'
 
-const minimalSocialConfig = {
+export default defineNuxtConfig({
   $meta: {
-    name: 'social-minimal',
-    description: 'Minimal social layer config for development stability',
+    name: 'social',
+    description: 'Social Layer provides functionalities for social interactions and networking.',
   },
 
-  ignore: [
-    './app/plugins/**',
-    './app/middleware/**',
-    './server/plugins/**',
+  modules: [
+    fileURLToPath(new URL('../../packages/modules/mframework-nuxt/src/module.ts', import.meta.url)),
+    '@vueuse/nuxt',
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxt/image',
+    ...(isProd ? ['nuxt-module-feed'] : []),
+    '@mframework/nuxt'
   ],
 
+  mframework: {
+    auth: '~/auth/authImplementation',
+    user: '~/auth/currentUser'
+  },
+  
   alias: {
+    '@mframework/core': fileURLToPath(new URL('../../packages/modules/alternate-core/src', import.meta.url)),
     '#auth': fileURLToPath(new URL('../auth', import.meta.url)),
     '#shared': fileURLToPath(new URL('../shared', import.meta.url)),
     '#social': fileURLToPath(new URL('./', import.meta.url)),
+  },
+
+  mframework: {
+    gateway: '~/gateway/socialGateway',
+    auth: '~/auth/socialAuth',
+    user: '~/auth/currentUser',
   },
 
   imports: {
@@ -34,6 +46,12 @@ const minimalSocialConfig = {
       './app/composables',
       './app/composables/**',
     ],
+  },
+
+  i18n: {
+    strategy: 'no_prefix',
+    defaultLocale: defaultAlternateLocateLocale,
+    locales: defaultAlternateLocateLocales as any,
   },
 
   runtimeConfig: {
@@ -43,40 +61,7 @@ const minimalSocialConfig = {
       namespaceId: '',
       apiToken: '',
     },
-  },
-
-  compatibilityDate: '2026-02-16',
-}
-
-export default defineNuxtConfig(useMinimalSocialConfig ? minimalSocialConfig : withAlternateUiNuxtConfig({
-  $meta: {
-    name: 'social',
-    description: 'Social Layer provides functionalities for social interactions and networking.',
-  },
-
-  modules: [
-    '@vueuse/nuxt',
-    '@pinia/nuxt',
-    '@nuxtjs/i18n',
-    '@nuxt/image',
-    'vuetify-nuxt-module',
-    ...(isProd ? ['nuxt-module-feed'] : []),
-  ],
-
-  alias: {
-    '#auth': fileURLToPath(new URL('../auth', import.meta.url)),
-    '#shared': fileURLToPath(new URL('../shared', import.meta.url)),
-    '#social': fileURLToPath(new URL('./', import.meta.url)),
-  },
-
-  imports: {
-    dirs: [
-      './app/composables',
-      './app/composables/**',
-    ],
-  },
-
-  feed: {
+      feed: {
     sources: [
       {
         path: "/feed.xml", // The route to your feed.
@@ -85,21 +70,7 @@ export default defineNuxtConfig(useMinimalSocialConfig ? minimalSocialConfig : w
       },
     ]
   },
-
-  i18n: {
-    strategy: 'no_prefix',
-    defaultLocale: defaultAlternateLocateLocale,
-    locales: defaultAlternateLocateLocales,
-  },
-
-  runtimeConfig: {
-    adminKey: '',
-    cloudflare: {
-      accountId: '',
-      namespaceId: '',
-      apiToken: '',
-    },
   },
 
   compatibilityDate: '2026-02-16',
-}))
+})

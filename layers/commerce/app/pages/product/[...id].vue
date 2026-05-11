@@ -28,7 +28,7 @@
               <v-tab value="nine" v-if="product?.product_types?.product_types_id?.name === 'Gift Card'">Redeem</v-tab>
             </v-tabs>
 
-            <template #header>
+            <template>
               <v-window v-model="tab">
                 <!--Product Description-->
                 <v-window-item :value="productbar?.menus[0]?.value">
@@ -253,6 +253,7 @@
   import short from '#social/app/components/related/short.vue'
   import spaces from '#social/app/components/related/space.vue'
   import shop from '#commerce/app/components/catalog/shops/stores.vue'
+  import { addViewed } from '#commerce/app/composables/catalog/products/useProducts/useRecentlyViewed'
 
   const tab = ref(null);
   const model = ref(null);
@@ -282,22 +283,21 @@
   const {
     data: productBlocks
   } = await useAsyncData('productBlocks', () => {
-    return $dataClient.request($readItem('page_blocks', '8', {
-      fields: ['*', 'media.data_files_id.filename_disk', 'content.*'],
+    return gateway.content(read('page_blocks', '8', {
+      fields: ['*', 'media.file.*', 'content.*'],
     }))
   })
 
   const {
     data: productbar
   } = await useAsyncData('productbar', () => {
-    return $dataClient.request($readItem('navigation', '52'))
+    return gateway.content(read('navigation', '52'))
   })
 
   useHead({
     title: computed(() => product?.value?.name || 'Product Page')
   })
 
-  import { addViewed } from '#commerce/app/composables/catalog/products/useRecentlyViewed'
 
   watch(product, (newVal) => {
     if (process.client && newVal?.id) {

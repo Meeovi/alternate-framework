@@ -7,7 +7,7 @@
                         {{ radio?.name }}
                     </template>
 
-                    <v-card #header>{{ radio?.description }}</v-card>
+                    <v-card>{{ radio?.description }}</v-card>
 
                     <template>
                         <v-btn class="ms-2" size="small" text="LISTEN" variant="outlined"
@@ -16,7 +16,7 @@
                 </div>
 
                 <v-avatar class="ma-3" :rounded="0" size="125">
-                    <NuxtImg :src="`${$dataClient.url}/assets/${radio?.image?.filename_disk}`" />
+                    <NuxtImg :src="getAssetUrl(radio?.image)" />
                 </v-avatar>
             </div>
         </v-card>
@@ -36,4 +36,5 @@
     const {
         radio
     } = props;
+    const { getAssetUrl } = useContentRequest()
 </script>

@@ -332,7 +332,7 @@ import { useDataRequest } from '~/composables/globals/useDataRequest'
     const {
         data: events
     } = await useAsyncData('events', () => {
-        return $dataClient.request($readItems('departments', {
+        return gateway.content(read('departments', {
             fields: ['*',
                 'products.products_id.*',
                 'images.*'
@@ -353,7 +353,7 @@ import { useDataRequest } from '~/composables/globals/useDataRequest'
     const {
         data: callouts
     } = await useAsyncData('callouts', () => {
-        return $dataClient.request($readItem('callouts', '2'))
+        return gateway.content(read('callouts', '2'))
     })
 
     useHead({

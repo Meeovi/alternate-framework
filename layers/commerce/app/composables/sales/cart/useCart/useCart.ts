@@ -1,8 +1,9 @@
+import type { Maybe } from '~/composables/system/models/shared';
 import type { SfCart } from '../../models';
 import { getCartProvider } from './registry'
 import { toRefs } from '@vueuse/shared';
 import type { UseCartReturn, UseCartState, FetchCard } from './types';
-import { getCommerceClient } from '../../../utils/client';
+import { getCommerceClient } from '../../../../utils/client';
 import { useAsyncData, useState, useRuntimeConfig } from 'nuxt/app';
 import { useHandleError } from '../../useHandleError';
 import { ref } from 'vue';

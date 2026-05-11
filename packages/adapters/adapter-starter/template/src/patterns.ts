@@ -3,13 +3,13 @@ import type {
   CommerceAdapter,
   SearchAdapter,
   TransportAdapter,
-} from 'alternate-gateway/core/adapters'
+} from 'alternate-gateway/adapters'
 
 import {
   setAuthAdapter,
   setCommerceAdapter,
   setSearchAdapter,
-} from 'alternate-gateway/core/registry'
+} from 'alternate-gateway/registry'
 
 export type AdapterInstallConfig = {
   baseUrl: string

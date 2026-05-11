@@ -27,12 +27,8 @@
 
     const { data: lists } = await useAsyncData('archivedLists', async () => {
         const opts = { filter: { status: { _eq: 'Archived' } } }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     const { data: archived } = await useAsyncData('archived', async () => {
@@ -42,12 +38,8 @@
                 status: { _eq: 'Archived' }
             }
         }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     useHead({

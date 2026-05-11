@@ -4,37 +4,50 @@
       <v-toolbar title="Radio Stations from the community" color="transparent">
         <NuxtLink to="/departments/categories/stations/">All Radio Stations</NuxtLink>
       </v-toolbar>
-      <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
-        <v-slide-group-item v-slot="{ toggle, selectedClass }" v-for="(result, index) in stationSlide" :key="index">
-          <stations style="margin: 10px;" :radio="result" :class="['ma-4', selectedClass]" @click="toggle" />
-        </v-slide-group-item>
-      </v-slide-group>
+
+      <div class="d-flex flex-wrap ga-2 pa-4 w-100">
+        <NuxtLink
+          v-for="(station, index) in stationItems"
+          :key="station?.id || index"
+          class="text-decoration-none"
+          :to="`/departments/categories/station/${station?.id || ''}`"
+        >
+          <v-chip color="primary" variant="outlined">
+            {{ station?.name || 'Station' }}
+          </v-chip>
+        </NuxtLink>
+      </div>
     </v-sheet>
   </div>
 </template>
 
 <script setup>
   import {
-    ref,
-  } from '#imports';
-  import stations from './radiostation.vue'
+    computed,
+  } from '#imports'
 
-  const model = ref(null);
   const {
-    $dataClient,
-    $readItems
+    read,
   } = useNuxtApp()
 
   const {
-    data: stationSlide
-  } = await useAsyncData('stationSlide', () => {
-    return $dataClient.request($readItems('radios', {
-      fields: ['*', { '*': ['*'] }],
-      filter: {
-        status: {
-          _eq: "published"
-        }
-      }
-    }))
+    data: stationSlide,
+  } = await useAsyncData('stationSlide', async () => {
+    try {
+      const result = await gateway.content(read('radios', {
+        fields: ['id', 'name'],
+        filter: {
+          status: {
+            _eq: 'published',
+          },
+        },
+      }))
+
+      return Array.isArray(result) ? result : (result?.data || [])
+    } catch {
+      return []
+    }
   })
+
+  const stationItems = computed(() => Array.isArray(stationSlide.value) ? stationSlide.value : [])
 </script>

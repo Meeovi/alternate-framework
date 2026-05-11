@@ -1,7 +1,7 @@
 <template>
     <v-card class="mx-auto" max-width="400">
-        <img v-if="member?.avatar?.filename_disk" class="align-end auto-text" height="200" :src="getAssetUrl(member?.avatar)"  :alt="member?.first_name" />
-        <template #header>{{ member?.first_name }} {{ member?.last_name }}</template>
+        <img v-if="hasAsset(member?.avatar)" class="align-end auto-text" height="200" :src="getAssetUrl(member?.avatar)"  :alt="member?.first_name" />
+        <template>{{ member?.first_name }} {{ member?.last_name }}</template>
 
         <v-card-text class="pt-4">
             {{ member?.title }}
@@ -22,6 +22,7 @@
 <script setup>
 import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { getAssetUrl } = useAdapterRequest()
+const hasAsset = (file) => Boolean(getAssetUrl(file))
     
     const props = defineProps({
         member: {

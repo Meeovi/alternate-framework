@@ -399,7 +399,8 @@
 
 <script setup lang="ts">
 const user = useCurrentUser()
-const { fetchSession, loading, logout } = useAuth()
+const { fetchSession, signOut: authSignOut } = useAuth()
+const loading = ref(false)
 const theme = useTheme()
 const nuxtApp = useNuxtApp()
 const config = useRuntimeConfig()
@@ -724,7 +725,7 @@ onMounted(async () => {
 })
 
 const signOut = async () => {
-  await logout('/auth/login')
+  await authSignOut({ redirectTo: '/auth/login' })
 }
 
 const toggleTheme = () => {
@@ -736,7 +737,7 @@ const toggleTheme = () => {
 }
 
 definePageMeta({
-  layout: 'default',
+  layout: 'nolive',
 })
 </script>
 

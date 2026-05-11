@@ -9,7 +9,7 @@ import { useRuntimeConfig } from '#imports'
 
 class CommerceAdminError extends ApiTransportError {
   statusCode: number
-  details?: unknown
+  override details?: unknown
   constructor(message: string, statusCode = 500, details?: unknown) {
     super(message, statusCode, details)
     this.name = 'CommerceAdminError'

@@ -1,5 +1,6 @@
 import type { Ref } from 'vue';
-import type { Maybe, SfAddress, SfProduct } from '../models';
+import type { Maybe, SfAddress } from '~/composables/system/models/shared';
+import type { SfProduct } from '~/composables/system/models/product';
 
 export type OrderData = {
   id: string;

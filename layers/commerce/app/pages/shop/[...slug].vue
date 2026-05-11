@@ -15,7 +15,7 @@
             <div class="card-wrapper">
               <div class="item-img">
                 <NuxtImg loading="lazy" class="align-end text-white" v-if="shop?.image"
-                  :src="`${$dataClient.url}/assets/${shop?.image?.filename_disk}`" :alt="shop?.name" cover />
+                  :src="getAssetUrl(shop?.image)" :alt="shop?.name" cover />
                 <div class="card-box">
                   <div class="icon-wrapper">
                     <span class="mbr-iconfont mobi-mbri-contact-form mobi-mbri"></span>
@@ -61,7 +61,7 @@
         </v-tab>
       </v-tabs>
 
-      <template #header>
+      <template>
         <v-tabs-window v-model="tab">
 
           <v-tabs-window-item :value="shopbar?.menus[1]?.value">
@@ -106,11 +106,13 @@
   import comments from '#social/app/components/blocks/comments.vue'
   import spaces from '#social/app/components/related/space.vue'
   import events from '#social/app/components/blocks/events/about.vue'
-  import { useContentFallback } from '#commerce/app/composables/useContent'
+  import { useContentFallback } from '#commerce/app/composables/content/useContent'
 
   const route = useRoute();
   const tab = ref(null);
-  const { $dataClient, $readItem } = useNuxtApp()
+  const gateway = useGateway()
+  const contentClient = gateway.content
+  const { getAssetUrl } = useContentRequest()
 
   const slug = computed(() => {
     const s = route.params.slug
@@ -145,7 +147,7 @@
   const shop = computed(() => shopRaw.value?.[0] || null)
 
   const { data: shopbar } = await useAsyncData('shopbar', () => {
-    return $dataClient.request($readItem('navigation', '55'))
+    return contentClient.readItem('navigation', '55')
   })
 
   definePageMeta({

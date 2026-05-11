@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
-import { useLocate } from 'alternate-locate/adapters/vue/composable'
+import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
+import { openErrorDialog } from '../core/dialog'
 
 export function useSignIn(input?: Ref<HTMLInputElement | undefined>) {
   const singleInstanceServer = useRuntimeConfig().public.singleInstance
@@ -23,7 +24,7 @@ export function useSignIn(input?: Ref<HTMLInputElement | undefined>) {
     await nextTick()
 
     if (!singleInstanceServer && server.value)
-      server.value = server.value.split('/')[0]
+      server.value = server.value.split('/')[0] || ''
 
     try {
       let href: string

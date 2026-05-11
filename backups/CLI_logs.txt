@@ -1,6 +1,0 @@
-v16.13.0
-
-🙌 Node.js version is compatible
-v16.13.0
-
-🙌 Node.js version is compatible

@@ -1,30 +1,14 @@
-import type { Node } from 'ultrahtml'
-import { decode } from 'tiny-decode'
-import { parse, TEXT_NODE } from 'ultrahtml'
-import { computed } from 'vue'
-import { isGlitchEdition } from '../contacts/users'
+export const maxAccountFieldCount = 4
 
-export const maxAccountFieldCount = computed(() => isGlitchEdition.value ? 16 : 4)
+export function convertMetadata(metadata: Array<{ name?: string; value?: string }> | null | undefined) {
+  if (!metadata)
+    return []
 
-export function convertMetadata(metadata: string) {
-  try {
-    const tree = parse(metadata)
-    return (tree.children as Node[]).map(n => convertToText(n)).join('').trim()
-  }
-  catch (err) {
-    console.error(err)
-    return ''
-  }
-}
-
-function convertToText(input: Node): string {
-  let text = ''
-
-  if (input.type === TEXT_NODE)
-    return decode(input.value)
-
-  if ('children' in input)
-    text = (input.children as Node[]).map(n => convertToText(n)).join('')
-
-  return text
+  return metadata
+    .filter(entry => entry && (entry.name || entry.value))
+    .slice(0, maxAccountFieldCount)
+    .map(entry => ({
+      name: String(entry.name || '').trim(),
+      value: String(entry.value || '').trim(),
+    }))
 }

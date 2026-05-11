@@ -1,28 +1,9 @@
 import { defineNuxtPlugin, useRuntimeConfig } from 'nuxt/app'
-import { createMeeoviDirectusClient } from '@mframework/adapter-directus'
-import { staticToken } from '@directus/sdk'
+import { DirectusAdapter } from '@mframework/adapter-directus'
 
 function createAdapter(url: string, token?: string) {
-  const sdk = createMeeoviDirectusClient<any>(url)
-  const client = token ? (sdk.client as any).with(staticToken(token)) : sdk.client
-
-  const adapter = {
-    request: (query: any) => client.request(query),
-    readItems: (collection: string, opts?: any) => client.request(sdk.readItems(collection as any, opts)),
-    readItem: (collection: string, id: string | number, opts?: any) => client.request(sdk.readItem(collection as any, id as any, opts)),
-    readFieldsByCollection: (collection: string) => client.request(sdk.readFieldsByCollection(collection as any)),
-    createItem: (collection: string, payload: any) => client.request(sdk.createItem(collection as any, payload)),
-    updateItem: (collection: string, id: string | number, payload?: any) => client.request(sdk.updateItem(collection as any, id as any, payload)),
-    deleteItem: (collection: string, id: string | number) => client.request(sdk.deleteItem(collection as any, id as any)),
-    uploadFiles: (files: any) => client.request(sdk.uploadFiles(files)),
-    getAssetUrl: (file: any) => {
-      const fid = file?.id || file?.directus_files_id?.id || file?.filename_disk || file
-      if (!fid) return ''
-      return `${url.replace(/\/$/, '')}/assets/${fid}`
-    },
-  }
-
-  return { adapter, sdk }
+  const adapter = new DirectusAdapter({ url, staticToken: token })
+  return { adapter }
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -35,9 +16,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   const directusToken = String(publicConfig?.directus?.staticToken || '')
   if (!directusUrl) return {}
 
-  const { adapter, sdk } = createAdapter(directusUrl, directusToken || undefined)
+  const { adapter } = createAdapter(directusUrl, directusToken || undefined)
   ;(globalThis as any).__adapter = adapter
-  ;(globalThis as any).__directus = { ...sdk, url: directusUrl }
+  ;(globalThis as any).__directus = { ...adapter, url: directusUrl }
 
   const canProvide = (key: string) => !(`$${key}` in (nuxtApp as any))
   const provide: Record<string, any> = {}
@@ -52,7 +33,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (canProvide('uploadFiles')) provide.uploadFiles = adapter.uploadFiles
   if (canProvide('directus')) {
     provide.directus = {
-      ...sdk,
+      ...adapter,
       url: directusUrl,
       request: adapter.request,
     }

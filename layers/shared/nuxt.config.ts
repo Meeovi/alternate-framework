@@ -5,112 +5,64 @@ import {
   defineNuxtConfig
 } from 'nuxt/config'
 import process from 'node:process'
-import {
-  createRequire
-} from 'node:module'
-import {
-  withAlternateUiNuxtConfig
-} from 'alternate-ui/nuxt'
-import {
-  defaultAlternateLocateLocale,
-  defaultAlternateLocateLocales,
-} from 'alternate-locate/adapters/nuxt/i18n'
-
-const require = createRequire(import.meta.url)
-
-function hasOptionalModule(name: string): boolean {
-  try {
-    require.resolve(name)
-    return true
-  } catch {
-    return false
-  }
-}
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
-const isProd = process.env.NODE_ENV === 'production'
-const disabledDevModules = new Set(
-  String(process.env.NUXT_DEV_DISABLE_MODULES || '')
-    .split(',')
-    .map(name => name.trim())
-    .filter(Boolean)
-)
-const hasI18nModule = hasOptionalModule('@nuxtjs/i18n')
-const hasPwaNuxtModule = hasOptionalModule('@vite-pwa/nuxt')
-const hasApiClientNuxtModule = hasOptionalModule('@mframework/api-client/nuxt')
-const enablePwaModule = (pwaDevEnabled || sw) && hasPwaNuxtModule
-const resolveFromConfig = (path: string) => fileURLToPath(new URL(path, import.meta.url))
-const enableSeoModule = isProd
-const disableSharedPlugins = process.env.NUXT_DEV_DISABLE_SHARED_PLUGINS === 'true'
-const disableSharedMiddleware = process.env.NUXT_DEV_DISABLE_SHARED_MIDDLEWARE === 'true'
-const useMinimalSharedConfig = process.env.NODE_ENV === 'development' && process.env.NUXT_DEV_SHARED_MINIMAL === 'true'
 
-const minimalSharedConfig = {
+export default defineNuxtConfig({
   $meta: {
-    name: 'shared-nuxt-minimal',
-    description: 'Minimal shared layer config for dev isolation',
-  },
-}
-
-const withModuleFilter = (modules: string[]) => {
-  if (process.env.NODE_ENV !== 'development' || disabledDevModules.size === 0) {
-    return modules
-  }
-  return modules.filter(moduleName => !disabledDevModules.has(moduleName))
-}
-
-export default defineNuxtConfig(useMinimalSharedConfig ? minimalSharedConfig : withAlternateUiNuxtConfig({
-  $meta: {
-    name: 'shared-nuxt',
+    name: 'shared',
     description: 'Nuxt-specific glue for alternate-* modules',
   },
 
-  modules: withModuleFilter([
+  css: [
+    'alternate-media/styles/media.css',
+  ],
+
+  modules: [
+    fileURLToPath(new URL('../../packages/modules/mframework-nuxt/src/module.ts', import.meta.url)),
+    'vuetify-nuxt-module',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
-    'vuetify-nuxt-module',
-    ...(enableSeoModule ? ['@nuxtjs/seo'] : []),
-    ...(hasI18nModule ? ['@nuxtjs/i18n'] : []),
-    ...(enablePwaModule ? ['@vite-pwa/nuxt'] : []),
-    ...(hasApiClientNuxtModule ? ['@mframework/api-client/nuxt'] : []),
-  ]),
-
-  ...(hasI18nModule ? {
-    i18n: {
-      strategy: 'no_prefix' as const,
-      defaultLocale: defaultAlternateLocateLocale,
-      locales: defaultAlternateLocateLocales.map(locale => ({ ...locale })),
-    },
-  } : {}),
-
-  css: [
-    'alternate-media/styles/media.css',
-    resolveFromConfig('./assets/css/ui.css'),
-    resolveFromConfig('./assets/css/media.css'),
-    resolveFromConfig('./assets/css/search.css'),
-    resolveFromConfig('./assets/css/locate.css'),
+    'nuxt-gtag',
+    '@nuxtjs/google-adsense',
+    'nuxt-vitalizer',
+    '@nuxtjs/seo',
+    '@nuxtjs/i18n',
+    '@vite-pwa/nuxt',
+    '@mframework/nuxt'
   ],
 
-  // Nuxt 4 auto-registers layer plugins from app/plugins.
-  // Keeping plugin definitions in app/plugins avoids custom path wiring.
-  imports: {
-    dirs: ['./runtime/composables'],
+  alias: {
+    '@mframework/core': fileURLToPath(new URL('../../packages/modules/alternate-core/src', import.meta.url)),
   },
 
-  ...(process.env.NODE_ENV === 'development' && (disableSharedPlugins || disableSharedMiddleware) ? {
-    ignore: [
-      ...(disableSharedPlugins ? ['./app/plugins/**'] : []),
-      ...(disableSharedMiddleware ? ['./app/middleware/**'] : []),
-    ],
-  } : {}),
-
+  // @ts-ignore - nuxt-gtag module augments this key at runtime
   site: {
     url: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
     name: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'}`,
     description: `${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
+  },
+
+  // @ts-ignore - nuxt-gtag module augments this key at runtime
+  gtag: {
+    enabled: process.env.NODE_ENV === 'production',
+    id: process.env.NUXT_PUBLIC_GTAG_ID,
+    config: {
+      page_title: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'} - {{ pageTitle }}`,
+    },
+    initCommands: [
+      // Setup up consent mode
+      ['consent', 'default', {
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500,
+      }]
+    ],
   },
 
   pwa: {
@@ -186,20 +138,56 @@ export default defineNuxtConfig(useMinimalSharedConfig ? minimalSharedConfig : w
     },
   },
 
-  includeCoreStyles: false,
-  includeStorefrontStyles: true,
-  includeStorefrontModule: true,
-
-  vite: {
-    optimizeDeps: {
-      include: []
+  vuetify: {
+    vuetifyOptions: {
+      icons: {
+        defaultSet: 'fa',
+        sets: [{
+          name: 'fa',
+          cdn: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css'
+        }, {
+          name: 'mdi',
+          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
+        }]
+      }
     }
   },
 
-  nitro: {
-    compressPublicAssets: true,
-    experimental: {
-      wasm: true,
+  i18n: {
+    strategy: "prefix_except_default",
+    defaultLocale: "en-US",
+    detectBrowserLanguage: false,
+    langDir: "alternate-locate/src/langs/",
+    vueI18n: "alternate-locate/src/adapters/nuxt/i18n.config",
+  },
+
+  runtimeConfig: {
+    mframework: {
+      auth: '~/auth/authImplementation',
+      user: '~/auth/currentUser',
+      gateway: '~/gateway/searchGateway'
+    },
+    public: {
+      googleAdsense: {
+        id: process.env.GOOGLE_ADSENSE_ID,
+        test: process.env.GOOGLE_ADSENSE_TEST_MODE === 'true',
+        onPageLoad: false,
+        pageLevelAds: false,
+      },
     },
   },
-}))
+
+  vite: {
+    logLevel: 'info',
+    plugins: []
+  },
+
+  nitro: {
+    prerender: {
+      routes: [
+        '/assets/images/*',
+      ]
+    },
+    compressPublicAssets: true,
+  },
+})

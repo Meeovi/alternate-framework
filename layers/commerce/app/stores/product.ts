@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
-import type { Product as DomainProduct } from '../types/domain';
-import { useProducts } from '../composables/catalog/products'
+import type { Product } from '../types/commerce.type';
+// import { useProducts } from '../composables/catalog/products'
+
 
 interface ProductState {
-    products: DomainProduct[]
-    selectedProduct: DomainProduct | null
-    isLoading: boolean
+    products: Product[];
+    selectedProduct: Product | null;
+    isLoading: boolean;
 }
 
 export const useProductStore = defineStore('product', {
@@ -18,16 +19,16 @@ export const useProductStore = defineStore('product', {
         async fetchProducts(options: any = {}) {
             this.isLoading = true;
             try {
-                const { getProducts } = useProducts()
-                const response = await getProducts(options)
-                ;(this as any).products = response as DomainProduct[]
+                // const { getProducts } = useProducts()
+                // const response = await getProducts(options)
+                // ;(this as any).products = response as DomainProduct[]
             } catch (error) {
                 console.error('Error fetching products:', error);
             } finally {
                 this.isLoading = false;
             }
         },
-        selectProduct(product: DomainProduct) {
+        selectProduct(product: Product) {
             ;(this as any).selectedProduct = product
         }
     }

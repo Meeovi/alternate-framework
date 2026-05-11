@@ -27,11 +27,7 @@
       fields: ['*', { '*': ['*'] }],
       filter: { status: { _eq: 'Public' } }
     }
-    if (content && typeof content.readItems === 'function') {
-      const resp = await content.readItems('lists', opts)
-      return resp?.data || resp
-    }
-    const { $directus, $readItems } = useNuxtApp()
-    return await $directus.request($readItems('lists', opts))
+    const resp = await content.readItems('lists', opts)
+    return resp?.data || resp
   })
 </script>

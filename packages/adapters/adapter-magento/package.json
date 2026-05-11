@@ -4,10 +4,15 @@
   "description": "Magento adapter for M Framework",
   "type": "module",
   "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./nuxt": "./module.ts"
+  },
   "scripts": {
     "build": "echo \"No build step\""
   },
   "dependencies": {
-    "graphql-request": "^7.3.4"
+    "@nuxt/kit": "^4.4.2",
+    "graphql-request": "^7.4.0"
   }
 }

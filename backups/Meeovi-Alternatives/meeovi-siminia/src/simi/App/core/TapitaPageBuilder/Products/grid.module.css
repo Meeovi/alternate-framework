@@ -1,8 +1,0 @@
-.root {
-    display: grid;
-    grid-template-areas:
-        'actions'
-        'items';
-    grid-template-columns: 1fr;
-    line-height: 1;
-}

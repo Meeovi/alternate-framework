@@ -7,15 +7,16 @@
   </template>
   
   <script setup>
-  import getActiveOrderQuery from '#graphql/app/commerce/queries/activeOrder.gql';
+  import { getCommerceClient } from '../../utils/client';
 
   const nuxtApp = useNuxtApp();
 
   const redirectToCheckout = async () => {
     try {
       // Fetch the active order to get the order code or id
-      const orderRes = await nuxtApp.$graphql.request(getActiveOrderQuery);
-      const order = orderRes?.activeOrder;
+      const commerce = getCommerceClient();
+      const orderRes = await (commerce?.getActiveOrder?.() || commerce?.activeOrder?.() || commerce?.getCart?.());
+      const order = orderRes?.activeOrder || orderRes?.cart || orderRes || null;
       if (!order) return;
 
       // Attempt to create a checkout session in Data
@@ -24,7 +25,7 @@
           orderCode: order.code,
           items: (order.lines || []).map((l) => ({ sku: l?.productVariant?.sku, quantity: l.quantity }))
         };
-        const created = await nuxtApp.$createItem('checkout_sessions', payload);
+        const created = await nuxtApp.create('checkout_sessions', payload);
         // support common response shapes
         const redirectUrl = created?.redirect_url || created?.data?.redirect_url || created?.url || created?.data?.url;
         if (redirectUrl) {

@@ -7,7 +7,7 @@
         </v-btn>
       </template>
       <v-card class="b-1">
-        <template #header>
+        <template>
           <h3>Create New List</h3>
         </template>
 
@@ -36,8 +36,8 @@ const { data, error } = await useAsyncData('listsFields', async () => {
   if (content && typeof content.readFieldsByCollection === 'function') {
     return await content.readFieldsByCollection('lists')
   }
-  const { $directus, $readFieldsByCollection } = useNuxtApp()
-  return $directus.request($readFieldsByCollection('lists'))
+  const { $readFieldsByCollection } = useNuxtApp()
+  return gateway.content($readFieldsByCollection('lists'))
 })
 
 // normalize response: Directus may return { data: [...] } or an array directly

@@ -95,7 +95,7 @@ const { getAssetUrl } = useAdapterRequest()
 const backgroundImage = computed(() => {
     const image = props.group?.image
 
-    if (image?.filename_disk) {
+    if (getAssetUrl(image)) {
         return getAssetUrl(image)
     }
 

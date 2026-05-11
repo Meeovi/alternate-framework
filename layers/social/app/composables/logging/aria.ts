@@ -1,3 +1,20 @@
+// Minimal event bus for aria announcer
+import { ref } from 'vue'
+type EventHandler<T> = (payload: T) => void
+function useEventBus<T = any, P = any>(key: symbol) {
+  const listeners = ref<EventHandler<P>[]>([])
+  return {
+    emit: (event: T, payload?: P) => {
+      listeners.value.forEach(fn => fn(payload as P))
+    },
+    on: (fn: EventHandler<P>) => {
+      listeners.value.push(fn)
+    },
+    off: (fn: EventHandler<P>) => {
+      listeners.value = listeners.value.filter(f => f !== fn)
+    },
+  }
+}
 export type AriaLive = 'off' | 'polite' | 'assertive'
 export type AriaAnnounceType = 'announce' | 'mute' | 'unmute'
 

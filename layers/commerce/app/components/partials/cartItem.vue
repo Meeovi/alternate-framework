@@ -44,11 +44,13 @@
 
 <script setup lang="ts">
 import productCard from '../catalog/product/productCard.vue';
-import { computed } from '#imports';
+import { computed } from 'vue';
 
 const props = defineProps<{ item: Record<string, any> }>();
 const emit = defineEmits(['cart-changed'])
 const nuxtApp = useNuxtApp()
+// Use injected composables for Directus
+const { directus, deleteItem, readItem, createItem } = nuxtApp;
 
 // Prepare a product object compatible with productCard.vue
 const productForCard = computed(() => {
@@ -56,7 +58,7 @@ const productForCard = computed(() => {
   return {
     id: pv?.product?.id || pv?.id || props.item?.id,
     name: pv?.name || pv?.product?.name,
-    image: pv?.featuredAsset ? { filename_disk: pv.featuredAsset?.id } : (pv?.product?.image || {}),
+    image: pv?.featuredAsset ? { id: pv.featuredAsset?.id } : (pv?.product?.image || {}),
     brands: pv?.product?.brands || [],
     currency: pv?.product?.currency || [],
     price: (props.item?.unitPriceWithTax && props.item.unitPriceWithTax / 100) || pv?.price || 0,
@@ -68,17 +70,9 @@ const productForCardPrice = computed(() => productForCard.value?.price || 0);
 
 async function removeItem(orderLineId: string) {
   try {
-    // Try to delete using Data client
-    try {
-      if (nuxtApp.$dataClient && nuxtApp.$dataClient.items) {
-        await nuxtApp.$dataClient.items('order_lines').delete(orderLineId);
-      } else if (nuxtApp.$deleteItem) {
-        await nuxtApp.$deleteItem('order_lines', orderLineId);
-      }
-    } catch (e) {
-      console.warn('Data delete failed, falling back to plugin helper or ignoring', e);
+    if (deleteItem) {
+      await (deleteItem as any)?.('order_lines', orderLineId);
     }
-
     emit('cart-changed');
   } catch (error) {
     console.error('Failed to remove item:', error);
@@ -88,24 +82,14 @@ async function removeItem(orderLineId: string) {
 async function updateQuantity(orderLineId: string, newQuantity: number) {
   if (newQuantity < 1) return;
   try {
-    // Try to update via Data SDK
-    try {
-      if (nuxtApp.$dataClient && nuxtApp.$dataClient.items) {
-        await nuxtApp.$dataClient.items('order_lines').update(orderLineId, { quantity: newQuantity });
-      } else if (nuxtApp.$createItem) {
-        // Fallback: read existing, delete and recreate with new quantity
-        const existing = await nuxtApp.$readItem('order_lines', orderLineId).catch(() => null);
-        if (existing) {
-          await nuxtApp.$deleteItem('order_lines', orderLineId).catch(() => null);
-          const payload = { ...existing, quantity: newQuantity };
-          delete payload.id;
-          await nuxtApp.$createItem('order_lines', payload).catch(() => null);
-        }
-      }
-    } catch (e) {
-      console.warn('Data update fallback failed', e);
+    // Fallback: read existing, delete and recreate with new quantity
+    const existing = await (readItem as any)?.('order_lines', orderLineId).catch(() => null);
+    if (existing) {
+      await (deleteItem as any)?.('order_lines', orderLineId).catch(() => null);
+      const payload = { ...existing, quantity: newQuantity };
+      delete payload.id;
+      await (createItem as any)?.('order_lines', payload).catch(() => null);
     }
-
     emit('cart-changed');
   } catch (error) {
     console.error('Failed to update quantity:', error);

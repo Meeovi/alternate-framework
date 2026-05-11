@@ -5,13 +5,13 @@
 </template>
 
 <script setup>
-    const { $dataClient, $readItems } = useNuxtApp()
+    const { read } = useNuxtApp()
 
     const { fetchSession } = useAuth()
     await fetchSession()
 
     const { data: meeBtn } = await useAsyncData('meeBtn', () => {
-        return $dataClient.request($readItems('mee_btn', {
+        return gateway.content(read('mee_btn', {
             fields: ['*', {
                 '*': ['*']
             }]

@@ -1,4 +1,4 @@
-import type { UserLogin } from 'alternate-gateway/core/shared/types'
+
 
 import type { mastodon } from 'masto'
 
@@ -6,10 +6,6 @@ export type SubscriptionResult = 'subscribed' | 'notification-denied' | 'not-sup
 export interface PushManagerSubscriptionInfo {
   registration: ServiceWorkerRegistration
   subscription: PushSubscription | null
-}
-
-export interface RequiredUserLogin extends Required<Omit<UserLogin, 'account' | 'pushSubscription'>> {
-  pushSubscription?: mastodon.v1.WebPushSubscription
 }
 
 export interface CreatePushNotification {

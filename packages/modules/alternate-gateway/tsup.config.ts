@@ -1,0 +1,12 @@
+// tsup.config.ts
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  dts: true,
+  format: ['esm'],
+  clean: true,
+  sourcemap: true,
+  bundle: true,            // you can still bundle other deps
+  external: ['@apollo/client'] // <-- keep Apollo external
+})

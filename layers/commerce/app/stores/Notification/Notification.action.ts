@@ -1,4 +1,5 @@
-import { Notification, NotificationOptions, NotificationType } from './Notification.type'
+import type { Notification, NotificationOptions } from './Notification.type'
+import { NotificationType } from './Notification.type'
 
 function genId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`

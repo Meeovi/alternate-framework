@@ -12,11 +12,11 @@
                         <v-btn icon dark @click="dialog = false">
                             <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
                         </v-btn>
-                        <template #header>
+                        <template>
                             <span class="text-h6">Create new Attribute Set</span>
                         </template>
                     </v-toolbar>
-                    <template #header>
+                    <template>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
@@ -56,7 +56,7 @@
 
 <script>
  /*   import gql from "graphql-tag";
-    import findManyCategories from "#graphql/query/findManyCategories"
+    import findManyCategories from "@/legacy/query/findManyCategories"
 
     const ADD_CATEGORIES = gql `
     mutation createOneCategories($name: String!, $content: String, $image: String, $meta_title: String, $meta_keywords: String, $meta_description:String){

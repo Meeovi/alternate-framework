@@ -4,6 +4,17 @@
 export default function useContentRequest() {
   const nuxt = useNuxtApp()
 
+  // Normalize provider-specific media relation fields to a stable UI contract.
+  // UI consumers should read `file`, not adapter-specific keys.
+  function applyFileAlias(normalized: Record<string, any>) {
+    if (normalized.directus_files_id && !normalized.file) {
+      normalized.file = normalized.directus_files_id
+    }
+    if (normalized.data_files_id && !normalized.file) {
+      normalized.file = normalized.data_files_id
+    }
+  }
+
   function normalizeResult(value: any): any {
     if (Array.isArray(value)) return value.map(normalizeResult)
     if (!value || typeof value !== 'object') return value
@@ -11,9 +22,7 @@ export default function useContentRequest() {
     for (const [key, entry] of Object.entries(value)) {
       normalized[key] = normalizeResult(entry)
     }
-    if (normalized.directus_files_id && !normalized.file) {
-      normalized.file = normalized.directus_files_id
-    }
+    applyFileAlias(normalized)
     return normalized
   }
 

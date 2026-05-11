@@ -4,11 +4,11 @@
           <v-card>
             <v-form @submit.prevent="handleSubmit">
                   <v-toolbar dark color="primary">
-                      <template #header>
+                      <template>
                           <span class="text-h6">Update Space</span>
                       </template>
                   </v-toolbar>
-                  <template #header>
+                  <template>
                       <v-container>
                           <v-row>
                               <v-col cols="12">
@@ -59,7 +59,7 @@
     <v-dialog v-model="deleteDialog" max-width="500px">
             <v-card>
                 <template #title class="text-h5">Delete Space</template>
-                <template #header>
+                <template>
                     Are you sure you want to delete this space? This action cannot be undone.
                 </template>
                 <template>
@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from '#imports';
+import { ref, onMounted } from 'vue';
 import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { readItem, deleteItem, updateItem, uploadFiles } = useAdapterRequest()
 import updateSpace from '#social/app/composables/spaces/updateSpace';

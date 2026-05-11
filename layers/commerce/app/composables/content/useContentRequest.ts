@@ -1,5 +1,16 @@
 import { ref } from 'vue'
 
+// Normalize provider-specific media relation fields to a stable UI contract.
+// UI consumers should read `file`, not adapter-specific keys.
+function applyFileAlias(normalized: Record<string, any>) {
+  if (normalized.directus_files_id && !normalized.file) {
+    normalized.file = normalized.directus_files_id
+  }
+  if (normalized.data_files_id && !normalized.file) {
+    normalized.file = normalized.data_files_id
+  }
+}
+
 function normalizeResult(value: any): any {
   if (Array.isArray(value)) return value.map(normalizeResult)
   if (!value || typeof value !== 'object') return value
@@ -9,9 +20,7 @@ function normalizeResult(value: any): any {
     normalized[key] = normalizeResult(entry)
   }
 
-  if (normalized.directus_files_id && !normalized.file) {
-    normalized.file = normalized.directus_files_id
-  }
+  applyFileAlias(normalized)
 
   return normalized
 }
@@ -39,12 +48,8 @@ function expandLegacyFields(value: any): any {
   return normalized
 }
 
-function resolveNuxtApp(): any {
-  return typeof useNuxtApp === 'function' ? useNuxtApp() : (globalThis as any).__nuxtApp || {}
-}
-
 function resolveContentClient() {
-  const nuxtApp = resolveNuxtApp()
+  const nuxtApp = useNuxtApp()
   const gatewayFactory = (globalThis as any).useGateway as (() => any) | undefined
 
   try {
@@ -57,7 +62,6 @@ function resolveContentClient() {
   }
 
   return nuxtApp?.$contentClient
-    || nuxtApp?.$dataClient
     || nuxtApp?.$adapter
     || nuxtApp?.$meeoviAdapter
     || (globalThis as any).__adapter
@@ -95,7 +99,8 @@ export default function useContentRequest() {
       error.value = null
 
       if (query?.operation && typeof query.operation === 'string') {
-        data.value = await requestContent(query.operation, query.payload || {})
+        const result = await requestContent(query.operation, query.payload || {})
+        data.value = typeof result === 'undefined' ? null : (result === null ? null : (typeof result === 'object' && Object.keys(result).length === 0 ? null : result)) as any
         return data.value
       }
 
@@ -157,6 +162,194 @@ export default function useContentRequest() {
     }
   }
 
+  async function createItems(collection: string, items: any[], opts?: any) {
+    const client = resolveContentClient()
+    const normalizedItems = expandLegacyFields(items)
+    const normalizedOpts = expandLegacyFields(opts)
+
+    if (client && typeof client.createItems === 'function') {
+      try {
+        return normalizeResult(await client.createItems(collection, normalizedItems, normalizedOpts))
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    if (client && typeof client.createItem === 'function') {
+      try {
+        const created = await Promise.all((normalizedItems || []).map((item: any) => client.createItem(collection, item, normalizedOpts)))
+        return normalizeResult(created)
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    try {
+      return normalizeResult(await requestContent('createItems', { collection, items: normalizedItems, opts: normalizedOpts }))
+    } catch {
+      return []
+    }
+  }
+
+  async function createItem(collection: string, item: any, opts?: any) {
+    const client = resolveContentClient()
+    const normalizedItem = expandLegacyFields(item)
+    const normalizedOpts = expandLegacyFields(opts)
+
+    if (client && typeof client.createItem === 'function') {
+      try {
+        return normalizeResult(await client.createItem(collection, normalizedItem, normalizedOpts))
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    if (client && typeof client.createItems === 'function') {
+      try {
+        const created = await client.createItems(collection, [normalizedItem], normalizedOpts)
+        return normalizeResult(Array.isArray(created) ? created[0] : created)
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    try {
+      return normalizeResult(await requestContent('createItem', { collection, item: normalizedItem, data: normalizedItem, opts: normalizedOpts }))
+    } catch {
+      return null
+    }
+  }
+
+  async function updateItems(collection: string, idsOrItems: any, dataOrOpts?: any, maybeOpts?: any) {
+    const client = resolveContentClient()
+    const looksLikeBulkPayload = Array.isArray(idsOrItems) && (typeof dataOrOpts === 'undefined' || Array.isArray(dataOrOpts) || typeof dataOrOpts === 'object')
+
+    const ids = looksLikeBulkPayload ? undefined : idsOrItems
+    const items = looksLikeBulkPayload ? idsOrItems : undefined
+    const data = looksLikeBulkPayload ? undefined : dataOrOpts
+    const opts = looksLikeBulkPayload ? dataOrOpts : maybeOpts
+
+    const normalizedItems = expandLegacyFields(items)
+    const normalizedData = expandLegacyFields(data)
+    const normalizedOpts = expandLegacyFields(opts)
+
+    if (client && typeof client.updateItems === 'function') {
+      try {
+        if (typeof normalizedItems !== 'undefined') {
+          return normalizeResult(await client.updateItems(collection, normalizedItems, normalizedOpts))
+        }
+        return normalizeResult(await client.updateItems(collection, ids, normalizedData, normalizedOpts))
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    if (client && typeof client.updateItem === 'function' && Array.isArray(ids)) {
+      try {
+        const updated = await Promise.all(ids.map((id) => client.updateItem(collection, id, normalizedData, normalizedOpts)))
+        return normalizeResult(updated)
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    try {
+      return normalizeResult(await requestContent('updateItems', {
+        collection,
+        ids,
+        items: normalizedItems,
+        data: normalizedData,
+        opts: normalizedOpts,
+      }))
+    } catch {
+      return []
+    }
+  }
+
+  async function updateItem(collection: string, idOrFilter: any, data: any, opts?: any) {
+    const client = resolveContentClient()
+    const normalizedData = expandLegacyFields(data)
+    const normalizedOpts = expandLegacyFields(opts)
+
+    if (client && typeof client.updateItem === 'function') {
+      try {
+        return normalizeResult(await client.updateItem(collection, idOrFilter, normalizedData, normalizedOpts))
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    if (client && typeof client.updateItems === 'function') {
+      try {
+        const updated = await client.updateItems(collection, [idOrFilter], normalizedData, normalizedOpts)
+        return normalizeResult(Array.isArray(updated) ? updated[0] : updated)
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    try {
+      return normalizeResult(await requestContent('updateItem', { collection, id: idOrFilter, filter: idOrFilter, data: normalizedData, opts: normalizedOpts }))
+    } catch {
+      return null
+    }
+  }
+
+  async function deleteItems(collection: string, ids: any, opts?: any) {
+    const client = resolveContentClient()
+    const normalizedOpts = expandLegacyFields(opts)
+
+    if (client && typeof client.deleteItems === 'function') {
+      try {
+        return await client.deleteItems(collection, ids, normalizedOpts)
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    if (client && typeof client.deleteItem === 'function' && Array.isArray(ids)) {
+      try {
+        await Promise.all(ids.map((id) => client.deleteItem(collection, id, normalizedOpts)))
+        return true
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    try {
+      return await requestContent('deleteItems', { collection, ids, opts: normalizedOpts })
+    } catch {
+      return false
+    }
+  }
+
+  async function deleteItem(collection: string, id: any, opts?: any) {
+    const client = resolveContentClient()
+    const normalizedOpts = expandLegacyFields(opts)
+
+    if (client && typeof client.deleteItem === 'function') {
+      try {
+        return await client.deleteItem(collection, id, normalizedOpts)
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    if (client && typeof client.deleteItems === 'function') {
+      try {
+        return await client.deleteItems(collection, [id], normalizedOpts)
+      } catch {
+        // fall through to endpoint fallback
+      }
+    }
+
+    try {
+      return await requestContent('deleteItem', { collection, id, opts: normalizedOpts })
+    } catch {
+      return false
+    }
+  }
+
   function getAssetUrl(file: any) {
     const client = resolveContentClient()
     if (!file) return ''
@@ -172,8 +365,14 @@ export default function useContentRequest() {
     loading,
     error,
     fetch,
+    createItems,
+    createItem,
     readItems,
     readItem,
+    updateItems,
+    updateItem,
+    deleteItems,
+    deleteItem,
     getAssetUrl,
   }
 }

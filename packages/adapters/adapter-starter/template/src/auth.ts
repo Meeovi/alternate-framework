@@ -1,7 +1,7 @@
 import type {
   AuthAdapter,
   TransportAdapter
-} from 'alternate-gateway/core'
+} from 'alternate-gateway'
 
 import type {
   LoginInput,
@@ -9,7 +9,7 @@ import type {
   Result,
   Session,
   User
-} from 'alternate-gateway/core'
+} from 'alternate-gateway'
 
 import { unwrap } from './utils'
 

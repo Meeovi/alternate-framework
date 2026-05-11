@@ -1,0 +1,22 @@
+{
+  "name": "alternate-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@graphql-codegen/cli": "^7.0.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/typescript": "^6.0.1",
+    "@graphql-codegen/typescript-document-nodes": "^6.0.0",
+    "@graphql-codegen/typescript-graphql-request": "^7.0.1",
+    "@graphql-codegen/typescript-operations": "^6.0.1"
+  }
+}

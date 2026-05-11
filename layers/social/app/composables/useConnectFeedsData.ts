@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { useAsyncData } from './core/vue'
 import useContentAdapter from './useContentAdapter'
 
 type MaybeRefId = { value: string | number | null | undefined }

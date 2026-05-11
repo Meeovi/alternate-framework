@@ -1,4 +1,4 @@
-import type { APIResponse, Result } from 'alternate-gateway/core'
+import type { APIResponse, Result } from 'alternate-gateway'
 
 export const unwrap = <T>(response: APIResponse<T>): Result<T> => {
   if (response.error) {

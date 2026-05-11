@@ -7,6 +7,7 @@
 
 import { registerAdapterEndpoint } from '@mframework/api-client/mesh'
 import { getCommerceAdapterRegistration } from '../adapters'
+import { defineNitroPlugin } from 'nitropack/runtime'
 
 export default defineNitroPlugin(() => {
   const endpoint = process.env.MAGENTO_GRAPHQL_ENDPOINT ||

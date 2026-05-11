@@ -8,7 +8,9 @@
 
             <template v-slot:default="{ isActive }">
                 <v-card class="pa-4">
-                    <createpost />
+                    <ClientOnly>
+                        <AddPost v-if="dialog" />
+                    </ClientOnly>
 
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -23,9 +25,11 @@
 
 <script setup>
     import {
+        defineAsyncComponent,
         ref
     } from 'vue'
-    import createpost from '#social/app/components/features/feed/add-post.vue'
+
+    const AddPost = defineAsyncComponent(() => import('../features/feed/add-post.vue'))
 
     const dialog = ref(false);
 </script>

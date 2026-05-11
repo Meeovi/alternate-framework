@@ -1,3 +1,4 @@
+import { useRuntimeConfig } from './core/vue'
 import useAdapterRequest from './core/useAdapterRequest'
 import {
   createDirectusCompatClient,

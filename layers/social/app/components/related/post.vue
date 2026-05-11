@@ -13,7 +13,7 @@
                             <audio :src="getAssetUrl(post?.audio)"></audio>
                         </div>
 
-                        <div v-else-if="post?.image && post?.image?.filename_disk.endsWith('.gif')">
+                        <div v-else-if="matchesExtension(post?.image, ['.gif'])">
                             <img loading="lazy" :src="getAssetUrl(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
@@ -120,4 +120,6 @@ import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
     })
 
 const { getAssetUrl } = useAdapterRequest()
+const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
+const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 </script>

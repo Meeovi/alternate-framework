@@ -43,14 +43,13 @@
   });
 
   const {
-    $dataClient,
-    $readItem
+    read
   } = useNuxtApp()
 
   const {
     data: callouts
   } = await useAsyncData('callouts', () => {
-    return $dataClient.request($readItem('callouts', '4'))
+    return gateway.content(read('callouts', '4'))
   })
 
   useHead({
@@ -58,6 +57,6 @@
   })
 
   definePageMeta({
-    middleware: ['authenticated'],
+    middleware: ['auth'],
   })
 </script>

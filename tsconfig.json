@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    // "ignoreDeprecations": "6.0",
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
@@ -14,6 +15,8 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "paths": {
+      "@mframework/core": ["packages/modules/alternate-core/src/index.ts"],
+      "@mframework/core/*": ["packages/modules/alternate-core/src/*"],
       "alternate-gateway/core": ["packages/modules/alternate-gateway/core/index.ts"],
       "alternate-gateway/core/*": ["packages/modules/alternate-gateway/core/src/*"],
       "#shared/*": ["packages/modules/alternate-gateway/core/src/shared/*"],
@@ -47,7 +50,7 @@
     "layers/shared/**/*",
     "layers/social/**/*",
     "layers/commerce/**/*"
-  ],
+, "layers/auth/server/api/org-members.get.ts", "layers/auth/server/utils/commerce-admin.ts", "layers/auth/server/utils/admin-access.ts"  ],
   "exclude": [
     "node_modules",
     "dist",

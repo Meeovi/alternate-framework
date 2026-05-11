@@ -6,7 +6,7 @@
         </div>
 
         <!-- TITLE -->
-        <template #header class="py-2 text-truncate">
+        <template class="py-2 text-truncate">
             {{ media?.title || media?.filename_download || 'Untitled file' }}
         </template>
 

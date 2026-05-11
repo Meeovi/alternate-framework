@@ -36,8 +36,8 @@ const { data, error } = await useAsyncData('websites', async () => {
   if (content && typeof content.readFieldsByCollection === 'function') {
     return await content.readFieldsByCollection('websites')
   }
-  const { $directus, $readFieldsByCollection } = useNuxtApp()
-  return $directus.request($readFieldsByCollection('websites'))
+  const { $readFieldsByCollection } = useNuxtApp()
+  return gateway.content($readFieldsByCollection('websites'))
 })
 
 // guard against undefined/null data.value and empty arrays

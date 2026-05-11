@@ -54,15 +54,13 @@
 <script setup>
 
     const {
-        $dataClient,
-        $readItems,
-        $readItem
+        read
     } = useNuxtApp()
 
     const {
         data: page
     } = await useAsyncData('page', () => {
-        return $dataClient.request($readItem('page', '46', {
+        return gateway.content(read('page', '46', {
             fields: ['*', {
                 '*': ['*']
             }]

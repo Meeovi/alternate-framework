@@ -1,4 +1,0 @@
-import { Ref } from 'vue';
-declare function sharedRef<T>(value: T, key: string): Ref;
-declare function sharedRef(key: string, _?: any): Ref;
-export { sharedRef };

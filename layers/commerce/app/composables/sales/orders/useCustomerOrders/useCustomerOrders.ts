@@ -1,16 +1,16 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe } from '../models/shared';
-import type { OrderData } from '../useCustomerOrder/types';
+import type { Maybe } from '~/composables/system/models/shared';
 import type {
   UseCustomerOrdersReturn,
   UseCustomerOrdersState,
   FetchCustomerOrders,
   OrdersData,
 } from './types';
+import { useHandleError } from '../../useHandleError';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../useHandleError';
+import type { OrderData } from '../useCustomerOrder/types';
 
 const order: Pick<OrderData, 'id' | 'date' | 'paymentAmount'> = {
   id: '0e4fec5a-61e6-48b8-94cc-d5f77687e2b0',

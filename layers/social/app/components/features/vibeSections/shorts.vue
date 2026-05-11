@@ -33,7 +33,7 @@
       @click="togglePlay"
     />
 
-    <template #header>
+    <template>
       <h4 v-if="short?.name" class="mb-2">{{ short.name }}</h4>
       <p v-if="short?.description">{{ short.description }}</p>
       
@@ -70,7 +70,7 @@
     <v-expand-transition>
       <div v-show="showComments">
         <v-divider />
-        <template #header>
+        <template>
           <v-text-field
             v-model="newComment"
             label="Add a comment..."

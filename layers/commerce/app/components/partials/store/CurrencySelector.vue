@@ -18,15 +18,11 @@
     useCurrencyStore
   } from '~/stores/currency'
   import {
-    useQuery,
-    useMutation
-  } from '@vue/apollo-composable'
+    useCommerceQuery
+  } from '../../composables/globals/useCommerceQuery'
   import {
-    CURRENCY_QUERY
-  } from '#graphql/commerce/queries/currency.gql'
-  import {
-    UPDATE_USER_CURRENCY
-  } from '#graphql/commerce/mutations/updateUserCurrency.gql'
+    useCommerceMutation
+  } from '../../composables/globals/useCommerceMutation'
   import {
     getCurrencySymbol
   } from '~/utils/currency'
@@ -45,13 +41,13 @@
 
   // Fetch currency data from Commerce
   const {
-    result: currencyResult
-  } = useQuery(CURRENCY_QUERY)
+    data: currencyResult
+  } = useCommerceQuery('currencyQuery')
 
   // Mutation for updating user currency preference
   const {
     mutate: updateUserCurrency
-  } = useMutation(UPDATE_USER_CURRENCY)
+  } = useCommerceMutation('updateUserCurrency')
 
   // Watch for currency data changes
   watch(currencyResult, (newResult) => {

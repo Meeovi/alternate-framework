@@ -1,11 +1,12 @@
 import { createAccountHandleTools, type mastodon } from '@mframework/adapter-federation'
 import { getInstanceDomain } from '../../contacts/users'
+import { currentInstance, currentServer, currentUser } from '../../contacts/users'
 
 const accountHandleTools = createAccountHandleTools({
   currentInstance: () => currentInstance.value,
   currentServer: () => currentServer.value,
   currentUser: () => currentUser.value,
-  getInstanceDomain: instance => getInstanceDomain(instance),
+  getInstanceDomain: () => getInstanceDomain(),
 })
 
 export function getDisplayName(account: mastodon.v1.Account, options?: { rich?: boolean }) {

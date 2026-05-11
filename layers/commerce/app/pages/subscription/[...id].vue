@@ -119,8 +119,7 @@ import productCard from '~/components/catalog/product/productCard.vue'
     const route = useRoute();
     
     const {
-        $dataClient,
-        $readItem
+        read
     } = useNuxtApp()
     const { user, fetchSession } = useAuth()
     await fetchSession()
@@ -131,7 +130,7 @@ import productCard from '~/components/catalog/product/productCard.vue'
         data: subscription
     } = await useAsyncData('subscription', () => {
         if (!currentUserId) return null
-        return $dataClient.request($readItem('subscriptions', route.params.id, {
+        return gateway.content(read('subscriptions', route.params.id, {
             filter: {
                 user: {
                     _eq: `${currentUserId}`
@@ -146,6 +145,6 @@ import productCard from '~/components/catalog/product/productCard.vue'
     })
 
 	definePageMeta({
-	  middleware: ['authenticated'],
+	  middleware: ['auth'],
 	})
 </script>

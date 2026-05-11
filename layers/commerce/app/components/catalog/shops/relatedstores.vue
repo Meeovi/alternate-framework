@@ -31,8 +31,7 @@
 
     const model = ref(null)
     const {
-        $dataClient,
-        $readItems,
+        read,
     } = useNuxtApp()
 
     const { fetchSession } = useAuth()
@@ -41,7 +40,7 @@
     const {
         data: shops
     } = await useAsyncData('shops', () => {
-        return $dataClient.request($readItems('shops', {
+        return gateway.content(read('shops', {
             fields: ['*', {
                 '*': ['*']
             }]

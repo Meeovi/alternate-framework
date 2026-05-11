@@ -1,4 +1,4 @@
-import { MeeoviCart } from './cart'
+import type { MeeoviCart } from './cart'
 
 export interface MeeoviCheckout {
 	id: string

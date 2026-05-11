@@ -18,11 +18,11 @@ const selectedSize = ref(null)
 
 
 const nuxtApp = useNuxtApp()
-const { $dataClient, $readItems } = nuxtApp
+const { read } = nuxtApp
 
 const loadSizes = async () => {
     try {
-        const res = await $dataClient.request($readItems('attributes', {
+        const res = await gateway.content(read('attributes', {
             filter: {
                 attribute_code: { _eq: 'size' }
             },

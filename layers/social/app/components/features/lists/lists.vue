@@ -27,22 +27,14 @@
 
     const { data: lists } = await useAsyncData('publicLists', async () => {
         const opts = { filter: { status: { _eq: 'Public' } } }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     const { data: myLists } = await useAsyncData('myLists', async () => {
         const opts = { filter: { user: { _eq: userDisplayName?.value } } }
-        if (content && typeof content.readItems === 'function') {
-            const resp = await content.readItems('lists', opts)
-            return resp?.data || resp
-        }
-        const { $directus, $readItems } = useNuxtApp()
-        return await $directus.request($readItems('lists', opts))
+        const resp = await content.readItems('lists', opts)
+        return resp?.data || resp
     })
 
     useHead({

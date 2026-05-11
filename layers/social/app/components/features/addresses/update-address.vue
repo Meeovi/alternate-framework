@@ -12,11 +12,11 @@
                         <v-btn icon dark @click="dialog = false">
                             <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
                         </v-btn>
-                        <template #header>
+                        <template>
                             <span class="text-h6">Update new Address</span>
                         </template>
                     </v-toolbar>
-                    <template #header>
+                    <template>
                         <v-container>
                             <v-row>
                                 <v-col cols="6">

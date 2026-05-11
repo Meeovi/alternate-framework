@@ -41,9 +41,7 @@
     import listShowcases from '#social/app/components/related/list.vue'
 
     const {
-        $dataClient,
-        $readItem,
-        $readItems
+        read
     } = useNuxtApp()
 
     // current selected tab value (matches menu.value)
@@ -52,7 +50,7 @@
     const {
         data: showcasePage
     } = await useAsyncData('showcasePage', () => {
-        return $dataClient.request($readItem('pages', '115', {
+        return gateway.content(read('pages', '115', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -62,7 +60,7 @@
     const {
         data: lists
     } = await useAsyncData('lists', () => {
-        return $dataClient.request($readItems('lists', {
+        return gateway.content(read('lists', {
             fields: ['*', {
                 '*': ['*']
             }],
@@ -84,7 +82,7 @@
     const {
         data: showcaseBar
     } = await useAsyncData('showcaseBar', () => {
-        return $dataClient.request($readItem('navigation', '54', {
+        return gateway.content(read('navigation', '54', {
             fields: ['*', {
                 '*': ['*']
             }]

@@ -76,7 +76,7 @@ export const cartLineItemMapping = {
 export const addressMapping = {
   id: 'id',
   firstName: 'firstname',
-  firstName: 'lastName', // Maps to lastname
+  lastName: 'lastname', // Maps to lastname
   company: 'company',
   street: 'street', // Array[0] is street line 1
   streetNumber: 'street', // Can be extracted from street[0]

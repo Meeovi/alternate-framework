@@ -21,17 +21,8 @@ function normalizeSiteUrl(value: unknown) {
   return String(value || '').replace(/\/$/, '')
 }
 
-function getPublicRuntimeConfig(): Record<string, any> {
-  try {
-    const runtimeConfig = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : { public: {} }
-    return runtimeConfig?.public || {}
-  } catch {
-    return {}
-  }
-}
-
 function buildSocialFeedLink(product?: Record<string, any>, input: Record<string, any> = {}) {
-  const publicConfig = getPublicRuntimeConfig()
+  const publicConfig = useRuntimeConfig().public || {}
   const baseUrl = normalizeSiteUrl(publicConfig.siteUrl || publicConfig.appUrl || input.siteUrl || '')
   const feedPath = String(input.feedPath || publicConfig.feedPath || '/feed.xml')
   const feedCollection = String(input.collection || publicConfig.feedCollection || 'posts')

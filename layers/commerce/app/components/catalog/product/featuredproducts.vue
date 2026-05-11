@@ -32,38 +32,41 @@
 
   const model = ref(null);
   const {
-    $dataClient,
-    $readItems
+    read
   } = useNuxtApp()
 
   const {
     data: featured
-  } = await useAsyncData('featured', () => {
-    return $dataClient.request($readItems('products', {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'currency.currency_id.*',
-        'brands.brands_id.*',
-        'image.*',
-      ],
-      limit: 10,
-      filter: {
-        lists: {
-          lists_id: {
-            lists_types: {
-              lists_types_id: {
-                name: {
-                  _eq: "Featured"
+  } = await useAsyncData('featured', async () => {
+    try {
+      return await gateway.content(read('products', {
+        fields: ['*',
+          'products.products_id.*',
+          'products.products_id.image.*',
+          'currency.currency_id.*',
+          'brands.brands_id.*',
+          'image.*',
+        ],
+        limit: 10,
+        filter: {
+          lists: {
+            lists_id: {
+              lists_types: {
+                lists_types_id: {
+                  name: {
+                    _eq: "Featured"
+                  }
                 }
               }
             }
+          },
+          status: {
+            _eq: "published"
           }
-        },
-        status: {
-          _eq: "published"
         }
-      }
-    }))
+      }))
+    } catch {
+      return null
+    }
   })
 </script>

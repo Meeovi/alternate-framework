@@ -38,8 +38,7 @@
     } from '#imports';
     const route = useRoute();
     const {
-        $dataClient,
-        $readItem
+        read
     } = useNuxtApp()
     const { user, fetchSession } = useAuth()
     await fetchSession()
@@ -50,7 +49,7 @@
         data: invoice
     } = await useAsyncData('invoice', () => {
         if (!currentUserId) return null
-        return $dataClient.request($readItem('invoices', route.params.id, {
+        return gateway.content(read('invoices', route.params.id, {
             filter: {
                 user: {
                     _eq: `${currentUserId}`

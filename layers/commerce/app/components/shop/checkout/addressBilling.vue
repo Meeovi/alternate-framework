@@ -153,12 +153,10 @@
   
   
 
-  import { ref, reactive, onMounted, onErrorCaptured } from '#imports';
-  import { useCommerceMutation } from '../../composables/globals/useCommerceMutation';
-  import setOrderBillingAddressMutation from '#graphql/app/commerce/mutations/setOrderBillingAddress.gql';
-  import getCountryListQuery from '#graphql/app/commerce/queries/getCountryList.gql';
-  import { useCommerceQuery } from '../../composables/globals/useCommerceQuery';
-  import { useNotification } from '~//composables/useNotifications';
+  import { ref, reactive, onMounted, onErrorCaptured } from 'vue';
+  import { useCommerceMutation } from '../../../composables/globals/useCommerceMutation';
+  import { useCommerceQuery } from '../../../composables/globals/useCommerceQuery';
+  import { useNotification } from '../../../composables/useNotifications';
   
   const emit = defineEmits(['address-saved', 'address-error', 'form-reset']);
   const { showNotification } = useNotification();
@@ -178,7 +176,7 @@
     countryCode: '',
   });
   
-  const { data: countriesResult } = useCommerceQuery(getCountryListQuery);
+  const { data: countriesResult } = useCommerceQuery('getCountryList');
   type Country = {
     code: string;
     name: string;
@@ -199,7 +197,7 @@
     countryCode: '',
   });
   
-  const { mutate: setBillingAddress } = useCommerceMutation(setOrderBillingAddressMutation);
+  const { mutate: setBillingAddress } = useCommerceMutation('setOrderBillingAddress');
   
   const updateRegions = (countryCode: string) => {
     const country = countries.value.find((c) => c.code === countryCode);

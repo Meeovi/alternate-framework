@@ -67,10 +67,8 @@
 
 <script setup lang="ts">
 
-import { ref, computed, watch } from '#imports';
-import { useCommerceMutation } from '../../composables/globals/useCommerceMutation';
-import adjustOrderLineMutation from '#graphql/app/commerce/mutations/adjustOrderLine.gql';
-import removeOrderLineMutation from '#graphql/app/commerce/mutations/removeOrderLine.gql';
+import { ref, computed, watch } from 'vue';
+import { useCommerceMutation } from '../../../composables/globals/useCommerceMutation';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -82,8 +80,8 @@ const props = defineProps({
 const count = ref(props.product.quantity);
 const inputId = useId();
 
-const { mutate: adjustOrderLine } = useCommerceMutation(adjustOrderLineMutation);
-const { mutate: removeOrderLine } = useCommerceMutation(removeOrderLineMutation);
+const { mutate: adjustOrderLine } = useCommerceMutation('adjustOrderLine');
+const { mutate: removeOrderLine } = useCommerceMutation('removeOrderLine');
 
 const itemCount = computed(() => {
     return props.cart?.lines?.reduce((total: number, line: any) => total + (line.quantity || 1), 0) || 0;

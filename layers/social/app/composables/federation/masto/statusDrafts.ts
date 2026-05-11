@@ -1,27 +1,28 @@
-import type { DraftItem, DraftKey, DraftMap, Mutable } from 'alternate-gateway/core/shared/types'
+import type { DraftItem, DraftKey, DraftMap } from '../../../../../shared/shared/types'
 import {
   createStatusDraftTools,
   type StatusDraftItem,
   type mastodon,
 } from '@mframework/adapter-federation'
 import type { ComputedRef, Ref } from 'vue'
-import { STORAGE_KEY_DRAFTS } from '../../../utils/constants'
+import { computed, nextTick, onUnmounted, ref } from 'vue'
+import { STORAGE_KEY_DRAFTS } from '~/constants'
 import { currentUser, useUserLocalStorage } from '../../contacts/users'
 import { convertMastodonHTML, htmlToText } from '../../core/content-parse'
 import { openPublishDialog } from '../../core/dialog'
 
 const statusDraftTools = createStatusDraftTools<DraftItem & StatusDraftItem>({
-  getCurrentUser: () => currentUser.value,
-  convertMastodonHTML,
+  getCurrentUser: () => currentUser.value as any,
+  convertMastodonHTML: async (html: string) => convertMastodonHTML(html),
   htmlToText,
-})
+} as any)
 
 export const currentUserDrafts = (import.meta.server || process.test)
-  ? computed<DraftMap>(() => ({ home: [], dialog: [], intent: [], quote: [] }))
+  ? ref<DraftMap>({ home: [], dialog: [], intent: [], quote: [] })
   : useUserLocalStorage<DraftMap>(STORAGE_KEY_DRAFTS, () => ({ home: [], dialog: [], intent: [], quote: [] }))
 
-export function getDefaultDraftItem(options: Partial<Mutable<mastodon.rest.v1.CreateScheduledStatusParams> & Omit<DraftItem, 'params'>> = {}): DraftItem {
-  return statusDraftTools.getDefaultDraftItem(options)
+export function getDefaultDraftItem(options: Record<string, unknown> = {}): DraftItem {
+  return statusDraftTools.getDefaultDraftItem(options as any)
 }
 
 export async function getDraftFromStatus(status: mastodon.v1.Status): Promise<DraftItem> {
@@ -33,7 +34,7 @@ export function getReplyDraft(status: mastodon.v1.Status) {
 }
 
 export function isEmptyDraft(drafts: Array<DraftItem> | DraftItem | null | undefined) {
-  return statusDraftTools.isEmptyDraft(drafts)
+  return statusDraftTools.isEmptyDraft(drafts as any)
 }
 
 export interface UseDraft {
@@ -90,7 +91,7 @@ export const builtinDraftKeys = statusDraftTools.builtinDraftKeys
 export function clearEmptyDrafts() {
   for (const key in currentUserDrafts.value) {
     if (isDraftKey(key)) {
-      if (builtinDraftKeys.includes(key) && !isEmptyDraft(currentUserDrafts.value[key]))
+      if (builtinDraftKeys.includes(key as any) && !isEmptyDraft(currentUserDrafts.value[key]))
         continue
       if (isEmptyDraft(currentUserDrafts.value[key]))
         delete currentUserDrafts.value[key]

@@ -7,11 +7,11 @@
                         <v-btn icon dark @click="dialog = false">
                             <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
                         </v-btn>
-                        <template #header>
+                        <template>
                             <span class="text-h6">Create a new Space</span>
                         </template>
                     </v-toolbar>
-                    <template #header>
+                    <template>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
@@ -35,7 +35,7 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-card title="Choose a Product for your List">
-                                        <template #header>
+                                        <template>
                                             <v-text-field density="compact" variant="solo"
                                                 label="Search Meeovi for products" append-inner-icon="fas:fa fa-search"
                                                 single-line hide-details></v-text-field>
@@ -51,12 +51,12 @@
                                                 {{ products.name }}
                                             </template>
 
-                                            <template #header>
+                                            <template>
                                                 <div>Sku: {{ products.variants.sku }}</div>
                                             </template>
 
                                             <template>
-                                                <template #header>$ {{ products.variants.price }}
+                                                <template>$ {{ products.variants.price }}
                                                 </template>
                                             </template>
                                             <div class="d-flex fill-height align-center justify-center">
@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from '#imports';
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
 import updateList from '~/app/composables/lists/updateList';
@@ -131,8 +131,8 @@ const fetchListData = async () => {
                 image: item.image
             }
         } else {
-            const { $directus, $readItem } = useNuxtApp();
-            const response = await $directus.request($readItem('lists', listId));
+            const { read } = useNuxtApp();
+            const response = await gateway.content(read('lists', listId));
             listData.value = {
                 id: response.id,
                 name: response.name,

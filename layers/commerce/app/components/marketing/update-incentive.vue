@@ -12,8 +12,8 @@
             <!-- Current Balance Card -->
             <v-col cols="12" md="6">
                 <v-card class="mb-4">
-                    <template #header>Current Balance</template>
-                    <template #header>
+                    <template>Current Balance</template>
+                    <template>
                         <div class="text-h4 text-primary">
                             {{ currentBalance }} Points
                         </div>
@@ -24,8 +24,8 @@
             <!-- Active Rewards Card -->
             <v-col cols="12" md="6">
                 <v-card class="mb-4">
-                    <template #header>Active Cart Rewards</template>
-                    <template #header>
+                    <template>Active Cart Rewards</template>
+                    <template>
                         <v-list v-if="activeRewards.length">
                             <v-list-item v-for="reward in activeRewards" :key="reward.cartId">
                                 <v-list-item-content>
@@ -48,8 +48,8 @@
             <!-- Modify Rewards Form -->
             <v-col cols="12">
                 <v-card>
-                    <template #header>Modify Rewards</template>
-                    <template #header>
+                    <template>Modify Rewards</template>
+                    <template>
                         <v-form ref="form" v-model="valid" @submit.prevent="handleModify">
                             <v-row>
                                 <v-col cols="12" md="6">
@@ -91,8 +91,8 @@
             <!-- Modification History -->
             <v-col cols="12">
                 <v-card>
-                    <template #header>Modification History</template>
-                    <template #header>
+                    <template>Modification History</template>
+                    <template>
                         <v-data-table :headers="historyHeaders" :items="modificationHistory" :loading="loadingHistory"
                             class="elevation-1">
                             <template v-slot:item.points_change="{ item }">
@@ -128,7 +128,7 @@
     import {
         ref,
         onMounted
-    } from '#imports';
+    } from 'vue';
     import {
         getRewardBalance,
         useRewardPoints,

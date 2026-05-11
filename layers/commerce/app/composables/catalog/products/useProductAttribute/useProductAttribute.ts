@@ -1,5 +1,6 @@
 import { ref } from 'vue';
-import type { SfAttribute, SfProduct } from '../../models';
+import type { SfProduct } from '~/composables/system/models';
+import type { SfAttribute } from '~/composables/system/models';
 import { groupBy, uniqBy } from 'lodash-es';
 
 /**

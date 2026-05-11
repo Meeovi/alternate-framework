@@ -5,15 +5,15 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
-                        <div v-if="post?.file?.filename_disk && post?.file?.filename_disk.endsWith('.mp4')">
+                        <div v-if="matchesExtension(post?.file, ['.mp4'])">
                             <video :src="getAssetUrl(post?.file)"></video>
                         </div>
 
-                        <div v-else-if="post?.audio?.filename_disk && post?.audio?.filename_disk.endsWith('.mp3')">
+                        <div v-else-if="matchesExtension(post?.audio, ['.mp3'])">
                             <audio :src="getAssetUrl(post?.audio)"></audio>
                         </div>
 
-                        <div v-else-if="post?.image?.filename_disk && post?.image?.filename_disk.endsWith('.gif')">
+                        <div v-else-if="matchesExtension(post?.image, ['.gif'])">
                             <img loading="lazy" :src="getAssetUrl(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
@@ -68,7 +68,7 @@
                                     <strong>Author</strong>
                                 </h4>
                                 <h5 class="card-text mbr-fonts-style display-7">
-                                    <NuxtLink v-if="post?.author?.avatar?.filename_disk" :to="`/user/${post?.author?.id}`">
+                                    <NuxtLink v-if="hasAsset(post?.author?.avatar)" :to="`/user/${post?.author?.id}`">
                                         <UAvatar :image="post?.author?.avatar"></UAvatar>
                                     </NuxtLink>
 
@@ -174,6 +174,9 @@
     const route = useRoute();
 import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
 const { readItems, getAssetUrl } = useAdapterRequest()
+const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
+const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
+const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
 

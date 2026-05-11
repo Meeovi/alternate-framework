@@ -122,7 +122,7 @@
 </template>
 
 <script setup>
-import { computed } from '#imports';
+import { computed } from 'vue';
 import addToCartBtn from '~/components/partials/addToCartBtn.vue';
 import Ratings from '~/components/partials/ratings.vue';
 

@@ -6,16 +6,16 @@
           <div class="col-12 col-lg-12">
             <div>
               <div class="shadow">
-                <img v-if="!user?.image" :src="user?.image" :alt="user?.name" class="align">
-                <img v-else src="https://via.placeholder.com/200" :alt="user?.name" class="align">
+                <img v-if="!userProfile?.image" :src="userProfile?.image || undefined" :alt="userProfile?.name" class="align">
+                <img v-else src="https://via.placeholder.com/200" :alt="userProfile?.name" class="align">
                 <h5 class="card-title mbr-fonts-style display-2">
-                  <strong>{{ user?.name }}</strong>
+                  <strong>{{ userProfile?.name }}</strong>
                 </h5>
                 <h5 class="card-subtitle mbr-fonts-style display-4">
-                  {{ user?.profession }}</h5>
-                <NuxtLink v-if="user?.isSeller" :to="`/spaces/${user?.spaces?.space_id?.slug}`"
+                  {{ userProfile?.profession }}</h5>
+                <NuxtLink v-if="userProfile?.isSeller" :to="`/spaces/${userProfile?.spaces?.space_id?.slug}`"
                   class="card-text mbr-fonts-style display-4"></NuxtLink>
-                <p class="card-text mbr-fonts-style display-4" v-dompurify-html="user?.description"></p>
+                <p class="card-text mbr-fonts-style display-4" v-dompurify-html="userProfile?.description"></p>
               </div>
             </div>
           </div>
@@ -27,7 +27,7 @@
       <v-tabs color="primary" center-active>
         <v-tab value="one">Feed</v-tab>
         <v-tab value="two">Vibez</v-tab>
-        <v-tab value="three" v-if="user?.isSeller">Shop</v-tab>
+        <v-tab value="three" v-if="userProfile?.isSeller">Shop</v-tab>
         <v-tab value="four">Links</v-tab>
       </v-tabs>
 
@@ -57,9 +57,9 @@
     useAsyncData,
     useHead
   } from '#imports';
-  import { useLocate } from 'alternate-locate/adapters/vue/composable'
-  import useLocalePath from '#social/app/composables/core/useLocalePath';
+  import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
   import {
+    computed,
     onMounted,
     ref
   } from '#imports';
@@ -71,17 +71,16 @@
   const tab = ref(null);
   const {
     user,
-    session,
     client
   } = useAuth()
+  const userProfile = computed(() => user?.value as any)
   const alert = useAlert()
   const {
     t
   } = useLocate()
-  const localePath = useLocalePath()
   const {
     data: accounts
-  } = await useAsyncData < any > ('/accounts', () => client.listAccounts())
+  } = await useAsyncData < any > ('/accounts', () => (client as any).listAccounts?.() ?? [])
 
   function hasProvider(provider: string) {
     const list = (accounts.value as any)?.data ?? (accounts.value as any)
@@ -98,6 +97,6 @@
   })
 
   useHead({
-    title: user?.value?.username || 'User Profile',
+    title: userProfile.value?.username || userProfile.value?.name || 'User Profile',
   })
 </script>
