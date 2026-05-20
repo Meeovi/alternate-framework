@@ -24,8 +24,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-const { getAssetUrl } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { getAssetUrl } = useSdkContentAdapter()
     
 const model = ref(null)
 const player = ref(null)

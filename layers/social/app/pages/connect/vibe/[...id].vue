@@ -85,14 +85,15 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, onMounted, onUnmounted } from '#imports'
-import { createDirectusAuthState } from '@mframework/adapter-directus'
-import useContentAdapter from '#social/app/composables/useContentAdapter'
+import { ref, onMounted, onUnmounted, useSdkContentAdapter } from '#imports'
 
 const route = useRoute()
 const config = useRuntimeConfig()
-const client = useContentAdapter().directusClient
-const { user } = createDirectusAuthState(null)
+const content = useSdkContentAdapter()
+const client = content?.directusClient
+const runtimeUseAuth = globalThis.useAuth
+const auth = runtimeUseAuth ? runtimeUseAuth() : { user: useState('social:user', () => null) }
+const user = auth.user
 
 const video = ref(null)
 const comments = ref([])
@@ -115,6 +116,7 @@ onUnmounted(() => {
 })
 
 async function fetchVideo() {
+  if (!client) return
   const resp = await client.items('videos').readByQuery({
     filter: { id: { _eq: route.params.id } },
     limit: 1,
@@ -132,6 +134,7 @@ async function trackView() {
 }
 
 async function fetchReactions() {
+  if (!client) return
   if (!user.value) {
     liked.value = false
   } else {
@@ -147,6 +150,7 @@ async function fetchReactions() {
 }
 
 async function toggleLike() {
+  if (!client) return
   if (!user.value) return
   const existing = await client.items('reactions').readByQuery({
     filter: { video_id: { _eq: route.params.id }, user_id: { _eq: user.value.id } },
@@ -166,6 +170,7 @@ async function toggleLike() {
 }
 
 async function react(emoji) {
+  if (!client) return
   if (!user.value) return
   await client.items('emoji_reactions').create({ target_type: 'video', target_id: route.params.id, user_id: user.value.id, emoji })
 }
@@ -176,6 +181,7 @@ function replyTo(comment) {
 }
 
 async function postComment() {
+  if (!client) return
   if (!newComment.value || !user.value) return
   await client.items('comments').create({ video_id: route.params.id, parent_id: replyingTo.value?.id || null, user_id: user.value.id, content: newComment.value })
   newComment.value = ''
@@ -184,6 +190,7 @@ async function postComment() {
 }
 
 async function refreshComments() {
+  if (!client) return
   const topResp = await client.items('comments').readByQuery({ filter: { video_id: { _eq: route.params.id }, parent_id: { _null: true } }, sort: ['-created_at'] })
   const topLevel = topResp?.data || []
   for (const comment of topLevel) {

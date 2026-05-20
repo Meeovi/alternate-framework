@@ -28,7 +28,7 @@
     
     const { fetchSession } = useAuth()
     await fetchSession()
-    import { useDirectusRequest } from '@mframework/adapter-directus'
+    
     const { readItem, readItems } = useDirectusRequest()
     const route = useRoute()
     const tab = ref(null);

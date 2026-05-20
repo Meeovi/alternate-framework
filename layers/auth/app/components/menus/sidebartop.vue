@@ -12,9 +12,9 @@
 
 <script setup>
   import { computed } from 'vue'
-  import { useSession } from '../../../lib/auth-client'
+  const auth = useAuth()
+  await auth.fetchSession()
 
-  const { data: session } = await useSession(useFetch)
-  const user = computed(() => session.value?.user ?? null)
-  const loggedInState = computed(() => Boolean(session.value?.session))
+  const user = computed(() => auth.user.value ?? null)
+  const loggedInState = computed(() => Boolean(auth.loggedIn.value))
 </script>

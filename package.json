@@ -23,19 +23,17 @@
   "author": "M Framework",
   "license": "MIT",
   "devDependencies": {
-    "lightningcss": "^1.31.1",
-    "prisma": "^7.8.0",
     "turbo": "^2.8.11",
     "typescript": "^5.9.3"
   },
   "workspaces": [
     "packages/*",
+    "packages/modules/*",
     "layers/*",
     "themes/*",
     "docs/*"
   ],
   "dependencies": {
-    "@prisma/client": "^7.8.0",
     "flat": "^6.0.1"
   },
   "overrides": {

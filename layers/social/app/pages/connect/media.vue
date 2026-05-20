@@ -109,8 +109,8 @@
         filterByFolder(folder?.id || null)
     }
 
-    import { useDirectusRequest } from '@mframework/adapter-directus'
-    const { readItem } = useDirectusRequest()
+    
+    const { readItem } = useNuxtApp()
     const tab = ref(null)
 
     const { data: mediaBar } = await useAsyncData('mediaBar', () =>

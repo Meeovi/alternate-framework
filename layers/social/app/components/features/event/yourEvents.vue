@@ -88,8 +88,8 @@
     } from '#imports'
     import eventCard from '../../../../../commerce/app/components/catalog/product/productCard.vue'
 
-    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-    const { readItem, readItems } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { readItem, readItems } = useSdkContentAdapter()
     const route = useRoute()
     const tab = ref(null);
 

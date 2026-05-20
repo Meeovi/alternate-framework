@@ -133,7 +133,7 @@ async function run() {
       } catch (err) {
         // create a generic stub
         const fnName = 'create' + toPascalCase(layer) + 'Adapter'
-        const content = `import type { TransportAdapter } from 'alternate-gateway/core'\nimport type { Result } from 'alternate-gateway/core'\n\nexport const ${fnName} = (transport: TransportAdapter) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example(): Promise<Result<any>> { return { ok: false, error: 'Not implemented' } }\n})\n`
+        const content = `// TODO: Replace with types from shared contracts if needed\n\nexport const ${fnName} = (transport) => ({\n  // TODO: implement ${layer} adapter methods\n  // Example:\n  // async example() { return { ok: false, error: 'Not implemented' } }\n})\n`
         await fs.writeFile(filePath, content, 'utf8')
       }
     }

@@ -89,8 +89,8 @@
         },
     })
 
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-const { getAssetUrl } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { getAssetUrl } = useSdkContentAdapter()
 
 const backgroundImage = computed(() => {
     const image = props.group?.image

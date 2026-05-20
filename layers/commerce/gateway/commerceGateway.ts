@@ -1,4 +1,28 @@
-import type { CartItem, CartTotals, GatewayContract } from '@mframework/core'
+type CartItem = {
+  id: string
+  productId: string
+  name: string
+  quantity: number
+  price: number
+  total: number
+}
+
+type CartTotals = {
+  subtotal: number
+  tax: number
+  shipping: number
+  discount: number
+  total: number
+  currency: string
+}
+
+interface GatewayContract {
+  cart: {
+    get(): Promise<{ items: CartItem[]; totals: CartTotals }>
+    add(productId: string, qty: number): Promise<void>
+    remove(itemId: string): Promise<void>
+  }
+}
 
 function defaultTotals(): CartTotals {
   return {

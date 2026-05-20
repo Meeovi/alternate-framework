@@ -172,8 +172,8 @@
     } from '~/stores/reactions'
 
     const route = useRoute();
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-const { readItems, getAssetUrl } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+const { readItems, getAssetUrl } = useSdkContentAdapter()
 const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
 const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 const hasAsset = (file) => Boolean(getAssetUrl(file))

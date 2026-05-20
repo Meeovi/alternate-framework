@@ -4,7 +4,7 @@ import {
   createGraphqlRestTransport,
   executeJsonRequest,
   joinUrl,
-} from '@mframework/api-client'
+} from './gateway-transport'
 import { useRuntimeConfig } from '#imports'
 
 class CommerceAdminError extends ApiTransportError {

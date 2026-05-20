@@ -5,7 +5,7 @@ import { toRefs } from '@vueuse/shared';
 import type { UseCartReturn, UseCartState, FetchCard } from './types';
 import { getCommerceClient } from '../../../../utils/client';
 import { useAsyncData, useState, useRuntimeConfig } from 'nuxt/app';
-import { useHandleError } from '../../useHandleError';
+import { useHandleError } from '../../../system/useHandleError';
 import { ref } from 'vue';
 
 /**

@@ -58,8 +58,8 @@
     import yourEvents from '#social/app/components/features/event/yourEvents.vue'
 
     const tab = ref(null);
-    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-    const { readItem, readItems } = useAdapterRequest()
+    import { useSdkContentAdapter } from '#imports'
+    const { readItem, readItems } = useSdkContentAdapter()
 
     const { data: eventsBar } = await useAsyncData('eventsBar', async () => {
         const resp = await readItem('navigation', '80', {

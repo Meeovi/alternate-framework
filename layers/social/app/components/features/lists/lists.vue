@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-    const content = useContentAdapter()
+    const content = useSdkContentAdapter()
 
     const { data: lists } = await useAsyncData('publicLists', async () => {
         const opts = { filter: { status: { _eq: 'Public' } } }

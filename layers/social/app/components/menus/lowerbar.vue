@@ -1,29 +1,37 @@
 <template>
     <v-card variant="text" class="lowerBar">
         <v-tabs v-model="tab" :bg-color="lowerbar?.color" :color="lowerbar?.colortext" align-tabs="center">
-            <v-tab><NuxtLink style="color: white;" to="/">{{ lowerbar?.name }}</NuxtLink></v-tab>
-            <div v-for="(menu, index) in lowerbar?.menus" :key="index">
-                <v-tab :value="menu?.value">
-                    <v-btn variant="text" :style="`color: ${lowerbar?.colortext} !important`"
-                        :href="menu?.slug">{{ menu?.name }}</v-btn>
-                </v-tab>
-            </div>
+            <v-tab to="/" :style="{ color: lowerbar?.colortext || 'white' }">
+                {{ lowerbar?.name || 'Home' }}
+            </v-tab>
+            <v-tab
+                v-for="(menu, index) in lowerbarMenus"
+                :key="menu?.id || menu?.slug || menu?.name || index"
+                :value="menu?.value || menu?.slug || menu?.name || index"
+                :href="menu?.slug || '#'"
+                :style="{ color: lowerbar?.colortext || 'white' }"
+            >
+                {{ menu?.name || '' }}
+            </v-tab>
         </v-tabs>
     </v-card>
 </template>
 
 <script setup>
     import {
+        computed,
         ref
     } from '#imports'
-    import { useDirectusRequest } from '@mframework/adapter-directus'
 
-    const { readItem } = useDirectusRequest()
-    const tab = ref(null);
-    
-    const { data: lowerbar } = await useAsyncData('lowerbar', () => {
-        return readItem('navigation', '76', {
-            fields: ['*', { '*': ['*'] }]
+    const { readItem } = useNuxtApp()
+    const tab = ref(null)
+
+    const { data: lowerbar } = await useAsyncData('lowerbar', async () => {
+        const item = await readItem('navigation', '76', {
+            fields: ['*', { '*': ['*'] }],
         })
+        return item || { name: 'Home', menus: [] }
     })
+
+    const lowerbarMenus = computed(() => Array.isArray(lowerbar.value?.menus) ? lowerbar.value.menus : [])
 </script>

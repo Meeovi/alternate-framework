@@ -78,7 +78,7 @@
     import {
         ref
     } from '#imports';
-    import { useDirectusRequest } from '@mframework/adapter-directus'
+    
     const { readItem, updateItem } = useDirectusRequest()
     import {
         useRouter

@@ -17,8 +17,8 @@
   import shortsCard from '#social/app/components/related/short.vue'
 
   const model = ref(null)
-    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-    const { readItems } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { readItems } = useSdkContentAdapter()
 
     const { data: vibez } = await useAsyncData('vibez', async () => {
       const resp = await readItems('shorts')

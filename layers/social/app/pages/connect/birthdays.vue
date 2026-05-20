@@ -71,7 +71,7 @@
     } from '#imports'
     import MembersList from '#social/app/components/related/memberList.vue'
 
-    import { useDirectusRequest } from '@mframework/adapter-directus'
+    
     const { readItem, readItems } = useDirectusRequest()
     const tab = ref(null);
 

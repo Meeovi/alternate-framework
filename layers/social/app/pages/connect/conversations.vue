@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { definePageMeta, useHead } from '~/composables/core/vue'
-import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
-import { isHydrated, useHydratedHead } from '~/composables/core/vue'
+definePageMeta({})
 
-definePageMeta({
-  middleware: ['auth'],
+const isHydrated = computed(() => import.meta.client)
+
+const t = (key: string) => {
+  const labels: Record<string, string> = {
+    'nav.conversations': 'Conversations',
+  }
+  return labels[key] || key
+}
+
+useHead({
+  title: 'Conversations',
 })
-
-const { t } = useLocate()
-
-  useHead({
-    title: 'Conversations',
-  })
 </script>
 
 <template>

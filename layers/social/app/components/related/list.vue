@@ -30,5 +30,5 @@
             required: true,
         },
     });
-    const content = useContentAdapter()
+    const content = useSdkContentAdapter()
 </script>

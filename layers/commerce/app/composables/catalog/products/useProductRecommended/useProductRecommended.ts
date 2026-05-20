@@ -10,7 +10,7 @@ import type {
   FetchProductRecommended,
 } from './types';
 import { getCommerceClient } from '../../../../utils/client';
-import { useHandleError } from '../../../useHandleError';
+import { useHandleError } from '../../../system/useHandleError/useHandleError';
 
 /**
  * Composable for getting recommended products data

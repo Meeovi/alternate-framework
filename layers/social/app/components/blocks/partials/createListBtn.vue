@@ -55,7 +55,7 @@
 <script setup>
 import { ref } from '#imports'
 
-const content = useContentAdapter()
+const content = useSdkContentAdapter()
 
 const { data: lists } = await useAsyncData('lists', async () => {
   const opts = { filter: { status: { _eq: 'Public' } } }

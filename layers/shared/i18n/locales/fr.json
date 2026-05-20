@@ -1,0 +1,10 @@
+{
+  "$vuetify": {
+    "badge": "Badge",
+    "input": {
+      "clear": "Effacer"
+    }
+  },
+  "$vuetify.badge": "Badge",
+  "$vuetify.input.clear": "Effacer"
+}

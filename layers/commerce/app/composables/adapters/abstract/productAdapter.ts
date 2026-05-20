@@ -1,7 +1,7 @@
-import type { Product } from '../../system/domain/product';
+import type { SfProduct } from '../../system/models/product';
 
 export interface ProductAdapter {
-  list(): Promise<Product[]>
-  get(id: string): Promise<Product | null>
-  search(query: string): Promise<Product[]>
+  list(): Promise<SfProduct[]>
+  get(id: string): Promise<SfProduct | null>
+  search(query: string): Promise<SfProduct[]>
 }

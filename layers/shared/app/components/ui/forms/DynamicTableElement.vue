@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import useContent from '../../../composables/useContent'
+import useContent from '../../../composables/content/useContent'
 
 type DirectusField = {
   field: string

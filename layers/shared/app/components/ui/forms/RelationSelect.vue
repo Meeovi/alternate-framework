@@ -30,7 +30,7 @@
     });
 
     const emit = defineEmits(["update:modelValue"]);
-    import useContent from '../../../composables/useContent'
+    import useContent from '../../../composables/content/useContent'
     const { readItems } = useContent()
 
     const internalValue = computed({

@@ -38,7 +38,7 @@
   //import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
   import {
     useDirectusForm
-  } from '@mframework/adapter-directus'
+  } from '../../../composables/useDirectusForm'
   import ListItemCard from './ListItemCard.vue'
 
   const props = defineProps({
@@ -48,17 +48,13 @@
   })
 
   const dialog = ref(false)
-  const content = useContentAdapter()
+  const content = useSdkContentAdapter()
 
   const {
     data,
     error
   } = await useAsyncData('listItemsFields', async () => {
-    if (content && typeof content.readFieldsByCollection === 'function') {
-      return await content.readFieldsByCollection('list_items')
-    }
-    const { $readFieldsByCollection } = useNuxtApp()
-    return gateway.content($readFieldsByCollection('list_items'))
+    return await content.readFieldsByCollection('list_items')
   })
 
   // normalize response: Directus may return { data: [...] } or an array directly

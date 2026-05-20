@@ -8,7 +8,7 @@ import type {
   FetchCustomerOrders,
   OrdersData,
 } from './types';
-import { useHandleError } from '../../useHandleError';
+import { useHandleError } from '../../../system/useHandleError/useHandleError';
 import { useAsyncData, useState } from 'nuxt/app';
 import type { OrderData } from '../useCustomerOrder/types';
 

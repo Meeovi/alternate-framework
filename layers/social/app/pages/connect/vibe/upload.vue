@@ -25,9 +25,10 @@
 
 <script setup>
 import { ref } from '#imports'
-import { createDirectusAuthState } from '@mframework/adapter-directus'
 
-const { user } = createDirectusAuthState(null)
+const runtimeUseAuth = globalThis.useAuth
+const auth = runtimeUseAuth ? runtimeUseAuth() : { user: useState('social:user', () => null) }
+const user = auth.user
 
 const name = ref('')
 const file = ref(null)

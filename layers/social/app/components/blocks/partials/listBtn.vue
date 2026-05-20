@@ -33,5 +33,5 @@
         }
     });
 
-const content = useContentAdapter()
+const content = useSdkContentAdapter()
 </script>

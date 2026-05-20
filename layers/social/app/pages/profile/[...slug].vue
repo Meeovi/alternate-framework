@@ -52,51 +52,35 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    useAuth,
-    useAsyncData,
-    useHead
-  } from '#imports';
-  import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
-  import {
-    computed,
-    onMounted,
-    ref
-  } from '#imports';
-  import {
-    useRoute
-  } from 'vue-router';
+import { useRoute } from 'vue-router'
 
-  const route = useRoute();
-  const tab = ref(null);
-  const {
-    user,
-    client
-  } = useAuth()
-  const userProfile = computed(() => user?.value as any)
-  const alert = useAlert()
-  const {
-    t
-  } = useLocate()
-  const {
-    data: accounts
-  } = await useAsyncData < any > ('/accounts', () => (client as any).listAccounts?.() ?? [])
-
-  function hasProvider(provider: string) {
-    const list = (accounts.value as any)?.data ?? (accounts.value as any)
-    return list?.some((account: {
-      provider: string
-    }) => account.provider === provider)
-  }
-
-  const error = useRoute().query?.error
-  onMounted(() => {
-    if (error) {
-      alert.error(String(error))
+const route = useRoute()
+const tab = ref(null)
+const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
+const auth = runtimeUseAuth
+  ? runtimeUseAuth()
+  : {
+      user: useState<any>('social:user', () => null),
+      client: null,
     }
-  })
+const { user, client } = auth
+const userProfile = computed(() => user?.value as any)
 
-  useHead({
-    title: userProfile.value?.username || userProfile.value?.name || 'User Profile',
-  })
+const { data: accounts } = await useAsyncData<any>('/accounts', () => (client as any).listAccounts?.() ?? [])
+
+function hasProvider(provider: string) {
+  const list = (accounts.value as any)?.data ?? (accounts.value as any)
+  return list?.some((account: { provider: string }) => account.provider === provider)
+}
+
+const error = useRoute().query?.error
+onMounted(() => {
+  if (error) {
+    console.error(String(error))
+  }
+})
+
+useHead({
+  title: userProfile.value?.username || userProfile.value?.name || 'User Profile',
+})
 </script>

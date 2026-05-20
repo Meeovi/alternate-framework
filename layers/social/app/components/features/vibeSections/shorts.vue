@@ -117,8 +117,8 @@ const isLiked = ref(false)
 const showComments = ref(false)
 const newComment = ref('')
 const vibeComments = ref([])
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-const { getAssetUrl } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { getAssetUrl } = useSdkContentAdapter()
 
 const hashtags = computed(() => {
   if (!short?.description) return []

@@ -1,7 +1,7 @@
 import { ref } from 'vue'
-import useContentRequest from '../useContentRequest'
 
 type MediaItem = Record<string, any>
+type ContentRequest = ReturnType<typeof useSdkContentAdapter>
 
 function toList(value: any): MediaItem[] {
   if (Array.isArray(value)) return value
@@ -10,7 +10,7 @@ function toList(value: any): MediaItem[] {
   return []
 }
 
-function mediaType(item: MediaItem) {
+function mediaType(item: MediaItem, request: ContentRequest) {
   const mime = String(item?.mime_type || item?.type || item?.file?.type || '').toLowerCase()
   const ext = String(item?.file?.filename_download || item?.filename_download || item?.extension || request.getAssetUrl(item?.file || item) || '').toLowerCase()
 
@@ -20,7 +20,7 @@ function mediaType(item: MediaItem) {
   return 'other'
 }
 
-function includesToken(item: MediaItem, token: string) {
+function includesToken(item: MediaItem, token: string, request: ContentRequest) {
   const haystack = [
     item?.title,
     item?.name,
@@ -40,7 +40,7 @@ function includesToken(item: MediaItem, token: string) {
 }
 
 export function useMediaCenter() {
-  const request = useContentRequest()
+  const request = useSdkContentAdapter()
   const allMedia = ref<MediaItem[]>([])
   const imageMedia = ref<MediaItem[]>([])
   const videoMedia = ref<MediaItem[]>([])
@@ -53,9 +53,9 @@ export function useMediaCenter() {
   async function loadMedia() {
     const list = toList(await request.readItems('media', { sort: ['-date_created'] }))
     allMedia.value = list
-    imageMedia.value = list.filter((item) => mediaType(item) === 'image')
-    videoMedia.value = list.filter((item) => mediaType(item) === 'video')
-    audioMedia.value = list.filter((item) => mediaType(item) === 'audio')
+    imageMedia.value = list.filter((item) => mediaType(item, request) === 'image')
+    videoMedia.value = list.filter((item) => mediaType(item, request) === 'video')
+    audioMedia.value = list.filter((item) => mediaType(item, request) === 'audio')
     sharedWithMe.value = list.filter((item) => Boolean(item?.is_shared || item?.shared || item?.shared_with_me))
 
     smartAlbums.value = [
@@ -101,7 +101,7 @@ export function useMediaCenter() {
       await loadMedia()
     }
 
-    const matches = allMedia.value.filter((item) => includesToken(item, token))
+    const matches = allMedia.value.filter((item) => includesToken(item, token, request))
     searchResults.value = matches
     return matches
   }
@@ -132,9 +132,9 @@ export function useMediaCenter() {
 
     return {
       all: inFolder,
-      images: inFolder.filter((item) => mediaType(item) === 'image'),
-      videos: inFolder.filter((item) => mediaType(item) === 'video'),
-      audio: inFolder.filter((item) => mediaType(item) === 'audio'),
+        images: inFolder.filter((item) => mediaType(item, request) === 'image'),
+        videos: inFolder.filter((item) => mediaType(item, request) === 'video'),
+        audio: inFolder.filter((item) => mediaType(item, request) === 'audio'),
     }
   }
 

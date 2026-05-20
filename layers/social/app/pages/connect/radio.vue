@@ -27,7 +27,7 @@
     import stationCard from '#social/app/components/related/radio.vue'
 
     const model = ref(null);
-    import { useDirectusRequest } from '@mframework/adapter-directus'
+    
     const { readItems, readItem } = useDirectusRequest()
 
     const { data: radioPage } = await useAsyncData('radioPage', () => {

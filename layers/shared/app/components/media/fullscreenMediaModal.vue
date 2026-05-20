@@ -37,7 +37,7 @@
   import {
     computed
   } from '#imports'
-  import useMedia from '../../composables/useMedia'
+  import useMedia from '../../composables/media/useMedia'
   import MediaPlayer from './mediaPlayer.vue'
 
   const props = defineProps({

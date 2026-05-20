@@ -38,5 +38,5 @@
     const {
         brand
     } = props;
-    const { getAssetUrl } = useContentRequest()
+    const { getAssetUrl } = useSdkContentAdapter()
 </script>

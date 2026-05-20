@@ -23,19 +23,25 @@
 
 <script setup>
     import {
-        ref
+        ref,
+        reactive
     } from '#imports'
     import DirectusFormElement from '../ui/forms/DirectusFormElement.vue'
-        import { useDirectusForm, useDirectusSchema } from '@mframework/adapter-directus'
+
     const dialog = ref(false)
+    const content = useContent()
+    const form = reactive({})
+    const formError = ref('')
+    const formSuccess = ref('')
+
     const {
         data,
         error
     } = await useAsyncData('media', async () => {
-        return useDirectusSchema('media')
+        const resp = await content.readFieldsByCollection('media')
+        return resp?.data || resp || []
     })
 
-    // guard against undefined/null data.value and empty arrays
     if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
         console.error(error)
         throw createError({
@@ -46,14 +52,24 @@
 
     const mediaFields = data
 
-    // use composable for form handling (validation, submit, provide context)
-    const {
-        form,
-        formError,
-        formSuccess,
-        submitForm
-    } = useDirectusForm('media', mediaFields, {
-        clearOnSuccess: true,
-        closeDialogRef: dialog
-    })
+    for (const field of mediaFields.value || []) {
+        if (field?.field && !(field.field in form)) {
+            form[field.field] = null
+        }
+    }
+
+    const submitForm = async () => {
+        formError.value = ''
+        formSuccess.value = ''
+        try {
+            await content.createItem('media', { ...form })
+            formSuccess.value = 'Posted successfully.'
+            for (const key of Object.keys(form)) {
+                form[key] = null
+            }
+            dialog.value = false
+        } catch (err) {
+            formError.value = err?.message || 'Failed to submit media.'
+        }
+    }
 </script>

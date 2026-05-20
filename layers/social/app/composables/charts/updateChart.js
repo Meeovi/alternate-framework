@@ -1,8 +1,7 @@
 // composables/updateChart.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function updateChart(chartId, chartData) {
-    const { updateItem } = useAdapterRequest()
+    const { updateItem } = useSdkContentAdapter()
 
     try {
       const chart = await updateItem('musicchart', chartId, chartData)

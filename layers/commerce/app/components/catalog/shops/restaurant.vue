@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-    const { getAssetUrl } = useContentRequest()
+    const { getAssetUrl } = useSdkContentAdapter()
     const props = defineProps({
         restaurant: {
             type: Object,

@@ -1,13 +1,12 @@
-import useContentAdapter from './useContentAdapter'
-import useContentRequest from './useContentRequest'
-
 export function useContentFallback() {
-  const content = useContentAdapter()
-  const request = useContentRequest()
+  const contentFactory = (globalThis as any).useSdkContentAdapter as (() => any) | undefined
+  if (typeof contentFactory !== 'function') {
+    throw new Error('useSdkContentAdapter is not available')
+  }
+  const content = contentFactory()
 
   return {
     adapter: content,
-    ...request,
     ...content,
   }
 }

@@ -7,14 +7,6 @@ export default defineNuxtConfig({
     description: 'Commerce Layer provides functionalities for managing and processing e-commerce transactions.',
   },
 
-  modules: [
-    fileURLToPath(new URL('../../packages/modules/mframework-nuxt/src/module.ts', import.meta.url)),
-  ],
-
-  alias: {
-    '@mframework/core': fileURLToPath(new URL('../../packages/modules/alternate-core/src', import.meta.url)),
-  },
-  
   runtimeConfig: {
     mframework: {
       gateway: '~/gateway/commerceGateway',

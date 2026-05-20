@@ -103,7 +103,7 @@
     } from '@mframework/adapter-directus';
     const currentUser = useCurrentUser()
 
-    const content = useContentAdapter()
+    const content = useSdkContentAdapter()
 
     const userDisplayName = computed(() => {
         return currentUser.value?.name || currentUser.value?.username || 'User'

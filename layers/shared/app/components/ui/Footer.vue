@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { SfButton, SfLink, SfListItem } from 'alternate-ui/storefront';
+
 
 const bottomLinks = [
   { key: 'terms', link: '/terms' },

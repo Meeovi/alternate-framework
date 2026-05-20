@@ -12,7 +12,7 @@
           <v-slide-group v-model="model" class="pa-4" show-arrows>
             <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
               v-for="(products, index) in bestsellers" :key="index">
-              <productCard :product="products" :class="['ma-4', selectedClass]" @click="toggle" />
+              <ProductCard :product="products" :class="['ma-4', selectedClass]" @click="toggle" />
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
@@ -28,8 +28,11 @@
 </template>
 
 <script setup>
-import { useProducts } from '#sdk/products'
+import { ref } from 'vue'
+import ProductCard from './productCard.vue'
+import { useProducts } from '../../../composables/catalog/products/useProducts/useProducts'
 
-const { bestsellers, fetchProducts } = useProducts()
+const model = ref(null)
+const { data: bestsellers, fetchProducts } = useProducts()
 await fetchProducts()
 </script>

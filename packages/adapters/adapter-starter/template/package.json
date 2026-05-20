@@ -10,7 +10,7 @@
   },
   "type": "module",
   "dependencies": {
-    "alternate-gateway": "file:../../../modules/alternate-gateway",
+
     "typescript": "^5.9.3"
   }
 }

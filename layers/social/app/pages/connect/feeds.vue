@@ -82,30 +82,36 @@
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '~/composables/useAuth'
-import { useHead } from '~/composables/core/vue'
-    import { computed, ref } from 'vue'
-    import postCard from '../../components/related/post.vue'
-    import useConnectFeedsData from '../../composables/useConnectFeedsData'
+import { computed, ref } from 'vue'
+import postCard from '../../components/related/post.vue'
+import useConnectFeedsData from '../../composables/useConnectFeedsData'
 
-    const { user, fetchSession } = useAuth()
-    void Promise.race([
-        fetchSession(),
-        new Promise((resolve) => setTimeout(resolve, 2500)),
-    ]).catch(() => {})
-    const currentUserId = computed(() => (user.value as any)?.id || (user.value as any)?.userId || null)
+const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
+const auth = runtimeUseAuth
+  ? runtimeUseAuth()
+  : {
+      user: useState<any>('social:user', () => null),
+      fetchSession: async () => null,
+    }
+const { user, fetchSession } = auth
+void Promise.race([
+  fetchSession(),
+  new Promise((resolve) => setTimeout(resolve, 2500)),
+]).catch(() => {})
 
-    const tab = ref(null)
-    const {
-        feedBar,
-        feedsPage,
-        posts,
-        circles,
-        contentStatusMessage,
-        reloadContent,
-    } = await useConnectFeedsData(currentUserId)
+const currentUserId = computed(() => (user.value as any)?.id || (user.value as any)?.userId || null)
+const tab = ref(null)
 
-    useHead({
-        title: 'Activity Feed',
-    })
+const {
+  feedBar,
+  feedsPage,
+  posts,
+  circles,
+  contentStatusMessage,
+  reloadContent,
+} = await useConnectFeedsData(currentUserId)
+
+useHead({
+  title: 'Activity Feed',
+})
 </script>

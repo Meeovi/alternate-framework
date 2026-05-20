@@ -20,21 +20,24 @@
 </template>
 
 <script setup lang="ts">
-    import spaceCard from '#social/app/components/related/space.vue'
-    const currentUser = useCurrentUser()
-    const currentFirstName = computed(() => (currentUser.value as any)?.firstName || (currentUser.value as any)?.first_name || '')
-    const currentLastName = computed(() => (currentUser.value as any)?.lastName || (currentUser.value as any)?.last_name || '')
+    import spaceCard from '../../related/space.vue'
+import { useSdkContentAdapter } from '#imports'
+    const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
+    const { user } = runtimeUseAuth
+        ? runtimeUseAuth()
+        : { user: useState<any>('social:user', () => null) }
+    const currentFirstName = computed(() => (user.value as any)?.firstName || (user.value as any)?.first_name || '')
+    const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
 
     const model = ref(null)
-    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-    const { readItems } = useAdapterRequest()
+    const { readItems } = useSdkContentAdapter()
 
-    const { data: myAudioSpaces } = await useAsyncData('myAudioSpaces', async () => {
+    const { data: myAudioSpaces } = await useAsyncData<any[]>('myAudioSpaces', async () => {
         const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
         return resp?.data || resp || []
     })
 
-    const { data: audioSpaces } = await useAsyncData('audioSpaces', async () => {
+    const { data: audioSpaces } = await useAsyncData<any[]>('audioSpaces', async () => {
         const resp = await readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
         return resp?.data || resp || []
     })

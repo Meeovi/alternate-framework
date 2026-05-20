@@ -116,8 +116,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCartStore } from '#commerce/app/stores/cart'
-import { useCart } from '#commerce/app/composables/sales/cart/useCart/useCart'
+import { useCartStore } from '../../../stores/cart'
+import { useCart } from '../../composables/sales/cart/useCart/useCart'
 import { useNuxtApp } from '#app'
 
 const cartNotification = ref(false)

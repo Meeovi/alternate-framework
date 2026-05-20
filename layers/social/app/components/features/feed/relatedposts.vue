@@ -22,8 +22,8 @@
     //import {posts} from '~/graphql/cms/queries/posts'  
 
     const tab = ref(null);
-    import useAdapterRequest from '~/composables/useAdapterRequest'
-    const { readItems } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { readItems } = useSdkContentAdapter()
 
     const { data: posts } = await useAsyncData('posts', async () => {
       const resp = await readItems('posts', { fields: ['*', { '*': ['*'] }] })

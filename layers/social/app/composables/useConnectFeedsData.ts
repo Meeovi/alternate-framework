@@ -1,83 +1,108 @@
-import { ref } from 'vue'
-import { useAsyncData } from './core/vue'
-import useContentAdapter from './useContentAdapter'
+import type { ComputedRef, Ref } from 'vue'
+import { useSdkContentAdapter } from '#imports'
+type FeedMenu = { name: string; value: string }
+type FeedBar = {
+  name: string
+  color: string
+  colortext: string
+  menus: FeedMenu[]
+}
 
-type MaybeRefId = { value: string | number | null | undefined }
+type UseConnectFeedsDataResult = {
+  feedBar: Ref<FeedBar | null | undefined>
+  feedsPage: Ref<any>
+  posts: Ref<any[] | undefined>
+  circles: Ref<any[] | undefined>
+  contentStatusMessage: Ref<string>
+  reloadContent: () => Promise<void>
+}
 
-export function useConnectFeedsData(currentUserId: MaybeRefId) {
-  const { readOne, readMany, describeError } = useContentAdapter()
+const defaultFeedBar: FeedBar = {
+  name: 'Activity Feed',
+  color: '#2b5db7',
+  colortext: '#ffffff',
+  menus: [
+    { name: 'All', value: 'all' },
+    { name: 'Following', value: 'following' },
+    { name: 'Circles', value: 'circles' },
+    { name: 'For You', value: 'for-you' },
+  ],
+}
+
+export default async function useConnectFeedsData(currentUserId: ComputedRef<string | null>): Promise<UseConnectFeedsDataResult> {
+  const { readItems } = useSdkContentAdapter()
+
   const contentStatusMessage = ref('')
 
-  function setContentError(error: any, label: string) {
-    console.error(`Failed to load ${label}`, error)
-    contentStatusMessage.value = describeError(error, { label })
-  }
-
-  async function safeReadItem(collection: string, id: string, opts: any, label: string) {
+  const { data: feedBar, refresh: refreshFeedBar } = await useAsyncData<FeedBar | null>('feeds:bar', async () => {
     try {
-      return await readOne(collection, id, opts)
-    } catch (error) {
-      setContentError(error, label)
+      const resp = await readItems('navigation', {
+        filter: { slug: { _eq: 'feed-bar' } },
+        fields: ['*', { menus: ['*'] }],
+        limit: 1,
+      })
+      const rows = resp?.data || resp || []
+      return rows?.[0] || defaultFeedBar
+    } catch {
+      return defaultFeedBar
+    }
+  })
+
+  const { data: feedsPage, refresh: refreshPage } = await useAsyncData<any>('feeds:page', async () => {
+    try {
+      const resp = await readItems('pages', {
+        filter: { slug: { _eq: 'feeds' } },
+        fields: ['*'],
+        limit: 1,
+      })
+      const rows = resp?.data || resp || []
+      return rows?.[0] || null
+    } catch {
       return null
     }
-  }
+  })
 
-  async function safeReadItems(collection: string, opts: any, label: string) {
+  const { data: posts, refresh: refreshPosts } = await useAsyncData<any[]>('feeds:posts', async () => {
     try {
-      return await readMany(collection, opts)
-    } catch (error) {
-      setContentError(error, label)
+      const resp = await readItems('posts', {
+        fields: ['*', { owner: ['*'], media: ['*'] }],
+        sort: ['-date_created'],
+        limit: 30,
+      })
+      const rows = resp?.data || resp || []
+      if (!Array.isArray(rows)) return []
+      return rows
+    } catch {
       return []
+    }
+  })
+
+  const { data: circles, refresh: refreshCircles } = await useAsyncData<any[]>('feeds:circles', async () => {
+    try {
+      const uid = currentUserId.value
+      const resp = await readItems('circle_posts', {
+        fields: ['*', { posts_id: ['*', { owner: ['*'] }] }],
+        sort: ['-date_created'],
+        filter: uid ? { owner: { _eq: uid } } : undefined,
+        limit: 30,
+      })
+      const rows = resp?.data || resp || []
+      return Array.isArray(rows) ? rows : []
+    } catch {
+      return []
+    }
+  })
+
+  const reloadContent = async () => {
+    contentStatusMessage.value = ''
+    await Promise.all([refreshFeedBar(), refreshPage(), refreshPosts(), refreshCircles()])
+
+    if (!feedBar.value || !posts.value) {
+      contentStatusMessage.value = 'Some feed content is temporarily unavailable.'
     }
   }
 
-  const { data: feedBar, refresh: refreshFeedBar } = useAsyncData('feedBar', async () => {
-    return await safeReadItem('navigation', '32', { fields: ['*', { '*': ['*'] }] }, 'feed navigation')
-  }, {
-    server: false,
-    default: () => null,
-  })
-
-  const { data: feedsPage, refresh: refreshFeedsPage } = useAsyncData('feedsPage', async () => {
-    return await safeReadItem('pages', '34', { fields: ['*', { '*': ['*'] }] }, 'feeds page')
-  }, {
-    server: false,
-    default: () => null,
-  })
-
-  const { data: posts, refresh: refreshPosts } = useAsyncData('posts', async () => {
-    return await safeReadItems('posts', {
-      fields: ['*'],
-      limit: 25,
-      sort: ['-date_created'],
-    }, 'posts')
-  }, {
-    server: false,
-    default: () => [],
-  })
-
-  const { data: circles, refresh: refreshCircles } = useAsyncData('circles', async () => {
-    if (!currentUserId.value) return []
-    return await safeReadItems('circles', {
-      fields: ['*', 'posts.posts_id.*', 'products.products_id.*', 'users.*'],
-      filter: { creator: { _eq: currentUserId.value } },
-      limit: 15,
-      sort: ['-date_created'],
-    }, 'circles')
-  }, {
-    server: false,
-    default: () => [],
-  })
-
-  async function reloadContent() {
-    contentStatusMessage.value = ''
-    await Promise.allSettled([
-      refreshFeedBar(),
-      refreshFeedsPage(),
-      refreshPosts(),
-      refreshCircles(),
-    ])
-  }
+  await reloadContent()
 
   return {
     feedBar,
@@ -88,5 +113,3 @@ export function useConnectFeedsData(currentUserId: MaybeRefId) {
     reloadContent,
   }
 }
-
-export default useConnectFeedsData

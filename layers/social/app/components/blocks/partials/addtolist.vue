@@ -101,7 +101,7 @@ const { user, fetchSession } = useAuth();
 await fetchSession();
 const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null;
 
-const content = useContentAdapter();
+const content = useSdkContentAdapter();
 
 const dialog = ref(false);
 const tab = ref('one');

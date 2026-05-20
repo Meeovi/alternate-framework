@@ -6,7 +6,7 @@ import type { Maybe } from '~/composables/system/models';
 import type { UseProductReturn, UseProductState, FetchProduct } from './types';
 import { getCommerceClient } from '../../../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../../../useHandleError';
+import { useHandleError } from '../../../system/useHandleError/useHandleError';
 
 /**
  * @description Composable managing product data

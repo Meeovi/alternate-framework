@@ -1,10 +1,10 @@
-import type { SearchAdapter as CoreSearchAdapter, SearchAdapterConfig } from 'alternate-gateway/adapters/search'
-import type {
-  SearchQuery as CoreSearchQuery,
-  SearchResult as CoreSearchResult,
-  Facet,
-  Result
-} from 'alternate-gateway/types'
+// TODO: Replace with types from shared contracts if needed
+type CoreSearchAdapter<T> = any
+type SearchAdapterConfig = any
+type CoreSearchQuery = any
+type CoreSearchResult = any
+type Facet = any
+type Result = any
 import { client } from './client'
 
 export interface OpenSearchAdapterOptions {

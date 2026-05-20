@@ -1,4 +1,4 @@
-# @mframework/directus-client
+# @mframework/adapter-directus
 
 A framework-agnostic, type-safe Directus client with optional bindings for Vue 3, Nuxt 3, and React. Includes schema introspection, auto-form and auto-table generators, validation utilities, and visual-editing / live-preview helpers.
 
@@ -21,9 +21,9 @@ Designed for modular, provider-agnostic platforms like Meeovi, but usable in any
 ## Installation
 
 ```bash
-npm install @mframework/directus-client
+npm install @mframework/adapter-directus
 # or
-pnpm add @mframework/directus-client
+pnpm add @mframework/adapter-directus
 ```
 
 ## Package structure
@@ -59,7 +59,7 @@ src/
 ### 1) Framework-agnostic
 
 ```ts
-import { createMeeoviDirectusClient } from '@mframework/directus-client';
+import { createMeeoviDirectusClient } from '@mframework/adapter-directus';
 
 const directus = createMeeoviDirectusClient('https://your-directus-url.com');
 
@@ -72,7 +72,7 @@ const products = await directus.client.request(directus.readItems('products'));
 Wrap your app:
 
 ```ts
-import { DirectusVueProvider, createMeeoviDirectusClient } from '@mframework/directus-client';
+import { DirectusVueProvider, createMeeoviDirectusClient } from '@mframework/adapter-directus';
 
 const directus = createMeeoviDirectusClient('https://cms.example.com');
 ```
@@ -88,7 +88,7 @@ const directus = createMeeoviDirectusClient('https://cms.example.com');
 Use inside components:
 
 ```ts
-import { useDirectus } from '@mframework/directus-client';
+import { useDirectus } from '@mframework/adapter-directus';
 
 const directus = useDirectus();
 const items = await directus.client.request(directus.readItems('articles'));
@@ -101,7 +101,7 @@ Create a plugin:
 ```ts
 // plugins/directus.client.ts
 import { defineNuxtPlugin, useRuntimeConfig } from '#imports';
-import { createMeeoviDirectusClient, DirectusVueProvider } from '@mframework/directus-client';
+import { createMeeoviDirectusClient, DirectusVueProvider } from '@mframework/adapter-directus';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
@@ -124,7 +124,7 @@ const posts = await $directus.client.request($directus.readItems('posts'));
 Wrap your app:
 
 ```tsx
-import { DirectusReactProvider, createMeeoviDirectusClient } from '@mframework/directus-client';
+import { DirectusReactProvider, createMeeoviDirectusClient } from '@mframework/adapter-directus';
 
 const directus = createMeeoviDirectusClient('https://cms.example.com');
 
@@ -140,7 +140,7 @@ export function App() {
 Use inside components:
 
 ```tsx
-import { useDirectus } from '@mframework/directus-client';
+import { useDirectus } from '@mframework/adapter-directus';
 const directus = useDirectus();
 const items = await directus.client.request(directus.readItems('products'));
 ```
@@ -148,7 +148,7 @@ const items = await directus.client.request(directus.readItems('products'));
 ## Schema introspection
 
 ```ts
-import { introspectSchema } from '@mframework/directus-client';
+import { introspectSchema } from '@mframework/adapter-directus';
 
 const schema = await introspectSchema(directus.client);
 console.log(schema.directus_fields);
@@ -157,7 +157,7 @@ console.log(schema.directus_fields);
 ## Auto-Form Engine
 
 ```ts
-import { createFormEngine } from '@mframework/directus-client';
+import { createFormEngine } from '@mframework/adapter-directus';
 
 const engine = createFormEngine('products', fields, directus);
 engine.form.title = 'New Product';
@@ -167,7 +167,7 @@ const result = await engine.submit();
 ## Auto-Table Engine
 
 ```ts
-import { generateTableSchema } from '@mframework/directus-client';
+import { generateTableSchema } from '@mframework/adapter-directus';
 const table = generateTableSchema(fields);
 console.log(table);
 ```
@@ -175,7 +175,7 @@ console.log(table);
 ## Validation Engine
 
 ```ts
-import { validateField } from '@mframework/directus-client';
+import { validateField } from '@mframework/adapter-directus';
 const error = validateField(field, value);
 if (error) console.error(error);
 ```
@@ -183,14 +183,14 @@ if (error) console.error(error);
 ## Widget Registry
 
 ```ts
-import { widgetRegistry } from '@mframework/directus-client';
+import { widgetRegistry } from '@mframework/adapter-directus';
 console.log(widgetRegistry.text.component);
 ```
 
 ## Visual Editing (framework-agnostic)
 
 ```ts
-import { createVisualEditing } from '@mframework/directus-client';
+import { createVisualEditing } from '@mframework/adapter-directus';
 
 const visual = createVisualEditing({
   enableVisualEditing: true,
@@ -206,7 +206,7 @@ visual.apply({ elements: document.querySelectorAll('[data-editable]') });
 ## Live Preview (framework-agnostic)
 
 ```ts
-import { createLivePreview } from '@mframework/directus-client';
+import { createLivePreview } from '@mframework/adapter-directus';
 
 const preview = createLivePreview({
   query: Object.fromEntries(new URLSearchParams(location.search)),
@@ -226,9 +226,9 @@ Everything is fully typed: Directus schema, client methods, form/table generator
 If you’re working inside a monorepo:
 
 ```bash
-npm --workspace @mframework/directus-client run build
+npm --workspace @mframework/adapter-directus run build
 # or
-pnpm --filter @mframework/directus-client build
+pnpm --filter @mframework/adapter-directus build
 ```
 
 ## Contributing

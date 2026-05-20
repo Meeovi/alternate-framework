@@ -87,7 +87,7 @@
     import addToCartBtn from '../../partials/addToCartBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
 
-    const { getAssetUrl } = useContentRequest()
+    const { getAssetUrl } = useSdkContentAdapter()
     const hasAsset = (file: any) => Boolean(getAssetUrl(file))
     const inputId = useId();
     const min = ref(1);

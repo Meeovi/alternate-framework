@@ -4,7 +4,6 @@ import type { Ref } from 'vue';
 import type { FetchProducts, UseProductsReturn, UseProductsState } from './types';
 import { getCommerceClient } from '../../../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../../../useHandleError';
 import type { Maybe } from '../../../models/shared';
 
 /**
@@ -27,8 +26,20 @@ export const useProducts: UseProductsReturn = () => {
   const fetchProducts: FetchProducts = async () => {
     state.value.loading = true;
     const client = getCommerceClient();
-    const { data, error } = await useAsyncData('commerce:products:list', () => client.listProducts?.());
-    useHandleError(error.value);
+    if (!client || typeof (client as any).listProducts !== 'function') {
+      state.value.data = [] as unknown as UseProductsState['data'];
+      state.value.loading = false;
+      return computed(() => state.value.data) as unknown as Ref<UseProductsState['data']>;
+    }
+
+    const { data, error } = await useAsyncData('commerce:products:list', () => (client as any).listProducts());
+    if (error.value) {
+      // Keep startup resilient when provider is not configured.
+      state.value.data = [] as unknown as UseProductsState['data'];
+      state.value.loading = false;
+      return computed(() => state.value.data) as unknown as Ref<UseProductsState['data']>;
+    }
+
     state.value.data = data.value as unknown as UseProductsState['data'];
     state.value.loading = false;
     return computed(() => state.value.data) as unknown as Ref<UseProductsState['data']>;

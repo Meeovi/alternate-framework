@@ -29,9 +29,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import Lightgallery from 'lightgallery/vue';
-import lgZoom from 'lightgallery/plugins/zoom';
-import lgVideo from 'lightgallery/plugins/video';
+
 
 type GalleryVideoSource = {
     src: string;
@@ -73,11 +71,8 @@ const emit = defineEmits<{
     (e: 'before-slide', detail: unknown): void;
 }>();
 
-const plugins = [lgZoom, lgVideo];
-
 const gallerySettings = computed(() => ({
     speed: 500,
-    plugins,
     ...props.settings,
 }));
 
@@ -174,9 +169,7 @@ function onBeforeSlide(detail: unknown): void {
 </script>
 
 <style scoped>
-@import 'lightgallery/css/lightgallery.css';
-@import 'lightgallery/css/lg-zoom.css';
-@import 'lightgallery/css/lg-video.css';
+
 
 .gallery-item {
     margin: 5px;

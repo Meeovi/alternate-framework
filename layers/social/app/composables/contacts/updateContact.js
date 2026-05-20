@@ -1,8 +1,7 @@
 // composables/updateContact.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function updateContact(contactId, contactData) {
-    const { updateItem } = useAdapterRequest()
+    const { updateItem } = useSdkContentAdapter()
 
     try {
       const contact = await updateItem('contacts', contactId, contactData)

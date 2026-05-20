@@ -91,8 +91,7 @@
         useReactionsStore
     } from '~/stores/reactions'
 
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
     const props = defineProps({
         post: {
             type: Object,
@@ -119,7 +118,7 @@ import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
         }
     })
 
-const { getAssetUrl } = useAdapterRequest()
+const { getAssetUrl } = useSdkContentAdapter()
 const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
 const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 </script>

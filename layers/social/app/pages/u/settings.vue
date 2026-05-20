@@ -123,8 +123,16 @@
 </template>
 
 <script setup lang="ts">
-const user = useCurrentUser()
-const { fetchSession } = useAuth()
+import { useTheme } from 'vuetify'
+
+const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
+const auth = runtimeUseAuth
+  ? runtimeUseAuth()
+  : {
+      user: useState<any>('social:user', () => null),
+      fetchSession: async () => null,
+    }
+const { user, fetchSession } = auth
 const loading = ref(false)
 const theme = useTheme()
 const config = useRuntimeConfig()

@@ -1,10 +1,9 @@
 // composables/createStation.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function createStation(stationData) {
     const route = useRoute();
     const id = route.params.id;
-    const { createItem } = useAdapterRequest()
+    const { createItem } = useSdkContentAdapter()
 
     try {
       const station = await createItem('radios', {

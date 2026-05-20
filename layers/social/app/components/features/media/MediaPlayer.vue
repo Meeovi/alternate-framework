@@ -152,7 +152,7 @@ const props = defineProps({
   }
 })
 
-const content = useContentAdapter()
+const content = useSdkContentAdapter()
 
 const currentIndex = ref(0)
 const isPlaying = ref(false)

@@ -70,7 +70,7 @@ const {
   getUserBookmarks,
   getPage,
   getAssetUrl
-} = useContentAdapter()
+} = useSdkContentAdapter()
 const hasAsset = (file) => Boolean(getAssetUrl(file))
 
 const { data: lists } = await useAsyncData('lists', () =>

@@ -53,6 +53,6 @@ const props = defineProps({
 });
 
 const { post } = props;
-import useAdapterRequest from '~/composables/useAdapterRequest'
-const { getAssetUrl } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { getAssetUrl } = useSdkContentAdapter()
 </script>

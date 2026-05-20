@@ -16,9 +16,9 @@
 <script setup>
 const gateway = useGateway()
 const content = gateway.content
-const route = useRoute()
 
-const { data: social } = await useAsyncData('social', () => {
-  return content.readItem('navigation', '76')
+const { data: social } = await useAsyncData('social', async () => {
+  const item = await content.readItem('navigation', '76')
+  return item || { name: '', menus: [] }
 })
 </script>

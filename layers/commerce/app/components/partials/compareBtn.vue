@@ -17,7 +17,7 @@
   const props = defineProps<{ product: Product }>();
 
   const compareStore = useCompareStore();
-  const content = useContentRequest() as any;
+  const content = useSdkContentAdapter() as any;
 
   // Check if the product is already in compare list
   const isInCompare = computed(() => {

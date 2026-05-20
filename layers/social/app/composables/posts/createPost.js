@@ -1,10 +1,9 @@
 // composables/createPost.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function createPost(postData) {
     const route = useRoute();
     const id = route.params.id;
-    const { createItem } = useAdapterRequest()
+    const { createItem } = useSdkContentAdapter()
 
     try {
       const post = await createItem('posts', {

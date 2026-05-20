@@ -1,8 +1,8 @@
 // composables/deleteShort.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
+import { useSdkContentAdapter } from '#imports'
 
 export default async function deleteShort(shortId) {
-    const { deleteItem } = useAdapterRequest()
+    const { deleteItem } = useSdkContentAdapter()
 
     try {
       await deleteItem('shorts', shortId)

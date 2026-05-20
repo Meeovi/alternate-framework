@@ -57,7 +57,7 @@
     } from '#imports'
     import TagChip from '../../components/related/tag.vue'
 
-    import { useDirectusRequest } from '@mframework/adapter-directus'
+    
     const { readItems, readItem } = useDirectusRequest()
     const route = useRoute()
     const tab = ref(null);

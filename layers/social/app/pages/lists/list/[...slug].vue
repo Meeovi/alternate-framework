@@ -112,7 +112,7 @@
   import shortCard from '#social/app/components/related/short.vue'
 
   const route = useRoute()
-  const content = useContentAdapter()
+  const content = useSdkContentAdapter()
   const {
     updateListItem,
     removeFromList
@@ -151,7 +151,7 @@
       filter: { slug: { _eq: slug.value } },
       limit: 1
     }
-    const content = useContentAdapter()
+    const content = useSdkContentAdapter()
     if (content && typeof content.readItems === 'function') {
       const resp = content.readItems('lists', opts)
       return resp?.data || resp

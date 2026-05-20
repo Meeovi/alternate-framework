@@ -94,6 +94,10 @@ const runtimeAdapter = (): AdapterName => {
 }
 
 const authCookieName = () => process.env.AUTH_COOKIE_NAME || 'auth-token'
+const magentoRequestTimeoutMs = () => {
+  const parsed = Number.parseInt(process.env.MAGENTO_AUTH_TIMEOUT_MS || '', 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 15000
+}
 
 const magentoGraphqlEndpoint = () => {
   const magentoBaseUrl = process.env.MAGENTO_BASE_URL || ''
@@ -116,6 +120,9 @@ const magentoRequest = async <T>(query: string, variables: Record<string, unknow
   const endpoint = magentoGraphqlEndpoint()
   const headers: Record<string, string> = { 'content-type': 'application/json' }
   if (token) headers.authorization = `Bearer ${token}`
+  const timeoutMs = magentoRequestTimeoutMs()
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
   let response: Response
   try {
@@ -123,12 +130,21 @@ const magentoRequest = async <T>(query: string, variables: Record<string, unknow
       method: 'POST',
       headers,
       body: JSON.stringify({ query, variables }),
+      signal: controller.signal,
     })
-  } catch {
+  } catch (error: any) {
+    if (error?.name === 'AbortError') {
+      throw createError({
+        statusCode: 504,
+        statusMessage: `Magento auth endpoint timed out after ${timeoutMs}ms: ${endpoint}`,
+      })
+    }
     throw createError({
       statusCode: 502,
       statusMessage: `Unable to reach Magento auth endpoint: ${endpoint}`,
     })
+  } finally {
+    clearTimeout(timeout)
   }
 
   const rawBody = await response.text()

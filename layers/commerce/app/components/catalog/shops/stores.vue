@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-    const { getAssetUrl } = useContentRequest()
+    const { getAssetUrl } = useSdkContentAdapter()
     const props = defineProps({
         store: {
             type: Object,

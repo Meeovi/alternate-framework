@@ -48,13 +48,14 @@
 </template>
 
 <script setup>
-    import { ref, computed, onMounted } from '#imports'
-    import { createDirectusAuthState } from '@mframework/adapter-directus'
-    import useContentAdapter from '#social/app/composables/useContentAdapter'
+    import { ref, computed, onMounted, useSdkContentAdapter } from '#imports'
 
     const config = useRuntimeConfig()
-    const directus = useContentAdapter().directusClient
-    const { user } = createDirectusAuthState(null)
+    const content = useSdkContentAdapter()
+    const directus = content?.directusClient
+    const runtimeUseAuth = globalThis.useAuth
+    const auth = runtimeUseAuth ? runtimeUseAuth() : { user: useState('social:user', () => null) }
+    const user = auth.user
 
     const videos = ref([])
     const tags = ref([])
@@ -64,7 +65,7 @@
     const visibilityOptions = ['public', 'followers', 'circles', 'private']
 
     onMounted(async () => {
-        if (!user.value) return
+        if (!user.value || !directus) return
 
         // Fetch videos for this user and their tags
         const videoResp = await directus.items('videos').list(`filter[user_id][_eq]=${user.value.id}&sort=-created_at&fields=*,tags.id,tags.name`)

@@ -8,10 +8,9 @@
 
             <template v-slot:default="{ isActive }">
                 <UCard title="Dialog">
-                    <template>
                         <UForm @submit.prevent="handleSubmit">
                             <UCard>
-                                <template>
+                                <div>
                                     <UInput v-model="postData.title" id="postName" label="Post Name*" required />
                                     <UTextarea v-model="postData.content" label="What's happening?*" variant="outlined"
                                         required></UTextarea>
@@ -42,9 +41,9 @@
                                             </UFileUpload>
                                         </v-col>
                                     </v-row>
-                                </template>
+                                </div>
                                 <v-divider class="mt-12"></v-divider>
-                                <template>
+                                <div>
                                     <UButton color="blue-darken-1" variant="text" @click="isActive.value = false">
                                         Close
                                     </UButton>
@@ -56,10 +55,9 @@
                                     <UButton color="blue-darken-1" variant="text" type="submit">
                                         Update Post
                                     </UButton>
-                                </template>
+                                </div>
                             </UCard>
                         </UForm>
-                    </template>
                 </UCard>
             </template>
         </v-dialog>
@@ -67,11 +65,11 @@
         <!-- Delete Confirmation Dialog -->
         <v-dialog v-model="deleteDialog" max-width="500px">
             <UCard>
-                <UCard-title class="text-h5">Delete Post</template>
-                <template>
+                <h3 class="text-h5">Delete Post</h3>
+                <div>
                     Are you sure you want to delete this post? This action cannot be undone.
-                </template>
-                <template>
+                </div>
+                <div>
                     <v-spacer></v-spacer>
                     <UButton color="blue-darken-1" variant="text" @click="deleteDialog = false">
                         Cancel
@@ -79,7 +77,7 @@
                     <UButton color="error" variant="text" @click="deletePost" :loading="deleteLoading">
                         Delete
                     </UButton>
-                </template>
+                </div>
             </UCard>
         </v-dialog>
     </div>
@@ -91,7 +89,7 @@
     } from 'vue';
     import uploadFiles from '../../../composables/globals/uploadFiles';
     import updatePost from '~/composables/posts/updatePost';
-    import useAdapterRequest from '~/composables/useAdapterRequest'
+    import { useSdkContentAdapter } from '#imports'
     import {
         useUserStore
     } from '#auth/app/stores/user'
@@ -143,7 +141,7 @@
     // Function to fetch existing post data
     const fetchPostData = async () => {
         try {
-            const { readItem } = useAdapterRequest()
+            const { readItem } = useSdkContentAdapter()
             const listId = route.params.id; // Assuming you're passing the ID in the route
             const response = await readItem('posts', listId)
 
@@ -201,7 +199,7 @@
     try {
         loading.value = true;
 
-        const { updateItem } = useAdapterRequest()
+        const { updateItem } = useSdkContentAdapter()
         
         // Prepare update data
         const updateData = {
@@ -249,7 +247,7 @@
     const deletePost = async () => {
         try {
             deleteLoading.value = true;
-            const { deleteItem } = useAdapterRequest()
+            const { deleteItem } = useSdkContentAdapter()
             await deleteItem('posts', route.params.id)
 
             // Close the delete dialog

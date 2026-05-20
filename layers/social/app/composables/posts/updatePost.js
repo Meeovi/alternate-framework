@@ -1,8 +1,7 @@
 // composables/updatePost.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function updatePost(postId, postData) {
-    const { updateItem } = useAdapterRequest()
+    const { updateItem } = useSdkContentAdapter()
 
     try {
       const post = await updateItem('posts', postId, postData)

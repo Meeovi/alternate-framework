@@ -1,8 +1,8 @@
 // composables/updateShort.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
+import { useSdkContentAdapter } from '#imports'
 
 export default async function updateShort(shortId, shortData) {
-    const { updateItem } = useAdapterRequest()
+    const { updateItem } = useSdkContentAdapter()
 
     try {
       const short = await updateItem('shorts', shortId, shortData)

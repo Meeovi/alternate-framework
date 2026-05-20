@@ -20,8 +20,8 @@
 </template>
 
 <script setup>
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-const { getAssetUrl } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { getAssetUrl } = useSdkContentAdapter()
 const hasAsset = (file) => Boolean(getAssetUrl(file))
     
     const props = defineProps({

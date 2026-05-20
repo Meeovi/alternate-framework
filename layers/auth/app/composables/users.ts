@@ -1,5 +1,10 @@
 import { ref, computed } from 'vue'
-import type { UserLogin } from '../../../shared/shared/types/'
+// TODO: Define UserLogin type or import from shared/contracts if available
+type UserLogin = {
+  server: string
+  token: string
+  account?: any
+}
 
 export const users = ref<UserLogin[]>([])
 export const currentUser = ref<UserLogin | undefined>(undefined)
@@ -36,7 +41,7 @@ export async function loginTo(masto: any, user: any) {
       console.warn('Failed to persist user to DB', e)
     }
 
-    const existing = users.value.find(u => u.server === user.server && u.token === user.token)
+    const existing = users.value.find((u: UserLogin) => u.server === user.server && u.token === user.token)
     if (existing) {
       existing.account = account
     } else {

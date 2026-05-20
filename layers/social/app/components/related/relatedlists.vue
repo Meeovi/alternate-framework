@@ -19,7 +19,7 @@
   } from '#imports'
   import listCard from '#social/app/components/related/list.vue'
 
-  const content = useContentAdapter()
+  const content = useSdkContentAdapter()
   const model = ref(null)
 
   const { data: lists } = await useAsyncData('lists', async () => {

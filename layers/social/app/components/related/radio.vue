@@ -29,8 +29,7 @@
 </template>
 
 <script setup>
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 const props = defineProps({
   radio: {
     type: Object,
@@ -39,5 +38,5 @@ const props = defineProps({
 })
 
 const { radio } = props
-const { getAssetUrl } = useAdapterRequest()
+const { getAssetUrl } = useSdkContentAdapter()
 </script>

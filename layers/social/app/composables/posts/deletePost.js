@@ -1,8 +1,7 @@
 // composables/deletePost.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function deletePost(postId) {
-    const { deleteItem } = useAdapterRequest()
+    const { deleteItem } = useSdkContentAdapter()
 
     try {
       await deleteItem('posts', postId)

@@ -63,7 +63,7 @@
   import { computed } from 'vue'
   import { usePrice } from '../../../composables/catalog/price/price'
 
-  const { getAssetUrl } = useContentRequest()
+  const { getAssetUrl } = useSdkContentAdapter()
 
   const { getProductPrice } = usePrice()
 

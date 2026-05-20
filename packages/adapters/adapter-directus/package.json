@@ -1,43 +1,63 @@
 {
   "name": "@mframework/adapter-directus",
   "version": "0.0.3",
+  "license": "MIT",
   "description": "Directus Client Library with auto generating forms and tables, Directus SDK and Types, and vue/react components for Directus Visual Editing.",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "author": {
+    "name": "M Framework"
+  },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./nuxt": "./src/module.ts"
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs",
+      "types": "./dist/types.d.ts"
+    }
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p tsconfig.json"
-  },
-  "keywords": [
-    "directus",
-    "directus-sdk",
-    "directus-types",
-    "directus-visual-editing",
-    "directus-client",
-    "vue",
-    "react",
-    "typescript"
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist"
   ],
-  "author": "M Framework",
-  "license": "MIT",
-  "type": "module",
+  "scripts": {
+    "prepack": "nuxt-module-build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
+    "docs": "cd docs && pnpm dev",
+    "release": "nuxt-module-build && changelogen --release --minor --push && pnpm publish",
+    "lint": "eslint --ext .js,.ts,.vue"
+  },
   "dependencies": {
-    "@directus/sdk": "^18.0.3",
-    "@directus/types": "^14.0.0",
-    "@directus/visual-editing": "^1.2.0",
-    "@nuxt/kit": "^4.4.2",
-    "react": "^19.2.3",
-    "typescript": "^5.9.3"
+    "@directus/sdk": "^21.3.0",
+    "@directus/types": "^15.0.3",
+    "@directus/visual-editing": "^2.0.1",
+    "@nuxt/kit": "^4.4.5"
   },
   "devDependencies": {
-    "@types/react": "^19.2.9"
+    "@nuxt/devtools": "^0.4.2",
+    "@nuxt/module-builder": "latest",
+    "@nuxtjs/eslint-config-typescript": "latest",
+    "@types/node": "^18.14.1",
+    "changelogen": "^0.4.1",
+    "eslint": "latest",
+    "nuxt": "^4.4.5",
+    "typescript": "^6.0.3",
+    "ufo": "^1.6.4"
+  },
+  "keywords": [
+    "nuxt",
+    "directus",
+    "nuxtjs",
+    "nuxt-module",
+    "vue3",
+    "nuxt3",
+    "directus-module",
+    "nuxt-directus",
+    "nuxtdirectus",
+    "nuxt-community"
+  ],
+  "unbuild": {
+    "failOnWarn": false
   }
 }

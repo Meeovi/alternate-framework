@@ -124,8 +124,8 @@
 
     const route = useRoute();
     const tab = ref(null)
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-const { readItems, readItem } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+const { readItems, readItem } = useSdkContentAdapter()
 
     const { data: space } = await useAsyncData('space', async () => {
         const resp = await readItems('spaces', {

@@ -56,12 +56,13 @@ DATABASE_PROVIDER=postgres
 DATABASE_URL=postgresql://user:pass@localhost:5432/mydb
 Supported providers:
 
-Provider	Value
-Postgres	postgres
-MySQL	mysql
+Provider	Value aliases
+PostgreSQL	postgresql, postgres
+MySQL / MariaDB	mysql, mariadb
 SQLite	sqlite
-MongoDB	mongo or mongodb
-Edge Postgres	edge-postgres
+SQL Server	sqlserver, mssql
+CockroachDB	cockroachdb, cockroach
+MongoDB	mongodb, mongo
 
 
 2. Initialize Prisma in your app
@@ -92,17 +93,17 @@ The adapter reads:
 env
 DATABASE_PROVIDER=
 DATABASE_URL=
-Then loads the correct adapter:
+Then loads the correct adapter package:
 
-Provider	Adapter
-postgres	PrismaPg
-mysql	PrismaMySQL
-sqlite	PrismaSQLite
-mongo	PrismaMongoDB
-edge-postgres	PrismaAccelerate
+Provider	Adapter package
+postgresql	@prisma/adapter-pg
+mysql	@prisma/adapter-mysql
+sqlite	@prisma/adapter-sqlite
+sqlserver	@prisma/adapter-sqlserver
+cockroachdb	@prisma/adapter-cockroachdb
+mongodb	@prisma/adapter-mongodb
 
-
-If no provider matches, it falls back to a normal Prisma client using only the URL.
+If a provider adapter package is missing, the adapter throws a clear install hint.
 
 🧩 Creating New Database Adapters
 All database adapters live in:

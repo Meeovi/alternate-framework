@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import useFollow, { type EntityType } from '../../composables/useFollow'
+import useFollow, { type EntityType } from '../../composables/contacts/useFollow'
 
 const props = defineProps({
   entityType: { type: String as () => EntityType, required: true },

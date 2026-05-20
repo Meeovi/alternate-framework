@@ -327,9 +327,10 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
 
     return settled.map((entry, index) => {
       if (entry.status === "fulfilled") return entry.value;
+      const backend = ctx.backends?.[index];
       return {
-        backendId: ctx.backends[index].id,
-        servedBy: ctx.backends[index].id,
+        backendId: backend?.id ?? `unknown-${index}`,
+        servedBy: backend?.id ?? `unknown-${index}`,
         result: null,
         error: entry.reason instanceof Error ? entry.reason : new Error(String(entry.reason)),
         elapsed: 0,
@@ -368,7 +369,7 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
     >;
 
     if (successes.length === 0) return { ...EMPTY_RESULT };
-    if (successes.length === 1) return successes[0].result;
+    if (successes.length === 1) return successes[0]?.result ?? { ...EMPTY_RESULT };
 
     type RankedItem = Record<string, unknown> & { _score?: number; _source?: string };
 
@@ -382,7 +383,10 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
 
       success.result.items.forEach((item, index) => {
         const score = ((success.result.items.length - index) / Math.max(1, success.result.items.length)) * weight;
+        // Ensure id property exists for SearchDocument type
+        const id = (item as any).id ?? `${success.servedBy}-${index}`;
         merged.push({
+          id,
           ...(item as Record<string, unknown>),
           _source: success.servedBy,
           _score: score,
@@ -403,8 +407,8 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
 
     merged.sort((a, b) => (Number(b._score ?? 0) - Number(a._score ?? 0)));
 
-    const pageSize = successes[0].result.pageSize;
-    const page = successes[0].result.page;
+    const pageSize = successes[0]?.result?.pageSize ?? 10;
+    const page = successes[0]?.result?.page ?? 1;
 
     const facets = [...facetMap.entries()].map(([field, values]) => ({
       field,
@@ -414,12 +418,12 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
     }));
 
     return {
-      items: merged.slice(0, pageSize),
+      items: merged.slice(0, pageSize) as import("../../core/types").SearchDocument[],
       total: Math.ceil(weightedTotal),
       page,
       pageSize,
       facets,
-      took: Math.max(...successes.map((entry) => entry.result.took ?? 0)),
+      took: Math.max(...successes.map((entry) => entry.result?.took ?? 0)),
     };
   };
 
@@ -437,7 +441,7 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
 
       const settled = await Promise.allSettled(normalizedBackends.map((backend) => backend.adapter.setup(indexes)));
       const failures = settled
-        .map((entry, index) => (entry.status === "rejected" ? normalizedBackends[index].id : null))
+        .map((entry, index) => (entry.status === "rejected" ? normalizedBackends?.[index]?.id ?? null : null))
         .filter((value): value is string => value !== null);
 
       const requiredFailures = failures.filter((backendId) => !backendMap.get(backendId)?.optional);
@@ -462,7 +466,7 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
       );
 
       const failures = settled
-        .map((entry, index) => (entry.status === "rejected" ? normalizedBackends[index].id : null))
+        .map((entry, index) => (entry.status === "rejected" ? normalizedBackends?.[index]?.id ?? null : null))
         .filter((value): value is string => value !== null);
 
       const requiredFailures = failures.filter((backendId) => !backendMap.get(backendId)?.optional);
@@ -536,7 +540,7 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
     async delete(indexName: string, id: string) {
       const settled = await Promise.allSettled(normalizedBackends.map((backend) => backend.adapter.delete(indexName, id)));
       const failures = settled
-        .map((entry, index) => (entry.status === "rejected" ? normalizedBackends[index].id : null))
+        .map((entry, index) => (entry.status === "rejected" ? normalizedBackends?.[index]?.id ?? null : null))
         .filter((value): value is string => value !== null);
 
       const requiredFailures = failures.filter((backendId) => !backendMap.get(backendId)?.optional);
@@ -556,7 +560,7 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
         if (entry.status === "fulfilled") {
           deleted += entry.value;
         } else {
-          failures.push(normalizedBackends[index].id);
+          failures.push(normalizedBackends?.[index]?.id ?? `unknown-${index}`);
         }
       });
 
@@ -578,7 +582,7 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
       settled.forEach((entry) => {
         if (entry.status !== "fulfilled") return;
         count += entry.value.count;
-        if (entry.value.size) size += entry.value.size;
+        if ((entry.value as any)?.size) size += (entry.value as any).size;
       });
 
       return {
@@ -589,4 +593,3 @@ export function multiBackendAdapter(config: MultiBackendAdapterConfig): SearchAd
   };
 }
 
-export type { BackendConfig, MultiBackendAdapterConfig };

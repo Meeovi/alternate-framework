@@ -66,7 +66,7 @@
     import createspace from '#social/app/components/features/spaceSections/crud/add-space.vue'
     import { componentMap } from '~/types/componentMap'
 
-    import { useDirectusRequest } from '@mframework/adapter-directus'
+    
     const { readItem, readItems } = useDirectusRequest()
 
     // current selected tab value (matches menu.value)

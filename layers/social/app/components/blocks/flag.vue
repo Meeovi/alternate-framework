@@ -33,11 +33,11 @@
     import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
     import {
         useDirectusForm
-    } from '@mframework/adapter-directus'
+    } from '../../composables/useDirectusForm'
 
     const dialog = ref(false)
-    import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-    const { readFieldsByCollection } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+ const { readFieldsByCollection } = useSdkContentAdapter()
 
     const { data, error } = await useAsyncData('report', async () => {
         const resp = await readFieldsByCollection('report')

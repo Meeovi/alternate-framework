@@ -45,8 +45,8 @@ import brand from '../components/related/brandCard.vue'
 
 const tab = ref(null)
 
-const { getBrands, getMeeBrands } = useCommerceAdapter()
-const { getBrandBar } = useContentAdapter()
+const { getBrands, getMeeBrands } = useSdkCommerceAdapter()
+const { getBrandBar } = useSdkContentAdapter()
 
 const { data: brands } = await useAsyncData('brands', getBrands)
 const { data: meebrands } = await useAsyncData('meebrands', getMeeBrands)

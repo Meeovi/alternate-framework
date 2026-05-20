@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { BooleanInput as AlternateUIBooleanInput } from 'alternate-ui/shared-ui/components'
+
 
 defineProps<{
   modelValue?: boolean

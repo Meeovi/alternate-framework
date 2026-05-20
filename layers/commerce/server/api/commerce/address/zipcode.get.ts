@@ -1,4 +1,4 @@
-import { executeJsonRequest } from '@mframework/api-client'
+import { executeJsonRequest } from '../../../utils/gateway-transport'
 import { createError, defineEventHandler, getQuery } from 'h3'
 
 export default defineEventHandler(async (event) => {

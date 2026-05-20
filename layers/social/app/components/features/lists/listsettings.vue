@@ -78,7 +78,7 @@
   import {
       ref
   } from '#imports'
-    const content = useContentAdapter()
+    const content = useSdkContentAdapter()
   
 
   const config = useRuntimeConfig();

@@ -74,7 +74,7 @@ const addPaymentLog = async (hookType: string, data: Customer | Checkout | Benef
     const customer = data as Customer
     if (hookType == 'customer.created' && customer.externalId) {
       // Write back polarCustomerId to users table using centralized prisma client
-      await prisma.users.updateMany({ where: { id: customer.externalId as any }, data: { polarCustomerId: customer.id } as any })
+      await prisma.user.updateMany({ where: { id: customer.externalId as any }, data: { polarCustomerId: customer.id } as any })
     }
     // await logAuditEvent({
     //   userId: customer.externalId || undefined,

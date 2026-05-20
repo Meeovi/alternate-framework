@@ -8,7 +8,7 @@ import type {
   FetchCustomerAddress,
 } from './types';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../../useHandleError';
+import { useHandleError } from '../../system/useHandleError/useHandleError';
 
 /**
  * @description Composable managing address data

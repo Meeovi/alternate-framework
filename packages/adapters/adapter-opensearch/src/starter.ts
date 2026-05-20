@@ -1,5 +1,10 @@
-import type { SearchAdapter, TransportAdapter } from 'alternate-gateway/adapters'
-import type { SearchQuery, SearchResult, Facet, Result } from 'alternate-gateway/types'
+// TODO: Replace with types from shared contracts if needed
+type SearchAdapter = any
+type TransportAdapter = any
+type SearchQuery = any
+type SearchResult = any
+type Facet = any
+type Result = any
 import { unwrap } from './utils'
 
 // Provide a starter-style adapter factory so apps using the starter-adapter

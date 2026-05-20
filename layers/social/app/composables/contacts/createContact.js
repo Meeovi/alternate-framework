@@ -1,10 +1,9 @@
 // composables/createContact.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function createContact(contactData) {
     const route = useRoute();
     const id = route.params.id;
-    const { createItem } = useAdapterRequest()
+    const { createItem } = useSdkContentAdapter()
 
     try {
       const contact = await createItem('contacts', {

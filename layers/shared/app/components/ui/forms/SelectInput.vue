@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { SelectInput as AlternateUISelectInput } from 'alternate-ui/shared-ui/components'
+
 
 defineProps<{
   defaultValue?: string

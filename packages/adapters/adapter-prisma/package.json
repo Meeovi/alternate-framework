@@ -28,17 +28,49 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "build": "tsup --config tsup.config.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "smoke": "node ./scripts/smoke.mjs",
+    "test": "npm run smoke"
   },
   "devDependencies": {
+    "@prisma/client": "^7.8.0",
     "prisma": "^7.8.0",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3"
   },
+  "peerDependencies": {
+    "@prisma/client": "^7.8.0",
+    "prisma": "^7.8.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/adapter-mysql": "^7.8.0",
+    "@prisma/adapter-sqlite": "^7.8.0",
+    "@prisma/adapter-sqlserver": "^7.8.0",
+    "@prisma/adapter-cockroachdb": "^7.8.0",
+    "@prisma/adapter-mongodb": "^7.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@prisma/adapter-pg": {
+      "optional": true
+    },
+    "@prisma/adapter-mysql": {
+      "optional": true
+    },
+    "@prisma/adapter-sqlite": {
+      "optional": true
+    },
+    "@prisma/adapter-sqlserver": {
+      "optional": true
+    },
+    "@prisma/adapter-cockroachdb": {
+      "optional": true
+    },
+    "@prisma/adapter-mongodb": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
     "dotenv": "^17.4.2",
     "pg": "^8.20.0"
-  }
+  },
+  "files": ["dist"]
 }

@@ -7,13 +7,9 @@ export default defineNuxtConfig({
     description: 'Auth Layer provides functionalities for user authentication and authorization.',
   },
 
-  modules: [
-    fileURLToPath(new URL('../../packages/modules/mframework-nuxt/src/module.ts', import.meta.url)),
-  ],
+  modules: [],
 
-  alias: {
-    '@mframework/core': fileURLToPath(new URL('../../packages/modules/alternate-core/src', import.meta.url)),
-  },
+  alias: {},
 
   runtimeConfig: {
     mframework: {

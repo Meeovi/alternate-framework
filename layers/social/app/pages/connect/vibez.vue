@@ -1,15 +1,14 @@
 <template>
     <v-container class="py-10">
         <v-card elevation="2" class="pa-6">
-            <template>
+            <v-card-title>
                 <v-row align="center" justify="space-between">
                     <span>🔥 Vibez Feed</span>
                     <v-switch v-model="showMine" label="Show My Videos" inset color="primary" />
                 </v-row>
-            </template>
+            </v-card-title>
 
-            <template #default>
-                <v-row class="mb-4" dense>
+            <v-row class="mb-4" dense>
                     <v-col cols="12" sm="6" md="4">
                         <v-select v-model="sortBy" :items="['recency', 'popularity']" label="Sort By" clearable />
                     </v-col>
@@ -26,12 +25,12 @@
                     <v-col cols="12" sm="6" md="4">
                         <v-card>
                             <v-img src="https://your-owncast-domain.com/preview.jpg" height="200px" cover />
-                            <template>Live Stream</template>
-                            <template>
+                            <v-card-title>Live Stream</v-card-title>
+                            <v-card-actions>
                                 <v-btn href="https://your-owncast-domain.com" target="_blank" color="red">
                                     Watch Live
                                 </v-btn>
-                            </template>
+                            </v-card-actions>
                         </v-card>
                     </v-col>
                 </v-row>
@@ -41,31 +40,29 @@
                 <v-row>
                     <v-col v-for="video in filteredVideos" :key="video.id" cols="12" sm="6" md="4">
                         <v-card @click="trackView(video.id)">
-                            <template>{{ video.title }}</template>
-                            <template #default>
-                                <v-img :src="getThumbnail(video)" height="200px" cover />
-                                <v-card class="mt-2" variant="outlined" density="compact">
-                                    {{ video.visibility === 'public' ? '🌍 Public' : '🔒 Private' }} •
-                                    {{ formatDuration(video.duration) }} • 👁️ {{ video.view_count || 0 }}
-                                </v-card>
-                                <div class="mt-2">
-                                    <v-chip v-for="tag in video.tags" :key="tag.id" class="ma-1" size="small"
-                                        color="primary" variant="outlined">
-                                        {{ tag.name }}
-                                    </v-chip>
+                            <v-card-title>{{ video.title }}</v-card-title>
+                            <v-img :src="getThumbnail(video)" height="200px" cover />
+                            <v-card class="mt-2" variant="outlined" density="compact">
+                                {{ video.visibility === 'public' ? '🌍 Public' : '🔒 Private' }} •
+                                {{ formatDuration(video.duration) }} • 👁️ {{ video.view_count || 0 }}
+                            </v-card>
+                            <div class="mt-2">
+                                <v-chip v-for="tag in video.tags" :key="tag.id" class="ma-1" size="small"
+                                    color="primary" variant="outlined">
+                                    {{ tag.name }}
+                                </v-chip>
 
-                                    <v-btn icon @click.stop="toggleLike(video)" :color="video.liked ? 'red' : 'grey'"
-                                        class="ml-2">
-                                        <v-icon>{{ video.liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
-                                    </v-btn>
-                                    <span>{{ video.reaction_count || 0 }}</span>
+                                <v-btn icon @click.stop="toggleLike(video)" :color="video.liked ? 'red' : 'grey'"
+                                    class="ml-2">
+                                    <v-icon>{{ video.liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+                                </v-btn>
+                                <span>{{ video.reaction_count || 0 }}</span>
 
-                                    <v-btn icon @click.stop="openComments(video)" class="ml-2">
-                                        <v-icon>mdi-comment-outline</v-icon>
-                                    </v-btn>
-                                    <span>{{ video.comment_count || 0 }}</span>
-                                </div>
-                            </template>
+                                <v-btn icon @click.stop="openComments(video)" class="ml-2">
+                                    <v-icon>mdi-comment-outline</v-icon>
+                                </v-btn>
+                                <span>{{ video.comment_count || 0 }}</span>
+                            </div>
                             <template #footer>
                                 <v-btn :href="getVideoUrl(video)" target="_blank" color="primary"
                                     :disabled="video.status !== 'ready'">
@@ -79,14 +76,13 @@
                 <v-alert v-if="filteredVideos.length === 0" type="info" class="mt-6">
                     No videos match your filters.
                 </v-alert>
-            </template>
         </v-card>
     </v-container>
 </template>
 
 <script setup>
 import { ref, computed, watchEffect } from '#imports'
-import { useDirectusRequest } from '@mframework/adapter-directus'
+
 
 const { readItems, createItem, deleteItem } = useDirectusRequest()
 const config = useRuntimeConfig()

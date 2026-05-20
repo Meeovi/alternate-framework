@@ -37,7 +37,7 @@ import updatebookmark from '#social/app/components/features/lists/update-bookmar
 import comments from '#social/app/components/blocks/comments.vue'
 
 const route = useRoute()
-const content = useContentAdapter()
+const content = useSdkContentAdapter()
 
 const { data: website } = await useAsyncData('website', async () => {
   const opts = { fields: ['*', { '*': ['*'] }] }

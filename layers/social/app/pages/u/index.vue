@@ -398,8 +398,18 @@
 </template>
 
 <script setup lang="ts">
-const user = useCurrentUser()
-const { fetchSession, signOut: authSignOut } = useAuth()
+import { useTheme } from 'vuetify'
+import { useSdkContentAdapter } from '#imports'
+
+const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
+const auth = runtimeUseAuth
+  ? runtimeUseAuth()
+  : {
+      user: useState<any>('social:user', () => null),
+      fetchSession: async () => null,
+      signOut: async () => null,
+    }
+const { user, fetchSession, signOut: authSignOut } = auth
 const loading = ref(false)
 const theme = useTheme()
 const nuxtApp = useNuxtApp()
@@ -575,7 +585,7 @@ const loadCommerceFeatures = async () => {
 }
 
 const loadSocialFeatures = async () => {
-  const { readItems } = useAdapterRequest()
+  const { readItems } = useSdkContentAdapter()
 
   const currentId = String((user.value as any)?.id || (customerFallback.value as any)?.id || '')
   const currentEmail = String((user.value as any)?.email || (customerFallback.value as any)?.email || '').toLowerCase()

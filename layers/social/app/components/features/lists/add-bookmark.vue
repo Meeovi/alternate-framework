@@ -27,17 +27,13 @@
 <script setup>
 import { ref } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '@mframework/adapter-directus'
+import { useDirectusForm } from '../../../composables/useDirectusForm'
 
 const dialog = ref(false)
-const content = useContentAdapter()
+const content = useSdkContentAdapter()
 
 const { data, error } = await useAsyncData('websites', async () => {
-  if (content && typeof content.readFieldsByCollection === 'function') {
-    return await content.readFieldsByCollection('websites')
-  }
-  const { $readFieldsByCollection } = useNuxtApp()
-  return gateway.content($readFieldsByCollection('websites'))
+  return await content.readFieldsByCollection('websites')
 })
 
 // guard against undefined/null data.value and empty arrays

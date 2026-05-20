@@ -1,11 +1,7 @@
 <template>
   <v-row justify="center">
       <UCard>
-        <template>
           <h4>Create New Note</h4>
-        </template>
-
-        <template #default>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
 
@@ -17,7 +13,6 @@
             <DirectusFormElement v-for="field in postFields" :key="field.field" :field="field" v-model="form[field.field]" />
             <UButton type="submit">Post</UButton>
           </UForm>
-        </template>
       </UCard>
   </v-row>
 </template>
@@ -25,11 +20,10 @@
 <script setup>
 import { ref } from 'vue'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '#shared/app/composables/globals/useDirectusForm'
-import useAdapterRequest from '~/composables/useAdapterRequest'
-
+import { useDirectusForm } from '../../../composables/useDirectusForm'
+import { useSdkContentAdapter } from '#imports'
 const dialog = ref(false)
-const { readFieldsByCollection } = useAdapterRequest()
+const { readFieldsByCollection } = useSdkContentAdapter()
 
 const { data, error } = await useAsyncData('posts', async () => {
   const resp = await readFieldsByCollection('posts')

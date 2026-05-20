@@ -15,14 +15,11 @@ export default defineNuxtConfig({
     description: 'Nuxt-specific glue for alternate-* modules',
   },
 
-  css: [
-    'alternate-media/styles/media.css',
-  ],
+  css: [],
 
   modules: [
-    fileURLToPath(new URL('../../packages/modules/mframework-nuxt/src/module.ts', import.meta.url)),
+    fileURLToPath(new URL('../../packages/modules/alternate-sdk/src/module', import.meta.url)),
     'vuetify-nuxt-module',
-    '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
@@ -32,12 +29,7 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
-    '@mframework/nuxt'
   ],
-
-  alias: {
-    '@mframework/core': fileURLToPath(new URL('../../packages/modules/alternate-core/src', import.meta.url)),
-  },
 
   // @ts-ignore - nuxt-gtag module augments this key at runtime
   site: {
@@ -154,11 +146,22 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    locales: [{
+        code: 'en',
+        language: 'en-US',
+        file: 'en.json'
+      },
+      {
+        code: 'fr',
+        language: 'fr-FR',
+        file: 'fr.json'
+      }
+    ],
+    lazy: true,
+    langDir: 'locales',
     strategy: "prefix_except_default",
-    defaultLocale: "en-US",
+    defaultLocale: "en",
     detectBrowserLanguage: false,
-    langDir: "alternate-locate/src/langs/",
-    vueI18n: "alternate-locate/src/adapters/nuxt/i18n.config",
   },
 
   runtimeConfig: {
@@ -190,4 +193,8 @@ export default defineNuxtConfig({
     },
     compressPublicAssets: true,
   },
+
+  sourcemap: {
+    client: 'hidden'
+  }
 })

@@ -1,6 +1,6 @@
 // composables/updatePost.js
 export default async function updatePost(websiteId, websiteData) {
-  const content = useContentAdapter()
+  const content = useSdkContentAdapter()
 
   try {
     if (content && typeof content.updateItem === 'function') {

@@ -55,45 +55,30 @@
     </div>
 </template>
 
-<script>
-    export default {
-        data: () => ({
-            videoOptions: {
-                autoplay: true,
-                controls: true,
-            }
-        }),
-        result() {
-            return {
-                shortId: this.$route.params.id,
-            }
-        },
-    }
-</script>
-
 <script setup>
     import vibe from '#social/app/pages/connect/vibe/[...id].vue'
     import addlive from '#social/app/components/features/vibeSections/add-live.vue'
     import {
+        computed,
         ref
     } from 'vue';
-    import {
-        useRoute
-    } from 'vue-router';
+    import { useRoute } from 'vue-router';
 
     const tab = ref(null);
     const createdialog = ref(false);
     const dialog = ref(false);
+    const route = useRoute();
+    const shortId = computed(() => String(route.params.id || ''));
 
-    const content = useContentAdapter()
-    const getAssetUrl = (file) => content.getAssetUrl(file)
+    const { readItems, getAssetUrl } = useSdkContentAdapter()
     const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const {
         data: short
-    } = await useAsyncData('short', () => {
-        return content.readItems('shorts', {
+    } = await useAsyncData('short', async () => {
+        const resp = await readItems('shorts', {
             fields: ['*', { '*': ['*'] }]
         })
+        return Array.isArray(resp?.data) ? resp.data : Array.isArray(resp) ? resp : []
     })
 </script>

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { TextInput as AlternateUITextInput } from 'alternate-ui/shared-ui/components'
+
 
 defineProps<{
   defaultValue?: string

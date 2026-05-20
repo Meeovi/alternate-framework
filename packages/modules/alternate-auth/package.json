@@ -1,0 +1,78 @@
+{
+  "name": "@mframework/alternate-auth",
+  "version": "1.0.0",
+  "description": "Official Nuxt module for BetterAuth, the open-source authentication framework.",
+  "repository": "mframework/alternate-auth",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "playground"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "npm run dev:prepare && nuxt dev playground",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
+    "prisma:generate": "prisma generate --schema=../../apps/ecosystem/meeovi-frontend/prisma/schema.prisma --env-file=../../apps/ecosystem/meeovi-frontend/.env"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.4.5",
+    "@better-auth/api-key": "^1.6.6",
+    "@better-auth/cli": "^1.4.10",
+    "@better-auth/i18n": "^1.6.6",
+    "@better-auth/infra": "^0.2.4",
+    "@better-auth/oauth-provider": "^1.4.12",
+    "@better-auth/passkey": "^1.4.10",
+    "@better-auth/prisma-adapter": "^1.6.8",
+    "@better-auth/scim": "^1.4.15",
+    "@better-auth/sso": "^1.4.12",
+    "@better-auth/stripe": "^1.6.5",
+    "@better-fetch/fetch": "^1.0.0",
+    "@mframework/adapter-prisma": "file:../../packages/adapters/adapter-prisma",
+    "@polar-sh/better-auth": "^1.6.3",
+    "@polar-sh/checkout": "^0.2.0",
+    "better-auth": "^1.4.12",
+    "defu": "^6.1.4",
+    "stripe": "^22.0.2",
+    "uuid": "^11.1.0",
+    "viem": "^2.46.1"
+  },
+  "devDependencies": {
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^17.4.2",
+    "@nuxt/devtools": "^3.2.4",
+    "@nuxt/eslint-config": "^1.15.2",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.4.5",
+    "@nuxt/test-utils": "^4.0.3",
+    "@types/node": "latest",
+    "changelogen": "^0.6.2",
+    "eslint": "^10.3.0",
+    "nuxt": "^4.4.5",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.5",
+    "vue-tsc": "^3.2.8"
+  }
+}

@@ -64,42 +64,35 @@
 <script setup lang="ts">
 import productCard from '../../catalog/product/productCard.vue'
 import { computed, ref } from 'vue'
+import { useSdkContentAdapter } from '#imports'
 import { useAuth } from '../../../composables/globals/useAuth'
-import { useGateway } from '../../../composables/useGateway'
-import useContentRequest from '../../../composables/content/useContentRequest'
 
 const auth = useAuth()
 const user = computed(() => (auth as any)?.user?.value || null)
 const userId = computed(() => user.value?.id || null)
 
 const tab = ref(null)
-const gateway = useGateway()
-const { fetch: contentFetch, getAssetUrl } = useContentRequest()
+const content = useSdkContentAdapter()
+const { getAssetUrl } = content
 
 const { data: incentiveBar } = await useAsyncData('incentiveBar', async () => {
-    // Backend-agnostic content fetch
-    const resp = await contentFetch({ collection: 'navigation', id: '118', options: { fields: ['*', { '*': ['*'] }] } })
-    return (resp as any)?.data ?? (resp as any) ?? null
+    return content.readItem('navigation', '118', { fields: ['*', { '*': ['*'] }] })
 })
 
 const { data: incentivePage } = await useAsyncData('incentivePage', async () => {
-    const resp = await contentFetch({ collection: 'pages', id: '86', options: { fields: ['*', { '*': ['*'] }] } })
-    return (resp as any)?.data ?? (resp as any) ?? null
+    return content.readItem('pages', '86', { fields: ['*', { '*': ['*'] }] })
 })
 
 const { data: allSubscriptions } = await useAsyncData('allSubscriptions', async () => {
-    const resp = await contentFetch({
-        collection: 'products',
-        options: {
-            fields: ['*', { '*': ['*'] }],
-            filter: {
-                user_id: {
-                    _eq: userId.value
-                },
-                type: {
-                    name: {
-                        _eq: 'Subscription'
-                    }
+    const resp = await content.readItems('products', {
+        fields: ['*', { '*': ['*'] }],
+        filter: {
+            user_id: {
+                _eq: userId.value
+            },
+            type: {
+                name: {
+                    _eq: 'Subscription'
                 }
             }
         }

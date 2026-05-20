@@ -96,7 +96,7 @@ import { useRoute, useRouter } from 'vue-router';
 import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
 import updateList from '~/app/composables/lists/updateList';
 
-const content = useContentAdapter()
+const content = useSdkContentAdapter()
 
 const route = useRoute();
 const router = useRouter();

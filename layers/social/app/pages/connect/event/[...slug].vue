@@ -71,8 +71,8 @@
 
     const route = useRoute();
     const tab = ref(null);
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-const { readItems, getAssetUrl } = useAdapterRequest()
+import { useSdkContentAdapter } from '#imports'
+const { readItems, getAssetUrl } = useSdkContentAdapter()
 
     const { data: event } = await useAsyncData('event', async () => {
         const resp = await readItems('events', {

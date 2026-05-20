@@ -49,7 +49,7 @@
                 </v-btn>
 
                 <p class="text-center text-sm text-muted">
-                    <v-btn variant="link" size="sm" class="p-0"
+                    <v-btn variant="text" size="sm" class="p-0"
                         @click="useBackupCode = !useBackupCode; codeSent = false; code = ''; backupCode = ''">
                         {{ useBackupCode ? "Send one-time code instead" : "Use a backup code instead" }}
                     </v-btn>

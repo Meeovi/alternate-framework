@@ -18,7 +18,7 @@
             },
     })
 
-    import useMedia from '../../composables/useMedia'
+    import useMedia from '../../composables/media/useMedia'
     const { fileUrl } = useMedia()
 
         const mapImageItem = (item) => ({

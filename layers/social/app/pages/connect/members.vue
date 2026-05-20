@@ -29,7 +29,7 @@
 		title: 'Members Area',
 	})
 
-	import { useDirectusRequest } from '@mframework/adapter-directus'
+	
 	const { readItem, readItems } = useDirectusRequest()
 
 	const { data: memberPage } = await useAsyncData('memberPage', () => {

@@ -8,7 +8,7 @@ import type {
   OrderData,
 } from './types';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../../useHandleError';
+import { useHandleError } from '../../../system/useHandleError/useHandleError';
 
 const order: OrderData = {
   id: '0e4fec5a-61e6-48b8-94cc-d5f77687e2b0',

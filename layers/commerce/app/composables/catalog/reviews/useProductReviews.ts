@@ -9,7 +9,7 @@ import type {
 } from './types';
 import { getCommerceClient } from '../../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../../useHandleError';
+import { useHandleError } from '../../system/useHandleError/useHandleError';
 
 /**
  * @description Composable managing product reviews data

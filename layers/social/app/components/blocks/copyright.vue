@@ -22,8 +22,8 @@
 </template>
 
 <script setup>
-    import { useDirectusRequest } from '@mframework/adapter-directus'
-    const { readItem } = useDirectusRequest()
+    
+    const { readItem } = useNuxtApp()
 
     const { data: blocksCopyright } = await useAsyncData('blocksCopyright', () => {
         return readItem('page_blocks', '5', { fields: ['*', 'media.*.*'] })

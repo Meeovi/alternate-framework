@@ -26,8 +26,6 @@
   "main": "./nuxt.config.ts",
   "dependencies": {
     "@mframework/adapter-directus": "file:../../packages/adapters/adapter-directus",
-    "@mframework/core": "file:../../packages/modules/alternate-gateway",
-    "@mframework/nuxt": "file:../../packages/modules/mframework-nuxt/dist",
     "@nuxt/image": "^2.0.0",
     "@tiptap/core": "2.27.2",
     "@tiptap/extension-bold": "2.27.2",
@@ -44,13 +42,10 @@
     "@tiptap/suggestion": "2.27.2",
     "@tiptap/vue-3": "2.27.2",
     "leaflet": "^1.9.4",
-    "nuxt": "^4.4.2"
+    "nuxt": "^4.4.5"
   },
   "devDependencies": {
-    "nuxt-module-feed": "^1.1.4",
-    "typescript": "^5.4.4",
-    "vitest": "4.0.18",
-    "vue-tsc": "^2.1.6"
+    "nuxt-module-feed": "^1.1.4"
   },
   "resolutions": {
     "vitest": "4.0.18",

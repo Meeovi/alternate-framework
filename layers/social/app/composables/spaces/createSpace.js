@@ -1,8 +1,7 @@
 // composables/cms/spaces/createSpace.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
-
+import { useSdkContentAdapter } from '#imports'
 export default async function createSpace(spaceData) {
-    const { createItem } = useAdapterRequest()
+    const { createItem } = useSdkContentAdapter()
 
     try {
         const space = await createItem('spaces', {

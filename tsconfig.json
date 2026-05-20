@@ -15,12 +15,7 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "paths": {
-      "@mframework/core": ["packages/modules/alternate-core/src/index.ts"],
-      "@mframework/core/*": ["packages/modules/alternate-core/src/*"],
-      "alternate-gateway/core": ["packages/modules/alternate-gateway/core/index.ts"],
-      "alternate-gateway/core/*": ["packages/modules/alternate-gateway/core/src/*"],
-      "#shared/*": ["packages/modules/alternate-gateway/core/src/shared/*"],
-      "#shared": ["packages/modules/alternate-gateway/core/src/shared"],
+
       
       "~/*": [
         "./layers/commerce/app/*",
@@ -45,12 +40,14 @@
     "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [
-    "packages/modules/alternate-gateway/core/src/**/*",
     "packages/modules/api/**/*",
     "layers/shared/**/*",
     "layers/social/**/*",
-    "layers/commerce/**/*"
-, "layers/auth/server/api/org-members.get.ts", "layers/auth/server/utils/commerce-admin.ts", "layers/auth/server/utils/admin-access.ts"  ],
+    "layers/commerce/**/*",
+    "layers/auth/server/api/org-members.get.ts",
+    "layers/auth/server/utils/commerce-admin.ts",
+    "layers/auth/server/utils/admin-access.ts"
+  ],
   "exclude": [
     "node_modules",
     "dist",

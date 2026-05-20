@@ -5,7 +5,7 @@ import type { Maybe, SfCustomer } from '../models';
 import type { UseCustomerReturn, UseCustomerState, FetchCustomer } from './types';
 import { getCommerceClient } from '../../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
-import { useHandleError } from '../../useHandleError';
+import { useHandleError } from '../../system/useHandleError/useHandleError';
 
 /**
  * @description Composable managing customer data

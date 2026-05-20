@@ -1,4 +1,6 @@
 // composables/useSpaceRegistry.ts
+import { useSdkContentAdapter } from '#imports'
+
 type ReadItemsFn = (collection: string, options?: { fields?: string[]; filter?: Record<string, any> }) => Promise<any>
 
 /**
@@ -13,8 +15,7 @@ export async function fetchSpaceRegistry(nuxtApp?: { read?: ReadItemsFn }) {
   if (nuxtApp && typeof nuxtApp.read === 'function') {
     readItemsFn = nuxtApp.read
   } else {
-    const mod = await import('../core/useAdapterRequest')
-    const adapter = (mod && typeof (mod as any).default === 'function') ? (mod as any).default() : (mod as any)
+    const adapter = useSdkContentAdapter()
     const { readItems } = adapter as any
     readItemsFn = readItems
   }
@@ -34,8 +35,8 @@ export async function fetchSpaceRegistry(nuxtApp?: { read?: ReadItemsFn }) {
   for (const s of spaces) {
     registry[s.slug] = {
       layout: s.layout_name,
-        // DISABLED: Dynamic @vite-ignore import causing Vite invalidation loop
-        component: () => Promise.reject(new Error('Space component loading disabled in dev mode'))
+      // DISABLED: Dynamic @vite-ignore import causing Vite invalidation loop
+      component: () => Promise.reject(new Error('Space component loading disabled in dev mode'))
     }
   }
 
@@ -47,8 +48,6 @@ export async function fetchSpaceRegistry(nuxtApp?: { read?: ReadItemsFn }) {
  * If you call this outside of a setup/plugin/middleware you MUST pass a
  * Nuxt app instance explicitly to avoid the "called outside" error.
  */
-import useAdapterRequest from '../core/useAdapterRequest'
-
 export const useSpaceRegistry = async (nuxtApp?: { read?: ReadItemsFn }) => {
   const runtimeUseNuxtApp = (globalThis as any).useNuxtApp
   const nuxt = nuxtApp ?? (typeof runtimeUseNuxtApp === 'function' ? runtimeUseNuxtApp() : undefined)
@@ -58,6 +57,6 @@ export const useSpaceRegistry = async (nuxtApp?: { read?: ReadItemsFn }) => {
   }
 
   // fall back to adapter composable when called inside setup without a nuxtApp arg
-  const { readItems } = useAdapterRequest()
+  const { readItems } = useSdkContentAdapter()
   return fetchSpaceRegistry({ read: readItems })
 }

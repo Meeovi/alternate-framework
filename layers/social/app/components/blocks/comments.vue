@@ -25,7 +25,7 @@
   import {
     useCommentsStore
   } from 
-  '../../stores/useCommentsStore'
+  '../../../stores/useCommentsStore'
 
   const props = defineProps({
     contentId: {

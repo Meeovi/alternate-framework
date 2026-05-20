@@ -1,8 +1,8 @@
 // composables/updateStation.js
-import useAdapterRequest from '#social/app/composables/core/useAdapterRequest'
+import { useSdkContentAdapter } from '#imports'
 
 export default async function updateStation(stationId, stationData) {
-    const { updateItem } = useAdapterRequest()
+    const { updateItem } = useSdkContentAdapter()
 
     try {
       const station = await updateItem('radios', stationId, stationData)

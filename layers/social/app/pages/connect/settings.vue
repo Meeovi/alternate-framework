@@ -1,21 +1,35 @@
 <script setup lang="ts">
-import { definePageMeta, useHead } from '~/composables/core/vue'
-import { useLocate } from 'alternate-gateway/locate/adapters/vue/composable'
-import { useCurrentUser } from '~/composables/contacts/users'
-import { useHydratedHead } from '~/composables/core/vue'
-
 definePageMeta({
   wideLayout: true,
 })
 
-const { t } = useLocate()
+const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
+const auth = runtimeUseAuth
+  ? runtimeUseAuth()
+  : {
+      user: useState<any>('social:user', () => null),
+    }
+const currentUser = auth.user
 
-useHydratedHead({
-  title: () => t('nav.settings'),
+const t = (key: string) => {
+  const labels: Record<string, string> = {
+    'nav.settings': 'Settings',
+    'settings.profile.label': 'Profile',
+    'settings.interface.label': 'Interface',
+    'settings.notifications_settings': 'Notifications',
+    'settings.language.label': 'Language',
+    'settings.preferences.label': 'Preferences',
+    'settings.users.label': 'Users',
+    'settings.about.label': 'About',
+  }
+  return labels[key] || key
+}
+
+useHead({
+  title: t('nav.settings'),
 })
 
 const route = useRoute()
-
 const isRootPath = computed(() => route.name === 'settings')
 </script>
 
@@ -26,7 +40,7 @@ const isRootPath = computed(() => route.name === 'settings')
         <MainContent>
           <template #title>
             <MainTitle icon="i-ri:settings-3-line">
-              {{ $t('nav.settings') }}
+              {{ t('nav.settings') }}
             </MainTitle>
           </template>
           <div xl:w-97 lg:w-78 w-full>
@@ -34,14 +48,14 @@ const isRootPath = computed(() => route.name === 'settings')
               v-if="currentUser"
               command
               icon="i-ri:user-line"
-              :text="$t('settings.profile.label')"
+              :text="t('settings.profile.label')"
               to="/settings/profile"
               :match="$route.path.startsWith('/settings/profile/')"
             />
             <SettingsItem
               command
               icon="i-ri-compasses-2-line"
-              :text="$t('settings.interface.label')"
+              :text="t('settings.interface.label')"
               to="/settings/interface"
               :match="$route.path.startsWith('/settings/interface/')"
             />
@@ -49,35 +63,35 @@ const isRootPath = computed(() => route.name === 'settings')
               v-if="currentUser"
               command
               icon="i-ri:notification-badge-line"
-              :text="$t('settings.notifications_settings')"
+              :text="t('settings.notifications_settings')"
               to="/settings/notifications"
               :match="$route.path.startsWith('/settings/notifications/')"
             />
             <SettingsItem
               command
               icon="i-ri-globe-line"
-              :text="$t('settings.language.label')"
+              :text="t('settings.language.label')"
               to="/settings/language"
               :match="$route.path.startsWith('/settings/language/')"
             />
             <SettingsItem
               command
               icon="i-ri-equalizer-line"
-              :text="$t('settings.preferences.label')"
+              :text="t('settings.preferences.label')"
               to="/settings/preferences"
               :match="$route.path.startsWith('/settings/preferences/')"
             />
             <SettingsItem
               command
               icon="i-ri-group-line"
-              :text="$t('settings.users.label')"
+              :text="t('settings.users.label')"
               to="/settings/users"
               :match="$route.path.startsWith('/settings/users/')"
             />
             <SettingsItem
               command
               icon="i-ri:information-line"
-              :text="$t('settings.about.label')"
+              :text="t('settings.about.label')"
               to="/settings/about"
               :match="$route.path.startsWith('/settings/about/')"
             />

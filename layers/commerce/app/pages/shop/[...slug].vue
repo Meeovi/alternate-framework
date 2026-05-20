@@ -110,9 +110,6 @@
 
   const route = useRoute();
   const tab = ref(null);
-  const gateway = useGateway()
-  const contentClient = gateway.content
-  const { getAssetUrl } = useContentRequest()
 
   const slug = computed(() => {
     const s = route.params.slug
@@ -120,6 +117,7 @@
   })
 
   const content = useContentFallback()
+  const { getAssetUrl } = content
 
   const { data: shopRaw } = await useAsyncData('shop', () => {
     return content.listShops({
@@ -147,7 +145,7 @@
   const shop = computed(() => shopRaw.value?.[0] || null)
 
   const { data: shopbar } = await useAsyncData('shopbar', () => {
-    return contentClient.readItem('navigation', '55')
+    return content.readItem('navigation', '55')
   })
 
   definePageMeta({
