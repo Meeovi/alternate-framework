@@ -1,5 +1,5 @@
-import { defineEventHandler } from 'h3'
-import { getAuth } from 'alternate-auth/runtime/server' // adjust to your server helper
+import { defineEventHandler, createError } from 'h3'
+import { getServerAuth } from 'alternate-sdk'
 
 export default defineEventHandler(async (event) => {
   const url = event.path || event.node.req.url || ''
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  const session = await getAuth(event)
+  const session = await getServerAuth(event)
 
   if (!session?.user) {
     throw createError({

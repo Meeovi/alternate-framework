@@ -7,16 +7,89 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/types.d.mts",
-      "import": "./dist/module.mjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
+    },
+    "./auth/adapter": {
+      "types": "./dist/auth/adapter.d.ts",
+      "import": "./dist/auth/adapter.js"
+    },
+    "./auth/server": {
+      "types": "./dist/auth/server.d.ts",
+      "import": "./dist/auth/server.js"
+    },
+    "./commerce": {
+      "types": "./dist/commerce/index.d.ts",
+      "import": "./dist/commerce/index.js"
+    },
+    "./commerce/adapter": {
+      "types": "./dist/commerce/adapter.d.ts",
+      "import": "./dist/commerce/adapter.js"
+    },
+    "./commerce/server": {
+      "types": "./dist/commerce/server.d.ts",
+      "import": "./dist/commerce/server.js"
+    },
+    "./content": {
+      "types": "./dist/content/index.d.ts",
+      "import": "./dist/content/index.js"
+    },
+    "./content/adapter": {
+      "types": "./dist/content/adapter.d.ts",
+      "import": "./dist/content/adapter.js"
+    },
+    "./content/server": {
+      "types": "./dist/content/server.d.ts",
+      "import": "./dist/content/server.js"
+    },
+    "./search": {
+      "types": "./dist/search/index.d.ts",
+      "import": "./dist/search/index.js"
+    },
+    "./search/adapter": {
+      "types": "./dist/search/adapter.d.ts",
+      "import": "./dist/search/adapter.js"
+    },
+    "./search/server": {
+      "types": "./dist/search/server.d.ts",
+      "import": "./dist/search/server.js"
+    },
+    "./federation": {
+      "types": "./dist/federation/index.d.ts",
+      "import": "./dist/federation/index.js"
+    },
+    "./federation/adapter": {
+      "types": "./dist/federation/adapter.d.ts",
+      "import": "./dist/federation/adapter.js"
+    },
+    "./federation/server": {
+      "types": "./dist/federation/server.d.ts",
+      "import": "./dist/federation/server.js"
     }
   },
-  "main": "./dist/module.mjs",
+  "main": "./dist/index.js",
   "typesVersions": {
     "*": {
-      ".": [
-        "./dist/types.d.mts"
-      ]
+      ".": ["./dist/index.d.ts"],
+      "auth": ["./dist/auth/index.d.ts"],
+      "auth/adapter": ["./dist/auth/adapter.d.ts"],
+      "auth/server": ["./dist/auth/server.d.ts"],
+      "commerce": ["./dist/commerce/index.d.ts"],
+      "commerce/adapter": ["./dist/commerce/adapter.d.ts"],
+      "commerce/server": ["./dist/commerce/server.d.ts"],
+      "content": ["./dist/content/index.d.ts"],
+      "content/adapter": ["./dist/content/adapter.d.ts"],
+      "content/server": ["./dist/content/server.d.ts"],
+      "search": ["./dist/search/index.d.ts"],
+      "search/adapter": ["./dist/search/adapter.d.ts"],
+      "search/server": ["./dist/search/server.d.ts"],
+      "federation": ["./dist/federation/index.d.ts"],
+      "federation/adapter": ["./dist/federation/adapter.d.ts"],
+      "federation/server": ["./dist/federation/server.d.ts"]
     }
   },
   "files": [
@@ -26,31 +99,19 @@
     "playground"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
-    "dev": "npm run dev:prepare && nuxt dev playground",
-    "dev:build": "nuxt build playground",
-    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
-    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest watch",
-    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+    "test:watch": "vitest watch"
   },
   "dependencies": {
-    "@nuxt/kit": "^4.4.5"
+    "alternate-auth": "file:../alternate-auth"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^3.2.4",
-    "@nuxt/eslint-config": "^1.15.2",
-    "@nuxt/module-builder": "^1.0.2",
-    "@nuxt/schema": "^4.4.5",
-    "@nuxt/test-utils": "^4.0.3",
     "@types/node": "latest",
-    "changelogen": "^0.6.2",
     "eslint": "^10.3.0",
-    "nuxt": "^4.4.5",
     "typescript": "~6.0.3",
-    "vitest": "^4.1.5",
-    "vue-tsc": "^3.2.8"
+    "vitest": "^4.1.5"
   }
 }

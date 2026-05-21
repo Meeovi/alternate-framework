@@ -1,5 +1,6 @@
 {
   "extends": "../../../tsconfig.json",
+  "ignoreDeprecations": "6.0",
   "exclude": [
     "dist",
     "node_modules",

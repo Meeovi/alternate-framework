@@ -1,7 +1,20 @@
-import { useRuntimeConfig } from '#imports'
-
 type AnyRecord = Record<string, any>
 type MaybeFn = ((...args: any[]) => any) | undefined
+
+function resolveRuntimeConfig(): AnyRecord {
+	const runtime = globalThis as AnyRecord
+	const configFactory = runtime.useRuntimeConfig as MaybeFn
+
+	if (typeof configFactory === 'function') {
+		try {
+			return (configFactory() as AnyRecord) || {}
+		} catch {
+			return {}
+		}
+	}
+
+	return {}
+}
 
 function resolveGatewayContent(): AnyRecord | null {
 	const runtime = globalThis as AnyRecord
@@ -63,7 +76,8 @@ function normalizeSiteUrl(value: unknown) {
 }
 
 function buildSocialFeedLink(product?: AnyRecord, input: AnyRecord = {}) {
-	const publicConfig = (useRuntimeConfig().public || {}) as AnyRecord
+	const runtimeConfig = resolveRuntimeConfig()
+	const publicConfig = (runtimeConfig.public || {}) as AnyRecord
 	const baseUrl = normalizeSiteUrl(publicConfig.siteUrl || publicConfig.appUrl || input.siteUrl || '')
 	const feedPath = String(input.feedPath || publicConfig.feedPath || '/feed.xml')
 	const feedCollection = String(input.collection || publicConfig.feedCollection || 'posts')

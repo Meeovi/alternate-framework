@@ -18,7 +18,6 @@ export default defineNuxtConfig({
   css: [],
 
   modules: [
-    fileURLToPath(new URL('../../packages/modules/alternate-sdk/src/module', import.meta.url)),
     'vuetify-nuxt-module',
     '@vueuse/nuxt',
     'nuxt-security',
@@ -157,11 +156,27 @@ export default defineNuxtConfig({
         file: 'fr.json'
       }
     ],
-    lazy: true,
     langDir: 'locales',
     strategy: "prefix_except_default",
     defaultLocale: "en",
     detectBrowserLanguage: false,
+  },
+
+  sitemap: {
+    sources: [
+      '/api/__sitemap__/urls',
+    ],
+  },
+
+  routeRules: {
+    '/**': {
+      robots: true,
+      isr: process.env.NODE_ENV === 'development' ? false : 60,
+    },
+  },
+
+  experimental: {
+    viewTransition: true,
   },
 
   runtimeConfig: {
@@ -177,6 +192,21 @@ export default defineNuxtConfig({
         onPageLoad: false,
         pageLevelAds: false,
       },
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com',
+      siteName: process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template',
+      siteDescription: process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!',
+      apiEndpoint: process.env.NUXT_PUBLIC_API_ENDPOINT || 'https://api.example.com',
+      i18n: {
+        locales: [{
+            code: 'en',
+            iso: 'en-US',
+          },
+          {
+            code: 'fr',
+            iso: 'fr-FR',
+          }
+        ]
+      }
     },
   },
 

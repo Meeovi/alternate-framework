@@ -1,4 +1,4 @@
-import useContentAdapter from './useContentAdapter'
+import useContentAdapter from '../content/adapter.js'
 
 type AnyRecord = Record<string, any>
 

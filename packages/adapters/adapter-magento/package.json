@@ -38,7 +38,8 @@
   },
   "dependencies": {
     "@nuxt/kit": "^4.4.6",
-    "ofetch": "^1.5.1"
+    "ofetch": "^1.5.1",
+    "alternate-sdk": "file:../../modules/alternate-sdk"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.2.4",
