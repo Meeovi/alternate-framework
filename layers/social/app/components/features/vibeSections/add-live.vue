@@ -22,7 +22,6 @@
 <script setup>
 import { ref, reactive } from '#imports'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useSdkContentAdapter } from '#imports'
 const dialog = ref(false)
 const { readFieldsByCollection, createItem } = useSdkContentAdapter()
 

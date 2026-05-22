@@ -1,5 +1,4 @@
 import type { ComputedRef, Ref } from 'vue'
-import { useSdkContentAdapter } from '#imports'
 type FeedMenu = { name: string; value: string }
 type FeedBar = {
   name: string

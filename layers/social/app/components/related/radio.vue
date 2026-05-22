@@ -29,7 +29,6 @@
 </template>
 
 <script setup>
-import { useSdkContentAdapter } from '#imports'
 const props = defineProps({
   radio: {
     type: Object,

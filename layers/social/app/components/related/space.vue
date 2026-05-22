@@ -28,7 +28,6 @@
 <script setup>
     import { ref } from '#imports'
     import share from '../blocks/share.vue'
-import { useSdkContentAdapter } from '#imports'
  const { getAssetUrl } = useSdkContentAdapter()
     const hasAsset = (file) => Boolean(getAssetUrl(file))
 

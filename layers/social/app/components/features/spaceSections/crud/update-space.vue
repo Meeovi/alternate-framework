@@ -78,7 +78,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useSdkContentAdapter } from '#imports'
  const { readItem, deleteItem, updateItem, uploadFiles } = useSdkContentAdapter()
 import updateSpace from '#social/app/composables/spaces/updateSpace';
 

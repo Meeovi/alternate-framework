@@ -22,7 +22,6 @@
     //import {posts} from '~/graphql/cms/queries/posts'  
 
     const tab = ref(null);
-import { useSdkContentAdapter } from '#imports'
  const { readItems } = useSdkContentAdapter()
 
     const { data: posts } = await useAsyncData('posts', async () => {

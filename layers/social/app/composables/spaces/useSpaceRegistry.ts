@@ -1,5 +1,4 @@
 // composables/useSpaceRegistry.ts
-import { useSdkContentAdapter } from '#imports'
 
 type ReadItemsFn = (collection: string, options?: { fields?: string[]; filter?: Record<string, any> }) => Promise<any>
 

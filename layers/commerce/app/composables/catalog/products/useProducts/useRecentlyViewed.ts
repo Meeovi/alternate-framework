@@ -4,7 +4,7 @@ import { useState, useCookie } from 'nuxt/app'
 const RECENTLY_VIEWED_KEY = 'recently_viewed_products'
 
 export function addViewed(productId: string) {
-  const products = useRecentlyViewed()
+  const { products } = useRecentlyViewed()
   if (!products.value.includes(productId)) {
     products.value.unshift(productId)
     if (products.value.length > 20) products.value.length = 20
@@ -21,7 +21,15 @@ export function useRecentlyViewed() {
       return []
     }
   })
-  return products
+  function load() {
+    const cookie = useCookie(RECENTLY_VIEWED_KEY).value
+    try {
+      products.value = cookie ? JSON.parse(cookie) : []
+    } catch {
+      products.value = []
+    }
+  }
+  return { products, load }
 }
 
 export default useRecentlyViewed

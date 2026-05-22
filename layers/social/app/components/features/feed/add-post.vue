@@ -21,7 +21,6 @@
 import { ref } from 'vue'
 import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
 import { useDirectusForm } from '../../../composables/useDirectusForm'
-import { useSdkContentAdapter } from '#imports'
 const dialog = ref(false)
 const { readFieldsByCollection } = useSdkContentAdapter()
 

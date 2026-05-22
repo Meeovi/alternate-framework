@@ -25,7 +25,6 @@
   "type": "module",
   "main": "./nuxt.config.ts",
   "dependencies": {
-    "@mframework/adapter-directus": "file:../../packages/adapters/adapter-directus",
     "@nuxt/image": "^2.0.0",
     "@tiptap/core": "2.27.2",
     "@tiptap/extension-bold": "2.27.2",
@@ -37,6 +36,7 @@
     "@tiptap/extension-mention": "2.27.2",
     "@tiptap/extension-paragraph": "2.27.2",
     "@tiptap/extension-placeholder": "2.27.2",
+    "pinia": "^2.1.7",
     "@tiptap/extension-text": "2.27.2",
     "@tiptap/pm": "2.27.2",
     "@tiptap/suggestion": "2.27.2",

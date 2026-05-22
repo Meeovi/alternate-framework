@@ -21,7 +21,6 @@
   import userCard from '#social/app/components/related/memberList.vue'
 
   const model = ref(null)
-import { useSdkContentAdapter } from '#imports'
  const { readItems } = useSdkContentAdapter()
 
   const { data: users } = await useAsyncData('users', async () => {

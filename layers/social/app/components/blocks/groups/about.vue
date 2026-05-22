@@ -89,7 +89,6 @@
         },
     })
 
-import { useSdkContentAdapter } from '#imports'
  const { getAssetUrl } = useSdkContentAdapter()
 
 const backgroundImage = computed(() => {

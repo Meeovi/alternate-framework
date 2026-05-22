@@ -1,4 +1,3 @@
-import { useSdkContentAdapter } from '#imports'
 
 export function useLists() {
   const {

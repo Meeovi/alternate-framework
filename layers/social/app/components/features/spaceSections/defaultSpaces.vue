@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
     import spaceCard from '../../related/space.vue'
-import { useSdkContentAdapter } from '#imports'
     const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
     const { user } = runtimeUseAuth
         ? runtimeUseAuth()

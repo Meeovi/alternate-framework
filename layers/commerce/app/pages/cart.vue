@@ -42,19 +42,25 @@
             @payment-success="handlePaymentSuccess"
             @payment-error="handlePaymentError"
           />
+
+          <p v-if="checkoutError" class="checkout-error mt-2">
+            {{ checkoutError }}
+          </p>
         </div>
       </div>
     </div>
   </template>
   
   <script setup>
+  import { loadStripe } from '@stripe/stripe-js'
   import { useCartStore } from '~/stores/cart'
   
   import ShippingOptions from '../components/catalog/product/shippingOptions.vue'
-  import { ref, computed } from '#imports'
+  import { ref, computed, useNuxtApp } from '#imports'
 
   const cart = useCartStore()
   const loading = ref(false)
+  const checkoutError = ref('')
 
   const selectedShipping = computed({
     get: () => cart.cart?.shipping_method_id ?? cart.cart?.shipping_method ?? null,
@@ -80,36 +86,74 @@
   }
 
   const startCheckout = async () => {
-    if (!cart || !cart.createCheckoutSession) return
     try {
+      checkoutError.value = ''
       loading.value = true
-      const data = await cart.createCheckoutSession(cart.cart?.id)
-      const url = data?.url || (data?.id ? `https://checkout.stripe.com/pay/${data.id}` : null)
-      if (url) {
-        window.location.href = url
-      } else if (data && data.id) {
-        // fallback: use injected Stripe instance from plugin if available
+      const createCheckoutSession = cart?.createCheckoutSession
+      const currentCartId = cart?.cart?.id
+      if (typeof createCheckoutSession !== 'function' || !currentCartId) {
+        checkoutError.value = 'Checkout is currently unavailable'
+        return
+      }
+
+      const data = await createCheckoutSession(currentCartId)
+      const checkoutUrl = typeof data?.url === 'string' ? data.url.trim() : ''
+      if (checkoutUrl) {
+        let parsedCheckoutUrl
+        try {
+          parsedCheckoutUrl = new URL(checkoutUrl)
+        } catch {
+          checkoutError.value = 'Failed to create checkout session'
+          return
+        }
+
+        if (parsedCheckoutUrl.protocol !== 'https:') {
+          checkoutError.value = 'Failed to create checkout session'
+          return
+        }
+
+        window.location.assign(parsedCheckoutUrl.toString())
+        return
+      }
+
+      if (data?.id) {
         const nuxtApp = useNuxtApp()
         const injectedStripe = nuxtApp?.$stripe || null
         if (injectedStripe && typeof injectedStripe.redirectToCheckout === 'function') {
-          await injectedStripe.redirectToCheckout({ sessionId: data.id })
-        } else if (window && window.Stripe) {
-          // last-resort: use global Stripe if present
-          const publishable = (useRuntimeConfig() || {}).public?.stripe?.publishableKey || null
-          if (publishable) {
-            const stripe = window.Stripe(publishable)
-            await stripe.redirectToCheckout({ sessionId: data.id })
-          } else {
-            console.warn('No Stripe publishable key available for client-side redirect')
+          const result = await injectedStripe.redirectToCheckout({ sessionId: data.id })
+          if (result?.error) {
+            checkoutError.value = 'Unable to redirect to payment provider'
           }
-        } else {
-          console.warn('No client Stripe instance available for redirect')
+          return
         }
-      } else {
-        console.warn('No checkout url returned from server')
+
+        const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+        if (!stripeKey || typeof stripeKey !== 'string' || !stripeKey.startsWith('pk_')) {
+          checkoutError.value = 'Checkout is currently unavailable'
+          return
+        }
+
+        const stripe = await loadStripe(stripeKey)
+        if (!stripe) {
+          checkoutError.value = 'Checkout is currently unavailable'
+          return
+        }
+
+        const { error: stripeError } = await stripe.redirectToCheckout({ sessionId: data.id })
+        if (stripeError) {
+          checkoutError.value = 'Unable to redirect to payment provider'
+        }
+        return
       }
+
+      checkoutError.value = 'Failed to create checkout session'
     } catch (e) {
-      console.error('Failed to start checkout', e)
+      checkoutError.value = 'Payment failed. Please try again.'
+      if (import.meta.dev) {
+        console.error('Failed to start checkout', e)
+      } else {
+        console.error('Failed to start checkout')
+      }
     } finally {
       loading.value = false
     }
@@ -137,6 +181,10 @@
   .empty-cart {
     text-align: center;
     padding: 50px;
+  }
+
+  .checkout-error {
+    color: #df1b41;
   }
   </style>
   

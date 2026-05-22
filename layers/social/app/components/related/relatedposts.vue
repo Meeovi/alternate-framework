@@ -17,7 +17,6 @@
   import postCard from '#social/app/components/related/post.vue'
 
   const model = ref(null)
-import { useSdkContentAdapter } from '#imports'
  const { readItems } = useSdkContentAdapter()
 
   const { data: note } = await useAsyncData('note', async () => {

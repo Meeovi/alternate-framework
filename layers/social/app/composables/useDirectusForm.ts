@@ -1,5 +1,4 @@
 import { reactive, ref, unref, watchEffect, type Ref } from 'vue'
-import { useSdkContentAdapter } from '#imports'
 type DirectusFormOptions = {
   clearOnSuccess?: boolean
   closeDialogRef?: Ref<boolean>

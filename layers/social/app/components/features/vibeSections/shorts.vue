@@ -117,7 +117,6 @@ const isLiked = ref(false)
 const showComments = ref(false)
 const newComment = ref('')
 const vibeComments = ref([])
-import { useSdkContentAdapter } from '#imports'
  const { getAssetUrl } = useSdkContentAdapter()
 
 const hashtags = computed(() => {

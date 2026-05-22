@@ -24,7 +24,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useSdkContentAdapter } from '#imports'
  const { getAssetUrl } = useSdkContentAdapter()
     
 const model = ref(null)

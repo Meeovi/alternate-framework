@@ -58,7 +58,6 @@
     import yourEvents from '#social/app/components/features/event/yourEvents.vue'
 
     const tab = ref(null);
-    import { useSdkContentAdapter } from '#imports'
     const { readItem, readItems } = useSdkContentAdapter()
 
     const { data: eventsBar } = await useAsyncData('eventsBar', async () => {

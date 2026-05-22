@@ -71,7 +71,6 @@
 
     const route = useRoute();
     const tab = ref(null);
-import { useSdkContentAdapter } from '#imports'
 const { readItems, getAssetUrl } = useSdkContentAdapter()
 
     const { data: event } = await useAsyncData('event', async () => {

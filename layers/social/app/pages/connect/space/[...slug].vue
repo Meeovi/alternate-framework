@@ -124,7 +124,6 @@
 
     const route = useRoute();
     const tab = ref(null)
-import { useSdkContentAdapter } from '#imports'
 const { readItems, readItem } = useSdkContentAdapter()
 
     const { data: space } = await useAsyncData('space', async () => {

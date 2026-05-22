@@ -64,7 +64,6 @@
 <script setup lang="ts">
 import productCard from '../../catalog/product/productCard.vue'
 import { computed, ref } from 'vue'
-import { useSdkContentAdapter } from '#imports'
 import { useAuth } from '../../../composables/globals/useAuth'
 
 const auth = useAuth()

@@ -89,7 +89,6 @@
     } from 'vue';
     import uploadFiles from '../../../composables/globals/uploadFiles';
     import updatePost from '~/composables/posts/updatePost';
-    import { useSdkContentAdapter } from '#imports'
     import {
         useUserStore
     } from '#auth/app/stores/user'

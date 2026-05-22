@@ -219,6 +219,22 @@ const selectedShipping = computed({
 })
 
 const nuxtApp = useNuxtApp()
+const GENERIC_CHECKOUT_ERROR = 'Payment failed. Please try again.'
+
+const toUserSafeErrorMessage = (err) => {
+    const message = typeof err?.message === 'string' ? err.message : ''
+    const safeMessages = new Set([
+        'Cart not found',
+        'Checkout is currently unavailable',
+        'Stripe publishable key missing',
+        'Unable to initialize payment provider',
+        'Unable to redirect to payment provider',
+        'Invalid checkout URL received',
+        'Failed to create checkout session'
+    ])
+
+    return safeMessages.has(message) ? message : GENERIC_CHECKOUT_ERROR
+}
 
 // Watch for same as shipping changes
 watch(sameAsShipping, (newValue) => {
@@ -246,31 +262,65 @@ const handleSubmit = async () => {
                 updated_at: new Date().toISOString()
             }
             await nuxtApp.gateway.content(nuxtApp.update('cart', cartId, payload))
-            await cartStore.fetchCart()
+            if (typeof cartStore?.fetchCart === 'function') {
+                await cartStore.fetchCart()
+            }
         } catch (e) {
             console.warn('Failed to persist addresses to Data cart', e)
         }
 
         // Create Stripe Checkout session via server API
-        const data = await cartStore.createCheckoutSession(cartId)
-        if (data?.url) {
-            window.location.href = data.url
+        const createCheckoutSession = cartStore?.createCheckoutSession
+        if (typeof createCheckoutSession !== 'function') {
+            throw new Error('Checkout is currently unavailable')
+        }
+
+        const data = await createCheckoutSession(cartId)
+        const checkoutUrl = typeof data?.url === 'string' ? data.url.trim() : ''
+
+        if (checkoutUrl) {
+            let parsedCheckoutUrl
+            try {
+                parsedCheckoutUrl = new URL(checkoutUrl)
+            } catch {
+                throw new Error('Invalid checkout URL received')
+            }
+
+            if (parsedCheckoutUrl.protocol !== 'https:') {
+                throw new Error('Invalid checkout URL received')
+            }
+
+            window.location.assign(parsedCheckoutUrl.toString())
             return
         }
 
         if (data?.id) {
             // fallback: try client redirect using session id
             const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
-            if (!stripeKey) throw new Error('Stripe publishable key missing')
+            if (!stripeKey || typeof stripeKey !== 'string' || !stripeKey.startsWith('pk_')) {
+                throw new Error('Stripe publishable key missing')
+            }
+
             const stripe = await loadStripe(stripeKey)
-            await stripe.redirectToCheckout({ sessionId: data.id })
+            if (!stripe) {
+                throw new Error('Unable to initialize payment provider')
+            }
+
+            const { error: stripeError } = await stripe.redirectToCheckout({ sessionId: data.id })
+            if (stripeError) {
+                throw new Error('Unable to redirect to payment provider')
+            }
             return
         }
 
         throw new Error('Failed to create checkout session')
     } catch (err) {
-        error.value = err?.message || 'Payment failed. Please try again.'
-        console.error('Checkout error:', err)
+        error.value = toUserSafeErrorMessage(err)
+        if (import.meta.dev) {
+            console.error('Checkout error:', err)
+        } else {
+            console.error('Checkout error')
+        }
     } finally {
         loading.value = false
     }

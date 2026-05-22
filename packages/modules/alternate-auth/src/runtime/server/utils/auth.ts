@@ -2,9 +2,54 @@ import {
   betterAuth
 } from 'better-auth'
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { PrismaClient } from "@prisma/client";
+import { createRequire } from "node:module";
 
-const prisma = new PrismaClient();
+const appCwd = process.env.INIT_CWD || process.cwd();
+const requireFromAppCwd = createRequire(`${appCwd}/package.json`);
+
+type PrismaModule = { PrismaClient?: new (...args: any[]) => any }
+
+function createClientFromModule(mod: PrismaModule | null | undefined) {
+  const Client = mod?.PrismaClient
+  if (!Client) return null
+
+  const connectionString = process.env.NUXT_DATABASE_URL || process.env.DATABASE_URL || process.env.BETTER_AUTH_DATABASE_URL
+
+  if (connectionString) {
+    try {
+      const { PrismaPg } = requireFromAppCwd("@prisma/adapter-pg")
+      return new Client({
+        adapter: new PrismaPg({ connectionString }),
+      })
+    } catch {
+      // Fall through to default constructor.
+    }
+  }
+
+  try {
+    return new Client()
+  } catch {
+    return null
+  }
+}
+
+async function resolvePrismaClient() {
+  try {
+    const mod = await import("@prisma/client") as PrismaModule;
+    const client = createClientFromModule(mod)
+    if (client) return client
+  } catch {
+    // Fall through to cwd-based resolve for linked workspace packages.
+  }
+
+  const mod = requireFromAppCwd("@prisma/client") as PrismaModule;
+  const client = createClientFromModule(mod)
+  if (client) return client
+
+  throw new Error('Unable to initialize PrismaClient. Run "prisma generate" in the consuming app.');
+}
+
+const prisma = await resolvePrismaClient();
 const config = useRuntimeConfig()
 
 type SocialProviderOptions = Record < string, string | string[] | undefined >

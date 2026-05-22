@@ -35,7 +35,7 @@ const updateMeta = () => {
   })
 }
 
-breadcrumbsStore.updateBreadcrumbs = () => {
+const updateBreadcrumbs = () => {
   const breadcrumbs = [{
     url: '/compare',
     name: 'Product Compare'

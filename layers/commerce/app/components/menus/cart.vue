@@ -116,7 +116,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCartStore } from '../../../stores/cart'
+import { loadStripe } from '@stripe/stripe-js'
+import { useCartStore } from '../../stores/cart'
 import { useCart } from '../../composables/sales/cart/useCart/useCart'
 import { useNuxtApp } from '#app'
 
@@ -158,27 +159,71 @@ const nuxtApp = useNuxtApp()
 const handleCheckout = async () => {
   try {
     loading.value = true
-    if (!cartStore || !cartStore.createCheckoutSession) {
+    const createCheckoutSession = cartStore?.createCheckoutSession
+    const currentCartId = cartStore?.cart?.id
+    if (typeof createCheckoutSession !== 'function' || !currentCartId) {
       showNotification('Checkout is not available')
       return
     }
 
-    const data = await cartStore.createCheckoutSession(cartStore?.cart?.id)
-    const url = data?.url || (data?.id ? `https://checkout.stripe.com/pay/${data.id}` : null)
-    if (url) {
-      window.location.href = url
+    const data = await createCheckoutSession(currentCartId)
+    const checkoutUrl = typeof data?.url === 'string' ? data.url.trim() : ''
+
+    if (checkoutUrl) {
+      let parsedCheckoutUrl
+      try {
+        parsedCheckoutUrl = new URL(checkoutUrl)
+      } catch {
+        showNotification('Failed to start checkout')
+        return
+      }
+
+      if (parsedCheckoutUrl.protocol !== 'https:') {
+        showNotification('Failed to start checkout')
+        return
+      }
+
+      window.location.assign(parsedCheckoutUrl.toString())
       return
     }
 
-    const injectedStripe = nuxtApp?.$stripe || (typeof useStripe === 'function' ? useStripe() : null)
-    if (injectedStripe && typeof injectedStripe.redirectToCheckout === 'function' && data?.id) {
-      await injectedStripe.redirectToCheckout({ sessionId: data.id })
+    if (data?.id) {
+      const injectedStripe = nuxtApp?.$stripe || (typeof useStripe === 'function' ? useStripe() : null)
+
+      if (injectedStripe && typeof injectedStripe.redirectToCheckout === 'function') {
+        const result = await injectedStripe.redirectToCheckout({ sessionId: data.id })
+        if (result?.error) {
+          showNotification('Failed to start checkout')
+        }
+        return
+      }
+
+      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+      if (!stripeKey || typeof stripeKey !== 'string' || !stripeKey.startsWith('pk_')) {
+        showNotification('Checkout is not available')
+        return
+      }
+
+      const stripe = await loadStripe(stripeKey)
+      if (!stripe) {
+        showNotification('Checkout is not available')
+        return
+      }
+
+      const { error: stripeError } = await stripe.redirectToCheckout({ sessionId: data.id })
+      if (stripeError) {
+        showNotification('Failed to start checkout')
+      }
       return
     }
 
     showNotification('Failed to start checkout')
   } catch (error) {
-    console.error('Checkout error:', error)
+    if (import.meta.dev) {
+      console.error('Checkout error:', error)
+    } else {
+      console.error('Checkout error')
+    }
     showNotification('Error starting checkout')
   } finally {
     loading.value = false

@@ -399,7 +399,6 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import { useSdkContentAdapter } from '#imports'
 
 const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
 const auth = runtimeUseAuth

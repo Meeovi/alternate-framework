@@ -91,7 +91,6 @@
         useReactionsStore
     } from '~/stores/reactions'
 
-import { useSdkContentAdapter } from '#imports'
     const props = defineProps({
         post: {
             type: Object,

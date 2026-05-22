@@ -20,7 +20,6 @@
 </template>
 
 <script setup>
-import { useSdkContentAdapter } from '#imports'
  const { getAssetUrl } = useSdkContentAdapter()
 const hasAsset = (file) => Boolean(getAssetUrl(file))
     

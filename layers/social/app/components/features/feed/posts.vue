@@ -53,6 +53,5 @@ const props = defineProps({
 });
 
 const { post } = props;
-import { useSdkContentAdapter } from '#imports'
  const { getAssetUrl } = useSdkContentAdapter()
 </script>
