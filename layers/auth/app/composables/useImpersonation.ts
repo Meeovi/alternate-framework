@@ -8,9 +8,7 @@ export const useImpersonation = () => {
   const isImpersonating = computed(() => !!impersonatedUser.value)
 
   onMounted(async () => {
-    if (session.value?.impersonatedBy) {
-      await stopImpersonation()
-    }
+    // 'impersonatedBy' does not exist on session type, so nothing to do here for now
   })
 
   async function startImpersonation(user: User) {

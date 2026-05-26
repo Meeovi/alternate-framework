@@ -51,7 +51,7 @@
     "@better-auth/stripe": "^1.6.5",
     "@better-fetch/fetch": "^1.0.0",
     "@mframework/adapter-prisma": "file:../../packages/adapters/adapter-prisma",
-    "@polar-sh/better-auth": "^1.6.3",
+    "@polar-sh/better-auth": "^1.8.4",
     "@polar-sh/checkout": "^0.2.0",
     "better-auth": "^1.4.12",
     "defu": "^6.1.4",

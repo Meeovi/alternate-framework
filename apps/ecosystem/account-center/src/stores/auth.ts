@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from '#imports';
 import { router } from '@/router';
 import { fetchWrapper } from '@/utils/helpers/fetch-wrapper';
 

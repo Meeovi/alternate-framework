@@ -15,7 +15,7 @@
                             <v-menu>
                                 <template v-slot:activator="{ props }">
                                     <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
-                                        v-bind="props" append-icon="fas:fa fa-caret-down" variant="text">
+                                        v-bind="props" append-icon="fas fa-caret-down" variant="text">
                                         Categories
                                     </v-btn>
                                 </template>

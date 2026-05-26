@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from '#imports';
 
 export const useCounterStore = defineStore({
   id: 'counter',

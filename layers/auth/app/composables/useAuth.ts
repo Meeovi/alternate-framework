@@ -37,15 +37,24 @@ export function useAuth() {
       return
     }
     sessionFetching.value = true
-    const { data } = await client.getSession({
-      fetchOptions: {
-        headers,
-      },
-    })
-    session.value = data?.session || null
-    user.value = data?.user || null
-    sessionFetching.value = false
-    return data
+    try {
+      const { data } = await client.getSession({
+        fetchOptions: {
+          headers,
+          timeout: 15000, // 15 seconds timeout to avoid headers timeout error
+        },
+      })
+      session.value = data?.session || null
+      user.value = data?.user || null
+      return data
+    } catch (error) {
+      console.error('Failed to fetch session', error)
+      session.value = null
+      user.value = null
+      return null
+    } finally {
+      sessionFetching.value = false
+    }
   }
 
   if (import.meta.client) {

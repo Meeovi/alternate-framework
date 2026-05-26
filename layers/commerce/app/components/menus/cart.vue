@@ -15,7 +15,7 @@
     <v-navigation-drawer v-model="drawer" location="right" temporary class="cart-flyout">
       <v-card-title class="d-flex justify-space-between align-center">
         <span>Shopping Cart</span>
-        <v-btn icon="fas:fa fa-x" @click="drawer = false">
+        <v-btn icon="fas fa-x" @click="drawer = false">
         </v-btn>
       </v-card-title>
 

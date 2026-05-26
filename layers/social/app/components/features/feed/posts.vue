@@ -1,6 +1,6 @@
 <template>
   <div>
-    <UCard class="features03 healthm5 cid-us2b5LfABW" id="features03-a5" data-sortbtn="btn-primary" width="500px" elevation="0">
+    <v-card class="features03 healthm5 cid-us2b5LfABW" id="features03-a5" data-sortbtn="btn-primary" width="500px" elevation="0">
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-    </UCard>
+    </v-card>
   </div>
 </template>
 

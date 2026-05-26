@@ -59,7 +59,7 @@
       <v-btn icon="mdi-comment" variant="text" @click="toggleComments" />
       <span class="text-caption">{{ short?.comments_count || 0 }}</span>
       
-      <v-btn icon="fas:fa:fa share-nodes" variant="text" @click="shareVibe" />
+      <v-btn icon="fas share-nodes" variant="text" @click="shareVibe" />
       <span class="text-caption">{{ short?.shares_count || 0 }}</span>
       
       <v-spacer />

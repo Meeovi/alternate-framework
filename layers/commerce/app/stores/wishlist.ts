@@ -1,3 +1,4 @@
+import { defineStore } from 'pinia'
 import { getCommerceClient } from '../utils/client'
 import type { Product } from '../types/commerce.type'
 

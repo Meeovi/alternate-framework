@@ -10,37 +10,23 @@
     "build": "nuxt prepare && tsc -p tsconfig.json"
   },
   "keywords": [
-    "better-auth",
     "authentication",
     "auth",
     "typescript",
     "vue",
     "m-framework"
   ],
-  "author": "M Framework",
-  "license": "MIT",
   "dependencies": {
-    "@better-auth/api-key": "^1.6.6",
-    "@better-auth/cli": "^1.4.10",
-    "@better-auth/i18n": "^1.6.6",
-    "@better-auth/infra": "^0.2.4",
-    "@better-auth/oauth-provider": "^1.4.12",
-    "@better-auth/passkey": "^1.4.10",
-    "@better-auth/prisma-adapter": "^1.6.8",
-    "@better-auth/scim": "^1.4.15",
-    "@better-auth/sso": "^1.4.12",
-    "@better-auth/stripe": "^1.6.5",
-    "@better-fetch/fetch": "^1.0.0",
-    "@polar-sh/better-auth": "^1.6.3",
-    "@mframework/adapter-prisma": "file:../../packages/adapters/adapter-prisma",
-    "pinia": "^2.1.7",
-    "@polar-sh/checkout": "^0.2.0",
-    "better-auth": "^1.4.12",
+    "@mframework/alternate-auth": "file:../../packages/modules/alternate-auth",
     "defu": "^6.1.4",
+    "pinia": "^2.1.7",
     "stripe": "^22.0.2",
     "uuid": "^11.1.0",
-    "viem": "^2.46.1"
+    "viem": "^2.46.1",
+    "vue-router": "^5.0.7"
   },
+  "author": "M Framework",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^25.6.0",
     "@types/uuid": "^10.0.0",

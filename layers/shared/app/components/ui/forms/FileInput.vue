@@ -70,7 +70,7 @@ const fileInputValue = computed({
             :required="required"  
             variant="solo-inverted"
             accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.txt"
-            prepend-icon="fas:fa fa-paperclip"
+            prepend-icon="fas fa-paperclip"
             :hint="selectedFile && selectedFile.length ? `${selectedFile.length} file(s) selected` : 'No file selected'"
             persistent-hint
         />

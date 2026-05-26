@@ -12,7 +12,7 @@
                         <v-form @submit.prevent="handleSubmit">
                             <v-toolbar dark color="primary">
                                 <v-btn icon dark @click="dialog = false">
-                                    <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
+                                    <v-icon icon="fas fa-circle-xmark"></v-icon>
                                 </v-btn>
                                 <template>
                                     <span class="text-h6">Update Short</span>
@@ -45,12 +45,12 @@
                                         </v-col>
                                         <v-col cols="6">
                                             <v-file-upload @change="handleVideoUpload" clearable density="compact"
-                                                prepend-icon="fas:fa fa-video" accept="video/*" label="Video File"
+                                                prepend-icon="fas fa-video" accept="video/*" label="Video File"
                                                 variant="solo-inverted" />
                                         </v-col>
                                         <v-col cols="6">
                                             <v-file-upload @change="handleThumbnailUpload" clearable density="compact"
-                                                prepend-icon="fas:fa fa-image" accept="image/*" label="Image for Video"
+                                                prepend-icon="fas fa-image" accept="image/*" label="Image for Video"
                                                 variant="solo-inverted" />
                                         </v-col>
                                     </v-row>

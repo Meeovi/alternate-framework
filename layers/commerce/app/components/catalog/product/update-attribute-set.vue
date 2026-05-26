@@ -3,14 +3,14 @@
         <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
             <template v-slot:activator="{ props }">
                 <v-btn v-bind="props" class="rightAddBtn">
-                    <v-icon start icon="fas:fa fa-plus"></v-icon>Add Attribute Set
+                    <v-icon start icon="fas fa-plus"></v-icon>Add Attribute Set
                 </v-btn>
             </template>
             <v-card>
                 <v-form method="post" @v-on:submit.prevent="addAttribute()">
                     <v-toolbar dark color="primary">
                         <v-btn icon dark @click="dialog = false">
-                            <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
+                            <v-icon icon="fas fa-circle-xmark"></v-icon>
                         </v-btn>
                         <template>
                             <span class="text-h6">Create new Attribute Set</span>

@@ -5,6 +5,8 @@ import {
   defineNuxtConfig
 } from 'nuxt/config'
 import process from 'node:process'
+import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import ViteFonts from 'unplugin-fonts/vite'
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
@@ -15,10 +17,7 @@ export default defineNuxtConfig({
     description: 'Nuxt-specific glue for alternate-* modules',
   },
 
-  css: [],
-
   modules: [
-    'vuetify-nuxt-module',
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
@@ -129,21 +128,6 @@ export default defineNuxtConfig({
     },
   },
 
-  vuetify: {
-    vuetifyOptions: {
-      icons: {
-        defaultSet: 'fa',
-        sets: [{
-          name: 'fa',
-          cdn: 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css'
-        }, {
-          name: 'mdi',
-          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
-        }]
-      }
-    }
-  },
-
   i18n: {
     locales: [{
         code: 'en',
@@ -210,9 +194,32 @@ export default defineNuxtConfig({
     },
   },
 
+  build: {
+    transpile: ['vuetify'],
+  },
+
   vite: {
     logLevel: 'info',
-    plugins: []
+    plugins: [
+      // @ts-expect-error
+      vuetify({ autoImport: true }),
+      ViteFonts({
+      fontsource: {
+        families: [
+          {
+            name: 'Roboto',
+            weights: [100, 300, 400, 500, 700, 900],
+            styles: ['normal', 'italic'],
+          },
+        ],
+      },
+    }),
+    ],
+    vue: {
+      template: {
+        transformAssetUrls,
+      },
+    },
   },
 
   nitro: {

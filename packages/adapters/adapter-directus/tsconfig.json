@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "module": "ESNext"
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "ignoreDeprecations": "5.0"
   }
 }

@@ -1,3 +1,4 @@
+import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null as null | { id: string; name: string; email: string; roles?: string[] })

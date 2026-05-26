@@ -4,7 +4,7 @@
             <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition" @show="fetchBookmarkData">
                 <template v-slot:activator="{ props }">
                     <v-btn v-bind="props">
-                        <v-icon start icon="fas:fa fa-plus"></v-icon>Update Address
+                        <v-icon start icon="fas fa-plus"></v-icon>Update Address
                     </v-btn>
                 </template>
                 <v-card>
@@ -27,7 +27,7 @@
                                     </v-col>
                                     <v-col cols="12">
                                         <v-file-upload @change="handleImageUpload" clearable density="compact"
-                                            prepend-icon="fas:fa fa-image" accept="image/*" label="Image"
+                                            prepend-icon="fas fa-image" accept="image/*" label="Image"
                                             variant="solo-inverted" />
                                     </v-col>
                                     <v-col cols="12"><v-textarea v-model="bookmarkData.note" label="Note"

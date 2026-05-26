@@ -5,7 +5,7 @@
                 <v-form @submit.prevent="handleSubmit">
                     <v-toolbar dark color="primary">
                         <v-btn icon dark @click="dialog = false">
-                            <v-icon icon="fas:fa fa-circle-xmark"></v-icon>
+                            <v-icon icon="fas fa-circle-xmark"></v-icon>
                         </v-btn>
                         <template>
                             <span class="text-h6">Create a new Space</span>
@@ -27,7 +27,7 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <v-file-upload @change="handleImageUpload" clearable
-                                        density="compact" prepend-icon="fas:fa fa-image" accept="image/*"
+                                        density="compact" prepend-icon="fas fa-image" accept="image/*"
                                         label="Image for List" variant="solo-inverted" />
                                 </v-col>
                                 <v-col cols="12">
@@ -37,7 +37,7 @@
                                     <v-card title="Choose a Product for your List">
                                         <template>
                                             <v-text-field density="compact" variant="solo"
-                                                label="Search Meeovi for products" append-inner-icon="fas:fa fa-search"
+                                                label="Search Meeovi for products" append-inner-icon="fas fa-search"
                                                 single-line hide-details></v-text-field>
                                             <div class="d-flex pa-4">
                                                 <v-checkbox-btn v-model="includeFiles" class="pe-2" color="orange">

@@ -29,7 +29,7 @@
                       @click="saveProductToList(list.id)" style="cursor: pointer;" :disabled="loading">
                       <template v-slot:append>
                         <v-progress-circular v-if="loading" indeterminate size="24"></v-progress-circular>
-                        <v-icon v-else icon="fas:fa fa-plus"></v-icon>
+                        <v-icon v-else icon="fas fa-plus"></v-icon>
                       </template>
                     </v-list-item>
                   </v-list>

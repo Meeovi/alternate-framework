@@ -21,21 +21,21 @@
                     </span>
 
                     <div class="flex items-center gap-2">
-                        <UButton
+                        <v-btn
                             size="xs"
                             variant="soft"
                             :disabled="organization.id === activeOrganizationId || actionLoading"
                             @click="setActive(organization.id)">
                             Set Active
-                        </UButton>
-                        <UButton
+                        </v-btn>
+                        <v-btn
                             size="xs"
                             color="error"
                             variant="outline"
                             :loading="actionLoading"
                             @click="leave(organization.id)">
                             Leave
-                        </UButton>
+                        </v-btn>
                     </div>
                 </li>
             </ul>

@@ -20,33 +20,33 @@
             <ul class="text-sm text-muted list-disc list-inside">
                 <li v-for="(c, i) in enableResult.backupCodes" :key="i">{{ c }}</li>
             </ul>
-            <UButton block size="md" @click="dismissEnableSuccess">Done</UButton>
+            <v-btn block size="md" @click="dismissEnableSuccess">Done</v-btn>
         </template>
         <template v-else-if="isSupported && !has2FA">
             <!-- Enable form: password + Enable 2FA -->
-            <UFormField label="Your password" required>
+            <v-formField label="Your password" required>
                 <UInput v-model="twoFactorPassword" type="password" placeholder="Password"
                     @keydown.enter="startEnable2FA" />
-            </UFormField>
+            </v-formField>
             <UAlert v-if="twoFactorError" color="error" variant="soft" :description="twoFactorError" />
-            <UButton block size="md" :loading="twoFactorLoading" @click="startEnable2FA">Enable 2FA</UButton>
+            <v-btn block size="md" :loading="twoFactorLoading" @click="startEnable2FA">Enable 2FA</v-btn>
         </template>
         <template v-else-if="isSupported">
             <!-- Disable form: password + Disable 2FA -->
-            <UFormField label="Your password" required>
+            <v-formField label="Your password" required>
                 <UInput v-model="disablePassword" type="password" placeholder="Password to disable 2FA"
                     @keydown.enter="handleDisable2FA" />
-            </UFormField>
+            </v-formField>
             <UAlert v-if="disableError" color="error" variant="soft" :description="disableError" />
-            <UButton block size="md" color="error" variant="outline" :loading="disableLoading"
+            <v-btn block size="md" color="error" variant="outline" :loading="disableLoading"
                 @click="handleDisable2FA">
-                Disable 2FA</UButton>
+                Disable 2FA</v-btn>
         </template>
     </div>
 
     <!-- Footer: sign out clears sessionStorage then signs out -->
     <template v-if="showSignOut && shouldRender" #footer>
-        <UButton color="neutral" variant="outline" block @click="handleSignOut">Sign Out</UButton>
+        <v-btn color="neutral" variant="outline" block @click="handleSignOut">Sign Out</v-btn>
     </template>
 </template>
 <script setup lang="ts">

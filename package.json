@@ -34,7 +34,8 @@
     "docs/*"
   ],
   "dependencies": {
-    "flat": "^6.0.1"
+    "flat": "^6.0.1",
+    "@polar-sh/sdk": "^0.47.0"
   },
   "overrides": {
     "vue": "^3.5.29"

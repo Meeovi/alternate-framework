@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-      <UCard>
+      <v-card>
           <h4>Create New Note</h4>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
@@ -9,11 +9,11 @@
             Post fields are not available yet.
           </div>
 
-          <UForm v-else @submit.prevent="submitForm">
+          <v-form v-else @submit.prevent="submitForm">
             <DirectusFormElement v-for="field in postFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <UButton type="submit">Post</UButton>
-          </UForm>
-      </UCard>
+            <v-btn type="submit">Post</v-btn>
+          </v-form>
+      </v-card>
   </v-row>
 </template>
 

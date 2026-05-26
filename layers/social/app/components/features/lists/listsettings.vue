@@ -21,7 +21,7 @@
                           <v-card title="Choose a Product for your List">
                               <template>
                                   <v-text-field density="compact" variant="solo" label="Search Meeovi for products"
-                                      append-inner-icon="fas:fa fa-search" single-line hide-details
+                                      append-inner-icon="fas fa-search" single-line hide-details
                                       @click:append-inner="onClick"></v-text-field>
                                   <v-spacer></v-spacer>
                                   <div class="d-flex pa-4">

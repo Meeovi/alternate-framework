@@ -2,14 +2,14 @@
     <div>
         <v-dialog max-width="500">
             <template v-slot:activator="{ props: activatorProps }">
-                <UButton color="primary" v-bind="activatorProps" icon="fas fa-gear" size="medium"
-                    title="Open Settings"></UButton>
+                <v-btn color="primary" v-bind="activatorProps" icon="fas fa-gear" size="medium"
+                    title="Open Settings"></v-btn>
             </template>
 
             <template v-slot:default="{ isActive }">
-                <UCard title="Dialog">
-                        <UForm @submit.prevent="handleSubmit">
-                            <UCard>
+                <v-card title="Dialog">
+                        <v-form @submit.prevent="handleSubmit">
+                            <v-card>
                                 <div>
                                     <UInput v-model="postData.title" id="postName" label="Post Name*" required />
                                     <UTextarea v-model="postData.content" label="What's happening?*" variant="outlined"
@@ -44,41 +44,41 @@
                                 </div>
                                 <v-divider class="mt-12"></v-divider>
                                 <div>
-                                    <UButton color="blue-darken-1" variant="text" @click="isActive.value = false">
+                                    <v-btn color="blue-darken-1" variant="text" @click="isActive.value = false">
                                         Close
-                                    </UButton>
+                                    </v-btn>
                                     <v-spacer></v-spacer>
-                                    <UButton color="blue-darken-1" variant="text" type="submit" @click="confirmDelete"
+                                    <v-btn color="blue-darken-1" variant="text" type="submit" @click="confirmDelete"
                                         :loading="deleteLoading">
                                         Delete Post
-                                    </UButton>
-                                    <UButton color="blue-darken-1" variant="text" type="submit">
+                                    </v-btn>
+                                    <v-btn color="blue-darken-1" variant="text" type="submit">
                                         Update Post
-                                    </UButton>
+                                    </v-btn>
                                 </div>
-                            </UCard>
-                        </UForm>
-                </UCard>
+                            </v-card>
+                        </v-form>
+                </v-card>
             </template>
         </v-dialog>
 
         <!-- Delete Confirmation Dialog -->
         <v-dialog v-model="deleteDialog" max-width="500px">
-            <UCard>
+            <v-card>
                 <h3 class="text-h5">Delete Post</h3>
                 <div>
                     Are you sure you want to delete this post? This action cannot be undone.
                 </div>
                 <div>
                     <v-spacer></v-spacer>
-                    <UButton color="blue-darken-1" variant="text" @click="deleteDialog = false">
+                    <v-btn color="blue-darken-1" variant="text" @click="deleteDialog = false">
                         Cancel
-                    </UButton>
-                    <UButton color="error" variant="text" @click="deletePost" :loading="deleteLoading">
+                    </v-btn>
+                    <v-btn color="error" variant="text" @click="deletePost" :loading="deleteLoading">
                         Delete
-                    </UButton>
+                    </v-btn>
                 </div>
-            </UCard>
+            </v-card>
         </v-dialog>
     </div>
 </template>
