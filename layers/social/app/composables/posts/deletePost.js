@@ -1,7 +1,7 @@
 // composables/deletePost.js
-import { useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 export default async function deletePost(postId) {
-    const { deleteItem } = useSdkContentAdapter()
+    const { deleteItem } = useContent()
 
     try {
       await deleteItem('posts', postId)

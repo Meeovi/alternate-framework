@@ -62,6 +62,7 @@
 </template>
 
 <script setup lang="ts">
+import useContent from '../../../composables/content/useContent'
 import productCard from '../../catalog/product/productCard.vue'
 import { computed, ref } from 'vue'
 import { useAuth } from '../../../composables/globals/useAuth'
@@ -71,7 +72,7 @@ const user = computed(() => (auth as any)?.user?.value || null)
 const userId = computed(() => user.value?.id || null)
 
 const tab = ref(null)
-const content = useSdkContentAdapter()
+const content = useContent()
 const { getAssetUrl } = content
 
 const { data: incentiveBar } = await useAsyncData('incentiveBar', async () => {

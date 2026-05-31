@@ -1,6 +1,6 @@
 // composables/updatePost.js
 export default async function updatePost(websiteId, websiteData) {
-  const content = useSdkContentAdapter()
+  const content = useContent()
 
   try {
     if (content && typeof content.updateItem === 'function') {
@@ -14,3 +14,4 @@ export default async function updatePost(websiteId, websiteData) {
   }
 }
   
+import useContent from '#shared/app/composables/content/useContent'

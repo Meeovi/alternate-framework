@@ -57,6 +57,7 @@
 
 <script setup>
     import vibe from '#social/app/pages/connect/vibe/[...id].vue'
+import useContent from '#shared/app/composables/content/useContent'
     import addlive from '#social/app/components/features/vibeSections/add-live.vue'
     import {
         computed,
@@ -70,7 +71,7 @@
     const route = useRoute();
     const shortId = computed(() => String(route.params.id || ''));
 
-    const { readItems, getAssetUrl } = useSdkContentAdapter()
+    const { readItems, getAssetUrl } = useContent()
     const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const {

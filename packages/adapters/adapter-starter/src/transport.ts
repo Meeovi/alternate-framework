@@ -1,5 +1,11 @@
 import type { TransportAdapter, RequestOptions, APIResponse } from 'alternate-gateway'
 
+const stringifyQueryValue = (value: unknown) => {
+  if (value === null || value === undefined) return null
+  if (typeof value === 'object') return JSON.stringify(value)
+  return String(value)
+}
+
 export const createStarterTransport = (config: { baseUrl: string; apiKey?: string }): TransportAdapter => {
   return {
     async request<T>(method: any, path: string | URL, options: RequestOptions = {}): Promise<APIResponse<T>> {
@@ -8,18 +14,26 @@ export const createStarterTransport = (config: { baseUrl: string; apiKey?: strin
 
         if (options.query) {
           Object.entries(options.query).forEach(([key, value]) => {
-            url.searchParams.set(key, String(value))
+            const serialized = stringifyQueryValue(value)
+            if (serialized !== null) {
+              url.searchParams.set(key, serialized)
+            }
           })
         }
+
+        const hasBody = options.body !== undefined && options.body !== null && method !== 'GET' && method !== 'HEAD'
+        const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
 
         const res = await fetch(url.toString(), {
           method,
           headers: {
-            'Content-Type': 'application/json',
+            ...(!isFormData && hasBody ? { 'Content-Type': 'application/json' } : {}),
             ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}),
             ...(options.headers || {})
           },
-          body: options.body ? JSON.stringify(options.body) : undefined
+          body: hasBody
+            ? (isFormData ? (options.body as BodyInit) : JSON.stringify(options.body))
+            : undefined
         })
 
         const data = await res.json().catch(() => null)

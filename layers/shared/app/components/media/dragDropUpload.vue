@@ -10,11 +10,12 @@
                 <template>
                     <div v-if="formError" class="error">{{ formError }}</div>
                     <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                    <v-form @submit.prevent="submitForm">
-                        <DirectusFormElement v-for="field in mediaFields" :key="field.field" :field="field"
-                            v-model="form[field.field]" />
-                        <v-btn type="submit">Post</v-btn>
-                    </v-form>
+                    <JsonSchemaFormFromFields
+                        :fields="mediaFields"
+                        :model-value="form"
+                        @update:model-value="Object.assign(form, $event)"
+                        @submit="submitForm"
+                    />
                 </template>
             </v-card>
         </template>
@@ -26,7 +27,7 @@
         ref,
         reactive
     } from '#imports'
-    import DirectusFormElement from '../ui/forms/DirectusFormElement.vue'
+    import JsonSchemaFormFromFields from '../ui/forms/JsonSchemaFormFromFields.vue'
 
     const dialog = ref(false)
     const content = useContent()

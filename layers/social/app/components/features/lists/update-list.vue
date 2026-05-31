@@ -92,11 +92,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import useContent from '#shared/app/composables/content/useContent'
 import { useRoute, useRouter } from 'vue-router';
 import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
 import updateList from '~/app/composables/lists/updateList';
 
-const content = useSdkContentAdapter()
+const content = useContent()
 
 const route = useRoute();
 const router = useRouter();
@@ -119,28 +120,15 @@ const loading = ref(false);
 const fetchListData = async () => {
     try {
         const listId = route.params.id; // Assuming you're passing the ID in the route
-        if (content && typeof content.readItem === 'function') {
-            const resp = await content.readItem('lists', listId)
-            const item = resp?.data || resp || {}
-            listData.value = {
-                id: item.id,
-                name: item.name,
-                type: item.type,
-                status: item.status,
-                description: item.description,
-                image: item.image
-            }
-        } else {
-            const { read } = useNuxtApp();
-            const response = await gateway.content(read('lists', listId));
-            listData.value = {
-                id: response.id,
-                name: response.name,
-                type: response.type,
-                status: response.status,
-                description: response.description,
-                image: response.image
-            }
+        const resp = await content.readItem('lists', listId)
+        const item = resp?.data || resp || {}
+        listData.value = {
+            id: item.id,
+            name: item.name,
+            type: item.type,
+            status: item.status,
+            description: item.description,
+            image: item.image
         }
     } catch (error) {
         console.error('Error fetching list:', error);

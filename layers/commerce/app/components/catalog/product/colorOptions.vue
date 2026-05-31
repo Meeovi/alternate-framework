@@ -20,21 +20,21 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import useContent from '#shared/app/composables/content/useContent'
 const emit = defineEmits(['color-selected'])
 const colors = ref([])
 const selectedColor = ref(null)
 
-const nuxtApp = useNuxtApp()
-const { read } = nuxtApp
+const content = useContent()
 
 const loadColors = async () => {
     try {
-        const res = await gateway.content(read('attributes', {
+        const res = await content.readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'color' }
             },
             sort: ['id']
-        }))
+        })
 
         const attr = (res && res[0]) || null
         const opts = attr?.options || []

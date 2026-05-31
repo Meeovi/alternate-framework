@@ -28,6 +28,7 @@
         ref,
         onMounted
     } from '#imports'
+import useContent from '../../composables/content/useContent'
 
     const props = defineProps({
         brand: {
@@ -38,5 +39,5 @@
     const {
         brand
     } = props;
-    const { getAssetUrl } = useSdkContentAdapter()
+    const { getAssetUrl } = useContent()
 </script>

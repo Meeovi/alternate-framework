@@ -55,10 +55,11 @@
     import {
         ref
     } from '#imports'
+    import useContent from '#shared/app/composables/content/useContent'
     import TagChip from '../../components/related/tag.vue'
 
     
-    const { readItems, readItem } = useDirectusRequest()
+    const { readItems, readItem } = useContent()
     const route = useRoute()
     const tab = ref(null);
 

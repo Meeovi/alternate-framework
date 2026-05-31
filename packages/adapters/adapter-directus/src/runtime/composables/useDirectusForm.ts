@@ -1,6 +1,4 @@
-import { useNuxtApp } from 'nuxt/app'
 import { ref, provide } from 'vue'
-import useDirectusRequest from './useDirectusRequest'
 import type { Ref } from 'vue'
 
 export function useDirectusForm(collectionName: string, fieldsRef: Ref<any[]>, opts?: { clearOnSuccess?: boolean, closeDialogRef?: Ref<boolean> }) {
@@ -8,7 +6,7 @@ export function useDirectusForm(collectionName: string, fieldsRef: Ref<any[]>, o
   const formError = ref<string | null>(null)
   const formSuccess = ref<string | null>(null)
 
-  // provide form context for DirectusFormElement children
+  // Keep the legacy provide key for backward compatibility.
   provide('directusForm', {
     form,
     fields: fieldsRef,
@@ -46,7 +44,13 @@ export function useDirectusForm(collectionName: string, fieldsRef: Ref<any[]>, o
       }
     }
 
-    const { createItem } = useDirectusRequest()
+    const requestApi = (globalThis as any).useSdkContentAdapter?.()
+    const createItem = requestApi?.createItem
+    if (typeof createItem !== 'function') {
+      formError.value = 'No gateway content adapter is available for form submission.'
+      return
+    }
+
     const result = await createItem(collectionName, form.value)
     if (result?.error) {
       formError.value = result?.error?.message || String(result)

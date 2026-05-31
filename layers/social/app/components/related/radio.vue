@@ -37,5 +37,6 @@ const props = defineProps({
 })
 
 const { radio } = props
-const { getAssetUrl } = useSdkContentAdapter()
+const { getAssetUrl } = useContent()
 </script>
+import useContent from '#shared/app/composables/content/useContent'

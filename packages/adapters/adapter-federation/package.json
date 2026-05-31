@@ -24,9 +24,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown index.ts",
+    "build": "tsdown index.ts --deps.never-bundle '#app'",
     "dev": "npm run dev:prepare && nuxi dev playground",
-    "dev:lib": "tsdown index.ts --watch",
+    "dev:lib": "tsdown index.ts --deps.never-bundle '#app' --watch",
     "typecheck": "tsc --project tsconfig.json",
     "prepack": "npm run build",
     "dev:build": "nuxi build playground",

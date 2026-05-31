@@ -126,7 +126,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { usePrice } from '../../../composables/catalog/price/price'
-import useContentFallback from '../../../composables/content/useContent'
+import { useAppGateway } from '~/app/composables/useAppGateway'
 import ratings from '../../partials/ratings.vue'
 
 const props = defineProps({
@@ -137,7 +137,7 @@ const props = defineProps({
 });
 
 const { getProductPrice } = usePrice()
-const { getProductRssLink } = useContentFallback()
+const { getProductRssLink } = useAppGateway().content
 const pricing = computed(() => getProductPrice(props.product || {}))
 const productRssLink = ref(null)
 

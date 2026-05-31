@@ -21,6 +21,7 @@
 
 <script setup lang="ts">
     import spaceCard from '../../related/space.vue'
+import useContent from '#shared/app/composables/content/useContent'
     const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
     const { user } = runtimeUseAuth
         ? runtimeUseAuth()
@@ -29,7 +30,7 @@
     const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
 
     const model = ref(null)
-    const { readItems } = useSdkContentAdapter()
+    const { readItems } = useContent()
 
     const { data: myDefaultSpaces } = await useAsyncData<any[]>('myDefaultSpaces', async () => {
         const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'default' } } } }, fields: ['*', { '*': ['*'] }] })

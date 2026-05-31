@@ -69,10 +69,11 @@
     import {
         ref
     } from '#imports'
+    import useContent from '#shared/app/composables/content/useContent'
     import MembersList from '#social/app/components/related/memberList.vue'
 
     
-    const { readItem, readItems } = useDirectusRequest()
+    const { readItem, readItems } = useContent()
     const tab = ref(null);
 
     const { data: birthdayBar } = await useAsyncData('birthdayBar', () => {

@@ -22,7 +22,8 @@
     "commerce/**/*.ts",
     "content/**/*.ts",
     "search/**/*.ts",
-    "federation/**/*.ts"
+    "federation/**/*.ts",
+    "gateway/**/*.ts"
   ],
   "exclude": [
     "dist",

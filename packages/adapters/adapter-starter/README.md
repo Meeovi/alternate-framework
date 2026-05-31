@@ -8,6 +8,11 @@ The starter now uses a reusable installer pattern:
 - A generic installer wires those factories into the gateway registry.
 - New adapters only need to provide transport + layer implementations.
 
+The starter also standardizes two runtime behaviors used across adapters:
+
+- Gateway bindings accept optional options objects so adapters can be configured or injected in tests.
+- Transport query values serialize nested objects/arrays safely (JSON stringified) and only attach JSON bodies when appropriate.
+
 ## Adapter Pattern
 
 The core pattern is implemented in these files:

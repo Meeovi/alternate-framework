@@ -17,11 +17,12 @@
   import {
     ref,
   } from '#imports';
+  import useContent from '#shared/app/composables/content/useContent'
   import shorts from './shorts.vue'
 
   const model = ref(null);
   
-  const { readItems } = useDirectusRequest()
+  const { readItems } = useContent()
 
   const { data: short } = await useAsyncData('short', async () => {
     const resp = await readItems('shorts', { fields: ['*', { '*': ['*'] }] })

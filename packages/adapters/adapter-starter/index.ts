@@ -11,6 +11,11 @@ import { handleStarterAdapterError } from './utils/errors'
 import { normalizeStarterSearchResult } from './utils/normalizers'
 import type { StarterGatewayAdapterContract, StarterSearchResult } from './types'
 
+export interface StarterAdapterOptions {
+  baseUrl?: string
+  apiKey?: string
+}
+
 const starterLayerFactories = defineAdapterLayerFactories({
   auth: createStarterAuthAdapter,
   commerce: createStarterCommerceAdapter,
@@ -23,7 +28,11 @@ export const installStarterAdapter = createAdapterInstaller(
 )
 
 export class StarterAdapter implements StarterGatewayAdapterContract {
-  private readonly transport = createStarterGatewayClient()
+  private readonly transport
+
+  constructor(options: StarterAdapterOptions = {}) {
+    this.transport = createStarterGatewayClient(options)
+  }
 
   health(): string {
     return 'ok'
@@ -41,8 +50,8 @@ export class StarterAdapter implements StarterGatewayAdapterContract {
   }
 }
 
-export const createGatewayAdapterBindings = () => ({
+export const createGatewayAdapterBindings = (options: StarterAdapterOptions = {}) => ({
   starter: {
-    adapter: new StarterAdapter()
+    adapter: new StarterAdapter(options)
   }
 })

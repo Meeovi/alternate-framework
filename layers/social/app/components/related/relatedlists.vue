@@ -17,9 +17,10 @@
   import {
     ref
   } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
   import listCard from '#social/app/components/related/list.vue'
 
-  const content = useSdkContentAdapter()
+  const content = useContent()
   const model = ref(null)
 
   const { data: lists } = await useAsyncData('lists', async () => {

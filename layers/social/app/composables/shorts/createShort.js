@@ -1,8 +1,8 @@
 // composables/cms/shorts/createSpace.js
-import { useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 
 export default async function createSpace(shortData) {
-    const { createItem } = useSdkContentAdapter()
+    const { createItem } = useContent()
     
     try {
         const short = await createItem('shorts', {

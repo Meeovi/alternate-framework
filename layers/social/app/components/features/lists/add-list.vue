@@ -14,10 +14,12 @@
         <template>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <v-form @submit.prevent="submitForm">
-            <DirectusFormElement v-for="field in listFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <v-btn type="submit">Submit</v-btn>
-          </v-form>
+          <JsonSchemaFormFromFields
+            :fields="listFields"
+            :model-value="form"
+            @update:model-value="Object.assign(form, $event)"
+            @submit="submitForm"
+          />
         </template>
       </v-card>
     </v-dialog>
@@ -26,17 +28,18 @@
 
 <script setup>
 import { ref, computed } from '#imports'
-import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '../../../composables/useDirectusForm'
+import useContent from '#shared/app/composables/content/useContent'
+import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
+import { useContentForm } from '../../../composables/useContentForm'
 
 const dialog = ref(false)
-const content = useSdkContentAdapter()
+const content = useContent()
 
 const { data, error } = await useAsyncData('listsFields', async () => {
   return await content.readFieldsByCollection('lists')
 })
 
-// normalize response: Directus may return { data: [...] } or an array directly
+// normalize response: providers may return { data: [...] } or an array directly
 const listFields = computed(() => {
   const resp = data?.value
   return resp?.data ?? resp ?? []
@@ -53,5 +56,5 @@ if (error.value || listFields.value == null || listFields.value.length === 0) {
 
 
 // use composable for form handling (validation, submit, provide context)
-const { form, formError, formSuccess, submitForm } = useDirectusForm('lists', listFields, { clearOnSuccess: true, closeDialogRef: dialog })
+const { form, formError, formSuccess, submitForm } = useContentForm('lists', listFields, { clearOnSuccess: true, closeDialogRef: dialog })
 </script>

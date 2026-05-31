@@ -12,22 +12,21 @@
 
 <script setup>
 import { ref, onMounted, watch } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 const emit = defineEmits(['size-selected'])
 const sizes = ref([])
 const selectedSize = ref(null)
 
-
-const nuxtApp = useNuxtApp()
-const { read } = nuxtApp
+const content = useContent()
 
 const loadSizes = async () => {
     try {
-        const res = await gateway.content(read('attributes', {
+        const res = await content.readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'size' }
             },
             sort: ['id']
-        }))
+        })
 
         const attr = (res && res[0]) || null
         const opts = attr?.options || []

@@ -9,10 +9,12 @@
         <v-card-text>
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <v-form @submit.prevent="submitForm">
-            <DirectusFormElement v-for="field in shortFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <v-btn type="submit">Create</v-btn>
-          </v-form>
+          <JsonSchemaFormFromFields
+            :fields="shortFields"
+            :model-value="form"
+            @update:model-value="Object.assign(form, $event)"
+            @submit="submitForm"
+          />
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -21,15 +23,16 @@
 
 <script setup>
 import { ref, reactive } from '#imports'
-import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
+import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
+import useContent from '#shared/app/composables/content/useContent'
 const dialog = ref(false)
-const { readFieldsByCollection, createItem } = useSdkContentAdapter()
+const { readFieldsByCollection, createItem } = useContent()
 
 const form = reactive({})
 const formError = ref('')
 const formSuccess = ref('')
 
-const { data, error } = await useAsyncData('shorts', async () => {
+const { data, error } = await useAsyncData('vibe-shorts-schema-fields', async () => {
   const resp = await readFieldsByCollection('shorts')
   return resp?.data || resp || []
 })

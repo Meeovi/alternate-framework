@@ -55,6 +55,7 @@
 
 <script setup>
 import { ref, computed } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 import listCard from '#social/app/components/related/list.vue'
 import RelatedLists from '#social/app/components/related/relatedlists.vue'
 import createList from '#social/app/components/features/lists/add-list.vue'
@@ -70,7 +71,7 @@ const {
   getUserBookmarks,
   getPage,
   getAssetUrl
-} = useSdkContentAdapter()
+} = useContent()
 const hasAsset = (file) => Boolean(getAssetUrl(file))
 
 const { data: lists } = await useAsyncData('lists', () =>

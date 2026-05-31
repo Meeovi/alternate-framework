@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": { "type": "string", "title": "Variant Name" },
+    "stock": { "type": "number", "title": "Stock" },
+    "barcode": { "type": "string", "title": "Barcode" }
+  }
+}

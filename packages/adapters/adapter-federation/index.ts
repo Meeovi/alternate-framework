@@ -12,10 +12,26 @@ import type {
 import { createForgeFedIssueCreateActivity } from './src/providers/activitypub/forgefed'
 import { createOStatusPost } from './src/providers/ostatus/provider'
 
+type ActivityPubClient = typeof activityPubGatewayClient
+type AtprotoClient = typeof atprotoGatewayClient
+
+export interface FederationAdapterOptions {
+	activityPubClient?: ActivityPubClient
+	atprotoClient?: AtprotoClient
+}
+
 export class FederationAdapter implements FederationGatewayAdapterContract {
+	private readonly activityPubClient: ActivityPubClient
+	private readonly atprotoClient: AtprotoClient
+
+	constructor(options: FederationAdapterOptions = {}) {
+		this.activityPubClient = options.activityPubClient ?? activityPubGatewayClient
+		this.atprotoClient = options.atprotoClient ?? atprotoGatewayClient
+	}
+
 	async getActivityPubInbox(actor: string): Promise<unknown> {
 		try {
-			return await activityPubGatewayClient(`/actors/${encodeURIComponent(actor)}/inbox`)
+			return await this.activityPubClient(`/actors/${encodeURIComponent(actor)}/inbox`)
 		} catch (error) {
 			return handleFederationError(error)
 		}
@@ -23,7 +39,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 
 	async getActivityPubOutbox(actor: string, limit = 20): Promise<FediversePost[]> {
 		try {
-			const outbox = await activityPubGatewayClient(`/actors/${encodeURIComponent(actor)}/outbox`)
+			const outbox = await this.activityPubClient(`/actors/${encodeURIComponent(actor)}/outbox`)
 			const items = outbox?.orderedItems ?? outbox?.items ?? []
 			return (Array.isArray(items) ? items : []).slice(0, limit).map((entry: unknown) =>
 				normalizeActivityPubPost(entry)
@@ -35,7 +51,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 
 	async getAtprotoProfile(handle: string): Promise<unknown | null> {
 		try {
-			return await atprotoGatewayClient.getProfile(handle)
+			return await this.atprotoClient.getProfile(handle)
 		} catch (error) {
 			return handleFederationError(error)
 		}
@@ -43,7 +59,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 
 	async getAtprotoFeed(actor: string, limit = 20): Promise<FediversePost[]> {
 		try {
-			const feed = await atprotoGatewayClient.getAuthorFeed(actor, limit)
+			const feed = await this.atprotoClient.getAuthorFeed(actor, limit)
 			const items = feed?.feed ?? []
 			return (Array.isArray(items) ? items : []).slice(0, limit).map((entry: unknown) =>
 				normalizeAtprotoPost(entry)
@@ -71,7 +87,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 	async publish(input: FediversePublishInput): Promise<unknown> {
 		try {
 			if (input.protocol === 'activitypub') {
-				return await activityPubGatewayClient('/outbox', {
+				return await this.activityPubClient('/outbox', {
 					method: 'POST',
 					body: {
 						type: 'Create',
@@ -116,7 +132,7 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 				throw new Error('ATPROTO_REPO or publish input.actor/input.metadata.repo is required for atproto publishing')
 			}
 
-			return await atprotoGatewayClient.createRecord(repo, 'app.bsky.feed.post', {
+			return await this.atprotoClient.createRecord(repo, 'app.bsky.feed.post', {
 				$type: 'app.bsky.feed.post',
 				text: input.content,
 				createdAt: new Date().toISOString()
@@ -140,8 +156,8 @@ export class FederationAdapter implements FederationGatewayAdapterContract {
 	}
 }
 
-export const createGatewayAdapterBindings = () => {
-	const federation = new FederationAdapter()
+export const createGatewayAdapterBindings = (options: FederationAdapterOptions = {}) => {
+	const federation = new FederationAdapter(options)
 	return {
 		federation: {
 			fediverse: federation

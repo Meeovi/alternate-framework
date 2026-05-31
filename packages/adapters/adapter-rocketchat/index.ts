@@ -8,8 +8,16 @@ import {
 } from "./utils/normalizers";
 import type { RocketChatGatewayAdapterContract, RocketChatMessage, RocketChatRoom } from "./types";
 
+export interface RocketChatAdapterOptions {
+  provider?: ReturnType<typeof createRocketChatGatewayClient>;
+}
+
 export class RocketChatAdapter implements RocketChatGatewayAdapterContract {
-  private readonly provider = createRocketChatGatewayClient();
+  private readonly provider;
+
+  constructor(options: RocketChatAdapterOptions = {}) {
+    this.provider = options.provider ?? createRocketChatGatewayClient();
+  }
 
   async listRooms(): Promise<RocketChatRoom[]> {
     try {
@@ -42,8 +50,8 @@ export class RocketChatAdapter implements RocketChatGatewayAdapterContract {
   }
 }
 
-export const createGatewayAdapterBindings = () => ({
+export const createGatewayAdapterBindings = (options: RocketChatAdapterOptions = {}) => ({
   chat: {
-    rocketchat: new RocketChatAdapter()
+    rocketchat: new RocketChatAdapter(options)
   }
 });

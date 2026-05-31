@@ -54,8 +54,9 @@
 
 <script setup>
 import { ref } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 
-const content = useSdkContentAdapter()
+const content = useContent()
 
 const { data: lists } = await useAsyncData('lists', async () => {
   const opts = { filter: { status: { _eq: 'Public' } } }

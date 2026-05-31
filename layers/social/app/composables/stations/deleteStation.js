@@ -1,7 +1,7 @@
 // composables/deleteStation.js
-import { useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 export default async function deleteStation(stationId) {
-    const { deleteItem } = useSdkContentAdapter()
+    const { deleteItem } = useContent()
 
     try {
       await deleteItem('radios', stationId)

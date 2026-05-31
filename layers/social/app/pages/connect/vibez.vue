@@ -82,9 +82,10 @@
 
 <script setup>
 import { ref, computed, watchEffect } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 
 
-const { readItems, createItem, deleteItem } = useDirectusRequest()
+const { readItems, createItem, deleteItem } = useContent()
 const config = useRuntimeConfig()
 const { user, fetchSession } = useAuth()
 await fetchSession()

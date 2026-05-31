@@ -5,7 +5,7 @@
             <div class="row align-left justify-content-center mbr-white">
                 <v-col v-for="child in copyright?.menus" cols="3" :key="child.id">
                     <v-list-item :value="child?.name" :prepend-icon="child?.icon"
-                        :href="`/${child.slug}`">
+                        :href="toPath(child?.slug)">
                         <v-list-item-title>{{ child?.name }}</v-list-item-title>
                     </v-list-item>
                 </v-col>
@@ -22,8 +22,13 @@
 </template>
 
 <script setup>
+    import { useRoutePath } from '#shared/app/composables/routing/useRoutePath'
+    import useContent from '#shared/app/composables/content/useContent'
+
+    const { normalizeRoutePath } = useRoutePath()
+    const toPath = (slug) => normalizeRoutePath(slug)
     
-    const { readItem } = useNuxtApp()
+    const { readItem } = useContent()
 
     const { data: blocksCopyright } = await useAsyncData('blocksCopyright', () => {
         return readItem('page_blocks', '5', { fields: ['*', 'media.*.*'] })

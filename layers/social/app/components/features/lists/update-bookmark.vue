@@ -92,18 +92,15 @@
         watch,
         computed
     } from '#imports';
+import useContent from '#shared/app/composables/content/useContent'
     import {
         useRoute,
         useRouter
     } from 'vue-router';
     import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
-    import {
-        updateItem,
-        deleteItem
-    } from '@mframework/adapter-directus';
     const currentUser = useCurrentUser()
 
-    const content = useSdkContentAdapter()
+    const content = useContent()
 
     const userDisplayName = computed(() => {
         return currentUser.value?.name || currentUser.value?.username || 'User'

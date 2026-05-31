@@ -99,6 +99,8 @@
     ref,
     computed
   } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
+  import { normalizeListRecord } from '#social/app/composables/content/socialMappers'
   import {
     useRoute
   } from 'vue-router'
@@ -112,7 +114,7 @@
   import shortCard from '#social/app/components/related/short.vue'
 
   const route = useRoute()
-  const content = useSdkContentAdapter()
+  const content = useContent()
   const {
     updateListItem,
     removeFromList
@@ -146,12 +148,12 @@
         'media.*',
         'list_items.list_items_id.*',
         'list_products.list_products_id.*',
-        'user.directus_users.*'
+        'user.user.*'
       ],
       filter: { slug: { _eq: slug.value } },
       limit: 1
     }
-    const content = useSdkContentAdapter()
+    const content = useContent()
     if (content && typeof content.readItems === 'function') {
       const resp = content.readItems('lists', opts)
       return resp?.data || resp
@@ -159,7 +161,7 @@
     return gateway.content(read('lists', opts))
   }, { server: true })
 
-  const list = computed(() => listRaw.value?.[0] || null)
+  const list = computed(() => normalizeListRecord(listRaw.value?.[0] || null))
 
   const mediaItems = computed(() => {
     if (list.value?.type !== 'playlist') return []

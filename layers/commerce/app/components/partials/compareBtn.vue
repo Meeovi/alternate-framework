@@ -8,6 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import useContent from '../../composables/content/useContent'
   import { computed } from 'vue';
   import { useCompareStore } from '../../stores/compare';
   // Minimal Product type for local use
@@ -17,7 +18,7 @@
   const props = defineProps<{ product: Product }>();
 
   const compareStore = useCompareStore();
-  const content = useSdkContentAdapter() as any;
+  const content = useContent() as any;
 
   // Check if the product is already in compare list
   const isInCompare = computed(() => {

@@ -1,6 +1,6 @@
 // composables/deleteWebsite.js
 export default async function deleteWebsite(websiteId) {
-  const content = useSdkContentAdapter()
+  const content = useContent()
 
   try {
     if (content && typeof content.deleteItem === 'function') {
@@ -14,3 +14,4 @@ export default async function deleteWebsite(websiteId) {
   }
 }
   
+import useContent from '#shared/app/composables/content/useContent'

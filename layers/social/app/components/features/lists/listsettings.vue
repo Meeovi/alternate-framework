@@ -78,7 +78,8 @@
   import {
       ref
   } from '#imports'
-    const content = useSdkContentAdapter()
+import useContent from '#shared/app/composables/content/useContent'
+    const content = useContent()
   
 
   const config = useRuntimeConfig();

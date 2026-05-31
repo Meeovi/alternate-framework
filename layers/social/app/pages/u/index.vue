@@ -399,6 +399,7 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
+import useContent from '#shared/app/composables/content/useContent'
 
 const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
 const auth = runtimeUseAuth
@@ -584,7 +585,7 @@ const loadCommerceFeatures = async () => {
 }
 
 const loadSocialFeatures = async () => {
-  const { readItems } = useSdkContentAdapter()
+  const { readItems } = useContent()
 
   const currentId = String((user.value as any)?.id || (customerFallback.value as any)?.id || '')
   const currentEmail = String((user.value as any)?.email || (customerFallback.value as any)?.email || '').toLowerCase()

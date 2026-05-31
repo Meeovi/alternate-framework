@@ -1,105 +1,48 @@
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { defu } from 'defu'
-import { defineNuxtModule, addPlugin, addImportsDir } from '@nuxt/kit'
+import { defineNuxtModule, addImportsDir } from '@nuxt/kit'
 import { joinURL } from 'ufo'
-import { DirectusQueryParams } from './runtime/types'
+import type { DirectusQueryParams } from './runtime/types'
 
 export type * from './runtime/types'
 
 export interface ModuleOptions {
-  /**
-   * Directus API URL
-   * @default process.env.NUXT_PUBLIC_DIRECTUS_URL
-   * @type string
-   */
-  url?: string;
-  /**
-   * Auto fetch user
-   * @default true
-   * @type boolean
-   */
-  autoFetch?: boolean;
-  /**
-   * Auto refesh tokens
-   * @default true
-   * @type boolean
-   */
-  autoRefresh?: boolean;
-  /**
-   * Auto refesh tokens
-   * @default true
-   * @type boolean
-   */
-  onAutoRefreshFailure?: () => Promise<void>;
-  /**
-   * fetch user params
-   * @type boolean
-   */
-  fetchUserParams?: DirectusQueryParams;
-  /**
-   * Auth Token
-   * @type string
-   */
-  token?: string;
-  /**
-   * Add Directus Admin Dashboard in Nuxt Devtools
-   *
-   * @default false
-   */
+  url?: string
+  autoFetch?: boolean
+  autoRefresh?: boolean
+  onAutoRefreshFailure?: () => Promise<void>
+  fetchUserParams?: DirectusQueryParams
+  token?: string
   devtools?: boolean
-  /**
-   * Token Cookie Name
-   * @type string
-   * @ default 'directus_token'
-   */
-  cookieNameToken?: string;
-  /**
-   * Refresh Token Cookie Name
-   * @type string
-   * @default 'directus_refresh_token'
-   */
-  cookieNameRefreshToken?: string;
+  cookieNameToken?: string
+  cookieNameRefreshToken?: string
+  cookieMaxAge?: number
+  cookieSameSite?: 'strict' | 'lax' | 'none' | undefined
+  cookieSecure?: boolean
+}
 
-  /**
-   * The max age for auth cookies in milliseconds.
-   * This should match your directus env key REFRESH_TOKEN_TTL
-   * @type string
-   * @default 604800000
-   */
-  cookieMaxAge?: number;
+interface AdapterRegistry {
+  register: (kind: string, name: string, factory: (config: any) => any) => void
+}
 
-  /**
-   * The max age for auth cookies in milliseconds.
-   * This should match your directus env key REFRESH_TOKEN_TTL
-   * @type string
-   * @default 604800000
-   */
-  maxAgeRefreshToken?: number;
-
-  /**
-   * The SameSite attribute for auth cookies.
-   * @type string
-   * @default 'lax'
-   */
-  cookieSameSite?: 'strict' | 'lax' | 'none' | undefined;
-
-  /**
-   * The Secure attribute for auth cookies.
-   * @type boolean
-   * @default false
-   */
-  cookieSecure?: boolean;
+interface DevtoolsTab {
+  name: string
+  title: string
+  icon?: string
+  view: {
+    type: 'iframe' | string
+    src: string
+  }
 }
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: '@mframework/adapter-directus',
     configKey: 'adapterDirectus',
-    compatibility: {
-      nuxt: '>=4.0.0',
-    },
+    compatibility: { nuxt: '>=4.0.0' },
   },
+
   defaults: {
     url: process.env.NUXT_PUBLIC_DIRECTUS_URL,
     autoFetch: true,
@@ -107,66 +50,84 @@ export default defineNuxtModule<ModuleOptions>({
     devtools: false,
     cookieNameToken: 'directus_token',
     cookieNameRefreshToken: 'directus_refresh_token',
-
-    // Nuxt Cookies Docs @ https://nuxt.com/docs/api/composables/use-cookie
     cookieMaxAge: 604800000,
     cookieSameSite: 'lax',
-    cookieSecure: false
+    cookieSecure: false,
   },
-  setup (options, nuxt) {
-    nuxt.options.runtimeConfig.public = nuxt.options.runtimeConfig.public || {}
-    nuxt.options.runtimeConfig.public.directus = defu(
-      nuxt.options.runtimeConfig.public.directus,
-      {
-        url: options.url,
-        autoFetch: options.autoFetch,
-        autoRefresh: options.autoRefresh,
-        onAutoRefreshFailure: options.onAutoRefreshFailure,
-        fetchUserParams: options.fetchUserParams,
-        token: options.token,
-        devtools: options.devtools,
-        cookieNameToken: options.cookieNameToken,
-        cookieNameRefreshToken: options.cookieNameRefreshToken,
-        cookieMaxAge: options.cookieMaxAge || options.maxAgeRefreshToken,
-        cookieSameSite: options.cookieSameSite,
-        cookieSecure: options.cookieSecure
-      })
 
+  setup(options, nuxt) {
+    // -----------------------------
+    // 1. Fix runtimeConfig typing
+    // -----------------------------
+    const publicRuntimeConfig = nuxt.options.runtimeConfig.public as Record<string, unknown>
+    const publicConfig = (publicRuntimeConfig.directus ??= {}) as Partial<ModuleOptions>
+
+    publicRuntimeConfig.directus = defu(publicConfig, {
+      url: options.url,
+      autoFetch: options.autoFetch,
+      autoRefresh: options.autoRefresh,
+      onAutoRefreshFailure: options.onAutoRefreshFailure,
+      fetchUserParams: options.fetchUserParams,
+      token: options.token,
+      devtools: options.devtools,
+      cookieNameToken: options.cookieNameToken,
+      cookieNameRefreshToken: options.cookieNameRefreshToken,
+      cookieMaxAge: options.cookieMaxAge,
+      cookieSameSite: options.cookieSameSite,
+      cookieSecure: options.cookieSecure,
+    }) as ModuleOptions
+
+    // -----------------------------
+    // 2. Transpile runtime
+    // -----------------------------
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
     nuxt.options.build.transpile.push(runtimeDir)
 
-    addPlugin(resolve(runtimeDir, 'plugin'))
+    // -----------------------------
+    // 3. Expose composables
+    // -----------------------------
     addImportsDir(resolve(runtimeDir, 'composables'))
-    if (options.maxAgeRefreshToken) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        'maxAgeRefreshToken is deprecated, please use cookieMaxAge instead'
-      )
-    }
 
+    // -----------------------------
+    // 4. Register adapter dynamically
+    // -----------------------------
+    ;(nuxt as any).hook('alternate:registerAdapter', (registry: AdapterRegistry) => {
+      registry.register('content', 'directus', (config: any) => {
+        const { createDirectusClient } = require('./runtime/composables/useContentRequest')
+        return createDirectusClient(config)
+      })
+    })
+
+    // -----------------------------
+    // 5. Devtools integration
+    // -----------------------------
     if (options.devtools) {
-      const adminUrl = joinURL(nuxt.options.runtimeConfig.public.directus.url, '/admin/')
-      // @ts-expect-error - private API
-      nuxt.hook('devtools:customTabs', (iframeTabs) => {
-        iframeTabs.push({
+      const directusConfig = publicRuntimeConfig.directus as ModuleOptions
+      const adminUrl = joinURL(directusConfig.url || '', '/admin/')
+
+      ;(nuxt as any).hook('devtools:customTabs', (tabs: DevtoolsTab[]) => {
+        tabs.push({
           name: 'directus',
           title: 'Directus',
           icon: 'simple-icons:directus',
-          view: {
-            type: 'iframe',
-            src: adminUrl
-          }
+          view: { type: 'iframe', src: adminUrl },
         })
       })
     }
-  }
+  },
 })
 
+
+// ---------------------------------------------------------
+// Nuxt Type Augmentation (fixed, no duplicate declarations)
+// ---------------------------------------------------------
 declare module '@nuxt/schema' {
-  interface ConfigSchema {
-    directus?: ModuleOptions;
-    publicRuntimeConfig?: {
-      directus?: ModuleOptions;
-    };
+  interface NuxtHooks {
+    'alternate:registerAdapter': (registry: any) => void
+    'devtools:customTabs': (tabs: any[]) => void
+  }
+
+  interface PublicRuntimeConfig {
+    directus?: ModuleOptions
   }
 }

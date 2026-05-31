@@ -49,8 +49,8 @@ import { computed } from 'vue';
 const props = defineProps<{ item: Record<string, any> }>();
 const emit = defineEmits(['cart-changed'])
 const nuxtApp = useNuxtApp()
-// Use injected composables for Directus
-const { directus, deleteItem, readItem, createItem } = nuxtApp;
+// Use injected content adapter methods from the app gateway
+const { deleteItem, readItem, createItem } = nuxtApp;
 
 // Prepare a product object compatible with productCard.vue
 const productForCard = computed(() => {

@@ -78,7 +78,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
- const { readItem, deleteItem, updateItem, uploadFiles } = useSdkContentAdapter()
+import useContent from '#shared/app/composables/content/useContent'
+ const { readItem, deleteItem, updateItem, uploadFiles } = useContent()
 import updateSpace from '#social/app/composables/spaces/updateSpace';
 
 const route = useRoute();

@@ -25,6 +25,7 @@
   "type": "module",
   "main": "./nuxt.config.ts",
   "dependencies": {
+    "@mframework/ui-forms": "file:../../packages/modules/ui-forms",
     "@nuxt/image": "^2.0.0",
     "@tiptap/core": "2.27.2",
     "@tiptap/extension-bold": "2.27.2",

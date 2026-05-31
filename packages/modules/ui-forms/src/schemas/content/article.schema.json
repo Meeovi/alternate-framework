@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["title", "slug"],
+  "properties": {
+    "title": { "type": "string", "title": "Title" },
+    "slug": { "type": "string", "title": "Slug" },
+    "summary": { "type": "string", "title": "Summary" },
+    "body": { "type": "string", "title": "Body", "format": "richtext" },
+    "publishedAt": { "type": "string", "title": "Publish Date", "format": "date" }
+  }
+}

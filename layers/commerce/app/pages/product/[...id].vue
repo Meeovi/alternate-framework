@@ -169,9 +169,9 @@
             </div>
           </v-sheet>
 
-          <!--Product featured in Shops-->
+          <!--Product featured in Outlets-->
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
-            <h4>Product featured in these Shops</h4>
+            <h4>Product featured in these Outlets</h4>
             <div v-if="product?.shops?.length > 0">
               <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-for="(shops, index) in product?.shops" :key="index"

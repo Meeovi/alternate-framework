@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": { "type": "string", "title": "Gallery Name" },
+    "description": { "type": "string", "title": "Description" },
+    "cover": { "type": "string", "title": "Cover Image", "format": "file" }
+  }
+}

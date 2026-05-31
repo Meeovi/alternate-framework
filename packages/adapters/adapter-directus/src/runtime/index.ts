@@ -63,6 +63,12 @@ function normalizeDirectusLegacyResult(value: any): any {
     if (normalized.directus_files_id && !normalized.file) {
         normalized.file = normalized.directus_files_id
     }
+    if (normalized.directus_users_id && !normalized.user) {
+        normalized.user = normalized.directus_users_id
+    }
+    if (normalized.directus_users && !normalized.user) {
+        normalized.user = normalized.directus_users
+    }
     return normalized
 }
 
@@ -76,6 +82,10 @@ function expandDirectusLegacyFields(value: any): any {
     if (!value || typeof value !== 'object') {
         if (typeof value === 'string' && value.includes('file')) {
             const legacyValue = value.replace(/(^|\.)file(\.|$)/g, '$1directus_files_id$2')
+            return legacyValue === value ? value : [value, legacyValue]
+        }
+        if (typeof value === 'string' && value.includes('user')) {
+            const legacyValue = value.replace(/(^|\.)user(\.|$)/g, '$1directus_users_id$2')
             return legacyValue === value ? value : [value, legacyValue]
         }
         return value
@@ -93,7 +103,11 @@ function normalizeDirectusLegacyPayload(data: any): any {
     if (!data || typeof data !== 'object') return data
     const normalized: Record<string, any> = {}
     for (const [key, entry] of Object.entries(data)) {
-        const nextKey = key === 'file' ? 'directus_files_id' : key
+        const nextKey = key === 'file'
+            ? 'directus_files_id'
+            : key === 'user'
+                ? 'directus_users_id'
+                : key
         normalized[nextKey] = normalizeDirectusLegacyPayload(entry)
     }
     return normalized
@@ -154,29 +168,34 @@ export class DirectusAdapter {
         return this.client.request(query)
     }
 
-    readItems(collection: string, opts?: any) {
-        const op = (this.sdk.readItems as any)(collection, opts)
-        return this.client.request(op)
+    async readItems(collection: string, opts?: any) {
+        const op = (this.sdk.readItems as any)(collection, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
     }
 
-    readItem(collection: string, id: string | number, opts?: any) {
-        const op = (this.sdk.readItem as any)(collection, id, opts)
-        return this.client.request(op)
+    async readItem(collection: string, id: string | number, opts?: any) {
+        const op = (this.sdk.readItem as any)(collection, id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
     }
 
-    readFieldsByCollection(collection: string, opts?: any) {
-        const op = (this.sdk.readFieldsByCollection as any)(collection, opts)
-        return this.client.request(op)
+    async readFieldsByCollection(collection: string, opts?: any) {
+        const op = (this.sdk.readFieldsByCollection as any)(collection, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
     }
 
-    createItem(collection: string, payload: any) {
-        const op = (this.sdk.createItem as any)(collection, payload)
-        return this.client.request(op)
+    async createItem(collection: string, payload: any) {
+        const op = (this.sdk.createItem as any)(collection, normalizeDirectusWritePayload(payload))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
     }
 
-    updateItem(collection: string, id: string | number, payload?: any) {
-        const op = (this.sdk.updateItem as any)(collection, id, payload)
-        return this.client.request(op)
+    async updateItem(collection: string, id: string | number, payload?: any) {
+        const op = (this.sdk.updateItem as any)(collection, id, normalizeDirectusWritePayload(payload))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
     }
 
     deleteItem(collection: string, id: string | number) {

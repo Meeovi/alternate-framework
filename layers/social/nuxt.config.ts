@@ -38,7 +38,6 @@ export default defineNuxtConfig({
     ]
   },  
   mframework: {
-    gateway: '~/gateway/socialGateway',
     auth: '~/auth/socialAuth',
     user: '~/auth/currentUser',
   },

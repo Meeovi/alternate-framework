@@ -46,11 +46,14 @@
 import shorts from '#social/app/components/related/short.vue'
 import productCard from '../../components/catalog/product/productCard.vue'
 import relatedbrands from '../../components/catalog/product/relatedbrands.vue'
-import { useDataRequest } from '~/composables/globals/useDataRequest'
+import { useAppGateway } from '../../composables/useAppGateway'
 
 
 const route = useRoute()
-const { readItems, readItem, getAssetUrl } = useDataRequest()
+const content = useAppGateway().content
+const readItems = content?.readItems || (() => Promise.resolve([]))
+const readItem = content?.readItem || (() => Promise.resolve(null))
+const getAssetUrl = content?.getAssetUrl || (() => '')
 
     const slug = computed(() => {
         const s = route.params.slug

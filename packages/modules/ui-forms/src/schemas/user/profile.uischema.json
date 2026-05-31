@@ -1,0 +1,9 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    { "type": "Control", "scope": "#/properties/displayName" },
+    { "type": "Control", "scope": "#/properties/email" },
+    { "type": "Control", "scope": "#/properties/birthday" },
+    { "type": "Control", "scope": "#/properties/avatar" }
+  ]
+}

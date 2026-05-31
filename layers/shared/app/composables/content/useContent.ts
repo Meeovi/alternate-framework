@@ -28,9 +28,15 @@ export function getContentProvider(name: string): ContentProvider {
 
 export function useContent() {
   const config = useRuntimeConfig()
-  const providerName = (config.public as any).contentProvider || 'directus'
+  const providerName = (config.public as any).contentProvider || 'content'
   const provider = getContentProvider(providerName)
-  const requestApi = useSdkContentAdapter()
+  const { $gateway } = useNuxtApp()
+  const requestApi = ($gateway as any)?.content
+
+  if (!requestApi) {
+    throw new Error('Gateway content adapter is not available on Nuxt app instance.')
+  }
+
   return {
     getContent: provider.getContent.bind(provider),
     listContent: provider.listContent.bind(provider),

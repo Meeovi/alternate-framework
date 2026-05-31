@@ -9,32 +9,32 @@
             Post fields are not available yet.
           </div>
 
-          <v-form v-else @submit.prevent="submitForm">
-            <DirectusFormElement v-for="field in postFields" :key="field.field" :field="field" v-model="form[field.field]" />
-            <v-btn type="submit">Post</v-btn>
-          </v-form>
+          <JsonSchemaFormFromFields
+            v-else
+            :fields="postFields"
+            :model-value="form"
+            @update:model-value="Object.assign(form, $event)"
+            @submit="submitForm"
+          />
       </v-card>
   </v-row>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
-import { useDirectusForm } from '../../../composables/useDirectusForm'
+import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
+import useDynamicSchema from '#shared/app/composables/content/useDynamicSchema'
+import { useContentForm } from '../../../composables/useContentForm'
 const dialog = ref(false)
-const { readFieldsByCollection } = useSdkContentAdapter()
+const { fields: schemaFields, error: schemaError, loadSchema } = useDynamicSchema()
+await loadSchema('posts')
 
-const { data, error } = await useAsyncData('posts', async () => {
-  const resp = await readFieldsByCollection('posts')
-  return resp?.data || resp || []
-})
-
-if (error.value) {
-  console.error(error.value)
+if (schemaError.value) {
+  console.error(schemaError.value)
 }
 
-const postFields = computed(() => (Array.isArray(data.value) ? data.value : []))
+const postFields = computed(() => (Array.isArray(schemaFields.value) ? schemaFields.value : []))
 
 // use composable for form handling (validation, submit, provide context)
-const { form, formError, formSuccess, submitForm } = useDirectusForm('posts', postFields, { clearOnSuccess: true, closeDialogRef: dialog })
+const { form, formError, formSuccess, submitForm } = useContentForm('posts', postFields, { clearOnSuccess: true, closeDialogRef: dialog })
 </script>

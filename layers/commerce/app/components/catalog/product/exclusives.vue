@@ -29,12 +29,14 @@
 
 <script setup>
   import productCard from './productCard.vue'
+  import useContent from '#shared/app/composables/content/useContent'
 
   const model = ref(null);
-  const { read, $commerce } = useNuxtApp()
+  const { $commerce } = useNuxtApp()
+  const content = useContent()
 
   const { data: exclusives } = await useAsyncData('exclusives', async () => {
-    const refs = await gateway.content(read('products', {
+    const refs = await content.readItems('products', {
       fields: ['id', 'sku'],
       limit: 10,
       filter: {
@@ -43,7 +45,7 @@
           departments_id: { name: { _eq: 'Exclusives' } }
         }
       }
-    }))
+    })
 
     const products = await Promise.all(refs.map(async (r) => {
       try {

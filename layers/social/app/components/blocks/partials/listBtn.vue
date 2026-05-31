@@ -21,6 +21,7 @@
 
 <script setup>
     import addtolist from '../lists/add-list.vue'
+import useContent from '#shared/app/composables/content/useContent'
 
     defineProps({
         productId: {
@@ -33,5 +34,5 @@
         }
     });
 
-const content = useSdkContentAdapter()
+const content = useContent()
 </script>

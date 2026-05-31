@@ -83,6 +83,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from '#imports';
+import useContent from '#shared/app/composables/content/useContent'
 
 // Define props with Magento product structure
 const props = defineProps({
@@ -101,7 +102,7 @@ const { user, fetchSession } = useAuth();
 await fetchSession();
 const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null;
 
-const content = useSdkContentAdapter();
+const content = useContent();
 
 const dialog = ref(false);
 const tab = ref('one');
@@ -110,7 +111,7 @@ const selectedLists = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
-// Fetch user's lists from Directus
+// Fetch user's lists through the content gateway
 const fetchLists = async () => {
     const currentUserId = getCurrentUserId();
     if (!currentUserId) return;

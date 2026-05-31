@@ -84,6 +84,7 @@
 </template>
 
 <script setup>
+import useContent from '#shared/app/composables/content/useContent'
     import {
         ref
     } from 'vue';
@@ -140,7 +141,7 @@
     // Function to fetch existing post data
     const fetchPostData = async () => {
         try {
-            const { readItem } = useSdkContentAdapter()
+            const { readItem } = useContent()
             const listId = route.params.id; // Assuming you're passing the ID in the route
             const response = await readItem('posts', listId)
 
@@ -198,7 +199,7 @@
     try {
         loading.value = true;
 
-        const { updateItem } = useSdkContentAdapter()
+        const { updateItem } = useContent()
         
         // Prepare update data
         const updateData = {
@@ -216,7 +217,7 @@
             updateData.image = uploadedFiles.imageId;
         }
 
-        // Update the post using Directus updateItem
+            // Update the post through the content adapter updateItem
         const updatedPost = await updateItem('posts', route.params.id, updateData)
 
         if (updatedPost) {
@@ -246,7 +247,7 @@
     const deletePost = async () => {
         try {
             deleteLoading.value = true;
-            const { deleteItem } = useSdkContentAdapter()
+            const { deleteItem } = useContent()
             await deleteItem('posts', route.params.id)
 
             // Close the delete dialog

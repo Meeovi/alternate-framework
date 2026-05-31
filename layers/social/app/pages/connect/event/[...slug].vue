@@ -66,12 +66,13 @@
     import {
         ref
     } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
     import AboutEvent from '#social/app/components/blocks/events/about.vue'
     //import DiscussionEvent from '#social/app/components/blocks/events/discussion.vue'
 
     const route = useRoute();
     const tab = ref(null);
-const { readItems, getAssetUrl } = useSdkContentAdapter()
+const { readItems, getAssetUrl } = useContent()
 
     const { data: event } = await useAsyncData('event', async () => {
         const resp = await readItems('events', {

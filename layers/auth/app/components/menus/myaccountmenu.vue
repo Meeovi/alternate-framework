@@ -14,9 +14,10 @@
 </template>
 
 <script setup>
-const { read } = useNuxtApp()
+import useContent from '#shared/app/composables/content/useContent'
+const content = useContent()
 
 const { data: navAccount } = await useAsyncData('auth-myaccount-nav-account', () => {
-  return gateway.content(read('navigation', '2'))
+  return content.readItem('navigation', '2')
 })
 </script>

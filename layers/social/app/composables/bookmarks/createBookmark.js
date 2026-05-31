@@ -1,12 +1,13 @@
 // composables/createWebsite.js
 import { getListProvider } from '../registry'
+import useContent from '#shared/app/composables/content/useContent'
 import { useLists } from '../useLists'
 
 export default async function createWebsite(websiteData) {
   const route = useRoute()
   const id = route.params.id
   const provider = getListProvider()
-  const content = useSdkContentAdapter()
+  const content = useContent()
 
   try {
     // If a provider is registered and implements website creation, use it

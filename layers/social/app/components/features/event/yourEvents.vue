@@ -86,9 +86,10 @@
     import {
         ref
     } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
     import eventCard from '../../../../../commerce/app/components/catalog/product/productCard.vue'
 
- const { readItem, readItems } = useSdkContentAdapter()
+ const { readItem, readItems } = useContent()
     const route = useRoute()
     const tab = ref(null);
 

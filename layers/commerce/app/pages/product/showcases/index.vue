@@ -50,34 +50,51 @@
   } from '#imports'
   import productCard from '~/components/catalog/product/productCard.vue'
 
-  const tab = ref(null);
+  const tab = ref(null)
 
-  const { $commerce } = useNuxtApp()
+  const gateway = useGateway()
+  const content = gateway.content
 
-  const { data: groupedProducts } = await useAsyncData('groupedProducts', async () => {
-    return await $commerce.getProducts({ pageSize: 12 })
+  const {
+    $commerce
+  } = useNuxtApp()
+
+  const {
+    data: groupedProducts
+  } = await useAsyncData('groupedProducts', async () => {
+    return await $commerce.getProducts({
+      pageSize: 12
+    })
   })
 
-  const { data: bundledProducts } = await useAsyncData('bundledProducts', async () => {
-    return await $commerce.getProducts({ pageSize: 12 })
+  const {
+    data: bundledProducts
+  } = await useAsyncData('bundledProducts', async () => {
+    return await $commerce.getProducts({
+      pageSize: 12
+    })
   })
 
-  const { data: subscriptions } = await useAsyncData('subscriptions', async () => {
-    return await $commerce.getProducts({ pageSize: 12 })
+  const {
+    data: subscriptions
+  } = await useAsyncData('subscriptions', async () => {
+    return await $commerce.getProducts({
+      pageSize: 12
+    })
   })
 
   const {
     data: productBlocks
-  } = await useAsyncData('productBlocks', () => {
-    return gateway.content(read('page_blocks', '8', {
+  } = await useAsyncData('productBlocks', async () => {
+    return await content.readItem('page_blocks', '8', {
       fields: ['*', 'media.file.*', 'content.*'],
-    }))
+    })
   })
 
   const {
     data: showcasebar
-  } = await useAsyncData('showcasebar', () => {
-    return gateway.content(read('navigation', '54'))
+  } = await useAsyncData('showcasebar', async () => {
+    return await content.readItem('navigation', '54')
   })
 
   useHead({

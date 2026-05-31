@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["displayName", "email"],
+  "properties": {
+    "displayName": { "type": "string", "title": "Display Name" },
+    "email": { "type": "string", "title": "Email" },
+    "birthday": { "type": "string", "title": "Birthday", "format": "date" },
+    "avatar": { "type": "string", "title": "Avatar", "format": "file" }
+  }
+}

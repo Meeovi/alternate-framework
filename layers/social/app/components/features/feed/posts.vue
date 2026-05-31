@@ -42,6 +42,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import useContent from '#shared/app/composables/content/useContent'
 import createListBtn from '~/components/partials/globals/createListBtn.vue'
 
 const model = ref(null)
@@ -53,5 +54,5 @@ const props = defineProps({
 });
 
 const { post } = props;
- const { getAssetUrl } = useSdkContentAdapter()
+ const { getAssetUrl } = useContent()
 </script>

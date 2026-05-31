@@ -158,6 +158,7 @@
 
 <script setup>
     import share from '#social/app/components/blocks/share.vue';
+import useContent from '#shared/app/composables/content/useContent'
     import tagCard from '#social/app/components/related/tag.vue';
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
@@ -172,7 +173,7 @@
     } from '~/stores/reactions'
 
     const route = useRoute();
-const { readItems, getAssetUrl } = useSdkContentAdapter()
+const { readItems, getAssetUrl } = useContent()
 const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
 const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 const hasAsset = (file) => Boolean(getAssetUrl(file))

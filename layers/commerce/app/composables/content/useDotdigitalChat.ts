@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { useState } from 'nuxt/app'
-import useContentFallback from './useContent'
+import { useAppGateway } from '~/app/composables/useAppGateway'
 
 type DotdigitalChatConfig = {
   provider: 'dotdigital'
@@ -37,7 +37,7 @@ export function useDotdigitalChat() {
     initialized: false,
   }))
 
-  const { getDotdigitalChatConfig } = useContentFallback()
+  const { getDotdigitalChatConfig } = useAppGateway().content
 
   async function loadConfig(force = false) {
     if (state.value.config && !force) return state.value.config

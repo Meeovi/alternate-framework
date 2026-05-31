@@ -27,8 +27,9 @@
 
 <script setup>
     import { ref } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
     import share from '../blocks/share.vue'
- const { getAssetUrl } = useSdkContentAdapter()
+ const { getAssetUrl } = useContent()
     const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const model = ref(null)

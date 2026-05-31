@@ -82,22 +82,24 @@
 </template>
 
 <script setup>
-    const props = defineProps({
-        group: {
-            type: Object,
-            required: true,
-        },
-    })
+import { computed } from 'vue'
+import useContent from '#shared/app/composables/content/useContent'
 
- const { getAssetUrl } = useSdkContentAdapter()
+const props = defineProps({
+    group: {
+        type: Object,
+        required: false,
+        default: null,
+    },
+})
+
+const { getAssetUrl } = useContent()
 
 const backgroundImage = computed(() => {
     const image = props.group?.image
-
-    if (getAssetUrl(image)) {
+    if (image && getAssetUrl(image)) {
         return getAssetUrl(image)
     }
-
     // fallback image from /assets
     return 'https://via.placeholder.com/800x450'
 })

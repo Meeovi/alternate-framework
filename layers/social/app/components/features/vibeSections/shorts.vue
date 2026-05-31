@@ -101,6 +101,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 
 const props = defineProps({
   short: {
@@ -117,7 +118,7 @@ const isLiked = ref(false)
 const showComments = ref(false)
 const newComment = ref('')
 const vibeComments = ref([])
- const { getAssetUrl } = useSdkContentAdapter()
+ const { getAssetUrl } = useContent()
 
 const hashtags = computed(() => {
   if (!short?.description) return []
@@ -148,7 +149,7 @@ const togglePlay = () => {
 
 const toggleLike = async () => {
   isLiked.value = !isLiked.value
-  // TODO: Implement like functionality with Directus
+  // TODO: Persist likes through the content gateway
 }
 
 const toggleComments = () => {
@@ -161,7 +162,7 @@ const toggleComments = () => {
 const addComment = async () => {
   if (!newComment.value.trim()) return
   
-  // TODO: Implement comment creation with Directus
+  // TODO: Persist comment creation through the content gateway
   const comment = {
     id: Date.now(),
     username: 'Current User',
@@ -174,7 +175,7 @@ const addComment = async () => {
 }
 
 const loadComments = async () => {
-  // TODO: Load comments from Directus
+  // TODO: Load comments through the content gateway
   vibeComments.value = [
     {
       id: 1,

@@ -6,11 +6,20 @@ import { createOpenSearchAdapter } from './src/adapter'
 import { handleOpenSearchError } from './utils/errors'
 import { normalizeOpenSearchResult } from './utils/normalizers'
 import type { OpenSearchGatewayAdapterContract, OpenSearchQueryInput, OpenSearchResult } from './types'
+import type { OpenSearchAdapterOptions } from './src/adapter'
+
+export interface OpenSearchBindingsOptions extends OpenSearchAdapterOptions {}
 
 export class OpenSearchAdapter implements OpenSearchGatewayAdapterContract {
+	private readonly options: OpenSearchAdapterOptions
+
+	constructor(options: OpenSearchAdapterOptions = {}) {
+		this.options = options
+	}
+
 	async search(input: OpenSearchQueryInput): Promise<OpenSearchResult> {
 		try {
-			const adapter = createOpenSearchAdapter()
+			const adapter = createOpenSearchAdapter(this.options)
 			const result = await adapter.search({
 				q: input.query ?? '',
 				page: input.page ?? 1,
@@ -23,8 +32,8 @@ export class OpenSearchAdapter implements OpenSearchGatewayAdapterContract {
 	}
 }
 
-export const createGatewayAdapterBindings = () => ({
+export const createGatewayAdapterBindings = (options: OpenSearchBindingsOptions = {}) => ({
 	search: {
-		opensearch: new OpenSearchAdapter()
+		opensearch: new OpenSearchAdapter(options)
 	}
 })

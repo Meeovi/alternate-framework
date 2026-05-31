@@ -1,0 +1,10 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    { "type": "Control", "scope": "#/properties/title" },
+    { "type": "Control", "scope": "#/properties/slug" },
+    { "type": "Control", "scope": "#/properties/summary" },
+    { "type": "Control", "scope": "#/properties/body" },
+    { "type": "Control", "scope": "#/properties/publishedAt" }
+  ]
+}

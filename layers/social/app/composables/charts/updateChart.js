@@ -1,7 +1,7 @@
 // composables/updateChart.js
-import { useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 export default async function updateChart(chartId, chartData) {
-    const { updateItem } = useSdkContentAdapter()
+    const { updateItem } = useContent()
 
     try {
       const chart = await updateItem('musicchart', chartId, chartData)

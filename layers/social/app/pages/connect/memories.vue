@@ -24,12 +24,13 @@
 
 <script setup>
     import { ref } from '#imports'
+    import useContent from '#shared/app/composables/content/useContent'
     import postsCard from '#social/app/components/related/post.vue'
     
     const { fetchSession } = useAuth()
     await fetchSession()
     
-    const { readItem, readItems } = useDirectusRequest()
+    const { readItem, readItems } = useContent()
     const route = useRoute()
     const tab = ref(null);
 

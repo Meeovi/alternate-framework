@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-    const content = useSdkContentAdapter()
+    const content = useContent()
 
     const { data: lists } = await useAsyncData('publicBookmarks', async () => {
         const opts = { filter: { status: { _eq: 'Public' } } }
@@ -46,3 +46,4 @@
         title: 'My Bookmarks Lists - Meeovi Tasks'
     })
 </script>
+import useContent from '#shared/app/composables/content/useContent'

@@ -26,6 +26,7 @@
 
 
 <script setup>
+import useContent from '../../../composables/content/useContent'
 
     const props = defineProps({
         radio: {
@@ -36,5 +37,5 @@
     const {
         radio
     } = props;
-    const { getAssetUrl } = useSdkContentAdapter()
+    const { getAssetUrl } = useContent()
 </script>

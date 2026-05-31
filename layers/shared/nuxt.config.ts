@@ -1,6 +1,7 @@
 import {
   fileURLToPath
 } from 'node:url'
+import { resolve } from 'path'
 import {
   defineNuxtConfig
 } from 'nuxt/config'
@@ -15,6 +16,10 @@ export default defineNuxtConfig({
   $meta: {
     name: 'shared',
     description: 'Nuxt-specific glue for alternate-* modules',
+  },
+
+  alias: {
+    '@mframework/ui-forms/': resolve(__dirname, '../../packages/modules/ui-forms/src/')
   },
 
   modules: [
@@ -166,8 +171,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     mframework: {
       auth: '~/auth/authImplementation',
-      user: '~/auth/currentUser',
-      gateway: '~/gateway/searchGateway'
+      user: '~/auth/currentUser'
     },
     public: {
       googleAdsense: {
@@ -201,7 +205,7 @@ export default defineNuxtConfig({
   vite: {
     logLevel: 'info',
     plugins: [
-      // @ts-expect-error
+      // @ts-ignore
       vuetify({ autoImport: true }),
       ViteFonts({
       fontsource: {

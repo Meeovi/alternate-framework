@@ -10,9 +10,7 @@ export function useSession() {
 		loading: false,
 		error: null,
 	}))
-
-	const authFactory = (globalThis as any).useSdkAuthAdapter as (() => any) | undefined
-	const auth = (typeof authFactory === 'function' ? authFactory() : {}) as any
+	const auth = useAuth() as any
 
 	const fetchSession = async (...args: any[]) => {
 		state.value.loading = true

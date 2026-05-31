@@ -1,32 +1,39 @@
 <template>
-  <v-btn
-    class="follow-btn"
-    :class="{ following: !!following }"
-    @click="onClick"
-    :disabled="loading"
-    :aria-pressed="!!following"
-  >
-    <span v-if="loading">…</span>
-    <span v-else>{{ following ? unfollowLabel : followLabel }}</span>
-  </v-btn>
+  <div v-if="loggedIn">
+    <v-btn
+      class="follow-btn"
+      :class="{ following: !!following }"
+      @click="onClick"
+      :disabled="loading"
+      :aria-pressed="!!following"
+    >
+      <span v-if="loading">…</span>
+      <span v-else>{{ following ? unfollowLabel : followLabel }}</span>
+    </v-btn>
+  </div>
+  <div v-else>
+    <v-btn class="follow-btn" disabled>Sign in to join</v-btn>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import useFollow, { type EntityType } from '../../composables/contacts/useFollow'
+import { useAuth } from '#auth/app/composables/useAuth'
 
 const props = defineProps({
   entityType: { type: String as () => EntityType, required: true },
   entityId: { type: [String, Number], required: true },
   initialFollowing: { type: Boolean as () => boolean | undefined, default: undefined },
-  followLabel: { type: String, default: 'Follow' },
-  unfollowLabel: { type: String, default: 'Unfollow' },
+  followLabel: { type: String, default: 'Join' },
+  unfollowLabel: { type: String, default: 'Leave' },
   size: { type: String as () => 'sm' | 'md' | 'lg', default: 'md' }
 })
 
 const emit = defineEmits(['update:following', 'change'])
 
 const { isFollowing, toggleFollow } = useFollow()
+const { loggedIn } = useAuth()
 
 const following = ref<boolean | undefined>(props.initialFollowing)
 const loading = ref(false)

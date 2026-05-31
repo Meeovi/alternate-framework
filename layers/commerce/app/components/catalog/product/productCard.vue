@@ -60,10 +60,11 @@
 </template>
 
 <script setup>
+import useContent from '../../../composables/content/useContent'
   import { computed } from 'vue'
   import { usePrice } from '../../../composables/catalog/price/price'
 
-  const { getAssetUrl } = useSdkContentAdapter()
+  const { getAssetUrl } = useContent()
 
   const { getProductPrice } = usePrice()
 

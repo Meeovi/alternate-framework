@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
- const { getAssetUrl } = useSdkContentAdapter()
+ const { getAssetUrl } = useContent()
 const hasAsset = (file) => Boolean(getAssetUrl(file))
     
     const props = defineProps({
@@ -33,3 +33,4 @@ const hasAsset = (file) => Boolean(getAssetUrl(file))
         member
     } = props;
 </script>
+import useContent from '#shared/app/composables/content/useContent'

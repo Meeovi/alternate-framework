@@ -1,7 +1,8 @@
 import { ref } from 'vue'
+import useContent from '../content/useContent'
 
 type MediaItem = Record<string, any>
-type ContentRequest = ReturnType<typeof useSdkContentAdapter>
+type ContentRequest = ReturnType<typeof useContent>
 
 function toList(value: any): MediaItem[] {
   if (Array.isArray(value)) return value
@@ -40,7 +41,7 @@ function includesToken(item: MediaItem, token: string, request: ContentRequest) 
 }
 
 export function useMediaCenter() {
-  const request = useSdkContentAdapter()
+  const request = useContent()
   const allMedia = ref<MediaItem[]>([])
   const imageMedia = ref<MediaItem[]>([])
   const videoMedia = ref<MediaItem[]>([])

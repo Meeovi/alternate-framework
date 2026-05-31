@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@fontsource/roboto": "^5.2.10",
+    "@jsonforms/core": "^3.7.0",
+    "@jsonforms/vue": "^3.7.0",
+    "@jsonforms/vue-vuetify": "^3.7.0",
     "@mdi/font": "^7.4.47",
     "@mframework/adapter-federation": "file:../../packages/adapters/adapter-federation",
+    "@mframework/ui-forms": "file:../../packages/modules/ui-forms",
     "@nuxtjs/google-adsense": "^3.0.3",
     "@nuxtjs/i18n": "^10.3.0",
     "@nuxtjs/seo": "^4.0.2",

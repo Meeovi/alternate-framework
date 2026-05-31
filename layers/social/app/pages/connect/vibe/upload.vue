@@ -61,7 +61,7 @@ async function handleUpload() {
   formData.append('name', name.value)
   formData.append('video', file.value)
 
-  // Try to read Directus access token from cookies (common names: access_token or sb:token)
+  // Try to read an API access token from cookies (common names: access_token or sb:token)
   const cookies = typeof document !== 'undefined' ? document.cookie : ''
   const match = cookies.match(/access_token=([^;]+)/) || cookies.match(/sb:token=([^;]+)/)
   const accessToken = match && match[1] ? decodeURIComponent(match[1]) : null

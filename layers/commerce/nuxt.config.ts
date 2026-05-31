@@ -9,7 +9,6 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     mframework: {
-      gateway: '~/gateway/commerceGateway',
       auth: '~/auth/commerceAuth',
       user: '~/auth/currentUser'
     },    

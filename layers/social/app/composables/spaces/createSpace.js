@@ -1,7 +1,7 @@
 // composables/cms/spaces/createSpace.js
-import { useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 export default async function createSpace(spaceData) {
-    const { createItem } = useSdkContentAdapter()
+    const { createItem } = useContent()
 
     try {
         const space = await createItem('spaces', {

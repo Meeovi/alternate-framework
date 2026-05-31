@@ -10,17 +10,14 @@
   "exports": {
     ".": {
       "import": "./dist/module.mjs",
-      "require": "./dist/module.cjs",
-      "types": "./dist/types.d.ts"
+      "types": "./dist/module.d.mts"
     }
   },
-  "main": "./dist/module.cjs",
-  "types": "./dist/types.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build",
+    "build": "nuxt-module-build build",
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
@@ -32,7 +29,9 @@
     "@directus/sdk": "^21.3.0",
     "@directus/types": "^15.0.3",
     "@directus/visual-editing": "^2.0.1",
-    "@nuxt/kit": "^4.4.5"
+    "@nuxt/kit": "^4.4.5",
+    "defu": "^6.1.4",
+    "ufo": "^1.6.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "^0.4.2",
@@ -42,8 +41,7 @@
     "changelogen": "^0.4.1",
     "eslint": "latest",
     "nuxt": "^4.4.5",
-    "typescript": "^6.0.3",
-    "ufo": "^1.6.4"
+    "typescript": "^6.0.3"
   },
   "keywords": [
     "nuxt",

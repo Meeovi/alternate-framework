@@ -63,11 +63,12 @@
         defineAsyncComponent,
         markRaw
     } from '#imports'
+    import useContent from '#shared/app/composables/content/useContent'
     import createspace from '#social/app/components/features/spaceSections/crud/add-space.vue'
     import { componentMap } from '~/types/componentMap'
 
     
-    const { readItem, readItems } = useDirectusRequest()
+    const { readItem, readItems } = useContent()
 
     // current selected tab value (matches menu.value)
     const currentTab = ref(null);

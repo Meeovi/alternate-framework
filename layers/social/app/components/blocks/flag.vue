@@ -9,11 +9,12 @@
                     <h1>New Report</h1>
                     <div v-if="formError" class="error">{{ formError }}</div>
                     <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                    <v-form @submit.prevent="submitForm">
-                        <DirectusFormElement v-for="field in reportFields" :key="field.field" :field="field"
-                            v-model="form[field.field]" />
-                        <v-btn type="submit">Submit</v-btn>
-                    </v-form>
+                    <JsonSchemaFormFromFields
+                        :fields="reportFields"
+                        :model-value="form"
+                        @update:model-value="Object.assign(form, $event)"
+                        @submit="submitForm"
+                    />
 
                     <template>
                         <v-spacer></v-spacer>
@@ -30,15 +31,16 @@
     import {
         ref
     } from '#imports'
-    import DirectusFormElement from '#shared/app/components/ui/forms/DirectusFormElement.vue'
+    import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
+    import useContent from '#shared/app/composables/content/useContent'
     import {
-        useDirectusForm
-    } from '../../composables/useDirectusForm'
+        useContentForm
+    } from '../../composables/useContentForm'
 
     const dialog = ref(false)
- const { readFieldsByCollection } = useSdkContentAdapter()
+ const { readFieldsByCollection } = useContent()
 
-    const { data, error } = await useAsyncData('report', async () => {
+    const { data, error } = await useAsyncData('report-schema-fields', async () => {
         const resp = await readFieldsByCollection('report')
         return resp?.data || resp || []
     })
@@ -57,7 +59,7 @@
         formError,
         formSuccess,
         submitForm
-    } = useDirectusForm('report', reportFields, {
+    } = useContentForm('report', reportFields, {
         clearOnSuccess: true,
         closeDialogRef: dialog
     })

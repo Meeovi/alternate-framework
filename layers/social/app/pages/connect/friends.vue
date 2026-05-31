@@ -65,10 +65,11 @@
     import {
         ref
     } from '#imports'
+    import useContent from '#shared/app/composables/content/useContent'
     import memberCard from '#social/app/components/related/memberList.vue'
 
     
-    const { readItem, readItems } = useDirectusRequest()
+    const { readItem, readItems } = useContent()
     const route = useRoute()
     const tab = ref(null);
 

@@ -69,6 +69,22 @@
     "./federation/server": {
       "types": "./dist/federation/server.d.ts",
       "import": "./dist/federation/server.js"
+    },
+    "./gateway": {
+      "types": "./dist/gateway/index.d.ts",
+      "import": "./dist/gateway/index.js"
+    },
+    "./gateway/createGateway": {
+      "types": "./dist/gateway/createGateway.d.ts",
+      "import": "./dist/gateway/createGateway.js"
+    },
+    "./gateway/registry": {
+      "types": "./dist/gateway/registry.d.ts",
+      "import": "./dist/gateway/registry.js"
+    },
+    "./gateway/types": {
+      "types": "./dist/gateway/types.d.ts",
+      "import": "./dist/gateway/types.js"
     }
   },
   "main": "./dist/index.js",
@@ -89,7 +105,11 @@
       "search/server": ["./dist/search/server.d.ts"],
       "federation": ["./dist/federation/index.d.ts"],
       "federation/adapter": ["./dist/federation/adapter.d.ts"],
-      "federation/server": ["./dist/federation/server.d.ts"]
+      "federation/server": ["./dist/federation/server.d.ts"],
+      "gateway": ["./dist/gateway/index.d.ts"],
+      "gateway/createGateway": ["./dist/gateway/createGateway.d.ts"],
+      "gateway/registry": ["./dist/gateway/registry.d.ts"],
+      "gateway/types": ["./dist/gateway/types.d.ts"]
     }
   },
   "files": [

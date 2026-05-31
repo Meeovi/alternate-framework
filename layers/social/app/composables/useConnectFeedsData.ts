@@ -1,4 +1,5 @@
 import type { ComputedRef, Ref } from 'vue'
+import useContent from '#shared/app/composables/content/useContent'
 type FeedMenu = { name: string; value: string }
 type FeedBar = {
   name: string
@@ -29,7 +30,7 @@ const defaultFeedBar: FeedBar = {
 }
 
 export default async function useConnectFeedsData(currentUserId: ComputedRef<string | null>): Promise<UseConnectFeedsDataResult> {
-  const { readItems } = useSdkContentAdapter()
+  const { readItems } = useContent()
 
   const contentStatusMessage = ref('')
 

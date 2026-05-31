@@ -1,7 +1,7 @@
 // composables/deleteContact.js
-import { useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 export default async function deleteContact(contactId) {
-    const { deleteItem } = useSdkContentAdapter()
+    const { deleteItem } = useContent()
 
     try {
       await deleteItem('contacts', contactId)

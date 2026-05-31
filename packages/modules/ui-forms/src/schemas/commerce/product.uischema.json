@@ -1,0 +1,9 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    { "type": "Control", "scope": "#/properties/name" },
+    { "type": "Control", "scope": "#/properties/sku" },
+    { "type": "Control", "scope": "#/properties/price" },
+    { "type": "Control", "scope": "#/properties/status" }
+  ]
+}

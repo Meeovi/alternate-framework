@@ -87,6 +87,7 @@
     import {
         useMediaCenter
     } from '#shared/app/composables/media/useMediaCenter'
+    import useContent from '#shared/app/composables/content/useContent'
 
     const {
         allMedia,
@@ -110,7 +111,7 @@
     }
 
     
-    const { readItem } = useNuxtApp()
+    const { readItem } = useContent()
     const tab = ref(null)
 
     const { data: mediaBar } = await useAsyncData('mediaBar', () =>

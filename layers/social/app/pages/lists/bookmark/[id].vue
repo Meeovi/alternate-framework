@@ -33,19 +33,16 @@
 
 <script setup>
 import { ref, computed } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 import updatebookmark from '#social/app/components/features/lists/update-bookmark.vue'
 import comments from '#social/app/components/blocks/comments.vue'
 
 const route = useRoute()
-const content = useSdkContentAdapter()
+const content = useContent()
 
 const { data: website } = await useAsyncData('website', async () => {
   const opts = { fields: ['*', { '*': ['*'] }] }
-  if (content && typeof content.readItem === 'function') {
     const resp = await content.readItem('websites', route.params.id, opts)
     return resp?.data || resp
-  }
-  const { read } = useNuxtApp()
-  return gateway.content(read('websites', route.params.id, opts))
 })
 </script>

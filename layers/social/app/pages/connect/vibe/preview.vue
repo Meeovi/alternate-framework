@@ -48,11 +48,11 @@
 </template>
 
 <script setup>
-    import { ref, computed, onMounted, useSdkContentAdapter } from '#imports'
+    import { ref, computed, onMounted } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 
     const config = useRuntimeConfig()
-    const content = useSdkContentAdapter()
-    const directus = content?.directusClient
+    const content = useContent()
     const runtimeUseAuth = globalThis.useAuth
     const auth = runtimeUseAuth ? runtimeUseAuth() : { user: useState('social:user', () => null) }
     const user = auth.user
@@ -64,16 +64,22 @@
 
     const visibilityOptions = ['public', 'followers', 'circles', 'private']
 
+    const unwrapList = (value) => value?.data || value || []
+
     onMounted(async () => {
-        if (!user.value || !directus) return
+        if (!user.value) return
 
         // Fetch videos for this user and their tags
-        const videoResp = await directus.items('videos').list(`filter[user_id][_eq]=${user.value.id}&sort=-created_at&fields=*,tags.id,tags.name`)
-        if (videoResp && videoResp.data) videos.value = videoResp.data
+        const videoResp = await content.readItems('videos', {
+            filter: { user_id: { _eq: user.value.id } },
+            sort: ['-created_at'],
+            fields: ['*', 'tags.id', 'tags.name']
+        })
+        videos.value = unwrapList(videoResp)
 
         // Fetch all available tags
-        const tagResp = await directus.items('tags').list()
-        if (tagResp && tagResp.data) tags.value = tagResp.data
+        const tagResp = await content.readItems('tags')
+        tags.value = unwrapList(tagResp)
     })
 
     const filteredVideos = computed(() => {

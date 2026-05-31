@@ -1,10 +1,36 @@
-// TODO: Replace with types from shared contracts if needed
-type CoreSearchAdapter<T> = any
-type SearchAdapterConfig = any
-type CoreSearchQuery = any
-type CoreSearchResult = any
-type Facet = any
-type Result = any
+type SearchAdapterConfig = { provider: string }
+
+type CoreSearchQuery = {
+  term?: string
+  q?: string
+  page?: number
+  pageSize?: number
+  limit?: number
+  filters?: Record<string, unknown>
+}
+
+type CoreSearchResult<T = Record<string, unknown>> = {
+  items: T[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+type Facet = Record<string, unknown>
+
+type Result<T> = {
+  ok: boolean
+  data?: T
+  error?: string
+}
+
+type CoreSearchAdapter<T> = {
+  id: string
+  type: 'search'
+  config: SearchAdapterConfig
+  search: (query: CoreSearchQuery) => Promise<CoreSearchResult<T>>
+  facets: (query: CoreSearchQuery) => Promise<Result<Facet[]>>
+}
 import { client } from './client'
 
 export interface OpenSearchAdapterOptions {

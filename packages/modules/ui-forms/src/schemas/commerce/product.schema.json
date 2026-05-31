@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["name", "sku", "price"],
+  "properties": {
+    "name": { "type": "string", "title": "Product Name" },
+    "sku": { "type": "string", "title": "SKU" },
+    "price": { "type": "number", "title": "Price" },
+    "status": { "type": "string", "title": "Status", "enum": ["draft", "active", "archived"] }
+  }
+}

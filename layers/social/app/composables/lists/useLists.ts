@@ -6,7 +6,7 @@ export function useLists() {
     createItem,
     updateItem,
     deleteItem,
-  } = useSdkContentAdapter()
+  } = useContent()
 
   const getList = async (id: string | number, options?: Record<string, any>) => {
     const resp = await readItem('lists', id, options)
@@ -72,3 +72,4 @@ export function useLists() {
     reorderItems,
   }
 }
+import useContent from '#shared/app/composables/content/useContent'

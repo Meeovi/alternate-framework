@@ -77,17 +77,18 @@
         computed,
         ref
     } from '#imports';
+import useContent from '../../../composables/content/useContent'
     import { watch } from 'vue';
     import {
         useCounter
     } from '@vueuse/core';
     import { usePrice } from '../../../composables/catalog/price/price';
-    import useContentFallback from '../../../composables/content/useContent';
+    import { useAppGateway } from '~/app/composables/useAppGateway';
     import tagCard from '#social/app/components/related/tag.vue';
     import addToCartBtn from '../../partials/addToCartBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
 
-    const { getAssetUrl } = useSdkContentAdapter()
+    const { getAssetUrl } = useContent()
     const hasAsset = (file: any) => Boolean(getAssetUrl(file))
     const inputId = useId();
     const min = ref(1);
@@ -116,7 +117,7 @@
     });
 
     const { getProductPrice } = usePrice();
-    const { getProductRssLink } = useContentFallback();
+    const { getProductRssLink } = useAppGateway().content;
     const pricing = computed(() => getProductPrice(props.product || {}));
     const productRssLink = ref<string | null>(null);
 

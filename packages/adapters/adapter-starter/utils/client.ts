@@ -1,7 +1,12 @@
 import { createStarterTransport } from "../src/transport";
 
-export const createStarterGatewayClient = () =>
+export interface StarterGatewayClientOptions {
+  baseUrl?: string;
+  apiKey?: string;
+}
+
+export const createStarterGatewayClient = (options: StarterGatewayClientOptions = {}) =>
   createStarterTransport({
-    baseUrl: process.env.STARTER_API_URL ?? "http://localhost:3000",
-    apiKey: process.env.STARTER_API_KEY
+    baseUrl: options.baseUrl ?? process.env.STARTER_API_URL ?? "http://localhost:3000",
+    apiKey: options.apiKey ?? process.env.STARTER_API_KEY
   });

@@ -12,6 +12,7 @@
 </template>
 
 <script setup>
+import useContent from '#shared/app/composables/content/useContent'
   import {
     ref
   } from 'vue'
@@ -22,9 +23,9 @@
     //import {posts} from '~/graphql/cms/queries/posts'  
 
     const tab = ref(null);
- const { readItems } = useSdkContentAdapter()
+ const { readItems } = useContent()
 
-    const { data: posts } = await useAsyncData('posts', async () => {
+    const { data: posts } = await useAsyncData('related-posts-list', async () => {
       const resp = await readItems('posts', { fields: ['*', { '*': ['*'] }] })
       return resp?.data || resp || []
     })

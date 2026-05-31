@@ -29,16 +29,15 @@
 
 <script setup>
 import productCard from './productCard.vue'
+import useContent from '#shared/app/composables/content/useContent'
 
   const model = ref(null)
-  const {
-    read
-  } = useNuxtApp()
+  const content = useContent()
 
   const {
     data: deals
   } = await useAsyncData('deals', () => {
-    return gateway.content(read('products', {
+    return content.readItems('products', {
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',
@@ -55,6 +54,6 @@ import productCard from './productCard.vue'
           _eq: "published"
         }
       }
-    }))
+    })
   })
 </script>

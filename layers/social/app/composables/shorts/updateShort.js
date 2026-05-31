@@ -1,8 +1,8 @@
 // composables/updateShort.js
-import { useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
 
 export default async function updateShort(shortId, shortData) {
-    const { updateItem } = useSdkContentAdapter()
+    const { updateItem } = useContent()
 
     try {
       const short = await updateItem('shorts', shortId, shortData)

@@ -30,5 +30,6 @@
             required: true,
         },
     });
-    const content = useSdkContentAdapter()
+    const content = useContent()
 </script>
+import useContent from '#shared/app/composables/content/useContent'

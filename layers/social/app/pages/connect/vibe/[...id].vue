@@ -85,12 +85,12 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { ref, onMounted, onUnmounted, useSdkContentAdapter } from '#imports'
+import useContent from '#shared/app/composables/content/useContent'
+import { ref, onMounted, onUnmounted } from '#imports'
 
 const route = useRoute()
 const config = useRuntimeConfig()
-const content = useSdkContentAdapter()
-const client = content?.directusClient
+const content = useContent()
 const runtimeUseAuth = globalThis.useAuth
 const auth = runtimeUseAuth ? runtimeUseAuth() : { user: useState('social:user', () => null) }
 const user = auth.user
@@ -101,6 +101,8 @@ const newComment = ref('')
 const replyingTo = ref(null)
 const liked = ref(false)
 const reactionCount = ref(0)
+
+const unwrapList = (value) => value?.data || value || []
 
 let pollId = null
 onMounted(async () => {
@@ -116,13 +118,12 @@ onUnmounted(() => {
 })
 
 async function fetchVideo() {
-  if (!client) return
-  const resp = await client.items('videos').readByQuery({
+  const resp = await content.readItems('videos', {
     filter: { id: { _eq: route.params.id } },
     limit: 1,
     fields: ['*', 'tags.id', 'tags.name']
   })
-  video.value = resp?.data?.[0] || null
+  video.value = unwrapList(resp)?.[0] || null
 }
 
 async function trackView() {
@@ -134,45 +135,42 @@ async function trackView() {
 }
 
 async function fetchReactions() {
-  if (!client) return
   if (!user.value) {
     liked.value = false
   } else {
-    const resp = await client.items('reactions').readByQuery({
+    const resp = await content.readItems('reactions', {
       filter: { video_id: { _eq: route.params.id }, user_id: { _eq: user.value.id } },
       limit: 1
     })
-    liked.value = (resp?.data && resp.data.length > 0) || false
+    liked.value = unwrapList(resp).length > 0
   }
 
-  const all = await client.items('reactions').readByQuery({ filter: { video_id: { _eq: route.params.id } } })
-  reactionCount.value = all?.data?.length || 0
+  const all = await content.readItems('reactions', { filter: { video_id: { _eq: route.params.id } } })
+  reactionCount.value = unwrapList(all).length
 }
 
 async function toggleLike() {
-  if (!client) return
   if (!user.value) return
-  const existing = await client.items('reactions').readByQuery({
+  const existing = await content.readItems('reactions', {
     filter: { video_id: { _eq: route.params.id }, user_id: { _eq: user.value.id } },
     limit: 1
   })
-  const existingId = existing?.data?.[0]?.id || null
+  const existingId = unwrapList(existing)?.[0]?.id || null
 
   if (existingId) {
-    await client.items('reactions').delete(existingId)
+    await content.deleteItem('reactions', existingId)
     liked.value = false
     reactionCount.value = Math.max(0, reactionCount.value - 1)
   } else {
-    await client.items('reactions').create({ video_id: route.params.id, user_id: user.value.id })
+    await content.createItem('reactions', { video_id: route.params.id, user_id: user.value.id })
     liked.value = true
     reactionCount.value += 1
   }
 }
 
 async function react(emoji) {
-  if (!client) return
   if (!user.value) return
-  await client.items('emoji_reactions').create({ target_type: 'video', target_id: route.params.id, user_id: user.value.id, emoji })
+  await content.createItem('emoji_reactions', { target_type: 'video', target_id: route.params.id, user_id: user.value.id, emoji })
 }
 
 function replyTo(comment) {
@@ -181,21 +179,19 @@ function replyTo(comment) {
 }
 
 async function postComment() {
-  if (!client) return
   if (!newComment.value || !user.value) return
-  await client.items('comments').create({ video_id: route.params.id, parent_id: replyingTo.value?.id || null, user_id: user.value.id, content: newComment.value })
+  await content.createItem('comments', { video_id: route.params.id, parent_id: replyingTo.value?.id || null, user_id: user.value.id, content: newComment.value })
   newComment.value = ''
   replyingTo.value = null
   await refreshComments()
 }
 
 async function refreshComments() {
-  if (!client) return
-  const topResp = await client.items('comments').readByQuery({ filter: { video_id: { _eq: route.params.id }, parent_id: { _null: true } }, sort: ['-created_at'] })
-  const topLevel = topResp?.data || []
+  const topResp = await content.readItems('comments', { filter: { video_id: { _eq: route.params.id }, parent_id: { _null: true } }, sort: ['-created_at'] })
+  const topLevel = unwrapList(topResp)
   for (const comment of topLevel) {
-    const repliesResp = await client.items('comments').readByQuery({ filter: { parent_id: { _eq: comment.id } }, sort: ['created_at'] })
-    comment.replies = repliesResp?.data || []
+    const repliesResp = await content.readItems('comments', { filter: { parent_id: { _eq: comment.id } }, sort: ['created_at'] })
+    comment.replies = unwrapList(repliesResp)
   }
   comments.value = topLevel
 }

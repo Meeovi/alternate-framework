@@ -78,13 +78,14 @@
     import {
         ref
     } from '#imports';
-    
-    const { readItem, updateItem } = useDirectusRequest()
+    import useContent from '#shared/app/composables/content/useContent'
     import {
         useRouter
     } from 'vue-router';
     import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
     import updateShort from '../../composables/shorts/updateShort';
+
+    const { readItem, updateItem } = useContent()
 
     // Make sure your props are properly defined
     // Update props to include spaces_id
@@ -220,7 +221,7 @@
                 }
             }
 
-            // Update the short using Directus SDK
+            // Update the short using the content gateway adapter
             const updatedShort = await updateItem('shorts', route.params.id, {
                 name: shortData.value.name,
                 type: shortData.value.type,

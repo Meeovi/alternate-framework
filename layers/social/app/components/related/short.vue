@@ -24,7 +24,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
- const { getAssetUrl } = useSdkContentAdapter()
+import useContent from '#shared/app/composables/content/useContent'
+ const { getAssetUrl } = useContent()
     
 const model = ref(null)
 const player = ref(null)

@@ -24,13 +24,14 @@
 
 <script setup>
 	import membersCard from '#social/app/components/related/memberList.vue'
+	import useContent from '#shared/app/composables/content/useContent'
 
 	useHead({
 		title: 'Members Area',
 	})
 
 	
-	const { readItem, readItems } = useDirectusRequest()
+	const { readItem, readItems } = useContent()
 
 	const { data: memberPage } = await useAsyncData('memberPage', () => {
 		return readItem('pages', '98', { fields: ['*', { '*': ['*'] }] })
