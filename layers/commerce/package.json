@@ -24,29 +24,32 @@
   },
   "dependencies": {
     "@better-auth/stripe": "^1.4.15",
-    "@mframework/alternate-auth": "file:../../packages/modules/alternate-auth",
     "@mframework/adapter-directus": "file:../../packages/adapters/adapter-directus",
+    "@mframework/alternate-auth": "file:../../packages/modules/alternate-auth",
     "@mframework/ui-forms": "file:../../packages/modules/ui-forms",
     "@nuxt/types": "^2.18.1",
-    "@polar-sh/sdk": "^0.47.0",
     "@polar-sh/better-auth": "^1.8.4",
     "@polar-sh/checkout": "^0.2.0",
+    "@polar-sh/nuxt": "^0.5.7",
+    "@polar-sh/sdk": "^0.47.0",
     "@stripe/stripe-js": "^9.3.1",
-    "@vueuse/shared": "^14.3.0",
-    "pinia": "^2.1.7",
     "@tilework/opus": "^0.0.12",
     "@vue/apollo-composable": "^4.2.2",
+    "@vueuse/shared": "^14.3.0",
     "history": "^5.3.0",
     "jwt-decode": "^4.0.0",
     "lodash-es": "^4.18.1",
-    "ramda": "^0.32.0"
+    "pinia": "^2.1.7",
+    "ramda": "^0.32.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^1.70.0",
     "@nuxt/types": "^2.18.1",
     "@types/lodash-es": "^4.17.12",
     "@types/ramda": "^0.31.1",
     "@vitest/coverage-v8": "^4.0.17",
     "jest-cucumber": "^4.5.0",
-    "nuxt": "^4.4.5"
+    "nuxt": "^4.4.6"
   }
 }

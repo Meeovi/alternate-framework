@@ -7,8 +7,10 @@ export function useFormValidation(schema: Record<string, any>, model: Record<str
   const issuesByPath = computed(() => {
     const byPath: Record<string, string[]> = {}
     for (const issue of result.value.issues) {
-      byPath[issue.path] ||= []
-      byPath[issue.path].push(issue.message)
+      if (!byPath[issue.path]) {
+        byPath[issue.path] = []
+      }
+      byPath[issue.path]!.push(issue.message)
     }
     return byPath
   })

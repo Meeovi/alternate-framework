@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from '#imports'
 
 export const useRegistryStore = defineStore('registry', () => {
   const activeAdapters = ref<{ [key: string]: string }>({})

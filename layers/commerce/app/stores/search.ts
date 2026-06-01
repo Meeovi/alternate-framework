@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from '#imports'
 
 export const useSearchStore = defineStore('search', () => {
   const query = ref('')

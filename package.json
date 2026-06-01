@@ -1,5 +1,5 @@
 {
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "npm@11.6.2",
   "name": "mframework",
   "version": "1.0.0",
   "private": true,

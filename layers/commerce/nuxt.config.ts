@@ -7,12 +7,26 @@ export default defineNuxtConfig({
     description: 'Commerce Layer provides functionalities for managing and processing e-commerce transactions.',
   },
 
+  modules: ["@polar-sh/nuxt"],
+
   runtimeConfig: {
     mframework: {
       auth: '~/auth/commerceAuth',
       user: '~/auth/currentUser'
     },    
+    mode: process.env.POLAR_MODE,
+    stripeSecretKey: process.env.NUXT_STRIPE_SECRET_KEY,
+    stripeWebhookSecret: process.env.NUXT_STRIPE_WEBHOOK_SECRET,
+    stripePriceIdProMonth: process.env.NUXT_STRIPE_PRICE_ID_PRO_MONTH,
+    stripePriceIdProYear: process.env.NUXT_STRIPE_PRICE_ID_PRO_YEAR,
+    // Polar
+    polarServer: process.env.NUXT_POLAR_SERVER,
+    polarAccessToken: process.env.NUXT_POLAR_ACCESS_TOKEN,
+    polarWebhookSecret: process.env.NUXT_POLAR_WEBHOOK_SECRET,
+    polarProductIdProMonth: process.env.NUXT_POLAR_PRODUCT_ID_PRO_MONTH,
+    polarProductIdProYear: process.env.NUXT_POLAR_PRODUCT_ID_PRO_YEAR,
     public: {
+      payment: process.env.NUXT_PAYMENT || 'stripe',
       // Directus
       directus: {
         url: process.env.DIRECTUS_URL,

@@ -32,6 +32,9 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
+    "nuxt-newsletter",
+    "@uploadthing/nuxt",
+    '@nuxtjs/turnstile'
   ],
 
   // @ts-ignore - nuxt-gtag module augments this key at runtime
@@ -39,6 +42,15 @@ export default defineNuxtConfig({
     url: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
     name: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'}`,
     description: `${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
+  },
+
+  newsletter: {
+    mailchimp: {
+      apiKey: process.env.MAILCHIMP_API_KEY,
+      serverPrefix: process.env.MAILCHIMP_SERVER_PREFIX,
+      audienceId: process.env.MAILCHIMP_AUDIENCE_ID,
+      component: true // optional
+    }
   },
 
   // @ts-ignore - nuxt-gtag module augments this key at runtime
@@ -172,6 +184,12 @@ export default defineNuxtConfig({
     mframework: {
       auth: '~/auth/authImplementation',
       user: '~/auth/currentUser'
+    },
+    turnstile: {
+      // This can be overridden at runtime via the NUXT_TURNSTILE_SECRET_KEY
+      // environment variable.
+      secretKey: `${process.env.NUXT_TURNSTILE_SECRET_KEY || ''}`,
+      addValidateEndpoint: true
     },
     public: {
       googleAdsense: {

@@ -1,3 +1,7 @@
+import { createAuthAdapter } from 'alternate-sdk/auth/adapter'
+
+import { useAppGateway } from './useAppGateway'
+
 type SessionState = {
 	data: any
 	loading: boolean
@@ -10,7 +14,9 @@ export function useSession() {
 		loading: false,
 		error: null,
 	}))
-	const auth = useAuth() as any
+	const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
+	const runtimeAuth = runtimeUseAuth?.() || {}
+	const auth = createAuthAdapter(runtimeAuth, useAppGateway().auth || {}) as any
 
 	const fetchSession = async (...args: any[]) => {
 		state.value.loading = true

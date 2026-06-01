@@ -4,6 +4,11 @@ import DynamicForm from './DynamicForm.vue'
 const route = useRoute()
 const collection = computed(() => String(route.params.collection || ''))
 const formData = ref({})
+
+// Usage examples:
+// <DynamicForm :collection="collection" v-model="formData" :enable-turnstile="true" />
+// <DynamicForm :collection="collection" v-model="formData" :enable-turnstile="false" />
+// <DynamicForm :collection="collection" v-model="formData" />
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { useState } from 'nuxt/app'
-import { useAppGateway } from '~/app/composables/useAppGateway'
+import { useAppGateway } from '../useAppGateway'
 
 type DotdigitalChatConfig = {
   provider: 'dotdigital'

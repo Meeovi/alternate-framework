@@ -11,6 +11,11 @@
         :model-value="form.model[String(field.field || '')]"
         @update:model-value="(value) => updateField(String(field.field || ''), value)"
       />
+      <NuxtTurnstile
+        v-if="turnstileEnabled"
+        ref="turnstile"
+        v-model="turnstileToken"
+      />
       <v-btn type="submit" :loading="submitting">{{ submitLabel }}</v-btn>
     </v-form>
   </div>
@@ -22,6 +27,12 @@ import { useJsonForm } from '../../../../../../packages/modules/ui-forms/src/com
 import DynamicFormElement from './DynamicFormElement.vue'
 import useContent from '../../../composables/content/useContent'
 import useDynamicSchema, { type DynamicContentField } from '../../../composables/content/useDynamicSchema'
+import useSSF from '../../../composables/security/ssf'
+
+// Usage examples from parent components:
+// <DynamicForm :enable-turnstile="true" ... />  // Force Turnstile on
+// <DynamicForm :enable-turnstile="false" ... /> // Force Turnstile off
+// <DynamicForm ... />                            // Use global Turnstile config
 
 const props = withDefaults(defineProps<{
   collection: string
@@ -29,11 +40,13 @@ const props = withDefaults(defineProps<{
   fields?: DynamicContentField[]
   submitLabel?: string
   clearOnSuccess?: boolean
+  enableTurnstile?: boolean | null
 }>(), {
   modelValue: () => ({}),
   fields: () => [],
   submitLabel: 'Save',
   clearOnSuccess: false,
+  enableTurnstile: null,
 })
 
 const emit = defineEmits<{
@@ -47,6 +60,15 @@ const { fields: schemaFields, loading, error: schemaError, loadSchema: loadSchem
 
 const submitting = ref(false)
 const submitError = ref<string | null>(null)
+const turnstile = ref<{ reset?: () => void } | null>(null)
+const turnstileToken = ref('')
+const { flags } = useSSF()
+const turnstileEnabled = computed(() => {
+  if (typeof props.enableTurnstile === 'boolean') {
+    return props.enableTurnstile
+  }
+  return Boolean(flags.turnstileEnabled)
+})
 
 function mapFieldToSchema(field: DynamicContentField): Record<string, unknown> {
   const dataType = String(field.type || field.schema?.data_type || '').toLowerCase()
@@ -156,6 +178,18 @@ async function submitForm() {
   submitting.value = true
   submitError.value = null
   try {
+    if (turnstileEnabled.value) {
+      if (!turnstileToken.value) {
+        submitError.value = 'Please complete the Turnstile verification.'
+        return
+      }
+
+      await $fetch('/api/validateTurnstile', {
+        method: 'POST',
+        body: { token: turnstileToken.value },
+      })
+    }
+
     const validation = form.validate()
     if (!validation.valid) {
       submitError.value = validation.issues[0]?.message || 'Invalid form values.'
@@ -169,9 +203,19 @@ async function submitForm() {
       form.reset()
       emitModel()
     }
+
+    if (turnstileEnabled.value) {
+      turnstile.value?.reset?.()
+      turnstileToken.value = ''
+    }
   } catch (err: any) {
     submitError.value = err?.message || 'Unable to submit form.'
     emit('error', err)
+
+    if (turnstileEnabled.value) {
+      turnstile.value?.reset?.()
+      turnstileToken.value = ''
+    }
   } finally {
     submitting.value = false
   }

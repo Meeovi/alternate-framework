@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from '#imports'
 import { ref } from 'vue'
 import { useAuth } from '#auth/app/composables/useAuth'
 import { useContent } from '#shared/app/composables/content/useContent'

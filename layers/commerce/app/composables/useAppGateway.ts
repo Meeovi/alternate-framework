@@ -1,5 +1,3 @@
-import { useGateway } from '#imports'
-
 function createFallbackContentApi() {
   const request = (async () => []) as any
 
@@ -18,8 +16,7 @@ function createFallbackContentApi() {
 
 export function useAppGateway() {
   const nuxtApp = useNuxtApp() as any
-  const composedGateway = useGateway() as any
-  const gateway = (nuxtApp.$gateway || composedGateway || {}) as any
+  const gateway = (nuxtApp.$gateway || {}) as any
 
   if (!gateway.content || typeof gateway.content.readItems !== 'function') {
     gateway.content = createFallbackContentApi()

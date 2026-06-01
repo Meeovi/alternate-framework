@@ -37,13 +37,13 @@
     "@tiptap/extension-mention": "2.27.2",
     "@tiptap/extension-paragraph": "2.27.2",
     "@tiptap/extension-placeholder": "2.27.2",
-    "pinia": "^2.1.7",
     "@tiptap/extension-text": "2.27.2",
     "@tiptap/pm": "2.27.2",
     "@tiptap/suggestion": "2.27.2",
     "@tiptap/vue-3": "2.27.2",
     "leaflet": "^1.9.4",
-    "nuxt": "^4.4.5"
+    "nuxt": "^4.4.6",
+    "pinia": "^2.1.7"
   },
   "devDependencies": {
     "nuxt-module-feed": "^1.1.4"
