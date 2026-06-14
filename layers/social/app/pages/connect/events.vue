@@ -54,12 +54,12 @@
     import {
         ref
     } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
+
     import eventCard from '../../../../commerce/app/components/catalog/product/productCard.vue'
     import yourEvents from '#social/app/components/features/event/yourEvents.vue'
 
     const tab = ref(null);
-    const { readItem, readItems } = useContent()
+    const { $readItems } = useNuxtApp()
 
     const { data: eventsBar } = await useAsyncData('eventsBar', async () => {
         const resp = await readItem('navigation', '80', {

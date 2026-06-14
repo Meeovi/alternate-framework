@@ -1,8 +1,7 @@
 // composables/updateShort.js
-import useContent from '#shared/app/composables/content/useContent'
 
 export default async function updateShort(shortId, shortData) {
-    const { updateItem } = useContent()
+    const { $updateItem } = useNuxtApp()
 
     try {
       const short = await updateItem('shorts', shortId, shortData)

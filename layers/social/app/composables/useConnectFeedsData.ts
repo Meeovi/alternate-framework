@@ -1,5 +1,5 @@
 import type { ComputedRef, Ref } from 'vue'
-import useContent from '#shared/app/composables/content/useContent'
+
 type FeedMenu = { name: string; value: string }
 type FeedBar = {
   name: string
@@ -15,6 +15,8 @@ type UseConnectFeedsDataResult = {
   circles: Ref<any[] | undefined>
   contentStatusMessage: Ref<string>
   reloadContent: () => Promise<void>
+  loadMorePosts: () => Promise<void>
+  loadMoreCircles: () => Promise<void>
 }
 
 const defaultFeedBar: FeedBar = {
@@ -29,47 +31,44 @@ const defaultFeedBar: FeedBar = {
   ],
 }
 
-export default async function useConnectFeedsData(currentUserId: ComputedRef<string | null>): Promise<UseConnectFeedsDataResult> {
-  const { readItems } = useContent()
+export default function useConnectFeedsData(currentUserId: ComputedRef<string | null>): UseConnectFeedsDataResult {
+  const { $readItems } = useNuxtApp()
 
   const contentStatusMessage = ref('')
 
-  const { data: feedBar, refresh: refreshFeedBar } = await useAsyncData<FeedBar | null>('feeds:bar', async () => {
+  const { data: feedBar, refresh: refreshFeedBar } = useAsyncData<FeedBar | null>('feeds:bar', async () => {
     try {
-      const resp = await readItems('navigation', {
+      const rows = await readItems('navigation', {
         filter: { slug: { _eq: 'feed-bar' } },
         fields: ['*', { menus: ['*'] }],
         limit: 1,
       })
-      const rows = resp?.data || resp || []
-      return rows?.[0] || defaultFeedBar
+      return Array.isArray(rows) ? rows[0] : defaultFeedBar
     } catch {
       return defaultFeedBar
     }
   })
 
-  const { data: feedsPage, refresh: refreshPage } = await useAsyncData<any>('feeds:page', async () => {
+  const { data: feedsPage, refresh: refreshPage } = useAsyncData<any>('feeds:page', async () => {
     try {
-      const resp = await readItems('pages', {
+      const rows = await readItems('pages', {
         filter: { slug: { _eq: 'feeds' } },
         fields: ['*'],
         limit: 1,
       })
-      const rows = resp?.data || resp || []
-      return rows?.[0] || null
+      return Array.isArray(rows) ? rows[0] : null
     } catch {
       return null
     }
   })
 
-  const { data: posts, refresh: refreshPosts } = await useAsyncData<any[]>('feeds:posts', async () => {
+  const { data: posts, refresh: refreshPosts } = useAsyncData<any[]>('feeds:posts', async () => {
     try {
-      const resp = await readItems('posts', {
+      const rows = await readItems('posts', {
         fields: ['*', { owner: ['*'], media: ['*'] }],
         sort: ['-date_created'],
         limit: 30,
       })
-      const rows = resp?.data || resp || []
       if (!Array.isArray(rows)) return []
       return rows
     } catch {
@@ -77,21 +76,54 @@ export default async function useConnectFeedsData(currentUserId: ComputedRef<str
     }
   })
 
-  const { data: circles, refresh: refreshCircles } = await useAsyncData<any[]>('feeds:circles', async () => {
+  const postsOffset = ref(0)
+
+  const loadMorePosts = async () => {
+    const currentOffset = postsOffset.value
+    const rows = await readItems('posts', {
+      fields: ['*', { owner: ['*'], media: ['*'] }],
+      sort: ['-date_created'],
+      limit: 30,
+      offset: currentOffset,
+    })
+    if (Array.isArray(rows) && rows.length) {
+      posts.value = [...(posts.value || []), ...rows]
+      postsOffset.value += rows.length
+    }
+  }
+
+  const { data: circles, refresh: refreshCircles } = useAsyncData<any[]>('feeds:circles', async () => {
     try {
       const uid = currentUserId.value
-      const resp = await readItems('circle_posts', {
+      const rows = await readItems('circle_posts', {
         fields: ['*', { posts_id: ['*', { owner: ['*'] }] }],
         sort: ['-date_created'],
         filter: uid ? { owner: { _eq: uid } } : undefined,
         limit: 30,
       })
-      const rows = resp?.data || resp || []
       return Array.isArray(rows) ? rows : []
     } catch {
       return []
     }
   })
+
+  const circlesOffset = ref(0)
+
+  const loadMoreCircles = async () => {
+    const currentOffset = circlesOffset.value
+    const uid = currentUserId.value
+    const rows = await readItems('circle_posts', {
+      fields: ['*', { posts_id: ['*', { owner: ['*'] }] }],
+      sort: ['-date_created'],
+      filter: uid ? { owner: { _eq: uid } } : undefined,
+      limit: 30,
+      offset: currentOffset,
+    })
+    if (Array.isArray(rows) && rows.length) {
+      circles.value = [...(circles.value || []), ...rows]
+      circlesOffset.value += rows.length
+    }
+  }
 
   const reloadContent = async () => {
     contentStatusMessage.value = ''
@@ -102,8 +134,6 @@ export default async function useConnectFeedsData(currentUserId: ComputedRef<str
     }
   }
 
-  await reloadContent()
-
   return {
     feedBar,
     feedsPage,
@@ -111,5 +141,7 @@ export default async function useConnectFeedsData(currentUserId: ComputedRef<str
     circles,
     contentStatusMessage,
     reloadContent,
+    loadMorePosts,
+    loadMoreCircles,
   }
 }

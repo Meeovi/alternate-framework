@@ -12,16 +12,15 @@
     </div>
   </template>
 
-  <script setup>
+<script setup>
   import { ref } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
   import shortsCard from '#social/app/components/related/short.vue'
 
   const model = ref(null)
- const { readItems } = useContent()
 
-    const { data: vibez } = await useAsyncData('vibez', async () => {
-      const resp = await readItems('shorts')
-      return resp?.data || resp || []
-    })
+  const { $directus, $readItems } = useNuxtApp()
+  const { data: vibez } = await useAsyncData('vibez', async () => {
+    const resp = await $directus.request($readItems('shorts'))
+    return resp?.data || resp || []
+  })
 </script>

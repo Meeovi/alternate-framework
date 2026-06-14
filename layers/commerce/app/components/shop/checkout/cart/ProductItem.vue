@@ -33,7 +33,7 @@ watch(quantity, (val) => {
 
 <template>
   <div v-if="cartItem.productVariant" class="mr-4 h-24 w-24 shrink-0 overflow-hidden rounded-md border border-secondary-200">
-    <img :src="cartItem.productVariant.featuredAsset?.preview" :alt="cartItem.productVariant.name" class="h-full w-full object-cover object-center" />
+    <NuxtImg provider="cloudinary" :src="cartItem.productVariant.featuredAsset?.preview" :alt="cartItem.productVariant.name" class="h-full w-full object-cover object-center" />
   </div>
   <div class="flex flex-1 flex-col text-left">
     <div>

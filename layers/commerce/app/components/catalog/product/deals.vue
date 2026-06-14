@@ -28,16 +28,16 @@
 </template>
 
 <script setup>
-import productCard from './productCard.vue'
-import useContent from '#shared/app/composables/content/useContent'
+  import productCard from './productCard.vue'
+  import { ref } from '#imports'
 
   const model = ref(null)
-  const content = useContent()
+  const { $directus, $readItems } = useNuxtApp()
 
   const {
     data: deals
   } = await useAsyncData('deals', () => {
-    return content.readItems('products', {
+    return $directus.request($readItems('products', {
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',
@@ -54,6 +54,6 @@ import useContent from '#shared/app/composables/content/useContent'
           _eq: "published"
         }
       }
-    })
+    }))
   })
 </script>

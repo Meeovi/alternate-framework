@@ -82,13 +82,15 @@
 
 <script setup>
 import { ref, computed, watchEffect } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
 
-
-const { readItems, createItem, deleteItem } = useContent()
+const { $directus, $readItems, $createItem, $deleteItem } = useNuxtApp()
 const config = useRuntimeConfig()
 const { user, fetchSession } = useAuth()
 await fetchSession()
+
+const readItems = (collection, opts) => $directus.request($readItems(collection, opts))
+const createItem = (collection, data) => $directus.request($createItem(collection, data))
+const deleteItem = (collection, id) => $directus.request($deleteItem(collection, id))
 
 const getCurrentUserId = () => user.value?.id || user.value?.userId || null
 

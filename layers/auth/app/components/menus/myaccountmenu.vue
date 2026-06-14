@@ -14,10 +14,10 @@
 </template>
 
 <script setup>
-import useContent from '#shared/app/composables/content/useContent'
-const content = useContent()
+
+const { $directus, $readItem } = useNuxtApp()
 
 const { data: navAccount } = await useAsyncData('auth-myaccount-nav-account', () => {
-  return content.readItem('navigation', '2')
+  return $directus.request($readItem('navigation', '2'))
 })
 </script>

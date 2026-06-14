@@ -92,48 +92,46 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import useContent from '#shared/app/composables/content/useContent'
+
 import { useRoute, useRouter } from 'vue-router';
 import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
 import updateList from '~/app/composables/lists/updateList';
 
-const content = useContent()
+const { $directus, $readItem } = useNuxtApp()
+  const route = useRoute();
+  const router = useRouter();
 
-const route = useRoute();
-const router = useRouter();
-
-const listData = ref({
-    id: '', // Add this to store the list ID
+  const listData = ref({
+    id: '',
     name: '',
     type: '',
     status: '',
     description: '',
     image: null,
-});
+  });
 
-const dialog = ref(false);
-const includeFiles = ref(true);
-const imageFile = ref(null);
-const loading = ref(false);
+  const dialog = ref(false);
+  const includeFiles = ref(true);
+  const imageFile = ref(null);
+  const loading = ref(false);
 
-// Function to fetch existing list data
-const fetchListData = async () => {
+  const fetchListData = async () => {
     try {
-        const listId = route.params.id; // Assuming you're passing the ID in the route
-        const resp = await content.readItem('lists', listId)
-        const item = resp?.data || resp || {}
-        listData.value = {
-            id: item.id,
-            name: item.name,
-            type: item.type,
-            status: item.status,
-            description: item.description,
-            image: item.image
-        }
+      const listId = route.params.id;
+      const resp = await $directus.request($readItem('lists', listId))
+      const item = resp || {}
+      listData.value = {
+        id: item.id,
+        name: item.name,
+        type: item.type,
+        status: item.status,
+        description: item.description,
+        image: item.image
+      }
     } catch (error) {
-        console.error('Error fetching list:', error);
+      console.error('Error fetching list:', error);
     }
-};
+  };
 
 // Load existing data when component mounts
 onMounted(() => {

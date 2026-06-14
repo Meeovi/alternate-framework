@@ -69,6 +69,7 @@
 
 import { ref, computed, watch } from 'vue';
 import { useCommerceMutation } from '../../../composables/globals/useCommerceMutation';
+import { usePreferredCurrency } from '~/composables/usePreferredCurrency';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -82,6 +83,7 @@ const inputId = useId();
 
 const { mutate: adjustOrderLine } = useCommerceMutation('adjustOrderLine');
 const { mutate: removeOrderLine } = useCommerceMutation('removeOrderLine');
+const { currency: preferredCurrency } = usePreferredCurrency();
 
 const itemCount = computed(() => {
     return props.cart?.lines?.reduce((total: number, line: any) => total + (line.quantity || 1), 0) || 0;
@@ -91,7 +93,7 @@ const formatPrice = (amount: number) => {
     if (!amount) return '$0.00';
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD',
+        currency: preferredCurrency.value || 'USD',
     }).format(amount / 100);
 };
 

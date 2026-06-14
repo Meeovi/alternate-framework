@@ -21,7 +21,6 @@
 
 <script setup>
     import addtolist from '../lists/add-list.vue'
-import useContent from '#shared/app/composables/content/useContent'
 
     defineProps({
         productId: {
@@ -34,5 +33,5 @@ import useContent from '#shared/app/composables/content/useContent'
         }
     });
 
-const content = useContent()
+const { $directus } = useNuxtApp()
 </script>

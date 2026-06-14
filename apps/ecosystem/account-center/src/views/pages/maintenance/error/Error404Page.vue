@@ -5,10 +5,10 @@
     <v-col class="d-flex align-center justify-center">
       <div class="text-center">
         <div class="CardMediaWrapper">
-          <img src="@/assets/images/maintenance/img-error-bg.svg" alt="grid" class="w-100" />
-          <img src="@/assets/images/maintenance/img-error-blue.svg" alt="grid" class="CardMediaParts" />
-          <img src="@/assets/images/maintenance/img-error-text.svg" alt="build" class="CardMediaBuild" />
-          <img src="@/assets/images/maintenance/img-error-purple.svg" alt="build" class="CardMediaBuild" />
+          <NuxtImg provider="cloudinary" src="@/assets/images/maintenance/img-error-bg.svg" alt="grid" class="w-100" />
+          <NuxtImg provider="cloudinary" src="@/assets/images/maintenance/img-error-blue.svg" alt="grid" class="CardMediaParts" />
+          <NuxtImg provider="cloudinary" src="@/assets/images/maintenance/img-error-text.svg" alt="build" class="CardMediaBuild" />
+          <NuxtImg provider="cloudinary" src="@/assets/images/maintenance/img-error-purple.svg" alt="build" class="CardMediaBuild" />
         </div>
         <h1 class="text-h1">Something is wrong</h1>
         <p>

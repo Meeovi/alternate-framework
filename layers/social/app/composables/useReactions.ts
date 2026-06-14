@@ -1,4 +1,4 @@
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from '#imports'
 import { useReactionsStore } from '../stores/useReactionsStore'
 
 export function useReactions(reactionId, type) {

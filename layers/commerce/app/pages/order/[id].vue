@@ -113,7 +113,7 @@
                   </div>
               </div>
           </div>
-          <img src="https://via.placeholder.com/1200x400" :alt="order?.id">
+          <NuxtImg provider="cloudinary" src="https://via.placeholder.com/1200x400" :alt="order?.id" />
       </section>
 
       <v-card title="Order Items" flat>

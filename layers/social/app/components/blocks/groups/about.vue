@@ -83,7 +83,6 @@
 
 <script setup>
 import { computed } from 'vue'
-import useContent from '#shared/app/composables/content/useContent'
 
 const props = defineProps({
     group: {
@@ -93,7 +92,7 @@ const props = defineProps({
     },
 })
 
-const { getAssetUrl } = useContent()
+const directusUrl = useDirectusUrl?.()
 
 const backgroundImage = computed(() => {
     const image = props.group?.image

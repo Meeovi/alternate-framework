@@ -28,7 +28,6 @@
         ref,
         onMounted
     } from '#imports'
-import useContent from '../../composables/content/useContent'
 
     const props = defineProps({
         brand: {
@@ -39,5 +38,5 @@ import useContent from '../../composables/content/useContent'
     const {
         brand
     } = props;
-    const { getAssetUrl } = useContent()
+    const directusUrl = useDirectusUrl?.()
 </script>

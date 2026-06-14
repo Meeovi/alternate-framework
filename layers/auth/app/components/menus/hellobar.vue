@@ -14,18 +14,17 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue'
-  import useContent from '#shared/app/composables/content/useContent'
+  import { computed } from '#imports'
   const auth = useAuth()
   await auth.fetchSession()
 
-  const content = useContent()
+  const { $directus, $readItem } = useNuxtApp()
   const loggedIn = computed(() => Boolean(auth.loggedIn.value))
   const user = computed(() => auth.user.value ?? null)
 
   const {
     data: hellobar
   } = await useAsyncData('hellobar', () => {
-    return content.readItem('navigation', '50')
+    return $directus.request($readItem('navigation', '50'))
   })
 </script>

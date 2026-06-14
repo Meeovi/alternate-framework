@@ -12,27 +12,26 @@
 
 <script setup>
 import { ref, onMounted, watch } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
+
 const emit = defineEmits(['size-selected'])
 const sizes = ref([])
 const selectedSize = ref(null)
 
-const content = useContent()
+const { $directus, $readItems } = useNuxtApp()
 
 const loadSizes = async () => {
     try {
-        const res = await content.readItems('attributes', {
+        const res = await $directus.request($readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'size' }
             },
             sort: ['id']
-        })
+        }))
 
         const attr = (res && res[0]) || null
         const opts = attr?.options || []
         sizes.value = opts.map((o, i) => ({ id: `${attr?.id || 'size'}-${i}`, name: o.name }))
     } catch (e) {
-        // eslint-disable-next-line no-console
         console.warn('Failed to load size attributes', e)
         sizes.value = []
     }

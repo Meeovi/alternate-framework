@@ -41,7 +41,6 @@
 
 <script setup>
 import { ref } from '#imports'
-import useContent from '../composables/content/useContent'
 import brand from '../components/related/brandCard.vue'
 
 const tab = ref(null)
@@ -49,7 +48,7 @@ const tab = ref(null)
 const { $gateway } = useNuxtApp()
 const getBrands = $gateway?.commerce?.getBrands || (async () => [])
 const getMeeBrands = $gateway?.commerce?.getMeeBrands || (async () => [])
-const { getBrandBar } = useContent()
+const getBrandBar = getBrandBar
 
 const { data: brands } = await useAsyncData('brands', getBrands)
 const { data: meebrands } = await useAsyncData('meebrands', getMeeBrands)

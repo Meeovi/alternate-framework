@@ -126,7 +126,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { usePrice } from '../../../composables/catalog/price/price'
-import { useAppGateway } from '~/app/composables/useAppGateway'
+import { useAppGateway } from '~/composables/useAppGateway'
 import ratings from '../../partials/ratings.vue'
 
 const props = defineProps({

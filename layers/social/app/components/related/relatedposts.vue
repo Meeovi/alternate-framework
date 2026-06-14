@@ -14,11 +14,11 @@
 
   <script setup>
   import { ref } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
+
   import postCard from '#social/app/components/related/post.vue'
 
   const model = ref(null)
- const { readItems } = useContent()
+ const { $readItems } = useNuxtApp()
 
   const { data: note } = await useAsyncData('note', async () => {
     const resp = await readItems('posts')

@@ -26,7 +26,7 @@ const selectNotify = ref<string>('All Notifications');
       <v-list-item value="" color="secondary" class="no-spacer">
         <template v-slot:prepend>
           <v-avatar size="40" class="mr-3 py-2">
-            <img src="@/assets/images/profile/user-round.svg" width="40" alt="Julia" />
+            <NuxtImg provider="cloudinary" src="@/assets/images/profile/user-round.svg" width="40" alt="Julia" />
           </v-avatar>
         </template>
         <div class="d-inline-flex align-center justify-space-between w-100">
@@ -83,7 +83,7 @@ const selectNotify = ref<string>('All Notifications');
       <v-list-item value="" color="secondary" class="no-spacer">
         <template v-slot:prepend>
           <v-avatar size="40" class="mr-3 py-2">
-            <img src="@/assets/images/profile/user-round.svg" width="40" alt="Julia" />
+            <NuxtImg provider="cloudinary" src="@/assets/images/profile/user-round.svg" width="40" alt="Julia" />
           </v-avatar>
         </template>
         <div class="d-inline-flex align-center justify-space-between w-100">
@@ -104,7 +104,7 @@ const selectNotify = ref<string>('All Notifications');
       <v-list-item value="" color="secondary" class="no-spacer">
         <template v-slot:prepend>
           <v-avatar size="40" class="mr-3 py-2">
-            <img src="@/assets/images/profile/user-round.svg" width="40" alt="Julia" />
+            <NuxtImg provider="cloudinary" src="@/assets/images/profile/user-round.svg" width="40" alt="Julia" />
           </v-avatar>
         </template>
         <div class="d-inline-flex align-center justify-space-between w-100">

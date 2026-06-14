@@ -14,11 +14,10 @@
 </template>
 
 <script setup>
-const gateway = useGateway()
-const content = gateway.content
+const { $directus, $readItem } = useNuxtApp()
 
 const { data: social } = await useAsyncData('social', async () => {
-  const item = await content.readItem('navigation', '76')
-  return item || { name: '', menus: [] }
+    const item = await $directus.request($readItem('navigation', '76'))
+    return item || { name: '', menus: [] }
 })
 </script>

@@ -1,4 +1,5 @@
 import { defineStore } from '#imports'
+import { computed, ref } from 'vue'
 
 export const useUiStore = defineStore('ui', () => {
   const mobileMenu = ref(false)

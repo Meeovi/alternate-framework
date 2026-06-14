@@ -170,6 +170,7 @@
 import { ref, onMounted, computed, watch } from '#imports'
 import { loadStripe } from '@stripe/stripe-js'
 import { useCartStore } from '~/stores/cart'
+import { usePreferredCurrency } from '~/composables/usePreferredCurrency'
 import ShippingOptions from '../../catalog/product/shippingOptions.vue'
 
 // Component state
@@ -201,6 +202,7 @@ const billingAddress = ref({
 
 // Cart store
 const cartStore = useCartStore()
+const { currency: preferredCurrency } = usePreferredCurrency()
 const cart = computed(() => cartStore.cart ?? { subtotal: 0, tax_amount: 0, shipping_amount: 0, total: 0, currency: 'USD' })
 
 // Selected shipping (v-model) bound to ShippingOptions
@@ -341,13 +343,13 @@ onMounted(async () => {
 // Format price helper - accepts numbers or objects { value, currency }
 const formatPrice = (price) => {
     let amount = 0
-    let currency = 'USD'
+    let currency = preferredCurrency.value || 'USD'
     if (!price) return '$0.00'
     if (typeof price === 'number') {
         amount = price
     } else if (price && typeof price === 'object') {
         amount = Number(price.value ?? price.amount ?? 0)
-        currency = price.currency ?? price.currency_code ?? 'USD'
+        currency = price.currency ?? price.currency_code ?? currency
     }
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: (currency || 'USD').toUpperCase() }).format(amount)
 }

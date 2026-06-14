@@ -1,7 +1,7 @@
 // composables/deleteContact.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function deleteContact(contactId) {
-    const { deleteItem } = useContent()
+    const { $deleteItem } = useNuxtApp()
 
     try {
       await deleteItem('contacts', contactId)

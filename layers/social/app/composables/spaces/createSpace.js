@@ -1,7 +1,7 @@
 // composables/cms/spaces/createSpace.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function createSpace(spaceData) {
-    const { createItem } = useContent()
+    const { $createItem } = useNuxtApp()
 
     try {
         const space = await createItem('spaces', {

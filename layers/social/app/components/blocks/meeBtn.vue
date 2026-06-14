@@ -5,17 +5,14 @@
 </template>
 
 <script setup>
-    import useContent from '#shared/app/composables/content/useContent'
-    const content = useContent()
+    const { $directus, $readItems } = useNuxtApp()
 
     const { fetchSession } = useAuth()
     await fetchSession()
 
     const { data: meeBtn } = await useAsyncData('meeBtn', () => {
-        return content.readItems('mee_btn', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        })
+        return $directus.request($readItems('mee_btn', {
+            fields: ['*']
+        }))
     })
 </script>

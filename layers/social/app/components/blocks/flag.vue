@@ -32,18 +32,17 @@
         ref
     } from '#imports'
     import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
-    import useContent from '#shared/app/composables/content/useContent'
     import {
         useContentForm
     } from '../../composables/useContentForm'
 
     const dialog = ref(false)
- const { readFieldsByCollection } = useContent()
+ const { $readFieldsByCollection } = useNuxtApp()
 
-    const { data, error } = await useAsyncData('report-schema-fields', async () => {
-        const resp = await readFieldsByCollection('report')
-        return resp?.data || resp || []
-    })
+     const { data, error } = await useAsyncData('report-schema-fields', async () => {
+         const resp = await readFieldsByCollection('report')
+         return Array.isArray(resp) ? resp : []
+     })
 
     // guard against undefined/null data.value and empty arrays
     // Don't throw here (that will crash the parent page). Instead fall back to an empty fields array

@@ -1,5 +1,4 @@
 import { ref } from 'vue'
-import useContent from '../content/useContent'
 
 type MediaItem = Record<string, any>
 type ContentRequest = ReturnType<typeof useContent>

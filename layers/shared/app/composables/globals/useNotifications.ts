@@ -1,11 +1,12 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import type { UnifiedNotification } from '../../../shared/notifications/schema'
+import { useNotificationsAdapter, type UnifiedNotification } from 'alternate-sdk/notifications'
 
 export function useNotifications() {
   const notifications = ref<UnifiedNotification[]>([])
   const loading = ref(false)
   const error = ref<Error | null>(null)
   const connected = ref(false)
+  const notificationsAdapter = useNotificationsAdapter()
 
   const unreadCount = computed(
     () => notifications.value.filter((n: UnifiedNotification) => !n.read).length,
@@ -15,8 +16,14 @@ export function useNotifications() {
     loading.value = true
     error.value = null
     try {
-      const data = await $fetch('/api/notifications')
-      notifications.value = (data as any)?.notifications ?? []
+      const data = await notificationsAdapter.getNotificationsSnapshot().catch(() => null)
+      if (data) {
+        notifications.value = data.notifications ?? []
+        return
+      }
+
+      const fallback = await $fetch('/api/notifications')
+      notifications.value = (fallback as any)?.notifications ?? []
     } catch (err) {
       error.value = err as Error
     } finally {
@@ -25,13 +32,17 @@ export function useNotifications() {
   }
 
   async function markAsRead(id: string) {
-    await $fetch(`/api/notifications/${id}/read`, { method: 'POST' })
+    await notificationsAdapter.markNotificationAsRead(id).catch(async () => {
+      await $fetch(`/api/notifications/${id}/read`, { method: 'POST' })
+    })
     const target = notifications.value.find((n: UnifiedNotification) => n.id === id)
     if (target) target.read = true
   }
 
   async function markAllAsRead() {
-    await $fetch('/api/notifications/read-all', { method: 'POST' })
+    await notificationsAdapter.markAllNotificationsAsRead().catch(async () => {
+      await $fetch('/api/notifications/read-all', { method: 'POST' })
+    })
     notifications.value.forEach((n: UnifiedNotification) => { n.read = true })
   }
 

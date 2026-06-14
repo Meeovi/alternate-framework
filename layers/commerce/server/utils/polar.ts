@@ -10,20 +10,11 @@ import type { Refund } from '@polar-sh/sdk/models/components/refund.js'
 import type { Subscription } from '@polar-sh/sdk/models/components/subscription.js'
 import { checkout, polar, portal, usage, webhooks } from '@polar-sh/better-auth'
 import { Polar } from '@polar-sh/sdk'
+import type { User } from 'alternate-sdk/contracts'
+import { createPrismaClient } from '@mframework/adapter-prisma'
 import { useRuntimeConfig } from '#imports'
-import type { User } from '../../app/types/commerce.type'
 
 const getRuntimeConfig = () => useRuntimeConfig()
-
-const loadPrismaClient = async () => {
-  try {
-    const moduleName = '@mframework/adapter-prisma'
-    const adapter = await import(moduleName) as { createPrismaClient?: () => any }
-    return adapter.createPrismaClient?.()
-  } catch {
-    return null
-  }
-}
 
 const createPolarClient = () => {
   const runtimeConfig = getRuntimeConfig()
@@ -82,14 +73,12 @@ const addPaymentLog = async (
   } else if (hookType.startsWith('customer.')) {
     const customer = data as Customer
 
-    if (hookType === 'customer.created' && customer.externalId) {
-      const prisma = await loadPrismaClient()
-      if (prisma?.user?.updateMany) {
-        await prisma.user.updateMany({
-          where: { id: customer.externalId as any },
-          data: { polarCustomerId: customer.id } as any,
-        })
-      }
+    if (hookType == 'customer.created' && customer.externalId) {
+      const prisma = createPrismaClient()
+      await prisma.user.updateMany({
+        where: { id: customer.externalId as any },
+        data: { polarCustomerId: customer.id } as any,
+      })
     }
 
     console.info('[polar webhook]', `polar:${hookType}`, {
@@ -110,7 +99,7 @@ export const setupPolar = () => {
 
   return polar({
     client: createPolarClient(),
-    createCustomerOnSignUp: runtimeConfig.public.payment === 'polar',
+    createCustomerOnSignUp: runtimeConfig.public.payment == 'polar',
     use: [
       checkout({
         products: [

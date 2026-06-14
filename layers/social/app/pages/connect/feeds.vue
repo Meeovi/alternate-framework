@@ -83,6 +83,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useInfiniteScroll } from '@vueuse/core'
 import postCard from '../../components/related/post.vue'
 import useConnectFeedsData from '../../composables/useConnectFeedsData'
 
@@ -109,7 +110,26 @@ const {
   circles,
   contentStatusMessage,
   reloadContent,
-} = await useConnectFeedsData(currentUserId)
+  loadMorePosts,
+  loadMoreCircles,
+} = useConnectFeedsData(currentUserId)
+
+const { reset } = useInfiniteScroll(
+  window,
+  () => {
+    if (tab.value === 'all' || tab.value === 'following' || tab.value === 'for-you') {
+      loadMorePosts()
+    } else if (tab.value === 'circles') {
+      loadMoreCircles()
+    }
+  },
+  {
+    distance: 10,
+    canLoadMore: () => {
+      return true
+    },
+  }
+)
 
 useHead({
   title: 'Activity Feed',

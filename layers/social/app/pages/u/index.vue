@@ -76,13 +76,13 @@
                   <v-btn variant="outlined" prepend-icon="fas fa-pen" to="/connect/compose">
                     Create Post
                   </v-btn>
-                  <v-btn variant="outlined" prepend-icon="fas fa-users" to="/connect">
+                  <v-btn variant="outlined" prepend-icon="fas fa-users" to="/connect/spaces">
                     Manage Spaces
                   </v-btn>
                   <v-btn variant="outlined" prepend-icon="fas fa-hashtag" to="/connect/hashtags">
                     Hashtags
                   </v-btn>
-                  <v-btn variant="outlined" prepend-icon="fas fa-calendar" to="/connect">
+                  <v-btn variant="outlined" prepend-icon="fas fa-calendar" to="/connect/events">
                     Events
                   </v-btn>
                   <v-btn v-if="isSeller" variant="outlined" prepend-icon="fas fa-store" to="/shops">
@@ -108,8 +108,8 @@
 
                   <div class="d-flex flex-wrap ga-2 mt-3">
                     <v-btn color="primary" prepend-icon="fas fa-pen" to="/connect/compose">Write Post</v-btn>
-                    <v-btn variant="tonal" prepend-icon="fas fa-users" to="/connect">Create/Manage Space</v-btn>
-                    <v-btn variant="tonal" prepend-icon="fas fa-table-list" to="/connect">Open Timeline</v-btn>
+                    <v-btn variant="tonal" prepend-icon="fas fa-users" to="/connect/spaces">Create/Manage Space</v-btn>
+                    <v-btn variant="tonal" prepend-icon="fas fa-table-list" to="/connect/feeds">Open Timeline</v-btn>
                   </div>
                 </v-card-text>
               </v-card>
@@ -194,7 +194,7 @@
                   <v-card>
                     <v-card-title class="d-flex align-center justify-space-between">
                       <span>Events</span>
-                      <v-btn size="small" variant="text" to="/connect">See all</v-btn>
+                      <v-btn size="small" variant="text" to="/connect/events">See all</v-btn>
                     </v-card-title>
                     <v-card-text>
                       <template v-if="eventsAvailable && events.length">
@@ -339,7 +339,7 @@
                 <v-card-text>
                   <div class="d-flex ga-2 mb-3">
                     <v-btn variant="outlined" prepend-icon="fas fa-pen" to="/connect/compose">Add Post</v-btn>
-                    <v-btn variant="outlined" prepend-icon="fas fa-table-list" to="/connect">Timeline</v-btn>
+                    <v-btn variant="outlined" prepend-icon="fas fa-table-list" to="/connect/feeds">Timeline</v-btn>
                   </div>
                   <template v-if="socialPostsAvailable && socialPosts.length">
                     <v-list density="comfortable">
@@ -370,7 +370,7 @@
                 </v-card-title>
                 <v-card-text>
                   <div class="d-flex ga-2 mb-3">
-                    <v-btn variant="outlined" prepend-icon="fas fa-users" to="/connect">Browse Spaces</v-btn>
+                    <v-btn variant="outlined" prepend-icon="fas fa-users" to="/connect/spaces">Browse Spaces</v-btn>
                   </div>
                   <template v-if="spacesAvailable && spaces.length">
                     <v-list density="comfortable">
@@ -399,17 +399,9 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import useContent from '#shared/app/composables/content/useContent'
+import { useAuth } from '#auth/app/composables/useAuth'
 
-const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
-const auth = runtimeUseAuth
-  ? runtimeUseAuth()
-  : {
-      user: useState<any>('social:user', () => null),
-      fetchSession: async () => null,
-      signOut: async () => null,
-    }
-const { user, fetchSession, signOut: authSignOut } = auth
+const { user, fetchSession, signOut: authSignOut } = useAuth()
 const loading = ref(false)
 const theme = useTheme()
 const nuxtApp = useNuxtApp()
@@ -585,7 +577,9 @@ const loadCommerceFeatures = async () => {
 }
 
 const loadSocialFeatures = async () => {
-  const { readItems } = useContent()
+  const { $directus, $readItems } = useNuxtApp()
+
+  const readItems = (collection: string, opts: any = {}) => $directus.request($readItems(collection, opts))
 
   const currentId = String((user.value as any)?.id || (customerFallback.value as any)?.id || '')
   const currentEmail = String((user.value as any)?.email || (customerFallback.value as any)?.email || '').toLowerCase()
@@ -710,7 +704,7 @@ const loadSocialFeatures = async () => {
 
 watchEffect(async () => {
   if (!token.value) {
-    await navigateTo('/auth/login')
+    await navigateTo('/login')
     return
   }
 
@@ -735,7 +729,7 @@ onMounted(async () => {
 })
 
 const signOut = async () => {
-  await authSignOut({ redirectTo: '/auth/login' })
+  await authSignOut({ redirectTo: '/login' })
 }
 
 const toggleTheme = () => {

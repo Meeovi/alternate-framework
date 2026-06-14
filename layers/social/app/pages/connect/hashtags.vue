@@ -52,27 +52,22 @@
 </template>
 
 <script setup>
-    import {
-        ref
-    } from '#imports'
-    import useContent from '#shared/app/composables/content/useContent'
+    import { ref } from '#imports'
     import TagChip from '../../components/related/tag.vue'
 
-    
-    const { readItems, readItem } = useContent()
-    const route = useRoute()
-    const tab = ref(null);
+    const { $directus, $readItems, $readItem } = useNuxtApp()
+    const tab = ref(null)
 
     const { data: hashtags } = await useAsyncData('hashtags', () => {
-        return readItems('tags', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItems('tags', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: hashtagPage } = await useAsyncData('hashtagPage', () => {
-        return readItem('pages', '86', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('pages', '86', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: tagBar } = await useAsyncData('tagBar', () => {
-        return readItem('navigation', '78', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('navigation', '78', { fields: ['*', { '*': ['*'] }] }))
     })
 
     useHead({

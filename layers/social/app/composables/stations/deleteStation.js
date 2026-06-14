@@ -1,7 +1,7 @@
 // composables/deleteStation.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function deleteStation(stationId) {
-    const { deleteItem } = useContent()
+    const { $deleteItem } = useNuxtApp()
 
     try {
       await deleteItem('radios', stationId)

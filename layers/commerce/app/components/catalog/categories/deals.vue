@@ -35,19 +35,17 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from 'vue'
+import { ref, watch, onMounted, computed } from '#imports'
 import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 import { useProducts } from '#commerce/app/composables/catalog/products/useProducts/useProducts'
-import { useAppGateway } from '#commerce/app/composables/useAppGateway'
 
-const gateway = useAppGateway()
-const content = gateway.content
+const { $directus, $readItem } = useNuxtApp()
 const tab = ref(null)
 
 const { data: dealbar } = await useAsyncData('dealbar', async () => {
-  return await content.readItem('navigation', '49', {
+  return $directus.request($readItem('navigation', '49', {
     fields: ['*', { '*': ['*'] }],
-  })
+  }))
 })
 const dealbarMenus = computed(() => Array.isArray(dealbar.value?.menus) ? dealbar.value.menus : [])
 

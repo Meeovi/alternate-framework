@@ -10,7 +10,7 @@
             <div class="remove-product" @click="removeProduct(product.uid)">
               <v-icon size="sm">mdi-close</v-icon>
             </div>
-            <img :src="product.image?.url" :alt="product.name" class="product-image" />
+            <NuxtImg provider="cloudinary" :src="product.image?.url" :alt="product.name" class="product-image" />
             <h4>{{ product.name }}</h4>
             <div class="product-price">
               <div class="current-price">

@@ -113,7 +113,7 @@
                     </div>
                 </div>
             </div>
-              <img src="https://via.placeholder.com/1200x400" alt="Invoices">
+              <NuxtImg provider="cloudinary" src="https://via.placeholder.com/1200x400" alt="Invoices" />
         </section>
 
         <v-card title="Invoice Items" flat>

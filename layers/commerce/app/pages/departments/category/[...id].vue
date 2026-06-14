@@ -53,55 +53,79 @@
 </template>
 
 <script setup lang="ts">
-import ProductCard from '../../../components/catalog/product/productCard.vue'
-import { useAppGateway } from '../../../composables/useAppGateway'
-import { ref, watch, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
+  import ProductCard from '../../../components/catalog/product/productCard.vue'
+  import {
+    useAppGateway
+  } from '../../../composables/useAppGateway'
+  import {
+    useRoute,
+    useNuxtApp,
+    useHead
+  } from 'nuxt/app'
+  //import useDirectusRequest from '../../../composables/content/useDirectusRequest'
 
-const route = useRoute()
-const gateway = useAppGateway()
-const category = ref(null)
-const products = ref([])
+  const route = useRoute()
+  const gateway = useAppGateway()
+  const category = ref<any>(null)
+  const products = ref([])
+  const { $readItems, $directus } = useNuxtApp() as any
 
-async function loadCategory() {
-  try {
-    // Use id if available, fallback to slug
-    const filter = route.params.id
-      ? { id: { _eq: Array.isArray(route.params.id) ? route.params.id[0] : route.params.id } }
-      : { slug: { _eq: Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug } }
-    const resp = await gateway.content.readItems('categories', {
-      fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*', 'products.products_id.*', 'products.products_id.image.*', 'menus.*', 'image.*'],
-      filter,
-      limit: 1,
-    })
-    category.value = Array.isArray(resp?.data) ? resp.data[0] : (resp?.data || resp || [])[0] || null
-  } catch (e) {
-    category.value = null
+  const slug = computed(() => {
+    const s = route.params.slug
+    return Array.isArray(s) ? s[0] : s
+  })
+
+  async function loadCategory() {
+    try {
+      // Use id if available, fallback to slug
+      const filter = route.params.id ?
+        {
+          id: {
+            _eq: Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+          }
+        } :
+        {
+          slug: {
+            _eq: slug.value
+          }
+        }
+      const resp = await $directus.request($readItems('categories', {
+        fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*', 'products.products_id.*',
+          'products.products_id.image.*', 'menus.*', 'image.*'
+        ],
+        filter,
+        limit: 1,
+      }))
+      category.value = Array.isArray(resp?.data) ? resp.data[0] : (resp?.data || resp || [])[0] || null
+    } catch (e) {
+      category.value = null
+    }
   }
-}
 
-async function loadProducts() {
-  if (!category.value?.magento_category_id) {
-    products.value = []
-    return
+  async function loadProducts() {
+    if (!category.value?.magento_category_id) {
+      products.value = []
+      return
+    }
+    try {
+      products.value = await gateway.commerce.products.listByCategory({
+        categoryId: category.value.magento_category_id
+      })
+    } catch (e) {
+      products.value = []
+    }
   }
-  try {
-    products.value = await gateway.commerce.products.listByCategory({
-      categoryId: category.value.magento_category_id
-    })
-  } catch (e) {
-    products.value = []
-  }
-}
 
-await loadCategory()
-await loadProducts()
-
-watch(() => route.params.slug, async () => {
   await loadCategory()
   await loadProducts()
-})
 
-useHead({
-  title: computed(() => category.value?.name || 'Category Page'),
-})
+  watch(() => route.params.slug, async () => {
+    await loadCategory()
+    await loadProducts()
+  })
+
+  useHead({
+    title: computed(() => category.value?.name || 'Category Page'),
+  })
 </script>

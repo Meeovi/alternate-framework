@@ -1,7 +1,7 @@
 // composables/updateChart.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function updateChart(chartId, chartData) {
-    const { updateItem } = useContent()
+    const { $updateItem } = useNuxtApp()
 
     try {
       const chart = await updateItem('musicchart', chartId, chartData)

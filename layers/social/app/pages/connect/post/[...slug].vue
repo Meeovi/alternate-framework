@@ -14,12 +14,12 @@
                         </div>
 
                         <div v-else-if="matchesExtension(post?.image, ['.gif'])">
-                            <img loading="lazy" :src="getAssetUrl(post?.image)"
+                            <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetUrl(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 
                         <div v-else>
-                            <img class="w-100" src="../../../assets/images/image3.jpg" :alt="post?.title || 'No Title'" />
+                            <NuxtImg provider="cloudinary" class="w-100" src="../../../assets/images/image3.jpg" :alt="post?.title || 'No Title'" />
                         </div>
 
                     </div>
@@ -69,11 +69,11 @@
                                 </h4>
                                 <h5 class="card-text mbr-fonts-style display-7">
                                     <NuxtLink v-if="hasAsset(post?.author?.avatar)" :to="`/user/${post?.author?.id}`">
-                                        <UAvatar :image="post?.author?.avatar"></UAvatar>
+                                        <v-avatar :image="post?.author?.avatar"></v-avatar>
                                     </NuxtLink>
 
                                     <NuxtLink v-else :to="`/user/${post?.author?.id}`">
-                                           <UAvatar image="https://via.placeholder.com/41" size="41"></UAvatar>
+                                           <v-avatar image="https://via.placeholder.com/41" size="41"></v-avatar>
                                     </NuxtLink>
                                 </h5>
                             </div>
@@ -157,8 +157,6 @@
 </template>
 
 <script setup>
-    import share from '#social/app/components/blocks/share.vue';
-import useContent from '#shared/app/composables/content/useContent'
     import tagCard from '#social/app/components/related/tag.vue';
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
@@ -168,15 +166,22 @@ import useContent from '#shared/app/composables/content/useContent'
         computed,
         ref
     } from '#imports'
+    import { useDirectusUrl } from '#shared/app/composables/media/useDirectusUrl'
     import {
         useReactionsStore
     } from '~/stores/reactions'
 
     const route = useRoute();
-const { readItems, getAssetUrl } = useContent()
-const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
-const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
-const hasAsset = (file) => Boolean(getAssetUrl(file))
+    const directusUrl = useDirectusUrl()
+    const getAssetUrl = (file) => {
+        const fileId = file?.id || file?.directus_files_id?.id || file?.filename_disk || file
+        if (!fileId || !directusUrl) return ''
+        return `${directusUrl.replace(/\/$/, '')}/assets/${fileId}`
+    }
+    const { $readItems } = useNuxtApp()
+    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
+    const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
+    const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
 
@@ -186,18 +191,10 @@ const hasAsset = (file) => Boolean(getAssetUrl(file))
             fields: ['*', 'author.*', 'image.*', 'file.*', 'audio.*'],
             limit: 1
         })
-        return resp?.data?.[0] || resp?.[0] || null
+        return resp?.[0] || null
     })
 
     const reactionsStore = useReactionsStore()
-    const reactionState = computed(() => {
-        if (!post?.value?.id) return {
-            likeCount: 0,
-            isLiked: false,
-            loading: false
-        }
-        return reactionsStore.getItem(post.value.id, post.value?.type)
-    })
 
     onMounted(async () => {
         if (post?.value?.id) {
@@ -207,10 +204,6 @@ const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     // Cusdis comment properties derived from this page's data
     const config = useRuntimeConfig ? useRuntimeConfig() : {}
-    const cusdisHost = config.public?.cusdisHost || 'https://cusdis.com'
-    const cusdisAppId = config.public?.cusdisAppId || 'APP_ID'
-    const pageId = computed(() => post?.value?.id ? String(post.value.id) : String(slugParam))
-    const pageTitle = computed(() => post?.value?.title || String(slugParam))
     const pageUrl = ref('')
     onMounted(() => {
         if (process.client) pageUrl.value = window.location.href

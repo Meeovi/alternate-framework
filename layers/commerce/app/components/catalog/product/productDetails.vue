@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div v-if="hasAsset(product?.image)">
-                        <img :src="getAssetUrl(product?.image)" :alt="product.name"
+                        <NuxtImg provider="cloudinary" :src="getAssetUrl(product?.image)" :alt="product.name"
                             class="w-full rounded-md" />
                     </div>
                 </div>
@@ -77,18 +77,19 @@
         computed,
         ref
     } from '#imports';
-import useContent from '../../../composables/content/useContent'
+
     import { watch } from 'vue';
     import {
         useCounter
     } from '@vueuse/core';
+    import { usePreferredCurrency } from '~/composables/usePreferredCurrency';
     import { usePrice } from '../../../composables/catalog/price/price';
-    import { useAppGateway } from '~/app/composables/useAppGateway';
+    import { useAppGateway } from '~/composables/useAppGateway';
     import tagCard from '#social/app/components/related/tag.vue';
     import addToCartBtn from '../../partials/addToCartBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
 
-    const { getAssetUrl } = useContent()
+    const directusUrl = useDirectusUrl?.()
     const hasAsset = (file: any) => Boolean(getAssetUrl(file))
     const inputId = useId();
     const min = ref(1);
@@ -116,9 +117,10 @@ import useContent from '../../../composables/content/useContent'
         },
     });
 
+    const { currency: preferredCurrency } = usePreferredCurrency();
     const { getProductPrice } = usePrice();
     const { getProductRssLink } = useAppGateway().content;
-    const pricing = computed(() => getProductPrice(props.product || {}));
+    const pricing = computed(() => getProductPrice(props.product || {}, { currency: preferredCurrency.value }));
     const productRssLink = ref<string | null>(null);
 
     watch(

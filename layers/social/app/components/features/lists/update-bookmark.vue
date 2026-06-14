@@ -92,7 +92,7 @@
         watch,
         computed
     } from '#imports';
-import useContent from '#shared/app/composables/content/useContent'
+
     import {
         useRoute,
         useRouter
@@ -100,7 +100,7 @@ import useContent from '#shared/app/composables/content/useContent'
     import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
     const currentUser = useCurrentUser()
 
-    const content = useContent()
+    const { $directus, $readItem, $updateItem, $deleteItem } = useNuxtApp()
 
     const userDisplayName = computed(() => {
         return currentUser.value?.name || currentUser.value?.username || 'User'
@@ -136,9 +136,9 @@ import useContent from '#shared/app/composables/content/useContent'
             const bookmarkId = route.params.id
             if (!bookmarkId) return
 
-            if (content && typeof content.readItem === 'function') {
-                const resp = await content.readItem('websites', bookmarkId)
-                const response = resp?.data || resp || null
+            if ($readItem) {
+                const resp = await $directus.request($readItem('websites', bookmarkId))
+                const response = resp || null
                 if (response) {
                     bookmarkData.value = {
                         id: response.id,
@@ -195,9 +195,9 @@ import useContent from '#shared/app/composables/content/useContent'
             }
 
             let updatedBookmark = null
-            if (content && typeof content.updateItem === 'function') {
-                const resp = await content.updateItem('websites', route.params.id, updateData)
-                updatedBookmark = resp?.data || resp
+            if ($updateItem) {
+                const resp = await $directus.request($updateItem('websites', route.params.id, updateData))
+                updatedBookmark = resp
             }
 
             if (updatedBookmark) {
@@ -234,8 +234,8 @@ import useContent from '#shared/app/composables/content/useContent'
     const deleteBookmark = async () => {
         try {
             deleteLoading.value = true;
-            if (content && typeof content.deleteItem === 'function') {
-                await content.deleteItem('websites', route.params.id)
+            if ($deleteItem) {
+                await $directus.request($deleteItem('websites', route.params.id))
             }
 
             // Close the delete dialog

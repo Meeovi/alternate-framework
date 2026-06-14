@@ -15,7 +15,7 @@
             :data-video="item.video ? stringifyVideo(item.video) : undefined"
             :data-poster="item.poster"
         >
-            <img
+            <NuxtImg provider="cloudinary"
                 class="img-responsive"
                 :src="item.thumb || item.poster || item.src"
                 :alt="item.alt || ''"

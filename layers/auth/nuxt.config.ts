@@ -27,7 +27,7 @@ export default defineNuxtConfig({
         backend: process.env.NUXT_PUBLIC_AUTH_BACKEND || process.env.AUTH_ADAPTER || 'better-auth',
         cookieName: 'auth-token',
         redirectUserTo: '/login',
-        redirectGuestTo: '/',
+        redirectGuestTo: '/login',
       },
       }
     }

@@ -1,5 +1,4 @@
 import { ref } from 'vue'
-import useContent from './useContent'
 
 export type DynamicContentField = {
   field?: string
@@ -31,7 +30,7 @@ function normalizeFields(input: unknown): DynamicContentField[] {
 }
 
 export function useDynamicSchema() {
-  const { readFieldsByCollection } = useContent()
+  const { $directus, $readFieldsByCollection } = useNuxtApp()
 
   const fields = ref<DynamicContentField[]>([])
   const loading = ref(false)
@@ -42,7 +41,7 @@ export function useDynamicSchema() {
     error.value = null
 
     try {
-      const response = await readFieldsByCollection(collection)
+      const response = await $directus.request($readFieldsByCollection(collection))
       fields.value = normalizeFields(response)
       return fields.value
     } catch (err: any) {

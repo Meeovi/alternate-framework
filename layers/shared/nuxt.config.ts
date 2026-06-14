@@ -1,13 +1,9 @@
-import {
-  fileURLToPath
-} from 'node:url'
 import { resolve } from 'path'
 import {
   defineNuxtConfig
 } from 'nuxt/config'
 import process from 'node:process'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
-import ViteFonts from 'unplugin-fonts/vite'
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
@@ -22,34 +18,57 @@ export default defineNuxtConfig({
     '@mframework/ui-forms/': resolve(__dirname, '../../packages/modules/ui-forms/src/')
   },
 
+  components: {
+    dirs: [
+      {
+        path: 'app/components',
+        pathPrefix: false,
+      }
+    ]
+  },
+
   modules: [
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
     'nuxt-gtag',
+    '@vueuse/motion/nuxt',
     '@nuxtjs/google-adsense',
     'nuxt-vitalizer',
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
+    'unplugin-fonts/nuxt',
     '@vite-pwa/nuxt',
-    "nuxt-newsletter",
-    "@uploadthing/nuxt",
-    '@nuxtjs/turnstile'
+    '@nuxtjs/turnstile',
+    '@nuxtjs/cloudinary',
+    '@nuxtjs/leaflet'
   ],
 
-  // @ts-ignore - nuxt-gtag module augments this key at runtime
+  unfonts: {
+    google: {
+      families: ['Open Sans', 'Material+Icons'],
+    },
+
+    fontsource: {
+      families: [],
+    },
+  },
+
+  // @ts-ignore - @nuxtjs/seo module augments this key at runtime
   site: {
     url: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
     name: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'}`,
     description: `${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
   },
 
-  newsletter: {
-    mailchimp: {
-      apiKey: process.env.MAILCHIMP_API_KEY,
-      serverPrefix: process.env.MAILCHIMP_SERVER_PREFIX,
-      audienceId: process.env.MAILCHIMP_AUDIENCE_ID,
-      component: true // optional
+  // @ts-ignore - @nuxtjs/cloudinary module augments this key at runtime
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'nuxt-cloudinary',
+  },
+
+  image: {
+    cloudinary: {
+      baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME || 'nuxt-cloudinary'}/image/upload/`
     }
   },
 
@@ -169,6 +188,7 @@ export default defineNuxtConfig({
     ],
   },
 
+  // @ts-ignore - routeRules is augmented by Nuxt at runtime
   routeRules: {
     '/**': {
       robots: true,
@@ -189,9 +209,13 @@ export default defineNuxtConfig({
       // This can be overridden at runtime via the NUXT_TURNSTILE_SECRET_KEY
       // environment variable.
       secretKey: `${process.env.NUXT_TURNSTILE_SECRET_KEY || ''}`,
-      addValidateEndpoint: true
     },
+    novuSecretKey: process.env.NOVU_SECRET_KEY,
+
     public: {
+      novuAppId: process.env.NUXT_PUBLIC_NOVU_APP_ID,
+      novuSubscriberId: process.env.NUXT_PUBLIC_NOVU_SUBSCRIBER_ID,
+      segmentWriteKey: process.env.NUXT_PUBLIC_SEGMENT_WRITE_KEY || '',
       googleAdsense: {
         id: process.env.GOOGLE_ADSENSE_ID,
         test: process.env.GOOGLE_ADSENSE_TEST_MODE === 'true',
@@ -212,12 +236,33 @@ export default defineNuxtConfig({
             iso: 'fr-FR',
           }
         ]
-      }
+      },
+      motion: {
+        directives: {
+          'pop-bottom': {
+            initial: {
+              scale: 0,
+              opacity: 0,
+              y: 100,
+            },
+            visible: {
+              scale: 1,
+              opacity: 1,
+              y: 0,
+            }
+          }
+        }
+      },
     },
   },
 
   build: {
-    transpile: ['vuetify'],
+    transpile: [
+      'vuetify', 
+      '@svar-ui/vue-grid',
+      '@svar-ui/vue-editor',
+      '@svar-ui/vue-core',
+    ],
   },
 
   vite: {
@@ -225,17 +270,6 @@ export default defineNuxtConfig({
     plugins: [
       // @ts-ignore
       vuetify({ autoImport: true }),
-      ViteFonts({
-      fontsource: {
-        families: [
-          {
-            name: 'Roboto',
-            weights: [100, 300, 400, 500, 700, 900],
-            styles: ['normal', 'italic'],
-          },
-        ],
-      },
-    }),
     ],
     vue: {
       template: {

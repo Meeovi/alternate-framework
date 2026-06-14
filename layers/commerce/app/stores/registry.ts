@@ -1,4 +1,5 @@
 import { defineStore } from '#imports'
+import { computed, ref } from 'vue'
 
 export const useRegistryStore = defineStore('registry', () => {
   const activeAdapters = ref<{ [key: string]: string }>({})

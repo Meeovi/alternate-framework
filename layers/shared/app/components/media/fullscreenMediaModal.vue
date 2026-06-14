@@ -11,7 +11,7 @@
 
       <template>
         <div v-if="mime.startsWith('image')" class="viewer">
-          <img :src="sourceUrl" :alt="file?.title || 'Image'" />
+          <NuxtImg provider="cloudinary" :src="sourceUrl" :alt="file?.title || 'Image'" />
         </div>
 
         <div v-else-if="mime.startsWith('video')" class="viewer">

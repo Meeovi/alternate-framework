@@ -1,9 +1,9 @@
 // composables/createPost.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function createPost(postData) {
     const route = useRoute();
     const id = route.params.id;
-    const { createItem } = useContent()
+    const { $createItem } = useNuxtApp()
 
     try {
       const post = await createItem('posts', {

@@ -1,7 +1,7 @@
 // composables/deleteSpace.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function deleteSpace(spaceId) {
-    const { deleteItem } = useContent()
+    const { $deleteItem } = useNuxtApp()
 
     try {
       await deleteItem('spaces', spaceId)

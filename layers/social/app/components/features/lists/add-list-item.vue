@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-row justify="center">
-            <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
+          <v-dialog v-model="dialog" :scrim="false" max-width="720" transition="dialog-bottom-transition">
                 <template v-slot:activator="{ props }">
                     <v-btn v-bind="props" color="primary" class="mb-4">
                         <v-icon start icon="fas fa-plus"></v-icon>Add Item
@@ -12,7 +12,13 @@
                     <v-card-text>
                         <div v-if="formError" class="error mb-4">{{ formError }}</div>
                         <div v-else-if="formSuccess" class="success mb-4">{{ formSuccess }}</div>
+                <div v-else-if="pending" class="d-flex justify-center py-6">
+                  <v-progress-circular indeterminate />
+                </div>
+                <div v-else-if="error" class="error mb-4">Failed to load list item form fields.</div>
+                <div v-else-if="listItemFields.length === 0" class="error mb-4">No list item fields available.</div>
                         <JsonSchemaFormFromFields
+                  v-else
                             :fields="listItemFields"
                             :model-value="form"
                             @update:model-value="Object.assign(form, $event)"
@@ -52,10 +58,9 @@
 
 <script setup>
   import {
-    ref,
-    computed
+    ref
   } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
+
   import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
   import {
     useContentForm
@@ -69,29 +74,16 @@ import useContent from '#shared/app/composables/content/useContent'
   })
 
   const dialog = ref(false)
-  const content = useContent()
+  const { $directus, $readFieldsByCollection } = useNuxtApp()
 
   const {
-    data,
-    error
+    data: listItemFields,
+    error,
+    pending
   } = await useAsyncData('listItemsFields', async () => {
-    return await content.readFieldsByCollection('list_items')
+    const resp = await $directus.request($readFieldsByCollection('list_items'))
+    return Array.isArray(resp) ? resp : []
   })
-
-  // normalize response: providers may return { data: [...] } or an array directly
-  const listItemFields = computed(() => {
-    const resp = data?.value
-    return resp?.data ?? resp ?? []
-  })
-
-  // guard against undefined/null and empty arrays
-  if (error.value || listItemFields.value == null || listItemFields.value.length === 0) {
-    console.error(error)
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'List not found'
-    })
-  }
 
   // use composable for form handling (validation, submit, provide context)
   const {

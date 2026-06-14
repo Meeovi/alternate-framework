@@ -6,7 +6,7 @@ import { useContent } from '#shared/app/composables/content/useContent'
 export const useReactionsStore = defineStore('reactions', () => {
   const items = ref({}) // { [reactionId]: { likeCount, isLiked, loading } }
   const user = useAuth().user
-  const { fetchReactionsApi, toggleReactionApi } = useContent()
+  const fetchReactionsApi = fetchReactionsApi; const toggleReactionApi = toggleReactionApi
 
   async function fetchReactions(reactionId, type) {
     if (!reactionId) return

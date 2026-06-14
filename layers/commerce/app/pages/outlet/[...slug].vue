@@ -108,14 +108,12 @@
   import events from '#social/app/components/blocks/events/about.vue'
   import { useAppGateway } from '../../composables/useAppGateway'
 
-  const route = useRoute();
-  const tab = ref(null);
-
+  const { $directus, $readItem } = useNuxtApp()
+  const route = useRoute()
   const slug = computed(() => {
     const s = route.params.slug
     return Array.isArray(s) ? s[0] : s
   })
-
   const content = useAppGateway().content
   // Fallback for getAssetUrl if content is null
   const getAssetUrl = content?.getAssetUrl || (() => '')
@@ -146,7 +144,7 @@
   const shop = computed(() => shopRaw.value?.[0] || null)
 
   const { data: shopbar } = await useAsyncData('shopbar', () => {
-    return content.readItem('navigation', '55')
+    return $directus.request($readItem('navigation', '55'))
   })
 
   definePageMeta({

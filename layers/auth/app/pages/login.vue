@@ -15,7 +15,7 @@
             autocomplete="current-password" required variant="outlined" :rules="passwordRules" class="mb-4" />
 
           <div class="d-flex justify-space-between align-center mb-4">
-            <v-checkbox v-model="rememberMe" label="Remember me" density="compact" class="my-0" />
+            <v-checkbox v-model="rememberMe" label="Remember Me" density="compact" class="my-0 loginCheckbox" />
             <NuxtLink :to="localePath('/forgot-password')" class="text-caption text-decoration-none text-primary">
               Forgot password?
             </NuxtLink>
@@ -44,6 +44,13 @@
             @click="signInWithProvider(provider.id)">
             Sign in with {{ provider.label }}
           </v-btn>
+        </div>
+
+        <div class="mt-6 text-center">
+          <span class="text-caption">Don't have an account?</span>
+          <NuxtLink :to="localePath('/register')" class="text-caption text-decoration-none text-primary font-weight-medium">
+            Sign Up
+          </NuxtLink>
         </div>
       </v-card-text>
     </v-card>
@@ -138,58 +145,3 @@ useHead({
   title: `Sign In - ${String(runtimeConfig.public?.siteName || runtimeConfig.public?.appName || 'Meeovi')}`,
 })
 </script>
-
-<style scoped>
-.login-form {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-card {
-  width: 100%;
-  background: white !important;
-  border-radius: 12px;
-}
-
-.login-card :deep(.v-card-title) {
-  padding-bottom: 8px;
-  color: #1a1a1a;
-}
-
-.login-card :deep(.v-card-subtitle) {
-  color: #666;
-  font-size: 14px;
-}
-
-.login-form-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.mb-4 {
-  margin-bottom: 16px;
-}
-
-.auth-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.auth-buttons :deep(.v-btn) {
-  text-transform: none;
-  font-weight: 500;
-}
-
-:deep(.v-text-field .v-field) {
-  background: #f5f5f5;
-}
-
-:deep(.v-text-field .v-field--focused .v-field__input) {
-  background: white;
-}
-</style>

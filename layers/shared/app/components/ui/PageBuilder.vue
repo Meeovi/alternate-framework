@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, resolveComponent, unref } from 'vue';
 
 // Define types locally since module resolution has issues
 interface Page {

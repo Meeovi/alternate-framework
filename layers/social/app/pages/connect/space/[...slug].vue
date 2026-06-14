@@ -16,30 +16,33 @@
             <v-sheet>
 
                 <v-tabs v-model="tab" align-tabs="center" style="background-color: transparent">
-                    <template v-for="(menu, index) in visibleTabs" :key="menu?.value">
-                        <v-tab :value="menu?.value">{{ menu?.name }}</v-tab>
+                    <v-tab v-for="menu in visibleTabs" :key="menu?.value" :value="menu?.value">
+                        {{ menu?.name }}
+                    </v-tab>
+
+                    <template #append>
+                        <v-menu v-if="overflowTabs.length">
+                            <template v-slot:activator="{ props }">
+                                <v-btn class="align-self-center me-4" height="100%" rounded="0" variant="plain"
+                                    v-bind="props">
+                                    More
+                                    <v-icon icon="mdi-menu-down" end></v-icon>
+                                </v-btn>
+                            </template>
+                            <v-list class="bg-grey-lighten-3">
+                                <v-list-item v-for="menu in overflowTabs" :key="menu?.value" :title="menu?.name"
+                                    @click="selectOverflowTab(menu)"></v-list-item>
+                            </v-list>
+                        </v-menu>
+                        <v-btn icon="fas fa-search" variant="text" class="ml-2" @click="searchDialog = true"></v-btn>
                     </template>
-                    <v-menu v-if="overflowTabs.length">
-                        <template v-slot:activator="{ props }">
-                            <v-btn class="align-self-center me-4" height="100%" rounded="0" variant="plain"
-                                v-bind="props">
-                                More
-                                <v-icon icon="mdi-menu-down" end></v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list class="bg-grey-lighten-3">
-                            <v-list-item v-for="menu in overflowTabs" :key="menu?.value" :title="menu?.name"
-                                @click="selectOverflowTab(menu)"></v-list-item>
-                        </v-list>
-                    </v-menu>
-                    <v-spacer />
-                    <v-btn icon="fas fa-search" variant="text" class="ml-2" @click="searchDialog = true"></v-btn>
-                    <SearchDialog
-                        v-model="searchDialog"
-                        :space="space"
-                        @search="handleSearch"
-                    />
                 </v-tabs>
+
+                <SearchDialog
+                    v-model="searchDialog"
+                    :space="space"
+                    @search="handleSearch"
+                />
 
                 <v-tabs-window v-model="tab" class="spaceTabs">
                     <v-tabs-window-item v-for="menu in (individualSpaceBar?.menus || [])" :key="menu?.value"
@@ -56,7 +59,6 @@
     import {
         ref
     } from '#imports'
-    import useContent from '#shared/app/composables/content/useContent'
     import {
         normalizeSpaceRecord,
         resolveUserRelation
@@ -102,10 +104,7 @@
     const router = useRouter();
     const tab = ref(route.query.tab || null)
     const searchDialog = ref(false)
-    const {
-        readItems,
-        readItem
-    } = useContent()
+    const { $readItems } = useNuxtApp()
     const {
         user,
         loggedIn
@@ -125,7 +124,7 @@
             ],
             limit: 1
         })
-        return normalizeSpaceRecord(resp?.data?.[0] || resp?.[0] || null)
+        return normalizeSpaceRecord(resp?.[0] || null)
     })
 
     const {
@@ -136,7 +135,7 @@
                 '*': ['*']
             }]
         })
-        return resp?.data || resp || null
+        return resp || null
     })
 
     // Tab overflow logic

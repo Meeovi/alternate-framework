@@ -19,29 +19,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import useContent from '#shared/app/composables/content/useContent'
+import { ref, onMounted } from '#imports'
+
 const emit = defineEmits(['color-selected'])
 const colors = ref([])
 const selectedColor = ref(null)
 
-const content = useContent()
+const { $directus, $readItems } = useNuxtApp()
 
 const loadColors = async () => {
     try {
-        const res = await content.readItems('attributes', {
+        const res = await $directus.request($readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'color' }
             },
             sort: ['id']
-        })
+        }))
 
         const attr = (res && res[0]) || null
         const opts = attr?.options || []
-        // options may only have `name`; normalize to objects with id and value
         colors.value = opts.map((o, i) => ({ id: `${attr?.id || 'color'}-${i}`, name: o.name, value: o.name }))
     } catch (e) {
-        // eslint-disable-next-line no-console
         console.warn('Failed to load color attributes', e)
         colors.value = []
     }

@@ -87,7 +87,6 @@
     import {
         useMediaCenter
     } from '#shared/app/composables/media/useMediaCenter'
-    import useContent from '#shared/app/composables/content/useContent'
 
     const {
         allMedia,
@@ -98,7 +97,6 @@
         sharedWithMe,
         folders,
         smartAlbums,
-
         uploadFiles,
         searchMedia,
         createFolder,
@@ -111,15 +109,15 @@
     }
 
     
-    const { readItem } = useContent()
+    const { $readItem } = useNuxtApp()
     const tab = ref(null)
 
     const { data: mediaBar } = await useAsyncData('mediaBar', () =>
-        readItem('navigation', '81', { fields: ['*', { menus: ['*'] }] })
+        $readItem('navigation', '81', { fields: ['*', { menus: ['*'] }] })
     )
 
     const { data: mediaCenterPage } = await useAsyncData('mediaCenterPage', () =>
-        readItem('pages', '100', { fields: ['*'] })
+        $readItem('pages', '100', { fields: ['*'] })
     )
 
     useHead({

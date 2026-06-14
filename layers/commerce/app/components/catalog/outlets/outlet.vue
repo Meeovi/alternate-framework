@@ -27,8 +27,7 @@
 </template>
 
 <script setup>
-import useContent from '../../../composables/content/useContent'
-    const { getAssetUrl } = useContent()
+    const directusUrl = useDirectusUrl?.()
     const props = defineProps({
         store: {
             type: Object,

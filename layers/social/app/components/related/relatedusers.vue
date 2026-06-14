@@ -18,11 +18,11 @@
 
   <script setup>
   import { ref } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
+
   import userCard from '#social/app/components/related/memberList.vue'
 
   const model = ref(null)
- const { readItems } = useContent()
+ const { $readItems } = useNuxtApp()
 
   const { data: users } = await useAsyncData('users', async () => {
     const resp = await readItems('tags')

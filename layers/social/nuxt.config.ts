@@ -41,6 +41,13 @@ export default defineNuxtConfig({
     auth: '~/auth/socialAuth',
     user: '~/auth/currentUser',
   },
+  public: {
+    walineServerURL: process.env.WALINE_SERVER_URL || 'https://waline.vercel.app',
+
+    minioEndpoint: process.env.MINIO_ENDPOINT || 'localhost',
+    minioPort: process.env.MINIO_PORT || '9000',
+    minioUseSSL: process.env.MINIO_USE_SSL === 'true',
+  }
   },
 
   compatibilityDate: '2026-02-16',

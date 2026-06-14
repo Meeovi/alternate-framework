@@ -23,12 +23,11 @@
 
 <script setup>
     import { useRoutePath } from '#shared/app/composables/routing/useRoutePath'
-    import useContent from '#shared/app/composables/content/useContent'
 
     const { normalizeRoutePath } = useRoutePath()
     const toPath = (slug) => normalizeRoutePath(slug)
     
-    const { readItem } = useContent()
+    const { $readItem } = useNuxtApp()
 
     const { data: blocksCopyright } = await useAsyncData('blocksCopyright', () => {
         return readItem('page_blocks', '5', { fields: ['*', 'media.*.*'] })

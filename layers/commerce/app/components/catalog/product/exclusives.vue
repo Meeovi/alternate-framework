@@ -29,14 +29,12 @@
 
 <script setup>
   import productCard from './productCard.vue'
-  import useContent from '#shared/app/composables/content/useContent'
 
   const model = ref(null);
-  const { $commerce } = useNuxtApp()
-  const content = useContent()
+  const { $commerce, $directus, $readItems } = useNuxtApp()
 
   const { data: exclusives } = await useAsyncData('exclusives', async () => {
-    const refs = await content.readItems('products', {
+    const refs = await $directus.request($readItems('products', {
       fields: ['id', 'sku'],
       limit: 10,
       filter: {
@@ -45,7 +43,7 @@
           departments_id: { name: { _eq: 'Exclusives' } }
         }
       }
-    })
+    }))
 
     const products = await Promise.all(refs.map(async (r) => {
       try {

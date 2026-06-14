@@ -78,8 +78,8 @@
   import {
       ref
   } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
-    const content = useContent()
+
+    const { $directus } = useNuxtApp()
   
 
   const config = useRuntimeConfig();

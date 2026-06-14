@@ -1,15 +1,74 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
       <v-card class="b-1">
         <v-card-title>
-          <h3>Create New Vibe</h3>
+          <h3>Create New Live</h3>
         </v-card-title>
 
         <v-card-text>
+          <section class="mb-6">
+            <div class="text-subtitle-2 mb-2">Record yourself</div>
+            <div class="text-body-2 text-medium-emphasis mb-3">
+              Start a recording, review it here, then save it to the backend.
+            </div>
+
+            <div v-if="recordingError" class="error mb-3">{{ recordingError }}</div>
+
+            <div class="d-flex flex-wrap ga-3 mb-3">
+              <v-btn
+                color="primary"
+                :disabled="!recordingSupported || recording || submitting"
+                @click="startRecording"
+              >
+                Start Recording
+              </v-btn>
+              <v-btn
+                color="error"
+                variant="tonal"
+                :disabled="!recording"
+                @click="stopRecording"
+              >
+                Stop Recording
+              </v-btn>
+              <v-btn
+                variant="text"
+                :disabled="!recordedVideoUrl || submitting"
+                @click="clearRecording"
+              >
+                Clear Recording
+              </v-btn>
+            </div>
+
+            <div v-if="!recordingSupported" class="text-body-2 text-medium-emphasis mb-3">
+              Recording is not supported in this browser.
+            </div>
+
+            <v-responsive
+              v-show="recording || cameraStream || recordedVideoUrl"
+              aspect-ratio="16/9"
+              class="rounded-lg overflow-hidden bg-black"
+            >
+              <video
+                ref="previewEl"
+                class="w-100 h-100"
+                autoplay
+                muted
+                playsinline
+                controls
+              />
+            </v-responsive>
+          </section>
+
           <div v-if="formError" class="error">{{ formError }}</div>
           <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
+          <div v-else-if="pending" class="d-flex justify-center py-6">
+            <v-progress-circular indeterminate />
+          </div>
+          <div v-else-if="error" class="error">Failed to load live form fields.</div>
+          <div v-else-if="shortFields.length === 0" class="error">No live fields available.</div>
+
           <JsonSchemaFormFromFields
+            v-else
             :fields="shortFields"
             :model-value="form"
             @update:model-value="Object.assign(form, $event)"
@@ -17,55 +76,33 @@
           />
         </v-card-text>
       </v-card>
-    </v-dialog>
   </v-row>
 </template>
 
 <script setup>
-import { ref, reactive } from '#imports'
+import { ref } from '#imports'
 import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
-import useContent from '#shared/app/composables/content/useContent'
+import useCreateLiveShort from '../../../composables/shorts/useCreateLiveShort'
+
 const dialog = ref(false)
-const { readFieldsByCollection, createItem } = useContent()
 
-const form = reactive({})
-const formError = ref('')
-const formSuccess = ref('')
-
-const { data, error } = await useAsyncData('vibe-shorts-schema-fields', async () => {
-  const resp = await readFieldsByCollection('shorts')
-  return resp?.data || resp || []
-})
-
-if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
-  console.error(error)
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Vibe not found'
-  })
-}
-
-const shortFields = data
-
-for (const field of shortFields.value || []) {
-  if (field?.field && !(field.field in form)) {
-    form[field.field] = null
-  }
-}
-
-const submitForm = async () => {
-  formError.value = ''
-  formSuccess.value = ''
-
-  try {
-    await createItem('shorts', { ...form })
-    formSuccess.value = 'Vibe created successfully.'
-    for (const key of Object.keys(form)) {
-      form[key] = null
-    }
-    dialog.value = false
-  } catch (err) {
-    formError.value = (err && err.message) ? err.message : 'Failed to create vibe.'
-  }
-}
+const {
+  form,
+  formError,
+  formSuccess,
+  shortFields,
+  pending,
+  error,
+  recordingError,
+  recordingSupported,
+  recording,
+  submitting,
+  recordedVideoUrl,
+  cameraStream,
+  previewEl,
+  startRecording,
+  stopRecording,
+  clearRecording,
+  submitForm,
+} = await useCreateLiveShort(dialog)
 </script>

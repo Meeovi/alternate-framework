@@ -24,12 +24,11 @@
     import {
         ref,
     } from '#imports';
-    import useContent from '#shared/app/composables/content/useContent'
     import stationCard from '#social/app/components/related/radio.vue'
 
     const model = ref(null);
     
-    const { readItems, readItem } = useContent()
+    const { $readItems } = useNuxtApp()
 
     const { data: radioPage } = await useAsyncData('radioPage', () => {
         return readItem('pages', '97', { fields: ['*', { '*': ['*'] }] })

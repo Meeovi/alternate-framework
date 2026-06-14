@@ -20,9 +20,9 @@
           />
         </div>
 
-        <UAvatar class="ma-3" rounded="0" size="125">
+        <v-avatar class="ma-3" rounded="0" size="125">
           <NuxtImg :src="getAssetUrl(radio?.image)" />
-        </UAvatar>
+        </v-avatar>
       </div>
     </v-card>
   </div>
@@ -37,6 +37,5 @@ const props = defineProps({
 })
 
 const { radio } = props
-const { getAssetUrl } = useContent()
+const directusUrl = useDirectusUrl?.()
 </script>
-import useContent from '#shared/app/composables/content/useContent'

@@ -8,6 +8,7 @@
     </v-btn>
 
     <v-navigation-drawer v-model="drawer" location="right" temporary class="notifications-flyout">
+      <NovuInbox />
       <div class="flyout-header">
         <div>
           <h3 class="flyout-title">Inbox</h3>
@@ -55,6 +56,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useNotifications } from '../../composables/globals/useNotifications'
+import NovuInbox from "../blocks/NovuInbox.vue";
 
 const drawer = ref(false)
 const {

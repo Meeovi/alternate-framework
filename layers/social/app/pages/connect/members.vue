@@ -23,21 +23,19 @@
 </template>
 
 <script setup>
-	import membersCard from '#social/app/components/related/memberList.vue'
-	import useContent from '#shared/app/composables/content/useContent'
+    import membersCard from '#social/app/components/related/memberList.vue'
 
-	useHead({
-		title: 'Members Area',
-	})
+    useHead({
+        title: 'Members Area',
+    })
 
-	
-	const { readItem, readItems } = useContent()
+    const { $directus, $readItems, $readItem } = useNuxtApp()
 
-	const { data: memberPage } = await useAsyncData('memberPage', () => {
-		return readItem('pages', '98', { fields: ['*', { '*': ['*'] }] })
-	})
+    const { data: memberPage } = await useAsyncData('memberPage', () => {
+        return $directus.request($readItem('pages', '98', { fields: ['*', { '*': ['*'] }] }))
+    })
 
-	const { data: members } = await useAsyncData('members', () => {
-		return readItems('members', { fields: ['*', 'avatar.*'], sort: '-created_on' })
-	})
+    const { data: members } = await useAsyncData('members', () => {
+        return $directus.request($readItems('members', { fields: ['*', 'avatar.*'], sort: '-created_on' }))
+    })
 </script>

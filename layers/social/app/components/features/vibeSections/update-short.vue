@@ -78,14 +78,13 @@
     import {
         ref
     } from '#imports';
-    import useContent from '#shared/app/composables/content/useContent'
     import {
         useRouter
     } from 'vue-router';
     import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
     import updateShort from '../../composables/shorts/updateShort';
 
-    const { readItem, updateItem } = useContent()
+    const { $readItem, $updateItem } = useNuxtApp()
 
     // Make sure your props are properly defined
     // Update props to include spaces_id
@@ -130,7 +129,7 @@
         try {
             const shortId = route.params.id
             const resp = await readItem('shorts', shortId)
-            const data = resp?.data || resp || null
+            const data = resp || null
             if (!data) return
             shortData.value = {
                 id: data.id,

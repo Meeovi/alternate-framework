@@ -252,7 +252,7 @@ const fillFromUser = () => {
 
 watchEffect(async () => {
   if (!token.value) {
-    await navigateTo('/auth/login')
+    await navigateTo('/login')
     return
   }
 
@@ -282,7 +282,7 @@ const toMagentoGender = (value: string) => {
 
 const saveProfile = async () => {
   if (!token.value) {
-    await navigateTo('/auth/login')
+    await navigateTo('/login')
     return
   }
 

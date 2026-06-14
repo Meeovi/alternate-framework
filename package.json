@@ -31,11 +31,13 @@
     "packages/modules/*",
     "layers/*",
     "themes/*",
-    "docs/*"
+    "docs/*",
+    "apps/*"
   ],
   "dependencies": {
+    "@polar-sh/sdk": "^0.47.0",
     "flat": "^6.0.1",
-    "@polar-sh/sdk": "^0.47.0"
+    "zod-to-json-schema": "^3.25.2"
   },
   "overrides": {
     "vue": "^3.5.29"

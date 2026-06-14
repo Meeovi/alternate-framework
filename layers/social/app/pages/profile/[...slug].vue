@@ -6,8 +6,8 @@
           <div class="col-12 col-lg-12">
             <div>
               <div class="shadow">
-                <img v-if="!userProfile?.image" :src="userProfile?.image || undefined" :alt="userProfile?.name" class="align">
-                <img v-else src="https://via.placeholder.com/200" :alt="userProfile?.name" class="align">
+                <NuxtImg provider="ipx" v-if="!userProfile?.image" :src="userProfile?.image || undefined" :alt="userProfile?.name" class="align" />
+                <NuxtImg provider="ipx" v-else src="https://via.placeholder.com/200" :alt="userProfile?.name" class="align" />
                 <h5 class="card-title mbr-fonts-style display-2">
                   <strong>{{ userProfile?.name }}</strong>
                 </h5>

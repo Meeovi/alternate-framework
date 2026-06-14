@@ -1,8 +1,7 @@
 // composables/cms/shorts/createSpace.js
-import useContent from '#shared/app/composables/content/useContent'
 
 export default async function createSpace(shortData) {
-    const { createItem } = useContent()
+    const { $createItem } = useNuxtApp()
     
     try {
         const short = await createItem('shorts', {

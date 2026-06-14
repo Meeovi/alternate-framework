@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import useContent from '#shared/app/composables/content/useContent'
+
     import {
         ref
     } from 'vue';
@@ -141,7 +141,7 @@ import useContent from '#shared/app/composables/content/useContent'
     // Function to fetch existing post data
     const fetchPostData = async () => {
         try {
-            const { readItem } = useContent()
+            const { $readItem } = useNuxtApp()
             const listId = route.params.id; // Assuming you're passing the ID in the route
             const response = await readItem('posts', listId)
 
@@ -199,7 +199,7 @@ import useContent from '#shared/app/composables/content/useContent'
     try {
         loading.value = true;
 
-        const { updateItem } = useContent()
+        const { $updateItem } = useNuxtApp()
         
         // Prepare update data
         const updateData = {
@@ -247,7 +247,7 @@ import useContent from '#shared/app/composables/content/useContent'
     const deletePost = async () => {
         try {
             deleteLoading.value = true;
-            const { deleteItem } = useContent()
+            const { $deleteItem } = useNuxtApp()
             await deleteItem('posts', route.params.id)
 
             // Close the delete dialog

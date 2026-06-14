@@ -83,7 +83,6 @@
 
 <script setup>
 import { ref, computed, onMounted } from '#imports';
-import useContent from '#shared/app/composables/content/useContent'
 
 // Define props with Magento product structure
 const props = defineProps({
@@ -102,7 +101,7 @@ const { user, fetchSession } = useAuth();
 await fetchSession();
 const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null;
 
-const content = useContent();
+const { $directus, $readItems, $createItem } = useNuxtApp();
 
 const dialog = ref(false);
 const tab = ref('one');
@@ -120,12 +119,12 @@ const fetchLists = async () => {
     error.value = null;
 
     try {
-        const resp = await content.readItems('lists', {
+        const resp = await $directus.request($readItems('lists', {
             filter: {
                 user: { _eq: currentUserId }
             },
             fields: ['id', 'name', 'description']
-        });
+        }))
         lists.value = resp && resp.data ? resp.data : resp;
     } catch (err) {
         console.error('Error fetching lists:', err);
@@ -162,25 +161,25 @@ const saveToLists = async () => {
 
         // Create list items for each selected list
         const promises = newLists.map(listId => {
-            return content.createItem('list_items', {
+            return $directus.request($createItem('list_items', {
                 list: listId,
                 magento_product_uid: props.product.uid,
                 magento_product_sku: props.product.sku,
                 magento_product_name: props.product.name,
                 magento_product_image: props.product.image?.url || null,
                 date_added: new Date().toISOString()
-            });
-        });
+            }))
+        })
 
-        await Promise.all(promises);
-        
+        await Promise.all(promises)
+
         // Emit event for parent component
         emit('item-added', {
             product: props.product,
             lists: newLists
-        });
+        })
 
-        closeDialog();
+        closeDialog()
     } catch (err) {
         console.error('Error saving to lists:', err);
         error.value = 'Failed to add product to lists. Please try again.';
@@ -215,12 +214,12 @@ const productPreview = computed(() => {
 
 const isProductInList = async (listId, productUid) => {
     try {
-        const resp = await content.readItems('list_items', {
+        const resp = await $directus.request($readItems('list_items', {
             filter: {
                 list: { _eq: listId },
                 magento_product_uid: { _eq: productUid }
             }
-        });
+        }))
         const items = resp && resp.data ? resp.data : resp;
         return Array.isArray(items) && items.length > 0;
     } catch (error) {

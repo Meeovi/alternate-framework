@@ -17,12 +17,12 @@
   import {
     ref,
   } from '#imports';
-  import useContent from '#shared/app/composables/content/useContent'
+  import 
   import shorts from './shorts.vue'
 
   const model = ref(null);
   
-  const { readItems } = useContent()
+  const { $readItems } = useNuxtApp()
 
   const { data: short } = await useAsyncData('short', async () => {
     const resp = await readItems('shorts', { fields: ['*', { '*': ['*'] }] })

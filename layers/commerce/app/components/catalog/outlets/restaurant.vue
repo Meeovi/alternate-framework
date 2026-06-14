@@ -23,7 +23,7 @@
                         <div class="item features-image col-12 col-lg-4">
                             <div class="item-wrapper">
                                 <div class="item-img">
-                                    <NuxtLink :to="`/shops/${restaurant?.id}`"><img loading="lazy" class="align-end text-white" v-if="restaurant?.image"
+                                    <NuxtLink :to="`/shops/${restaurant?.id}`"><NuxtImg provider="cloudinary" loading="lazy" class="align-end text-white" v-if="restaurant?.image"
                                 :src="getAssetUrl(restaurant?.image)" :alt="restaurant?.name"></NuxtLink>
                                 </div>
                                 <div class="item-content">
@@ -48,8 +48,8 @@
 </template>
 
 <script setup>
-import useContent from '../../../composables/content/useContent'
-    const { getAssetUrl } = useContent()
+
+    const directusUrl = useDirectusUrl?.()
     const props = defineProps({
         restaurant: {
             type: Object,

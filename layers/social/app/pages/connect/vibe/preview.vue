@@ -49,10 +49,9 @@
 
 <script setup>
     import { ref, computed, onMounted } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
 
     const config = useRuntimeConfig()
-    const content = useContent()
+    const { $directus, $readItems } = useNuxtApp()
     const runtimeUseAuth = globalThis.useAuth
     const auth = runtimeUseAuth ? runtimeUseAuth() : { user: useState('social:user', () => null) }
     const user = auth.user
@@ -70,15 +69,15 @@ import useContent from '#shared/app/composables/content/useContent'
         if (!user.value) return
 
         // Fetch videos for this user and their tags
-        const videoResp = await content.readItems('videos', {
+        const videoResp = await $directus.request($readItems('videos', {
             filter: { user_id: { _eq: user.value.id } },
             sort: ['-created_at'],
             fields: ['*', 'tags.id', 'tags.name']
-        })
+        }))
         videos.value = unwrapList(videoResp)
 
         // Fetch all available tags
-        const tagResp = await content.readItems('tags')
+        const tagResp = await $directus.request($readItems('tags'))
         tags.value = unwrapList(tagResp)
     })
 

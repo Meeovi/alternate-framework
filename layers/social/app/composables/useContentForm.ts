@@ -7,10 +7,9 @@ type ContentFormOptions = {
 }
 
 export function useContentForm(collection: string, fields: any, options: ContentFormOptions = {}) {
-  const { $gateway } = useNuxtApp()
-  const { createItem } = (($gateway as any)?.content || {})
+  const { $directus, $createItem } = useNuxtApp()
 
-  if (typeof createItem !== 'function') {
+  if (typeof $createItem !== 'function') {
     throw new Error('Gateway content adapter is not available on Nuxt app instance.')
   }
 
@@ -67,7 +66,7 @@ export function useContentForm(collection: string, fields: any, options: Content
         return
       }
 
-      await createItem(collection, { ...form })
+      await $directus.request($createItem(collection, { ...form }))
       formSuccess.value = 'Saved successfully.'
 
       if (options.clearOnSuccess) {

@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import useContent from '#shared/app/composables/content/useContent'
+
   import {
     ref
   } from 'vue'
@@ -23,7 +23,7 @@ import useContent from '#shared/app/composables/content/useContent'
     //import {posts} from '~/graphql/cms/queries/posts'  
 
     const tab = ref(null);
- const { readItems } = useContent()
+ const { $readItems } = useNuxtApp()
 
     const { data: posts } = await useAsyncData('related-posts-list', async () => {
       const resp = await readItems('posts', { fields: ['*', { '*': ['*'] }] })

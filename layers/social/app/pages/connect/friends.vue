@@ -8,7 +8,7 @@
 						<h3 class="mbr-section-title mb-4 mbr-fonts-style display-1">
 							<strong> {{ friendsPage?.name }}</strong>
 						</h3>
-						<p class="mbr-section-title mb-4 mbr-fonts-style display-7" v-dompurify-html="friendsPage?.content"></p>
+						<p class="mbr-section-title mb-4 mbr-fonts-style display-7" v-dompurify-html="friendsPage?.description"></p>
 					</div>
 				</div>
 			</div>
@@ -20,8 +20,7 @@
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in friendBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text" :style="`color: ${friendBar?.colortext} !important`"
-                                :href="menu?.slug">{{ menu?.name }}</v-btn>
+                            <v-btn variant="text" :style="`color: ${friendBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>
@@ -30,70 +29,72 @@
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="friendBar?.menus?.[0]?.value">
-                <v-sheet class="pa-5" color="purple">
-                    <div v-for="member in friends?.followers" :key="member.id" class="d-inline-block">
-                        <memberCard :member="member?.followers_id" />
+                <v-sheet class="pa-5">
+                    <div v-for="member in followers" :key="member.id" class="d-inline-block">
+                        <MemberCard :member="member" />
                     </div>
+                    <div v-if="!loading && (!followers || followers.length === 0)" class="center-text">No followers yet.</div>
                 </v-sheet>
             </v-tabs-window-item>
+
             <v-tabs-window-item :value="friendBar?.menus?.[1]?.value">
-                <v-sheet class="pa-5" color="orange">
-                    <div v-for="member in friendRequests" :key="member.id" class="d-inline-block">
-                        <memberCard :member="member" />
+                <v-sheet class="pa-5">
+                    <div v-for="request in friendRequests" :key="request.id" class="d-inline-block">
+                        <MemberCard :member="request.requester" />
                     </div>
+                    <div v-if="!loading && (!friendRequests || friendRequests.length === 0)" class="center-text">No friend requests.</div>
                 </v-sheet>
             </v-tabs-window-item>
+
             <v-tabs-window-item :value="friendBar?.menus?.[2]?.value">
-                <v-sheet class="pa-5" color="brown">
-                     <div v-for="member in suggestions" :key="member.id" class="d-inline-block">
-                        <memberCard :member="member" />
+                <v-sheet class="pa-5">
+                    <div v-for="suggestion in suggestions" :key="suggestion.id" class="d-inline-block">
+                        <MemberCard :member="suggestion.profile" />
                     </div>
+                    <div v-if="!loading && (!suggestions || suggestions.length === 0)" class="center-text">No suggestions right now.</div>
                 </v-sheet>
             </v-tabs-window-item>
-            <!--<v-tabs-window-item :value="friendBar?.menus?.[3]?.value">
-                <v-sheet class="pa-5" color="green">
-                     <div v-for="member in membersList" :key="member.id" class="d-inline-block">
-                        <memberCard :member="member" />
+
+            <v-tabs-window-item :value="friendBar?.menus?.[3]?.value">
+                <v-sheet class="pa-5">
+                    <div v-for="member in members" :key="member.id" class="d-inline-block">
+                        <MemberCard :member="member.profile" />
                     </div>
+                    <div v-if="!loading && (!members || members.length === 0)" class="center-text">No members found.</div>
                 </v-sheet>
-            </v-tabs-window-item>-->
+            </v-tabs-window-item>
         </v-tabs-window>
+
+        <v-overlay v-model="loading" class="align-center justify-center">
+            <v-progress-circular indeterminate size="64" color="primary" />
+        </v-overlay>
     </div>
 </template>
 
-<script setup>
-    import {
-        ref
-    } from '#imports'
-    import useContent from '#shared/app/composables/content/useContent'
-    import memberCard from '#social/app/components/related/memberList.vue'
+<script setup lang="ts">
+import { ref } from 'vue'
+import useFriendsPageData from '../../composables/contacts/useFriendsPageData'
+import MemberCard from '../../components/related/memberList.vue'
 
-    
-    const { readItem, readItems } = useContent()
-    const route = useRoute()
-    const tab = ref(null);
+const { friendBar, friendsPage, followers, friendRequests, suggestions, members, reloadData } = useFriendsPageData()
+const tab = ref('followers')
+const loading = ref(false)
 
-    const { data: friendBar } = await useAsyncData('friendBar', () => {
-        return readItem('navigation', '77', { fields: ['*', { '*': ['*'] }] })
-    })
+onMounted(async () => {
+  loading.value = true
+  await reloadData()
+  loading.value = false
+})
 
-    const { data: friendsPage } = await useAsyncData('friendsPage', () => {
-        return readItem('pages', '87', { fields: ['*', { '*': ['*'] }] })
-    })
-
-    const { data: friends } = await useAsyncData('members', () => {
-        return readItems('profiles', { fields: ['*', { '*': ['*'] }] })
-    })
-
-    const { data: suggestions } = await useAsyncData('members', () => {
-        return readItems('profiles', { fields: ['*', { '*': ['*'] }] })
-    })
-
-    const { data: membersList } = await useAsyncData('members', () => {
-        return readItems('profiles', { fields: ['*', { '*': ['*'] }] })
-    })
-
-    useHead({
-        title: 'Friend Center',
-    })
+useHead({
+  title: friendsPage?.value?.name || 'Friends',
+})
 </script>
+
+<style>
+.center-text {
+  text-align: center;
+  padding: 24px;
+  color: #666;
+}
+</style>

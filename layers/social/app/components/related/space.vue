@@ -1,10 +1,10 @@
 <template>
     <div>
         <v-card class="mx-auto" max-width="400" height="550">
-            <img v-if="hasAsset(space?.image)" class="align-end text-white" height="200"
+            <NuxtImg provider="cloudinary" v-if="hasAsset(space?.image)" class="align-end text-white" height="200"
                 :src="getAssetUrl(space?.image)" :alt="space?.name" />
 
-            <img class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
+            <NuxtImg provider="cloudinary" class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
 
             <template>{{ space?.name }}</template>
 
@@ -27,9 +27,9 @@
 
 <script setup>
     import { ref } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
+
     import share from '../blocks/share.vue'
- const { getAssetUrl } = useContent()
+ const directusUrl = useDirectusUrl?.()
     const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const model = ref(null)

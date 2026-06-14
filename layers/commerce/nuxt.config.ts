@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     polarProductIdProYear: process.env.NUXT_POLAR_PRODUCT_ID_PRO_YEAR,
     public: {
       payment: process.env.NUXT_PAYMENT || 'stripe',
+      currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
       // Directus
       directus: {
         url: process.env.DIRECTUS_URL,
@@ -39,11 +40,11 @@ export default defineNuxtConfig({
           enableGlobalAuthMiddleware: false, // Enable auth middleware on every page
           userFields: ['*'], // Select user fields
           redirect: {
-            login: '/auth/login', // Path to redirect when login is required
+            login: '/login', // Path to redirect when login is required
             logout: '/', // Path to redirect after logout
             home: '/', // Path to redirect after successful login
-            resetPassword: '/auth/reset-password', // Path to redirect for password reset
-            callback: '/auth/callback', // Path to redirect after login with provider
+            resetPassword: '/reset-password', // Path to redirect for password reset
+            callback: '/callback', // Path to redirect after login with provider
           },
         }
       },

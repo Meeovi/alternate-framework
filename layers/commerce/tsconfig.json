@@ -1,5 +1,51 @@
 {
   "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "~": [
+        "./app"
+      ],
+      "~/*": [
+        "./app/*"
+      ],
+      "@": [
+        "./app"
+      ],
+      "@/*": [
+        "./app/*"
+      ],
+      "#shared": [
+        "./shared"
+      ],
+      "#shared/*": [
+        "./shared/*"
+      ],
+      "#server": [
+        "./server"
+      ],
+      "#server/*": [
+        "./server/*"
+      ],
+      "#imports": [
+        "./.nuxt/imports"
+      ],
+      "#build": [
+        "./.nuxt"
+      ],
+      "#build/*": [
+        "./.nuxt/*"
+      ],
+      "alternate-sdk": [
+        "../../packages/modules/alternate-sdk/index.ts"
+      ],
+      "alternate-sdk/contracts": [
+        "../../packages/modules/alternate-sdk/contracts/index.ts"
+      ],
+      "@mframework/adapter-prisma": [
+        "../../packages/adapters/adapter-prisma/src/index.ts"
+      ]
+    }
+  },
   "include": [
     "./**/*.ts",
     "./**/*.d.ts",

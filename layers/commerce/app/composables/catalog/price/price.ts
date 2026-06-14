@@ -87,13 +87,14 @@ function normalizeCurrency(product: ProductLike, fallback?: string | null): stri
 	const regularPrice = maximumPrice?.regular_price || maximumPrice?.regularPrice || minimumPrice?.regular_price || minimumPrice?.regularPrice
 
 	return (
+		fallback
+		||
 		product?.currency
 		|| product?.currency_code
 		|| finalPrice?.currency
 		|| finalPrice?.currency_code
 		|| regularPrice?.currency
 		|| regularPrice?.currency_code
-		|| fallback
 		|| null
 	)
 }

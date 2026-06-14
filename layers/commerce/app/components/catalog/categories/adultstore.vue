@@ -35,7 +35,7 @@
                     <div class="item features-image col-12 col-md-6 col-lg-4">
                         <div class="item-wrapper">
                             <div class="item-img">
-                                <img src="assets/images/features2.jpg" alt="" />
+                                <NuxtImg provider="cloudinary" src="assets/images/features2.jpg" alt="" />
                                 <div class="item-content">
                                     <h5 class="item-title mbr-fonts-style display-2">
                                         <strong>Сream</strong>
@@ -55,7 +55,7 @@
                     <div class="item features-image col-12 col-md-6 col-lg-4">
                         <div class="item-wrapper">
                             <div class="item-img">
-                                <img src="assets/images/features1.jpg" alt="" />
+                                <NuxtImg provider="cloudinary" src="assets/images/features1.jpg" alt="" />
                                 <div class="item-content">
                                     <h5 class="item-title mbr-fonts-style display-2">
                                         <strong>Soap</strong>
@@ -75,7 +75,7 @@
                     <div class="item features-image col-12 col-md-6 col-lg-4">
                         <div class="item-wrapper">
                             <div class="item-img">
-                                <img src="assets/images/features4.jpg" alt="" />
+                                <NuxtImg provider="cloudinary" src="assets/images/features4.jpg" alt="" />
                                 <div class="item-content">
                                     <h5 class="item-title mbr-fonts-style display-2">
                                         <strong>Lotion</strong>
@@ -101,8 +101,6 @@
 </template>
 
 <script setup>
-    import AgeVerification from '~/app/components/partials/globals/ageverification.vue'
-
     const {
         $directus,
         $readItem

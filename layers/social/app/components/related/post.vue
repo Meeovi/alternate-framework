@@ -14,12 +14,12 @@
                         </div>
 
                         <div v-else-if="matchesExtension(post?.image, ['.gif'])">
-                            <img loading="lazy" :src="getAssetUrl(post?.image)"
+                            <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetUrl(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 
                         <div v-else>
-                            <img loading="lazy" src="https://via.placeholder.com/800x450" :alt="post?.title || 'No Title'" />
+                            <NuxtImg provider="cloudinary" loading="lazy" src="https://via.placeholder.com/800x450" :alt="post?.title || 'No Title'" />
                         </div>
                     </div>
 
@@ -32,11 +32,11 @@
                         <v-spacer></v-spacer>
                         
                         <NuxtLink v-if="post?.author?.avatar" :to="`/user/${post?.author?.id}`" class="postAvatar">
-                            <UAvatar :image="getAssetUrl(post?.author?.avatar)" size="x-small"></UAvatar>
+                            <v-avatar :image="getAssetUrl(post?.author?.avatar)" size="x-small"></v-avatar>
                         </NuxtLink>
 
                         <NuxtLink v-else :to="`/user/${post?.author?.id}`" class="postAvatar">
-                            <UAvatar image="https://via.placeholder.com/40" size="x-small"></UAvatar>
+                            <v-avatar image="https://via.placeholder.com/40" size="x-small"></v-avatar>
                         </NuxtLink>
                     </v-toolbar>
 
@@ -80,7 +80,6 @@
 
 <script setup>
     import share from '#social/app/components/blocks/share.vue';
-    import useContent from '#shared/app/composables/content/useContent'
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
     import {
@@ -118,7 +117,7 @@
         }
     })
 
-const { getAssetUrl } = useContent()
+const directusUrl = useDirectusUrl?.()
 const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
 const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 </script>

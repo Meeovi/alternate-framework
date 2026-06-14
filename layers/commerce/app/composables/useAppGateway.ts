@@ -16,6 +16,12 @@ function createFallbackContentApi() {
 
 export function useAppGateway() {
   const nuxtApp = useNuxtApp() as any
+  
+  // Priority 1: Check if gateway is already initialized on nuxtApp (from plugin)
+  if (nuxtApp.$gateway && nuxtApp.$gateway.content && typeof nuxtApp.$gateway.content.readItems === 'function') {
+    return nuxtApp.$gateway
+  }
+
   const gateway = (nuxtApp.$gateway || {}) as any
 
   if (!gateway.content || typeof gateway.content.readItems !== 'function') {

@@ -7,9 +7,9 @@
                         <div class="card-wrapper">
                             <div class="row">
                                 <div class="col-12 col-md-12 col-lg-5 image-wrapper">
-                                    <img v-if="event?.image" class="w-100" :src="getAssetUrl(event?.image)" :alt="event?.name">
+                                    <NuxtImg provider="cloudinary" v-if="event?.image" class="w-100" :src="getAssetUrl(event?.image)" :alt="event?.name" />
 
-                                    <img v-else src="../../../assets/images/backgraund-trend.jpg" :alt="event?.name" />
+                                    <NuxtImg provider="cloudinary" v-else src="../../../assets/images/backgraund-trend.jpg" :alt="event?.name" />
                                 </div>
                                 <div class="col-12 col-lg col-md-12">
                                     <div class="text-wrapper align-left">
@@ -66,20 +66,21 @@
     import {
         ref
     } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
+
     import AboutEvent from '#social/app/components/blocks/events/about.vue'
     //import DiscussionEvent from '#social/app/components/blocks/events/discussion.vue'
 
     const route = useRoute();
     const tab = ref(null);
-const { readItems, getAssetUrl } = useContent()
+    const { $directus, $readItems } = useNuxtApp()
 
     const { data: event } = await useAsyncData('event', async () => {
-        const resp = await readItems('events', {
-            filter: { slug: { _eq: `${route.params.slug}` } },
+        const slug = Array.isArray(route.params.slug) ? route.params.slug.join('/') : route.params.slug
+        const resp = await $directus.request($readItems('events', {
+            filter: { slug: { _eq: slug } },
             fields: ['*'],
             limit: 1
-        })
+        }))
         return resp?.data?.[0] || resp?.[0] || null
     })
 

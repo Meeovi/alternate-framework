@@ -1,7 +1,55 @@
 {
  "extends": "./.nuxt/tsconfig.json",
  "compilerOptions": {
-  "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+    "ignoreDeprecations": "6.0",
+    "paths": {
+     "~": [
+        "./app"
+     ],
+     "~/*": [
+        "./app/*"
+     ],
+     "@": [
+        "./app"
+     ],
+     "@/*": [
+        "./app/*"
+     ],
+     "#shared": [
+        "./shared"
+     ],
+     "#shared/*": [
+        "./shared/*"
+     ],
+     "#server": [
+        "./server"
+     ],
+     "#server/*": [
+        "./server/*"
+     ],
+     "#imports": [
+        "./.nuxt/imports"
+     ],
+     "#build": [
+        "./.nuxt"
+     ],
+     "#build/*": [
+        "./.nuxt/*"
+     ],
+     "alternate-sdk": [
+        "../../packages/modules/alternate-sdk/index.ts"
+     ],
+     "alternate-sdk/contracts": [
+        "../../packages/modules/alternate-sdk/contracts/index.ts"
+     ],
+     "alternate-sdk/notifications": [
+        "../../packages/modules/alternate-sdk/notifications/index.ts"
+     ],
+     "alternate-sdk/localization": [
+        "../../packages/modules/alternate-sdk/localization/index.ts"
+     ]
+    }
  },
  "exclude": [
   "**/__tests__/**",

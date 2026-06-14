@@ -24,8 +24,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import useContent from '#shared/app/composables/content/useContent'
- const { getAssetUrl } = useContent()
+
+ const directusUrl = useDirectusUrl?.()
     
 const model = ref(null)
 const player = ref(null)

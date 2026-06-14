@@ -14,7 +14,7 @@
             </div>
         </section>
         
-        <v-card variant="text" class="lowerBar">
+        <v-card variant="text">
             <v-toolbar :style="`background-color: ${birthdayBar?.color}; color: ${birthdayBar?.colortext} !important`">
                 <v-toolbar-title>{{ birthdayBar?.name }}</v-toolbar-title>
 
@@ -28,18 +28,6 @@
                 </v-tabs>
             </v-toolbar>
         </v-card>
-        <section data-bs-version="5.1" class="header6 cid-v0GHPMn349" id="header6-k">
-            <div class="mbr-overlay" style="opacity: 0.3; background-color: rgb(1, 43, 58);">
-            </div>
-
-            <div>
-                <div class="container">
-                    <h5 class="mbr-section-title mbr-fonts-style display-4" v-dompurify-html="birthdayPage?.content"></h5>
-                    <p class="mbr-text mbr-fonts-style display-1">{{ birthdayPage?.name }}</p>
-
-                </div>
-            </div>
-        </section>
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="birthdayBar?.menus[0]?.value">
@@ -66,42 +54,36 @@
 </template>
 
 <script setup>
-    import {
-        ref
-    } from '#imports'
-    import useContent from '#shared/app/composables/content/useContent'
+    import { ref } from '#imports'
     import MembersList from '#social/app/components/related/memberList.vue'
 
-    
-    const { readItem, readItems } = useContent()
-    const tab = ref(null);
+    const { $directus, $readItem, $readItems } = useNuxtApp()
+    const tab = ref(null)
 
     const { data: birthdayBar } = await useAsyncData('birthdayBar', () => {
-        return readItem('navigation', '82', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('navigation', '82', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: birthdayPage } = await useAsyncData('birthdayPage', () => {
-        return readItem('pages', '91', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('pages', '91', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: members } = await useAsyncData('members', async () => {
-        const resp = await readItems('profiles', {
+        const resp = await $directus.request($readItems('profiles', {
             filter: { birth_date: { _eq: new Date().toISOString().slice(5, 10) } },
             fields: ['*', 'avatar.*'],
             limit: 1
-        })
-        const data = resp?.data || resp || []
-        return data?.[0] || null
+        }))
+        return Array.isArray(resp) ? resp : []
     })
 
     const { data: recentBirthdays } = await useAsyncData('recentBirthdays', async () => {
-        const resp = await readItems('profiles', {
+        const resp = await $directus.request($readItems('profiles', {
             filter: { birth_date: { _lt: new Date().toISOString().slice(5, 10) } },
             fields: ['*', 'avatar.*'],
             limit: 1
-        })
-        const data = resp?.data || resp || []
-        return data?.[0] || null
+        }))
+        return Array.isArray(resp) ? resp : []
     })
 
     useHead({

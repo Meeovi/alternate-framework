@@ -26,7 +26,6 @@
 
 
 <script setup>
-import useContent from '../../../composables/content/useContent'
 
     const props = defineProps({
         radio: {
@@ -37,5 +36,5 @@ import useContent from '../../../composables/content/useContent'
     const {
         radio
     } = props;
-    const { getAssetUrl } = useContent()
+    const directusUrl = useDirectusUrl?.()
 </script>

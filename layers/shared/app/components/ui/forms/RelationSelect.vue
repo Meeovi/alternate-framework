@@ -30,8 +30,7 @@
     });
 
     const emit = defineEmits(["update:modelValue"]);
-    import useContent from '../../../composables/content/useContent'
-    const { readItems } = useContent()
+        const { $readItems } = useNuxtApp()
 
     const internalValue = computed({
         get: () => props.modelValue,

@@ -1,9 +1,9 @@
 // composables/createContact.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function createContact(contactData) {
     const route = useRoute();
     const id = route.params.id;
-    const { createItem } = useContent()
+    const { $createItem } = useNuxtApp()
 
     try {
       const contact = await createItem('contacts', {

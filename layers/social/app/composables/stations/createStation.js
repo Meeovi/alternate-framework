@@ -1,9 +1,9 @@
 // composables/createStation.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function createStation(stationData) {
     const route = useRoute();
     const id = route.params.id;
-    const { createItem } = useContent()
+    const { $createItem } = useNuxtApp()
 
     try {
       const station = await createItem('radios', {

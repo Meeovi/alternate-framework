@@ -13,23 +13,24 @@
                 </div>
             </div>
             <div class="item-img" v-if="list?.image">
-                <img :src="content.getAssetUrl(list?.image)" :alt="list?.name" >
+                <NuxtImg provider="cloudinary" :src="useDirectusUrl?.().replace(/\/$/, '') + '/assets/' + (list?.image)" :alt="list?.name" />
             </div>
 
             <div class="item-img" v-else>
-                <img src="https://via.placeholder.com/400x300" :alt="list?.name" />
+                <NuxtImg provider="cloudinary" src="https://via.placeholder.com/400x300" :alt="list?.name" />
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-    const props = defineProps({
+
+    defineProps({
         list: {
             type: Object,
             required: true,
         },
-    });
-    const content = useContent()
+    })
+
+    const { $directus } = useNuxtApp()
 </script>
-import useContent from '#shared/app/composables/content/useContent'

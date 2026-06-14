@@ -43,9 +43,11 @@
 <script setup>
 import { ref, watch, computed, onMounted } from '#imports'
 import { useCartStore } from '~/stores/cart'
+import { usePreferredCurrency } from '~/composables/usePreferredCurrency'
 import { useRouter } from 'vue-router'
 
 const cartStore = useCartStore()
+const { currency: preferredCurrency } = usePreferredCurrency()
 const router = useRouter()
 
 const placeholder = '/_assets/placeholder.png'
@@ -82,7 +84,7 @@ const getImageUrl = (item) => {
 
 const formatPrice = (value) => {
   const amount = typeof value === 'number' ? value : Number(value || 0)
-  return new Intl.NumberFormat(undefined, { style: 'currency', currency: cartStore.cart?.currency || 'USD' }).format(amount)
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency: preferredCurrency.value || cartStore.cart?.currency || 'USD' }).format(amount)
 }
 
 const removeItem = async (item) => {

@@ -57,7 +57,7 @@ import { ref, useAsyncData, useHead, useNuxtApp } from '#imports'
 
   const tab = ref(null)
   
-  import { useAppGateway } from '~/app/composables/useAppGateway'
+  import { useAppGateway } from '~/composables/useAppGateway'
   const content = useAppGateway().content
 
   const { data: outlets } = await useAsyncData('outlets', async () => {

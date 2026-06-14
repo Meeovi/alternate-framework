@@ -15,7 +15,7 @@ const items = shallowRef([
     <v-card-text>
       <div class="d-flex align-start mb-6">
         <v-btn icon rounded="sm" color="darksecondary" variant="flat">
-          <img :src="iconCard" width="25" />
+          <NuxtImg provider="cloudinary" :src="iconCard" width="25" />
         </v-btn>
         <div class="ml-auto z-1">
           <v-menu :close-on-content-click="false">

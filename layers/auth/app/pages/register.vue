@@ -25,7 +25,7 @@
 					<div>
 						<v-label class="mb-2 d-block">Profile Image (optional)</v-label>
 						<v-file-input v-model="imageFile" accept="image/*" label="Select an image" variant="outlined"
-							prepend-icon="mdi-camera" @update:model-value="handleImageChange" />
+							prepend-icon="fas fa-camera" @update:model-value="handleImageChange" />
 						<v-img v-if="imagePreview" :src="imagePreview" alt="Profile preview" class="mt-3"
 							max-width="150" max-height="150" />
 					</div>
@@ -139,19 +139,3 @@
 		title: `Register - ${String(runtimeConfig.public?.siteName || runtimeConfig.public?.appName || 'Meeovi')}`,
 	});
 </script>
-
-<style scoped>
-	.register-form {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.register-card {
-		width: 100%;
-		background: white !important;
-		border-radius: 12px;
-	}
-</style>

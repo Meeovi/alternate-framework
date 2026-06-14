@@ -22,9 +22,8 @@
         computed,
         ref
     } from '#imports'
-    import useContent from '#shared/app/composables/content/useContent'
 
-    const { readItem } = useContent()
+    const { $readItem } = useNuxtApp()
     const tab = ref(null)
 
     const { data: lowerbar } = await useAsyncData('lowerbar', async () => {

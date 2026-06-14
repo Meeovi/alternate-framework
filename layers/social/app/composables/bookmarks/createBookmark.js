@@ -1,13 +1,13 @@
 // composables/createWebsite.js
 import { getListProvider } from '../registry'
-import useContent from '#shared/app/composables/content/useContent'
+
 import { useLists } from '../useLists'
 
 export default async function createWebsite(websiteData) {
   const route = useRoute()
   const id = route.params.id
   const provider = getListProvider()
-  const content = useContent()
+  const { $directus, $readItem, $readItems, $createItem, $updateItem, $deleteItem, $uploadFiles } = useNuxtApp()
 
   try {
     // If a provider is registered and implements website creation, use it
@@ -16,7 +16,7 @@ export default async function createWebsite(websiteData) {
     }
 
     if (content && typeof content.createItem === 'function') {
-      const resp = await content.createItem('websites', {
+      const resp = await $directus.request($createItem('websites', {
         name: websiteData.name,
         note: websiteData.note,
         status: websiteData.status,

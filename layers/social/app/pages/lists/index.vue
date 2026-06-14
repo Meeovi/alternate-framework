@@ -1,29 +1,24 @@
 <template>
     <div>
-        <section data-bs-version="5.1" class="header1 cid-v0HengyO4j" id="header01-0">
-            <div class="container-fluid">
-                <div class="row justify-content-left auto-text">
-                    <div v-if="hasAsset(page?.image)" class="col-12 col-md-12 col-lg-8 image-wrapper">
-                        <img class="w-100" :src="getAssetUrl(page?.image)" :alt="page?.name">
-                    </div>
-                    <div v-else class="col-12 col-md-12 col-lg-8 image-wrapper">
-                        <img class="w-100" src="https://via.placeholder.com/1200x400" :alt="page?.name">
-                    </div>
-                    <div class="col-12 col-lg col-md-12">
-                        <div class="text-wrapper align-left rightTextColumn">
-                            <h1
-                                class="mbr-section-title text-black align-center mbr-fonts-style mb-4 display-2 auto-text">
-                                <strong>{{ page?.name }}</strong>
-                            </h1>
-                            <p class="mbr-text mbr-fonts-style mb-4 display-7 text-black align-center auto-text"
-                                v-dompurify-html="page?.content"></p>
-                            <createList
-                                class="mbr-section-btn mt-3 mobi-mbri mobi-mbri-plus mbr-iconfont mbr-iconfont-btn" />
+        <v-toolbar color="green">
+            <v-toolbar-title>
+                <div class="listsToolbarTitle">
+                    {{ page?.name }}
+                    <v-tooltip interactive>
+                        <template v-slot:activator="{ props: activatorProps }">
+                            <v-icon-btn size="small" icon="fas fa-circle-info" v-bind="activatorProps"></v-icon-btn>
+                        </template>
+                        <div>
+                            <p class="listsToolbarTooltip" v-dompurify-html="page?.content"></p>
                         </div>
-                    </div>
+                    </v-tooltip>
                 </div>
-            </div>
-        </section>
+            </v-toolbar-title>
+
+            <v-toolbar-items>
+                <createList class="createListsToolbarItems" />
+            </v-toolbar-items>
+        </v-toolbar>
 
         <v-sheet class="mx-auto sliderLists row align-items-stretch items-row justify-content-center">
             <v-toolbar color="transparent">
@@ -54,49 +49,88 @@
 </template>
 
 <script setup>
-import { ref, computed } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
-import listCard from '#social/app/components/related/list.vue'
-import RelatedLists from '#social/app/components/related/relatedlists.vue'
-import createList from '#social/app/components/features/lists/add-list.vue'
-import { useUsers } from '#auth/app/composables/users'
+    import {
+        ref,
+        computed
+    } from '#imports'
+    import listCard from '#social/app/components/related/list.vue'
+    import RelatedLists from '#social/app/components/related/relatedlists.vue'
+    import createList from '#social/app/components/features/lists/add-list.vue'
+    import {
+        useUsers
+    } from '#auth/app/composables/users'
 
-const { userDisplayName } = useUser()
+    import {
+        useLists
+    } from '#social/app/composables/lists/useLists'
+    import {
+        normalizeListRecord
+    } from '#social/app/composables/content/socialMappers'
+    import {
+        useRoute
+    } from 'vue-router'
 
-const model = ref(null)
+    const model = ref(null)
 
-const {
-  getPublicLists,
-  getUserLists,
-  getUserBookmarks,
-  getPage,
-  getAssetUrl
-} = useContent()
-const hasAsset = (file) => Boolean(getAssetUrl(file))
+    const { $directus, $readItems, $readItem } = useNuxtApp()
+    
+    const directusUrl = useDirectusUrl?.()
+    const hasAsset = (file) => Boolean(getAssetUrl(file))
 
-const { data: lists } = await useAsyncData('lists', () =>
-  getPublicLists()
-)
+    const opts = {
+        fields: ['*', 'category.categories_id.*', 'department.departments_id', 'user.user.*',
+            'image.*'
+        ],
+        limit: 50
+    }
 
-const { data: myLists } = await useAsyncData('myLists', () =>
-  getUserLists(
-    userDisplayName.value.firstName,
-    userDisplayName.value.lastName
-  )
-)
+    const {
+        data: allLists
+    } = await useAsyncData('allLists', async () => {
+        return $directus.request($readItems('lists', opts))
+    })
 
-const { data: myBookmarks } = await useAsyncData('myBookmarks', () =>
-  getUserBookmarks(
-    userDisplayName.value.firstName,
-    userDisplayName.value.lastName
-  )
-)
+    const {
+        data: myLists
+    } = await useAsyncData('myLists', async () => {
+        return $directus.request($readItems('lists', {
+            ...opts,
+            filter: {
+                user: {
+                    _neq: 'null'
+                }
+            }
+        }))
+    })
 
-const { data: page } = await useAsyncData('page', () =>
-  getPage(40)
-)
+    const {
+        data: myBookmarks
+    } = await useAsyncData('myBookmarks', async () => {
+        return $directus.request($readItems('lists', {
+            ...opts,
+            filter: {
+                type: {
+                    _eq: 'bookmarks'
+                }
+            }
+        }))
+    })
 
-useHead({
-  title: 'Meeovi Tasks'
-})
+    const {
+        data: page
+    } = await useAsyncData('page', () => {
+        return $directus.request($readItems('pages', {
+            filter: {
+                id: {
+                    _eq: 40
+                }
+            },
+            fields: ['*'],
+            limit: 1
+        })).then(response => (response?.data?.[0] || response?.[0]) ?? null)
+    })
+
+    useHead({
+        title: () => page?.value?.name || 'Page',
+    })
 </script>

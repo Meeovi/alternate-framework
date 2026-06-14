@@ -1,7 +1,7 @@
 // composables/updatePost.js
-import useContent from '#shared/app/composables/content/useContent'
+
 export default async function updatePost(spaceId, spaceData) {
-    const { updateItem } = useContent()
+    const { $updateItem } = useNuxtApp()
 
     try {
       const space = await updateItem('spaces', spaceId, spaceData)

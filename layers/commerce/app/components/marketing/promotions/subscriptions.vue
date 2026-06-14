@@ -6,7 +6,7 @@
                 <v-row class="accountRow">
                     <v-col cols="3" v-for="(subscriptions, index) in allSubscriptions" :key="index">
                         <v-card class="mx-auto" max-width="400">
-                            <img loading="lazy" class="align-end text-white" height="200"
+                            <NuxtImg provider="cloudinary" loading="lazy" class="align-end text-white" height="200"
                             :src="getAssetUrl(subscriptions?.image)" :alt="subscriptions?.name" cover />
                                 <template>{{subscriptions?.name}}</template>
                             <v-card class="pt-4">
@@ -62,9 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import useContent from '../../../composables/content/useContent'
 import productCard from '../../catalog/product/productCard.vue'
-import { computed, ref } from 'vue'
+import { computed, ref } from '#imports'
 import { useAuth } from '../../../composables/globals/useAuth'
 
 const auth = useAuth()
@@ -72,19 +71,18 @@ const user = computed(() => (auth as any)?.user?.value || null)
 const userId = computed(() => user.value?.id || null)
 
 const tab = ref(null)
-const content = useContent()
-const { getAssetUrl } = content
+const { $directus, $readItem, $readItems } = useNuxtApp()
 
 const { data: incentiveBar } = await useAsyncData('incentiveBar', async () => {
-    return content.readItem('navigation', '118', { fields: ['*', { '*': ['*'] }] })
+    return $directus.request($readItem('navigation', '118', { fields: ['*', { '*': ['*'] }] }))
 })
 
 const { data: incentivePage } = await useAsyncData('incentivePage', async () => {
-    return content.readItem('pages', '86', { fields: ['*', { '*': ['*'] }] })
+    return $directus.request($readItem('pages', '86', { fields: ['*', { '*': ['*'] }] }))
 })
 
 const { data: allSubscriptions } = await useAsyncData('allSubscriptions', async () => {
-    const resp = await content.readItems('products', {
+    const resp = await $directus.request($readItems('products', {
         fields: ['*', { '*': ['*'] }],
         filter: {
             user_id: {
@@ -96,7 +94,7 @@ const { data: allSubscriptions } = await useAsyncData('allSubscriptions', async 
                 }
             }
         }
-    })
+    }))
     return (resp as any)?.data ?? (resp as any) ?? []
 })
 

@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-// TODO: Define UserLogin type or import from shared/contracts if available
+// TODO: Define UserLogin type or import it from alternate-sdk/contracts if needed
 type UserLogin = {
   server: string
   token: string

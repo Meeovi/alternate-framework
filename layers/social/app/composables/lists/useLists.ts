@@ -1,53 +1,40 @@
 
 export function useLists() {
-  const {
-    readItem,
-    readItems,
-    createItem,
-    updateItem,
-    deleteItem,
-  } = useContent()
+  const { $readItems } = useNuxtApp()
 
   const getList = async (id: string | number, options?: Record<string, any>) => {
-    const resp = await readItem('lists', id, options)
-    return resp?.data || resp || null
+    return await readItem('lists', id, options) || null
   }
 
   const listLists = async (options?: Record<string, any>) => {
-    const resp = await readItems('lists', options)
-    return resp?.data || resp || []
+    const result = await readItems('lists', options)
+    return Array.isArray(result) ? result : []
   }
 
   const createList = async (payload: Record<string, any>) => {
-    const resp = await createItem('lists', payload)
-    return resp?.data || resp || null
+    return await createItem('lists', payload) || null
   }
 
   const updateList = async (id: string | number, payload: Record<string, any>) => {
-    const resp = await updateItem('lists', id, payload)
-    return resp?.data || resp || null
+    return await updateItem('lists', id, payload) || null
   }
 
   const deleteList = async (id: string | number) => {
-    const resp = await deleteItem('lists', id)
-    return resp?.data || resp || null
+    return await deleteItem('lists', id) || null
   }
 
   const addItem = async (payload: Record<string, any>) => {
-    const resp = await createItem('list_items', payload)
-    return resp?.data || resp || null
+    return await createItem('list_items', payload) || null
   }
 
   const updateListItem = async (id: string | number, payload: Record<string, any>) => {
-    const resp = await updateItem('list_items', id, payload)
-    return resp?.data || resp || null
+    return await updateItem('list_items', id, payload) || null
   }
 
   const updateItemInList = updateListItem
 
   const deleteListItem = async (id: string | number) => {
-    const resp = await deleteItem('list_items', id)
-    return resp?.data || resp || null
+    return await deleteItem('list_items', id) || null
   }
 
   const removeFromList = deleteListItem
@@ -72,4 +59,3 @@ export function useLists() {
     reorderItems,
   }
 }
-import useContent from '#shared/app/composables/content/useContent'

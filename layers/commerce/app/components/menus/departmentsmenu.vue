@@ -14,17 +14,14 @@
 </template>
 
 <script setup>
-  import {
-    useAppGateway
-  } from '../../composables/useAppGateway'
+  import { computed } from '#imports'
 
-  const gateway = useAppGateway()
-  const content = gateway.content
+  const { $directus, $readItems } = useNuxtApp()
 
   const {
-    data: departmentsMenu
-  } = await useAsyncData('departmentsMenu', () => {
-    return content.readItems('departments', {
+    data: departmentsMenuRaw
+  } = await useAsyncData('departmentsMenu', async () => {
+    const rows = await $directus.request($readItems('departments', {
       filter: {
         active: {
           _eq: 'active'
@@ -37,6 +34,26 @@
         '*': ['*']
       }],
       sort: ['name']
-    })
+    }))
+    const result = Array.isArray(rows) ? rows : []
+    if (result.length) return result
+
+    return await $directus.request($readItems('departments', {
+      filter: {
+        type: {
+          _eq: 'department'
+        }
+      },
+      fields: ['*', {
+        '*': ['*']
+      }],
+      sort: ['name']
+    }))
+  })
+
+  const departmentsMenu = computed(() => {
+    const value = departmentsMenuRaw.value
+    if (Array.isArray(value)) return value
+    return []
   })
 </script>

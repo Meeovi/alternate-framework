@@ -23,11 +23,18 @@
 </template>
 
 <script setup>
-    const content = useContent()
+    import listCard from '#social/app/components/related/list.vue'
+    import { computed, useCurrentUser } from '#imports'
+
+    const { $directus, $readItems } = useNuxtApp()
+    const currentUser = useCurrentUser()
+    const userDisplayName = computed(() => {
+        return currentUser.value?.name || currentUser.value?.username || ''
+    })
 
     const { data: lists } = await useAsyncData('archivedLists', async () => {
         const opts = { filter: { status: { _eq: 'Archived' } } }
-        const resp = await content.readItems('lists', opts)
+        const resp = await $directus.request($readItems('lists', opts))
         return resp?.data || resp
     })
 
@@ -38,7 +45,7 @@
                 status: { _eq: 'Archived' }
             }
         }
-        const resp = await content.readItems('lists', opts)
+        const resp = await $directus.request($readItems('lists', opts))
         return resp?.data || resp
     })
 
@@ -46,4 +53,3 @@
         title: 'My Archived Lists - Meeovi Tasks'
     })
 </script>
-import useContent from '#shared/app/composables/content/useContent'

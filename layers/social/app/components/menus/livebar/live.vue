@@ -33,9 +33,9 @@
                             <template v-slot:activator="{ props }">
                                 <div class="avatarBorder" v-for="(shorts, index) in short" :key="index">
                                     <v-avatar v-bind="props" size="60">
-                                        <img v-if="hasAsset(shorts?.thumbnail)" loading="lazy" :src="getAssetUrl(shorts?.thumbnail)" :alt="shorts?.name" cover />
+                                        <NuxtImg provider="cloudinary" v-if="hasAsset(shorts?.thumbnail)" loading="lazy" :src="getAssetUrl(shorts?.thumbnail)" :alt="shorts?.name" cover />
 
-                                        <img v-else src="/images/display-2.png" :alt="shorts?.name" cover />
+                                        <NuxtImg provider="cloudinary" v-else src="/images/display-2.png" :alt="shorts?.name" cover />
                                     </v-avatar>
                                 </div>
                             </template>
@@ -57,7 +57,6 @@
 
 <script setup>
     import vibe from '#social/app/pages/connect/vibe/[...id].vue'
-import useContent from '#shared/app/composables/content/useContent'
     import addlive from '#social/app/components/features/vibeSections/add-live.vue'
     import {
         computed,
@@ -71,7 +70,7 @@ import useContent from '#shared/app/composables/content/useContent'
     const route = useRoute();
     const shortId = computed(() => String(route.params.id || ''));
 
-    const { readItems, getAssetUrl } = useContent()
+    const { $readItems } = useNuxtApp()
     const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const {
@@ -80,6 +79,6 @@ import useContent from '#shared/app/composables/content/useContent'
         const resp = await readItems('shorts', {
             fields: ['*', { '*': ['*'] }]
         })
-        return Array.isArray(resp?.data) ? resp.data : Array.isArray(resp) ? resp : []
+        return Array.isArray(resp) ? resp : []
     })
 </script>

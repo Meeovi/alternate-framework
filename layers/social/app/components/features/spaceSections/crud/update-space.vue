@@ -78,8 +78,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import useContent from '#shared/app/composables/content/useContent'
- const { readItem, deleteItem, updateItem, uploadFiles } = useContent()
+
+ const { $readItem, $deleteItem, $updateItem, $uploadFiles } = useNuxtApp()
 import updateSpace from '#social/app/composables/spaces/updateSpace';
 
 const route = useRoute();
@@ -108,7 +108,7 @@ const fetchSpaceData = async () => {
     try {
         const spaceId = route.params.id;
         const resp = await readItem('spaces', spaceId)
-        const response = resp?.data || resp || null
+        const response = resp || null
 
         if (response) {
             spaceData.value = {
@@ -153,7 +153,7 @@ const handleSubmit = async () => {
         if (imageFile.value) {
             const uploaded = await uploadFiles({ file: imageFile.value })
             // adapter may return file id in different shapes
-            spaceData.value.image = uploaded?.data?.[0]?.id || uploaded?.id || uploaded?.imageId || uploaded
+            spaceData.value.image = uploaded?.id || uploaded?.imageId || uploaded
         }
 
         // Update the space using adapter

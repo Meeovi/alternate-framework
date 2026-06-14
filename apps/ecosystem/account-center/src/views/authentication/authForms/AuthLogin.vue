@@ -25,7 +25,7 @@ function validate(values: any, { setErrors }: any) {
 
 <template>
   <v-btn block color="primary" variant="outlined" class="text-lightText googleBtn">
-    <img :src="Google" alt="google" />
+    <NuxtImg provider="cloudinary" :src="Google" alt="google" />
     <span class="ml-2">Sign in with Google</span></v-btn
   >
   <v-row>

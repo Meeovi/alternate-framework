@@ -1,9 +1,9 @@
 <template>
   <v-card class="mb-4" elevation="2">
     <template #title class="d-flex align-center">
-      <UAvatar size="40" class="mr-3">
+      <v-avatar size="40" class="mr-3">
         <v-img :src="short?.creator_avatar || '/default-avatar.png'" :alt="short?.creator" />
-      </UAvatar>
+      </v-avatar>
       <div>
         <div class="font-weight-bold">{{ short?.creator || 'Anonymous' }}</div>
         <div class="text-caption text-grey">{{ formatDate(short?.date_created) }}</div>
@@ -83,9 +83,9 @@
           
           <div v-for="comment in vibeComments" :key="comment.id" class="mb-2">
             <div class="d-flex align-start">
-              <UAvatar size="32" class="mr-2">
+              <v-avatar size="32" class="mr-2">
                 <v-img :src="comment.user_avatar || '/default-avatar.png'" />
-              </UAvatar>
+              </v-avatar>
               <div>
                 <div class="font-weight-bold text-caption">{{ comment.username }}</div>
                 <div class="text-body-2">{{ comment.content }}</div>
@@ -101,7 +101,6 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from '#imports'
-import useContent from '#shared/app/composables/content/useContent'
 
 const props = defineProps({
   short: {
@@ -118,7 +117,7 @@ const isLiked = ref(false)
 const showComments = ref(false)
 const newComment = ref('')
 const vibeComments = ref([])
- const { getAssetUrl } = useContent()
+ const directusUrl = useDirectusUrl?.()
 
 const hashtags = computed(() => {
   if (!short?.description) return []

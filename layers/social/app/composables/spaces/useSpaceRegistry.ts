@@ -14,7 +14,7 @@ export async function fetchSpaceRegistry(nuxtApp?: { read?: ReadItemsFn }) {
   if (nuxtApp && typeof nuxtApp.read === 'function') {
     readItemsFn = nuxtApp.read
   } else {
-    const adapter = useContent()
+
     const { readItems } = adapter as any
     readItemsFn = readItems
   }
@@ -56,7 +56,6 @@ export const useSpaceRegistry = async (nuxtApp?: { read?: ReadItemsFn }) => {
   }
 
   // fall back to adapter composable when called inside setup without a nuxtApp arg
-  const { readItems } = useContent()
+  const { $readItems } = useNuxtApp()
   return fetchSpaceRegistry({ read: readItems })
 }
-import useContent from '#shared/app/composables/content/useContent'

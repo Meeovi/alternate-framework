@@ -110,7 +110,7 @@
                     </div>
                 </div>
             </div>
-            <img src="https://via.placeholder.com/1200x400" alt="Shipments">
+            <NuxtImg provider="cloudinary" src="https://via.placeholder.com/1200x400" alt="Shipments" />
         </section>
 
         <v-card title="Shipment Items" flat>

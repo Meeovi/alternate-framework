@@ -23,11 +23,18 @@
 </template>
 
 <script setup>
-    const content = useContent()
+    import bookmarkCard from '#social/app/components/related/bookmark.vue'
+    import { computed, useCurrentUser } from '#imports'
+
+    const { $directus, $readItems } = useNuxtApp()
+    const currentUser = useCurrentUser()
+    const userDisplayName = computed(() => {
+        return currentUser.value?.name || currentUser.value?.username || ''
+    })
 
     const { data: lists } = await useAsyncData('publicBookmarks', async () => {
         const opts = { filter: { status: { _eq: 'Public' } } }
-        const resp = await content.readItems('lists', opts)
+        const resp = await $directus.request($readItems('lists', opts))
         return resp?.data || resp
     })
 
@@ -38,7 +45,7 @@
                 type: { _eq: 'bookmark' }
             }
         }
-        const resp = await content.readItems('lists', opts)
+        const resp = await $directus.request($readItems('lists', opts))
         return resp?.data || resp
     })
 
@@ -46,4 +53,3 @@
         title: 'My Bookmarks Lists - Meeovi Tasks'
     })
 </script>
-import useContent from '#shared/app/composables/content/useContent'

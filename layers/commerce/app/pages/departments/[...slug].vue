@@ -9,40 +9,39 @@
             <v-card variant="text">
                 <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`"
                     :title="category?.name">
-                    <v-slide-group show-arrows v-if="category?.categories?.length">
-                        <v-slide-group-item v-slot="{ isSelected, toggle }">
-                            <v-menu>
-                                <template v-slot:activator="{ props }">
-                                    <v-btn class="deptCatBtn ma-2" :color="isSelected ? 'primary' : undefined"
-                                        @click="toggle" v-bind="props" append-icon="fas:fa fa-caret-down"
-                                        variant="text">
-                                        Categories
-                                    </v-btn>
-                                </template>
-                                <v-list class="departmentMenu">
-                                    <v-row>
-                                        <v-col cols="3" v-for="cat in normalizedCategories" :key="cat.id">
-                                            <v-list-item>
-                                                <v-chip>
-                                                    <NuxtLink :to="`/departments/category/${cat.id}`">
-                                                        {{ cat.name }}
-                                                    </NuxtLink>
-                                                </v-chip>
-                                            </v-list-item>
-                                        </v-col>
-                                    </v-row>
-                                </v-list>
-                            </v-menu>
-                        </v-slide-group-item>
+                    <template #extension>
+                        <v-menu v-if="normalizedCategories.length">
+                            <template v-slot:activator="{ props }">
+                                <v-btn class="deptCatBtn ma-2" v-bind="props" append-icon="fas:fa fa-caret-down"
+                                    variant="text">
+                                    Categories
+                                </v-btn>
+                            </template>
+                            <v-list class="departmentMenu">
+                                <v-row>
+                                    <v-col cols="3" v-for="cat in normalizedCategories" :key="cat.id">
+                                        <v-list-item>
+                                            <v-chip>
+                                                <NuxtLink :to="`/departments/category/${cat.id}`">
+                                                    {{ cat.name }}
+                                                </NuxtLink>
+                                            </v-chip>
+                                        </v-list-item>
+                                    </v-col>
+                                </v-row>
+                            </v-list>
+                        </v-menu>
 
-                        <v-slide-group-item v-if="category?.menus?.length" v-for="menu in category?.menus" :key="menu"
-                            v-slot="{ isSelected, toggle }">
-                            <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
-                                :href="`${menu?.url}`">
-                                {{ menu?.name }}
-                            </v-btn>
-                        </v-slide-group-item>
-                    </v-slide-group>
+                        <v-btn
+                            v-for="menu in normalizedMenus"
+                            :key="menu.id || menu.name || menu.url"
+                            class="ma-2"
+                            :href="`${menu?.url}`"
+                            variant="text"
+                        >
+                            {{ menu?.name }}
+                        </v-btn>
+                    </template>
                 </v-toolbar>
                 <!-- Category Top Banner Section -->
                 <section data-bs-version="5.1" class="pricing6 shopm5 cid-tZY31Y2JxZ" id="apricing6-6g">
@@ -209,11 +208,22 @@
         ref,
         watch,
         computed
-    } from 'vue'
+    } from '#imports'
 
     const route = useRoute()
     const gateway = useAppGateway()
+    const { $directus, $readItems } = useNuxtApp()
     const category = ref(null)
+
+    function toList(input) {
+        if (Array.isArray(input)) return input
+        return []
+    }
+
+    const slug = computed(() => {
+        const raw = route.params.slug
+        return Array.isArray(raw) ? raw[0] : raw
+    })
 
     const products = ref([])
     const bestSellingProducts = ref([])
@@ -227,59 +237,55 @@
     const departmentSpaces = ref([])
 
     async function loadCategory() {
-        const resp = await gateway.content.readItems('departments', {
+        const resp = await $directus.request($readItems('departments', {
             filter: {
-                slug: { _eq: `${route.params.slug}` }
+                slug: { _eq: `${slug.value}` }
             },
             limit: 1,
             fields: [
                 '*',
-                'categories.categories_id.*',   // <-- REQUIRED
-                'categories.categories_id.children.children_id.*' // optional deeper nesting
+                'menus.*',
+                'categories.categories_id.*'
             ]
-        })
+        }))
 
-        category.value = Array.isArray(resp) ? resp[0] : (resp?.data?.[0] || null)
+        category.value = toList(resp)[0] || null
     }
 
     async function loadProducts() {
-        // Use backend-agnostic useProducts composable
         await fetchProducts()
         const all = (productsData.value?.items || [])
-        // Try to use a backend-agnostic category id
         const catId = category.value?.id || category.value?.category_id || category.value?.categoryId || category
             .value?.magento_category_id
-        // Filter by category if provided
         const filtered = catId ? all.filter(p => String(p.category_id || p.category || p.categoryId) === String(
             catId)) : all
         products.value = filtered
-        // Example: Best sellers and event products can be filtered by flags if available
         bestSellingProducts.value = filtered.filter(p => p.bestSelling)
         eventProducts.value = filtered.filter(p => p.type === 'event')
     }
 
     async function loadPosts() {
-        // Posts about this category from content domain
-        posts.value = await gateway.content.readItems('posts', {
+        const resp = await $directus.request($readItems('posts', {
             filter: {
                 categories: {
                     _eq: category.value?.id
                 }
             },
             limit: 10
-        }).then(r => r?.data || [])
+        }))
+        posts.value = toList(resp)
     }
 
     async function loadSpaces() {
-        // Spaces about this category from content domain
-        departmentSpaces.value = await gateway.content.readItems('spaces', {
+        const resp = await $directus.request($readItems('spaces', {
             filter: {
                 categories: {
                     _eq: category.value?.id
                 }
             },
             limit: 10
-        }).then(r => r?.data || [])
+        }))
+        departmentSpaces.value = toList(resp)
     }
 
     async function loadAll() {
@@ -294,8 +300,14 @@
     const normalizedCategories = computed(() => {
         if (!category.value?.categories) return []
         return category.value.categories
-            .map(c => c.categories_id)
+            .map(c => c.categories_id || c)
             .filter(Boolean)
+    })
+
+    const normalizedMenus = computed(() => {
+        const menus = category.value?.menus
+        if (!Array.isArray(menus)) return []
+        return menus.filter(Boolean)
     })
 
     await loadAll()

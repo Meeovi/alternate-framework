@@ -12,97 +12,74 @@
   import {
     ref,
     onMounted,
-    watch
+    watch,
+    useCookie,
+    useRuntimeConfig
   } from '#imports'
-  import {
-    useCurrencyStore
-  } from '~/stores/currency'
-  import {
-    useCommerceQuery
-  } from '../../composables/globals/useCommerceQuery'
-  import {
-    useCommerceMutation
-  } from '../../composables/globals/useCommerceMutation'
-  import {
-    getCurrencySymbol
-  } from '~/utils/currency'
-  import {
-    useCurrency
-  } from '~/app/composables/useCurrency'
 
-  const store = useCurrencyStore()
-  const selectedCurrency = ref('')
-  const availableCurrencies = ref([])
+  const defaultCurrency = 'USD'
+  const symbolMap = {
+    USD: '$',
+    EUR: 'EUR',
+    GBP: 'GBP',
+    CAD: 'CAD',
+    AUD: 'AUD',
+    JPY: 'JPY'
+  }
 
-  const {
-    currentCurrency,
-    setCurrency
-  } = useCurrency()
+  const runtimeConfig = useRuntimeConfig()
+  const runtimeCurrencies = runtimeConfig.public?.currencies
 
-  // Fetch currency data from Commerce
-  const {
-    data: currencyResult
-  } = useCommerceQuery('currencyQuery')
+  const configuredCodes = Array.isArray(runtimeCurrencies)
+    ? runtimeCurrencies
+    : String(runtimeCurrencies || '')
+        .split(',')
+        .map(code => code.trim().toUpperCase())
+        .filter(Boolean)
 
-  // Mutation for updating user currency preference
-  const {
-    mutate: updateUserCurrency
-  } = useCommerceMutation('updateUserCurrency')
+  const currencyCodes = configuredCodes.length ? configuredCodes : ['USD', 'EUR', 'GBP']
 
-  // Watch for currency data changes
-  watch(currencyResult, (newResult) => {
-    if (newResult?.currency) {
-      const {
-        available_currency_codes,
-        exchange_rates,
-        default_display_currency_code
-      } = newResult.currency
+  const availableCurrencies = ref(
+    currencyCodes.map(code => ({
+      code,
+      symbol: symbolMap[code] || code,
+    }))
+  )
 
-      // Map available currencies with their symbols
-      availableCurrencies.value = available_currency_codes.map(code => ({
-        code,
-        symbol: getCurrencySymbol(code),
-        rate: exchange_rates.find(rate => rate.currency_to === code)?.rate || 1
-      }))
-
-      // Set initial currency from user preference or default
-      const userCurrency = store.getCurrentCurrency
-      selectedCurrency.value = userCurrency || default_display_currency_code
-
-      // Update exchange rates in store
-      const ratesObj = {}
-      exchange_rates.forEach(({
-        currency_to,
-        rate
-      }) => {
-        ratesObj[currency_to] = rate
-      })
-      store.setExchangeRates(ratesObj)
-    }
+  const currencyCookie = useCookie<string>('vsf-currency', {
+    sameSite: 'lax',
+    path: '/'
   })
 
-  // Handle currency change
-  const handleCurrencyChange = async () => {
-    await setCurrency(selectedCurrency.value)
+  const selectedCurrency = ref(currencyCookie.value || defaultCurrency)
 
-    // If user is logged in, save preference
-    if (store.user) {
-      try {
-        await updateUserCurrency({
-          variables: {
-            currency: selectedCurrency.value
-          }
-        })
-      } catch (error) {
-        console.error('Failed to update user currency preference:', error)
-      }
+  const handleCurrencyChange = () => {
+    const value = selectedCurrency.value || defaultCurrency
+    currencyCookie.value = value
+
+    if (import.meta.client) {
+      localStorage.setItem('vsf-currency', value)
+      window.dispatchEvent(new CustomEvent('commerce:currency-changed', {
+        detail: { currency: value }
+      }))
     }
   }
 
+  watch(selectedCurrency, () => {
+    handleCurrencyChange()
+  })
+
   onMounted(() => {
-    // Initialize with store currency if available
-    if (currentCurrency.value) {
-      selectedCurrency.value = currentCurrency.value
+    if (import.meta.client) {
+      const persisted = localStorage.getItem('vsf-currency')
+      if (persisted) {
+        selectedCurrency.value = persisted
+        return
+      }
+    }
+
+    if (currencyCookie.value) {
+      selectedCurrency.value = currencyCookie.value
     }
   })
 </script>

@@ -152,7 +152,7 @@ const props = defineProps({
   }
 })
 
-const content = useContent()
+const { $directus } = useNuxtApp()
 
 const currentIndex = ref(0)
 const isPlaying = ref(false)
@@ -302,4 +302,3 @@ onMounted(() => {
   background-color: rgba(0, 0, 0, 0.02);
 }
 </style>
-import useContent from '#shared/app/composables/content/useContent'
