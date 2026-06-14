@@ -9,7 +9,7 @@ function bindGlobalGateway(gateway: SdkGateway) {
 }
 
 function resolveDomain(
-  domain: 'content' | 'auth' | 'commerce' | 'search',
+  domain: 'content' | 'auth' | 'commerce' | 'search' | 'notifications' | 'localization',
   options: GatewayFactoryOptions,
   registry?: GatewayRegistry
 ) {
@@ -35,6 +35,8 @@ export function createGateway(options: GatewayFactoryOptions = {}, registry?: Ga
     auth: resolveDomain('auth', options, registry),
     commerce: resolveDomain('commerce', options, registry),
     search: resolveDomain('search', options, registry),
+    notifications: resolveDomain('notifications', options, registry),
+    localization: resolveDomain('localization', options, registry),
   }
 
   bindGlobalGateway(gateway)

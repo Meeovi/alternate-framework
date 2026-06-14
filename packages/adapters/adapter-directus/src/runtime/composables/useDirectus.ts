@@ -36,18 +36,18 @@ export const useDirectus = () => {
     } catch (err: any) {
       if (process.dev) {
         console.error('[Directus Error]: ' + err)
-        console.log(err.response._data)
+        console.log(err.response?._data)
       } else {
         console.error(
           '[Directus Error]: ' +
-            err.response?.status +
+            (err.response?.status || 'Unknown') +
             ', ' +
-            err.response?.statusText
+            (err.response?.statusText || err.message || 'Request failed')
         )
       }
       throw createError({
-        statusCode: err.response?.status,
-        statusMessage: err.response?.statusText,
+        statusCode: err.response?.status || 500,
+        statusMessage: err.response?.statusText || err.message || 'Internal Server Error',
         data: err.response?._data
       })
     }

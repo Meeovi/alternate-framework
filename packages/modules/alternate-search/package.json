@@ -21,6 +21,8 @@
   },
   "scripts": {
     "build": "tsdown index.ts",
+    "prepare": "npm run build",
+    "prepack": "npm run build",
     "dev": "tsdown index.ts --watch",
     "test": "vitest",
     "coverage": "vitest run --coverage --coverage.provider=istanbul",

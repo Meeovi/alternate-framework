@@ -85,6 +85,34 @@
     "./gateway/types": {
       "types": "./dist/gateway/types.d.ts",
       "import": "./dist/gateway/types.js"
+    },
+    "./contracts": {
+      "types": "./dist/contracts/index.d.ts",
+      "import": "./dist/contracts/index.js"
+    },
+    "./notifications": {
+      "types": "./dist/notifications/index.d.ts",
+      "import": "./dist/notifications/index.js"
+    },
+    "./notifications/adapter": {
+      "types": "./dist/notifications/adapter.d.ts",
+      "import": "./dist/notifications/adapter.js"
+    },
+    "./notifications/types": {
+      "types": "./dist/notifications/types.d.ts",
+      "import": "./dist/notifications/types.js"
+    },
+    "./localization": {
+      "types": "./dist/localization/index.d.ts",
+      "import": "./dist/localization/index.js"
+    },
+    "./localization/adapter": {
+      "types": "./dist/localization/adapter.d.ts",
+      "import": "./dist/localization/adapter.js"
+    },
+    "./localization/types": {
+      "types": "./dist/localization/types.d.ts",
+      "import": "./dist/localization/types.js"
     }
   },
   "main": "./dist/index.js",
@@ -109,7 +137,14 @@
       "gateway": ["./dist/gateway/index.d.ts"],
       "gateway/createGateway": ["./dist/gateway/createGateway.d.ts"],
       "gateway/registry": ["./dist/gateway/registry.d.ts"],
-      "gateway/types": ["./dist/gateway/types.d.ts"]
+      "gateway/types": ["./dist/gateway/types.d.ts"],
+      "contracts": ["./dist/contracts/index.d.ts"],
+      "notifications": ["./dist/notifications/index.d.ts"],
+      "notifications/adapter": ["./dist/notifications/adapter.d.ts"],
+      "notifications/types": ["./dist/notifications/types.d.ts"],
+      "localization": ["./dist/localization/index.d.ts"],
+      "localization/adapter": ["./dist/localization/adapter.d.ts"],
+      "localization/types": ["./dist/localization/types.d.ts"]
     }
   },
   "files": [
@@ -120,6 +155,8 @@
   ],
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
+    "prepack": "npm run build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",

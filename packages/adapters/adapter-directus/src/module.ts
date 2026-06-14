@@ -3,9 +3,99 @@ import { fileURLToPath } from 'url'
 import { defu } from 'defu'
 import { defineNuxtModule, addImportsDir } from '@nuxt/kit'
 import { joinURL } from 'ufo'
+import { $fetch } from 'ofetch'
 import type { DirectusQueryParams } from './runtime/types'
 
 export type * from './runtime/types'
+
+function normalizeDirectusParams(params: Record<string, any> = {}): Record<string, any> {
+  const query = { ...params }
+  if (query.filter && typeof query.filter === 'object') {
+    query.filter = JSON.stringify(query.filter)
+  }
+  if (query.deep && typeof query.deep === 'object') {
+    query.deep = JSON.stringify(query.deep)
+  }
+  return query
+}
+
+function createDirectusClient(config: { url?: string, staticToken?: string } = {}): any {
+  const { url, staticToken } = config
+  const directusUrl = url
+
+  if (!directusUrl) {
+    throw new Error('Directus URL is required')
+  }
+
+  return {
+    readItems: async (collection: string, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${directusUrl}/items/${collection}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return Array.isArray(response?.data) ? response.data : []
+    },
+    readItem: async (collection: string, id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${directusUrl}/items/${collection}/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readFieldsByCollection: async (collection: string, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${directusUrl}/fields/${collection}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return Array.isArray(response?.data) ? response.data : []
+    },
+    createItem: async (collection: string, payload: Record<string, any>) => {
+      const response = await $fetch<{ data?: any }>(`${directusUrl}/items/${collection}`, {
+        method: 'POST',
+        body: payload,
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    updateItem: async (collection: string, id: string | number, payload: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${directusUrl}/items/${collection}/${id}`, {
+        method: 'PATCH',
+        body: payload,
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    deleteItem: async (collection: string, id: string | number) => {
+      await $fetch(`${directusUrl}/items/${collection}/${id}`, {
+        method: 'DELETE',
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return true
+    },
+    uploadFiles: async (formData: FormData) => {
+      const response = await $fetch<{ data?: any }>(`${directusUrl}/files`, {
+        method: 'POST',
+        body: formData,
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    getAssetUrl: (file: any) => {
+      const fileId = file?.id || file?.directus_files_id?.id || file?.filename_disk || file
+      if (!directusUrl || !fileId) return ''
+      return `${directusUrl}/assets/${fileId}`
+    },
+    request: async (path: string, options: Record<string, any> = {}) => {
+      return $fetch(`${directusUrl}${path}`, {
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+        ...options,
+      })
+    },
+  }
+}
 
 export interface ModuleOptions {
   url?: string
@@ -88,13 +178,12 @@ export default defineNuxtModule<ModuleOptions>({
     // -----------------------------
     addImportsDir(resolve(runtimeDir, 'composables'))
 
-    // -----------------------------
+// -----------------------------
     // 4. Register adapter dynamically
     // -----------------------------
     ;(nuxt as any).hook('alternate:registerAdapter', (registry: AdapterRegistry) => {
       registry.register('content', 'directus', (config: any) => {
-        const { createDirectusClient } = require('./runtime/composables/useContentRequest')
-        return createDirectusClient(config)
+        return createDirectusClient({ url: options.url, staticToken: options.token })
       })
     })
 

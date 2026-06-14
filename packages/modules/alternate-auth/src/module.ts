@@ -1,4 +1,7 @@
-import { defineNuxtModule, addServerHandler, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addServerHandler } from '@nuxt/kit'
+import { existsSync } from 'node:fs'
+import { dirname, resolve as resolvePath } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 export interface SocialProviderConfig {
   name: string
@@ -38,7 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
   },
 
   async setup(options, nuxt) {
-    const resolver = createResolver(import.meta.url)
+    const moduleDir = dirname(fileURLToPath(import.meta.url))
 
     //
     // ---------------------------------------------------------
@@ -102,9 +105,18 @@ export default defineNuxtModule<ModuleOptions>({
     // 4. Register the API route
     // ---------------------------------------------------------
     //
+    const distRuntimeHandler = resolvePath(moduleDir, 'runtime/server/api/auth/[...all]')
+    const srcRuntimeHandler = resolvePath(moduleDir, '../src/runtime/server/api/auth/[...all]')
+    const authHandlerPath =
+      existsSync(`${distRuntimeHandler}.js`) ||
+      existsSync(`${distRuntimeHandler}.mjs`) ||
+      existsSync(`${distRuntimeHandler}.ts`)
+        ? distRuntimeHandler
+        : srcRuntimeHandler
+
     addServerHandler({
-      route: '/api/auth/[...all]',
-      handler: resolver.resolve('./runtime/server/api/auth/[...all]'),
+      route: '/api/auth/**',
+      handler: authHandlerPath,
     })
   },
 })

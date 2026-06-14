@@ -9,6 +9,8 @@ export interface GatewayFactoryOptions {
   auth?: GatewayDomainOptions | null
   commerce?: GatewayDomainOptions | null
   search?: GatewayDomainOptions | null
+  notifications?: GatewayDomainOptions | null
+  localization?: GatewayDomainOptions | null
 }
 
 export interface GatewayProviders {
@@ -16,6 +18,8 @@ export interface GatewayProviders {
   auth: AnyRecord | null
   commerce: AnyRecord | null
   search: AnyRecord | null
+  notifications: AnyRecord | null
+  localization: AnyRecord | null
 }
 
 export interface SdkGateway extends GatewayProviders {}

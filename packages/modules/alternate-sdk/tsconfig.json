@@ -23,7 +23,10 @@
     "content/**/*.ts",
     "search/**/*.ts",
     "federation/**/*.ts",
-    "gateway/**/*.ts"
+    "gateway/**/*.ts",
+    "contracts/**/*.ts",
+    "notifications/**/*.ts",
+    "localization/**/*.ts"
   ],
   "exclude": [
     "dist",
