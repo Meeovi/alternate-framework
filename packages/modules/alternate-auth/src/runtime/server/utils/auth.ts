@@ -52,15 +52,39 @@ async function resolvePrismaClient() {
 const prisma = await resolvePrismaClient();
 const config = useRuntimeConfig()
 
-type SocialProviderOptions = Record < string, string | string[] | undefined >
-  type PluginOptions = Record < string, unknown >
-  type PluginFactory = (options ? : PluginOptions) => unknown
+type SocialProviderOptions = Record<string, string | string[] | undefined>
+type PluginOptions = Record<string, unknown>
+
+interface SocialProviderConfig {
+  name: string
+  clientId?: string
+  clientSecret?: string
+  [key: string]: unknown
+}
+
+interface BetterAuthConfig {
+  socialProviders?: SocialProviderConfig[]
+  plugins?: Array<{ name: string; options?: PluginOptions }>
+  emailAndPassword?: boolean | { enabled?: boolean; autoSignIn?: boolean }
+  options?: Record<string, unknown>
+}
+
+declare function useRuntimeConfig(): {
+  betterAuth?: BetterAuthConfig
+  auth?: { secret?: string }
+  public: { auth?: { baseURL?: string } } & Record<string, unknown>
+}
+
+function getBetterAuthConfig() {
+  return config.betterAuth || {}
+}
 
 // Build social providers from env/config
 async function buildSocialProviders() {
-  const providers: Record < string, SocialProviderOptions > = {}
+  const providers: Record<string, SocialProviderOptions> = {}
+  const betterAuthConfig = getBetterAuthConfig()
 
-  const configs = config.betterAuth?.socialProviders || []
+  const configs = betterAuthConfig.socialProviders || []
 
   for (const providerConfig of configs) {
     const {
@@ -86,7 +110,8 @@ async function buildSocialProviders() {
 // Dynamically load and configure plugins
 async function buildPlugins() {
   const plugins: unknown[] = []
-  const configs = config.betterAuth?.plugins || []
+  const betterAuthConfig = getBetterAuthConfig()
+  const configs = betterAuthConfig.plugins || []
 
   for (const pluginConfig of configs) {
     const plugin = await loadPlugin(pluginConfig.name, pluginConfig.options)
@@ -97,39 +122,49 @@ async function buildPlugins() {
 }
 
 async function loadPlugin(name: string, options: PluginOptions = {}) {
-  // Core plugins from better-auth/plugins
+  // Core plugins from better-auth/plugins (use any to avoid type conflicts)
+  const corePlugins = await import('better-auth/plugins')
   const {
     twoFactor,
     organization,
     username,
-    passkey,
     magicLink,
     emailOTP,
     jwt,
     bearer,
     admin,
-    apiKey,
-    sso,
     oidcProvider,
-    stripe,
-    // Add more as needed
-  } = await import('better-auth/plugins')
+  } = corePlugins
 
-  const pluginMap: Record < string, PluginFactory > = {
+  // Use any type to avoid stricter type checking on plugin options
+  const pluginMap: Record<string, (options?: any) => any> = {
     '2fa': twoFactor,
     'twoFactor': twoFactor,
     'organization': organization,
     'username': username,
-    'passkey': passkey,
     'magicLink': magicLink,
     'emailOTP': emailOTP,
     'jwt': jwt,
     'bearer': bearer,
     'admin': admin,
-    'apiKey': apiKey,
-    'sso': sso,
     'oidcProvider': oidcProvider,
-    'stripe': stripe,
+    'oidc': oidcProvider,
+  }
+
+  // Handle plugins from separate packages (ESM exports, no .default)
+  const separatePluginLoaders: Record<string, () => Promise<any>> = {
+    'passkey': async () => import('@better-auth/passkey'),
+    'apiKey': async () => import('@better-auth/api-key'),
+    'sso': async () => import('@better-auth/sso'),
+    'stripe': async () => import('@better-auth/stripe'),
+  }
+
+  const separatePluginLoader = separatePluginLoaders[name]
+  if (separatePluginLoader) {
+    const pluginModule = await separatePluginLoader()
+    const plugin = pluginModule.default || pluginModule
+    if (plugin) return plugin(options)
+    return null
   }
 
   const pluginFn = pluginMap[name]
@@ -150,7 +185,7 @@ export const auth = betterAuth({
   },
 
   database: prismaAdapter(prisma, {
-    provider: `${process.env.BETTER_AUTH_DATABASE_PROVIDER}`,
+    provider: (process.env.BETTER_AUTH_DATABASE_PROVIDER || 'postgresql') as 'postgresql' | 'sqlite' | 'cockroachdb' | 'mysql' | 'sqlserver' | 'mongodb',
   }),
 
   baseURL: config.public.auth?.baseURL || process.env.BETTER_AUTH_URL,
@@ -160,14 +195,14 @@ export const auth = betterAuth({
   socialProviders,
 
   // Dynamic plugins array
-  plugins,
+  plugins: plugins as any,
 
   // Optional: email/password configuration
-  emailAndPassword: config.betterAuth?.emailAndPassword !== false ? {
+  emailAndPassword: getBetterAuthConfig().emailAndPassword !== false ? {
     enabled: true,
     autoSignIn: true,
   } : undefined,
 
   // Merge any additional options
-  ...config.betterAuth?.options,
+  ...getBetterAuthConfig().options,
 })

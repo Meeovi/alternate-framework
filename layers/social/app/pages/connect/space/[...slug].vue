@@ -104,7 +104,7 @@
     const router = useRouter();
     const tab = ref(route.query.tab || null)
     const searchDialog = ref(false)
-    const { $readItems } = useNuxtApp()
+    const { $directus, $readItems, $readItem } = useNuxtApp()
     const {
         user,
         loggedIn
@@ -113,7 +113,7 @@
     const {
         data: space
     } = await useAsyncData('space', async () => {
-        const resp = await readItems('spaces', {
+        const resp = await $directus.request($readItems('spaces', {
             filter: {
                 slug: {
                     _eq: `${route.params.slug}`
@@ -123,18 +123,18 @@
                 'products.products_id.*', 'lists.lists_id.*', 'media.*'
             ],
             limit: 1
-        })
+        }))
         return normalizeSpaceRecord(resp?.[0] || null)
     })
 
     const {
         data: individualSpaceBar
     } = await useAsyncData('individualSpaceBar', async () => {
-        const resp = await readItem('navigation', '83', {
+        const resp = await $directus.request($readItem('navigation', '83', {
             fields: ['*', {
                 '*': ['*']
             }]
-        })
+        }))
         return resp || null
     })
 

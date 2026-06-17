@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./.nuxt/tsconfig.app.json" },
+    { "path": "./.nuxt/tsconfig.server.json" },
+    { "path": "./.nuxt/tsconfig.shared.json" },
+    { "path": "./.nuxt/tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@mframework/adapter-prisma": ["../../packages/adapters/adapter-prisma/src/index.ts"]
+    }
+  }
+}

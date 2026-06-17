@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id         String    @id @db.VarChar(255)
+  name       String?
+  email      String?
+  login      String?
+  avatar     String?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+
+  chats chats[] @relation("UserChats")
+}
+
+model chats {
+  id         String    @id @db.VarChar(255)
+  title      String?
+  visibility String    @default("private")
+  userId     String    @db.VarChar(255)
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now())
+
+  user      users      @relation("UserChats", fields: [userId], references: [id])
+  messages  messages[]
+  votes     votes[]
+
+  @@index([userId], map: "idx_user_id")
+  @@map("chats")
+}
+
+model messages {
+  id         String    @id @db.VarChar(255)
+  chatId     String    @db.VarChar(255)
+  userId     String    @db.VarChar(255)
+  role       String    @default("user") @db.VarChar(255)
+  parts      Json?
+  attachments Json?
+  tokenUsage Json?
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime  @default(now()) @db.Timestamp(6)
+
+  chat    chats   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  votes   votes[]
+
+  @@index([chatId], map: "idx_chat_id")
+  @@map("messages")
+}
+
+model votes {
+  chatId     String   @db.VarChar(255)
+  messageId  String   @db.VarChar(255)
+  isUpvoted  Boolean  @default(false)
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @db.Timestamp(6)
+
+  chat    chats    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  message messages @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, messageId])
+  @@index([chatId], map: "idx_chat_id")
+  @@index([isUpvoted(sort: Desc)], map: "idx_is_upvoted")
+  @@index([messageId], map: "idx_message_id")
+  @@map("votes")
+}

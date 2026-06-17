@@ -4,7 +4,7 @@ export default async function updatePost(websiteId, websiteData) {
 
   try {
     if (content && typeof content.updateItem === 'function') {
-      const resp = await $directus.request($updateItem('websites', websiteId, websiteData)
+      const resp = await $directus.request($updateItem('websites', websiteId, websiteData))
       return resp?.data || resp
     }
     throw new Error('No adapter content client available for updateItem')

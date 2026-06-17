@@ -36,7 +36,7 @@
 import { ref } from '#imports'
 import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
 
-import { useContentForm } from '../../../composables/useContentForm'
+import { useContentForm } from '../../../../composables/useContentForm'
 
 const dialog = ref(false)
   const { $readFieldsByCollection } = useNuxtApp()

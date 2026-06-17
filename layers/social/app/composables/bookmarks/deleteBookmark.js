@@ -4,7 +4,7 @@ export default async function deleteWebsite(websiteId) {
 
   try {
     if (content && typeof content.deleteItem === 'function') {
-      await $directus.request($deleteItem('websites', websiteId)
+      await $directus.request($deleteItem('websites', websiteId))
       return true
     }
     throw new Error('No adapter content client available for deleteItem')

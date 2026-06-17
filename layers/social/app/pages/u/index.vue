@@ -399,7 +399,6 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import { useAuth } from '#auth/app/composables/useAuth'
 
 const { user, fetchSession, signOut: authSignOut } = useAuth()
 const loading = ref(false)

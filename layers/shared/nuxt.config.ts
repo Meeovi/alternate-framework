@@ -44,6 +44,39 @@ export default defineNuxtConfig({
     '@nuxtjs/leaflet'
   ],
 
+  seo: {
+    meta: {
+      // Basic SEO
+      description: `${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
+      author: `${process.env.NUXT_PUBLIC_SITE_AUTHOR || 'John Doe'}`,
+
+      // Theme & Color
+      themeColor: [
+        { content: '#18181b', media: '(prefers-color-scheme: dark)' },
+        { content: 'white', media: '(prefers-color-scheme: light)' },
+      ],
+      colorScheme: 'dark light',
+
+      // Social Media
+      twitterCreator: `${process.env.NUXT_PUBLIC_TWITTER_HANDLE || '@myhandle'}`,
+      twitterSite: `${process.env.NUXT_PUBLIC_TWITTER_HANDLE || '@myhandle'}`,
+
+      // App Info
+      applicationName: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'} App`,
+
+      // Nuxt SEO Utils already sets the below tags for you
+      ogSiteName: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'}`,
+      ogLocale: 'en_US',
+      ogType: 'website',
+      ogUrl: 'https://example.com',
+      ogTitle: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'} - ${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
+
+      // Other Nuxt SEO modules handle these
+      ogImage: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}/og-image.png`,
+      robots: 'index, follow',
+    }
+  },
+
   unfonts: {
     google: {
       families: ['Open Sans', 'Material+Icons'],
@@ -266,6 +299,9 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    optimizeDeps: {
+      exclude: ['vuetify'],
+    },
     logLevel: 'info',
     plugins: [
       // @ts-ignore

@@ -43,7 +43,9 @@ export function useContentForm(collection: string, fields: any, options: Content
       }
 
       if (field.meta?.required || !field.schema?.is_nullable) {
-        nextRequired.push(field.field)
+        if (!nextRequired.includes(field.field)) {
+          nextRequired.push(field.field)
+        }
       }
 
       if (!(field.field in form)) {

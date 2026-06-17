@@ -26,7 +26,7 @@ export default async function createWebsite(websiteData) {
         slug: websiteData.slug,
         coverFile: null,
         username: websiteData.username
-      })
+      }))
       return resp?.data || resp
     }
 

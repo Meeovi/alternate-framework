@@ -1,11 +1,11 @@
-import { createDefaultRendererRegistry } from './renderers/index.js'
+import { createDefaultRendererRegistry, type UiFormsRendererRegistry } from './renderers/index.js'
 
 export interface UiFormsPluginOptions {
-  rendererRegistry?: Record<string, unknown>
+  rendererRegistry?: UiFormsRendererRegistry
 }
 
 export interface UiFormsApi {
-  getRenderers: () => Record<string, unknown>
+  getRenderers: () => UiFormsRendererRegistry
 }
 
 export function createUiFormsPlugin(nuxtApp: any, options: UiFormsPluginOptions = {}): UiFormsApi {

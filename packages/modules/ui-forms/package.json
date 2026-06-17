@@ -11,9 +11,15 @@
       "types": "./dist/src/index.d.ts",
       "import": "./dist/src/index.js"
     },
-    "./components/*": "./src/components/*",
-    "./nuxt-layer": "./nuxt-layer/index.ts",
-    "./schemas/*": "./src/schemas/*"
+    "./components/*": {
+      "import": "./src/components/*"
+    },
+    "./nuxt-layer": {
+      "import": "./nuxt-layer/index.ts"
+    },
+    "./schemas/*": {
+      "import": "./src/schemas/*"
+    }
   },
   "files": [
     "dist",
@@ -28,14 +34,18 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@jsonforms/core": "^3.8.0",
+    "@jsonforms/vue": "^3.8.0",
+    "@jsonforms/vue-vuetify": "^3.8.0",
+    "maska": "^2.1.11",
     "zod": "^3.24.0"
   },
   "peerDependencies": {
-    "vue": "^3.4.0",
-    "nuxt": "^4.0.0"
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0"
   },
   "devDependencies": {
-    "typescript": "~6.0.3",
-    "@types/node": "latest"
+    "@types/node": "latest",
+    "typescript": "~6.0.3"
   }
 }

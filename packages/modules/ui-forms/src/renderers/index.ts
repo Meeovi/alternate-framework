@@ -1,17 +1,16 @@
-import { createVuetifyRendererRegistry } from './vuetify.js'
-import { richTextRenderer } from './custom/richtext.renderer.js'
-import { fileUploadRenderer } from './custom/fileupload.renderer.js'
-import { relationRenderer } from './custom/relation.renderer.js'
+import { createDefaultJsonFormsRegistry } from './vuetify.js'
+import type {
+  JsonFormsCellRendererRegistryEntry,
+  JsonFormsRendererRegistryEntry,
+} from '@jsonforms/core'
 
-export interface RendererDefinition {
-  key: string
-  tester: (scope: string, schema: Record<string, any>) => boolean
-  component: string
+export interface UiFormsRendererRegistry {
+  renderers: JsonFormsRendererRegistryEntry[]
+  cells: JsonFormsCellRendererRegistryEntry[]
 }
 
-export function createDefaultRendererRegistry(): Record<string, unknown> {
-  return {
-    ...createVuetifyRendererRegistry(),
-    custom: [richTextRenderer, fileUploadRenderer, relationRenderer],
-  }
+export * from './vuetify.js'
+
+export function createDefaultRendererRegistry(): UiFormsRendererRegistry {
+  return createDefaultJsonFormsRegistry()
 }

@@ -1,9 +1,9 @@
 <template>
     <div>
-        <v-dialog max-width="500">
+        <v-dialog v-model="dialog" max-width="500" :scroll-strategy="'reposition'">
             <template v-slot:activator="{ props: activatorProps }">
-                <v-btn color="primary" v-bind="activatorProps" icon="fas fa-gear" size="medium"
-                    title="Open Settings"></v-btn>
+                <v-btn color="red darken-1" v-bind="activatorProps" prepend-icon="fas fa-gear" text="Edit" variant="text"
+                    title="Edit this Content"></v-btn>
             </template>
 
             <template v-slot:default="{ isActive }">
@@ -44,9 +44,9 @@
                                 </div>
                                 <v-divider class="mt-12"></v-divider>
                                 <div>
-                                    <v-btn color="blue-darken-1" variant="text" @click="isActive.value = false">
-                                        Close
-                                    </v-btn>
+<v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+                        Close
+                    </v-btn>
                                     <v-spacer></v-spacer>
                                     <v-btn color="blue-darken-1" variant="text" type="submit" @click="confirmDelete"
                                         :loading="deleteLoading">
@@ -63,7 +63,7 @@
         </v-dialog>
 
         <!-- Delete Confirmation Dialog -->
-        <v-dialog v-model="deleteDialog" max-width="500px">
+        <v-dialog v-model="deleteDialog" max-width="500px" :scroll-strategy="'reposition'">
             <v-card>
                 <h3 class="text-h5">Delete Post</h3>
                 <div>
@@ -88,16 +88,22 @@
     import {
         ref
     } from 'vue';
-    import uploadFiles from '../../../composables/globals/uploadFiles';
-    import updatePost from '~/composables/posts/updatePost';
+    import uploadFiles from '../../../composables/content/uploadFiles'
+    import updatePost from '../../../composables/posts/updatePost';
     import {
         useUserStore
     } from '#auth/app/stores/user'
     import {
         useRouter
     } from 'vue-router'
+    import {
+        useAuth
+    } from '#auth/app/composables/useAuth'
 
-    const userStore = useUserStore()
+    const {
+        user
+    } = useAuth()
+
     // Make sure your props are properly defined
     // Update props to include space_id
     const props = defineProps({
@@ -112,11 +118,10 @@
     const deleteLoading = ref(false);
 
     const userDisplayName = computed(() => {
-        return userStore.user?.name || userStore.user?.username || 'User'
+        return user.user?.name || user.user?.username || 'User'
     })
 
     const route = useRoute();
-    const router = useRouter();
 
     const postData = ref({
         id: '', // Add this to store the post ID
@@ -128,7 +133,7 @@
         media: null,
         audio: null,
         username: userDisplayName,
-        user_avatar: userStore.user?.photoUrl,
+        user_avatar: user.user?.photoUrl,
         space_id: props.space_id, // Initialize with the space_id from props
     });
 

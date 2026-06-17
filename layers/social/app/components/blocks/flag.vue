@@ -1,80 +1,80 @@
 <template>
-    <div>
-        <v-btn class="btn btn-sm btn-black-outline display-4" @click="dialog = true" prepend-icon="fas fa-flag"
-            title="Flag this content" variant="flat"></v-btn>
+  <div>
+    <v-btn variant="text" color="inherit" prepend-icon="fas fa-flag" title="Flag this content" @click="dialog = true">
+      Flag this content
+    </v-btn>
 
-        <v-dialog v-model="dialog" max-width="800" transition="dialog-bottom-transition">
-            <template v-slot:default="{ isActive }">
-                <v-card class="pa-4">
-                    <h1>New Report</h1>
-                    <div v-if="formError" class="error">{{ formError }}</div>
-                    <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                    <JsonSchemaFormFromFields
-                        :fields="reportFields"
-                        :model-value="form"
-                        @update:model-value="Object.assign(form, $event)"
-                        @submit="submitForm"
-                    />
+    <v-dialog v-model="dialog" transition="dialog-bottom-transition" fullscreen :scroll-strategy="'reposition'">
+      <v-card class="pa-4">
+        <v-toolbar>
+          <v-btn :icon="'mdi-close'" variant="text" @click="dialog = false" />
 
-                    <template>
-                        <v-spacer></v-spacer>
+          <v-toolbar-title>New Report</v-toolbar-title>
 
-                        <v-btn text="Close" variant="text" @click="isActive.value = false"></v-btn>
-                    </template>
-                </v-card>
-            </template>
-        </v-dialog>
-    </div>
+          <v-toolbar-items>
+            <v-btn variant="text" @click="submitForm">
+              Save
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <div v-if="formError" class="error">{{ formError }}</div>
+        <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
+        <JsonSchemaFormFromFields :fields="reportFields" :model-value="form"
+          @update:model-value="Object.assign(form, $event)" @submit="submitForm" />
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script setup>
-    import {
-        ref
-    } from '#imports'
-    import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
-    import {
-        useContentForm
-    } from '../../composables/useContentForm'
+  import {
+    computed,
+    ref,
+  } from '#imports'
+  import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
+  import {
+    useContentForm
+  } from '../../composables/useContentForm'
 
-    const dialog = ref(false)
- const { $readFieldsByCollection } = useNuxtApp()
+  const props = defineProps({
+    reportId: {
+      type: [String, Number, Object],
+      required: false,
+    },
+    report: {
+      type: [String, Number, Object],
+      required: false,
+    },
+  })
 
-     const { data, error } = await useAsyncData('report-schema-fields', async () => {
-         const resp = await readFieldsByCollection('report')
-         return Array.isArray(resp) ? resp : []
-     })
+  const providedReportId = props.reportId ?? props.report ?? null
+  const dialog = ref(false)
+  const {
+    $directus,
+    $readFieldsByCollection,
+  } = useNuxtApp()
 
-    // guard against undefined/null data.value and empty arrays
-    // Don't throw here (that will crash the parent page). Instead fall back to an empty fields array
-    let reportFields = data
-    if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
-        console.warn('Report fields not available or empty', error?.value)
-        reportFields = ref([])
-    }
+  const {
+    data,
+    error,
+  } = await useAsyncData(`report-schema-fields-${String(providedReportId ?? 'new')}`, async () => {
+    const resp = await $directus.request($readFieldsByCollection('report'))
+    return Array.isArray(resp) ? resp : []
+  })
 
-    // use composable for form handling (validation, submit, provide context)
-    const {
-        form,
-        formError,
-        formSuccess,
-        submitForm
-    } = useContentForm('report', reportFields, {
-        clearOnSuccess: true,
-        closeDialogRef: dialog
-    })
+  if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
+    console.warn('Report fields not available or empty', error?.value)
+  }
 
-    const props = defineProps({
-        // Accept either `reportId` or `report` to be compatible with different usages
-        reportId: {
-            type: [String, Number, Object],
-            required: false
-        },
-        report: {
-            type: [String, Number, Object],
-            required: false
-        }
-    });
+  const reportFields = computed(() => Array.isArray(data.value) ? data.value : [])
 
-    // normalize prop value
-    const providedReportId = props.reportId ?? props.report ?? null
+  const {
+    form,
+    formError,
+    formSuccess,
+    submitForm,
+  } = useContentForm('report', reportFields, {
+    clearOnSuccess: true,
+    closeDialogRef: dialog,
+  })
 </script>

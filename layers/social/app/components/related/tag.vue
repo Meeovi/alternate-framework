@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="text-center">
-            <v-chip class="ma-2" label :to="`/hashtag/${tag?.slug}`">
-                {{ tag?.name }}
+            <v-chip class="ma-2" label :to="`/connect/hashtag/${tag?.slug}`">
+                #{{ tag?.name }}
             </v-chip>
         </div>
     </div>

@@ -1,42 +1,42 @@
 <template>
   <form class="ui-forms-renderer" @submit.prevent="onSubmitInternal">
-    <SectionLayout>
-      <div v-for="(fieldSchema, key) in properties" :key="key" class="ui-forms-field">
-        <component
-          :is="resolveComponent(fieldSchema)"
-          :label="fieldSchema.title || key"
-          :model-value="modelValue[key]"
-          :schema="fieldSchema"
-          @update:model-value="updateField(key, $event)"
-        />
-      </div>
-    </SectionLayout>
+    <JsonForms
+      :data="modelValue"
+      :schema="schema"
+      :uischema="uischema"
+      :renderers="renderers"
+      :cells="cells"
+      :config="config"
+      @change="onChange"
+    />
 
     <div class="ui-forms-controls">
-      <SubmitButton :disabled="submitting">Submit</SubmitButton>
-      <ResetButton @click="onReset">Reset</ResetButton>
+      <v-btn type="submit" color="primary" :loading="submitting">
+        Submit
+      </v-btn>
+      <v-btn type="button" variant="text" @click="onReset">
+        Reset
+      </v-btn>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import SectionLayout from './layouts/SectionLayout.vue'
-import SubmitButton from './controls/SubmitButton.vue'
-import ResetButton from './controls/ResetButton.vue'
-import TextField from './fields/TextField.vue'
-import NumberField from './fields/NumberField.vue'
-import SelectField from './fields/SelectField.vue'
-import DateField from './fields/DateField.vue'
-import RichTextField from './fields/RichTextField.vue'
-import FileUploadField from './fields/FileUploadField.vue'
+import { markRaw } from 'vue'
+import { JsonForms, type JsonFormsChangeEvent } from '@jsonforms/vue'
+import { VBtn } from 'vuetify/components'
+import { createDefaultRendererRegistry } from '../renderers'
+import '@jsonforms/vue-vuetify/lib/jsonforms-vue-vuetify.css'
 
 const props = withDefaults(defineProps<{
   schema: Record<string, any>
   modelValue: Record<string, any>
+  uischema?: Record<string, any>
   submitting?: boolean
+  config?: Record<string, any>
 }>(), {
   submitting: false,
+  config: () => ({}),
 })
 
 const emit = defineEmits<{
@@ -45,22 +45,12 @@ const emit = defineEmits<{
   reset: []
 }>()
 
-const properties = computed(() => props.schema?.properties || {})
+const { renderers: unprocessedRenderers, cells: unprocessedCells } = createDefaultRendererRegistry()
+const renderers = markRaw(unprocessedRenderers)
+const cells = markRaw(unprocessedCells)
 
-const resolveComponent = (fieldSchema: Record<string, any>) => {
-  if (fieldSchema?.format === 'richtext') return RichTextField
-  if (fieldSchema?.format === 'file') return FileUploadField
-  if (fieldSchema?.format === 'date') return DateField
-  if (fieldSchema?.enum) return SelectField
-  if (fieldSchema?.type === 'number' || fieldSchema?.type === 'integer') return NumberField
-  return TextField
-}
-
-const updateField = (key: string, value: unknown) => {
-  emit('update:modelValue', {
-    ...props.modelValue,
-    [key]: value,
-  })
+const onChange = (event: JsonFormsChangeEvent) => {
+  emit('update:modelValue', event.data ?? {})
 }
 
 const onSubmitInternal = () => emit('submit')
@@ -68,7 +58,13 @@ const onReset = () => emit('reset')
 </script>
 
 <style scoped>
-.ui-forms-renderer { display: grid; gap: 1rem; }
-.ui-forms-field { display: grid; gap: 0.5rem; }
-.ui-forms-controls { display: flex; gap: 0.75rem; }
+.ui-forms-renderer {
+  display: grid;
+  gap: 1rem;
+}
+
+.ui-forms-controls {
+  display: flex;
+  gap: 0.75rem;
+}
 </style>

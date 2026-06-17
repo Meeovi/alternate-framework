@@ -19,7 +19,8 @@
                         </div>
 
                         <div v-else>
-                            <NuxtImg provider="cloudinary" class="w-100" src="../../../assets/images/image3.jpg" :alt="post?.title || 'No Title'" />
+                            <NuxtImg provider="cloudinary" class="w-100" src="../../../assets/images/image3.jpg"
+                                :alt="post?.title || 'No Title'" />
                         </div>
 
                     </div>
@@ -39,7 +40,8 @@
                                 </div>
                             </div>
 
-                            <p class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text">{{ post?.content }}</p>
+                            <p class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text">{{ post?.content }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -73,7 +75,7 @@
                                     </NuxtLink>
 
                                     <NuxtLink v-else :to="`/user/${post?.author?.id}`">
-                                           <v-avatar image="https://via.placeholder.com/41" size="41"></v-avatar>
+                                        <v-avatar image="https://via.placeholder.com/41" size="41"></v-avatar>
                                     </NuxtLink>
                                 </h5>
                             </div>
@@ -163,10 +165,11 @@
     import comments from '#social/app/components/blocks/comments.vue';
     import {
         onMounted,
-        computed,
         ref
     } from '#imports'
-    import { useDirectusUrl } from '#shared/app/composables/media/useDirectusUrl'
+    import {
+        useDirectusUrl
+    } from '#shared/app/composables/media/useDirectusUrl'
     import {
         useReactionsStore
     } from '~/stores/reactions'
@@ -178,19 +181,36 @@
         if (!fileId || !directusUrl) return ''
         return `${directusUrl.replace(/\/$/, '')}/assets/${fileId}`
     }
-    const { $readItems } = useNuxtApp()
-    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '').toLowerCase()
+    const {
+        $directus,
+        $readItems,
+        $preview
+    } = useNuxtApp()
+    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '')
+        .toLowerCase()
     const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
     const hasAsset = (file) => Boolean(getAssetUrl(file))
 
     const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
 
-    const { data: post } = await useAsyncData('post', async () => {
-        const resp = await readItems('posts', {
-            filter: { slug: { _eq: `${slugParam}` } },
+    if ($preview) {
+        const post = await useAsyncData('post', () => {
+            return $directus.request($readItem('posts', slugParam))
+        });
+    }
+
+    const {
+        data: post
+    } = await useAsyncData('post', async () => {
+        const resp = await $directus.request($readItems('posts', {
+            filter: {
+                slug: {
+                    _eq: `${slugParam}`
+                }
+            },
             fields: ['*', 'author.*', 'image.*', 'file.*', 'audio.*'],
             limit: 1
-        })
+        }))
         return resp?.[0] || null
     })
 
