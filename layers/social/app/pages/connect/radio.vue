@@ -22,20 +22,20 @@
 
 <script setup>
     import {
-        ref,
+        ref
     } from '#imports';
     import stationCard from '#social/app/components/related/radio.vue'
 
+    const { $sdk } = useNuxtApp()
+
     const model = ref(null);
-    
-    const { $readItems } = useNuxtApp()
 
     const { data: radioPage } = await useAsyncData('radioPage', () => {
-        return readItem('pages', '97', { fields: ['*', { '*': ['*'] }] })
+        return $sdk.content.readItem('pages', '97', { fields: ['*', { '*': ['*'] }] })
     })
 
     const { data: stations } = await useAsyncData('stations', () => {
-        return readItems('radios', { fields: ['*', { '*': ['*'] }] })
+        return $sdk.content.readItems('radios', { fields: ['*', { '*': ['*'] }] })
     })
 
     useHead({

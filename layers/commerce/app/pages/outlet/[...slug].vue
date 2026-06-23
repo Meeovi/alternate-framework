@@ -15,7 +15,7 @@
             <div class="card-wrapper">
               <div class="item-img">
                 <NuxtImg loading="lazy" class="align-end text-white" v-if="shop?.image"
-                  :src="getAssetUrl(shop?.image)" :alt="shop?.name" cover />
+                  :src="$sdk.media?.getAssetUrl?.(shop?.image)" :alt="shop?.name" cover />
                 <div class="card-box">
                   <div class="icon-wrapper">
                     <span class="mbr-iconfont mobi-mbri-contact-form mobi-mbri"></span>
@@ -106,20 +106,16 @@
   import comments from '#social/app/components/blocks/comments.vue'
   import spaces from '#social/app/components/related/space.vue'
   import events from '#social/app/components/blocks/events/about.vue'
-  import { useAppGateway } from '../../composables/useAppGateway'
 
-  const { $directus, $readItem } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
   const route = useRoute()
   const slug = computed(() => {
     const s = route.params.slug
     return Array.isArray(s) ? s[0] : s
   })
-  const content = useAppGateway().content
-  // Fallback for getAssetUrl if content is null
-  const getAssetUrl = content?.getAssetUrl || (() => '')
 
   const { data: shopRaw } = await useAsyncData('shop', () => {
-    return content.listOutlets({
+    return $sdk.commerce.listOutlets({
       fields: ['*',
         'media.*',
         'spaces.spaces_id.*',
@@ -144,7 +140,7 @@
   const shop = computed(() => shopRaw.value?.[0] || null)
 
   const { data: shopbar } = await useAsyncData('shopbar', () => {
-    return $directus.request($readItem('navigation', '55'))
+    return $sdk.content.getItem('navigation', '55')
   })
 
   definePageMeta({

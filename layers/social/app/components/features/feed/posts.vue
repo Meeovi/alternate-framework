@@ -8,14 +8,14 @@
               <div class="items-wrapper" style="width: 1820px;">
                 <div class="item features-without-image">
                   <div class="item-wrapper">
-                    <NuxtImg loading="lazy" :src="getAssetUrl(post?.image)" :alt="post?.title || 'No Title'" />
+                    <NuxtImg loading="lazy" :src="$sdk.media?.getAssetUrl?.(post?.image)" :alt="post?.title || 'No Title'" />
                     <div class="card-box">
                       <p class="item-text mbr-fonts-style display-7">{{ post?.title }}</p>
                       <p class="item-text mbr-fonts-style display-7">{{ post?.content }}</p>
                       <div class="people-wrapper">
                         <div class="people-wrap">
                           <div class="image-wrap">
-                            <NuxtImg loading="lazy" class="person" :src="getAssetUrl(post?.user_avatar)" :alt="post?.username || 'Anonymous'" />
+                            <NuxtImg loading="lazy" class="person" :src="$sdk.media?.getAssetUrl?.(post?.user_avatar)" :alt="post?.username || 'Anonymous'" />
                           </div>
                           <div class="rating-content">
                             <p class="mbr-rating mbr-fonts-style display-4">
@@ -45,6 +45,8 @@ import { ref, computed } from 'vue'
 
 import createListBtn from '~/components/partials/globals/createListBtn.vue'
 
+const { $sdk } = useNuxtApp()
+
 const model = ref(null)
 const props = defineProps({
   post: {
@@ -54,5 +56,4 @@ const props = defineProps({
 });
 
 const { post } = props;
- const directusUrl = useDirectusUrl?.()
 </script>

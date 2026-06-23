@@ -1,6 +1,6 @@
 import { useCookie, useNuxtApp, CookieRef, useRuntimeConfig } from '#app'
 import { computed } from 'vue'
-import { DirectusAuthResponse } from '../types'
+import { DirectusAuthResponse } from '../types/index'
 import { useDirectusUrl } from './useDirectusUrl'
 
 export const useDirectusToken = () => {
@@ -8,11 +8,6 @@ export const useDirectusToken = () => {
   const baseUrl = useDirectusUrl()
   const config = useRuntimeConfig().public
 
-  /**
-   * Get or set cookie.
-   * @param name
-   * @private
-   */
   const _getOrSetCookie = (name: string) => {
     nuxtApp._cookies = nuxtApp._cookies || {}
     if (nuxtApp._cookies[name]) {

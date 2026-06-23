@@ -25,14 +25,14 @@
                   </strong>
                   <v-list lines="two">
                         <v-list-item :title="list?.name" :subtitle="list?.type"
-                          :prepend-avatar="useDirectusUrl?.().replace(/\/$/, '') + '/assets/' + (list?.image)"
-                      @click="saveProductToList(list.id)" style="cursor: pointer;" :disabled="loading">
-                      <template v-slot:append>
-                        <v-progress-circular v-if="loading" indeterminate size="24"></v-progress-circular>
-                        <v-icon v-else icon="fas fa-plus"></v-icon>
-                      </template>
-                    </v-list-item>
-                  </v-list>
+                          :prepend-avatar="$sdk.media?.getAssetUrl(list?.image)"
+                          @click="saveProductToList(list.id)" style="cursor: pointer;" :disabled="loading">
+                          <template v-slot:append>
+                            <v-progress-circular v-if="loading" indeterminate size="24"></v-progress-circular>
+                            <v-icon v-else icon="fas fa-plus"></v-icon>
+                          </template>
+                        </v-list-item>
+                      </v-list>
                 </v-col>
               </v-row>
 
@@ -55,11 +55,11 @@
 <script setup>
 import { ref } from '#imports'
 
-const { $directus, $readItems, $createItem } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 
 const { data: lists } = await useAsyncData('lists', async () => {
   const opts = { filter: { status: { _eq: 'Public' } } }
-  const resp = await $directus.request($readItems('lists', opts))
+  const resp = await $sdk.content.readItems('lists', opts)
   return resp?.data || resp
 })
 
@@ -68,7 +68,7 @@ const loading = ref(false)
 const saveProductToList = async (listId) => {
   loading.value = true
   try {
-    await $directus.request($createItem('list_items', { list: listId }))
+    await $sdk.content.createItem('list_items', { list: listId })
   } catch (err) {
     console.error('Failed to save product to list', err)
   } finally {

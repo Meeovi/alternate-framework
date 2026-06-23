@@ -1,4 +1,4 @@
-import { DirectusQueryParams, DirectusNotificationObject } from '../types'
+import { DirectusQueryParams, DirectusNotificationObject } from '../types/index'
 import { useDirectus } from './useDirectus'
 
 export const useDirectusNotifications = () => {
@@ -34,7 +34,6 @@ export const useDirectusNotifications = () => {
     return notifications.data
   }
 
-  // A partial notification object.
   const createNotification = async <T>(data: {
     notification: DirectusNotificationObject;
   }): Promise<T[]> => {

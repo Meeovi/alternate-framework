@@ -97,7 +97,7 @@ import { useRoute, useRouter } from 'vue-router';
 import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
 import updateList from '~/app/composables/lists/updateList';
 
-const { $directus, $readItem } = useNuxtApp()
+const { $sdk } = useNuxtApp()
   const route = useRoute();
   const router = useRouter();
 
@@ -118,7 +118,7 @@ const { $directus, $readItem } = useNuxtApp()
   const fetchListData = async () => {
     try {
       const listId = route.params.id;
-      const resp = await $directus.request($readItem('lists', listId))
+      const resp = await $sdk.content.getItem('lists', listId)
       const item = resp || {}
       listData.value = {
         id: item.id,

@@ -7,7 +7,7 @@ export default async function createWebsite(websiteData) {
   const route = useRoute()
   const id = route.params.id
   const provider = getListProvider()
-  const { $directus, $readItem, $readItems, $createItem, $updateItem, $deleteItem, $uploadFiles } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   try {
     // If a provider is registered and implements website creation, use it
@@ -15,8 +15,8 @@ export default async function createWebsite(websiteData) {
       return await provider.createWebsite(websiteData, { route, id })
     }
 
-    if (content && typeof content.createItem === 'function') {
-      const resp = await $directus.request($createItem('websites', {
+    if ($sdk?.content && typeof $sdk.content.createItem === 'function') {
+      const resp = await $sdk.content.createItem('websites', {
         name: websiteData.name,
         note: websiteData.note,
         status: websiteData.status,
@@ -26,7 +26,7 @@ export default async function createWebsite(websiteData) {
         slug: websiteData.slug,
         coverFile: null,
         username: websiteData.username
-      }))
+      })
       return resp?.data || resp
     }
 

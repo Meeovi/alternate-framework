@@ -7,7 +7,7 @@
                         <div class="card-wrapper">
                             <div class="row">
                                 <div class="col-12 col-md-12 col-lg-5 image-wrapper">
-                                    <NuxtImg provider="cloudinary" v-if="event?.image" class="w-100" :src="getAssetUrl(event?.image)" :alt="event?.name" />
+                                    <NuxtImg provider="cloudinary" v-if="event?.image" class="w-100" :src="$sdk.media?.getAssetUrl?.(event?.image)" :alt="event?.name" />
 
                                     <NuxtImg provider="cloudinary" v-else src="../../../assets/images/backgraund-trend.jpg" :alt="event?.name" />
                                 </div>
@@ -70,17 +70,17 @@
     import AboutEvent from '#social/app/components/blocks/events/about.vue'
     //import DiscussionEvent from '#social/app/components/blocks/events/discussion.vue'
 
+    const { $sdk } = useNuxtApp()
     const route = useRoute();
     const tab = ref(null);
-    const { $directus, $readItems } = useNuxtApp()
 
     const { data: event } = await useAsyncData('event', async () => {
         const slug = Array.isArray(route.params.slug) ? route.params.slug.join('/') : route.params.slug
-        const resp = await $directus.request($readItems('events', {
+        const resp = await $sdk.content.readItems('events', {
             filter: { slug: { _eq: slug } },
             fields: ['*'],
             limit: 1
-        }))
+        })
         return resp?.data?.[0] || resp?.[0] || null
     })
 

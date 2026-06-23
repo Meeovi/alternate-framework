@@ -20,8 +20,7 @@
 
   const route = useRoute();
   const {
-    $directus,
-    $readItems
+    $sdk
   } = useNuxtApp()
 
   const slug = computed(() => {
@@ -35,31 +34,29 @@
     error,
     refresh: refreshList
   } = await useAsyncData('list', () => {
-    return $directus.request(
-      $readItems('lists', {
-        fields: [
-          '*',
-          'category.categories_id.*',
-          'department.departments_id',
-          'spaces.spaces_id.*',
-          'products.products_id.*',
-          'products.products_id.image.*',
-          'vibez.shorts_id.*',
-          'list_template.templates.*',
-          'image.*',
-          'media.*',
-          'list_items.list_items_id.*',
-          'list_products.list_products_id.*',
-          'user.directus_users.*'
-        ],
-        filter: {
-          slug: {
-            _eq: slug.value
-          }
-        },
-        limit: 1
-      })
-    )
+    return $sdk.content.readItems('lists', {
+      fields: [
+        '*',
+        'category.categories_id.*',
+        'department.departments_id',
+        'spaces.spaces_id.*',
+        'products.products_id.*',
+        'products.products_id.image.*',
+        'vibez.shorts_id.*',
+        'list_template.templates.*',
+        'image.*',
+        'media.*',
+        'list_items.list_items_id.*',
+        'list_products.list_products_id.*',
+        'user.directus_users.*'
+      ],
+      filter: {
+        slug: {
+          _eq: slug.value
+        }
+      },
+      limit: 1
+    })
   })
 
   const list = computed(() => listRaw.value?.[0] || null)

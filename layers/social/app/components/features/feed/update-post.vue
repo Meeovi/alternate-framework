@@ -146,9 +146,9 @@
     // Function to fetch existing post data
     const fetchPostData = async () => {
         try {
-            const { $readItem } = useNuxtApp()
+            const { $sdk } = useNuxtApp()
             const listId = route.params.id; // Assuming you're passing the ID in the route
-            const response = await readItem('posts', listId)
+            const response = await $sdk.content.readItem('posts', listId)
 
             // Populate the form with existing data
             postData.value = {

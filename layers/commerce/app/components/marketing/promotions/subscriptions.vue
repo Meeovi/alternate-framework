@@ -7,7 +7,7 @@
                     <v-col cols="3" v-for="(subscriptions, index) in allSubscriptions" :key="index">
                         <v-card class="mx-auto" max-width="400">
                             <NuxtImg provider="cloudinary" loading="lazy" class="align-end text-white" height="200"
-                            :src="getAssetUrl(subscriptions?.image)" :alt="subscriptions?.name" cover />
+                            :src="$sdk.media?.getAssetUrl?.(subscriptions?.image)" :alt="subscriptions?.name" cover />
                                 <template>{{subscriptions?.name}}</template>
                             <v-card class="pt-4">
                                 Status: {{ subscriptions?.status }}
@@ -35,7 +35,7 @@
                     <v-col cols="3" v-for="(subscriptions, index) in allSubscriptions" :key="index">
                         <v-card class="mx-auto" max-width="400">
                             <NuxtImg loading="lazy" class="align-end text-white" height="200"
-                            :src="getAssetUrl(subscriptions?.image)" :alt="subscriptions?.name" cover />
+                            :src="$sdk.media?.getAssetUrl?.(subscriptions?.image)" :alt="subscriptions?.name" cover />
                                 <template>{{subscriptions?.name}}</template>
 
                             <v-card class="pt-4">
@@ -66,23 +66,24 @@ import productCard from '../../catalog/product/productCard.vue'
 import { computed, ref } from '#imports'
 import { useAuth } from '../../../composables/globals/useAuth'
 
+const { $sdk } = useNuxtApp()
+
 const auth = useAuth()
 const user = computed(() => (auth as any)?.user?.value || null)
 const userId = computed(() => user.value?.id || null)
 
 const tab = ref(null)
-const { $directus, $readItem, $readItems } = useNuxtApp()
 
 const { data: incentiveBar } = await useAsyncData('incentiveBar', async () => {
-    return $directus.request($readItem('navigation', '118', { fields: ['*', { '*': ['*'] }] }))
+    return $sdk.content.getItem('navigation', '118', { fields: ['*', { '*': ['*'] }] })
 })
 
 const { data: incentivePage } = await useAsyncData('incentivePage', async () => {
-    return $directus.request($readItem('pages', '86', { fields: ['*', { '*': ['*'] }] }))
+    return $sdk.content.getItem('pages', '86', { fields: ['*', { '*': ['*'] }] })
 })
 
 const { data: allSubscriptions } = await useAsyncData('allSubscriptions', async () => {
-    const resp = await $directus.request($readItems('products', {
+    const resp = await $sdk.content.readItems('products', {
         fields: ['*', { '*': ['*'] }],
         filter: {
             user_id: {
@@ -94,7 +95,7 @@ const { data: allSubscriptions } = await useAsyncData('allSubscriptions', async 
                 }
             }
         }
-    }))
+    })
     return (resp as any)?.data ?? (resp as any) ?? []
 })
 

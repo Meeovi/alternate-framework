@@ -2,10 +2,8 @@ declare function useNuxtApp(): any
 
 /**
  * Adapter-aware request helpers.
- * Prefer runtime adapter injected on the Nuxt app (e.g. `nuxt.$adapter`).
- * If not present, fall back to runtime `globalThis.__directus` or Nuxt helpers
- * exposed at runtime (e.g. `$readItems`, `$createItem`). This avoids static
- * imports of Directus SDK at build time.
+ * Uses $sdk.content as the primary interface.
+ * Falls back to legacy $directus/$readItems, etc. for backward compatibility.
  */
 export default function useDirectusRequest() {
   const nuxt = typeof useNuxtApp === 'function' ? useNuxtApp() as any : (globalThis as any).__nuxtApp || {}
@@ -17,17 +15,23 @@ export default function useDirectusRequest() {
     } catch (_) {}
   }
 
+  function resolveSdkContent() {
+    return nuxt?.$sdk?.content || null
+  }
+
   function resolveAdapter() {
     return nuxt?.$adapter || (globalThis as any).__adapter || null
   }
 
   function resolveDirectusClient() {
-    // prefer Nuxt-injected $directus, then globalThis directus helpers
     return nuxt?.$directus || (globalThis as any).__directus || null
   }
 
   async function request(config: any) {
     try {
+      const sdkContent = resolveSdkContent()
+      if (sdkContent && typeof sdkContent.request === 'function') return await sdkContent.request(config)
+
       const adapter = resolveAdapter()
       if (adapter && typeof adapter.request === 'function') return await adapter.request(config)
 
@@ -45,6 +49,9 @@ export default function useDirectusRequest() {
   }
 
   async function readItems(collection: string, opts?: any) {
+    const sdkContent = resolveSdkContent()
+    if (sdkContent && typeof sdkContent.readItems === 'function') return await sdkContent.readItems(collection, opts)
+
     const adapter = resolveAdapter()
     if (adapter && typeof adapter.readItems === 'function') return await adapter.readItems(collection, opts)
 
@@ -59,6 +66,9 @@ export default function useDirectusRequest() {
   }
 
   async function readItem(collection: string, id: string, opts?: any) {
+    const sdkContent = resolveSdkContent()
+    if (sdkContent && typeof sdkContent.readItem === 'function') return await sdkContent.readItem(collection, id, opts)
+
     const adapter = resolveAdapter()
     if (adapter && typeof adapter.readItem === 'function') return await adapter.readItem(collection, id, opts)
 
@@ -73,6 +83,9 @@ export default function useDirectusRequest() {
   }
 
   async function readFieldsByCollection(collection: string, opts?: any) {
+    const sdkContent = resolveSdkContent()
+    if (sdkContent && typeof sdkContent.readFieldsByCollection === 'function') return await sdkContent.readFieldsByCollection(collection, opts)
+
     const adapter = resolveAdapter()
     if (adapter && typeof adapter.readFieldsByCollection === 'function') return await adapter.readFieldsByCollection(collection, opts)
 
@@ -87,6 +100,9 @@ export default function useDirectusRequest() {
   }
 
   async function deleteItem(collection: string, id: string) {
+    const sdkContent = resolveSdkContent()
+    if (sdkContent && typeof sdkContent.deleteItem === 'function') return await sdkContent.deleteItem(collection, id)
+
     const adapter = resolveAdapter()
     if (adapter && typeof adapter.deleteItem === 'function') return await adapter.deleteItem(collection, id)
 
@@ -101,6 +117,9 @@ export default function useDirectusRequest() {
   }
 
   async function createItem(collection: string, data: any) {
+    const sdkContent = resolveSdkContent()
+    if (sdkContent && typeof sdkContent.createItem === 'function') return await sdkContent.createItem(collection, data)
+
     const adapter = resolveAdapter()
     if (adapter && typeof adapter.createItem === 'function') return await adapter.createItem(collection, data)
 
@@ -115,6 +134,9 @@ export default function useDirectusRequest() {
   }
 
   async function updateItem(collection: string, idOrFilter: any, data: any) {
+    const sdkContent = resolveSdkContent()
+    if (sdkContent && typeof sdkContent.updateItem === 'function') return await sdkContent.updateItem(collection, idOrFilter, data)
+
     const adapter = resolveAdapter()
     if (adapter && typeof adapter.updateItem === 'function') return await adapter.updateItem(collection, idOrFilter, data)
 
@@ -129,6 +151,9 @@ export default function useDirectusRequest() {
   }
 
   async function uploadFiles(formData: FormData) {
+    const sdkContent = resolveSdkContent()
+    if (sdkContent && typeof sdkContent.uploadFiles === 'function') return await sdkContent.uploadFiles(formData)
+
     const adapter = resolveAdapter()
     if (adapter && typeof adapter.uploadFiles === 'function') return await adapter.uploadFiles(formData)
 
@@ -142,5 +167,11 @@ export default function useDirectusRequest() {
     throw new Error('uploadFiles not available')
   }
 
-  return { request, readItems, readItem, readFieldsByCollection, createItem, updateItem, deleteItem, uploadFiles }
+  async function getAssetUrl(file: any) {
+    const sdkMedia = nuxt?.$sdk?.media
+    if (sdkMedia && typeof sdkMedia.getAssetUrl === 'function') return sdkMedia.getAssetUrl(file)
+    return ''
+  }
+
+  return { request, readItems, readItem, readFieldsByCollection, createItem, updateItem, deleteItem, uploadFiles, getAssetUrl }
 }

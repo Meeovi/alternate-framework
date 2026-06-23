@@ -2,7 +2,7 @@ import {
   DirectusCollectionCreation,
   DirectusCollectionRequest,
   DirectusCollectionUpdate
-} from '../types'
+} from '../types/index'
 
 import { useDirectus } from './useDirectus'
 

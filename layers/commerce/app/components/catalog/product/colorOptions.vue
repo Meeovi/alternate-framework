@@ -25,16 +25,16 @@ const emit = defineEmits(['color-selected'])
 const colors = ref([])
 const selectedColor = ref(null)
 
-const { $directus, $readItems } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 
 const loadColors = async () => {
     try {
-        const res = await $directus.request($readItems('attributes', {
+        const res = await $sdk.content.readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'color' }
             },
             sort: ['id']
-        }))
+        })
 
         const attr = (res && res[0]) || null
         const opts = attr?.options || []

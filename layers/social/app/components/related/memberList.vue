@@ -4,11 +4,12 @@ import { computed, toRef } from 'vue'
 
 type MemberLike = SocialProfile | Member | FriendRequest | FriendSuggestion
 
+const { $sdk } = useNuxtApp()
+
 const props = defineProps<{ member: MemberLike }>()
 const member = toRef(props, 'member')
 
-const directusUrl = useDirectusUrl?.()
-const hasAsset = (file: any) => Boolean(getAssetUrl(file))
+const hasAsset = (file: any) => Boolean($sdk.media?.getAssetUrl?.(file))
 
 function resolveProfile(m: MemberLike): any {
   if ('profile' in m && m.profile) return m.profile
@@ -44,7 +45,7 @@ const userLink = computed(() => {
           v-if="hasAsset(avatarUrl)"
           provider="ipx"
           class="friend-avatar"
-          :src="getAssetUrl(avatarUrl)"
+          :src="$sdk.media?.getAssetUrl?.(avatarUrl)"
           :alt="displayName"
         />
         <v-avatar

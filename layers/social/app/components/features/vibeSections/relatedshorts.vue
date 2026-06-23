@@ -17,15 +17,14 @@
   import {
     ref,
   } from '#imports';
-  import 
   import shorts from './shorts.vue'
 
   const model = ref(null);
   
-  const { $readItems } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   const { data: short } = await useAsyncData('short', async () => {
-    const resp = await readItems('shorts', { fields: ['*', { '*': ['*'] }] })
+    const resp = await $sdk.content.readItems('shorts', { fields: ['*', { '*': ['*'] }] })
     return resp?.data || resp || []
   })
 </script>

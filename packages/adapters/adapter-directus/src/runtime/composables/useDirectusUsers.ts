@@ -5,7 +5,7 @@ import {
   DirectusUserDeletion,
   DirectusItems,
   DirectusUser
-} from '../types'
+} from '../types/index'
 import { useDirectus } from './useDirectus'
 
 export const useDirectusUsers = () => {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <section data-bs-version="5.1" class="header6 cid-sBXV7XsZQm" id="header6-2i"
-            :style="`background-image: url('${backgroundImage}'); background-position: center;`">
+            :style="`background-image: url('\${backgroundImage}'); background-position: center;`">
             <div class="mbr-overlay" style="opacity: 0.2; background-color: rgb(68, 121, 217);"></div>
             <div class="align-center container-fluid">
                 <div class="row justify-content-center">
@@ -61,7 +61,7 @@
                                     style="color: rgb(255, 153, 102); fill: rgb(255, 153, 102);"></span>
                                 <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
                                     <strong>Owner</strong><br><br>
-                                    <NuxtLink :to="`/user/${group?.owner?.id}`">{{ group?.owner?.first_name }}
+                                    <NuxtLink :to="`/user/\${group?.owner?.id}`">{{ group?.owner?.first_name }}
                                         {{ group?.owner?.last_name }}</NuxtLink>
                                 </h4>
                             </div>
@@ -92,12 +92,12 @@ const props = defineProps({
     },
 })
 
-const directusUrl = useDirectusUrl?.()
+const { $sdk } = useNuxtApp()
 
 const backgroundImage = computed(() => {
     const image = props.group?.image
-    if (image && getAssetUrl(image)) {
-        return getAssetUrl(image)
+    if (image && $sdk.media?.getAssetUrl?.(image)) {
+        return $sdk.media?.getAssetUrl?.(image)
     }
     // fallback image from /assets
     return 'https://via.placeholder.com/800x450'

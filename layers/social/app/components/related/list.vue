@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="item-img" v-if="list?.image">
-                <NuxtImg provider="cloudinary" :src="useDirectusUrl?.().replace(/\/$/, '') + '/assets/' + (list?.image)" :alt="list?.name" />
+                <NuxtImg provider="cloudinary" :src="$sdk.media?.getAssetUrl?.(list?.image)" :alt="list?.name" />
             </div>
 
             <div class="item-img" v-else>
@@ -32,5 +32,5 @@
         },
     })
 
-    const { $directus } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
 </script>

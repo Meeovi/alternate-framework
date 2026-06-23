@@ -2,7 +2,7 @@ import { useRuntimeConfig } from '#app'
 import {
   DirectusThumbnailOptions,
   DirectusFileRequest
-} from '../types'
+} from '../types/index'
 import { useDirectusUrl } from './useDirectusUrl'
 import { useDirectus } from './useDirectus'
 import { useDirectusToken } from './useDirectusToken'

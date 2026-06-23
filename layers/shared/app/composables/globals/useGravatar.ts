@@ -1,0 +1,1 @@
+const { proxy } = useScriptGravatar()

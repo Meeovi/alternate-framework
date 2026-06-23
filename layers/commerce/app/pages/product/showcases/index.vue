@@ -52,7 +52,7 @@
 
   const tab = ref(null)
 
-  const { $directus, $readItem, $commerce } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   const {
     data: groupedProducts
@@ -81,15 +81,15 @@
   const {
     data: productBlocks
   } = await useAsyncData('productBlocks', async () => {
-    return await $directus.request($readItem('page_blocks', '8', {
-      fields: ['*', 'media.file.*', 'content.*'],
-    }))
+    return await $sdk.content.getItem('page_blocks', '8', {
+      fields: ['*', 'media.file.*', 'content.*']
+    })
   })
 
   const {
     data: showcasebar
   } = await useAsyncData('showcasebar', async () => {
-    return await $directus.request($readItem('navigation', '54'))
+    return await $sdk.content.getItem('navigation', '54')
   })
 
   useHead({

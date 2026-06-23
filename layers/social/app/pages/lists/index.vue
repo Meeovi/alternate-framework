@@ -72,10 +72,10 @@
 
     const model = ref(null)
 
-    const { $directus, $readItems, $readItem } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
     
-    const directusUrl = useDirectusUrl?.()
-    const hasAsset = (file) => Boolean(getAssetUrl(file))
+    
+    const hasAsset = (file) => Boolean($sdk.media?.getAssetUrl?.(file))
 
     const opts = {
         fields: ['*', 'category.categories_id.*', 'department.departments_id', 'user.user.*',
@@ -87,39 +87,39 @@
     const {
         data: allLists
     } = await useAsyncData('allLists', async () => {
-        return $directus.request($readItems('lists', opts))
+        return $sdk.content.readItems('lists', opts)
     })
 
     const {
         data: myLists
     } = await useAsyncData('myLists', async () => {
-        return $directus.request($readItems('lists', {
+        return $sdk.content.readItems('lists', {
             ...opts,
             filter: {
                 user: {
                     _neq: 'null'
                 }
             }
-        }))
+        })
     })
 
     const {
         data: myBookmarks
     } = await useAsyncData('myBookmarks', async () => {
-        return $directus.request($readItems('lists', {
+        return $sdk.content.readItems('lists', {
             ...opts,
             filter: {
                 type: {
                     _eq: 'bookmarks'
                 }
             }
-        }))
+        })
     })
 
     const {
         data: page
     } = await useAsyncData('page', () => {
-        return $directus.request($readItems('pages', {
+        return $sdk.content.readItems('pages', {
             filter: {
                 id: {
                     _eq: 40
@@ -127,7 +127,7 @@
             },
             fields: ['*'],
             limit: 1
-        })).then(response => (response?.data?.[0] || response?.[0]) ?? null)
+        }).then(response => (response?.data?.[0] || response?.[0]) ?? null)
     })
 
     useHead({

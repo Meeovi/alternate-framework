@@ -39,13 +39,15 @@ import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchema
 import { useContentForm } from '../../../../composables/useContentForm'
 
 const dialog = ref(false)
-  const { $readFieldsByCollection } = useNuxtApp()
 
-  const { data: spaceFields, error, pending } = await useAsyncData('space-schema-fields', async () => {
-    const resp = await readFieldsByCollection('spaces')
-    return Array.isArray(resp) ? resp : []
-  })
+const { data: spaceFields, error, pending } = await useAsyncData('space-schema-fields', async () => {
+  const sdk = useNuxtApp().$sdk || {}
+  const readFieldsByCollection = sdk.content?.readFieldsByCollection
+  if (!readFieldsByCollection) return []
 
-// use composable for form handling (validation, submit, provide context)
+  const resp = await readFieldsByCollection('spaces')
+  return Array.isArray(resp) ? resp : []
+})
+
 const { form, formError, formSuccess, submitForm } = useContentForm('spaces', spaceFields, { clearOnSuccess: true, closeDialogRef: dialog })
 </script>

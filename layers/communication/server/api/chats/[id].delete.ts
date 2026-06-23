@@ -1,5 +1,5 @@
-import { blob } from 'hub:blob'
-import { prisma } from '../db'
+import { del, list } from '@vercel/blob'
+import { prisma } from '../../db'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     id: z.string()
   }).parse)
 
-  const chat = await prisma.chats.findFirst({
+  const chat = await prisma.conversations.findFirst({
     where: {
       id: id as string,
       userId: session.user?.id || session.id as string
@@ -26,14 +26,14 @@ export default defineEventHandler(async (event) => {
   const chatFolder = `${username}/${id}`
 
   try {
-    const { blobs } = await blob.list({
+    const { blobs } = await list({
       prefix: chatFolder
     })
 
     if (blobs.length > 0) {
       await Promise.all(
         blobs.map(b =>
-          blob.del(b.pathname).catch(error =>
+          del(b.pathname).catch(error =>
             console.error('[delete-chat] Failed to delete file:', b.pathname, error)
           )
         )
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
     console.error('Failed to list/delete chat files:', error)
   }
 
-  return await prisma.chats.delete({
+  return await prisma.conversations.delete({
     where: {
       id: id as string
     }

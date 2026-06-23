@@ -6,9 +6,9 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-8">
                         <h3 class="mbr-section-title mb-4 mbr-fonts-style display-1">
-                            <strong> {{ spacePage?.name }}</strong>
+                            <strong> {{ spacesPage?.name }}</strong>
                         </h3>
-                        <p class="mbr-section-title mb-4 mbr-fonts-style display-7" v-dompurify-html="spacePage?.content"></p>
+                        <p class="mbr-section-title mb-4 mbr-fonts-style display-7" v-dompurify-html="spacesPage?.content"></p>
                     </div>
                 </div>
             </div>
@@ -18,29 +18,41 @@
             <v-toolbar :style="`background-color: ${spacesPage?.color}; color: ${spacesPage?.colortext} !important`">
                 <v-toolbar-title>{{ spacesPage?.name }}</v-toolbar-title>
 
+                <v-dialog v-model="dialog" :scrim="false" max-width="720" transition="dialog-bottom-transition">
+                  <template v-slot:activator="{ props }">
+                    <v-btn v-bind="props" class="ms-2" variant="outlined" size="small">
+                      <v-icon start icon="fas fa-plus"></v-icon>New Space
+                    </v-btn>
+                  </template>
+                  <v-card class="b-1">
+                    <v-card-title>
+                      <h3>Create New Space</h3>
+                    </v-card-title>
+
+                    <v-card-text>
+                      <div v-if="formError" class="error">{{ formError }}</div>
+                      <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
+                      <div v-else-if="pending" class="d-flex justify-center py-6">
+                        <v-progress-circular indeterminate />
+                      </div>
+                      <div v-else-if="error" class="error">Failed to load space form fields.</div>
+                      <div v-else-if="spaceFields.length === 0" class="error">No space fields available.</div>
+                      <JsonSchemaFormFromFields
+                        v-else
+                        :fields="spaceFields"
+                        :model-value="form"
+                        @update:model-value="Object.assign(form, $event)"
+                        @submit="submitForm"
+                      />
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
+
+                <v-spacer></v-spacer>
+
                 <v-tabs v-model="currentTab" fixed-tabs>
                     <v-tab v-for="(menu, index) in tabsList" :key="menu?.value ?? index" :value="menu?.value ?? menu">
                         <v-chip>{{ menu?.title || menu?.name || menu?.value }}</v-chip>
-                    </v-tab>
-
-                    <!--<v-menu v-if="tabsList?.length">
-                        <template v-slot:activator="{ props }">
-                            <v-btn class="align-self-center me-4" height="100%" rounded="0" variant="plain"
-                                v-bind="props">
-                                Filter
-                                <v-icon icon="mdi-menu-down" end></v-icon>
-                            </v-btn>
-                        </template>
-
-                        <v-list class="bg-grey-lighten-3">
-                            <v-list-item v-for="(menu, index) in tabsList" :key="menu?.value ?? index"
-                                :title="menu?.title || menu?.name || menu?.value" @click="selectTab(menu)">
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>-->
-
-                    <v-tab :value="'create'">
-                        <createspace />
                     </v-tab>
                 </v-tabs>
             </v-toolbar>
@@ -63,21 +75,31 @@
         defineAsyncComponent,
         markRaw
     } from '#imports'
-    import createspace from '#social/app/components/features/spaceSections/crud/add-space.vue'
     import { componentMap } from '~/types/componentMap'
+    import { useContentForm } from '../../composables/useContentForm'
 
-    
-    const { $readItems } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
+
+    const dialog = ref(false)
+
+    const { data: spaceFields, error: fieldsError, pending } = await useAsyncData('space-schema-fields', async () => {
+      const { readFieldsByCollection } = $sdk.content || {}
+      if (!readFieldsByCollection) return []
+      const resp = await readFieldsByCollection('spaces')
+      return Array.isArray(resp) ? resp : []
+    })
+
+    const { form, formError, formSuccess, submitForm } = useContentForm('spaces', spaceFields, { clearOnSuccess: true, closeDialogRef: dialog })
 
     // current selected tab value (matches menu.value)
     const currentTab = ref(null);
 
     const { data: spacesPage } = await useAsyncData('spacesPage', () => {
-        return readItem('pages', '99', { fields: ['*', { '*': ['*'] }] })
+        return $sdk.content.readItem('pages', '99', { fields: ['*', { '*': ['*'] }] })
     })
 
     const { data: spacesBar } = await useAsyncData('spacesBar', () => {
-        return readItem('navigation', '79', { fields: ['*', { '*': ['*'] }] })
+        return $sdk.content.readItem('navigation', '79', { fields: ['*', { '*': ['*'] }] })
     })
 
     // Normalize menus to objects: support both string arrays and object arrays
@@ -101,10 +123,6 @@
     }, {
         immediate: true
     })
-
-    function selectTab(menu) {
-        currentTab.value = menu?.value ?? menu
-    }
 
     useHead({
         title: 'Spaces',

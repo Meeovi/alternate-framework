@@ -54,7 +54,7 @@ const emit = defineEmits<{
   error: [value: unknown]
 }>()
 
-const { $directus, $createItem } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 const { fields: schemaFields, loading, error: schemaError, loadSchema: loadSchemaForCollection } = useDynamicSchema()
 
 const submitting = ref(false)
@@ -195,7 +195,7 @@ async function submitForm() {
       return
     }
 
-    const created = await $directus.request($createItem(props.collection, { ...form.model }))
+    const created = await $sdk.content.createItem(props.collection, { ...form.model })
     emit('submitted', created)
 
     if (props.clearOnSuccess) {

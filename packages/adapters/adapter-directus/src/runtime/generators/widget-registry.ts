@@ -1,4 +1,4 @@
-import { readItems } from "@mframework/adapter-directus";
+import { readItems } from "@directus/sdk";
 
 export interface WidgetDefinition {
   component: string;

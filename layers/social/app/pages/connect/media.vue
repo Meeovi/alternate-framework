@@ -88,6 +88,8 @@
         useMediaCenter
     } from '#shared/app/composables/media/useMediaCenter'
 
+    const { $sdk } = useNuxtApp()
+
     const {
         allMedia,
         imageMedia,
@@ -108,16 +110,14 @@
         filterByFolder(folder?.id || null)
     }
 
-    
-    const { $readItem } = useNuxtApp()
     const tab = ref(null)
 
     const { data: mediaBar } = await useAsyncData('mediaBar', () =>
-        $readItem('navigation', '81', { fields: ['*', { menus: ['*'] }] })
+        $sdk.content.readItem('navigation', '81', { fields: ['*', { menus: ['*'] }] })
     )
 
     const { data: mediaCenterPage } = await useAsyncData('mediaCenterPage', () =>
-        $readItem('pages', '100', { fields: ['*'] })
+        $sdk.content.readItem('pages', '100', { fields: ['*'] })
     )
 
     useHead({

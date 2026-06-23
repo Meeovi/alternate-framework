@@ -33,5 +33,5 @@
         }
     });
 
-const { $directus } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 </script>

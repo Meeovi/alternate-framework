@@ -1,3 +1,65 @@
+<template>
+  <UDashboardPanel
+    id="home"
+    class="min-h-0"
+    :ui="{ body: 'p-0 sm:p-0' }"
+  >
+    <template #header>
+      <Navbar />
+    </template>
+
+    <template #body>
+      <div ref="dropzoneRef" class="flex flex-1">
+        <DragDropOverlay :show="dragging" />
+
+        <UContainer class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
+          <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
+            {{ greeting }}
+          </h1>
+
+          <UChatPrompt
+            v-model="input"
+            :status="loading ? 'streaming' : 'ready'"
+            :disabled="uploading"
+            class="[view-transition-name:chat-prompt]"
+            variant="subtle"
+            :ui="{ base: 'px-1.5' }"
+            @submit="onSubmit"
+          >
+            <template v-if="files.length > 0" #header>
+              <ChatFiles :files="files" @remove="removeFile" />
+            </template>
+
+            <template #footer>
+              <div class="flex items-center gap-1">
+                <ChatFileUploadButton :open="open" />
+
+                <ModelSelect />
+              </div>
+
+              <UChatPromptSubmit color="neutral" size="sm" :disabled="uploading" />
+            </template>
+          </UChatPrompt>
+
+          <div class="flex flex-wrap gap-2">
+            <UButton
+              v-for="quickChat in quickChats"
+              :key="quickChat.label"
+              :icon="quickChat.icon"
+              :label="quickChat.label"
+              size="sm"
+              color="neutral"
+              variant="outline"
+              class="rounded-full"
+              @click="createChat(quickChat.label)"
+            />
+          </div>
+        </UContainer>
+      </div>
+    </template>
+  </UDashboardPanel>
+</template>
+
 <script setup lang="ts">
 const input = ref('')
 const loading = ref(false)
@@ -92,64 +154,3 @@ const quickChats = [
 ]
 </script>
 
-<template>
-  <UDashboardPanel
-    id="home"
-    class="min-h-0"
-    :ui="{ body: 'p-0 sm:p-0' }"
-  >
-    <template #header>
-      <Navbar />
-    </template>
-
-    <template #body>
-      <div ref="dropzoneRef" class="flex flex-1">
-        <DragDropOverlay :show="dragging" />
-
-        <UContainer class="flex-1 flex flex-col justify-center gap-4 sm:gap-6 py-8">
-          <h1 class="text-3xl sm:text-4xl text-highlighted font-bold">
-            {{ greeting }}
-          </h1>
-
-          <UChatPrompt
-            v-model="input"
-            :status="loading ? 'streaming' : 'ready'"
-            :disabled="uploading"
-            class="[view-transition-name:chat-prompt]"
-            variant="subtle"
-            :ui="{ base: 'px-1.5' }"
-            @submit="onSubmit"
-          >
-            <template v-if="files.length > 0" #header>
-              <ChatFiles :files="files" @remove="removeFile" />
-            </template>
-
-            <template #footer>
-              <div class="flex items-center gap-1">
-                <ChatFileUploadButton :open="open" />
-
-                <ModelSelect />
-              </div>
-
-              <UChatPromptSubmit color="neutral" size="sm" :disabled="uploading" />
-            </template>
-          </UChatPrompt>
-
-          <div class="flex flex-wrap gap-2">
-            <UButton
-              v-for="quickChat in quickChats"
-              :key="quickChat.label"
-              :icon="quickChat.icon"
-              :label="quickChat.label"
-              size="sm"
-              color="neutral"
-              variant="outline"
-              class="rounded-full"
-              @click="createChat(quickChat.label)"
-            />
-          </div>
-        </UContainer>
-      </div>
-    </template>
-  </UDashboardPanel>
-</template>

@@ -1,6 +1,6 @@
 import type { UIMessage } from 'ai'
 import { convertToModelMessages, createUIMessageStream, createUIMessageStreamResponse, generateText, smoothStream, stepCountIs, streamText } from 'ai'
-import { prisma } from '../db'
+import { prisma } from '../../db'
 import { z } from 'zod'
 import type { AnthropicLanguageModelOptions } from '@ai-sdk/anthropic'
 import { anthropic } from '@ai-sdk/anthropic'
@@ -8,8 +8,8 @@ import type { GoogleLanguageModelOptions } from '@ai-sdk/google'
 // import { google } from '@ai-sdk/google'
 import type { OpenAILanguageModelResponsesOptions } from '@ai-sdk/openai'
 import { openai } from '@ai-sdk/openai'
-import { chartTool } from '../../shared/utils/tools/chart'
-import { weatherTool } from '../../shared/utils/tools/weather'
+import { chartTool } from '../../../shared/utils/tools/chart'
+import { weatherTool } from '../../../shared/utils/tools/weather'
 
 defineRouteMeta({
   openAPI: {
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     messages: z.array(z.custom<UIMessage>())
   }).parse)
 
-  const chat = await prisma.chats.findFirst({
+  const chat = await prisma.conversations.findFirst({
     where: {
       id: id as string,
       userId: session.user?.id || session.id as string
@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
       prompt: JSON.stringify(messages[0])
     })
 
-    await prisma.chats.update({
+    await prisma.conversations.update({
       where: { id: id as string },
       data: { title }
     })

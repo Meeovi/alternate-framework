@@ -57,32 +57,32 @@
     import { ref } from '#imports'
     import MembersList from '#social/app/components/related/memberList.vue'
 
-    const { $directus, $readItem, $readItems } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
     const tab = ref(null)
 
     const { data: birthdayBar } = await useAsyncData('birthdayBar', () => {
-        return $directus.request($readItem('navigation', '82', { fields: ['*', { '*': ['*'] }] }))
+        return $sdk.content.getItem('navigation', '82', { fields: ['*', { '*': ['*'] }] })
     })
 
     const { data: birthdayPage } = await useAsyncData('birthdayPage', () => {
-        return $directus.request($readItem('pages', '91', { fields: ['*', { '*': ['*'] }] }))
+        return $sdk.content.getItem('pages', '91', { fields: ['*', { '*': ['*'] }] })
     })
 
     const { data: members } = await useAsyncData('members', async () => {
-        const resp = await $directus.request($readItems('profiles', {
+        const resp = await $sdk.content.readItems('profiles', {
             filter: { birth_date: { _eq: new Date().toISOString().slice(5, 10) } },
             fields: ['*', 'avatar.*'],
             limit: 1
-        }))
+        })
         return Array.isArray(resp) ? resp : []
     })
 
     const { data: recentBirthdays } = await useAsyncData('recentBirthdays', async () => {
-        const resp = await $directus.request($readItems('profiles', {
+        const resp = await $sdk.content.readItems('profiles', {
             filter: { birth_date: { _lt: new Date().toISOString().slice(5, 10) } },
             fields: ['*', 'avatar.*'],
             limit: 1
-        }))
+        })
         return Array.isArray(resp) ? resp : []
     })
 

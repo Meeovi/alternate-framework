@@ -39,13 +39,13 @@ import { ref, watch, onMounted, computed } from '#imports'
 import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 import { useProducts } from '#commerce/app/composables/catalog/products/useProducts/useProducts'
 
-const { $directus, $readItem } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 const tab = ref(null)
 
 const { data: dealbar } = await useAsyncData('dealbar', async () => {
-  return $directus.request($readItem('navigation', '49', {
-    fields: ['*', { '*': ['*'] }],
-  }))
+  return $sdk.content.getItem('navigation', '49', {
+    fields: ['*', { '*': ['*'] }]
+  })
 })
 const dealbarMenus = computed(() => Array.isArray(dealbar.value?.menus) ? dealbar.value.menus : [])
 

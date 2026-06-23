@@ -39,10 +39,10 @@ import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchema
 import { useContentForm } from '../../../composables/useContentForm'
 
 const dialog = ref(false)
-const { $directus, $readFieldsByCollection } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 
 const { data: listFields, error, pending } = await useAsyncData('listsFields', async () => {
-  const resp = await $directus.request($readFieldsByCollection('lists'))
+  const resp = await $sdk.content.readFieldsByCollection('lists')
   return Array.isArray(resp) ? resp : []
 })
 

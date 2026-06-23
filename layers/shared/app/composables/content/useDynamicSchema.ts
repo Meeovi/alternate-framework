@@ -30,7 +30,7 @@ function normalizeFields(input: unknown): DynamicContentField[] {
 }
 
 export function useDynamicSchema() {
-  const { $directus, $readFieldsByCollection } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   const fields = ref<DynamicContentField[]>([])
   const loading = ref(false)
@@ -41,7 +41,7 @@ export function useDynamicSchema() {
     error.value = null
 
     try {
-      const response = await $directus.request($readFieldsByCollection(collection))
+      const response = await $sdk.content.readFieldsByCollection(collection)
       fields.value = normalizeFields(response)
       return fields.value
     } catch (err: any) {

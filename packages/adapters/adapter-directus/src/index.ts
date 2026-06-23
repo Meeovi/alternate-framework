@@ -1,5 +1,3 @@
-import { createDirectusClient } from './runtime/composables/useContentRequest'
+import { createGatewayAdapterBindings } from './runtime/index'
 
-export function directusContentAdapter(config = {}) {
-  return createDirectusClient(config)
-}
+export const directusContentAdapter = (config = {}) => createGatewayAdapterBindings(config).content.directus

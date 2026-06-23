@@ -212,7 +212,7 @@
 
     const route = useRoute()
     const gateway = useAppGateway()
-    const { $directus, $readItems } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
     const category = ref(null)
 
     function toList(input) {
@@ -237,7 +237,7 @@
     const departmentSpaces = ref([])
 
     async function loadCategory() {
-        const resp = await $directus.request($readItems('departments', {
+        const resp = await $sdk.content.readItems('departments', {
             filter: {
                 slug: { _eq: `${slug.value}` }
             },
@@ -247,7 +247,7 @@
                 'menus.*',
                 'categories.categories_id.*'
             ]
-        }))
+        })
 
         category.value = toList(resp)[0] || null
     }
@@ -265,26 +265,26 @@
     }
 
     async function loadPosts() {
-        const resp = await $directus.request($readItems('posts', {
+        const resp = await $sdk.content.readItems('posts', {
             filter: {
                 categories: {
                     _eq: category.value?.id
                 }
             },
             limit: 10
-        }))
+        })
         posts.value = toList(resp)
     }
 
     async function loadSpaces() {
-        const resp = await $directus.request($readItems('spaces', {
+        const resp = await $sdk.content.readItems('spaces', {
             filter: {
                 categories: {
                     _eq: category.value?.id
                 }
             },
             limit: 10
-        }))
+        })
         departmentSpaces.value = toList(resp)
     }
 

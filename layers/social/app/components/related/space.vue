@@ -2,7 +2,7 @@
     <div>
         <v-card class="mx-auto" max-width="400" height="550">
             <NuxtImg provider="cloudinary" v-if="hasAsset(space?.image)" class="align-end text-white" height="200"
-                :src="getAssetUrl(space?.image)" :alt="space?.name" />
+                :src="$sdk.media?.getAssetUrl?.(space?.image)" :alt="space?.name" />
 
             <NuxtImg provider="cloudinary" class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
 
@@ -29,8 +29,8 @@
     import { ref } from '#imports'
 
     import share from '../blocks/share.vue'
- const directusUrl = useDirectusUrl?.()
-    const hasAsset = (file) => Boolean(getAssetUrl(file))
+    const { $sdk } = useNuxtApp()
+    const hasAsset = (file) => Boolean($sdk.media?.getAssetUrl?.(file))
 
     const model = ref(null)
     const props = defineProps({

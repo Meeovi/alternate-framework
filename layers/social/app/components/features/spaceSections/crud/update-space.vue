@@ -107,7 +107,7 @@ const loading = ref(false);
 const fetchSpaceData = async () => {
     try {
         const spaceId = route.params.id;
-        const resp = await readItem('spaces', spaceId)
+        const resp = await $sdk.content.readItem('spaces', spaceId)
         const response = resp || null
 
         if (response) {

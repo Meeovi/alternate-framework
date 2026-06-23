@@ -12,7 +12,8 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({})
+import { useHead } from 'nuxt/app'
+import { computed } from 'vue'
 
 const isHydrated = computed(() => import.meta.client)
 

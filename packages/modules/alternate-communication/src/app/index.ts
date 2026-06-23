@@ -1,88 +1,88 @@
 import { AlternateCommunicationOptions } from '../config';
-import { defaultCommunicationPolicy } from '../domain/policy/CommunicationPolicy';
+import { CommunicationPolicyContext, defaultCommunicationPolicy } from '../domain/policy/CommunicationPolicy';
 import { EventBus } from '../events/bus';
 
 // Commands
-import { createRoom } from './commands/CreateRoom';
-import { sendMessage } from './commands/SendMessage';
-import { editMessage } from './commands/EditMessage';
-import { deleteMessage } from './commands/DeleteMessage';
-import { addReaction } from './commands/AddReaction';
-import { removeReaction } from './commands/RemoveReaction';
-import { updatePresence } from './commands/UpdatePresence';
-import { addMember } from './commands/AddMember';
-import { removeMember } from './commands/RemoveMember';
-import { muteMember } from './commands/MuteMember';
-import { unmuteMember } from './commands/UnmuteMember';
+import { createRoom, CreateRoomInput } from './commands/CreateRoom';
+import { sendMessage, SendMessageInput } from './commands/SendMessage';
+import { editMessage, EditMessageInput } from './commands/EditMessage';
+import { deleteMessage, DeleteMessageInput } from './commands/DeleteMessage';
+import { addReaction, AddReactionInput } from './commands/AddReaction';
+import { removeReaction, RemoveReactionInput } from './commands/RemoveReaction';
+import { updatePresence, UpdatePresenceInput } from './commands/UpdatePresence';
+import { addMember, AddMemberInput } from './commands/AddMember';
+import { removeMember, RemoveMemberInput } from './commands/RemoveMember';
+import { muteMember, MuteMemberInput } from './commands/MuteMember';
+import { unmuteMember, UnmuteMemberInput } from './commands/UnmuteMember';
 
 // Queries
-import { listMessages } from './queries/ListMessages';
-import { listRoomsForUser } from './queries/ListRoomsForUser';
+import { listMessages, ListMessagesInput } from './queries/ListMessages';
+import { listRoomsForUser, ListRoomsForUserInput } from './queries/ListRoomsForUser';
 import { getRoom } from './queries/GetRoom';
 import { getMessage } from './queries/GetMessage';
 import { listMembers } from './queries/ListMembers';
 import { listReactions } from './queries/ListReactions';
-import { searchMessages } from './queries/SearchMessages';
+import { searchMessages, SearchMessagesInput } from './queries/SearchMessages';
 
 export function createUseCases(options: AlternateCommunicationOptions, eventBus: EventBus) {
   const policy = options.policy ?? defaultCommunicationPolicy;
 
   return {
     commands: {
-      createRoom: (ctx, input) =>
+      createRoom: (ctx: CommunicationPolicyContext, input: CreateRoomInput) =>
         createRoom({ storage: options.storage, policy, eventBus }, ctx, input),
 
-      sendMessage: (ctx, input) =>
+      sendMessage: (ctx: CommunicationPolicyContext, input: SendMessageInput) =>
         sendMessage({ storage: options.storage, policy, eventBus }, ctx, input),
 
-      editMessage: (ctx, input) =>
+      editMessage: (ctx: CommunicationPolicyContext, input: EditMessageInput) =>
         editMessage({ storage: options.storage, policy, eventBus }, ctx, input),
 
-      deleteMessage: (ctx, input) =>
+      deleteMessage: (ctx: CommunicationPolicyContext, input: DeleteMessageInput) =>
         deleteMessage({ storage: options.storage, policy, eventBus }, ctx, input),
 
-      addReaction: (ctx, input) =>
+      addReaction: (ctx: CommunicationPolicyContext, input: AddReactionInput) =>
         addReaction({ storage: options.storage, eventBus }, ctx, input),
 
-      removeReaction: (ctx, input) =>
+      removeReaction: (ctx: CommunicationPolicyContext, input: RemoveReactionInput) =>
         removeReaction({ storage: options.storage, eventBus }, ctx, input),
 
-      updatePresence: (ctx, input) =>
+      updatePresence: (ctx: CommunicationPolicyContext, input: UpdatePresenceInput) =>
         updatePresence({ eventBus }, ctx, input),
 
-      addMember: (ctx, input) =>
+      addMember: (ctx: CommunicationPolicyContext, input: AddMemberInput) =>
         addMember({ storage: options.storage, policy, eventBus }, ctx, input),
 
-      removeMember: (ctx, input) =>
+      removeMember: (ctx: CommunicationPolicyContext, input: RemoveMemberInput) =>
         removeMember({ storage: options.storage, policy, eventBus }, ctx, input),
 
-      muteMember: (ctx, input) =>
+      muteMember: (ctx: CommunicationPolicyContext, input: MuteMemberInput) =>
         muteMember({ storage: options.storage, policy, eventBus }, ctx, input),
 
-      unmuteMember: (ctx, input) =>
+      unmuteMember: (ctx: CommunicationPolicyContext, input: UnmuteMemberInput) =>
         unmuteMember({ storage: options.storage, policy, eventBus }, ctx, input)
     },
 
     queries: {
-      listMessages: (ctx, input) =>
+      listMessages: (ctx: CommunicationPolicyContext, input: ListMessagesInput) =>
         listMessages({ storage: options.storage }, ctx, input),
 
-      listRoomsForUser: (ctx, input) =>
+      listRoomsForUser: (ctx: CommunicationPolicyContext, input: ListRoomsForUserInput) =>
         listRoomsForUser({ storage: options.storage }, ctx, input),
 
-      getRoom: (ctx, roomId) =>
+      getRoom: (ctx: CommunicationPolicyContext, roomId: string) =>
         getRoom({ storage: options.storage }, ctx, roomId),
 
-      getMessage: (ctx, messageId) =>
+      getMessage: (ctx: CommunicationPolicyContext, messageId: string) =>
         getMessage({ storage: options.storage }, ctx, messageId),
 
-      listMembers: (ctx, roomId) =>
+      listMembers: (ctx: CommunicationPolicyContext, roomId: string) =>
         listMembers({ storage: options.storage }, ctx, roomId),
 
-      listReactions: (ctx, messageId) =>
+      listReactions: (ctx: CommunicationPolicyContext, messageId: string) =>
         listReactions({ storage: options.storage }, ctx, messageId),
 
-      searchMessages: (ctx, input) =>
+      searchMessages: (ctx: CommunicationPolicyContext, input: SearchMessagesInput) =>
         searchMessages({ search: options.search! }, ctx, input)
     }
   };

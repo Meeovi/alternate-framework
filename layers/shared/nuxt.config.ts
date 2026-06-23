@@ -1,9 +1,13 @@
-import { resolve } from 'path'
+import {
+  resolve
+} from 'path'
 import {
   defineNuxtConfig
 } from 'nuxt/config'
 import process from 'node:process'
-import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import vuetify, {
+  transformAssetUrls
+} from 'vite-plugin-vuetify'
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
@@ -15,35 +19,39 @@ export default defineNuxtConfig({
   },
 
   alias: {
+    '@mframework/ui-forms': resolve(__dirname, '../../packages/modules/ui-forms/src/index.ts'),
     '@mframework/ui-forms/': resolve(__dirname, '../../packages/modules/ui-forms/src/')
   },
 
   components: {
-    dirs: [
-      {
-        path: 'app/components',
-        pathPrefix: false,
-      }
-    ]
+    dirs: [{
+      path: 'app/components',
+      pathPrefix: false,
+    }]
   },
 
   modules: [
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
-    'nuxt-gtag',
     '@vueuse/motion/nuxt',
-    '@nuxtjs/google-adsense',
     'nuxt-vitalizer',
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
-    'unplugin-fonts/nuxt',
     '@vite-pwa/nuxt',
     '@nuxtjs/turnstile',
     '@nuxtjs/cloudinary',
-    '@nuxtjs/leaflet'
+    '@nuxtjs/leaflet',
+    '@nuxt/scripts',
+    '@nuxt/fonts'
   ],
 
+  // @ts-ignore - @nuxtjs/fonts module augments this key at runtime
+  fonts: {
+    priority: ['bunny', 'google'],
+  },
+
+  // @ts-ignore - @nuxtjs/seo module augments this key at runtime
   seo: {
     meta: {
       // Basic SEO
@@ -51,9 +59,14 @@ export default defineNuxtConfig({
       author: `${process.env.NUXT_PUBLIC_SITE_AUTHOR || 'John Doe'}`,
 
       // Theme & Color
-      themeColor: [
-        { content: '#18181b', media: '(prefers-color-scheme: dark)' },
-        { content: 'white', media: '(prefers-color-scheme: light)' },
+      themeColor: [{
+          content: '#18181b',
+          media: '(prefers-color-scheme: dark)'
+        },
+        {
+          content: 'white',
+          media: '(prefers-color-scheme: light)'
+        },
       ],
       colorScheme: 'dark light',
 
@@ -77,16 +90,6 @@ export default defineNuxtConfig({
     }
   },
 
-  unfonts: {
-    google: {
-      families: ['Open Sans', 'Material+Icons'],
-    },
-
-    fontsource: {
-      families: [],
-    },
-  },
-
   // @ts-ignore - @nuxtjs/seo module augments this key at runtime
   site: {
     url: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
@@ -103,25 +106,6 @@ export default defineNuxtConfig({
     cloudinary: {
       baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME || 'nuxt-cloudinary'}/image/upload/`
     }
-  },
-
-  // @ts-ignore - nuxt-gtag module augments this key at runtime
-  gtag: {
-    enabled: process.env.NODE_ENV === 'production',
-    id: process.env.NUXT_PUBLIC_GTAG_ID,
-    config: {
-      page_title: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'} - {{ pageTitle }}`,
-    },
-    initCommands: [
-      // Setup up consent mode
-      ['consent', 'default', {
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-        ad_storage: 'denied',
-        analytics_storage: 'denied',
-        wait_for_update: 500,
-      }]
-    ],
   },
 
   pwa: {
@@ -221,6 +205,50 @@ export default defineNuxtConfig({
     ],
   },
 
+  scripts: {
+    registry: {
+      googleAnalytics: {
+        trigger: 'onNuxtReady'
+      },
+      googleAdsense: {
+        trigger: 'onNuxtReady'
+      },
+      metaPixel: {
+        trigger: 'onNuxtReady'
+      },
+      redditPixel: {
+        trigger: 'onNuxtReady'
+      },
+      snapchatPixel: {
+        trigger: 'onNuxtReady'
+      },
+      tiktokPixel: {
+        trigger: 'onNuxtReady'
+      },
+      xPixel: {
+        trigger: 'onNuxtReady'
+      },
+      bingUet: {
+        trigger: 'onNuxtReady'
+      },
+      carbonAds: {
+        trigger: 'onNuxtReady',
+      },
+      googleTagManager: { trigger: 'onNuxtReady' },
+      blueskyEmbed: {},
+      googleRecaptcha: { trigger: 'onNuxtReady' },
+      gravatar: {
+        trigger: 'onNuxtReady',
+      },
+      paypal: {
+        trigger: 'onNuxtReady',
+      },
+      stripe: { trigger: 'onNuxtReady' },
+      lemonSqueezy: {
+        trigger: 'onNuxtReady',
+      },
+    }
+  },
   // @ts-ignore - routeRules is augmented by Nuxt at runtime
   routeRules: {
     '/**': {
@@ -242,6 +270,15 @@ export default defineNuxtConfig({
       // This can be overridden at runtime via the NUXT_TURNSTILE_SECRET_KEY
       // environment variable.
       secretKey: `${process.env.NUXT_TURNSTILE_SECRET_KEY || ''}`,
+    },
+    notify: {
+      sendgridApiKey: process.env.SENDGRID_API_KEY,
+      sendgridFromEmail: process.env.SENDGRID_FROM_EMAIL,
+      sendgridFromName: process.env.SENDGRID_FROM_NAME,
+      twilioSid: process.env.TWILIO_SID,
+      twilioToken: process.env.TWILIO_TOKEN,
+      twilioFrom: process.env.TWILIO_FROM,
+      fcmServerKey: process.env.FCM_SERVER_KEY
     },
     novuSecretKey: process.env.NOVU_SECRET_KEY,
 
@@ -291,7 +328,7 @@ export default defineNuxtConfig({
 
   build: {
     transpile: [
-      'vuetify', 
+      'vuetify',
       '@svar-ui/vue-grid',
       '@svar-ui/vue-editor',
       '@svar-ui/vue-core',
@@ -305,7 +342,9 @@ export default defineNuxtConfig({
     logLevel: 'info',
     plugins: [
       // @ts-ignore
-      vuetify({ autoImport: true }),
+      vuetify({
+        autoImport: true
+      }),
     ],
     vue: {
       template: {
@@ -316,6 +355,7 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
+      crawlLinks: true,
       routes: [
         '/assets/images/*',
       ]
@@ -325,5 +365,14 @@ export default defineNuxtConfig({
 
   sourcemap: {
     client: 'hidden'
-  }
+  },
+
+  typescript: {
+    tsConfig: {
+      include: [
+        // this path is relative to the generated .nuxt/tsconfig.json
+        '../test/e2e/**/*',
+      ],
+    },
+  },
 })

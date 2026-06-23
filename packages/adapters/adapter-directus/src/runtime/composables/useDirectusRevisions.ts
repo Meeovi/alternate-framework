@@ -1,4 +1,4 @@
-import { DirectusQueryParams } from '../types'
+import { DirectusQueryParams } from '../types/index'
 import { useDirectus } from './useDirectus'
 
 export const useDirectusRevisions = () => {

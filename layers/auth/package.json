@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "@mframework/alternate-auth": "file:../../packages/modules/alternate-auth",
+    "@mframework/adapter-prisma": "file:../../packages/adapters/adapter-prisma",
     "defu": "^6.1.4",
     "pinia": "^2.1.7",
     "stripe": "^22.0.2",

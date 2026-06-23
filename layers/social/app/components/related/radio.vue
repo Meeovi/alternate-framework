@@ -1,31 +1,31 @@
 <template>
-  <div>
-    <v-card color="#b02564">
-      <div class="d-flex flex-no-wrap justify-space-between">
-        <div>
-          <v-card-title class="text-h5">
-            {{ radio?.name }}
-          </v-card-title>
+    <div>
+        <v-card color="#b02564">
+            <div class="d-flex flex-no-wrap justify-space-between">
+                <div>
+                    <v-card-title class="text-h5">
+                        {{ radio?.name }}
+                    </v-card-title>
 
-          <v-card-text>
-            {{ radio?.description }}
-          </v-card-text>
+                    <v-card-text>
+                        {{ radio?.description }}
+                    </v-card-text>
 
-          <v-btn
-            class="ms-2"
-            size="small"
-            text="LISTEN"
-            variant="outlined"
-            :href="`/departments/categories/station/${radio?.id}`"
-          />
-        </div>
+                    <v-btn
+                        class="ms-2"
+                        size="small"
+                        text="LISTEN"
+                        variant="outlined"
+                        :href="`/departments/categories/station/${radio?.id}`"
+                    />
+                </div>
 
-        <v-avatar class="ma-3" rounded="0" size="125">
-          <NuxtImg :src="getAssetUrl(radio?.image)" />
-        </v-avatar>
-      </div>
-    </v-card>
-  </div>
+                <v-avatar class="ma-3" rounded="0" size="125">
+                    <NuxtImg :src="$sdk.media?.getAssetUrl?.(radio?.image)" />
+                </v-avatar>
+            </div>
+        </v-card>
+    </div>
 </template>
 
 <script setup>
@@ -36,6 +36,6 @@ const props = defineProps({
   },
 })
 
+const { $sdk } = useNuxtApp()
 const { radio } = props
-const directusUrl = useDirectusUrl?.()
 </script>

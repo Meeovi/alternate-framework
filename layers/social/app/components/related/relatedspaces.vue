@@ -17,12 +17,13 @@
 
   import spaceCard from '#social/app/components/related/space.vue'
 
+  const { $sdk } = useNuxtApp()
+
   const model = ref(null)
- const { $readItems } = useNuxtApp()
 
   const { data: group } = await useAsyncData('group', async () => {
     try {
-      const resp = await readItems('spaces')
+      const resp = await $sdk.content.readItems('spaces')
       return resp?.data || resp || []
     } catch {
       return []

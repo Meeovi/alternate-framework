@@ -101,15 +101,12 @@
 </template>
 
 <script setup>
-    const {
-        $directus,
-        $readItem
-    } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
 
     const {
         data: adult
     } = await useAsyncData('adult', () => {
-        return $directus.request($readItem('departments', '64'))
+        return $sdk.content.getItem('departments', '64')
     })
 
     const props = defineProps({

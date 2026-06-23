@@ -27,7 +27,7 @@
     <video 
       ref="videoRef"
       class="vibe-video"
-      :src="getAssetUrl(short?.video)"
+      :src="$sdk.media?.getAssetUrl?.(short?.video)"
       controls
       preload="metadata"
       @click="togglePlay"
@@ -102,6 +102,8 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from '#imports'
 
+const { $sdk } = useNuxtApp()
+
 const props = defineProps({
   short: {
     type: Object,
@@ -117,7 +119,6 @@ const isLiked = ref(false)
 const showComments = ref(false)
 const newComment = ref('')
 const vibeComments = ref([])
- const directusUrl = useDirectusUrl?.()
 
 const hashtags = computed(() => {
   if (!short?.description) return []

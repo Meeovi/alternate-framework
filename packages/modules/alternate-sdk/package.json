@@ -5,146 +5,152 @@
   "repository": "mframework/alternate-sdk",
   "license": "MIT",
   "type": "module",
+  "types": "types/sdk.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./auth": {
-      "types": "./dist/auth/index.d.ts",
-      "import": "./dist/auth/index.js"
+      "types": "./dist/src/auth/index.d.ts",
+      "import": "./dist/src/auth/index.js"
     },
     "./auth/adapter": {
-      "types": "./dist/auth/adapter.d.ts",
-      "import": "./dist/auth/adapter.js"
+      "types": "./dist/src/auth/adapter.d.ts",
+      "import": "./dist/src/auth/adapter.js"
     },
     "./auth/server": {
-      "types": "./dist/auth/server.d.ts",
-      "import": "./dist/auth/server.js"
+      "types": "./dist/src/auth/server.d.ts",
+      "import": "./dist/src/auth/server.js"
     },
     "./commerce": {
-      "types": "./dist/commerce/index.d.ts",
-      "import": "./dist/commerce/index.js"
+      "types": "./dist/src/commerce/index.d.ts",
+      "import": "./dist/src/commerce/index.js"
     },
     "./commerce/adapter": {
-      "types": "./dist/commerce/adapter.d.ts",
-      "import": "./dist/commerce/adapter.js"
+      "types": "./dist/src/commerce/adapter.d.ts",
+      "import": "./dist/src/commerce/adapter.js"
     },
     "./commerce/server": {
-      "types": "./dist/commerce/server.d.ts",
-      "import": "./dist/commerce/server.js"
+      "types": "./dist/src/commerce/server.d.ts",
+      "import": "./dist/src/commerce/server.js"
     },
     "./content": {
-      "types": "./dist/content/index.d.ts",
-      "import": "./dist/content/index.js"
+      "types": "./dist/src/content/index.d.ts",
+      "import": "./dist/src/content/index.js"
     },
     "./content/adapter": {
-      "types": "./dist/content/adapter.d.ts",
-      "import": "./dist/content/adapter.js"
+      "types": "./dist/src/content/adapter.d.ts",
+      "import": "./dist/src/content/adapter.js"
     },
     "./content/server": {
-      "types": "./dist/content/server.d.ts",
-      "import": "./dist/content/server.js"
+      "types": "./dist/src/content/server.d.ts",
+      "import": "./dist/src/content/server.js"
     },
     "./search": {
-      "types": "./dist/search/index.d.ts",
-      "import": "./dist/search/index.js"
+      "types": "./dist/src/search/index.d.ts",
+      "import": "./dist/src/search/index.js"
     },
     "./search/adapter": {
-      "types": "./dist/search/adapter.d.ts",
-      "import": "./dist/search/adapter.js"
+      "types": "./dist/src/search/adapter.d.ts",
+      "import": "./dist/src/search/adapter.js"
     },
     "./search/server": {
-      "types": "./dist/search/server.d.ts",
-      "import": "./dist/search/server.js"
+      "types": "./dist/src/search/server.d.ts",
+      "import": "./dist/src/search/server.js"
     },
     "./federation": {
-      "types": "./dist/federation/index.d.ts",
-      "import": "./dist/federation/index.js"
+      "types": "./dist/src/federation/index.d.ts",
+      "import": "./dist/src/federation/index.js"
     },
     "./federation/adapter": {
-      "types": "./dist/federation/adapter.d.ts",
-      "import": "./dist/federation/adapter.js"
+      "types": "./dist/src/federation/adapter.d.ts",
+      "import": "./dist/src/federation/adapter.js"
     },
     "./federation/server": {
-      "types": "./dist/federation/server.d.ts",
-      "import": "./dist/federation/server.js"
+      "types": "./dist/src/federation/server.d.ts",
+      "import": "./dist/src/federation/server.js"
+    },
+    "./module": {
+      "types": "./dist/src/module.d.ts",
+      "import": "./dist/src/module.js"
     },
     "./gateway": {
-      "types": "./dist/gateway/index.d.ts",
-      "import": "./dist/gateway/index.js"
+      "types": "./dist/src/gateway/index.d.ts",
+      "import": "./dist/src/gateway/index.js"
     },
     "./gateway/createGateway": {
-      "types": "./dist/gateway/createGateway.d.ts",
-      "import": "./dist/gateway/createGateway.js"
+      "types": "./dist/src/gateway/createGateway.d.ts",
+      "import": "./dist/src/gateway/createGateway.js"
     },
     "./gateway/registry": {
-      "types": "./dist/gateway/registry.d.ts",
-      "import": "./dist/gateway/registry.js"
+      "types": "./dist/src/gateway/registry.d.ts",
+      "import": "./dist/src/gateway/registry.js"
     },
     "./gateway/types": {
-      "types": "./dist/gateway/types.d.ts",
-      "import": "./dist/gateway/types.js"
+      "types": "./dist/src/gateway/types.d.ts",
+      "import": "./dist/src/gateway/types.js"
     },
     "./contracts": {
-      "types": "./dist/contracts/index.d.ts",
-      "import": "./dist/contracts/index.js"
+      "types": "./dist/src/contracts/index.d.ts",
+      "import": "./dist/src/contracts/index.js"
     },
     "./notifications": {
-      "types": "./dist/notifications/index.d.ts",
-      "import": "./dist/notifications/index.js"
+      "types": "./dist/src/notifications/index.d.ts",
+      "import": "./dist/src/notifications/index.js"
     },
     "./notifications/adapter": {
-      "types": "./dist/notifications/adapter.d.ts",
-      "import": "./dist/notifications/adapter.js"
+      "types": "./dist/src/notifications/adapter.d.ts",
+      "import": "./dist/src/notifications/adapter.js"
     },
     "./notifications/types": {
-      "types": "./dist/notifications/types.d.ts",
-      "import": "./dist/notifications/types.js"
+      "types": "./dist/src/notifications/types.d.ts",
+      "import": "./dist/src/notifications/types.js"
     },
     "./localization": {
-      "types": "./dist/localization/index.d.ts",
-      "import": "./dist/localization/index.js"
+      "types": "./dist/src/localization/index.d.ts",
+      "import": "./dist/src/localization/index.js"
     },
     "./localization/adapter": {
-      "types": "./dist/localization/adapter.d.ts",
-      "import": "./dist/localization/adapter.js"
+      "types": "./dist/src/localization/adapter.d.ts",
+      "import": "./dist/src/localization/adapter.js"
     },
     "./localization/types": {
-      "types": "./dist/localization/types.d.ts",
-      "import": "./dist/localization/types.js"
+      "types": "./dist/src/localization/types.d.ts",
+      "import": "./dist/src/localization/types.js"
     }
   },
   "main": "./dist/index.js",
   "typesVersions": {
     "*": {
       ".": ["./dist/index.d.ts"],
-      "auth": ["./dist/auth/index.d.ts"],
-      "auth/adapter": ["./dist/auth/adapter.d.ts"],
-      "auth/server": ["./dist/auth/server.d.ts"],
-      "commerce": ["./dist/commerce/index.d.ts"],
-      "commerce/adapter": ["./dist/commerce/adapter.d.ts"],
-      "commerce/server": ["./dist/commerce/server.d.ts"],
-      "content": ["./dist/content/index.d.ts"],
-      "content/adapter": ["./dist/content/adapter.d.ts"],
-      "content/server": ["./dist/content/server.d.ts"],
-      "search": ["./dist/search/index.d.ts"],
-      "search/adapter": ["./dist/search/adapter.d.ts"],
-      "search/server": ["./dist/search/server.d.ts"],
-      "federation": ["./dist/federation/index.d.ts"],
-      "federation/adapter": ["./dist/federation/adapter.d.ts"],
-      "federation/server": ["./dist/federation/server.d.ts"],
-      "gateway": ["./dist/gateway/index.d.ts"],
-      "gateway/createGateway": ["./dist/gateway/createGateway.d.ts"],
-      "gateway/registry": ["./dist/gateway/registry.d.ts"],
-      "gateway/types": ["./dist/gateway/types.d.ts"],
-      "contracts": ["./dist/contracts/index.d.ts"],
-      "notifications": ["./dist/notifications/index.d.ts"],
-      "notifications/adapter": ["./dist/notifications/adapter.d.ts"],
-      "notifications/types": ["./dist/notifications/types.d.ts"],
-      "localization": ["./dist/localization/index.d.ts"],
-      "localization/adapter": ["./dist/localization/adapter.d.ts"],
-      "localization/types": ["./dist/localization/types.d.ts"]
+      "auth": ["./dist/src/auth/index.d.ts"],
+      "auth/adapter": ["./dist/src/auth/adapter.d.ts"],
+      "auth/server": ["./dist/src/auth/server.d.ts"],
+      "commerce": ["./dist/src/commerce/index.d.ts"],
+      "commerce/adapter": ["./dist/src/commerce/adapter.d.ts"],
+      "commerce/server": ["./dist/src/commerce/server.d.ts"],
+      "content": ["./dist/src/content/index.d.ts"],
+      "content/adapter": ["./dist/src/content/adapter.d.ts"],
+      "content/server": ["./dist/src/content/server.d.ts"],
+      "search": ["./dist/src/search/index.d.ts"],
+      "search/adapter": ["./dist/src/search/adapter.d.ts"],
+      "search/server": ["./dist/src/search/server.d.ts"],
+      "federation": ["./dist/src/federation/index.d.ts"],
+      "federation/adapter": ["./dist/src/federation/adapter.d.ts"],
+      "federation/server": ["./dist/src/federation/server.d.ts"],
+      "gateway": ["./dist/src/gateway/index.d.ts"],
+      "gateway/createGateway": ["./dist/src/gateway/createGateway.d.ts"],
+      "gateway/registry": ["./dist/src/gateway/registry.d.ts"],
+      "gateway/types": ["./dist/src/gateway/types.d.ts"],
+      "module": ["./dist/src/module.d.ts"],
+      "contracts": ["./dist/src/contracts/index.d.ts"],
+      "notifications": ["./dist/src/notifications/index.d.ts"],
+      "notifications/adapter": ["./dist/src/notifications/adapter.d.ts"],
+      "notifications/types": ["./dist/src/notifications/types.d.ts"],
+      "localization": ["./dist/src/localization/index.d.ts"],
+      "localization/adapter": ["./dist/src/localization/adapter.d.ts"],
+      "localization/types": ["./dist/src/localization/types.d.ts"]
     }
   },
   "files": [
@@ -163,7 +169,7 @@
     "test:watch": "vitest watch"
   },
   "dependencies": {
-    "alternate-auth": "file:../alternate-auth"
+    "@mframework/alternate-auth": "file:../alternate-auth"
   },
   "devDependencies": {
     "@types/node": "latest",

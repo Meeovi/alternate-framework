@@ -32,12 +32,12 @@
   import { ref } from '#imports'
 
   const model = ref(null)
-  const { $directus, $readItems } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   const {
     data: deals
   } = await useAsyncData('deals', () => {
-    return $directus.request($readItems('products', {
+    return $sdk.content.readItems('products', {
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',
@@ -54,6 +54,6 @@
           _eq: "published"
         }
       }
-    }))
+    })
   })
 </script>

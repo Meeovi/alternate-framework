@@ -82,57 +82,53 @@
         user
     } = useAuth()
 
-    const {
-        $directus,
-        $readItem,
-        $readItems
-    } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
     const tab = ref(null);
 
     const {
         data: feedBar
     } = await useAsyncData('feedBar', async () => {
-        const resp = await $directus.request($readItem('navigation', '32', {
+        const resp = await $sdk.content.getItem('navigation', '32', {
             fields: ['*', {
                 '*': ['*']
             }]
-        }))
+        })
         return resp?.data ?? resp ?? null
     })
 
     const {
         data: feedsPage
     } = await useAsyncData('feedsPage', async () => {
-        const resp = await $directus.request($readItem('pages', '34', {
+        const resp = await $sdk.content.getItem('pages', '34', {
             fields: ['*', {
                 '*': ['*']
             }]
-        }))
+        })
         return resp?.data ?? resp ?? null
     })
 
     const {
         data: posts
     } = await useAsyncData('posts', async () => {
-        const resp = await $directus.request($readItems('posts', {
+        const resp = await $sdk.content.readItems('posts', {
             fields: ['*', {
                 '*': ['*']
             }]
-        }))
+        })
         return resp?.data ?? resp ?? []
     })
 
     const {
         data: circles
     } = await useAsyncData('circles', async () => {
-        const resp = await $directus.request($readItems('circles', {
+        const resp = await $sdk.content.readItems('circles', {
             fields: ['*', 'posts.posts_id.*', 'products.products_id.*', 'users.*'],
             filter: {
                 creator: {
                     _eq: user?.id
                 }
             }
-        }))
+        })
         return resp?.data ?? resp ?? []
     })
 

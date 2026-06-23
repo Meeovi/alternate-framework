@@ -30,7 +30,7 @@
     });
 
     const emit = defineEmits(["update:modelValue"]);
-        const { $readItems } = useNuxtApp()
+        const { $sdk } = useNuxtApp()
 
     const internalValue = computed({
         get: () => props.modelValue,
@@ -41,7 +41,7 @@
 
     onMounted(async () => {
         try {
-            const items = await readItems(props.collection, { limit: 50 })
+            const items = await $sdk.content.readItems(props.collection, { limit: 50 })
             options.value = (items || []).map((item: any) => ({
                 id: item.id,
                 display: item.name || item.title || `Item ${item.id}`,

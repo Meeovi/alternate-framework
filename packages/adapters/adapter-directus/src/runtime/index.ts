@@ -1,37 +1,26 @@
-// src/index.ts
+import { createDirectus, rest, staticToken, readItem, readItems, readFieldsByCollection, createItem, updateItem, deleteItem, uploadFiles, readSingleton } from '@directus/sdk'
 
-export * from './client/createClient';
-export { directus } from './client/createClient'
-import { createMeeoviDirectusClient } from './client/createClient'
-import { staticToken } from '@directus/sdk'
+export const directus = createDirectus('')
 
-// Vue bindings
-export { default as DirectusVueProvider } from './vue/DirectusProvider';
-export * from './vue/useDirectus';
+export function createMeeoviDirectusClient<Schema = any>(url: string) {
+  return createDirectus<Schema>(url).with(rest())
+}
 
-// React bindings
-export { DirectusProvider as DirectusReactProvider } from './react/DirectusProvider';
-export * from './react/useDirectus';
+export * from './schema/types'
+export * from './schema/introspect'
 
-// Schema + generators + utils
-export * from './client/createClient';
+export type { DirectusSchema } from './schema/types'
 
-export * from './schema/types';
-export * from './schema/introspect';
+export * from './utils/fields'
 
-export type { DirectusSchema } from './types';
+export * from './generators/form-engine'
+export * from './generators/table-engine'
+export * from './generators/validation-engine'
+export * from './generators/widget-registry'
 
-export * from './utils/collections';
-export * from './utils/fields';
-
-export * from './generators/form-engine';
-export * from './generators/table-engine';
-export * from './generators/validation-engine';
-export * from './generators/widget-registry';
-
-export * from './utils/visualEditing';
-export * from './utils/livePreview';
-export * from './composables';
+export * from './utils/visualEditing'
+export * from './utils/livePreview'
+export * from './composables'
 
 export {
     createDirectus,
@@ -160,8 +149,8 @@ export class DirectusAdapter {
         this.url = String(options.url || (import.meta as any)?.env?.DIRECTUS_URL || '')
         this.sdk = createMeeoviDirectusClient<any>(this.url)
         this.client = options.staticToken
-            ? (this.sdk.client as any).with(staticToken(options.staticToken))
-            : this.sdk.client
+            ? (this.sdk as any).with(staticToken(options.staticToken))
+            : this.sdk
     }
 
     request(query: any) {
@@ -169,42 +158,42 @@ export class DirectusAdapter {
     }
 
     async readItems(collection: string, opts?: any) {
-        const op = (this.sdk.readItems as any)(collection, normalizeDirectusReadOptions(opts))
+        const op = (readItems as any)(collection, normalizeDirectusReadOptions(opts))
         const result = await this.client.request(op)
         return normalizeDirectusResult(result)
     }
 
     async readItem(collection: string, id: string | number, opts?: any) {
-        const op = (this.sdk.readItem as any)(collection, id, normalizeDirectusReadOptions(opts))
+        const op = (readItem as any)(collection, id, normalizeDirectusReadOptions(opts))
         const result = await this.client.request(op)
         return normalizeDirectusResult(result)
     }
 
     async readFieldsByCollection(collection: string, opts?: any) {
-        const op = (this.sdk.readFieldsByCollection as any)(collection, normalizeDirectusReadOptions(opts))
+        const op = (readFieldsByCollection as any)(collection, normalizeDirectusReadOptions(opts))
         const result = await this.client.request(op)
         return normalizeDirectusResult(result)
     }
 
     async createItem(collection: string, payload: any) {
-        const op = (this.sdk.createItem as any)(collection, normalizeDirectusWritePayload(payload))
+        const op = (createItem as any)(collection, normalizeDirectusWritePayload(payload))
         const result = await this.client.request(op)
         return normalizeDirectusResult(result)
     }
 
     async updateItem(collection: string, id: string | number, payload?: any) {
-        const op = (this.sdk.updateItem as any)(collection, id, normalizeDirectusWritePayload(payload))
+        const op = (updateItem as any)(collection, id, normalizeDirectusWritePayload(payload))
         const result = await this.client.request(op)
         return normalizeDirectusResult(result)
     }
 
     deleteItem(collection: string, id: string | number) {
-        const op = (this.sdk.deleteItem as any)(collection, id)
+        const op = (deleteItem as any)(collection, id)
         return this.client.request(op)
     }
 
     uploadFiles(files: any) {
-        return this.client.request(this.sdk.uploadFiles(files))
+        return this.client.request((uploadFiles as any)(files))
     }
 
     getSchema(collection: string) {

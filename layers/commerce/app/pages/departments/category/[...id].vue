@@ -69,7 +69,7 @@
   const gateway = useAppGateway()
   const category = ref<any>(null)
   const products = ref([])
-  const { $readItems, $directus } = useNuxtApp() as any
+  const { $sdk } = useNuxtApp()
 
   const slug = computed(() => {
     const s = route.params.slug
@@ -90,13 +90,13 @@
             _eq: slug.value
           }
         }
-      const resp = await $directus.request($readItems('categories', {
+      const resp = await $sdk.content.readItems('categories', {
         fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*', 'products.products_id.*',
           'products.products_id.image.*', 'menus.*', 'image.*'
         ],
         filter,
         limit: 1,
-      }))
+      })
       category.value = Array.isArray(resp?.data) ? resp.data[0] : (resp?.data || resp || [])[0] || null
     } catch (e) {
       category.value = null

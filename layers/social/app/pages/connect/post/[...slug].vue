@@ -6,15 +6,15 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
                         <div v-if="matchesExtension(post?.file, ['.mp4'])">
-                            <video :src="getAssetUrl(post?.file)"></video>
+                            <video :src="$sdk.media?.getAssetUrl?.(post?.file)"></video>
                         </div>
 
                         <div v-else-if="matchesExtension(post?.audio, ['.mp3'])">
-                            <audio :src="getAssetUrl(post?.audio)"></audio>
+                            <audio :src="$sdk.media?.getAssetUrl?.(post?.audio)"></audio>
                         </div>
 
                         <div v-else-if="matchesExtension(post?.image, ['.gif'])">
-                            <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetUrl(post?.image)"
+                            <NuxtImg provider="cloudinary" loading="lazy" :src="$sdk.media?.getAssetUrl?.(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 
@@ -71,7 +71,7 @@
                                 </h4>
                                 <h5 class="card-text mbr-fonts-style display-7">
                                     <NuxtLink v-if="hasAsset(post?.author?.avatar)" :to="`/user/${post?.author?.id}`">
-                                        <v-avatar :image="post?.author?.avatar"></v-avatar>
+                                        <v-avatar :image="$sdk.media?.getAssetUrl?.(post?.author?.avatar)"></v-avatar>
                                     </NuxtLink>
 
                                     <NuxtLink v-else :to="`/user/${post?.author?.id}`">
@@ -168,41 +168,22 @@
         ref
     } from '#imports'
     import {
-        useDirectusUrl
-    } from '#shared/app/composables/media/useDirectusUrl'
-    import {
         useReactionsStore
     } from '~/stores/reactions'
 
+    const { $sdk } = useNuxtApp()
     const route = useRoute();
-    const directusUrl = useDirectusUrl()
-    const getAssetUrl = (file) => {
-        const fileId = file?.id || file?.directus_files_id?.id || file?.filename_disk || file
-        if (!fileId || !directusUrl) return ''
-        return `${directusUrl.replace(/\/$/, '')}/assets/${fileId}`
-    }
-    const {
-        $directus,
-        $readItems,
-        $preview
-    } = useNuxtApp()
-    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '')
+    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || $sdk.media?.getAssetUrl?.(file) || '')
         .toLowerCase()
     const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
-    const hasAsset = (file) => Boolean(getAssetUrl(file))
+    const hasAsset = (file) => Boolean($sdk.media?.getAssetUrl?.(file))
 
     const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
-
-    if ($preview) {
-        const post = await useAsyncData('post', () => {
-            return $directus.request($readItem('posts', slugParam))
-        });
-    }
 
     const {
         data: post
     } = await useAsyncData('post', async () => {
-        const resp = await $directus.request($readItems('posts', {
+        const resp = await $sdk.content.readItems('posts', {
             filter: {
                 slug: {
                     _eq: `${slugParam}`
@@ -210,7 +191,7 @@
             },
             fields: ['*', 'author.*', 'image.*', 'file.*', 'audio.*'],
             limit: 1
-        }))
+        })
         return resp?.[0] || null
     })
 

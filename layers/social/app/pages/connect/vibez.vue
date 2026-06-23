@@ -83,14 +83,14 @@
 <script setup>
 import { ref, computed, watchEffect } from '#imports'
 
-const { $directus, $readItems, $createItem, $deleteItem } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 const config = useRuntimeConfig()
 const { user, fetchSession } = useAuth()
 await fetchSession()
 
-const readItems = (collection, opts) => $directus.request($readItems(collection, opts))
-const createItem = (collection, data) => $directus.request($createItem(collection, data))
-const deleteItem = (collection, id) => $directus.request($deleteItem(collection, id))
+const readItems = (collection, opts) => $sdk.content.readItems(collection, opts)
+const createItem = (collection, data) => $sdk.content.createItem(collection, data)
+const deleteItem = (collection, id) => $sdk.content.deleteItem(collection, id)
 
 const getCurrentUserId = () => user.value?.id || user.value?.userId || null
 
@@ -102,7 +102,7 @@ const sortBy = ref('recency')
 
 async function fetchTags() {
     try {
-        const data = await readItems('tags', { fields: ['id', 'name'] })
+        const data = await $sdk.content.readItems('tags', { fields: ['id', 'name'] })
         tags.value = data?.data || data || []
     } catch (e) {
         console.error('Failed to fetch tags', e)
@@ -121,7 +121,7 @@ async function fetchVideos() {
 
         const sort = sortBy.value === 'popularity' ? ['-view_count'] : ['-created_at']
 
-        const resp = await readItems('videos', { filter, sort, fields: ['*', 'tags.id', 'tags.name'] })
+        const resp = await $sdk.content.readItems('videos', { filter, sort, fields: ['*', 'tags.id', 'tags.name'] })
         const data = resp?.data || resp || []
         videos.value = (data || []).map((v) => ({ ...v, liked: false, reaction_count: v.reaction_count || 0, comment_count: v.comment_count || 0 }))
 
@@ -129,16 +129,16 @@ async function fetchVideos() {
         await Promise.all(
             videos.value.map(async (v) => {
                 try {
-                    const resp = await readItems('reactions', { filter: { video_id: { _eq: v.id } } })
+                    const resp = await $sdk.content.readItems('reactions', { filter: { video_id: { _eq: v.id } } })
                     v.reaction_count = resp?.data?.length || resp?.length || 0
 
                     if (currentUserId) {
-                        const me = await readItems('reactions', { filter: { video_id: { _eq: v.id }, user_id: { _eq: currentUserId } }, limit: 1 })
+                        const me = await $sdk.content.readItems('reactions', { filter: { video_id: { _eq: v.id }, user_id: { _eq: currentUserId } }, limit: 1 })
                         const meData = me?.data || me || []
                         v.liked = (meData && meData.length > 0) || false
                     }
 
-                    const commentsResp = await readItems('comments', { filter: { video_id: { _eq: v.id } } })
+                    const commentsResp = await $sdk.content.readItems('comments', { filter: { video_id: { _eq: v.id } } })
                     v.comment_count = commentsResp?.data?.length || commentsResp?.length || 0
                 } catch (e) {
                     // non-fatal per-video
@@ -190,7 +190,7 @@ async function toggleLike(video) {
     if (!currentUserId) return
 
     try {
-        const existing = await readItems('reactions', { filter: { video_id: { _eq: video.id }, user_id: { _eq: currentUserId } }, limit: 1 })
+        const existing = await $sdk.content.readItems('reactions', { filter: { video_id: { _eq: video.id }, user_id: { _eq: currentUserId } }, limit: 1 })
         const existingId = (existing?.data?.[0]?.id) || (existing?.[0]?.id) || null
 
         if (existingId) {
@@ -198,7 +198,7 @@ async function toggleLike(video) {
             video.liked = false
             video.reaction_count = Math.max(0, (video.reaction_count || 0) - 1)
         } else {
-            const resp = await createItem('reactions', { video_id: video.id, user_id: currentUserId })
+            const resp = await $sdk.content.createItem('reactions', { video_id: video.id, user_id: currentUserId })
             const createdId = resp?.data?.id || resp?.id || null
             if (createdId) {
                 video.liked = true

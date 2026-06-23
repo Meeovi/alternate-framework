@@ -18,15 +18,7 @@
   },
   "include": [
     "*.ts",
-    "auth/**/*.ts",
-    "commerce/**/*.ts",
-    "content/**/*.ts",
-    "search/**/*.ts",
-    "federation/**/*.ts",
-    "gateway/**/*.ts",
-    "contracts/**/*.ts",
-    "notifications/**/*.ts",
-    "localization/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "dist",

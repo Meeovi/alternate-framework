@@ -100,7 +100,7 @@
     import uploadFiles from '#social/app/composables/lists/content/uploadFiles';
     const currentUser = useCurrentUser()
 
-    const { $directus, $readItem, $updateItem, $deleteItem } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
 
     const userDisplayName = computed(() => {
         return currentUser.value?.name || currentUser.value?.username || 'User'
@@ -137,7 +137,7 @@
             if (!bookmarkId) return
 
             if ($readItem) {
-                const resp = await $directus.request($readItem('websites', bookmarkId))
+                const resp = await $sdk.content.getItem('websites', bookmarkId)
                 const response = resp || null
                 if (response) {
                     bookmarkData.value = {
@@ -196,7 +196,7 @@
 
             let updatedBookmark = null
             if ($updateItem) {
-                const resp = await $directus.request($updateItem('websites', route.params.id, updateData))
+                const resp = await $sdk.content.updateItem('websites', route.params.id, updateData)
                 updatedBookmark = resp
             }
 
@@ -235,7 +235,7 @@
         try {
             deleteLoading.value = true;
             if ($deleteItem) {
-                await $directus.request($deleteItem('websites', route.params.id))
+                await $sdk.content.deleteItem('websites', route.params.id)
             }
 
             // Close the delete dialog

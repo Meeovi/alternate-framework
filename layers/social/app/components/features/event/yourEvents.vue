@@ -94,17 +94,17 @@
     const tab = ref(null);
 
     const { data: eventBar } = await useAsyncData('eventBar', async () => {
-        const resp = await readItem('navigation', '80', { fields: ['*', { '*': ['*'] }] })
+        const resp = await $sdk.content.readItem('navigation', '80', { fields: ['*', { '*': ['*'] }] })
         return resp?.data || resp || null
     })
 
     const { data: events } = await useAsyncData('events', async () => {
-        const resp = await readItems('products', { fields: ['*', { '*': ['*'] }], filter: { product_type: { product_types_id: { name: { _eq: 'Event' } } }, attributes: { default_label: { _eq: 'RSVP Status' } } } })
+        const resp = await $sdk.content.readItems('products', { fields: ['*', { '*': ['*'] }], filter: { product_type: { product_types_id: { name: { _eq: 'Event' } } }, attributes: { default_label: { _eq: 'RSVP Status' } } } })
         return resp?.data || resp || []
     })
 
     const { data: pastEvents } = await useAsyncData('pastEvents', async () => {
-        const resp = await readItems('products', { fields: ['*', { '*': ['*'] }], filter: { product_type: { product_types_id: { name: { _eq: 'Event' } } }, date_created: { _lt: new Date().toISOString().slice(5, 10) } } })
+        const resp = await $sdk.content.readItems('products', { fields: ['*', { '*': ['*'] }], filter: { product_type: { product_types_id: { name: { _eq: 'Event' } } }, date_created: { _lt: new Date().toISOString().slice(5, 10) } } })
         return resp?.data || resp || []
     })
 

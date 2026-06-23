@@ -30,15 +30,15 @@
     const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
 
     const model = ref(null)
-    const { $readItems } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
 
     const { data: myAudioSpaces } = await useAsyncData<any[]>('myAudioSpaces', async () => {
-        const resp = await readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
+        const resp = await $sdk.content.readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
         return resp?.data || resp || []
     })
 
     const { data: audioSpaces } = await useAsyncData<any[]>('audioSpaces', async () => {
-        const resp = await readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
+        const resp = await $sdk.content.readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] })
         return resp?.data || resp || []
     })
 </script>

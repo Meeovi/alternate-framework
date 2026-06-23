@@ -17,16 +17,16 @@ const emit = defineEmits(['size-selected'])
 const sizes = ref([])
 const selectedSize = ref(null)
 
-const { $directus, $readItems } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 
 const loadSizes = async () => {
     try {
-        const res = await $directus.request($readItems('attributes', {
+        const res = await $sdk.content.readItems('attributes', {
             filter: {
                 attribute_code: { _eq: 'size' }
             },
             sort: ['id']
-        }))
+        })
 
         const attr = (res && res[0]) || null
         const opts = attr?.options || []

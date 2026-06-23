@@ -28,6 +28,11 @@ export default defineNuxtConfig({
     public: {
       payment: process.env.NUXT_PAYMENT || 'stripe',
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
+      scripts: {
+        paypal: {
+          clientId: `${process.env.NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID}`, // NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID
+        },
+      },
       // Directus
       directus: {
         url: process.env.DIRECTUS_URL,

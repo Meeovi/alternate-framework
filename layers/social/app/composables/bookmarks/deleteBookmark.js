@@ -1,10 +1,10 @@
 // composables/deleteWebsite.js
 export default async function deleteWebsite(websiteId) {
-  const { $directus, $readItem, $readItems, $createItem, $updateItem, $deleteItem, $uploadFiles } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   try {
-    if (content && typeof content.deleteItem === 'function') {
-      await $directus.request($deleteItem('websites', websiteId))
+    if ($sdk?.content && typeof $sdk.content.deleteItem === 'function') {
+      await $sdk.content.deleteItem('websites', websiteId)
       return true
     }
     throw new Error('No adapter content client available for deleteItem')
@@ -13,4 +13,3 @@ export default async function deleteWebsite(websiteId) {
     throw error
   }
 }
-  

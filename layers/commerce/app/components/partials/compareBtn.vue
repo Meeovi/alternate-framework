@@ -15,7 +15,7 @@
   const props = defineProps<{ product: Product }>();
 
   const compareStore = useCompareStore();
-  const { $directus, $readItems, $deleteItem, $createItem } = useNuxtApp() as any;
+  const { $sdk } = useNuxtApp() as any;
 
   const isInCompare = computed(() => {
     return compareStore.getComparedProductSkus.includes(props.product?.sku);
@@ -33,11 +33,11 @@
 
       if (isInCompare.value) {
         try {
-          const itemsRes = await $directus.request($readItems('compare_items', { filter: { sku: { _eq: sku } } }))
+          const itemsRes = await $sdk.content.readItems('compare_items', { filter: { sku: { _eq: sku } } })
           const items = itemsRes?.data || itemsRes || [];
           for (const it of items) {
             const id = it.id || it._id || it.ID;
-            if (id) await $directus.request($deleteItem('compare_items', id))
+            if (id) await $sdk.content.deleteItem('compare_items', id)
           }
         } catch (e) {
           console.warn('Data remove compare item failed:', e);
@@ -45,7 +45,7 @@
         compareStore.productSkus = compareStore.productSkus.filter((s: string) => s !== sku);
       } else {
         try {
-          await $directus.request($createItem('compare_items', { sku }))
+          await $sdk.content.createItem('compare_items', { sku })
         } catch (e) {
           console.warn('Data create compare item failed:', e);
         }

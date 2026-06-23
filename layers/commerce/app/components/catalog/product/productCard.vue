@@ -3,7 +3,7 @@
     <div class="border border-neutral-200 rounded-md hover:shadow-lg max-w-[300px]">
       <div class="relative" v-if="product?.image?.length > 0">
         <NuxtLink :to="`/product/${product?.id}`" class="block">
-          <NuxtImg provider="cloudinary" :src="getAssetUrl(product?.image)" :alt="product?.name"
+          <NuxtImg provider="cloudinary" :src="$sdk.media?.getAssetUrl?.(product?.image)" :alt="product?.name"
             class="block object-cover h-auto rounded-md aspect-square" width="300" height="300" />
         </NuxtLink>
         <v-btn variant="flat" size="sm" square
@@ -64,7 +64,7 @@
   import { computed } from 'vue'
   import { usePrice } from '../../../composables/catalog/price/price'
 
-  const directusUrl = useDirectusUrl?.()
+  const { $sdk } = useNuxtApp()
 
   const { getProductPrice } = usePrice()
 

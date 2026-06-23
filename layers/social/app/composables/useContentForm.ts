@@ -1,5 +1,6 @@
 import { reactive, ref, unref, watchEffect, type Ref } from 'vue'
 import { useJsonForm } from '../../../../packages/modules/ui-forms/src/composables/useJsonForm'
+import { useNuxtApp } from 'nuxt/app'
 
 type ContentFormOptions = {
   clearOnSuccess?: boolean
@@ -7,11 +8,7 @@ type ContentFormOptions = {
 }
 
 export function useContentForm(collection: string, fields: any, options: ContentFormOptions = {}) {
-  const { $directus, $createItem } = useNuxtApp()
-
-  if (typeof $createItem !== 'function') {
-    throw new Error('Gateway content adapter is not available on Nuxt app instance.')
-  }
+  const { $sdk } = useNuxtApp()
 
   const formSchema = {
     type: 'object',
@@ -68,7 +65,7 @@ export function useContentForm(collection: string, fields: any, options: Content
         return
       }
 
-      await $directus.request($createItem(collection, { ...form }))
+      await $sdk.content.createItem(collection, { ...form })
       formSuccess.value = 'Saved successfully.'
 
       if (options.clearOnSuccess) {

@@ -152,7 +152,7 @@ const props = defineProps({
   }
 })
 
-const { $directus } = useNuxtApp()
+const { $sdk } = useNuxtApp()
 
 const currentIndex = ref(0)
 const isPlaying = ref(false)

@@ -5,7 +5,7 @@
                 <div class="row main justify-content-center">
                     <div class="col-lg-12 p-4">
                         <div class="image-element card-wrapper">
-                            <NuxtImg class="brandLogo" :src="getAssetUrl(brand?.image)" :alt="brand.name" />
+                            <NuxtImg class="brandLogo" :src="$sdk.media?.getAssetUrl?.(brand?.image)" :alt="brand.name" />
                             <!--<div class="mbr-overlay card-overlay"></div>-->
                             <div class="wrapper">
                                 <h5 class="card-title mbr-fonts-style align-left display-2">
@@ -29,6 +29,8 @@
         onMounted
     } from '#imports'
 
+    const { $sdk } = useNuxtApp()
+
     const props = defineProps({
         brand: {
             type: Object,
@@ -38,5 +40,4 @@
     const {
         brand
     } = props;
-    const directusUrl = useDirectusUrl?.()
 </script>

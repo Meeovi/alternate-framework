@@ -6,7 +6,7 @@ import {
   DirectusItemUpdate,
   DirectusItems,
   DirectusItem
-} from '../types'
+} from '../types/index'
 import { useDirectus } from './useDirectus'
 
 export const useDirectusItems = () => {

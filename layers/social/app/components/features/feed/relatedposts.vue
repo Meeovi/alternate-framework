@@ -23,10 +23,10 @@
     //import {posts} from '~/graphql/cms/queries/posts'  
 
     const tab = ref(null);
- const { $readItems } = useNuxtApp()
+ const { $sdk } = useNuxtApp()
 
     const { data: posts } = await useAsyncData('related-posts-list', async () => {
-      const resp = await readItems('posts', { fields: ['*', { '*': ['*'] }] })
+      const resp = await $sdk.content.readItems('posts', { fields: ['*', { '*': ['*'] }] })
       return resp?.data || resp || []
     })
 </script>

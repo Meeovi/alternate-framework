@@ -55,5 +55,6 @@
   "**/__tests__/**",
   "**/*.spec.ts",
   "**/*.spec.tsx"
- ]
+ ],
+"include": ["types/**/*.d.ts", "nuxt.config.ts", "plugins", "server", "app.vue"]
 }

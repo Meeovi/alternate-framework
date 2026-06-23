@@ -17,26 +17,27 @@ function createFallbackContentApi() {
 export function useAppGateway() {
   const nuxtApp = useNuxtApp() as any
   
-  // Priority 1: Check if gateway is already initialized on nuxtApp (from plugin)
-  if (nuxtApp.$gateway && nuxtApp.$gateway.content && typeof nuxtApp.$gateway.content.readItems === 'function') {
-    return nuxtApp.$gateway
+  // Priority 1: Check if $sdk is available (from plugin)
+  if (nuxtApp.$sdk && nuxtApp.$sdk.content && typeof nuxtApp.$sdk.content.readItems === 'function') {
+    return nuxtApp.$sdk
   }
 
-  const gateway = (nuxtApp.$gateway || {}) as any
+  const sdk = (nuxtApp.$sdk || {}) as any
 
-  if (!gateway.content || typeof gateway.content.readItems !== 'function') {
-    gateway.content = createFallbackContentApi()
+  if (!sdk.content || typeof sdk.content.readItems !== 'function') {
+    sdk.content = createFallbackContentApi()
   }
 
-  gateway.auth ||= {}
-  gateway.commerce ||= {}
-  gateway.search ||= {}
+  sdk.auth ||= {}
+  sdk.commerce ||= {}
+  sdk.search ||= {}
+  sdk.media ||= {}
 
-  if (!nuxtApp.$gateway) {
-    nuxtApp.$gateway = gateway
+  if (!nuxtApp.$sdk) {
+    nuxtApp.$sdk = sdk
   }
 
-  return gateway
+  return sdk
 }
 
 export default useAppGateway

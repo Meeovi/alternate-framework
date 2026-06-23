@@ -33,7 +33,7 @@
                             <template v-slot:activator="{ props }">
                                 <div class="avatarBorder" v-for="(shorts, index) in short" :key="index">
                                     <v-avatar v-bind="props" size="60">
-                                        <NuxtImg provider="cloudinary" v-if="hasAsset(shorts?.thumbnail)" loading="lazy" :src="getAssetUrl(shorts?.thumbnail)" :alt="shorts?.name" cover />
+                                        <NuxtImg provider="cloudinary" v-if="hasAsset(shorts?.thumbnail)" loading="lazy" :src="$sdk.media?.getAssetUrl?.(shorts?.thumbnail)" :alt="shorts?.name" cover />
 
                                         <NuxtImg provider="cloudinary" v-else src="/images/display-2.png" :alt="shorts?.name" cover />
                                     </v-avatar>
@@ -64,19 +64,20 @@
     } from 'vue';
     import { useRoute } from 'vue-router';
 
+    const { $sdk } = useNuxtApp()
+
     const tab = ref(null);
     const createdialog = ref(false);
     const dialog = ref(false);
     const route = useRoute();
     const shortId = computed(() => String(route.params.id || ''));
 
-    const { $readItems } = useNuxtApp()
-    const hasAsset = (file) => Boolean(getAssetUrl(file))
+    const hasAsset = (file) => Boolean($sdk.media?.getAssetUrl?.(file))
 
     const {
         data: short
     } = await useAsyncData('short', async () => {
-        const resp = await readItems('shorts', {
+        const resp = await $sdk.content.readItems('shorts', {
             fields: ['*', { '*': ['*'] }]
         })
         return Array.isArray(resp) ? resp : []

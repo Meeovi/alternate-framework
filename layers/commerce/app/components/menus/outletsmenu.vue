@@ -17,12 +17,12 @@
 <script setup>
   import { computed } from '#imports'
 
-  const { $directus, $readItems } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   const {
     data: outletsMenuRaw
   } = await useAsyncData('outletsMenu', async () => {
-    const rows = await $directus.request($readItems('departments', {
+    const rows = await $sdk.content.readItems('departments', {
       filter: {
         active: {
           _eq: 'active'
@@ -35,11 +35,11 @@
         '*': ['*']
       }],
       sort: ['name']
-    }))
+    })
     const result = Array.isArray(rows) ? rows : []
     if (result.length) return result
 
-    return await $directus.request($readItems('departments', {
+    return await $sdk.content.readItems('departments', {
       filter: {
         type: {
           _eq: 'outlet'
@@ -49,7 +49,7 @@
         '*': ['*']
       }],
       sort: ['name']
-    }))
+    })
   })
 
   const outletsMenu = computed(() => {

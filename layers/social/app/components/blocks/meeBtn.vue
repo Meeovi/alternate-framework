@@ -5,14 +5,14 @@
 </template>
 
 <script setup>
-    const { $directus, $readItems } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
 
     const { fetchSession } = useAuth()
     await fetchSession()
 
     const { data: meeBtn } = await useAsyncData('meeBtn', () => {
-        return $directus.request($readItems('mee_btn', {
+        return $sdk.content.readItems('mee_btn', {
             fields: ['*']
-        }))
+        })
     })
 </script>

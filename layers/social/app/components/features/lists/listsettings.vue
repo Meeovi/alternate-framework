@@ -79,7 +79,7 @@
       ref
   } from '#imports'
 
-    const { $directus } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
   
 
   const config = useRuntimeConfig();

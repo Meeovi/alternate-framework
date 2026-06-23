@@ -8,7 +8,7 @@
                             <v-list>
                                 <v-list-item :title="post?.author?.name"
                                     :subtitle="post?.date_created ? new Date(post?.date_created).toLocaleDateString() : 'Unknown date'"
-                                    :prepend-avatar="getAssetUrl(post?.author?.avatar)"></v-list-item>
+                                    :prepend-avatar="$sdk.media?.getAssetUrl?.(post?.author?.avatar)"></v-list-item>
                             </v-list>
                         </v-toolbar-title>
 
@@ -17,15 +17,15 @@
                         <editMenu :post="post" />
                     </v-toolbar>
                     <div class="align-end text-white" height="200" v-if="post?.file">
-                        <video :src="getAssetUrl(post?.file)"></video>
+                        <video :src="$sdk.media?.getAssetUrl?.(post?.file)"></video>
                     </div>
 
                     <div class="align-end text-white" height="200" v-else-if="post?.audio">
-                        <audio :src="getAssetUrl(post?.audio)"></audio>
+                        <audio :src="$sdk.media?.getAssetUrl?.(post?.audio)"></audio>
                     </div>
 
                     <div class="align-end text-white" height="200" v-else-if="matchesExtension(post?.image, ['.gif'])">
-                        <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetUrl(post?.image)"
+                        <NuxtImg provider="cloudinary" loading="lazy" :src="$sdk.media?.getAssetUrl?.(post?.image)"
                             :alt="post?.title || 'No Title'" />
                     </div>
                     <v-img v-else class="align-end text-white" height="200"
@@ -92,6 +92,8 @@
         useReactionsStore
     } from '../../stores/useReactionsStore'
 
+    const { $sdk } = useNuxtApp()
+
     const props = defineProps({
         post: {
             type: Object,
@@ -118,13 +120,7 @@
         }
     })
 
-    const directusUrl = useDirectusUrl?.()
-    const getAssetUrl = (file) => {
-        const fileId = file?.id || file?.directus_files_id?.id || file?.filename_disk || file
-        if (!fileId || !directusUrl) return ''
-        return `${directusUrl.replace(/\/$/, '')}/assets/${fileId}`
-    }
-    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetUrl(file) || '')
+    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || $sdk.media?.getAssetUrl?.(file) || '')
         .toLowerCase()
     const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 </script>

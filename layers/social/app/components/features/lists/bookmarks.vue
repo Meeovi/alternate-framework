@@ -26,7 +26,7 @@
     import bookmarkCard from '#social/app/components/related/bookmark.vue'
     import { computed, useCurrentUser } from '#imports'
 
-    const { $directus, $readItems } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
     const currentUser = useCurrentUser()
     const userDisplayName = computed(() => {
         return currentUser.value?.name || currentUser.value?.username || ''
@@ -34,7 +34,7 @@
 
     const { data: lists } = await useAsyncData('publicBookmarks', async () => {
         const opts = { filter: { status: { _eq: 'Public' } } }
-        const resp = await $directus.request($readItems('lists', opts))
+        const resp = await $sdk.content.readItems('lists', opts)
         return resp?.data || resp
     })
 
@@ -45,7 +45,7 @@
                 type: { _eq: 'bookmark' }
             }
         }
-        const resp = await $directus.request($readItems('lists', opts))
+        const resp = await $sdk.content.readItems('lists', opts)
         return resp?.data || resp
     })
 

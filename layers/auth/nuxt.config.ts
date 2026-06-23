@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     description: 'Auth Layer provides functionalities for user authentication and authorization.',
   },
 
-  modules: ['@mframework/alternate-auth'],
+  modules: [],
 
   alias: {},
 

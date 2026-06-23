@@ -1,40 +1,39 @@
-
 export function useLists() {
-  const { $readItems } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   const getList = async (id: string | number, options?: Record<string, any>) => {
-    return await readItem('lists', id, options) || null
+    return await $sdk.content.readItem('lists', id, options) || null
   }
 
   const listLists = async (options?: Record<string, any>) => {
-    const result = await readItems('lists', options)
+    const result = await $sdk.content.readItems('lists', options)
     return Array.isArray(result) ? result : []
   }
 
   const createList = async (payload: Record<string, any>) => {
-    return await createItem('lists', payload) || null
+    return await $sdk.content.createItem('lists', payload) || null
   }
 
   const updateList = async (id: string | number, payload: Record<string, any>) => {
-    return await updateItem('lists', id, payload) || null
+    return await $sdk.content.updateItem('lists', id, payload) || null
   }
 
   const deleteList = async (id: string | number) => {
-    return await deleteItem('lists', id) || null
+    return await $sdk.content.deleteItem('lists', id) || null
   }
 
   const addItem = async (payload: Record<string, any>) => {
-    return await createItem('list_items', payload) || null
+    return await $sdk.content.createItem('list_items', payload) || null
   }
 
   const updateListItem = async (id: string | number, payload: Record<string, any>) => {
-    return await updateItem('list_items', id, payload) || null
+    return await $sdk.content.updateItem('list_items', id, payload) || null
   }
 
   const updateItemInList = updateListItem
 
   const deleteListItem = async (id: string | number) => {
-    return await deleteItem('list_items', id) || null
+    return await $sdk.content.deleteItem('list_items', id) || null
   }
 
   const removeFromList = deleteListItem

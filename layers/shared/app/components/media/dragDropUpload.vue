@@ -25,12 +25,14 @@
 <script setup>
     import {
         ref,
-        reactive
-    } from '#imports'
+        reactive,
+        useAsyncData,
+        createError
+    } from 'vue'
     import JsonSchemaFormFromFields from '../ui/forms/JsonSchemaFormFromFields.vue'
 
     const dialog = ref(false)
-    const { $directus, $readFieldsByCollection, $createItem } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
     const form = reactive({})
     const formError = ref('')
     const formSuccess = ref('')
@@ -39,7 +41,7 @@
         data,
         error
     } = await useAsyncData('media', async () => {
-        const resp = await $directus.request($readFieldsByCollection('media'))
+        const resp = await $sdk.content.readFieldsByCollection('media')
         return Array.isArray(resp) ? resp : []
     })
 
@@ -63,7 +65,7 @@
         formError.value = ''
         formSuccess.value = ''
         try {
-            await $directus.request($createItem('media', { ...form }))
+            await $sdk.content.createItem('media', { ...form })
             formSuccess.value = 'Posted successfully.'
             for (const key of Object.keys(form)) {
                 form[key] = null

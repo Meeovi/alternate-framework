@@ -1,4 +1,5 @@
 import type { DirectusField } from '../schema/types';
+import { readItems } from '@directus/sdk';
 
 export interface TableColumn {
   key: string;
@@ -8,9 +9,6 @@ export interface TableColumn {
   hidden?: boolean;
 }
 
-/**
- * Convert Directus fields into a table schema.
- */
 export function generateTableSchema(fields: DirectusField[]): TableColumn[] {
   return fields
     .filter((f) => !f.hidden)
@@ -23,23 +21,17 @@ export function generateTableSchema(fields: DirectusField[]): TableColumn[] {
     }));
 }
 
-/**
- * Convert "product_name" → "Product Name"
- */
 function prettifyLabel(str: string): string {
   return str
     .replace(/_/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-/**
- * Fetch table rows from Directus.
- */
 export async function fetchTableRows(
   directus: any,
   collection: string
 ): Promise<any[]> {
   return await directus.request(
-    directus.readItems(collection)
+    readItems(collection)
   );
 }

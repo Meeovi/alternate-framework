@@ -5,7 +5,7 @@
                 <div class="card-wrapper">
                     <div class="img-wrapper">
                         <NuxtImg loading="lazy" class="align-end text-white" v-if="store?.image"
-                            :src="getAssetUrl(store?.image)" :alt="store?.name || 'Store Name'"
+                            :src="$sdk.media?.getAssetUrl?.(store?.image)" :alt="store?.name || 'Store Name'"
                             cover />
                     </div>
                     <div class="card-box align-center">
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-    const directusUrl = useDirectusUrl?.()
+    const { $sdk } = useNuxtApp()
     const props = defineProps({
         store: {
             type: Object,

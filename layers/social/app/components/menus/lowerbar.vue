@@ -23,11 +23,11 @@
         ref
     } from '#imports'
 
-    const { $readItem } = useNuxtApp()
+    const { $sdk } = useNuxtApp()
     const tab = ref(null)
 
     const { data: lowerbar } = await useAsyncData('lowerbar', async () => {
-        const item = await readItem('navigation', '76', {
+        const item = await $sdk.content.readItem('navigation', '76', {
             fields: ['*', { '*': ['*'] }],
         })
         return item || { name: 'Home', menus: [] }

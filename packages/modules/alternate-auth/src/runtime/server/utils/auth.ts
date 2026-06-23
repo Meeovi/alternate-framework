@@ -206,3 +206,7 @@ export const auth = betterAuth({
   // Merge any additional options
   ...getBetterAuthConfig().options,
 })
+
+export function getAuth(event?: unknown) {
+  return auth
+}

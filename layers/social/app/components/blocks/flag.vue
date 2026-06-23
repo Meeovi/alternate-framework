@@ -29,36 +29,34 @@
 <script setup>
   import {
     computed,
-    ref,
+    ref
   } from '#imports'
   import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
   import {
     useContentForm
   } from '../../composables/useContentForm'
 
+  const { $sdk } = useNuxtApp()
+
   const props = defineProps({
     reportId: {
       type: [String, Number, Object],
-      required: false,
+      required: false
     },
     report: {
       type: [String, Number, Object],
-      required: false,
+      required: false
     },
   })
 
   const providedReportId = props.reportId ?? props.report ?? null
   const dialog = ref(false)
-  const {
-    $directus,
-    $readFieldsByCollection,
-  } = useNuxtApp()
 
   const {
     data,
-    error,
+    error
   } = await useAsyncData(`report-schema-fields-${String(providedReportId ?? 'new')}`, async () => {
-    const resp = await $directus.request($readFieldsByCollection('report'))
+    const resp = await $sdk.content.readFieldsByCollection('report')
     return Array.isArray(resp) ? resp : []
   })
 
@@ -72,9 +70,9 @@
     form,
     formError,
     formSuccess,
-    submitForm,
+    submitForm
   } = useContentForm('report', reportFields, {
     clearOnSuccess: true,
-    closeDialogRef: dialog,
+    closeDialogRef: dialog
   })
 </script>

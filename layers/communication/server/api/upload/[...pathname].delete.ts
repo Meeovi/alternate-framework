@@ -1,4 +1,4 @@
-import { blob } from 'hub:blob'
+import { del } from '@vercel/blob'
 import { z } from 'zod'
 
 export default defineEventHandler(async (event) => {
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  await blob.del(pathname)
+  await del(pathname)
 
   return sendNoContent(event)
 })

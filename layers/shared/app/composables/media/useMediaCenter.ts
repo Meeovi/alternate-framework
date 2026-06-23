@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 
 type MediaItem = Record<string, any>
-type ContentRequest = ReturnType<typeof useContent>
 
 function toList(value: any): MediaItem[] {
   if (Array.isArray(value)) return value
@@ -10,9 +9,9 @@ function toList(value: any): MediaItem[] {
   return []
 }
 
-function mediaType(item: MediaItem, request: ContentRequest) {
+function mediaType(item: MediaItem, request: any) {
   const mime = String(item?.mime_type || item?.type || item?.file?.type || '').toLowerCase()
-  const ext = String(item?.file?.filename_download || item?.filename_download || item?.extension || request.getAssetUrl(item?.file || item) || '').toLowerCase()
+  const ext = String(item?.file?.filename_download || item?.filename_download || item?.extension || request?.getAssetUrl?.(item?.file || item) || '').toLowerCase()
 
   if (mime.startsWith('image/') || /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(ext)) return 'image'
   if (mime.startsWith('video/') || /\.(mp4|webm|mov|mkv|avi|m3u8)$/i.test(ext)) return 'video'
@@ -20,7 +19,7 @@ function mediaType(item: MediaItem, request: ContentRequest) {
   return 'other'
 }
 
-function includesToken(item: MediaItem, token: string, request: ContentRequest) {
+function includesToken(item: MediaItem, token: string, request: any) {
   const haystack = [
     item?.title,
     item?.name,
@@ -29,7 +28,7 @@ function includesToken(item: MediaItem, token: string, request: ContentRequest) 
     item?.file?.filename_download,
     item?.file?.title,
     item?.filename_download,
-    request.getAssetUrl(item?.file || item),
+    request?.getAssetUrl?.(item?.file || item),
     item?.tags,
   ]
     .filter(Boolean)
@@ -40,7 +39,7 @@ function includesToken(item: MediaItem, token: string, request: ContentRequest) 
 }
 
 export function useMediaCenter() {
-  const request = useContent()
+  const { $sdk } = useNuxtApp()
   const allMedia = ref<MediaItem[]>([])
   const imageMedia = ref<MediaItem[]>([])
   const videoMedia = ref<MediaItem[]>([])
@@ -51,11 +50,11 @@ export function useMediaCenter() {
   const smartAlbums = ref<Array<{ id: string; label: string; items: MediaItem[] }>>([])
 
   async function loadMedia() {
-    const list = toList(await request.readItems('media', { sort: ['-date_created'] }))
+    const list = toList(await $sdk.content.readItems('media', { sort: ['-date_created'] }))
     allMedia.value = list
-    imageMedia.value = list.filter((item) => mediaType(item, request) === 'image')
-    videoMedia.value = list.filter((item) => mediaType(item, request) === 'video')
-    audioMedia.value = list.filter((item) => mediaType(item, request) === 'audio')
+    imageMedia.value = list.filter((item) => mediaType(item, $sdk.content) === 'image')
+    videoMedia.value = list.filter((item) => mediaType(item, $sdk.content) === 'video')
+    audioMedia.value = list.filter((item) => mediaType(item, $sdk.content) === 'audio')
     sharedWithMe.value = list.filter((item) => Boolean(item?.is_shared || item?.shared || item?.shared_with_me))
 
     smartAlbums.value = [
@@ -67,7 +66,7 @@ export function useMediaCenter() {
   }
 
   async function loadFolders() {
-    const list = toList(await request.readItems('media_folders', { sort: ['sort', 'name'] }))
+    const list = toList(await $sdk.content.readItems('media_folders', { sort: ['sort', 'name'] }))
     folders.value = list
   }
 
@@ -85,7 +84,7 @@ export function useMediaCenter() {
           return form
         })()
 
-    const uploaded = await request.uploadFiles(formData)
+    const uploaded = await $sdk.content.uploadFiles(formData)
     await loadMedia()
     return uploaded
   }
@@ -101,14 +100,14 @@ export function useMediaCenter() {
       await loadMedia()
     }
 
-    const matches = allMedia.value.filter((item) => includesToken(item, token, request))
+    const matches = allMedia.value.filter((item) => includesToken(item, token, $sdk.content))
     searchResults.value = matches
     return matches
   }
 
   const createFolder = async (_payload: any) => {
     const payload = typeof _payload === 'string' ? { name: _payload } : _payload
-    const created = await request.createItem('media_folders', payload)
+    const created = await $sdk.content.createItem('media_folders', payload)
     await loadFolders()
     return created
   }
@@ -132,9 +131,9 @@ export function useMediaCenter() {
 
     return {
       all: inFolder,
-        images: inFolder.filter((item) => mediaType(item, request) === 'image'),
-        videos: inFolder.filter((item) => mediaType(item, request) === 'video'),
-        audio: inFolder.filter((item) => mediaType(item, request) === 'audio'),
+        images: inFolder.filter((item) => mediaType(item, $sdk.content) === 'image'),
+        videos: inFolder.filter((item) => mediaType(item, $sdk.content) === 'video'),
+        audio: inFolder.filter((item) => mediaType(item, $sdk.content) === 'audio'),
     }
   }
 

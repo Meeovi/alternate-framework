@@ -6,7 +6,7 @@
                     <div class="row justify-content-center">
                         <div class="right-side col-12 col-md-5 item-wrapper">
                             <div v-if="tag?.image?.filename_disk">
-                                <NuxtImg provider="cloudinary" :alt="tag?.name" :src="getAssetUrl(tag?.image)" cover />
+                                <NuxtImg provider="cloudinary" :alt="tag?.name" :src="$sdk.media?.getAssetUrl?.(tag?.image)" cover />
                             </div>
 
                             <div v-else><NuxtImg provider="cloudinary" src="https://media.istockphoto.com/id/1444833918/photo/3d-megaphone-with-hashtags-and-bell-notification-loudspeaker-for-announce-promotion-in-social.jpg?s=2048x2048&w=is&k=20&c=qqD2LRmjXMMzQmiITcZ78tCudX9SQIoehV3EXprfBrY=" :alt="tag?.name" /></div>
@@ -86,18 +86,13 @@
         useRoute
     } from 'vue-router'
 
+    const { $sdk } = useNuxtApp()
     const route = useRoute()
-
-    const {
-        $directus,
-        $readItems,
-        getAssetUrl
-    } = useNuxtApp()
 
     const {
         data: tag
     } = await useAsyncData('tagRaw', async () => {
-        const resp = await $directus.request($readItems('tags', {
+        const resp = await $sdk.content.readItems('tags', {
             filter: {
                 slug: {
                     _eq: `${route.params.slug}`
@@ -107,7 +102,7 @@
                 '*': ['*']
             }],
             limit: 1
-        }))
+        })
         return resp?.data?.[0] || resp?.[0] || null
     })
 

@@ -74,14 +74,14 @@
   })
 
   const dialog = ref(false)
-  const { $directus, $readFieldsByCollection } = useNuxtApp()
+  const { $sdk } = useNuxtApp()
 
   const {
     data: listItemFields,
     error,
     pending
   } = await useAsyncData('listItemsFields', async () => {
-    const resp = await $directus.request($readFieldsByCollection('list_items'))
+    const resp = await $sdk.content.readFieldsByCollection('list_items')
     return Array.isArray(resp) ? resp : []
   })
 

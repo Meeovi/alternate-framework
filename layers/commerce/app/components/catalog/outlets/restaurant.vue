@@ -24,7 +24,7 @@
                             <div class="item-wrapper">
                                 <div class="item-img">
                                     <NuxtLink :to="`/shops/${restaurant?.id}`"><NuxtImg provider="cloudinary" loading="lazy" class="align-end text-white" v-if="restaurant?.image"
-                                :src="getAssetUrl(restaurant?.image)" :alt="restaurant?.name"></NuxtLink>
+                                    :src="$sdk.media?.getAssetUrl?.(restaurant?.image)" :alt="restaurant?.name"></NuxtLink>
                                 </div>
                                 <div class="item-content">
                                     <div class="desc-wrap">
@@ -49,7 +49,7 @@
 
 <script setup>
 
-    const directusUrl = useDirectusUrl?.()
+    const { $sdk } = useNuxtApp()
     const props = defineProps({
         restaurant: {
             type: Object,
