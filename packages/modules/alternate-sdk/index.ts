@@ -45,6 +45,14 @@ function createDirectusClient(url: string, staticToken?: string): any {
       })
       return Array.isArray(response?.data) ? response.data : []
     },
+    getItem: async (collection: string, id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/items/${collection}/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
     readItem: async (collection: string, id: string | number, params: Record<string, any> = {}) => {
       const response = await $fetch<{ data?: any }>(`${url}/items/${collection}/${id}`, {
         method: 'GET',
@@ -69,6 +77,14 @@ function createDirectusClient(url: string, staticToken?: string): any {
       })
       return response?.data || null
     },
+    createItems: async (collection: string, items: Record<string, any>[]) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/items/${collection}`, {
+        method: 'POST',
+        body: items,
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
     updateItem: async (collection: string, id: string | number, payload: Record<string, any> = {}) => {
       const response = await $fetch<{ data?: any }>(`${url}/items/${collection}/${id}`, {
         method: 'PATCH',
@@ -77,9 +93,36 @@ function createDirectusClient(url: string, staticToken?: string): any {
       })
       return response?.data || null
     },
+    updateItems: async (collection: string, keysOrQuery: any, item: Record<string, any> = {}) => {
+      let body: any
+      if (Array.isArray(keysOrQuery)) {
+        body = { keys: keysOrQuery, data: item }
+      } else if (typeof keysOrQuery === 'object' && keysOrQuery !== null) {
+        body = { query: keysOrQuery, data: item }
+      } else {
+        body = item
+      }
+      const response = await $fetch<{ data?: any[] }>(`${url}/items/${collection}`, {
+        method: 'PATCH',
+        body,
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
     deleteItem: async (collection: string, id: string | number) => {
       await $fetch(`${url}/items/${collection}/${id}`, {
         method: 'DELETE',
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return true
+    },
+    deleteItems: async (collection: string, keysOrQuery: any) => {
+      const body = Array.isArray(keysOrQuery)
+        ? { keys: keysOrQuery }
+        : keysOrQuery
+      await $fetch(`${url}/items/${collection}`, {
+        method: 'DELETE',
+        body,
         headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
       })
       return true
@@ -88,6 +131,118 @@ function createDirectusClient(url: string, staticToken?: string): any {
       const response = await $fetch<{ data?: any }>(`${url}/files`, {
         method: 'POST',
         body: formData,
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readUsers: async (params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/users`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
+    readUser: async (id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/users/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readRoles: async (params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/roles`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
+    readRole: async (id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/roles/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readFolders: async (params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/folders`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
+    readFolder: async (id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/folders/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readFiles: async (params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/files`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
+    readFile: async (id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/files/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readFlows: async (params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/flows`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
+    readFlow: async (id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/flows/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readShares: async (params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/shares`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
+    readShare: async (id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/shares/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || null
+    },
+    readPanels: async (params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any[] }>(`${url}/panels`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
+        headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+      })
+      return response?.data || []
+    },
+    readPanel: async (id: string | number, params: Record<string, any> = {}) => {
+      const response = await $fetch<{ data?: any }>(`${url}/panels/${id}`, {
+        method: 'GET',
+        query: normalizeDirectusParams(params),
         headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
       })
       return response?.data || null
@@ -123,7 +278,7 @@ export function initGateway(nuxtApp: any) {
       gatewayConfig.content = {
         provider: 'directus',
         url: directus.url,
-        token: directus.token || directus.staticToken,
+        token: directus.token || directus.staticToken || directus.auth?.token,
       }
     }
 

@@ -2,14 +2,32 @@ function createFallbackContentApi() {
   const request = (async () => []) as any
 
   request.readItems = async () => []
+  request.getItem = async () => null
   request.readItem = async () => null
   request.readFieldsByCollection = async () => []
   request.createItem = async () => null
+  request.createItems = async () => null
   request.updateItem = async () => null
+  request.updateItems = async () => null
   request.deleteItem = async () => true
+  request.deleteItems = async () => true
   request.uploadFiles = async () => null
   request.getAssetUrl = () => ''
   request.request = async () => null
+  request.readUsers = async () => []
+  request.readUser = async () => null
+  request.readRoles = async () => []
+  request.readRole = async () => null
+  request.readFolders = async () => []
+  request.readFolder = async () => null
+  request.readFiles = async () => []
+  request.readFile = async () => null
+  request.readFlows = async () => []
+  request.readFlow = async () => null
+  request.readShares = async () => []
+  request.readShare = async () => null
+  request.readPanels = async () => []
+  request.readPanel = async () => null
 
   return request
 }

@@ -1,4 +1,33 @@
-import { createDirectus, rest, staticToken, readItem, readItems, readFieldsByCollection, createItem, updateItem, deleteItem, uploadFiles, readSingleton } from '@directus/sdk'
+import {
+  createDirectus,
+  rest,
+  staticToken,
+  readItem,
+  readItems,
+  readFieldsByCollection,
+  createItem,
+  createItems,
+  updateItem,
+  updateItems,
+  deleteItem,
+  deleteItems,
+  uploadFiles,
+  readSingleton,
+  readUsers,
+  readUser,
+  readRoles,
+  readRole,
+  readFolders,
+  readFolder,
+  readFiles,
+  readFile,
+  readFlows,
+  readFlow,
+  readShares,
+  readShare,
+  readPanels,
+  readPanel
+} from '@directus/sdk'
 
 export const directus = createDirectus('')
 
@@ -30,11 +59,28 @@ export {
     readMe,
     readItems,
     createItem,
+    createItems,
     updateItem,
+    updateItems,
     deleteItem,
+    deleteItems,
     uploadFiles,
     readSingleton,
-    readFieldsByCollection
+    readFieldsByCollection,
+    readUsers,
+    readUser,
+    readRoles,
+    readRole,
+    readFolders,
+    readFolder,
+    readFiles,
+    readFile,
+    readFlows,
+    readFlow,
+    readShares,
+    readShare,
+    readPanels,
+    readPanel
 } from '@directus/sdk';
 
 export interface DirectusAdapterOptions {
@@ -189,6 +235,107 @@ export class DirectusAdapter {
 
     deleteItem(collection: string, id: string | number) {
         const op = (deleteItem as any)(collection, id)
+        return this.client.request(op)
+    }
+
+    async readUsers(opts?: any) {
+        const op = (readUsers as any)(normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readUser(id: string | number, opts?: any) {
+        const op = (readUser as any)(id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readRoles(opts?: any) {
+        const op = (readRoles as any)(normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readRole(id: string | number, opts?: any) {
+        const op = (readRole as any)(id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readFolders(opts?: any) {
+        const op = (readFolders as any)(normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readFolder(id: string | number, opts?: any) {
+        const op = (readFolder as any)(id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readFiles(opts?: any) {
+        const op = (readFiles as any)(normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readFile(id: string | number, opts?: any) {
+        const op = (readFile as any)(id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readFlows(opts?: any) {
+        const op = (readFlows as any)(normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readFlow(id: string | number, opts?: any) {
+        const op = (readFlow as any)(id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readShares(opts?: any) {
+        const op = (readShares as any)(normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readShare(id: string | number, opts?: any) {
+        const op = (readShare as any)(id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readPanels(opts?: any) {
+        const op = (readPanels as any)(normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async readPanel(id: string | number, opts?: any) {
+        const op = (readPanel as any)(id, normalizeDirectusReadOptions(opts))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async createItems(collection: string, payload: any) {
+        const op = (createItems as any)(collection, normalizeDirectusWritePayload(payload))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async updateItems(collection: string, keysOrQuery: any, payload: any) {
+        const op = (updateItems as any)(collection, keysOrQuery, normalizeDirectusWritePayload(payload))
+        const result = await this.client.request(op)
+        return normalizeDirectusResult(result)
+    }
+
+    async deleteItems(collection: string, keysOrQuery: any) {
+        const op = (deleteItems as any)(collection, keysOrQuery)
         return this.client.request(op)
     }
 

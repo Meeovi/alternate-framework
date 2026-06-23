@@ -32,13 +32,8 @@
                             </v-list>
                         </v-menu>
 
-                        <v-btn
-                            v-for="menu in normalizedMenus"
-                            :key="menu.id || menu.name || menu.url"
-                            class="ma-2"
-                            :href="`${menu?.url}`"
-                            variant="text"
-                        >
+                        <v-btn v-for="menu in normalizedMenus" :key="menu.id || menu.name || menu.url" class="ma-2"
+                            :href="`${menu?.url}`" variant="text">
                             {{ menu?.name }}
                         </v-btn>
                     </template>
@@ -212,7 +207,9 @@
 
     const route = useRoute()
     const gateway = useAppGateway()
-    const { $sdk } = useNuxtApp()
+    const {
+        $sdk
+    } = useNuxtApp()
     const category = ref(null)
 
     function toList(input) {
@@ -239,7 +236,9 @@
     async function loadCategory() {
         const resp = await $sdk.content.readItems('departments', {
             filter: {
-                slug: { _eq: `${slug.value}` }
+                slug: {
+                    _eq: `${slug.value}`
+                }
             },
             limit: 1,
             fields: [
@@ -268,11 +267,16 @@
         const resp = await $sdk.content.readItems('posts', {
             filter: {
                 categories: {
-                    _eq: category.value?.id
+                    departments_id: {
+                        slug: {
+                            _eq: `${slug.value}`
+                        }
+                    }
                 }
             },
             limit: 10
         })
+
         posts.value = toList(resp)
     }
 
@@ -280,11 +284,16 @@
         const resp = await $sdk.content.readItems('spaces', {
             filter: {
                 categories: {
-                    _eq: category.value?.id
+                    departments_id: {
+                        slug: {
+                            _eq: `${slug.value}`
+                        }
+                    }
                 }
             },
             limit: 10
         })
+
         departmentSpaces.value = toList(resp)
     }
 

@@ -68,6 +68,153 @@ function createDirectusClient(config = {}) {
             });
             return true;
         },
+        readUsers: async (params = {}) => {
+            const response = await $fetch(`${directusUrl}/users`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || [];
+        },
+        readUser: async (id, params = {}) => {
+            const response = await $fetch(`${directusUrl}/users/${id}`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        readRoles: async (params = {}) => {
+            const response = await $fetch(`${directusUrl}/roles`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || [];
+        },
+        readRole: async (id, params = {}) => {
+            const response = await $fetch(`${directusUrl}/roles/${id}`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        readFolders: async (params = {}) => {
+            const response = await $fetch(`${directusUrl}/folders`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || [];
+        },
+        readFolder: async (id, params = {}) => {
+            const response = await $fetch(`${directusUrl}/folders/${id}`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        readFiles: async (params = {}) => {
+            const response = await $fetch(`${directusUrl}/files`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || [];
+        },
+        readFile: async (id, params = {}) => {
+            const response = await $fetch(`${directusUrl}/files/${id}`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        readFlows: async (params = {}) => {
+            const response = await $fetch(`${directusUrl}/flows`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || [];
+        },
+        readFlow: async (id, params = {}) => {
+            const response = await $fetch(`${directusUrl}/flows/${id}`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        readShares: async (params = {}) => {
+            const response = await $fetch(`${directusUrl}/shares`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || [];
+        },
+        readShare: async (id, params = {}) => {
+            const response = await $fetch(`${directusUrl}/shares/${id}`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        readPanels: async (params = {}) => {
+            const response = await $fetch(`${directusUrl}/panels`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || [];
+        },
+        readPanel: async (id, params = {}) => {
+            const response = await $fetch(`${directusUrl}/panels/${id}`, {
+                method: 'GET',
+                query: normalizeDirectusParams(params),
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        createItems: async (collection, items) => {
+            const response = await $fetch(`${directusUrl}/items/${collection}`, {
+                method: 'POST',
+                body: items,
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        updateItems: async (collection, keysOrQuery, item = {}) => {
+            let body;
+            if (Array.isArray(keysOrQuery)) {
+                body = { keys: keysOrQuery, data: item };
+            } else if (typeof keysOrQuery === 'object' && keysOrQuery !== null) {
+                body = { query: keysOrQuery, data: item };
+            } else {
+                body = item;
+            }
+            const response = await $fetch(`${directusUrl}/items/${collection}`, {
+                method: 'PATCH',
+                body,
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return response?.data || null;
+        },
+        deleteItems: async (collection, keysOrQuery) => {
+            const body = Array.isArray(keysOrQuery)
+                ? { keys: keysOrQuery }
+                : keysOrQuery;
+            await $fetch(`${directusUrl}/items/${collection}`, {
+                method: 'DELETE',
+                body,
+                headers: staticToken ? { Authorization: `Bearer ${staticToken}` } : {},
+            });
+            return true;
+        },
         uploadFiles: async (formData) => {
             const response = await $fetch(`${directusUrl}/files`, {
                 method: 'POST',

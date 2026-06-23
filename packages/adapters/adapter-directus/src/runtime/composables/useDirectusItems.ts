@@ -5,7 +5,8 @@ import {
   DirectusItemDeletion,
   DirectusItemUpdate,
   DirectusItems,
-  DirectusItem
+  DirectusItem,
+  DirectusQueryParams
 } from '../types/index'
 import { useDirectus } from './useDirectus'
 
@@ -114,12 +115,37 @@ export const useDirectusItems = () => {
     }
   }
 
+  const updateItems = async <T>(data: {
+    collection: string
+    keysOrQuery: string[] | object
+    item: Object
+    params?: DirectusQueryParams
+  }): Promise<T[]> => {
+    try {
+      const body = Array.isArray(data.keysOrQuery)
+        ? { keys: data.keysOrQuery, data: data.item }
+        : { query: data.keysOrQuery, data: data.item };
+      const items = await directus<{ data: T[] }>(
+        `/items/${data.collection}`,
+        {
+          method: 'PATCH',
+          body,
+          params: data.params
+        }
+      )
+      return items.data ?? []
+    } catch (e) {
+      return []
+    }
+  }
+
   return {
     getItems,
     getSingletonItem,
     getItemById,
     createItems,
     deleteItems,
-    updateItem
+    updateItem,
+    updateItems
   }
 }
