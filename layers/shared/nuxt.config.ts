@@ -43,7 +43,8 @@ export default defineNuxtConfig({
     '@nuxtjs/cloudinary',
     '@nuxtjs/leaflet',
     '@nuxt/scripts',
-    '@nuxt/fonts'
+    '@nuxt/fonts',
+    '@nuxtjs/mcp-toolkit'
   ],
 
   // @ts-ignore - @nuxtjs/fonts module augments this key at runtime
@@ -249,6 +250,14 @@ export default defineNuxtConfig({
       },
     }
   },
+
+  mcp: {
+    name: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'} MCP`,
+    sessions: true,
+    route: '/mcp', // Default route for the MCP server
+    dir: 'mcp', // Base directory for MCP definitions (relative to server/)
+  },
+
   // @ts-ignore - routeRules is augmented by Nuxt at runtime
   routeRules: {
     '/**': {
@@ -361,6 +370,9 @@ export default defineNuxtConfig({
       ]
     },
     compressPublicAssets: true,
+    experimental: {
+      asyncContext: true,
+    },
   },
 
   sourcemap: {
