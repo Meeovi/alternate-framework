@@ -71,3 +71,4 @@ export interface SfPagination {
   totalPages: number;
   $custom?: SfPaginationCustom;
 }
+

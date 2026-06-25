@@ -1,5 +1,5 @@
 import type { ProductProvider } from '../catalog/products/useProducts/types'
-import type { CartProvider } from '../sales/cart/useCart/types'
+import type { CartProvider } from '../../types/cart'
 import { registerProductProvider } from '../catalog/products/registry'
 import { registerCartProvider } from '../sales/cart/useCart/registry'
 

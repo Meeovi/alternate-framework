@@ -44,7 +44,10 @@ export default defineNuxtConfig({
     '@nuxtjs/leaflet',
     '@nuxt/scripts',
     '@nuxt/fonts',
-    '@nuxtjs/mcp-toolkit'
+    '@nuxtjs/mcp-toolkit',
+    '@storefront-ui/nuxt',
+    'alternate-search',
+    resolve(__dirname, '../../packages/plugins/experience-builder/module.ts')
   ],
 
   // @ts-ignore - @nuxtjs/fonts module augments this key at runtime
@@ -235,16 +238,22 @@ export default defineNuxtConfig({
       carbonAds: {
         trigger: 'onNuxtReady',
       },
-      googleTagManager: { trigger: 'onNuxtReady' },
+      googleTagManager: {
+        trigger: 'onNuxtReady'
+      },
       blueskyEmbed: {},
-      googleRecaptcha: { trigger: 'onNuxtReady' },
+      googleRecaptcha: {
+        trigger: 'onNuxtReady'
+      },
       gravatar: {
         trigger: 'onNuxtReady',
       },
       paypal: {
         trigger: 'onNuxtReady',
       },
-      stripe: { trigger: 'onNuxtReady' },
+      stripe: {
+        trigger: 'onNuxtReady'
+      },
       lemonSqueezy: {
         trigger: 'onNuxtReady',
       },
@@ -263,6 +272,13 @@ export default defineNuxtConfig({
     '/**': {
       robots: true,
       isr: process.env.NODE_ENV === 'development' ? false : 60,
+      headers: {
+        'Content-Security-Policy': [
+          "media-src 'self' blob: https://stream.mux.com;", // Allows MSE segment blobs
+          "worker-src 'self' blob:;",                     // Allows parsing engines running on workers
+          "connect-src 'self' https://*.mux.com;"         // Allows chunk/manifest data requests
+        ].join(' ')
+      }
     },
   },
 
@@ -341,6 +357,7 @@ export default defineNuxtConfig({
       '@svar-ui/vue-grid',
       '@svar-ui/vue-editor',
       '@svar-ui/vue-core',
+      '@mframework/alternate-search'
     ],
   },
 
@@ -387,4 +404,14 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  vue: {
+    compilerOptions: {
+      // Instruct Vue to treat all tags starting with 'video-' or 'media-' as custom elements
+      isCustomElement: (tag) => 
+        tag.startsWith('video-') || 
+        tag.startsWith('media-') || 
+        tag.endsWith('-video')
+    }
+  }
 })

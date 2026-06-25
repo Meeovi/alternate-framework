@@ -2,7 +2,7 @@ import type { Maybe } from '~/composables/system/models/shared';
 import type { SfCart } from '../../models';
 import { getCartProvider } from './registry'
 import { toRefs } from '@vueuse/shared';
-import type { UseCartReturn, UseCartState, FetchCart, CartProvider } from './types';
+import type { UseCartReturn, UseCartState, FetchCart, CartProvider } from '../../../../types/cart';
 import { getCommerceClient } from '../../../../utils/client';
 import { useState, useRuntimeConfig } from 'nuxt/app';
 import { ref } from 'vue';
@@ -59,13 +59,44 @@ export const useCart: UseCartReturn = () => {
     }
   };
 
+  const persistentCartState = useState<UseCartState>('persistentCart', () => ({
+    data: null,
+    loading: false,
+  }));
+
+  const cartPriceRules = useState('cartPriceRules', () => ({
+    data: null,
+    loading: false,
+  }));
+
+  const fetchCartPriceRules = async (): Promise<void> => {
+    cartPriceRules.value.loading = true;
+    try {
+      const client = getCommerceClient();
+      if (!client || typeof client.getCartPriceRules !== 'function') {
+        cartPriceRules.value.data = null;
+        return;
+      }
+
+      const data = await client.getCartPriceRules();
+      cartPriceRules.value.data = data ?? null;
+    } catch (error) {
+      throw new Error(error as string);
+    } finally {
+      cartPriceRules.value.loading = false;
+    }
+  };
+
   // Backward-compatible alias for existing callers using the old typo.
   const fetchCard = fetchCart;
 
   return {
     fetchCart,
     fetchCard,
+    fetchCartPriceRules,
     ...toRefs(state.value),
+    ...toRefs(persistentCartState.value),
+    ...toRefs(cartPriceRules.value),
     getCart: provider.getCart,
     addItem: provider.addItem,
     removeItem: provider.removeItem,

@@ -1,5 +1,5 @@
 {
-  "name": "alternate-search",
+  "name": "@mframework/alternate-search",
   "version": "1.0.0",
   "description": "The most comprehensive search framework for TypeScript.",
   "type": "module",
@@ -34,11 +34,18 @@
     "typecheck": "tsc --project tsconfig.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "module.ts"
   ],
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./module": "./module.ts",
+    "./integrations/nuxt": "./dist/index.mjs",
+    "./src/runtime/server/api/search": "./src/runtime/server/api/search.ts"
+  },
   "dependencies": {
     "@mframework/alternate-events": "file:../alternate-events",
     "@nuxt/kit": "^4.4.2",

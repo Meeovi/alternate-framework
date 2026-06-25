@@ -161,7 +161,7 @@
         ref,
         computed
     } from '#imports'
-    import orderCard from '~/components/related/order.vue'
+    import orderCard from '../related/order.vue'
 
 
     // @ts-ignore - useAuth may not be globally available

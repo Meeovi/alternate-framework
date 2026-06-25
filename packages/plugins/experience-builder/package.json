@@ -1,0 +1,47 @@
+{
+  "name": "@mframework/experience-builder",
+  "version": "1.0.0",
+  "description": "Built on top of GrapesJS, the Experience Builder is a powerful tool that allows users to create and customize web experiences with ease. It provides a user-friendly interface for designing and managing web pages, making it accessible to both developers and non-developers alike.",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "experience-builder",
+    "grapesjs",
+    "web-design",
+    "customization",
+    "user-friendly",
+    "web-development",
+    "drag-and-drop",
+    "responsive-design",
+    "template-management",
+    "component-library",
+    "visual-editor",
+    "page-builder",
+    "content-management",
+    "frontend-development",
+    "ui-ux-design",
+    "interactive-websites",
+    "web-experience"
+  ],
+  "author": "Meeovi Labs",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "grapesjs": "^0.23.2"
+  },
+  "devDependencies": {
+    "@nuxt/kit": "^4.4.6",
+    "nuxt": "^4.4.0",
+    "typescript": "^5.9.3",
+    "vue": "^3.5.35"
+  }
+}

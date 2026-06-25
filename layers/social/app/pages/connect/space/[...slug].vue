@@ -7,14 +7,29 @@
                 </v-toolbar-title>
 
                 <v-toolbar-items>
-                    <v-btn class="text-white" variant="plain">{{ space?.status }} Space</v-btn>
+                    <v-btn class="text-white" variant="plain">
+                        {{ space?.status }} Space
+                    </v-btn>
 
-                    <v-btn class="text-white" variant="plain">Members: {{ space?.numberOfMembers }}</v-btn>
+                    <v-btn class="text-white" variant="plain">
+                        Members: {{ space?.numberOfMembers }}
+                    </v-btn>
+
+                    <v-btn class="text-white" variant="plain" v-if="loggedIn && !isMember" @click="joinSpace">
+                        Join
+                    </v-btn>
+
+                    <v-btn class="text-white" variant="plain" v-else-if="loggedIn && isMember" @click="leaveSpace">
+                        Leave
+                    </v-btn>
+
+                    <v-btn v-if="userCanEditSpace" class="text-white" variant="plain" @click="goToBuilder">
+                        Design Page
+                    </v-btn>
                 </v-toolbar-items>
             </v-toolbar>
 
             <v-sheet>
-
                 <v-tabs v-model="tab" align-tabs="center" style="background-color: transparent">
                     <v-tab v-for="menu in visibleTabs" :key="menu?.value" :value="menu?.value">
                         {{ menu?.name }}
@@ -22,29 +37,32 @@
 
                     <template #append>
                         <v-menu v-if="overflowTabs.length">
-                            <template v-slot:activator="{ props }">
+                            <template #activator="{ props }">
                                 <v-btn class="align-self-center me-4" height="100%" rounded="0" variant="plain"
                                     v-bind="props">
                                     More
                                     <v-icon icon="mdi-menu-down" end></v-icon>
                                 </v-btn>
                             </template>
+
                             <v-list class="bg-grey-lighten-3">
                                 <v-list-item v-for="menu in overflowTabs" :key="menu?.value" :title="menu?.name"
-                                    @click="selectOverflowTab(menu)"></v-list-item>
+                                    @click="selectOverflowTab(menu)" />
                             </v-list>
                         </v-menu>
-                        <v-btn icon="fas fa-search" variant="text" class="ml-2" @click="searchDialog = true"></v-btn>
+
+                        <v-btn icon="fas fa-search" variant="text" class="ml-2" @click="searchDialog = true" />
                     </template>
                 </v-tabs>
 
-                <SearchDialog
-                    v-model="searchDialog"
-                    :space="space"
-                    @search="handleSearch"
-                />
+                <SearchDialog v-model="searchDialog" :space="space" @search="handleSearch" />
 
-                <v-tabs-window v-model="tab" class="spaceTabs">
+                <!-- EXPERIENCE BUILDER PAGE -->
+                <ExperienceRenderer v-if="builderPage" entity-type="space" :entity-id="space?.id"
+                    :slug="route.params.slug" />
+
+                <!-- LEGACY TABS -->
+                <v-tabs-window v-else v-model="tab" class="spaceTabs">
                     <v-tabs-window-item v-for="menu in (individualSpaceBar?.menus || [])" :key="menu?.value"
                         :value="menu?.value">
                         <component :is="getTabComponent(menu)" :space="space" :user="user" :loggedIn="loggedIn" />
@@ -56,14 +74,38 @@
 </template>
 
 <script setup>
+    /* ------------------------------
+   Imports
+------------------------------ */
     import {
-        ref
+        ref,
+        computed,
+        watch,
+        nextTick,
+        onMounted
+    } from 'vue'
+    import {
+        useRoute,
+        useRouter,
+        useAsyncData,
+        useNuxtApp,
+        useHead
     } from '#imports'
-    import {
-        normalizeSpaceRecord,
-        resolveUserRelation
-    } from '#social/app/composables/content/socialMappers'
 
+    import {
+        useAuth
+    } from '#auth/app/composables/useAuth'
+    import {
+        useSpace
+    } from '#social/app/composables/spaces/useSpace'
+    import {
+        useExperiencePage
+    } from '#experience-builder/composables/useExperiencePage'
+
+    import ExperienceRenderer from '#experience-builder/components/ExperienceRenderer.vue'
+    import SearchDialog from '../../../components/blocks/groups/SearchDialog.vue'
+
+    /* Legacy tab components */
     import AboutTab from './AboutTab.vue'
     import DiscussionTab from './DiscussionTab.vue'
     import MembersTab from './MembersTab.vue'
@@ -71,61 +113,38 @@
     import ProductsTab from './ProductsTab.vue'
     import ListsTab from './ListsTab.vue'
     import SettingsTab from './SettingsTab.vue'
-    import {
-        useAuth
-    } from '#auth/app/composables/useAuth'
-    // Map tab names to components
-    const tabComponentMap = {
-        about: AboutTab,
-        discussion: DiscussionTab,
-        post: DiscussionTab,
-        member: MembersTab,
-        media: MediaTab,
-        product: ProductsTab,
-        list: ListsTab,
-        setting: SettingsTab
-    }
 
-    function getTabComponent(menu) {
-        if (!menu?.name) return {
-            template: '<div class="center-text">No content for this tab.</div>'
-        }
-        const name = menu.name.toLowerCase()
-        for (const key in tabComponentMap) {
-            if (name.includes(key)) return tabComponentMap[key]
-        }
-        // fallback
-        return {
-            template: '<div class="center-text">No content for this tab.</div>'
-        }
-    }
+    /* ------------------------------
+       Routing + State
+    ------------------------------ */
+    const route = useRoute()
+    const router = useRouter()
 
-    const route = useRoute();
-    const router = useRouter();
     const tab = ref(route.query.tab || null)
     const searchDialog = ref(false)
-    const { $sdk } = useNuxtApp()
+
+    /* ------------------------------
+       Auth
+    ------------------------------ */
     const {
         user,
         loggedIn
     } = useAuth()
 
+    /* ------------------------------
+       Load Space
+    ------------------------------ */
     const {
-        data: space
-    } = await useAsyncData('space', async () => {
-        const resp = await $sdk.content.readItems('spaces', {
-            filter: {
-                slug: {
-                    _eq: `${route.params.slug}`
-                }
-            },
-            fields: ['*', 'posts.posts_id.*', 'image.*', 'owner.*', 'members.user.*',
-                'products.products_id.*', 'lists.lists_id.*', 'media.*'
-            ],
-            limit: 1
-        })
-        return normalizeSpaceRecord(resp?.[0] || null)
-    })
+        space,
+        exists
+    } = useSpace()
+
+    /* ------------------------------
+       Load Navigation Tabs
+    ------------------------------ */
+    const {
+        $sdk
+    } = useNuxtApp()
 
     const {
         data: individualSpaceBar
@@ -138,41 +157,61 @@
         return resp || null
     })
 
-    // Tab overflow logic
+    /* ------------------------------
+       Experience Builder Detection
+    ------------------------------ */
+    const {
+        fetchPage
+    } = useExperiencePage()
+    const builderPage = ref(null)
 
-    // Watch tab and update query param
-    watch(tab, (newTab) => {
-        if (newTab) {
-            router.replace({ query: { ...route.query, tab: newTab } })
+    await useAsyncData('builderPage', async () => {
+        if (!space.value?.id) return null
+        try {
+            const page = await fetchPage('space', space.value.id, route.params.slug)
+            builderPage.value = page
+            return page
+        } catch {
+            return null
         }
     })
 
-    // On mount, set tab from query if present
-    onMounted(() => {
-        if (route.query.tab) {
-            tab.value = route.query.tab
-        }
-    })
-
-    // Search dialog handler
-    function handleSearch({ query, type }) {
-        // Navigate to /results with query and type, and optionally space id
-        router.push({
-            path: '/results',
-            query: {
-                q: query,
-                type,
-                space: space?.value?.id || space?.id || ''
-            }
-        })
+    /* ------------------------------
+       Tab Component Mapping
+    ------------------------------ */
+    const tabComponentMap = {
+        about: AboutTab,
+        discussion: DiscussionTab,
+        post: DiscussionTab,
+        member: MembersTab,
+        media: MediaTab,
+        product: ProductsTab,
+        list: ListsTab,
+        setting: SettingsTab,
+        experience: ExperienceRenderer
     }
-    import {
-        computed,
-        nextTick,
-        watch,
-        onMounted
-    } from 'vue'
-    import SearchDialog from '../../../components/blocks/groups/SearchDialog.vue'
+
+    function getTabComponent(menu) {
+        if (!menu?.name) {
+            return {
+                template: '<div class="center-text">No content for this tab.</div>'
+            }
+        }
+
+        const name = menu.name.toLowerCase()
+
+        for (const key in tabComponentMap) {
+            if (name.includes(key)) return tabComponentMap[key]
+        }
+
+        return {
+            template: '<div class="center-text">No content for this tab.</div>'
+        }
+    }
+
+    /* ------------------------------
+       Tab Overflow Logic
+    ------------------------------ */
     const visibleTabs = computed(() => (individualSpaceBar?.value?.menus || []).slice(0, 4))
     const overflowTabs = computed(() => (individualSpaceBar?.value?.menus || []).slice(4))
 
@@ -183,8 +222,77 @@
         })
     }
 
+    /* ------------------------------
+       Join / Leave Space
+    ------------------------------ */
+    const isMember = computed(() => {
+        return space.value?.members?.some(m => m?.user?.id === user.value?.id)
+    })
+
+    async function joinSpace() {
+        await $sdk.social.joinSpace(space.value.id)
+        await space.refresh()
+    }
+
+    async function leaveSpace() {
+        await $sdk.social.leaveSpace(space.value.id)
+        await space.refresh()
+    }
+
+    /* ------------------------------
+       Permissions
+    ------------------------------ */
+    const userCanEditSpace = computed(() => {
+        return user.value?.roles?.includes('space_admin') ||
+            user.value?.roles?.includes('space_owner')
+    })
+
+    function goToBuilder() {
+        router.push(`/space/${route.params.slug}/builder/${route.params.slug}`)
+    }
+
+    /* ------------------------------
+       Search Handler
+    ------------------------------ */
+    function handleSearch({
+        query,
+        type
+    }) {
+        router.push({
+            path: '/results',
+            query: {
+                q: query,
+                type,
+                space: space?.value?.id || ''
+            }
+        })
+    }
+
+    /* ------------------------------
+       Sync tab with URL
+    ------------------------------ */
+    watch(tab, (newTab) => {
+        if (newTab) {
+            router.replace({
+                query: {
+                    ...route.query,
+                    tab: newTab
+                }
+            })
+        }
+    })
+
+    onMounted(() => {
+        if (route.query.tab) {
+            tab.value = route.query.tab
+        }
+    })
+
+    /* ------------------------------
+       Page Title
+    ------------------------------ */
     useHead({
-        title: space?.value?.name || 'Space Page',
+        title: space?.value?.name || 'Space Page'
     })
 </script>
 
