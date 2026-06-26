@@ -1,4 +1,4 @@
-import { defineNuxtModule, addServerHandler } from '@nuxt/kit'
+import { defineNuxtModule, addServerHandler, addImportsDir } from '@nuxt/kit'
 import { existsSync } from 'node:fs'
 import { dirname, resolve as resolvePath } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -118,5 +118,12 @@ export default defineNuxtModule<ModuleOptions>({
       route: '/api/auth/**',
       handler: authHandlerPath,
     })
+
+    //
+    // ---------------------------------------------------------
+    // 5. Auto-import composables
+    // ---------------------------------------------------------
+    //
+    addImportsDir(resolvePath(moduleDir, 'runtime/composables'))
   },
 })

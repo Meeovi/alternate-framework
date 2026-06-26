@@ -201,3 +201,9 @@ export { deepMerge } from "./src/runtime/utils/deep-merge";
 export { resolveConfig, validateConfig } from "./src/runtime/utils/config";
 export { warmSearchCache } from "./src/runtime/utils/cache-warming";
 export type { CacheWarmRequest, CacheWarmOptions, CacheWarmResult } from "./src/runtime/utils/cache-warming";
+
+// Runtime utilities (used by composables and available for direct import)
+export { normalizeText, getPrice, getTitle, getDescription, getLink, formatPrice, matchesPriceBand, deriveOptionsFromItems } from "./src/runtime/utils/filters";
+export { facetToOptions } from "./src/runtime/utils/facets";
+export { priceBandsFor } from "./src/runtime/utils/price";
+export { sortItems } from "./src/runtime/utils/sorting";

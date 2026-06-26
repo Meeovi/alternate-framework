@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@cline/sdk": "^0.0.46",
+    "@geoman-io/leaflet-geoman-free": "^2.20.0",
     "@mframework/adapter-directus": "file:../../packages/adapters/adapter-directus",
     "@mframework/adapter-federation": "file:../../packages/adapters/adapter-federation",
     "@mframework/adapter-magento": "file:../../packages/adapters/adapter-magento",
@@ -43,6 +44,9 @@
     "@vueuse/motion": "^3.0.3",
     "@vueuse/nuxt": "^14.0.0",
     "grapesjs": "^0.22.14",
+    "leaflet-routing-machine": "^3.2.12",
+    "leaflet.heat": "^0.2.0",
+    "leaflet.markercluster": "^1.5.3",
     "nuxt": "^4.4.8",
     "nuxt-security": "^2.4.0",
     "nuxt-tiptap-editor": "^3.2.0",

@@ -10,12 +10,16 @@ import {
   getPrice,
   getTitle,
   normalizeText,
-  sortItems,
+  getDescription,
+  getLink,
+  formatPrice,
   matchesPriceBand,
-  deriveOptionsFromItems,
-  facetToOptions,
-  priceBandsFor
-} from '../utils'
+  deriveOptionsFromItems
+} from '../utils/filters'
+
+import { sortItems } from '../utils/sorting'
+import { facetToOptions } from '../utils/facets'
+import { priceBandsFor } from '../utils/price'
 
 export function useAlternateSearch() {
   const route = useRoute()
@@ -120,7 +124,7 @@ export function useAlternateSearch() {
   const priceBands = computed(() => priceBandsFor(items.value))
 
   const visibleItems = computed(() => {
-    return items.value.filter(item => {
+    return items.value.filter((item: Record<string, any>) => {
       const category = normalizeText(item.category)
       const brand = normalizeText(item.brand)
       const price = getPrice(item)
@@ -151,6 +155,22 @@ export function useAlternateSearch() {
     await router.push({ path: '/results', query })
   }
 
+  async function changePage(newPage: number) {
+    await navigateWithState(newPage)
+  }
+
+  function applyFilters() {
+    navigateWithState(1)
+  }
+
+  function clearAllFilters() {
+    selectedCategories.value = []
+    selectedBrands.value = []
+    selectedPriceBand.value = ''
+    sortBy.value = 'relevance'
+    navigateWithState(1)
+  }
+
   return {
     // state
     searchQuery,
@@ -175,7 +195,14 @@ export function useAlternateSearch() {
     pending,
     error,
 
+    // computed
+    totalLabel: computed(() => `of ${total.value} results`),
+    emptyMessage: computed(() => `No results found for "${searchQuery.value}"`),
+
     // actions
+    changePage,
+    applyFilters,
+    clearAllFilters,
     navigateWithState
   }
 }

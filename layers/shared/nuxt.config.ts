@@ -109,7 +109,28 @@ export default defineNuxtConfig({
   image: {
     cloudinary: {
       baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME || 'nuxt-cloudinary'}/image/upload/`
-    }
+    },
+    domains: [
+      process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com',
+    ],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
+    format: ['webp', 'avif'],
+    presets: {
+      default: {
+        modifiers: {
+          format: 'webp',
+          quality: 80,
+        },
+      },
+    },
+    densities: [1, 2, 3],
   },
 
   pwa: {
@@ -200,7 +221,14 @@ export default defineNuxtConfig({
     langDir: 'locales',
     strategy: "prefix_except_default",
     defaultLocale: "en",
-    detectBrowserLanguage: false,
+    fallbackLocale: 'en',
+    detectBrowserLanguage: {
+      useCookie: true,
+      alwaysRedirect: true,
+      cookieCrossOrigin: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root', // recommended
+    }
   },
 
   sitemap: {
@@ -258,6 +286,10 @@ export default defineNuxtConfig({
         trigger: 'onNuxtReady',
       },
     }
+  },
+
+  leaflet: {
+    markerCluster: true
   },
 
   mcp: {
@@ -330,7 +362,12 @@ export default defineNuxtConfig({
             code: 'fr',
             iso: 'fr-FR',
           }
-        ]
+        ],
+        baseUrl: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
+        domainLocales: {
+          [`${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`]: ['en'],
+          [`${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.fr'}`]: ['fr']
+        }
       },
       motion: {
         directives: {

@@ -1,5 +1,6 @@
 import { defineNuxtPlugin } from '#app'
+import { useToast } from 'better-auth/vue'
 
-export default defineNuxtPlugin((_nuxtApp) => {
-  console.log('Plugin injected by my-module!')
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.provide('toast', useToast())
 })

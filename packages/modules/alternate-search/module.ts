@@ -6,7 +6,7 @@ export default defineNuxtModule({
     configKey: 'alternateSearch'
   },
 
-  setup(_, nuxt) {
+  setup (_, nuxt) {
     const resolver = createResolver(import.meta.url)
 
     // Expose composables
