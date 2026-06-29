@@ -1,1 +1,1 @@
-export { useImpersonation } from '@mframework/alternate-auth'
+export { useImpersonation } from '@mframework/alternate-auth/runtime'

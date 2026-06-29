@@ -2,6 +2,7 @@ import { getCommerceClient } from '../../../utils/client'
 import { useShippingCalculations } from './calculations'
 import { useTracking } from './tracking'
 import { useBookingIntegrations } from './bookingIntegrations'
+import type { SfShippingMethod, SfShippingAddress, SfShippingRatesRequest } from '~/composables/system/models'
 
 function clientOrNull() {
 	try {
@@ -17,18 +18,22 @@ export function useShipping() {
 	const tracking = useTracking()
 	const booking = useBookingIntegrations()
 
-	async function listShippingMethods(cartId?: string) {
-		if (client && typeof client.listShippingMethods === 'function') return client.listShippingMethods({ cartId })
-		if (client && typeof client.getShippingMethods === 'function') return client.getShippingMethods({ cartId })
-		return []
+	async function listShippingMethods(payload?: Partial<SfShippingRatesRequest>) {
+		if (client && typeof client.listShippingMethods === 'function') return client.listShippingMethods(payload)
+		if (client && typeof client.estimateShippingMethods === 'function') return client.estimateShippingMethods(payload)
+		return { methods: [] as SfShippingMethod[] }
 	}
 
-	async function selectShippingMethod(cartId: string, methodCode: string) {
+	async function selectShippingMethod(payload: {
+		cartId?: string
+		shippingMethodCode: string
+		shippingCarrierCode: string
+	}) {
 		if (client && typeof client.selectShippingMethod === 'function') {
-			return client.selectShippingMethod({ cartId, methodCode })
+			return client.selectShippingMethod(payload)
 		}
 		if (client && typeof client.setShippingMethod === 'function') {
-			return client.setShippingMethod({ cartId, methodCode })
+			return client.setShippingMethod(payload)
 		}
 		return { success: false, reason: 'selectShippingMethod not implemented by provider' }
 	}

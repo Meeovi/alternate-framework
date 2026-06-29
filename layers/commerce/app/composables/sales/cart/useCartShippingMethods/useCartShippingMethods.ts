@@ -1,7 +1,7 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, SfShippingMethods } from '../../models';
+import type { Maybe, SfShippingMethods, SfShippingMethod } from '../../../system/models';
 import type {
   UseCartShippingMethodsState,
   UseCartShippingMethodsReturn,
@@ -11,37 +11,59 @@ import { getCommerceClient } from '../../../../utils/client';
 import { useAsyncData, useState } from 'nuxt/app';
 import { useHandleError } from '../../../system/useHandleError/useHandleError';
 
-/**
- * @description Composable for getting shipping methods.
- * @example
- * const { data, loading, getShippingMethods } = useCartShippingMethods();
- */
-
 export const useCartShippingMethods: UseCartShippingMethodsReturn = () => {
-  const state = useState<UseCartShippingMethodsState>('useCartSippingMethods', () => ({
+  const state = useState<UseCartShippingMethodsState>('useCartShippingMethods', () => ({
     data: null,
     loading: false,
   }));
 
-  /**
-   * @description Function for fetching shipping methods.
-   * @example
-   * getShippingMethods();
-   */
-
-  const getShippingMethods: GetShippingMethods = async () => {
+  const getShippingMethods: GetShippingMethods = async (payload?: {
+    address?: Record<string, any>
+    items?: Array<Record<string, any>>
+  }) => {
     state.value.loading = true;
     const client = getCommerceClient();
-    const { data, error } = await useAsyncData<any>(() => client.listShippingMethods?.());
-    useHandleError(error.value);
-    const result = (data.value && (data.value as any).methods) ? data.value : { methods: [] };
-    state.value.data = result as any;
+
+    let result: { methods: SfShippingMethod[] } = { methods: [] };
+
+    try {
+      if (client && typeof client.estimateShippingMethods === 'function') {
+        const res = await client.estimateShippingMethods(payload)
+        if (res && Array.isArray(res.methods)) {
+          result = res as { methods: SfShippingMethod[] }
+        }
+      } else if (client && typeof client.listShippingMethods === 'function') {
+        const res = await client.listShippingMethods(payload) as any
+        if (Array.isArray(res)) {
+          result = { methods: res }
+        } else if (res && Array.isArray(res.methods)) {
+          result = res as { methods: SfShippingMethod[] }
+        }
+      }
+    } catch (error) {
+      useHandleError(error as any)
+    }
+
+    state.value.data = result;
     state.value.loading = false;
     return computed(() => state.value.data) as unknown as Ref<Maybe<SfShippingMethods>>;
   };
 
+  const selectShippingMethod = async (payload: {
+    cartId?: string
+    shippingMethodCode: string
+    shippingCarrierCode: string
+  }) => {
+    const client = getCommerceClient();
+    if (!client || typeof client.selectShippingMethod !== 'function') {
+      return null
+    }
+    return client.selectShippingMethod(payload);
+  };
+
   return {
     getShippingMethods,
+    selectShippingMethod,
     ...toRefs(state.value),
   };
 };

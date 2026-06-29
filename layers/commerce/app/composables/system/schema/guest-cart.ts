@@ -1,6 +1,5 @@
-import type { MeeoviCart } from './cart'
+import type { SfCart } from "./cart";
 
-export interface MeeoviGuestCart extends MeeoviCart {
-	guestId: string
+export interface SfGuestCart extends SfCart {
+  guestId: string;
 }
-

@@ -1,5 +1,6 @@
 import type { Simplify } from '../defs/typeHelpers';
-import type { Maybe, SfCustomer } from "../models";
+import type { SfCustomer } from "../models/customer";
+import type { SfCustomerGroup, SfGender, Maybe } from "../models/shared";
 
 export interface RegisterCustomerExtendedArgs {}
 export interface RegisterCustomerCustomArgs {}
@@ -9,6 +10,15 @@ export type RegisterCustomerArgs = {
   firstName: string;
   lastName: string;
   password: string;
+  prefix?: string;
+  suffix?: string;
+  middleName?: string;
+  dateOfBirth?: string;
+  gender?: SfGender;
+  taxClass?: string;
+  websiteId?: string;
+  storeId?: string;
+  groupId?: string;
   //$extended?: RegisterCustomerExtendedArgs;
   //$custom?: RegisterCustomerCustomArgs;
 };
@@ -35,6 +45,7 @@ export interface GetCustomerExtendedArgs {}
 export interface GetCustomerCustomArgs {}
 
 export type GetCustomerArgs = {
+  customerId?: string;
   //$extended?: GetCustomerExtendedArgs;
   //$custom?: GetCustomerCustomArgs;
 };
@@ -57,9 +68,16 @@ export interface UpdateCustomerExtendedArgs {}
 export interface UpdateCustomerCustomArgs {}
 
 export type UpdateCustomerArgs = {
+  customerId?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
+  prefix?: string;
+  suffix?: string;
+  middleName?: string;
+  dateOfBirth?: string;
+  gender?: SfGender;
+  taxClass?: string;
   //$extended?: UpdateCustomerExtendedArgs;
   //$custom?: UpdateCustomerCustomArgs;
 };
@@ -73,7 +91,6 @@ export interface ChangeCustomerPasswordCustomArgs {}
 
 export type ChangeCustomerPasswordArgs = {
   currentPassword: string;
-  // eslint-disable-next-line unicorn/no-keyword-prefix
   newPassword: string;
   confirmPassword: string;
   //$extended?: ChangeCustomerPasswordExtendedArgs;
@@ -81,3 +98,15 @@ export type ChangeCustomerPasswordArgs = {
 };
 
 export type ChangeCustomerPassword = (args: Simplify<ChangeCustomerPasswordArgs>) => Promise<void>;
+
+export interface GetCustomerGroupsExtendedArgs {}
+export interface GetCustomerGroupsCustomArgs {}
+
+export type GetCustomerGroupsArgs = {
+  //$extended?: GetCustomerGroupsExtendedArgs;
+  //$custom?: GetCustomerGroupsCustomArgs;
+};
+
+export type GetCustomerGroups = (args?: Simplify<GetCustomerGroupsArgs>) => Promise<{
+  groups: SfCustomerGroup[];
+}>;

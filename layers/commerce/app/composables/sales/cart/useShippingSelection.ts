@@ -1,22 +1,46 @@
-import { ref } from '#imports'
+import { ref } from 'vue'
+import type { SfShippingMethod } from '~/composables/system/models'
 
-export function useShippingSelection(initialValue = null) {
-  const shippingOptions = ref([])
-  const selected = ref(initialValue)
+export function useShippingSelection(initialValue: SfShippingMethod | null = null) {
+  const shippingOptions = ref<SfShippingMethod[]>([])
+  const selected = ref<SfShippingMethod | null>(initialValue)
   const loading = ref(false)
 
-  const load = async () => {
-    // No-op stub: real implementation should fetch shipping methods from provider
+  const load = async (params?: {
+    address?: Record<string, any>
+    items?: Array<Record<string, any>>
+  }) => {
+    const client = getCommerceClient()
     loading.value = true
     try {
-      // placeholder empty list
-      shippingOptions.value = []
+      if (client && typeof client.estimateShippingMethods === 'function' && params) {
+        const res = await client.estimateShippingMethods(params)
+        shippingOptions.value = res?.methods || []
+      } else if (client && typeof client.listShippingMethods === 'function') {
+        const res = await client.listShippingMethods(params) as any
+        shippingOptions.value = Array.isArray(res) ? res : res?.methods || []
+      } else {
+        shippingOptions.value = []
+      }
     } finally {
       loading.value = false
     }
+
+    return shippingOptions.value
   }
 
-  return { shippingOptions, selected, loading, load }
+  const select = (method: SfShippingMethod | null) => {
+    selected.value = method
+    return method
+  }
+
+  return {
+    shippingOptions,
+    selected,
+    loading,
+    load,
+    select,
+  }
 }
 
 export default useShippingSelection

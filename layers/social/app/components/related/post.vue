@@ -81,7 +81,7 @@
 <script setup>
     import editMenu from '#social/app/components/blocks/postEditMenu.vue';
     import share from '#social/app/components/blocks/share.vue';
-    import repost from '#social/app/components/blocks/repost.vue';
+    import repost from '#social/app/components/blocks/repost/repost.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
     import {
         toRef,

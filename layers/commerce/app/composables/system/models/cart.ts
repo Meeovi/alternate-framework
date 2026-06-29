@@ -4,6 +4,7 @@ import type {
   Maybe,
   SfAddress,
   SfAttribute,
+  SfCoupon,
   SfDiscountablePrice,
   SfId,
   SfImage,
@@ -15,21 +16,52 @@ export interface SfCartLineItemCustom extends InferCustom<"normalizeCartLineItem
 export interface SfCartLineItem {
   attributes: SfAttribute[];
   productId: SfId;
-  /**
-   * ID of the cart's line item
-   */
   id: SfId;
+  parentItemId?: string;
   image: Maybe<SfImage>;
   name: Maybe<string>;
   quantity: number;
   sku: Maybe<string>;
   slug: string;
-  /**
-   * Product of quantity and unitPrice
-   */
-  totalPrice: Maybe<SfMoney>;
+  productType?: string;
+  currency: string;
+  price: SfMoney;
+  basePrice: SfMoney;
+  finalPrice: SfMoney;
+  discountAmount: SfMoney;
+  taxAmount: SfMoney;
+  taxPercent: number;
+  discountPercent: number;
+  rowTotal: SfMoney;
+  rowTotalInclTax: SfMoney;
+  totalPrice: SfMoney;
   unitPrice: Maybe<SfDiscountablePrice>;
   quantityLimit: Maybe<number>;
+  freeShipping: boolean;
+  message?: string;
+  appToTotal?: string;
+  isQtyDecimal?: boolean;
+  noDiscount?: boolean;
+  weeeTaxApplied?: string;
+  weeeTaxAppliedAmount?: number;
+  weeeTaxDisposition?: number;
+  weeeTaxRowDisposition?: number;
+  productOption?: {
+    id: string;
+    title: string;
+    type: "select" | "radio" | "checkbox" | "multi_select";
+    values: Array<{
+      id: string;
+      title: string;
+      price: number;
+      priceType: "fixed" | "percent";
+    }>;
+  };
+  children?: SfCartLineItem[];
+  extensionAttributes?: {
+    downloadableProductLinks?: string[];
+    giftCard?: Record<string, unknown>;
+  };
   $custom?: SfCartLineItemCustom;
 }
 
@@ -42,54 +74,86 @@ export interface SfCartCoupon {
   $custom?: SfCartCouponCustom;
 }
 
+export interface SfCartAddressCustom extends InferCustom<"normalizeCartAddress"> {}
+
+export interface SfCartAddress extends SfAddress {
+  id: SfId;
+  type: "shipping" | "billing" | "both";
+  $custom?: SfCartAddressCustom;
+}
+
+export interface SfCartTotal {
+  subtotal: SfMoney;
+  subtotalExclTax: SfMoney;
+  subtotalInclTax: SfMoney;
+  discount: SfMoney;
+  grandTotal: SfMoney;
+  tax: SfMoney;
+  shipping: SfMoney;
+  shippingExclTax: SfMoney;
+  shippingInclTax: SfMoney;
+  couponDiscount: SfMoney;
+  cartDiscount: SfMoney;
+  weeeTax: SfMoney;
+  rounding: SfMoney;
+  baseCurrencyCode: string;
+  storeCurrencyCode: string;
+  quoteCurrencyCode: string;
+}
+
 export interface SfCartCustom extends InferCustom<"normalizeCart"> {}
 
 export interface SfCart {
   appliedCoupons: SfCartCoupon[];
-  /**
-   * @default null
-   */
+  appliedTaxes?: Array<{
+    code: string;
+    title: string;
+    percent: number;
+    amount: SfMoney;
+  }>;
+  appliedRuleIds: string[];
   billingAddress: Maybe<SfAddress>;
-  /**
-   * Active customer's email. Required to complete the checkout
-   * @default null
-   */
+  bonusDiscountAmount: number;
+  couponCode?: string;
+  createdAt: string;
+  currency: SfCurrency;
   customerEmail: Maybe<string>;
+  customerId?: string;
+  customerGroupId?: string;
+  customerIsGuest: boolean;
+  discountAmount: SfMoney;
+  giftMessage?: string;
+  giftMessageId: number;
+  giftRegistryItemId: number;
+  giftRegistryListId: number;
+  grandTotal: SfMoney;
+  items: SfCartLineItem[];
+  lineCount: number;
+  itemsQty: number;
+  storeId: string;
+  websiteId: string;
   id: SfId;
-  /**
-   * Shipping address is required to get available shipping methods
-   * @default null
-   */
-  lineItems: SfCartLineItem[];
+  isActive: boolean;
+  isVirtual: boolean;
+  itemsCount?: number;
+  reservation?: string;
   shippingAddress: Maybe<SfAddress>;
-  /**
-   * Required to complete the checkout. To get available methods use `getAvailableShippingMethods`
-   * @default null
-   */
   shippingMethod: Maybe<SfShippingMethod>;
-  /**
-   * Difference of `subtotalRegularPrice` and discounts applied to line items before providing coupons.
-   * If none of the products are discounted, price will be equal to `subtotalRegularPrice`
-   */
-  subtotalDiscountedPrice: SfMoney;
-  /**
-   * Total regular price of all line items (coupons, taxes, shipping excluded)
-   */
-  subtotalRegularPrice: SfMoney;
-  totalCouponDiscounts: SfMoney;
-  /**
-   * Total count of all line items and their's quantities in cart
-   */
-  totalItems: number;
-  /**
-   * Total cart price (discounts, taxes, shipping included)
-   */
-  totalPrice: SfMoney;
-  /**
-   * Calculated after applying shipping method
-   * @default null
-   */
-  totalShippingPrice: Maybe<SfMoney>;
-  totalTax: SfMoney;
+  shippingAmount: SfMoney;
+  shippingDescription?: string;
+  shippingTaxAmount: SfMoney;
+  subtotal: SfMoney;
+  taxAmount: SfMoney;
+  totalSegments?: Array<{
+    code: string;
+    title: string;
+    amount: SfMoney;
+  }>;
+  totals: Maybe<SfCartTotal>;
+  updatedAt: string;
+  validationMessages?: Array<{
+    code: string;
+    text: string;
+  }>;
   $custom?: SfCartCustom;
 }

@@ -1,2 +1,2 @@
-export { useCurrentUser } from '@mframework/alternate-auth'
-export type { AuthUser } from '@mframework/alternate-auth'
+export { useCurrentUser } from '@mframework/alternate-auth/runtime'
+export type { AuthUser } from '@mframework/alternate-auth/runtime'

@@ -1,4 +1,5 @@
 import { getCommerceClient } from '../../../../utils/client'
+import type { SfProduct } from '~/composables/system/models'
 
 function clientOrNull() {
 	try {
@@ -11,7 +12,7 @@ function clientOrNull() {
 export function useNewestProducts() {
 	const client = clientOrNull()
 
-	async function getNewestProducts(opts: Record<string, unknown> = {}) {
+	async function getNewestProducts(opts: Record<string, unknown> = {}): Promise<SfProduct[]> {
 		if (client && typeof client.getNewestProducts === 'function') return client.getNewestProducts(opts)
 		if (client && typeof client.listProducts === 'function') {
 			const products = await client.listProducts({ ...opts, sort: 'newest' })

@@ -10,6 +10,10 @@
       "types": "./dist/types.d.mts",
       "import": "./dist/module.mjs"
     },
+    "./runtime": {
+      "types": "./dist/runtime/composables/index.d.ts",
+      "import": "./dist/runtime/composables/index.js"
+    },
     "./runtime/server": {
       "types": "./dist/runtime/server/utils/auth.d.ts",
       "import": "./dist/runtime/server/utils/auth.js"

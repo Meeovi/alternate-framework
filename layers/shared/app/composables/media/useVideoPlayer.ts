@@ -1,6 +1,6 @@
 // composables/useVideoPlayer.ts
 import { ref, shallowRef, onMounted, onBeforeUnmount } from 'vue'
-import { getVideoJsPlugins } from '@/videojs/videojs-plugin-registry'
+import { getVideoJsPlugins } from '../../utils/videojs/videojs-plugin-registry'
 
 export function useVideoPlayer(playerConfig) {
   const playerEl = shallowRef(null)
@@ -23,7 +23,9 @@ export function useVideoPlayer(playerConfig) {
       // Run plugin beforeCreate hooks
       plugins.forEach(p => p.beforeCreate?.(playerConfig))
 
-      videojs.value = (await import('video.js')).default
+      const importFn = new Function('return import("video.js")')
+      const videojsModule = await importFn()
+      videojs.value = videojsModule.default
 
       player.value = videojs.value(playerEl.value, playerConfig)
 

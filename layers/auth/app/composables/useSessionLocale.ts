@@ -1,1 +1,1 @@
-export { useSessionLocale } from '@mframework/alternate-auth'
+export { useSessionLocale } from '@mframework/alternate-auth/runtime'

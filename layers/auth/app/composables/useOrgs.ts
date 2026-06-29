@@ -1,1 +1,1 @@
-export { useOrgs, useCurrentOrganization } from '@mframework/alternate-auth'
+export { useOrgs, useCurrentOrganization } from '@mframework/alternate-auth/runtime'

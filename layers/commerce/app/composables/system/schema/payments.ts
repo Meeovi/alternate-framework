@@ -1,11 +1,15 @@
-export interface MeeoviPayment {
-	id: number
-	status?: string | null
-	description?: string | null
-	gateway?: string | null
-	amount?: number | null
-	created_at?: string | null
-	// relations omitted: payments_countries[], payments_currency[]
+export interface SfPayment {
+  id: string;
+  method?: string;
+  amount: number;
+  baseAmount: number;
+  baseShippingAmount: number;
+  shippingAmount: number;
+  currencyCode: string;
+  additionalInformation: Record<string, any>;
+  billingName?: string;
+  billingAddress?: Record<string, any>;
+  extensionAttributes?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
 }
-
-

@@ -1,10 +1,32 @@
-export interface MeeoviAttribute {
-	id: number
-	default_label?: string | null
-	isPublic?: boolean | null
-	options?: Record<string, unknown> | null
-	attribute_code?: string | null
-	// relations omitted: attributes_product_types[], attributes_products[], integrations_attributes[], product_attributes[], products_attributes[], videos[]
+export interface SfAttribute {
+  id: string;
+  entityTypeId: string;
+  attributeCode: string;
+  backendModel?: string;
+  backendType: "static" | "varchar" | "int" | "decimal" | "text" | "datetime" | "select" | "bool" | "json";
+  backendTable?: string;
+  frontendModel?: string;
+  frontendInput: "text" | "textarea" | "date" | "boolean" | "multiselect" | "select" | "price" | "media_image" | "weee" | "swatch_visual" | "swatch_text";
+  frontendLabel: string;
+  frontendClass?: string;
+  sourceModel?: string;
+  isRequired: boolean;
+  isUnique: boolean;
+  isGlobal: boolean;
+  isVisible: boolean;
+  isSearchable: boolean;
+  isFilterable: boolean;
+  isComparable: boolean;
+  isVisibleOnFront: boolean;
+  usedInProductListing?: boolean;
+  usedForSortBy?: boolean;
+  isHtmlAllowedOnFront: boolean;
+  isConfigurable: boolean;
+  applyTo: SfProductType[];
+  isVisibleInAdvancedSearch?: boolean;
+  position: number;
+  note: string;
+  defaultValue: string | number | boolean | string[] | null;
+  sortOrder?: number;
+  extensionAttributes?: Record<string, unknown>;
 }
-
-

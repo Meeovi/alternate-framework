@@ -1,49 +1,38 @@
-export interface MeeoviInvoice {
-	id: string
-	created_at?: string | null
-	updated_at?: string | null
-	base_currency_code?: string | null
-	base_discount_amount?: number | null
-	base_grand_total?: number | null
-	base_discount_tax_compensation_amount?: number | null
-	base_shipping_amount?: number | null
-	base_shipping_discount_tax_compensation_amnt?: number | null
-	base_shipping_incl_tax?: number | null
-	base_shipping_tax_amount?: number | null
-	base_subtotal?: number | null
-	base_subtotal_incl_tax?: number | null
-	base_tax_amount?: number | null
-	base_total_refunded?: number | null
-	base_to_global_rate?: number | null
-	base_to_order_rate?: number | null
-	can_void_flag?: number | null
-	discount_amount?: number | null
-	discount_description?: string | null
-	email_sent?: number | null
-	entity_id?: number | null
-	global_currency_code?: string | null
-	grand_total?: number | null
-	discount_tax_compensation_amount?: number | null
-	increment_id?: string | null
-	is_used_for_refund?: number | null
-	order_currency_code?: string | null
-	shipping_amount?: number | null
-	shipping_discount_tax_compensation_amount?: number | null
-	shipping_incl_tax?: number | null
-	shipping_tax_amount?: number | null
-	state?: number | null
-	store_currency_code?: string | null
-	store_id?: number | null
-	store_to_base_rate?: number | null
-	store_to_order_rate?: number | null
-	subtotal?: number | null
-	subtotal_incl_tax?: number | null
-	tax_amount?: number | null
-	total_qty?: number | null
-	user?: string | null
-	plan?: string | null
-	service_period?: string | null
-	payment_period?: string | null
+export interface SfInvoice {
+  id: string;
+  incrementId: string;
+  orderId: string;
+  orderIncrementId: string;
+  state: string;
+  subTotal: number;
+  baseSubTotal: number;
+  subTotalInclTax: number;
+  baseSubtotalInclTax: number;
+  shippingAmount: number;
+  baseShippingAmount: number;
+  shippingDescription: string;
+  shippingInclTax: number;
+  baseShippingInclTax: number;
+  shippingTaxAmount: number;
+  baseShippingTaxAmount: number;
+  discountAmount: number;
+  baseDiscountAmount: number;
+  discountDescription: string;
+  grandTotal: number;
+  baseGrandTotal: number;
+  taxAmount: number;
+  baseTaxAmount: number;
+  discountTaxCompensationAmount: number;
+  baseDiscountTaxCompensationAmount: number;
+  shippingDiscountTaxCompensationAmount: number;
+  baseShippingDiscountTaxCompensationAmount: number;
+  subtotalInclTax: number;
+  baseSubtotalInclTax: number;
+  totalQty: number;
+  emailSent: boolean;
+  canVoid: boolean;
+  canRefund: boolean;
+  createdAt: string;
+  updatedAt: string;
+  extensionAttributes?: Record<string, unknown>;
 }
-
-

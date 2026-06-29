@@ -1,10 +1,15 @@
-export interface MeeoviShop {
-	id: string
-	name: string
-	domain?: string | null
-	currency?: string | null
-	productsCount?: number
-	metadata?: Record<string, unknown>
+export interface SfShop {
+  id: string;
+  name: string;
+  code: string;
+  domain: string;
+  currency: string;
+  language: string;
+  timezone: string;
+  status: "active" | "inactive";
+  productsCount: number;
+  ownerId: string;
+  createdAt: string;
+  updatedAt: string;
+  extensionAttributes?: Record<string, unknown>;
 }
-
-

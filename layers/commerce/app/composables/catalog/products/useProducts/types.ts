@@ -62,6 +62,7 @@ export interface ProductProvider {
 export interface UseProductRecommendedState {
   data: Maybe<SfProduct[]>;
   loading: boolean;
+  error: Error | null;
 }
 
 export type FetchProductRecommended = (slug: string) => Promise<Ref<Maybe<SfProduct[]>>>;

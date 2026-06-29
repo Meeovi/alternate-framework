@@ -1,1 +1,1 @@
-export { useAuth } from '@mframework/alternate-auth'
+export { useAuth } from '@mframework/alternate-auth/runtime'

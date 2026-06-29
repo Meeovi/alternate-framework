@@ -1,2 +1,2 @@
-export { useAlert } from '@mframework/alternate-auth'
+export { useAlert } from '@mframework/alternate-auth/runtime'
 export default useAlert

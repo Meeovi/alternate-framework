@@ -1,4 +1,4 @@
-import type { ChatProvider, RCMessage, RCRoom } from '../types'
+import type { ChatProvider, RCMessage, RCRoom } from '../../../types/chat'
 
 export function createMemoryChatProvider(): ChatProvider {
   const rooms: Record<string, RCRoom> = {}

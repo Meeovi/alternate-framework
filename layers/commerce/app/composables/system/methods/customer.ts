@@ -43,6 +43,7 @@ export interface GetCustomerAddressesExtendedArgs {}
 export interface GetCustomerAddressesCustomArgs {}
 
 export type GetCustomerAddressesArgs = {
+  customerId?: SfId;
   //$extended?: GetCustomerAddressesExtendedArgs;
   //$custom?: GetCustomerAddressesCustomArgs;
 };

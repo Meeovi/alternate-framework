@@ -1,11 +1,16 @@
-import type { MeeoviProduct } from './product'
+import type { SfProduct } from "./product";
 
-export interface MeeoviConfigurableProduct {
-	id: string
-	baseProductId: string
-	title?: string | null
-	options: { name: string; values: string[] }[]
-	variants: MeeoviProduct[]
-	metadata?: Record<string, unknown>
+export interface SfConfigurableProduct {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+  status: SfProductStatus;
+  visibility: SfProductVisibility;
+  typeId: "configurable";
+  createdAt: string;
+  updatedAt: string;
+  options: SfProductConfigurableOption[];
+  variants: SfProduct[];
+  extensionAttributes?: Record<string, unknown>;
 }
-

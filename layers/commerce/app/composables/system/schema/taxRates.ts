@@ -1,9 +1,11 @@
-export interface MeeoviTaxRate {
-	id: number
-	rate?: number | null
-	tax_class?: string | null
-	certifications?: Record<string, unknown> | null
-	age_gating?: string | null
-	// relations omitted: taxes_countries[], taxes_states[]
+export interface SfTaxRate {
+  id: string;
+  taxCountryId: string;
+  taxRegionId: string;
+  rate: number;
+  taxPostcode: string;
+  taxCalculationRateId: string;
+  createdAt: string;
+  updatedAt: string;
+  extensionAttributes?: Record<string, unknown>;
 }
-

@@ -49,7 +49,7 @@ export function useAuth(): UseAuthReturn {
   const sessionFetching = ref(false)
 
   watchEffect(() => {
-    if (sessionData.value) {
+    if (sessionData?.value) {
       session.value = sessionData.value.session
       user.value = sessionData.value.user
     }
@@ -64,8 +64,10 @@ export function useAuth(): UseAuthReturn {
     const data = await $fetch<any>('/api/auth/adapter/session', {
       method: 'GET',
       headers,
-    })
-    setAdapterSession(data)
+    }).catch(() => null)
+    if (data) {
+      setAdapterSession(data)
+    }
     return data
   }
 

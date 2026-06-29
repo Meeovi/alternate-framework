@@ -1,8 +1,11 @@
-export interface MeeoviTaxRule {
-	id: string
-	name: string
-	taxRateId?: string | null
-	priority?: number
-	metadata?: Record<string, unknown>
+export interface SfTaxRule {
+  id: string;
+  code: string;
+  priority: number;
+  position: number;
+  customerTaxClassIds: string[];
+  productTaxClassIds: string[];
+  taxRateIds: string[];
+  calculateSubtotal: boolean;
+  extensionAttributes?: Record<string, unknown>;
 }
-

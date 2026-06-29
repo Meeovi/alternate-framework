@@ -1,27 +1,29 @@
 import type { Maybe } from '~/composables/system/models/shared';
-import type { SfCart } from '../../models';
+import type { SfCart, SfCartLineItem, SfShippingMethod } from '~/composables/system/models';
 import { getCartProvider } from './registry'
 import { toRefs } from '@vueuse/shared';
-import type { UseCartReturn, UseCartState, FetchCart, CartProvider } from '../../../../types/cart';
+import type { UseCartReturn, UseCartState, FetchCart, CartProvider } from '~/types/cart';
 import { getCommerceClient } from '../../../../utils/client';
 import { useState, useRuntimeConfig } from 'nuxt/app';
 import { ref } from 'vue';
 
-/**
- * @description Composable for managing cart.
- * @returns {@link UseCartReturn}
- * @example
- * const { data, loading } = useCart();
- */
 export const useCart: UseCartReturn = () => {
   const _cfg: any = (typeof (useRuntimeConfig as any) === 'function') ? (useRuntimeConfig as any)() : (useRuntimeConfig || { public: {} })
   const providerName = (_cfg && _cfg.public && _cfg.public.cartProvider) ? _cfg.public.cartProvider : 'default'
-  const emptyCart = { id: '', items: [], total: 0 }
+  const emptyCart = { id: '', quoteId: '', items: [], total: 0, subtotal: 0, grandTotal: 0, taxAmount: 0, shippingAmount: 0, discountAmount: 0, currency: 'USD', itemsCount: 0, customerIsGuest: true } as any
   const stubProvider: CartProvider = {
     getCart: async () => emptyCart,
-    addItem: async () => emptyCart,
-    removeItem: async () => emptyCart,
+    getGuestCart: async () => emptyCart,
+    createEmptyCart: async () => emptyCart,
+    addCartLineItem: async () => emptyCart,
+    updateCartLineItem: async () => emptyCart,
+    removeCartLineItem: async () => emptyCart,
     clearCart: async () => emptyCart,
+    estimateShippingMethods: async () => ({ methods: [] }),
+    selectShippingMethod: async () => emptyCart,
+    selectPaymentMethod: async () => emptyCart,
+    applyCoupon: async () => emptyCart,
+    removeCoupon: async () => emptyCart,
   }
   let provider: CartProvider
   try {
@@ -34,11 +36,6 @@ export const useCart: UseCartReturn = () => {
     loading: false,
   }));
 
-  /**
-   * @description Function for fetching the cart.
-   * @example
-   * getCart();
-   */
   const fetchCart: FetchCart = async () => {
     state.value.loading = true;
     try {
@@ -50,7 +47,6 @@ export const useCart: UseCartReturn = () => {
 
       const data = await client.getCart();
       state.value.data = data ?? null;
-      // wrap the returned ref into our Vue ref to avoid cross-package Ref mismatch
       return ref<Maybe<SfCart>>(state.value.data);
     } catch (error) {
       throw new Error(error as string);
@@ -87,19 +83,41 @@ export const useCart: UseCartReturn = () => {
     }
   };
 
-  // Backward-compatible alias for existing callers using the old typo.
+  const splitCart = async (payload: {
+    customerId: string
+    storeId: string
+    websiteId: string
+    regionCode: string
+    postcode: string
+  }): Promise<SfCart> => {
+    const client = getCommerceClient();
+    if (!client || typeof client.splitCart !== 'function') {
+      throw new Error('splitCart not supported by provider')
+    }
+    return client.splitCart(payload);
+  };
+
   const fetchCard = fetchCart;
 
   return {
     fetchCart,
     fetchCard,
     fetchCartPriceRules,
+    splitCart,
     ...toRefs(state.value),
     ...toRefs(persistentCartState.value),
     ...toRefs(cartPriceRules.value),
     getCart: provider.getCart,
-    addItem: provider.addItem,
-    removeItem: provider.removeItem,
-    clearCart: provider.clearCart
+    getGuestCart: provider.getGuestCart,
+    createEmptyCart: provider.createEmptyCart,
+    addItem: provider.addCartLineItem,
+    updateItem: provider.updateCartLineItem,
+    removeItem: provider.removeCartLineItem,
+    clearCart: provider.clearCart,
+    estimateShippingMethods: provider.estimateShippingMethods,
+    selectShippingMethod: provider.selectShippingMethod,
+    selectPaymentMethod: provider.selectPaymentMethod,
+    applyCoupon: provider.applyCoupon,
+    removeCoupon: provider.removeCoupon,
   };
 };

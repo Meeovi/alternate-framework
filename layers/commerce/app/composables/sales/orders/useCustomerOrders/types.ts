@@ -1,8 +1,7 @@
 import type { Ref } from 'vue';
-import type { Maybe } from '~/composables/system/models/shared';
-import type { OrderData } from '../useCustomerOrder/types';
+import type { Maybe, SfOrderListItem } from '~/composables/system/models';
 
-export type OrdersData = Pick<OrderData, 'id' | 'date' | 'paymentAmount' | 'status'>[];
+export type OrdersData = SfOrderListItem[];
 
 export interface UseCustomerOrdersState {
   data: Maybe<OrdersData>;

@@ -9,10 +9,10 @@
 <script setup lang="ts">
 import { useHead } from 'nuxt/app'
 import { useRoute } from 'vue-router'
-import { useSpace } from '../../../../composables/spaces/useSpace'
+import { useSpace } from '../../../../composables/spaces/useSpaces'
 
 const route = useRoute()
-const { space } = useSpace()
+const { space } = await useSpace()
 
 useHead({
   title: space?.value?.name || 'Space Builder',

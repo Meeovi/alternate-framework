@@ -1,4 +1,6 @@
-import { reactive, shallowRef } from 'vue'
+// modules/alternate-federation/runtime/useFederation.ts
+
+import { shallowRef } from 'vue'
 import type { mastodon } from '../../clients/mastodon'
 import {
   createMastodonSessionClients,
@@ -16,15 +18,6 @@ export interface FederationMastoState {
   streamingClient: ReturnType<typeof shallowRef<mastodon.streaming.Client | undefined>>
 }
 
-export interface LoginMastodonSessionOptions {
-  masto: FederationMastoState
-  user: FederationSessionUser
-  getInstanceCache: (server: string) => mastodon.v2.Instance | undefined
-  instanceStorage: { value: Record<string, mastodon.v2.Instance> }
-  currentUser: { value: unknown }
-  webSocketImplementation?: unknown
-}
-
 export function createFederationState(): FederationMastoState {
   return {
     client: shallowRef<mastodon.rest.Client>(undefined as never),
@@ -32,17 +25,28 @@ export function createFederationState(): FederationMastoState {
   }
 }
 
-export function loginMastodonSession(options: LoginMastodonSessionOptions) {
-  const server = options.user.server
+export async function loginMastodonSession(options: {
+  masto: FederationMastoState
+  user: FederationSessionUser
+  getInstanceCache: (server: string) => mastodon.v2.Instance | undefined
+  instanceStorage: { value: Record<string, mastodon.v2.Instance> }
+  currentUser: { value: unknown }
+  webSocketImplementation?: unknown
+}) {
+  const { masto, user } = options
+  const server = user.server
   const url = `https://${server}`
-  const accessToken = options.user.token
+  const accessToken = user.token
 
-  const instance = reactive(options.getInstanceCache(server) || {
-    uri: server,
-    accountDomain: server,
-  }) as any
+  const instance =
+    options.getInstanceCache(server) ||
+    ({
+      uri: server,
+      accountDomain: server,
+    } as any)
 
   const streamingApiUrl = instance?.configuration?.urls?.streaming
+
   const clients = createMastodonSessionClients({
     url,
     accessToken,
@@ -51,34 +55,99 @@ export function loginMastodonSession(options: LoginMastodonSessionOptions) {
     webSocketImplementation: options.webSocketImplementation,
   })
 
-  options.masto.client.value = clients.client
-  options.masto.streamingClient.value = clients.streamingClient
+  masto.client.value = clients.client
+  masto.streamingClient.value = clients.streamingClient
 
-  options.masto.client.value.v2.instance.fetch().catch(error => new Promise<mastodon.v2.Instance>((resolve, reject) => {
-    if (isMastoHttpErrorStatus(error, 404)) {
-      return options.masto.client.value.v1.instance.fetch().then((newInstance) => {
-        console.warn(`Instance ${server} on version ${newInstance.version} does not support \"GET /api/v2/instance\" API, try converting to v2 instance... expect some errors`)
-        return resolve(normalizeLegacyV1InstanceToV2(newInstance))
-      }).catch(reject)
-    }
-
-    return reject(error)
-  })).then((newInstance) => {
+  try {
+    const newInstance = await masto.client.value.v2.instance.fetch()
     Object.assign(instance, newInstance)
-
-    if (newInstance.configuration.urls.streaming !== streamingApiUrl) {
-      const updated = createMastodonSessionClients({
-        url,
-        accessToken,
-        streamingApiUrl: newInstance.configuration.urls.streaming,
-        enableStreaming: Boolean(newInstance.configuration.urls.streaming && options.currentUser.value),
-        webSocketImplementation: options.webSocketImplementation,
-      })
-      options.masto.streamingClient.value = updated.streamingClient
-    }
-
     options.instanceStorage.value[server] = newInstance
-  })
+  } catch (error) {
+    if (isMastoHttpErrorStatus(error, 404)) {
+      const legacy = await masto.client.value.v1.instance.fetch()
+      const normalized = normalizeLegacyV1InstanceToV2(legacy)
+      Object.assign(instance, normalized)
+      options.instanceStorage.value[server] = normalized
+    } else {
+      throw error
+    }
+  }
 
   return instance as mastodon.v2.Instance
+}
+
+// ---------------------------------------------------------
+// FEDERATION API (RAW MASTODON)
+// ---------------------------------------------------------
+
+export function useFederation(masto: FederationMastoState) {
+  const getClient = (): mastodon.rest.Client => {
+    const c = masto.client.value
+    if (!c) throw new Error('Federation client not initialized')
+    return c
+  }
+
+  // -----------------------------------------------------
+  // GET POSTS (public timeline or hashtag)
+  // -----------------------------------------------------
+  const getRawPosts = async (opts?: {
+    hashtag?: string
+    limit?: number
+  }): Promise<mastodon.v1.Status[]> => {
+    const c = getClient()
+
+    if (opts?.hashtag) {
+      return c.v1.timelines.tag.$select(opts.hashtag).list({
+        limit: opts.limit || 20,
+      })
+    }
+
+    return c.v1.timelines.public.list({
+      limit: opts?.limit || 20,
+    })
+  }
+
+  // -----------------------------------------------------
+  // GET USER FEED
+  // -----------------------------------------------------
+  const getRawUserFeed = async (opts: {
+    userHandle: string
+    limit?: number
+  }): Promise<mastodon.v1.Status[]> => {
+    const c = getClient()
+
+    const acct = opts.userHandle
+    const account = await c.v1.accounts.lookup({ acct })
+
+    return c.v1.accounts.$select(account.id).statuses.list({
+      limit: opts.limit || 20,
+    })
+  }
+
+  // -----------------------------------------------------
+  // CREATE POST
+  // -----------------------------------------------------
+  const createRawPost = async (payload: {
+    content: string
+    visibility: mastodon.v1.StatusVisibility
+    hashtags?: string[]
+  }): Promise<mastodon.v1.Status> => {
+    const c = getClient()
+
+    const content =
+      payload.hashtags && payload.hashtags.length
+        ? `${payload.content}\n\n${payload.hashtags.map(h => `#${h}`).join(' ')}`
+        : payload.content
+
+    return c.v1.statuses.create({
+      status: content,
+      visibility: payload.visibility
+    })
+  }
+
+  return {
+    getRawPosts,
+    getRawUserFeed,
+    createRawPost
+  }
 }

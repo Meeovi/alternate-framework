@@ -10,6 +10,10 @@
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
     },
+    "./clients/mastodon": "./src/clients/mastodon.ts",
+    "./clients/atproto": "./src/clients/atproto.ts",
+    "./runtime/useFederation": "./src/runtime/useFederation.ts",
+    "./runtime/composables/useFederation": "./src/runtime/composables/useFederation.ts",
     "./nuxt": "./src/module.ts"
   },
   "main": "./dist/index.mjs",
@@ -40,8 +44,9 @@
     "demo:smoke": "bash ./demo/smoke-test.sh"
   },
   "dependencies": {
-    "@atproto/lex-password-session": "^0.0.11",
+    "@atproto/api": "^0.20.22",
     "@atproto/lex": "^0.0.16",
+    "@atproto/lex-password-session": "^0.0.11",
     "@nuxt/kit": "^4.2.1",
     "masto": "^7.10.1",
     "ofetch": "^1.4.1"

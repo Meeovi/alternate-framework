@@ -1,38 +1,39 @@
-import { ref } from 'vue';
-import type { SfProduct } from '~/composables/system/models';
-import type { SfAttribute } from '~/composables/system/models';
-import { groupBy, uniqBy } from 'lodash-es';
+import { getCommerceClient } from '../../../../utils/client'
+import type { SfProduct, SfProductStatus, SfProductVisibility, SfProductType } from '~/composables/system/models'
 
-/**
- * composable for getting product attributes data
- * @param {SfProduct} product Product object
- * @param {TAttribute} attributesNames get specific product attributes
- */
-export function useProductAttribute<TAttribute extends string>(product: SfProduct, attributesNames: TAttribute[] = []) {
-  const attributes = groupBy(
-    uniqBy(
-      (product?.variants || []).flatMap((variant: any) => variant?.attributes),
-      'value',
-    ),
-    'name',
-  );
+export interface ProductAttribute {
+  id: string
+  code: string
+  label: string
+  value: string | number | boolean | string[]
+  frontendInput: string
+  isRequired: boolean
+  isVisible: boolean
+  sortOrder: number
+}
 
-  const mapAttribute = (attributes: SfAttribute[] = []) => {
-    const defaults = attributesNames.map((attribute) => ({ name: attribute, value: null }));
+export function useProductAttribute(product: SfProduct, attributesNames: string[] = []) {
+  const attributes = (product?.variants || [])
+    .flatMap((variant: any) => variant?.attributes || [])
+    .filter((attr: any, index: number, self: any[]) => 
+      index === self.findIndex((a: any) => a.name === attr.name)
+    )
 
-    return Object.fromEntries([...defaults, ...attributes].map(({ name, value }) => [name, value]));
-  };
+  const mapAttribute = (attrs: any[] = []) => {
+    const defaults = attributesNames.map((name) => ({ name, value: null }))
+    return Object.fromEntries([...defaults, ...attrs].map(({ name, value }: any) => [name, value]))
+  }
 
-  const selectedAttrs = ref(mapAttribute(product.attributes));
+  const selectedAttrs = ref(mapAttribute(product.attributes))
 
   return {
-    getAttributeList: (attributeName: TAttribute) => attributes[attributeName] || [],
-    getAttribute: (attributeName: TAttribute) => selectedAttrs.value[attributeName],
-    setAttribute: (attributeName: TAttribute, attributeValue: string) => {
+    getAttributeList: (attributeName: string) => attributes.filter((a: any) => a.name === attributeName),
+    getAttribute: (attributeName: string) => selectedAttrs.value[attributeName],
+    setAttribute: (attributeName: string, attributeValue: string) => {
       selectedAttrs.value = {
         ...selectedAttrs.value,
         [attributeName]: attributeValue,
-      };
+      }
     },
-  };
+  }
 }

@@ -7,6 +7,7 @@ import type {
   SfProduct,
   SfProductCatalogItem,
   SfProductReview,
+  SfProductMediaEntry,
 } from "../models";
 import type { ResolvedPrice } from '../../catalog/price/price';
 
@@ -19,12 +20,25 @@ export interface SearchProductsCustomArgs {}
 export type SearchProductsArgs = {
   pageSize?: number;
   currentPage?: number;
-  sortBy?: "relevant" | "price-low-to-high" | "price-high-to-low" | (string & {});
+  sortBy?: "relevant" | "price-low-to-high" | "price-high-to-low" | "name-asc" | "name-desc" | "newest" | (string & {});
   search?: string;
   category?: SfCategory["id"];
+  categoryIds?: string[];
   facets?: {
     [name: string]: string[];
   };
+  filters?: {
+    priceFrom?: number;
+    priceTo?: number;
+    inStock?: boolean;
+    newProducts?: boolean;
+    saleProducts?: boolean;
+    status?: SfProductStatus[];
+    visibility?: SfProductVisibility[];
+    attributeSetId?: string;
+    typeId?: SfProductType;
+  };
+  aggregationFilters?: boolean;
   //$extended?: SearchProductsExtendedArgs;
   //$custom?: SearchProductsCustomArgs;
 } & SfSortBy;
@@ -33,7 +47,52 @@ export type SearchProducts = (args: Simplify<SearchProductsArgs>) => Promise<{
   products: SfProductCatalogItem[];
   pagination: SfPagination;
   facets: SfFacet[];
+  aggregations?: Array<{
+    field: string;
+    label: string;
+    displayMode: string;
+    options: Array<{
+      value: string;
+      label: string;
+      count: number;
+      isSelected: boolean;
+    }>;
+  }>;
+  suggestions?: string[];
 }>;
+
+export interface SearchAutocompleteExtendedArgs {}
+export interface SearchAutocompleteCustomArgs {}
+
+export type SearchAutocompleteArgs = {
+  keyword?: string;
+  storeId?: string;
+  customerGroupId?: string;
+  currencyCode?: string;
+  partialMatchLength?: number;
+  //$extended?: SearchAutocompleteExtendedArgs;
+  //$custom?: SearchAutocompleteCustomArgs;
+};
+
+export type SearchAutocomplete = (args: Simplify<SearchAutocompleteArgs>) => Promise<{
+  products: Array<{
+    id: SfId;
+    sku: string;
+    name: string;
+    price: number;
+    urlKey: string;
+    image?: {
+      url: string;
+      alt: string;
+    };
+  }>;
+  suggestions: string[];
+}>;
+
+export type GetProductSearchSuggestions = (args: {
+  keyword?: string;
+  limit?: number;
+}) => Promise<string[]>;
 
 export interface GetProductsExtendedArgs {}
 export interface GetProductsCustomArgs {}
@@ -41,6 +100,9 @@ export interface GetProductsCustomArgs {}
 export type GetProductsArgs = {
   ids?: string[];
   skus?: string[];
+  storeId?: string;
+  customerGroupId?: string;
+  currencyCode?: string;
   //$extended?: GetProductsExtendedArgs;
   //$custom?: GetProductsCustomArgs;
 };
@@ -55,6 +117,10 @@ export interface GetProductDetailsCustomArgs {}
 export type GetProductDetailsArgs = {
   id: SfId;
   sku?: string;
+  urlKey?: string;
+  storeId?: string;
+  customerGroupId?: string;
+  currencyCode?: string;
   //$extended?: GetProductDetailsExtendedArgs;
   //$custom?: GetProductDetailsCustomArgs;
 };
@@ -109,6 +175,19 @@ export type GetProductPriceArgs = {
 
 export type GetProductPrice = (args: Simplify<GetProductPriceArgs>) => Promise<{
   pricing: ResolvedPrice;
+}>;
+
+export interface GetProductMediaGalleryEntriesExtendedArgs {}
+export interface GetProductMediaGalleryEntriesCustomArgs {}
+
+export type GetProductMediaGalleryEntriesArgs = {
+  productId: SfId;
+  //$extended?: GetProductMediaGalleryEntriesExtendedArgs;
+  //$custom?: GetProductMediaGalleryEntriesCustomArgs;
+};
+
+export type GetProductMediaGalleryEntries = (args: Simplify<GetProductMediaGalleryEntriesArgs>) => Promise<{
+  media: SfProductMediaEntry[];
 }>;
 
 export type GetCatalogPriceRules = (args?: Record<string, any>) => Promise<{

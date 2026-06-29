@@ -82,7 +82,7 @@
 <script setup>
 import { ref } from '#imports'
 import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
-import useCreateLiveShort from '../../../composables/shorts/useCreateLiveShort'
+import useCreateLiveShort from '../../../composables/vibez/useCreateLiveShort'
 
 const dialog = ref(false)
 

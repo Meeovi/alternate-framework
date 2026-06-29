@@ -97,7 +97,7 @@
     } from '#auth/app/composables/useAuth'
     import {
         useSpace
-    } from '#social/app/composables/spaces/useSpace'
+    } from '#social/app/composables/spaces/useSpaces'
     import {
         useExperiencePage
     } from '#experience-builder/composables/useExperiencePage'
@@ -137,7 +137,7 @@
     const {
         space,
         exists
-    } = useSpace()
+    } = await useSpace()
 
     /* ------------------------------
        Load Navigation Tabs

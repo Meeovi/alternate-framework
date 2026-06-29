@@ -1,51 +1,73 @@
 import { getCommerceClient } from '../../utils/client'
+import type { SfProduct, SfOrder } from '~/composables/system/models'
 
-type StatsEvent = {
-	name: string
-	payload?: Record<string, unknown>
-	at: string
+export interface ProductViewEvent {
+  name: string
+  product: SfProduct
+  context?: Record<string, any>
+  at: string
 }
 
-function clientOrNull() {
-	try {
-		return getCommerceClient() as any
-	} catch {
-		return null
-	}
+export interface OrderPlacedEvent {
+  name: string
+  order: SfOrder
+  context?: Record<string, any>
+  at: string
+}
+
+export type CommerceEvent = ProductViewEvent | OrderPlacedEvent | {
+  name: string
+  payload?: Record<string, unknown>
+  at: string
 }
 
 export function useStastics() {
-	const client = clientOrNull()
-	const events: StatsEvent[] = []
+  const client = clientOrNull()
+  const events: CommerceEvent[] = []
 
-	async function trackEvent(name: string, payload: Record<string, unknown> = {}) {
-		const event: StatsEvent = {
-			name,
-			payload,
-			at: new Date().toISOString(),
-		}
-		events.push(event)
+  async function trackProductView(product: SfProduct, context: Record<string, any> = {}) {
+    return trackEvent('product_view', { product, context })
+  }
 
-		if (client && typeof client.trackEvent === 'function') {
-			await client.trackEvent(event)
-		}
+  async function trackOrderPlaced(order: SfOrder, context: Record<string, any> = {}) {
+    return trackEvent('order_placed', { order, context })
+  }
 
-		return event
-	}
+  async function trackEvent(name: string, payload: Record<string, unknown> = {}): Promise<CommerceEvent> {
+    const event: CommerceEvent = {
+      name,
+      payload,
+      at: new Date().toISOString(),
+    }
+    events.push(event)
 
-	function getEvents() {
-		return [...events]
-	}
+    if (client && typeof client.trackEvent === 'function') {
+      await client.trackEvent(event)
+    }
 
-	function clearEvents() {
-		events.length = 0
-	}
+    return event
+  }
 
-	return {
-		trackEvent,
-		getEvents,
-		clearEvents,
-	}
+  async function trackPageView(path: string, title?: string) {
+    return trackEvent('page_view', { path, title })
+  }
+
+  function getEvents(): CommerceEvent[] {
+    return [...events]
+  }
+
+  function clearEvents() {
+    events.length = 0
+  }
+
+  return {
+    trackProductView,
+    trackOrderPlaced,
+    trackPageView,
+    trackEvent,
+    getEvents,
+    clearEvents,
+  }
 }
 
 export const useStatistics = useStastics

@@ -1,9 +1,11 @@
-export interface MeeoviInventoryLot {
-	id: number
-	location_id?: number | null
-	qty?: number | null
-	batch?: string | null
-	expires_at?: string | null
-	created_at?: string | null
+export interface SfInventoryLot {
+  id: string;
+  sourceCode: string;
+  sku: string;
+  qty: number;
+  batch?: string;
+  expiresAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  extensionAttributes?: Record<string, unknown>;
 }
-

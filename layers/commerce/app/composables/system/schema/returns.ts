@@ -1,11 +1,24 @@
-export interface MeeoviReturn {
-	id: number
-	status?: string | null
-	date_created?: string | null
-	date_updated?: string | null
-	return_number?: string | null
-	reason?: string | null
-	// relations omitted: returns_orders[], returns_products[]
+export interface SfReturn {
+  id: string;
+  orderId: string;
+  incrementId: string;
+  status: string;
+  state: string;
+  customerId: string;
+  items: Array<{
+    id: string;
+    orderItemId: string;
+    productId: string;
+    sku: string;
+    name: string;
+    qty: number;
+    reason: string;
+    condition: "received" | "damaged" | "rejected";
+    resolution: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+  createdAtSql?: string;
+  updatedAtSql?: string;
+  // Additional fields omitted
 }
-
-

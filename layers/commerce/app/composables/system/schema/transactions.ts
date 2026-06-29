@@ -1,13 +1,17 @@
-export interface MeeoviTransaction {
-	id: string
-	status?: string | null
-	date_created?: string | null
-	date_updated?: string | null
-	order?: number | null
-	payment_method?: string | null
-	transactions_parent_id?: string | null
-	type?: string | null
-	amount?: number | null
-	// relations omitted: transactions_currency[]
+export interface SfTransaction {
+  id: string;
+  parentId?: string;
+  paymentId: string;
+  orderId?: string;
+  status: string;
+  type: "authorization" | "capture" | "void" | "refund" | "order" | "capture_offline";
+  isClosed: boolean;
+  closedAmount: number;
+  amount: number;
+  baseAmount: number;
+  currencyCode: string;
+  additionalInformation: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+  extensionAttributes?: Record<string, unknown>;
 }
-

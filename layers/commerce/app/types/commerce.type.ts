@@ -1,5 +1,3 @@
-// types/commerce.d.ts
-
 export interface CartTotals {
   subtotal: number
   tax: number
@@ -124,5 +122,3 @@ export interface Review {
   author?: string
   raw?: any
 }
-
- 
