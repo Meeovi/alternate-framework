@@ -1,9 +1,23 @@
 {
-  "extends": "../../../tsconfig.json",
-  "ignoreDeprecations": "6.0",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "paths": {
+      "adapter-directus": ["../adapter-directus/src/index.ts"],
+      "#imports": ["./.nuxt/imports"]
+    }
+  },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "dist",
     "node_modules",
-    "playground",
+    "playground"
   ]
 }

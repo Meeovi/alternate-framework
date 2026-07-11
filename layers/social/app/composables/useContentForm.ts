@@ -1,6 +1,6 @@
 import { reactive, ref, unref, watchEffect, type Ref } from 'vue'
 import { useJsonForm } from '../../../../packages/modules/ui-forms/src/composables/useJsonForm'
-import { useNuxtApp } from 'nuxt/app'
+import { useNuxtApp } from '#app'
 
 type ContentFormOptions = {
   clearOnSuccess?: boolean

@@ -9,6 +9,246 @@ try {
   sdk = undefined;
 }
 
+import type * as Sf from '~/composables/system/models';
+
+/**
+ * Strict Interface Contract for the commerce backend.
+ *
+ * The layer defines this contract; adapters (e.g. Magento) MUST implement every
+ * method. Composables blindly trust the interface and never probe for method
+ * existence. Naming is dictated by the layer, not the backend: when a backend
+ * exposes a different internal name it MUST be mapped inside the adapter.
+ */
+export interface CommerceClient {
+  // ---- Catalog / Products ----
+  getProducts(params?: Record<string, any>): Promise<Sf.SfProduct[]>;
+  listProducts(params?: Record<string, any>): Promise<Sf.SfProduct[]>;
+  getProductById(id: string): Promise<Sf.SfProduct | null>;
+  getProductBySku(sku: string): Promise<Sf.SfProduct | null>;
+  getProductBySlug(slug: string): Promise<Sf.SfProduct | null>;
+  getProductByUrlKey(urlKey: string): Promise<Sf.SfProduct | null>;
+  getBestSellingProducts(params?: Record<string, any>): Promise<Sf.SfProduct[]>;
+  getNewestProducts(params?: Record<string, any>): Promise<Sf.SfProduct[]>;
+  getRelatedProducts(id: string): Promise<Sf.SfProduct[]>;
+  getProductRecommendations(id: string, limit?: number): Promise<Sf.SfProduct[]>;
+  getRecommendations(params?: Record<string, any>): Promise<Sf.SfRecommendation[]>;
+  getRecommendationRules(params?: Record<string, any>): Promise<Sf.SfRecommendationRule[]>;
+  getSenseiRecommendations(params?: Record<string, any>): Promise<Sf.SfProduct[]>;
+  sendRecommendation(payload: Record<string, any>): Promise<void>;
+  getRelatedProductsRules(params?: Record<string, any>): Promise<any>;
+  addProductLink(payload: Record<string, any>): Promise<void>;
+  removeProductLink(payload: Record<string, any>): Promise<void>;
+
+  // ---- Categories ----
+  getCategories(params?: Record<string, any>): Promise<Sf.SfCategory[]>;
+  getCategory(id: string): Promise<Sf.SfCategory | null>;
+  getCategoryTree(params?: Record<string, any>): Promise<Sf.SfCategoryTree[]>;
+
+  // ---- Cart ----
+  getCart(): Promise<Sf.SfCart | null>;
+  addCartLineItem(payload: Record<string, any>): Promise<Sf.SfCart>;
+  updateCartLineItem(payload: Record<string, any>): Promise<Sf.SfCart>;
+  removeCartLineItem(payload: Record<string, any>): Promise<Sf.SfCart>;
+  applyCouponToCart(payload: Record<string, any>): Promise<Sf.SfCart>;
+  removeCouponFromCart(payload: Record<string, any>): Promise<Sf.SfCart>;
+  calculateCartPrices(payload: Record<string, any>): Promise<Sf.SfCart>;
+  priceCartItem(payload: Record<string, any>): Promise<Sf.SfCart>;
+
+  // ---- Checkout / Shipping ----
+  estimateShippingMethods(payload: Record<string, any>): Promise<Sf.SfShippingMethod[]>;
+  listShippingMethods(payload: Record<string, any>): Promise<Sf.SfShippingMethod[]>;
+  selectShippingMethod(payload: Record<string, any>): Promise<Sf.SfCart>;
+  setShippingMethod(payload: Record<string, any>): Promise<Sf.SfCart>;
+
+  // ---- Customer / Address ----
+  getCustomer(): Promise<Sf.SfCustomer | null>;
+  createCustomerAddress(payload: Record<string, any>): Promise<Sf.SfCustomerAddress>;
+  getCustomerAddresses(): Promise<Sf.SfCustomerAddress[]>;
+  updateCustomerAddress(payload: Record<string, any>): Promise<Sf.SfCustomerAddress>;
+  deleteCustomerAddress(id: string): Promise<void>;
+  getCustomerGroups(): Promise<Sf.SfCustomerGroup[]>;
+
+  // ---- Orders ----
+  getOrders(params?: Record<string, any>): Promise<Sf.SfOrder[]>;
+  listOrders(params?: Record<string, any>): Promise<Sf.SfOrder[]>;
+  getOrder(id: string): Promise<Sf.SfOrder | null>;
+  getOrderByIncrementId(incrementId: string): Promise<Sf.SfOrder | null>;
+  createOrder(payload: Record<string, any>): Promise<Sf.SfOrder>;
+  createPosOrder(payload: Record<string, any>): Promise<Sf.SfOrder>;
+  orderBySku(payload: Record<string, any>): Promise<any>;
+
+  // ---- Invoices ----
+  getInvoices(orderId: string): Promise<Sf.SfInvoice[]>;
+  listInvoices(params?: Record<string, any>): Promise<Sf.SfInvoice[]>;
+  getInvoice(id: string): Promise<Sf.SfInvoice | null>;
+
+  // ---- Shipments ----
+  createShipment(payload: Record<string, any>): Promise<Sf.SfShipment>;
+  bookShipment(payload: Record<string, any>): Promise<Sf.SfShipment>;
+  cancelShipment(id: string): Promise<void>;
+  cancelShipmentBooking(id: string): Promise<void>;
+  trackShipment(id: string): Promise<Sf.SfShipment>;
+  getTrackingInfo(payload: Record<string, any>): Promise<any>;
+
+  // ---- Credit memos ----
+  getCreditMemos(orderId: string): Promise<Sf.SfCreditMemo[]>;
+  listCreditMemos(params?: Record<string, any>): Promise<Sf.SfCreditMemo[]>;
+  getCreditMemo(id: string): Promise<Sf.SfCreditMemo | null>;
+
+  // ---- Coupons / Rewards / Gift cards ----
+  listCoupons(params?: Record<string, any>): Promise<Sf.SfCoupon[]>;
+  applyCoupon(payload: Record<string, any>): Promise<void>;
+  removeCoupon(payload: Record<string, any>): Promise<void>;
+  validateCoupon(code: string): Promise<boolean>;
+  getCoupon(code: string): Promise<Sf.SfCoupon | null>;
+  getRewards(params?: Record<string, any>): Promise<Sf.SfRewardPoint[]>;
+  listRewards(params?: Record<string, any>): Promise<Sf.SfRewardPoint[]>;
+  getRewardBalance(customerId: string): Promise<number>;
+  redeemReward(payload: Record<string, any>): Promise<void>;
+  listGiftCards(params?: Record<string, any>): Promise<Sf.SfGiftCard[]>;
+  listGiftCertificates(params?: Record<string, any>): Promise<Sf.SfGiftCard[]>;
+  applyGiftCard(payload: Record<string, any>): Promise<void>;
+  applyGiftCertificate(payload: Record<string, any>): Promise<void>;
+
+  // ---- Compare ----
+  addToCompare(payload: Record<string, any>): Promise<void>;
+  removeFromCompare(payload: Record<string, any>): Promise<void>;
+  getComparedProducts(): Promise<Sf.SfProduct[]>;
+
+  // ---- Discounts / Promotions / Price rules ----
+  listDiscounts(params?: Record<string, any>): Promise<any>;
+  getPromotions(params?: Record<string, any>): Promise<any>;
+  getDiscountForCart(cartId: string): Promise<any>;
+  calculateDiscounts(payload: Record<string, any>): Promise<any>;
+  getSpecialOffer(id: string): Promise<any>;
+  listSpecialOffers(params?: Record<string, any>): Promise<any>;
+  getCatalogPriceRules(params?: Record<string, any>): Promise<any>;
+  listCatalogPriceRules(params?: Record<string, any>): Promise<any>;
+  getCartPriceRules(params?: Record<string, any>): Promise<any>;
+  listCartPriceRules(params?: Record<string, any>): Promise<any>;
+  getCatalogPriceBySku(sku: string): Promise<any>;
+  getCatalogPriceForProduct(productId: string): Promise<any>;
+  getMinimumAdvertisedPrice(payload: Record<string, any>): Promise<any>;
+  getSuggestedRetailPrice(payload: Record<string, any>): Promise<any>;
+
+  // ---- Enterprise ----
+  getDynamicBlockById(id: string): Promise<Sf.SfDynamicBlock | null>;
+  listDynamicBlocks(params?: Record<string, any>): Promise<Sf.SfDynamicBlock[]>;
+  getCatalogEventById(id: string): Promise<Sf.SfEvent | null>;
+  listCatalogEvents(params?: Record<string, any>): Promise<Sf.SfEvent[]>;
+  getCompanyCredits(companyId?: string): Promise<Sf.SfCompanyCredit | null>;
+  updateCreditBalance(payload: Record<string, any>): Promise<Sf.SfCompanyCredit>;
+  getGiftRegistryById(id: string): Promise<Sf.SfGiftRegistry | null>;
+  listGiftRegistries(params?: Record<string, any>): Promise<Sf.SfGiftRegistry[]>;
+  createGiftRegistry(payload: Record<string, any>): Promise<Sf.SfGiftRegistry>;
+  updateGiftRegistry(payload: Record<string, any>): Promise<Sf.SfGiftRegistry>;
+  addGiftRegistryItem(payload: Record<string, any>): Promise<void>;
+  removeGiftRegistryItem(payload: Record<string, any>): Promise<void>;
+  getStoreCredit(customerId?: string): Promise<Sf.SfStoreCredit>;
+  updateStoreCredit(payload: Record<string, any>): Promise<Sf.SfStoreCredit>;
+  applyStoreCreditToCart(payload: Record<string, any>): Promise<void>;
+  getCatalogPermissions(userId?: string): Promise<any>;
+  getUserRoles(userId?: string): Promise<Sf.SfRole[]>;
+  createRMA(payload: Record<string, any>): Promise<Sf.SfRMARequest>;
+  listReturns(params?: Record<string, any>): Promise<Sf.SfRMARequest[]>;
+  getReturn(id: string): Promise<Sf.SfRMARequest | null>;
+  createReturn(payload: Record<string, any>): Promise<Sf.SfRMARequest>;
+  getNegotiableCredits(companyId?: string): Promise<Sf.SfNegotiableCredit>;
+  applyCreditToQuote(payload: Record<string, any>): Promise<void>;
+  getCompanyHierarchy(companyId?: string): Promise<any>;
+  getTeams(companyId?: string): Promise<Sf.SfTeam[]>;
+  listSharedCatalogs(params?: Record<string, any>): Promise<Sf.SfSharedCatalog[]>;
+  getSharedCatalogById(id: string): Promise<Sf.SfSharedCatalog | null>;
+  createCompanyAccount(payload: Record<string, any>): Promise<Sf.SfCompanyAccount>;
+  getCompanyAccountById(id: string): Promise<Sf.SfCompanyAccount | null>;
+  listCompanyAccounts(params?: Record<string, any>): Promise<Sf.SfCompanyAccount[]>;
+  updateCompanyAccount(payload: Record<string, any>): Promise<Sf.SfCompanyAccount>;
+  deleteCompanyAccount(id: string): Promise<void>;
+  createApprovalRule(payload: Record<string, any>): Promise<any>;
+  listApprovalRules(params?: Record<string, any>): Promise<any[]>;
+  updateApprovalRule(payload: Record<string, any>): Promise<any>;
+  deleteApprovalRule(id: string): Promise<void>;
+  listAdminActionLogs(params?: Record<string, any>): Promise<any[]>;
+  createPurchaseOrder(payload: Record<string, any>): Promise<Sf.SfPurchaseOrder>;
+  getPurchaseOrderById(id: string): Promise<Sf.SfPurchaseOrder | null>;
+  listPurchaseOrders(params?: Record<string, any>): Promise<Sf.SfPurchaseOrder[]>;
+  updatePurchaseOrder(payload: Record<string, any>): Promise<Sf.SfPurchaseOrder>;
+  deletePurchaseOrder(id: string): Promise<void>;
+  createQuote(payload: Record<string, any>): Promise<Sf.SfNegotiableQuote>;
+  getQuote(id: string): Promise<any>;
+  listQuotes(params?: Record<string, any>): Promise<any[]>;
+  acceptQuote(id: string): Promise<any>;
+  createRequisitionList(payload: Record<string, any>): Promise<Sf.SfRequisitionList>;
+  getRequisitionListById(id: string): Promise<Sf.SfRequisitionList | null>;
+  listRequisitionLists(params?: Record<string, any>): Promise<Sf.SfRequisitionList[]>;
+  updateRequisitionList(payload: Record<string, any>): Promise<Sf.SfRequisitionList>;
+  deleteRequisitionList(id: string): Promise<void>;
+  addRequisitionListItem(payload: Record<string, any>): Promise<void>;
+  removeRequisitionListItem(payload: Record<string, any>): Promise<void>;
+  getInvitations(params?: Record<string, any>): Promise<any[]>;
+  sendInvitation(payload: Record<string, any>): Promise<void>;
+  resendInvitation(id: string): Promise<void>;
+  cancelInvitation(id: string): Promise<void>;
+  listAffiliates(params?: Record<string, any>): Promise<Sf.SfAffiliate[]>;
+  getAffiliateSummary(affiliateId?: string): Promise<Sf.SfAffiliate>;
+  listChannels(params?: Record<string, any>): Promise<any[]>;
+  setChannel(channel: string): Promise<void>;
+
+  // ---- Content ----
+  getPoll(id: string): Promise<any>;
+  listPolls(params?: Record<string, any>): Promise<any[]>;
+  votePoll(payload: Record<string, any>): Promise<void>;
+  getGlossaryTermBySlug(slug: string): Promise<any>;
+  listGlossaryTerms(params?: Record<string, any>): Promise<any[]>;
+
+  // ---- Sales / Misc ----
+  getStores(params?: Record<string, any>): Promise<Sf.SfStore[]>;
+  listCarriers(params?: Record<string, any>): Promise<Sf.SfCarrier[]>;
+  listRegisters(params?: Record<string, any>): Promise<any[]>;
+  listPaymentGateways(params?: Record<string, any>): Promise<any[]>;
+  getPaymentGateway(id: string): Promise<any>;
+  listPayments(params?: Record<string, any>): Promise<any[]>;
+  listTransactions(params?: Record<string, any>): Promise<any[]>;
+  getTransaction(id: string): Promise<any>;
+  listShippingIntegrations(params?: Record<string, any>): Promise<any[]>;
+  addGiftMessage(payload: Record<string, any>): Promise<void>;
+  getGiftMessages(params?: Record<string, any>): Promise<any[]>;
+  updateGiftMessage(payload: Record<string, any>): Promise<void>;
+  deleteGiftMessage(id: string): Promise<void>;
+  listGiftWrappingOptions(params?: Record<string, any>): Promise<any[]>;
+  addGiftWrapToCart(payload: Record<string, any>): Promise<void>;
+  removeGiftWrapFromCart(payload: Record<string, any>): Promise<void>;
+  sendToAFriend(payload: Record<string, any>): Promise<void>;
+  tellAFriend(payload: Record<string, any>): Promise<void>;
+  trackEvent(payload: Record<string, any>): Promise<void>;
+  trackReferral(payload: Record<string, any>): Promise<void>;
+  createReservation(payload: Record<string, any>): Promise<any>;
+  listReservations(params?: Record<string, any>): Promise<any[]>;
+  updateStock(payload: Record<string, any>): Promise<void>;
+  getStock(payload: Record<string, any>): Promise<any>;
+  getStockByProductId(sku: string): Promise<Sf.SfProductStockItem | null>;
+  getStockBySku(sku: string): Promise<Sf.SfProductStockItem | null>;
+  checkInventory(sku: string, qty: number): Promise<boolean>;
+  listInventorySources(): Promise<Sf.SfInventorySource[]>;
+  listInventorySourceItems(params: { sourceCode: string; skus: string[] }): Promise<Sf.SfStockItem[]>;
+  assignStockToSource(payload: {
+    sourceCode: string;
+    sku: string;
+    qty: number;
+    status?: number;
+  }): Promise<unknown>;
+
+  // ---- Tax ----
+  listTaxRates(params?: Record<string, any>): Promise<Sf.SfTaxRate[]>;
+  listTax(params?: Record<string, any>): Promise<any>;
+
+  /**
+   * Low-level GraphQL request passthrough for ad-hoc queries the contract does
+   * not yet cover. Kept intentionally narrow.
+   */
+  request<T = any>(document: string, variables?: Record<string, any>): Promise<T>;
+}
+
 function getRawCommerceClient(provider?: string, config?: any): any {
   return (sdk as any)?.commerce || null;
 }

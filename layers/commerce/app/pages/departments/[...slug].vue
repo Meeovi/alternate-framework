@@ -198,7 +198,7 @@
     } from '../../composables/useAppGateway'
     import {
         useProducts
-    } from '#commerce/app/composables/catalog/products/useProducts/useProducts'
+    } from '#commerce/app/composables/catalog/products/useProducts'
     import {
         ref,
         watch,

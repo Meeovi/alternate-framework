@@ -1,124 +1,307 @@
 <template>
-    <section v-if="shouldRender" class="space-y-3">
-        <h2 class="font-medium">Organizations</h2>
+    <section class="pa-4">
+        <h2 class="text-h5 mb-4">Organizations</h2>
 
-        <p v-if="!isSupported" class="text-sm text-muted">
-            Organization management is not available for the current auth backend ({{ backendLabel }}).
-        </p>
+        <!-- Alerts -->
+        <v-alert v-if="error" type="error" variant="tonal" class="mb-3">
+            {{ error }}
+        </v-alert>
 
-        <template v-else>
-            <UAlert v-if="error" color="error" variant="soft" :description="error" />
-            <UAlert v-if="message" color="success" variant="soft" :description="message" />
+        <v-alert v-if="message" type="success" variant="tonal" class="mb-3">
+            {{ message }}
+        </v-alert>
 
-            <div v-if="loading" class="text-sm text-muted">Loading organizations...</div>
-            <div v-else-if="organizations.length === 0" class="text-sm text-muted">No organizations found.</div>
+        <!-- Create Organization -->
+        <v-card class="mb-4 pa-4">
+            <v-text-field v-model="newOrgName" label="New Organization Name" variant="outlined" />
+            <v-btn color="primary" :loading="actionLoading" @click="createOrganization(newOrgName)">
+                Create Organization
+            </v-btn>
+        </v-card>
 
-            <ul v-else class="space-y-2">
-                <li v-for="organization in organizations" :key="organization.id" class="flex items-center justify-between gap-2">
-                    <span>
-                        {{ organization.name }}
-                        <span v-if="organization.id === activeOrganizationId" class="text-xs text-muted">(Active)</span>
+        <!-- Organizations List -->
+        <div v-if="loading" class="text-body-2 text-grey">Loading organizations...</div>
+
+        <div v-else-if="orgList.length === 0" class="text-body-2 text-grey">
+            No organizations found.
+        </div>
+
+        <v-list v-else>
+            <v-list-item v-for="org in orgList" :key="org.id" class="d-flex justify-space-between align-center">
+                <div>
+                    <strong>{{ org.name }}</strong>
+                    <span v-if="org.id === activeOrg" class="text-caption text-grey">
+                        (Active)
                     </span>
+                </div>
 
-                    <div class="flex items-center gap-2">
-                        <v-btn
-                            size="xs"
-                            variant="soft"
-                            :disabled="organization.id === activeOrganizationId || actionLoading"
-                            @click="setActive(organization.id)">
-                            Set Active
-                        </v-btn>
-                        <v-btn
-                            size="xs"
-                            color="error"
-                            variant="outline"
-                            :loading="actionLoading"
-                            @click="leave(organization.id)">
-                            Leave
-                        </v-btn>
-                    </div>
-                </li>
-            </ul>
-        </template>
+                <div class="d-flex gap-2">
+                    <v-btn size="small" variant="tonal" :disabled="org.id === activeOrg || actionLoading"
+                        @click="setActive(org.id)">
+                        Set Active
+                    </v-btn>
+
+                    <v-btn size="small" color="error" variant="outlined" :loading="actionLoading"
+                        @click="leave(org.id)">
+                        Leave
+                    </v-btn>
+
+                    <v-btn size="small" variant="outlined" @click="openOrganizationManager(org)">
+                        Manage
+                    </v-btn>
+                </div>
+            </v-list-item>
+        </v-list>
+
+        <!-- ROLE CREATE DIALOG -->
+        <v-dialog v-model="roleCreateDialog" max-width="500">
+            <v-card class="pa-4">
+                <h3 class="text-h6 mb-4">Create Role</h3>
+
+                <v-text-field v-model="roleNameInput" label="Role Name" variant="outlined" />
+
+                <v-textarea v-model="rolePermissionInput" label="Permission JSON" variant="outlined"
+                    hint="Example: { project: ['create', 'update'] }" />
+
+                <v-btn color="primary" class="mt-4" @click="uiCreateRole">
+                    Create
+                </v-btn>
+            </v-card>
+        </v-dialog>
+
+        <!-- ROLE EDIT DIALOG -->
+        <v-dialog v-model="roleEditDialog" max-width="500">
+            <v-card class="pa-4">
+                <h3 class="text-h6 mb-4">Edit Role</h3>
+
+                <v-text-field v-model="roleNameInput" label="Role Name" variant="outlined" />
+
+                <v-textarea v-model="rolePermissionInput" label="Permission JSON" variant="outlined" />
+
+                <v-btn color="primary" class="mt-4" @click="uiUpdateRole">
+                    Save Changes
+                </v-btn>
+            </v-card>
+        </v-dialog>
+
+        <!-- TEAM CREATE DIALOG -->
+        <v-dialog v-model="teamCreateDialog" max-width="500">
+            <v-card class="pa-4">
+                <h3 class="text-h6 mb-4">Create Team</h3>
+
+                <v-text-field v-model="teamNameInput" label="Team Name" variant="outlined" />
+
+                <v-btn color="primary" class="mt-4" @click="uiCreateTeam">
+                    Create
+                </v-btn>
+            </v-card>
+        </v-dialog>
+
+        <!-- TEAM EDIT DIALOG -->
+        <v-dialog v-model="teamEditDialog" max-width="500">
+            <v-card class="pa-4">
+                <h3 class="text-h6 mb-4">Edit Team</h3>
+
+                <v-text-field v-model="teamNameInput" label="Team Name" variant="outlined" />
+
+                <v-btn color="primary" class="mt-4" @click="uiUpdateTeam">
+                    Save Changes
+                </v-btn>
+            </v-card>
+        </v-dialog>
     </section>
 </template>
 
 <script setup lang="ts">
-    import { authClient } from '../../lib/auth-client'
-    import { useAuthCapabilities } from '../../composables/useAuthCapabilities'
+    import {
+        ref,
+        computed,
+        onMounted
+    } from 'vue'
+    import {
+        useOrganization
+    } from '../../composables/organization/useOrganization'
 
-    const props = withDefaults(defineProps<{
-        enabled?: boolean;
-        showUnsupportedState?: boolean;
-    }>(), {
-        enabled: true,
-        showUnsupportedState: false,
-    })
+    const {
+        organizations,
+        activeOrganizationId,
+        loading,
+        actionLoading,
+        error,
+        message,
 
-    const { backend, hasOrganization } = useAuthCapabilities()
-    const isSupported = computed(() => hasOrganization.value)
-    const backendLabel = computed(() => backend.value)
-    const shouldRender = computed(() => props.enabled && (isSupported.value || props.showUnsupportedState))
+        loadOrganizations,
+        createOrganization,
+        setActive,
+        leave,
 
-    const loading = ref(false)
-    const actionLoading = ref(false)
-    const error = ref('')
-    const message = ref('')
-    const organizations = ref<Array<{ id: string; name: string }>>([])
+        listRoles,
+        createRole,
+        updateRole,
+        deleteRole,
 
-    const activeOrgState = authClient.useActiveOrganization?.()
-    const activeOrganizationId = computed(() => activeOrgState?.value?.data?.id || null)
+        listTeams,
+        createTeam,
+        updateTeam,
+        removeTeam,
 
-    async function loadOrganizations() {
-        if (!isSupported.value) return
+        listTeamMembers,
+        removeTeamMember,
+        inviteMember,
+    } = useOrganization()
 
-        loading.value = true
-        error.value = ''
-        try {
-            const listApi = (authClient as any).organization?.list
-            const { data, error: listError } = await listApi({ limit: 50 })
-            if (listError) throw listError
-            organizations.value = Array.isArray(data) ? data : []
-        } catch (err: any) {
-            error.value = err?.message || 'Failed to load organizations'
-            organizations.value = []
-        } finally {
-            loading.value = false
-        }
+    // ---------------------------
+    // SAFE COMPUTED LISTS
+    // ---------------------------
+    const orgList = computed(() => organizations.value?.data || [])
+    const activeOrg = computed(() => activeOrganizationId.value)
+
+    // ---------------------------
+    // UI STATE
+    // ---------------------------
+    const newOrgName = ref('')
+    const drawer = ref(false)
+    const selectedOrg = ref < any > (null)
+
+    // Roles
+    const roleList = ref < any[] > ([])
+    const roleNameInput = ref('')
+    const rolePermissionInput = ref('')
+    const selectedRole = ref < any > (null)
+
+    // Teams
+    const teamList = ref < any[] > ([])
+    const teamNameInput = ref('')
+    const selectedTeam = ref < any > (null)
+
+    // Members
+    const memberList = ref < any[] > ([])
+    const inviteEmailInput = ref('')
+
+    // Dialogs
+    const roleCreateDialog = ref(false)
+    const roleEditDialog = ref(false)
+    const teamCreateDialog = ref(false)
+    const teamEditDialog = ref(false)
+
+    // ---------------------------
+    // UI Actions
+    // ---------------------------
+    function openOrganizationManager(org: any) {
+        selectedOrg.value = org
+        drawer.value = true
+        loadOrganizationDetails()
     }
 
-    async function setActive(orgId: string) {
-        if (!isSupported.value) return
+    async function loadOrganizationDetails() {
+        if (!selectedOrg.value) return
 
-        actionLoading.value = true
-        error.value = ''
-        message.value = ''
-        try {
-            await (authClient as any).organization.setActive({ organizationId: orgId })
-            message.value = 'Active organization updated'
-            await loadOrganizations()
-        } catch (err: any) {
-            error.value = err?.message || 'Failed to set active organization'
-        } finally {
-            actionLoading.value = false
-        }
+        const roleRes = await listRoles(selectedOrg.value.id)
+        roleList.value = roleRes.data || []
+
+        const teamRes = await listTeams(selectedOrg.value.id)
+        teamList.value = teamRes.data || []
     }
 
-    async function leave(orgId: string) {
-        if (!isSupported.value) return
+    // ROLE CREATE
+    function openRoleCreateDialog() {
+        roleNameInput.value = ''
+        rolePermissionInput.value = ''
+        roleCreateDialog.value = true
+    }
 
-        actionLoading.value = true
-        error.value = ''
-        message.value = ''
-        try {
-            await (authClient as any).organization.leave({ organizationId: orgId })
-            message.value = 'You left the organization'
-            await loadOrganizations()
-        } catch (err: any) {
-            error.value = err?.message || 'Failed to leave organization'
-        } finally {
-            actionLoading.value = false
-        }
+    async function uiCreateRole() {
+        if (!selectedOrg.value) return
+
+        const permission = JSON.parse(rolePermissionInput.value || '{}')
+        await createRole(selectedOrg.value.id, roleNameInput.value, permission)
+        roleCreateDialog.value = false
+        await loadOrganizationDetails()
+    }
+
+    // ROLE EDIT
+    function openRoleEditDialog(role: any) {
+        selectedRole.value = role
+        roleNameInput.value = role.roleName
+        rolePermissionInput.value = JSON.stringify(role.permission || {}, null, 2)
+        roleEditDialog.value = true
+    }
+
+    async function uiUpdateRole() {
+        if (!selectedOrg.value || !selectedRole.value) return
+
+        const permission = JSON.parse(rolePermissionInput.value || '{}')
+        await updateRole(selectedOrg.value.id, selectedRole.value.id, roleNameInput.value, permission)
+        roleEditDialog.value = false
+        await loadOrganizationDetails()
+    }
+
+    async function uiDeleteRole(roleId: string) {
+        if (!selectedOrg.value) return
+
+        await deleteRole(selectedOrg.value.id, roleId)
+        await loadOrganizationDetails()
+    }
+
+    // TEAM CREATE
+    function openTeamCreateDialog() {
+        teamNameInput.value = ''
+        teamCreateDialog.value = true
+    }
+
+    async function uiCreateTeam() {
+        if (!selectedOrg.value) return
+
+        await createTeam(selectedOrg.value.id, teamNameInput.value)
+        teamCreateDialog.value = false
+        await loadOrganizationDetails()
+    }
+
+    // TEAM EDIT
+    function openTeamEditDialog(team: any) {
+        selectedTeam.value = team
+        teamNameInput.value = team.name
+        teamEditDialog.value = true
+    }
+
+    async function uiUpdateTeam() {
+        if (!selectedTeam.value || !selectedOrg.value) return
+
+        await updateTeam(selectedTeam.value.id, {
+            name: teamNameInput.value,
+            organizationId: selectedOrg.value.id,
+            updatedAt: new Date(),
+        })
+        teamEditDialog.value = false
+        await loadOrganizationDetails()
+    }
+
+    async function uiRemoveTeam(teamId: string) {
+        if (!selectedOrg.value) return
+
+        await removeTeam(selectedOrg.value.id, teamId)
+        await loadOrganizationDetails()
+    }
+
+    // TEAM MEMBERS
+    async function openTeamMembers(team: any) {
+        selectedTeam.value = team
+        const res = await listTeamMembers(team.id)
+        memberList.value = res.data || []
+    }
+
+    async function uiInviteMember() {
+        if (!selectedTeam.value) return
+
+        await inviteMember(inviteEmailInput.value, 'member', selectedTeam.value.id)
+        await openTeamMembers(selectedTeam.value)
+    }
+
+    async function uiRemoveTeamMember(userId: string) {
+        if (!selectedTeam.value) return
+
+        await removeTeamMember(selectedTeam.value.id, userId)
+        await openTeamMembers(selectedTeam.value)
     }
 
     onMounted(loadOrganizations)

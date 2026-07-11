@@ -6,6 +6,7 @@ import type {
   SfCartCouponCustom,
   SfCartLineItemCustom,
   SfCartTotal,
+  SfCartLineItem,
 } from "./cart";
 import type { SfCategory, SfCategoryTree, SfCategoryCustom } from "./category";
 import type {
@@ -75,8 +76,6 @@ import type {
   SfProductRanking,
   SfReviewSummary,
   SfProductLink,
-  SfProductLinkId,
-  SfProductLinkType,
   SfTierPrice,
 } from "./product";
 import type {
@@ -140,7 +139,6 @@ import type {
   SfAddressCustom,
   SfAttribute,
   SfAttributeCustom,
-  SfCreateAddressBody,
   SfCurrency,
   SfDiscountablePrice,
   SfDiscountablePriceCustom,
@@ -161,7 +159,6 @@ import type {
   SfDirectoryEntry,
   Maybe,
   Nullable,
-  SfId,
   SfEntityId,
   SfStoreId,
   SfWebsiteId,
@@ -173,7 +170,6 @@ import type {
   SfStockId,
   SfSourceId,
   SfReservationId,
-  SfProductLinkId,
   SfCustomerAddressId,
   SfPaymentMethodId,
   SfShippingMethodId,
@@ -192,10 +188,6 @@ import type {
   SfYesNo,
   SfSortDirection,
 } from "./shared";
-import type {
-  SfProductReview,
-  SfProductReviewCustom,
-} from "./product";
 
 export type {
   SfCartLineItem,
@@ -281,8 +273,6 @@ export type {
   SfProductRanking,
   SfReviewSummary,
   SfProductLink,
-  SfProductLinkId,
-  SfProductLinkType,
   SfTierPrice,
 } from "./product";
 export type {
@@ -346,7 +336,6 @@ export type {
   SfAddressCustom,
   SfAttribute,
   SfAttributeCustom,
-  SfCreateAddressBody,
   SfCurrency,
   SfDiscountablePrice,
   SfDiscountablePriceCustom,
@@ -367,7 +356,6 @@ export type {
   SfDirectoryEntry,
   Maybe,
   Nullable,
-  SfId,
   SfEntityId,
   SfStoreId,
   SfWebsiteId,
@@ -379,7 +367,6 @@ export type {
   SfStockId,
   SfSourceId,
   SfReservationId,
-  SfProductLinkId,
   SfCustomerAddressId,
   SfPaymentMethodId,
   SfShippingMethodId,
@@ -398,10 +385,8 @@ export type {
   SfYesNo,
   SfSortDirection,
 } from "./shared";
-export type {
-  SfProductReview,
-  SfProductReviewCustom,
-} from "./product";
+
+export type { SfProductLinkId, SfProductLinkType } from "./shared";
 
 export interface SfContract {
   SfAffiliate: SfAffiliate;
@@ -472,7 +457,6 @@ export interface SfContract {
   SfShippingMethods: SfShippingMethods;
   SfShippingMethod: SfShippingMethod;
   SfShippingMethodCustom: SfShippingMethodCustom;
-  SfCustomerGroup: SfCustomerGroup;
   SfCustomer: SfCustomer;
   SfCustomerCustom: SfCustomerCustom;
   SfCustomerAddress: SfCustomerAddress;
@@ -498,12 +482,8 @@ export interface SfContract {
   SfProductCatalogItem: SfProductCatalogItem;
   SfPaginationCustom: SfPaginationCustom;
   SfPagination: SfPagination;
-  SfMoneyCustom: SfMoneyCustom;
-  SfMoney: SfMoney;
   SfDiscountablePriceCustom: SfDiscountablePriceCustom;
   SfDiscountablePrice: SfDiscountablePrice;
-  SfImageCustom: SfImageCustom;
-  SfImage: SfImage;
   SfAttributeCustom: SfAttributeCustom;
   SfAttribute: SfAttribute;
   SfCreateAddressBody: SfCreateAddressBody;

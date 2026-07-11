@@ -1,30 +1,21 @@
 import { getCommerceClient } from '../../utils/client'
-
-function clientOrNull() {
-	try {
-		return getCommerceClient() as any
-	} catch {
-		return null
-	}
-}
+import type { CommerceClient } from '../../utils/client'
 
 export function useTellFriends() {
-	const client = clientOrNull()
+  const client = getCommerceClient() as CommerceClient
 
-	async function sendRecommendation(payload: {
-		productId?: string
-		email?: string
-		message?: string
-		senderName?: string
-	}) {
-		if (client && typeof client.tellAFriend === 'function') return client.tellAFriend(payload)
-		if (client && typeof client.sendRecommendation === 'function') return client.sendRecommendation(payload)
-		return { success: false, reason: 'tellAFriend not implemented by provider' }
-	}
+  async function sendRecommendation(payload: {
+    productId?: string
+    email?: string
+    message?: string
+    senderName?: string
+  }) {
+    return client.sendRecommendation(payload)
+  }
 
-	return {
-		sendRecommendation,
-	}
+  return {
+    sendRecommendation,
+  }
 }
 
 export default useTellFriends

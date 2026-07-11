@@ -1,5 +1,11 @@
 export type NotificationCategory = string
 
+export interface NotifyAdapter {
+  notify(payload: any): Promise<void>
+  dismiss(id: string): Promise<void>
+  clear(): Promise<void>
+}
+
 export interface NotificationAction {
   id: string
   label: string
@@ -27,6 +33,9 @@ export interface NotificationsSnapshot {
 }
 
 export interface NotificationsAdapter {
+  notify(payload: any): Promise<void>
+  dismiss(id: string): Promise<void>
+  clear(): Promise<void>
   listNotifications(args?: Record<string, any>): Promise<UnifiedNotification[]>
   getNotificationsSnapshot(args?: Record<string, any>): Promise<NotificationsSnapshot>
   markNotificationAsRead(id: string, args?: Record<string, any>): Promise<void>

@@ -1,35 +1,27 @@
 import { getCommerceClient } from '../../utils/client'
+import type { CommerceClient } from '../../utils/client'
 import type { SfStoreCredit } from '~/composables/system/models'
 
 export function useStoreCredit() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function getStoreCredit(customerId: string): Promise<SfStoreCredit | null> {
-		if (client && typeof client.getStoreCredit === 'function') {
-			return client.getStoreCredit(customerId) as Promise<SfStoreCredit>
-		}
-		return null
-	}
+  async function getStoreCredit(customerId: string): Promise<SfStoreCredit | null> {
+    return client.getStoreCredit(customerId)
+  }
 
-	async function updateStoreCredit(customerId: string, amount: number) {
-		if (client && typeof client.updateStoreCredit === 'function') {
-			return client.updateStoreCredit(customerId, amount)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function updateStoreCredit(customerId: string, amount: number) {
+    return client.updateStoreCredit({ customerId, amount })
+  }
 
-	async function applyStoreCreditToCart(cartId: string, amount: number) {
-		if (client && typeof client.applyStoreCreditToCart === 'function') {
-			return client.applyStoreCreditToCart(cartId, amount)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function applyStoreCreditToCart(cartId: string, amount: number) {
+    return client.applyStoreCreditToCart({ cartId, amount })
+  }
 
-	return {
-		getStoreCredit,
-		updateStoreCredit,
-		applyStoreCreditToCart,
-	}
+  return {
+    getStoreCredit,
+    updateStoreCredit,
+    applyStoreCreditToCart,
+  }
 }
 
 export default useStoreCredit

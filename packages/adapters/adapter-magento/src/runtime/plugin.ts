@@ -1,22 +1,19 @@
-// packages/magento/runtime/plugin.ts
-import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
-import { createMagentoClient } from './server/utils/client'
+// packages/adapters/adapter-magento/src/runtime/plugin.ts
+import { defineNuxtPlugin, useNuxtApp, useRuntimeConfig } from '#app'
+import { MagentoAdapter } from '@mframework/adapter-magento'
 
 export default defineNuxtPlugin(() => {
-  const runtime = useRuntimeConfig() as any
-  const source = runtime.magento || runtime.public?.magento || {}
-  const config = {
-    provider: source.provider || 'rest',
-    url: source.url || source.baseUrl || '',
-    token: source.token || source.accessToken || '',
+  const nuxtApp = useNuxtApp()
+  const config = useRuntimeConfig()
+  const options = config.magento
+
+  const adapterInstance = new MagentoAdapter(options?.endpoint || '', options?.token)
+
+  if (nuxtApp.$sdk) {
+    Object.assign(nuxtApp.$sdk, adapterInstance)
+  } else {
+    nuxtApp.$sdk = adapterInstance as any
   }
 
-  // Client-side usage: admin context only (no customer token here)
-  const client = createMagentoClient(config, null as any)
-
-  return {
-    provide: {
-      magento: client,
-    },
-  }
+  return {}
 })

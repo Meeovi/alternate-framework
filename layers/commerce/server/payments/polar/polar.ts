@@ -12,6 +12,7 @@ import { checkout, polar, portal, usage, webhooks } from '@polar-sh/better-auth'
 import { Polar } from '@polar-sh/sdk'
 
 // Centralized Prisma client instance
+// @ts-ignore
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 

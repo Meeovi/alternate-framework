@@ -12,6 +12,13 @@
         "-y",
         "@playwright/mcp@0.0.38"
       ]
+    },
+    "routing": {
+      "tier": "efficient"
+    },
+    "agent_defaults": {
+      "variant": "Low",
+      "max_output_tokens": 8192
     }
   }
 }

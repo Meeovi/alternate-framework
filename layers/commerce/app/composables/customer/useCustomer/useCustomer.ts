@@ -4,7 +4,8 @@ import type { Ref } from 'vue';
 import type { Maybe, SfCustomer, SfCustomerAddress, SfCustomerGroup } from '~/composables/system/models';
 import type { UseCustomerReturn, UseCustomerState, FetchCustomer } from './types';
 import { getCommerceClient } from '../../../utils/client';
-import { useAsyncData, useState } from 'nuxt/app';
+import type { CommerceClient } from '../../../utils/client';
+import { useAsyncData, useState } from '#app';
 import { useHandleError } from '../../system/useHandleError/useHandleError';
 
 export const useCustomer: UseCustomerReturn = () => {
@@ -15,10 +16,10 @@ export const useCustomer: UseCustomerReturn = () => {
 
   const fetchCustomer: FetchCustomer = async () => {
     state.value.loading = true;
-    const client = getCommerceClient();
+    const client = getCommerceClient() as CommerceClient;
 
     try {
-      const { data, error } = await useAsyncData<UseCustomerState['data']>(() => client.getCustomer?.())
+      const { data, error } = await useAsyncData<UseCustomerState['data']>(() => client.getCustomer())
       useHandleError(error.value);
       state.value.data = data.value ?? null;
     } catch (error) {
@@ -32,20 +33,14 @@ export const useCustomer: UseCustomerReturn = () => {
   };
 
   const getAddresses = async (): Promise<SfCustomerAddress[]> => {
-    const client = getCommerceClient();
-    if (client && typeof client.getCustomerAddresses === 'function') {
-      const result = await client.getCustomerAddresses()
-      return Array.isArray(result?.addresses) ? result.addresses : []
-    }
-    return []
+    const client = getCommerceClient() as CommerceClient;
+    const result = await client.getCustomerAddresses()
+    return Array.isArray((result as any)?.addresses) ? (result as any).addresses : []
   }
 
   const getGroups = async (): Promise<SfCustomerGroup[]> => {
-    const client = getCommerceClient();
-    if (client && typeof client.getCustomerGroups === 'function') {
-      return client.getCustomerGroups() as Promise<SfCustomerGroup[]>
-    }
-    return []
+    const client = getCommerceClient() as CommerceClient;
+    return client.getCustomerGroups()
   }
 
   return {

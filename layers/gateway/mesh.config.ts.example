@@ -1,0 +1,118 @@
+import { defineConfig, loadGraphQLHTTPSubgraph } from '@graphql-mesh/compose-cli'
+
+// Uncomment the imports that you need for the subgraphs below under defineConfig({})
+
+// import { loadOpenAPISubgraph } from '@omnigraph/openapi'
+// import { loadGrpcSubgraph } from '@omnigraph/grpc'
+// import { loadJSONSchemaSubgraph } from '@omnigraph/json-schema'
+// import { loadSOAPSubgraph } from '@omnigraph/soap'
+// import { loadODataSubgraph } from '@omnigraph/odata'
+// import { loadThriftSubgraph } from '@omnigraph/thrift'
+// import { loadSQLiteSubgraph } from '@omnigraph/sqlite'
+// import { loadMySQLSubgraph } from '@omnigraph/mysql'
+// import { loadNeo4jSubgraph } from '@omnigraph/neo4j'
+
+import { defineConfig as defineGatewayConfig } from '@graphql-hive/gateway'
+
+// Uncomment what you need and add your subgraph configuration to the `subgraphs` array below. You can also add your own subgraph source handlers by following the documentation at https://the-guild.dev/graphql/mesh/v1/source-handlers
+
+export const composeConfig = defineConfig({
+  subgraphs: [
+    {
+      sourceHandler: loadGraphQLHTTPSubgraph('Countries', {
+        endpoint: 'https://countries.trevorblades.com',
+        retry: 2,
+        timeout: 5_000
+      })
+    },
+   /* {
+      sourceHandler: loadOpenAPISubgraph('Wiki', {
+        source: 'https://api.apis.guru/v2/specs/wikimedia.org/1.0.0/swagger.yaml'
+      })
+    },
+    {
+      sourceHandler: loadGrpcSubgraph('MyGrpcApi', {
+        // gRPC Endpoint
+        endpoint: 'localhost:50051',
+ 
+        // Request timeout in milliseconds
+        requestTimeout: 200_000,
+ 
+        // Use HTTPS instead HTTP for gRPC connection
+        useHTTPS: false,
+ 
+        // Use SSL credentials for gRPC connection
+        credentialsSsl: {
+          rootCA: 'path/to/rootCA.pem',
+          certChain: 'path/to/certChain.pem',
+        },
+ 
+        // Prefix to collect Query method default: list, get
+        prefixQueryMethod: ['list', 'get'],
+ 
+        // Headers for the protobuf if URL is provided
+        schemaHeaders: {
+          'x-api-key': 'my-api-key'
+        }
+      })
+    },
+    {
+      sourceHandler: loadJSONSchemaSubgraph('MyApi', {
+        endpoint: 'https://some-service-url/endpoint-path/',
+        operations: [
+          {
+            type: 'Query',
+            field: 'users',
+            path: '/users',
+            method: 'GET',
+            responseSchema: './json-schemas/users.json'
+          }
+        ]
+      })
+    },
+    {
+      sourceHandler: loadSOAPSubgraph('CountryInfo', {
+        source:
+          'http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL'
+      })
+    },
+    {
+      sourceHandler: loadODataSubgraph('TripPin', {
+        endpoint: 'https://services.odata.org/TripPinRESTierService/'
+      })
+    },
+    {
+      sourceHandler: loadThriftSubgraph('Calculator', {
+        idl: './src/thrift/calculator.thrift',
+        hostName: 'localhost',
+        port: 8080,
+        path: '/thrift',
+        serviceName: 'calculator-service'
+      })
+    },
+    {
+      sourceHandler: loadSQLiteSubgraph('MyDb', {
+        db: 'path/to/database.sqlite',
+        //infile: 'path/to/db_dump.sql'
+      })
+    },
+    {
+      sourceHandler: loadMySQLSubgraph('Employees', {
+        endpoint: 'mysql://root:passwd@localhost:3306/employees'
+        // You can use environment variables like
+        // endpoint: "mysql://{env.MYSQL_USER}:{env.MYSQL_PASSWORD}@{env.MYSQL_HOST}:{env.MYSQL_PORT}/{env.MYSQL_DATABASE}"
+      })
+    },
+    {
+      sourceHandler: loadNeo4jSubgraph('MyNeo4j', {
+        url: 'neo4j://localhost',
+        username: 'neo4j',
+        password: 'MY_PASSWORD'
+      })
+    },*/
+  ],
+})
+
+export const gatewayConfig = defineGatewayConfig({
+  webhooks: true
+})

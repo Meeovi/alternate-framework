@@ -6,8 +6,11 @@ import type {
   SfPagination,
   SfProduct,
   SfProductCatalogItem,
-  SfProductReview,
   SfProductMediaEntry,
+  SfProductReview,
+  SfProductStatus,
+  SfProductType,
+  SfProductVisibility,
 } from "../models";
 import type { ResolvedPrice } from '../../catalog/price/price';
 

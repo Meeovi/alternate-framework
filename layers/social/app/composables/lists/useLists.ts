@@ -1,6 +1,6 @@
 // layers/social/composables/useLists.ts
 
-import { useNuxtApp } from 'nuxt/app'
+import { useNuxtApp } from '#app'
 
 /**
  * Core list types + plugin‑extensible registry

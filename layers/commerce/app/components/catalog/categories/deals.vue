@@ -37,7 +37,7 @@
 <script setup>
 import { ref, watch, onMounted, computed } from '#imports'
 import productCard from '#commerce/app/components/catalog/product/productCard.vue'
-import { useProducts } from '#commerce/app/composables/catalog/products/useProducts/useProducts'
+import { useProducts } from '#commerce/app/composables/catalog/products/useProducts'
 
 const { $sdk } = useNuxtApp()
 const tab = ref(null)

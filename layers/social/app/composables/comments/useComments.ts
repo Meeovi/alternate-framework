@@ -1,74 +1,40 @@
-export const useComments = () => {
-  const nuxtApp = (globalThis as any).__nuxtApp || {}
-  const adapter = nuxtApp?.$adapter || (globalThis as any).__adapter || null
+import type { SocialDriverContract, Comment, PostFilters } from '@mframework/alternate-sdk/contracts/social'
 
-  const call = async (method: string, payload: any, fallback: () => Promise<any>) => {
-    if (adapter && typeof adapter[method] === 'function') {
-      return adapter[method](payload)
-    }
-    return fallback()
+const useSocialDriver = (): SocialDriverContract => {
+  const nuxtApp = useNuxtApp()
+  return nuxtApp?.$sdk?.social ?? {} as SocialDriverContract
+}
+
+export const useComments = () => {
+  const social = useSocialDriver()
+
+  const getComments = async (postId: string | number, opts?: { limit?: number; offset?: number }): Promise<Comment[]> => {
+    return social.getComments?.(String(postId), opts) ?? []
   }
 
-  const getComments = (postId: string | number, opts?: any) =>
-    call('getComments', { postId, ...(opts || {}) }, async () => {
-      const params = new URLSearchParams({ ...(opts || {}) })
-      const res = await fetch(`/api/social/comments/${postId}?${params}`)
-      return res.json()
-    })
+  const getThread = async (commentId: string | number): Promise<Comment | null> => {
+    return social.getThread?.(String(commentId)) ?? null
+  }
 
-  const getThread = (commentId: string | number) =>
-    call('getThread', { commentId }, async () => {
-      const res = await fetch(`/api/social/comments/thread/${commentId}`)
-      return res.json()
-    })
+  const createComment = async (postId: string | number, content: string): Promise<Comment> => {
+    return social.createComment?.(String(postId), { content }) as Promise<Comment>
+  }
 
-  const createComment = (postId: string | number, data: any) =>
-    call('createComment', { postId, ...data }, async () => {
-      const res = await fetch(`/api/social/comments/${postId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      return res.json()
-    })
+  const replyToComment = async (commentId: string | number, content: string): Promise<Comment> => {
+    return social.replyToComment?.(String(commentId), { content }) as Promise<Comment>
+  }
 
-  const replyToComment = (commentId: string | number, data: any) =>
-    call('replyToComment', { commentId, ...data }, async () => {
-      const res = await fetch(`/api/social/comments/${commentId}/reply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      return res.json()
-    })
+  const deleteComment = async (commentId: string | number): Promise<{ success: boolean }> => {
+    return social.deleteComment?.(String(commentId)) ?? { success: false }
+  }
 
-  const deleteComment = (commentId: string | number) =>
-    call('deleteComment', { commentId }, async () => {
-      const res = await fetch(`/api/social/comments/item/${commentId}`, {
-        method: 'DELETE'
-      })
-      return res.json()
-    })
+  const reactToComment = async (commentId: string | number, reaction: string): Promise<{ success: boolean }> => {
+    return social.reactToComment?.(String(commentId), reaction) ?? { success: false }
+  }
 
-  const reactToComment = (commentId: string | number, reaction: string) =>
-    call('reactToComment', { commentId, reaction }, async () => {
-      const res = await fetch(`/api/social/comments/react`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ commentId, reaction })
-      })
-      return res.json()
-    })
-
-  const reportComment = (commentId: string | number, reason: string) =>
-    call('reportComment', { commentId, reason }, async () => {
-      const res = await fetch(`/api/social/comments/report`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ commentId, reason })
-      })
-      return res.json()
-    })
+  const reportComment = async (commentId: string | number, reason: string): Promise<{ success: boolean }> => {
+    return social.reportComment?.(String(commentId), reason) ?? { success: false }
+  }
 
   return {
     getComments,

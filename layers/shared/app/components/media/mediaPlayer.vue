@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from '#imports'
-import useVideojs from '../../composables/media/useVideoPlayer.ts'
+import { useVideoPlayer } from '../../composables/media/useVideoPlayer.ts'
 
 defineOptions({ name: 'VideoPlayer' })
 

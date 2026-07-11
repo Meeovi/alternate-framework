@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { useHead } from 'nuxt/app'
+import { useHead } from '#app'
 import { computed } from 'vue'
 
 const isHydrated = computed(() => import.meta.client)

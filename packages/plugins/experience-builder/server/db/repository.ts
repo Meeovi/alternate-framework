@@ -1,7 +1,6 @@
 // modules/experience-builder/server/db/repository.ts
 
 import type { H3Event } from 'h3'
-import { useRuntimeConfig } from 'nuxt/app'
 import { sql } from 'kysely' // or your DB client
 
 export function getExperiencePagesRepository(event: H3Event) {

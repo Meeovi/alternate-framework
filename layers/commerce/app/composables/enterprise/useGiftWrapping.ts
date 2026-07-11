@@ -1,5 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfProduct } from '~/composables/system/models'
+import type { CommerceClient } from '../../utils/client'
 
 export interface GiftWrappingOption {
   id: string
@@ -15,34 +15,25 @@ export interface GiftWrapRequest {
 }
 
 export function useGiftWrapping() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function listGiftWrappingOptions(params: Record<string, any> = {}): Promise<GiftWrappingOption[]> {
-		if (client && typeof client.listGiftWrappingOptions === 'function') {
-			return client.listGiftWrappingOptions(params) as Promise<GiftWrappingOption[]>
-		}
-		return []
-	}
+  async function listGiftWrappingOptions(params: Record<string, any> = {}): Promise<GiftWrappingOption[]> {
+    return client.listGiftWrappingOptions(params)
+  }
 
-	async function addGiftWrapToCart(cartId: string, request: GiftWrapRequest) {
-		if (client && typeof client.addGiftWrapToCart === 'function') {
-			return client.addGiftWrapToCart(cartId, request)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function addGiftWrapToCart(cartId: string, request: GiftWrapRequest) {
+    return client.addGiftWrapToCart({ cartId, ...request })
+  }
 
-	async function removeGiftWrapFromCart(cartId: string, itemId: string) {
-		if (client && typeof client.removeGiftWrapFromCart === 'function') {
-			return client.removeGiftWrapFromCart(cartId, itemId)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function removeGiftWrapFromCart(cartId: string, itemId: string) {
+    return client.removeGiftWrapFromCart({ cartId, itemId })
+  }
 
-	return {
-		listGiftWrappingOptions,
-		addGiftWrapToCart,
-		removeGiftWrapFromCart,
-	}
+  return {
+    listGiftWrappingOptions,
+    addGiftWrapToCart,
+    removeGiftWrapFromCart,
+  }
 }
 
 export default useGiftWrapping

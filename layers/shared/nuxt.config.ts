@@ -1,13 +1,7 @@
-import {
-  resolve
-} from 'path'
-import {
-  defineNuxtConfig
-} from 'nuxt/config'
+import { resolve } from 'path'
+import { defineNuxtConfig } from 'nuxt/config'
 import process from 'node:process'
-import vuetify, {
-  transformAssetUrls
-} from 'vite-plugin-vuetify'
+import vuetify from 'vite-plugin-vuetify'
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
@@ -35,7 +29,6 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@nuxt/image',
     '@vueuse/motion/nuxt',
-    'nuxt-vitalizer',
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
@@ -46,7 +39,6 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/mcp-toolkit',
     '@storefront-ui/nuxt',
-    'alternate-search',
     resolve(__dirname, '../../packages/plugins/experience-builder/module.ts')
   ],
 
@@ -221,7 +213,6 @@ export default defineNuxtConfig({
     langDir: 'locales',
     strategy: "prefix_except_default",
     defaultLocale: "en",
-    fallbackLocale: 'en',
     detectBrowserLanguage: {
       useCookie: true,
       alwaysRedirect: true,
@@ -364,10 +355,6 @@ export default defineNuxtConfig({
           }
         ],
         baseUrl: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
-        domainLocales: {
-          [`${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`]: ['en'],
-          [`${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.fr'}`]: ['fr']
-        }
       },
       motion: {
         directives: {
@@ -394,13 +381,12 @@ export default defineNuxtConfig({
       '@svar-ui/vue-grid',
       '@svar-ui/vue-editor',
       '@svar-ui/vue-core',
-      '@mframework/alternate-search'
     ],
   },
 
   vite: {
     optimizeDeps: {
-      exclude: ['vuetify'],
+      exclude: ['vuetify']
     },
     logLevel: 'info',
     plugins: [
@@ -409,10 +395,8 @@ export default defineNuxtConfig({
         autoImport: true
       }),
     ],
-    vue: {
-      template: {
-        transformAssetUrls,
-      },
+    resolve: {
+      dedupe: ['vue', 'vue-router']
     },
   },
 

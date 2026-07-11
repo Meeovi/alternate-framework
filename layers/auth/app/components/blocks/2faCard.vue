@@ -51,7 +51,7 @@
 </template>
 <script setup lang="ts">
     import { authClient } from '../../../lib/auth-client'
-    import { useAuthCapabilities } from '../../composables/useAuthCapabilities'
+    import { useAuthCapabilities } from '../../composables/organization/useOrganization'
 
     const props = withDefaults(defineProps<{
         enabled?: boolean;

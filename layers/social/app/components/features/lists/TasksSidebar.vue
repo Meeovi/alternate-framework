@@ -81,7 +81,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useLists } from '@/layers/social/composables/useLists'
+import { useLists } from '../../../composables/lists/useLists'
 
 const drawer = ref(true)
 const createDialog = ref(false)

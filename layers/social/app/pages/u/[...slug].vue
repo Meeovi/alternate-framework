@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { navigateTo } from 'nuxt/app'
+import { navigateTo } from '#app'
 
 await navigateTo('/user')
 </script>

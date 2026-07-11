@@ -30,7 +30,7 @@
 <script setup>
 import { ref } from 'vue'
 import ProductCard from './productCard.vue'
-import { useProducts } from '../../../composables/catalog/products/useProducts/useProducts'
+import { useProducts } from '../../../composables/catalog/products/useProducts'
 
 const model = ref(null)
 const { data: bestsellers, fetchProducts } = useProducts()

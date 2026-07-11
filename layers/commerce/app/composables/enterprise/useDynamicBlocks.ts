@@ -1,27 +1,22 @@
 import { getCommerceClient } from '../../utils/client'
+import type { CommerceClient } from '../../utils/client'
 import type { SfDynamicBlock } from '~/composables/system/models'
 
 export function useDynamicBlocks() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function getDynamicBlockById(id: string): Promise<SfDynamicBlock | null> {
-		if (client && typeof client.getDynamicBlockById === 'function') {
-			return client.getDynamicBlockById(id) as Promise<SfDynamicBlock>
-		}
-		return null
-	}
+  async function getDynamicBlockById(id: string): Promise<SfDynamicBlock | null> {
+    return client.getDynamicBlockById(id)
+  }
 
-	async function listDynamicBlocks(params: Record<string, any> = {}): Promise<SfDynamicBlock[]> {
-		if (client && typeof client.listDynamicBlocks === 'function') {
-			return client.listDynamicBlocks(params) as Promise<SfDynamicBlock[]>
-		}
-		return []
-	}
+  async function listDynamicBlocks(params: Record<string, any> = {}): Promise<SfDynamicBlock[]> {
+    return client.listDynamicBlocks(params)
+  }
 
-	return {
-		getDynamicBlockById,
-		listDynamicBlocks
-	}
+  return {
+    getDynamicBlockById,
+    listDynamicBlocks,
+  }
 }
 
 export default useDynamicBlocks

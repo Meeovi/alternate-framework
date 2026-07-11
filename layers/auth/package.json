@@ -4,10 +4,13 @@
   "description": "The authentication layer for M Framework applications.",
   "type": "module",
   "main": "./nuxt.config.ts",
+  "nuxt-layer": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nuxt dev",
-    "build": "nuxt prepare && tsc -p tsconfig.json"
+    "migrate": "npx auth generate --config ./server/utils/auth.ts",
+    "build": "tsc -p tsconfig.json",
+    "prisma:generate": "prisma generate --schema=../../apps/ecosystem/meeovi-frontend/prisma/schema.prisma --env-file=../../apps/ecosystem/meeovi-frontend/.env"
   },
   "keywords": [
     "authentication",
@@ -17,25 +20,31 @@
     "m-framework"
   ],
   "dependencies": {
-    "@mframework/alternate-auth": "file:../../packages/modules/alternate-auth",
+    "@better-auth/api-key": "^1.6.6",
+    "@better-auth/cli": "^1.4.10",
+    "@better-auth/i18n": "^1.6.13",
+    "@better-auth/infra": "^0.2.4",
+    "@better-auth/oauth-provider": "^1.4.12",
+    "@better-auth/passkey": "^1.4.10",
+    "@better-auth/prisma-adapter": "^1.6.8",
+    "@better-auth/scim": "^1.4.15",
+    "@better-auth/sso": "^1.4.12",
+    "@better-auth/stripe": "^1.6.5",
+    "@better-fetch/fetch": "^1.0.0",
     "@mframework/adapter-prisma": "file:../../packages/adapters/adapter-prisma",
+    "@node-rs/argon2": "^2.0.2",
+    "@polar-sh/better-auth": "^1.8.4",
+    "@polar-sh/checkout": "^0.2.0",
+    "better-auth": "^1.4.12",
     "defu": "^6.1.4",
-    "pinia": "^2.1.7",
     "stripe": "^22.0.2",
     "uuid": "^11.1.0",
-    "viem": "^2.46.1",
-    "vue-router": "^5.0.7"
+    "viem": "^2.46.1"
   },
   "author": "M Framework",
   "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^25.6.0",
-    "@types/uuid": "^10.0.0",
-    "dotenv": "^17.4.2",
-    "nuxt": "^4.4.8",
-    "react": "^19.2.5",
-    "tsx": "^4.21.0",
-    "typescript": "^6.0.3",
-    "vue": "^3.5.32"
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.5.0"
   }
 }

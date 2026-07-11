@@ -1,5 +1,5 @@
 import type { InferCustom } from "../defs";
-import type { SfAddress, SfId, SfCustomerGroup } from "./shared";
+import type { SfAddress, SfCustomerGroup, SfGender, SfId } from "./shared";
 
 export interface SfCustomerCustom extends InferCustom<"normalizeCustomer"> {}
 
@@ -45,6 +45,6 @@ export interface SfCustomerAddress extends SfAddress {
   };
 }
 
-export interface SfCustomerGroup extends SfCustomerGroup {
+export interface SfCustomerGroupExt extends SfCustomerGroup {
   customerCount: number;
 }

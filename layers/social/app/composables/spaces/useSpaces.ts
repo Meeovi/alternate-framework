@@ -1,63 +1,41 @@
 import { ref, useRoute } from '#imports'
+import type { SocialDriverContract, Space, Post, UserProfile } from '@mframework/alternate-sdk/contracts/social'
+
+const useSocialDriver = (): SocialDriverContract => {
+  const nuxtApp = useNuxtApp()
+  return nuxtApp?.$sdk?.social ?? {} as SocialDriverContract
+}
 
 export const useSpaces = () => {
-  const nuxtApp = (globalThis as any).__nuxtApp || {}
-  const adapter = nuxtApp?.$adapter || (globalThis as any).__adapter || null
+  const social = useSocialDriver()
 
-  const call = async (method: string, payload: any, fallback: () => Promise<any>) => {
-    if (adapter && typeof adapter[method] === 'function') {
-      return adapter[method](payload)
-    }
-    return fallback()
+  const getSpaces = async (opts?: { limit?: number; query?: string }): Promise<Space[]> => {
+    return social.getSpaces?.(opts) ?? []
   }
 
-  const getSpaces = (opts?: any) =>
-    call('getSpaces', opts, async () => {
-      const params = new URLSearchParams({ ...(opts || {}) })
-      const res = await fetch(`/api/social/spaces?${params}`)
-      return res.json()
-    })
+  const getSpace = async (spaceId: string | number): Promise<Space | null> => {
+    return social.getSpace?.(String(spaceId)) ?? null
+  }
 
-  const getSpace = (spaceId: string | number) =>
-    call('getSpace', { spaceId }, async () => {
-      const res = await fetch(`/api/social/spaces/${spaceId}`)
-      return res.json()
-    })
+  const createSpace = async (data: { name: string; slug?: string; description?: string }): Promise<Space> => {
+    return social.createSpace?.(data) as Promise<Space>
+  }
 
-  const createSpace = (data: any) =>
-    call('createSpace', data, async () => {
-      const res = await fetch(`/api/social/spaces`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      return res.json()
-    })
+  const joinSpace = async (spaceId: string | number): Promise<{ success: boolean }> => {
+    return social.joinSpace?.(String(spaceId)) ?? { success: false }
+  }
 
-  const joinSpace = (spaceId: string | number) =>
-    call('joinSpace', { spaceId }, async () => {
-      const res = await fetch(`/api/social/spaces/${spaceId}/join`, { method: 'POST' })
-      return res.json()
-    })
+  const leaveSpace = async (spaceId: string | number): Promise<{ success: boolean }> => {
+    return social.leaveSpace?.(String(spaceId)) ?? { success: false }
+  }
 
-  const leaveSpace = (spaceId: string | number) =>
-    call('leaveSpace', { spaceId }, async () => {
-      const res = await fetch(`/api/social/spaces/${spaceId}/leave`, { method: 'POST' })
-      return res.json()
-    })
+  const getSpaceMembers = async (spaceId: string | number, opts?: { limit?: number }): Promise<UserProfile[]> => {
+    return social.getSpaceMembers?.(String(spaceId), opts) ?? []
+  }
 
-  const getSpaceMembers = (spaceId: string | number) =>
-    call('getSpaceMembers', { spaceId }, async () => {
-      const res = await fetch(`/api/social/spaces/${spaceId}/members`)
-      return res.json()
-    })
-
-  const getSpacePosts = (spaceId: string | number, opts?: any) =>
-    call('getSpacePosts', { spaceId, ...(opts || {}) }, async () => {
-      const params = new URLSearchParams({ ...(opts || {}) })
-      const res = await fetch(`/api/social/spaces/${spaceId}/posts?${params}`)
-      return res.json()
-    })
+  const getSpacePosts = async (spaceId: string | number, opts?: { limit?: number; offset?: number }): Promise<Post[]> => {
+    return social.getSpacePosts?.(String(spaceId), opts) ?? []
+  }
 
   return {
     getSpaces,
@@ -71,10 +49,10 @@ export const useSpaces = () => {
 }
 
 export const useSpace = async () => {
-  const nuxtApp = (globalThis as any).__nuxtApp || {}
+  const nuxtApp = useNuxtApp()
   const route = useRoute()
 
-  const space = ref<any>(null)
+  const space = ref<Space | null>(null)
   const exists = ref(false)
 
   const refresh = async () => {
@@ -97,19 +75,18 @@ export const useSpace = async () => {
         space.value = data
         exists.value = !!data
       } else {
-        const res = await fetch(`/api/social/spaces?slug=${encodeURIComponent(slug)}`)
-        const data = await res.json()
-        space.value = data?.[0] || data || null
-        exists.value = !!space.value
+        const social = nuxtApp?.$sdk?.social
+        const data = await social?.getSpace?.(slug) ?? null
+        space.value = data
+        exists.value = !!data
       }
-    } catch (e) {
+    } catch {
       space.value = null
       exists.value = false
     }
   }
 
-  space.refresh = refresh
   await refresh()
 
-  return { space, exists }
+  return { space, exists, refresh }
 }

@@ -28,7 +28,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePosts } from '@/layers/social/composables/usePosts'
+import { usePosts } from '../../../composables/posts/usePosts'
 
 const route = useRoute()
 const router = useRouter()

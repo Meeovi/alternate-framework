@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { navigateTo } from 'nuxt/app'
+import { navigateTo } from '#app'
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { useUserStore } from '../stores/user'
 

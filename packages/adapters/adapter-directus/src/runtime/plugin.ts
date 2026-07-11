@@ -1,33 +1,18 @@
-import { defineNuxtPlugin, useRuntimeConfig } from '#app'
+// packages/adapters/adapter-directus/src/runtime/plugin.ts
+import { defineNuxtPlugin, useNuxtApp, useRuntimeConfig } from '#app'
+import { DirectusAdapter } from '../index.js'
 
-import { useDirectusToken } from './composables/useDirectusToken';
-import { useDirectusUser } from './composables/useDirectusUser';
-import { useDirectusAuth } from './composables/useDirectusAuth';
+export default defineNuxtPlugin(() => {
+  const nuxtApp = useNuxtApp()
+  const config = useRuntimeConfig()
+  const options = config.directus
 
-export default defineNuxtPlugin(async (nuxtApp) => {
-  
-  const config = useRuntimeConfig();
-  const { fetchUser } = useDirectusAuth();
-  const { token, checkAutoRefresh } = useDirectusToken();
-  const user = useDirectusUser();
+  const adapterInstance = new DirectusAdapter(options?.url || '', options?.auth?.token)
 
-  async function checkIfUserExists() {
-    if (config.public.directus.autoFetch) {
-      if (!user.value && token.value) {
-        await fetchUser();
-      }
-    }
-  }
-
-  // do the checks server-side, instead of using hook 'app:created', 
-  // as this hook is not called on SSR=true (static generation)
-  await checkAutoRefresh();
-  await checkIfUserExists();
-
-  nuxtApp.hook('page:start', async () => {
-    if (import.meta.client) {
-      await checkAutoRefresh();
-      await checkIfUserExists();
-    }
+  nuxtApp.hook('app:created', () => {
+    const target = nuxtApp.$sdk || {}
+    Object.assign(target, adapterInstance)
   })
+
+  return {}
 })

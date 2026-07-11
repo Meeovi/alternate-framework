@@ -1,7 +1,15 @@
 import { computed, ref, toRefs } from 'vue';
 import { getCommerceClient } from '../../../utils/client';
-import { useAsyncData, useState } from 'nuxt/app';
-import type { UseSwatchesState, UseSwatches, UseSwatchesReturn, FetchSwatches } from '../../../types/swatches';
+import { useAsyncData, useState } from '#app';
+import type { SfProduct } from '~/composables/system/models';
+import type {
+  SwatchAttribute,
+  UseSwatchesState,
+  UseSwatches,
+  UseSwatchesReturn,
+  UseSwatchesComputed,
+  FetchSwatches,
+} from '../../../types/swatches';
 
 /**
  * @description Composable for managing swatches.
@@ -9,7 +17,7 @@ import type { UseSwatchesState, UseSwatches, UseSwatchesReturn, FetchSwatches } 
  * @example
  * const { data, loading, fetchSwatches } = useSwatches();
  */
-export const useSwatches: UseSwatchesReturn = (): UseSwatches => {
+export const useSwatches: UseSwatchesReturn = (): UseSwatches & UseSwatchesComputed => {
   const state = useState<UseSwatchesState>('swatches', () => ({
     data: null,
     loading: false,
@@ -42,8 +50,28 @@ export const useSwatches: UseSwatchesReturn = (): UseSwatches => {
     return computed(() => state.value.data) as unknown as Ref<UseSwatchesState['data']>;
   };
 
+  const findAttribute = (attributeCode: string): SwatchAttribute | undefined =>
+    state.value.data?.find((a) => a.attributeCode === attributeCode);
+
+  const getSwatchOptions: UseSwatchesComputed['getSwatchOptions'] = (attributeCode) => {
+    return findAttribute(attributeCode)?.options ?? [];
+  };
+
+  const getSelectedSwatch: UseSwatchesComputed['getSelectedSwatch'] = (attributeCode, value) => {
+    return findAttribute(attributeCode)?.options.find((o) => o.value === value);
+  };
+
+  const getProductSwatchImage: UseSwatchesComputed['getProductSwatchImage'] = (product: SfProduct, attributeCode: string) => {
+    const selectedValue = (product as any)?.attributes?.[attributeCode];
+    if (selectedValue === undefined) return undefined;
+    return getSelectedSwatch(attributeCode, selectedValue)?.swatchValue;
+  };
+
   return {
     ...toRefs(state.value),
     fetchSwatches,
+    getSwatchOptions,
+    getSelectedSwatch,
+    getProductSwatchImage,
   };
 };

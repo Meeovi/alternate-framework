@@ -1,43 +1,31 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfCompanyAccount } from '~/composables/system/models'
+import type { CommerceClient } from '../../utils/client'
 
 export function usePurchaseOrderApprovalRules() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function listApprovalRules(companyId: string) {
-		if (client && typeof client.listApprovalRules === 'function') {
-			return client.listApprovalRules(companyId)
-		}
-		return []
-	}
+  async function listApprovalRules(companyId: string) {
+    return client.listApprovalRules({ companyId })
+  }
 
-	async function createApprovalRule(companyId: string, data: Record<string, any>) {
-		if (client && typeof client.createApprovalRule === 'function') {
-			return client.createApprovalRule(companyId, data)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function createApprovalRule(companyId: string, data: Record<string, any>) {
+    return client.createApprovalRule({ companyId, ...data })
+  }
 
-	async function updateApprovalRule(id: string, data: Record<string, any>) {
-		if (client && typeof client.updateApprovalRule === 'function') {
-			return client.updateApprovalRule(id, data)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function updateApprovalRule(id: string, data: Record<string, any>) {
+    return client.updateApprovalRule({ id, ...data })
+  }
 
-	async function deleteApprovalRule(id: string) {
-		if (client && typeof client.deleteApprovalRule === 'function') {
-			return client.deleteApprovalRule(id)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function deleteApprovalRule(id: string) {
+    return client.deleteApprovalRule(id)
+  }
 
-	return {
-		listApprovalRules,
-		createApprovalRule,
-		updateApprovalRule,
-		deleteApprovalRule,
-	}
+  return {
+    listApprovalRules,
+    createApprovalRule,
+    updateApprovalRule,
+    deleteApprovalRule,
+  }
 }
 
 export default usePurchaseOrderApprovalRules

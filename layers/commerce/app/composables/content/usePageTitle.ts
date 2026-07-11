@@ -1,4 +1,4 @@
-import { useAppConfig } from "nuxt/app";
+import { useAppConfig } from "#app";
 
 // Avoid relying on ambient auto-imports for `useHead` during typechecking
 const _useHead = (globalThis as any).useHead as ((h: any) => void) | undefined

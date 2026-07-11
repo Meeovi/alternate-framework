@@ -1,6 +1,14 @@
 import { getCommerceClient } from '../../utils/client'
 import type { SfProduct, SfOrder } from '~/composables/system/models'
 
+function clientOrNull() {
+	try {
+		return getCommerceClient() as any
+	} catch {
+		return null
+	}
+}
+
 export interface ProductViewEvent {
   name: string
   product: SfProduct

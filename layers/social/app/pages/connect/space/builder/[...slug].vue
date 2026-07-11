@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { useHead } from 'nuxt/app'
+import { useHead } from '#app'
 import { useRoute } from 'vue-router'
 import { useSpace } from '../../../../composables/spaces/useSpaces'
 

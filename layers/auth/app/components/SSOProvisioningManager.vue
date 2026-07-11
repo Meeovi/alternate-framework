@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuthCapabilities } from '../composables/useAuthCapabilities'
+import { useAuthCapabilities } from '../composables/organization/useOrganization'
 
 const props = withDefaults(defineProps<{
   enabled?: boolean

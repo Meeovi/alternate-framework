@@ -16,7 +16,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useLists } from '@/layers/social/composables/useLists'
+import { useLists } from '../../../composables/lists/useLists'
 
 const focus = ref(new Date().toISOString().substring(0, 10))
 const events = ref([])

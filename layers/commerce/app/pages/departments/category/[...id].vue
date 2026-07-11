@@ -62,7 +62,7 @@
     useRoute,
     useNuxtApp,
     useHead
-  } from 'nuxt/app'
+  } from '#app'
   //import useDirectusRequest from '../../../composables/content/useDirectusRequest'
 
   const route = useRoute()

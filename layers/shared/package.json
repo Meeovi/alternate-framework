@@ -11,11 +11,8 @@
   "dependencies": {
     "@cline/sdk": "^0.0.46",
     "@geoman-io/leaflet-geoman-free": "^2.20.0",
-    "@mframework/adapter-directus": "file:../../packages/adapters/adapter-directus",
     "@mframework/adapter-federation": "file:../../packages/adapters/adapter-federation",
-    "@mframework/adapter-magento": "file:../../packages/adapters/adapter-magento",
     "@mframework/alternate-sdk": "file:../../packages/modules/alternate-sdk",
-    "@mframework/alternate-search": "file:../../packages/modules/alternate-search",
     "@mframework/experience-builder": "file:../../packages/plugins/experience-builder",
     "@novu/api": "^3.17.0",
     "@novu/framework": "^2.11.0",
@@ -52,7 +49,7 @@
     "nuxt-tiptap-editor": "^3.2.0",
     "uploadthing": "7.7.4",
     "vue-dompurify-html": "^5.3.0",
-    "zod": "^3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
@@ -69,7 +66,6 @@
     "@vue/test-utils": "^2.4.10",
     "eslint": "^9.32.0",
     "happy-dom": "^20.10.6",
-    "nuxt-vitalizer": "^2.0.0",
     "playwright-core": "^1.61.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
@@ -93,5 +89,8 @@
   "type": "module",
   "resolutions": {
     "@vercel/nft": "^0.27.4"
+  },
+  "overrides": {
+    "vue": "^3.5.39"
   }
 }

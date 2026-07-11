@@ -1,4 +1,4 @@
-import type { ProductProvider } from "./useProducts/types"
+import type { ProductProvider } from "../../../types/products"
 
 // Product providers
 const providers: Record<string, ProductProvider> = {}

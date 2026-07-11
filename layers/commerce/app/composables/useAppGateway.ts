@@ -20,7 +20,7 @@ function createFallbackContentApi() {
   request.readRole = async () => null
   request.readFolders = async () => []
   request.readFolder = async () => null
-  request.readFiles = async () => []
+  request.readFiles = async () => null
   request.readFile = async () => null
   request.readFlows = async () => []
   request.readFlow = async () => null
@@ -34,16 +34,13 @@ function createFallbackContentApi() {
 
 export function useAppGateway() {
   const nuxtApp = useNuxtApp() as any
-  
-  // Priority 1: Check if $sdk is available (from plugin)
-  if (nuxtApp.$sdk && nuxtApp.$sdk.content && typeof nuxtApp.$sdk.content.readItems === 'function') {
-    return nuxtApp.$sdk
-  }
 
   const sdk = (nuxtApp.$sdk || {}) as any
 
   if (!sdk.content || typeof sdk.content.readItems !== 'function') {
     sdk.content = createFallbackContentApi()
+  } else {
+    Object.assign(sdk.content, createFallbackContentApi())
   }
 
   sdk.auth ||= {}

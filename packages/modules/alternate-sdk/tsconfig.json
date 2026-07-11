@@ -14,7 +14,14 @@
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "noImplicitAny": false,
-    "types": ["node"]
+    "types": ["node"],
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@mframework/adapter-gateway": ["../../adapters/adapter-gateway/dist/index.js"],
+      "@mframework/adapter-gateway/client": ["../../adapters/adapter-gateway/dist/src/mesh/client.js"],
+      "@mframework/adapter-gateway/*/client": ["../../adapters/adapter-gateway/dist/src/mesh/client.js"]
+    }
   },
   "include": [
     "*.ts",

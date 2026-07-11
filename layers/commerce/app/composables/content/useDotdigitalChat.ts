@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { useState } from 'nuxt/app'
+import { useState } from '#app'
 import { useAppGateway } from '../useAppGateway'
 
 type DotdigitalChatConfig = {

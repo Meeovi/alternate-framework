@@ -1,0 +1,5 @@
+src
+test
+*.test.ts
+*.config.ts
+*.config.tsbuildinfo

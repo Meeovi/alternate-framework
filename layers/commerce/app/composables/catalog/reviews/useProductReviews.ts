@@ -8,7 +8,7 @@ import type {
   FetchProductReviews,
 } from './types';
 import { getCommerceClient } from '../../../utils/client';
-import { useAsyncData, useState } from 'nuxt/app';
+import { useAsyncData, useState } from '#app';
 import { useHandleError } from '../../system/useHandleError/useHandleError';
 
 /**

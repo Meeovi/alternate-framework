@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-toolbar color="green">
+        <v-toolbar class="listToolbar" color="green">
             <v-toolbar-title>
                 <div class="listsToolbarTitle">
                     {{ page?.name }}
@@ -50,33 +50,15 @@
 
 <script setup>
     import {
-        ref,
-        computed
-    } from '#imports'
+        ref    } from '#imports'
     import listCard from '#social/app/components/related/list.vue'
     import RelatedLists from '#social/app/components/related/relatedlists.vue'
     import createList from '#social/app/components/features/lists/add-list.vue'
-    import {
-        useUsers
-    } from '#auth/app/composables/users'
-
-    import {
-        useLists
-    } from '#social/app/composables/lists/useLists'
-    import {
-        normalizeListRecord
-    } from '#social/app/composables/content/socialMappers'
-    import {
-        useRoute
-    } from 'vue-router'
 
     const model = ref(null)
 
     const { $sdk } = useNuxtApp()
     
-    
-    const hasAsset = (file) => Boolean($sdk.media?.getAssetUrl?.(file))
-
     const opts = {
         fields: ['*', 'category.categories_id.*', 'department.departments_id', 'user.user.*',
             'image.*'

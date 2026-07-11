@@ -1,27 +1,22 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfRecommendation, SfDynamicBlock } from '~/composables/system/models'
+import type { CommerceClient } from '../../utils/client'
+import type { SfRecommendation } from '~/composables/system/models'
 
 export function useRecommendations() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function getRecommendations(context: Record<string, any> = {}): Promise<SfRecommendation[]> {
-		if (client && typeof client.getRecommendations === 'function') {
-			return client.getRecommendations(context) as Promise<SfRecommendation[]>
-		}
-		return []
-	}
+  async function getRecommendations(context: Record<string, any> = {}): Promise<SfRecommendation[]> {
+    return client.getRecommendations(context)
+  }
 
-	async function getRecommendationRules(productId: string) {
-		if (client && typeof client.getRecommendationRules === 'function') {
-			return client.getRecommendationRules(productId)
-		}
-		return []
-	}
+  async function getRecommendationRules(productId: string) {
+    return client.getRecommendationRules({ productId })
+  }
 
-	return {
-		getRecommendations,
-		getRecommendationRules,
-	}
+  return {
+    getRecommendations,
+    getRecommendationRules,
+  }
 }
 
 export default useRecommendations

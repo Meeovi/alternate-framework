@@ -8,6 +8,9 @@ import {
     getCommerceClient
 } from '../../utils/client';
 import type {
+    CommerceClient
+} from '../../utils/client';
+import type {
     UseTaxReturn,
     TaxItem
 } from '../../types/tax';
@@ -15,7 +18,7 @@ import type { SfTaxRate, SfTaxRule, SfTaxClass } from '~/composables/system/mode
 
 export function useTax(): UseTaxReturn {
     const state = ref < {
-        data: (SfTaxRate | SfTaxRule | SfTaxClass)[] | null;
+        data: TaxItem[] | null;
         loading: boolean;
         error: any;
     } > ({
@@ -27,33 +30,18 @@ export function useTax(): UseTaxReturn {
     const fetchTax = async () => {
         state.value.loading = true;
         state.value.error = null;
-        const client = getCommerceClient();
+        const client = getCommerceClient() as CommerceClient;
 
-        if (!client || typeof (client as any).listTax === 'function') {
-            if ((client as any).listTaxRates) {
-                try {
-                    const rates = await (client as any).listTaxRates()
-                    state.value.data = Array.isArray(rates) ? rates.map((rate: any) => ({
-                        id: rate.id,
-                        type: 'VAT',
-                        rate: rate.rate,
-                    })) : []
-                } catch (e) {
-                    state.value.data = []
-                }
-            } else {
-                state.value.data = [];
-                state.value.loading = false;
-                return computed(() => state.value.data) as unknown as Ref < any > ;
-            }
-        } else {
-            try {
-                const data = await (client as any).listTax();
-                state.value.data = data;
-            } catch (error) {
-                state.value.data = [];
-                state.value.error = error;
-            }
+        try {
+            const rates = await client.listTaxRates();
+            state.value.data = Array.isArray(rates) ? rates.map((rate) => ({
+                id: rate.id,
+                type: 'VAT' as const,
+                rate: rate.rate,
+            })) : [];
+        } catch (error) {
+            state.value.data = [];
+            state.value.error = error;
         }
 
         state.value.loading = false;

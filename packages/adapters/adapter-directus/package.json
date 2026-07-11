@@ -1,62 +1,85 @@
 {
   "name": "@mframework/adapter-directus",
-  "version": "0.0.3",
+  "version": "1.0.0",
+  "description": "Backend agnostic Directus module for the M Framework",
+  "repository": "@mframework/adapter-directus",
   "license": "MIT",
-  "description": "Directus Client Library with auto generating forms and tables, Directus SDK and Types, and vue/react components for Directus Visual Editing.",
   "type": "module",
-  "author": {
-    "name": "M Framework"
-  },
+  "main": "./src/index.ts",
   "exports": {
     ".": {
-      "import": "./dist/module.mjs",
-      "types": "./dist/module.d.mts"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./module": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./src/index.ts"
+      ],
+      "module": [
+        "./dist/types.d.mts"
+      ]
     }
   },
   "files": [
     "dist"
   ],
+  "workspaces": [
+    "playground"
+  ],
   "scripts": {
-    "build": "nuxt-module-build build",
-    "dev": "nuxi dev playground",
-    "dev:build": "nuxi build playground",
-    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
-    "docs": "cd docs && pnpm dev",
-    "release": "nuxt-module-build && changelogen --release --minor --push && pnpm publish",
-    "lint": "eslint --ext .js,.ts,.vue"
+    "prepack": "nuxt-module-build build",
+    "dev": "npm run dev:prepare && nuxt dev playground",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "mesh:compose": "mesh-compose -o ./src/graphql/supergraph.graphql",
+    "mesh:codegen": "graphql-codegen",
+    "mesh:build": "npm run mesh:compose && npm run mesh:codegen",
+    "generate": "npm run mesh:build",
+    "prestart": "npm run generate",
+    "predev": "npm run generate",
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
   },
   "dependencies": {
-    "@directus/sdk": "^21.3.0",
-    "@directus/types": "^15.0.3",
-    "@directus/visual-editing": "^2.0.1",
-    "@nuxt/kit": "^4.4.5",
-    "defu": "^6.1.4",
-    "ofetch": "^1.5.0",
-    "ufo": "^1.6.4"
+    "@directus/sdk": "^23.0.0",
+    "@directus/visual-editing": "^2.1.0",
+    "@graphql-hive/gateway": "^2.10.2",
+    "@graphql-mesh/compose-cli": "^1.5.33",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@nuxt/kit": "^4.4.8",
+    "citty": "^0.2.2",
+    "consola": "^3.4.2",
+    "giget": "^3.3.0",
+    "graphql": "^17.0.2",
+    "graphql-request": "^7.4.0",
+    "ufo": "^1.6.4",
+    "unstorage": "^1.17.5"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^0.4.2",
-    "@nuxt/module-builder": "latest",
-    "@nuxtjs/eslint-config-typescript": "latest",
-    "@types/node": "^18.14.1",
-    "changelogen": "^0.4.1",
-    "eslint": "latest",
-    "nuxt": "^4.4.5",
-    "typescript": "^6.0.3"
-  },
-  "keywords": [
-    "nuxt",
-    "directus",
-    "nuxtjs",
-    "nuxt-module",
-    "vue3",
-    "nuxt3",
-    "directus-module",
-    "nuxt-directus",
-    "nuxtdirectus",
-    "nuxt-community"
-  ],
-  "unbuild": {
-    "failOnWarn": false
+    "@graphql-codegen/cli": "^7.2.0",
+    "@nuxt/a11y": "^1.0.0-alpha.1",
+    "@nuxt/devtools": "^3.2.4",
+    "@nuxt/eslint": "^1.16.0",
+    "@nuxt/eslint-config": "^1.15.2",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.4.8",
+    "@nuxt/test-utils": "^4.0.3",
+    "@parcel/watcher": "^2.5.6",
+    "@types/node": "latest",
+    "changelogen": "^0.6.2",
+    "eslint": "^10.4.1",
+    "nuxt": "^4.4.8",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.8",
+    "vue-tsc": "^3.3.3"
   }
 }

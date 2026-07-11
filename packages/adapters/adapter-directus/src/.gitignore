@@ -1,0 +1,4 @@
+/graphql/subgraph.graphql
+/graphql/types/
+
+.env

@@ -1,18 +1,16 @@
 // layers/social/plugins/social-adapter.ts
 
-import type { SocialAdapter } from '../adapter/SocialAdapter'
-import { mockAdapter } from '../adapter/mockAdapter'
+import { useSocialAdapter, setDefaultSocialAdapter, SocialDriverRegistry } from '@mframework/alternate-sdk/social/adapter'
 
 export default defineNuxtPlugin(() => {
   const runtimeConfig = useRuntimeConfig()
 
-  const adapter: SocialAdapter =
-    (globalThis as any).__adapter ||
-    mockAdapter // fallback to mock in dev
+  const socialAdapter = useSocialAdapter()
+  setDefaultSocialAdapter(socialAdapter)
 
   return {
     provide: {
-      adapter
+      social: socialAdapter
     }
   }
 })

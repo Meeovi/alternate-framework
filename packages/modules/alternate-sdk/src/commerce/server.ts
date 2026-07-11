@@ -1,4 +1,4 @@
-import useCommerceAdapter from './adapter.js'
+import { useCommerceAdapter } from './adapter.js'
 
 type AnyRecord = Record<string, any>
 

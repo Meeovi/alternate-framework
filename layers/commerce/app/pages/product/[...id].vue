@@ -253,7 +253,7 @@
   import short from '#social/app/components/related/short.vue'
   import spaces from '#social/app/components/related/space.vue'
   import shop from '#commerce/app/components/catalog/shops/stores.vue'
-  import { addViewed } from '#commerce/app/composables/catalog/products/useProducts/useRecentlyViewed'
+  import { addViewed } from '#commerce/app/composables/catalog/products/useRecentlyViewed'
 
   const tab = ref(null);
   const model = ref(null);

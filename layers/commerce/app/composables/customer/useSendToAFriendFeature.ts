@@ -1,5 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfProduct } from '~/composables/system/models'
+import type { CommerceClient } from '../../utils/client'
 
 export interface SendToFriendPayload {
   productId: string
@@ -15,34 +15,25 @@ export interface SendToFriendResult {
 }
 
 export function useSendToAFriendFeature() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function sendToAFriend(payload: SendToFriendPayload): Promise<SendToFriendResult> {
-		if (client && typeof client.sendToAFriend === 'function') {
-			return client.sendToAFriend(payload) as Promise<SendToFriendResult>
-		}
-		if (client && typeof client.tellAFriend === 'function') {
-			return client.tellAFriend(payload) as Promise<SendToFriendResult>
-		}
-		return { success: false, error: 'Not implemented' }
-	}
+  async function sendToAFriend(payload: SendToFriendPayload): Promise<void> {
+    return client.sendToAFriend(payload)
+  }
 
-	async function sendRecommendation(payload: {
-		productId?: string
-		email?: string
-		message?: string
-		senderName?: string
-	}): Promise<SendToFriendResult> {
-		if (client && typeof client.sendRecommendation === 'function') {
-			return client.sendRecommendation(payload) as Promise<SendToFriendResult>
-		}
-		return { success: false, error: 'Not implemented' }
-	}
+  async function sendRecommendation(payload: {
+    productId?: string
+    email?: string
+    message?: string
+    senderName?: string
+  }): Promise<void> {
+    return client.sendRecommendation(payload)
+  }
 
-	return {
-		sendToAFriend,
-		sendRecommendation
-	}
+  return {
+    sendToAFriend,
+    sendRecommendation,
+  }
 }
 
 export default useSendToAFriendFeature

@@ -1,4 +1,2 @@
-export type {
-  InferSessionFromClient,
-  InferUserFromClient
-} from 'better-auth/client'
+export { useAuthCapabilities } from '@mframework/alternate-auth/runtime'
+export default useAuthCapabilities

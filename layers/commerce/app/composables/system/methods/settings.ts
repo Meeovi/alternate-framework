@@ -9,6 +9,18 @@ export type GetCurrenciesArgs = {
   //$custom?: GetCurrenciesCustomArgs;
 };
 
+export interface GetExchangeRatesExtendedArgs {}
+export interface GetExchangeRatesCustomArgs {}
+
+export type GetExchangeRatesArgs = {
+  baseCurrency?: string;
+  targetCurrencies?: string[];
+  //$extended?: GetExchangeRatesExtendedArgs;
+  //$custom?: GetExchangeRatesCustomArgs;
+};
+
+export type GetExchangeRates = (args?: Simplify<GetExchangeRatesArgs>) => Promise<Record<string, number>>;
+
 export type GetCurrencies = (args?: Simplify<GetCurrenciesArgs>) => Promise<{
   currencies: SfCurrency[];
   defaultCurrency: SfCurrency;

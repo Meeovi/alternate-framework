@@ -59,26 +59,6 @@ export type GetPaymentMethodsArgs = {
 
 export type GetPaymentMethods = (args?: Simplify<GetPaymentMethodsArgs>) => Promise<SfPaymentMethod[]>;
 
-export interface PlaceOrderExtendedArgs {}
-export interface PlaceOrderCustomArgs {}
-
-export type PlaceOrderArgs = {
-  quoteId?: string;
-  paymentMethod?: Record<string, any>;
-  shippingMethod?: {
-    carrierCode: string;
-    methodCode: string;
-  };
-  billingAddress?: SfCreateAddressBody;
-  shippingAddress?: SfCreateAddressBody;
-  //$extended?: PlaceOrderExtendedArgs;
-  //$custom?: PlaceOrderCustomArgs;
-};
-
-export type PlaceOrder = (args?: Simplify<PlaceOrderArgs>) => Promise<{
-  order: import("../models/order").SfOrder;
-}>;
-
 export type SetCustomerEmail = (args: Simplify<SetCustomerEmailArgs>) => Promise<SfCart>;
 
 export type SetCartAddress = (args: Simplify<SetCartAddressArgs>) => Promise<SfCart>;

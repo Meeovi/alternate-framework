@@ -1,0 +1,18 @@
+{
+  "schema": "./packages/adapters/adapter-gateway/src/graphql/*.graphql",
+  "documents": "./packages/modules/alternate-sdk/src/**/*.queries.ts",
+  "generates": {
+    "./packages/modules/alternate-sdk/src/generated/graphql-types.ts": {
+      "plugins": [
+        "typescript",
+        "typescript-operations",
+        "typescript-typed-document-node"
+      ],
+      "config": {
+        "documentMode": "typedDocumentNode",
+        "strict": true,
+        "nonOptionalTypename": true
+      }
+    }
+  }
+}

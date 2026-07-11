@@ -1,61 +1,35 @@
-import {
-  defineNuxtModule,
-  addPlugin,
-  addServerHandler,
-  createResolver,
-} from '@nuxt/kit'
+// packages/adapters/adapter-magento/src/module.ts
+import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
 
-export interface MagentoModuleOptions {
-  url ? : string
-  token ? : string
-  provider ? : 'rest' | 'graphql'
+export interface ModuleOptions {
+  /** The endpoint URL for your Magento instance or Hive Gateway endpoint */
+  endpoint?: string
+  /** Optional store view code identifier (e.g., 'default', 'fr') */
+  storeCode?: string
+  /** Optional customer/admin token for authenticated graph requests */
+  token?: string
 }
 
-export default defineNuxtModule < MagentoModuleOptions > ({
+export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'adapter-magento',
-    configKey: 'magento',
+    name: '@mframework/adapter-magento',
+    configKey: 'magentoAdapter'
   },
-
   defaults: {
-    url: process.env.MAGENTO_URL,
-    token: process.env.MAGENTO_TOKEN,
-    provider: 'rest',
+    endpoint: '',
+    storeCode: undefined,
+    token: undefined
   },
-
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
-    nuxt.options.runtimeConfig.magento = {
-      url: options.url,
-      token: options.token,
-      provider: options.provider,
+    // 1. Push module configurations into public runtime config so the runtime plugin can read them
+    nuxt.options.runtimeConfig.public.magentoAdapter = {
+      ...nuxt.options.runtimeConfig.public.magentoAdapter,
+      ...options
     }
 
+    // 2. Register the local runtime plugin that exposes the $magentoSdk global context
     addPlugin(resolver.resolve('./runtime/plugin'))
-
-    addServerHandler({
-      route: '/api/magento',
-      handler: resolver.resolve('./runtime/server/api/magento'),
-    })
-
-    addServerHandler({
-      route: '/api/magento/customer/login',
-      handler: resolver.resolve('./runtime/server/api/magento-customer-login'),
-    })
-
-    addServerHandler({
-      route: '/api/magento/customer/logout',
-      handler: resolver.resolve('./runtime/server/api/magento-customer-logout'),
-    })
-
-    addServerHandler({
-      route: '/**',
-      handler: resolver.resolve('./runtime/server/middleware/magento-auth-guard'),
-    })
-
-    nuxt.hook('imports:dirs', (dirs) => {
-      dirs.push(resolver.resolve('./runtime/composables'))
-    })
-  },
+  }
 })

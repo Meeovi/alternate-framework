@@ -1,4 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
+import type { CommerceClient } from '../../utils/client'
 import type { SfCart } from '~/composables/system/models'
 
 export interface OrderBySkuPayload {
@@ -14,26 +15,20 @@ export interface OrderBySkuResult {
 }
 
 export function useOrderBySku() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function orderBySku(payload: OrderBySkuPayload): Promise<OrderBySkuResult> {
-		if (client && typeof client.orderBySku === 'function') {
-			return client.orderBySku(payload) as Promise<OrderBySkuResult>
-		}
-		return { success: false, message: 'Not implemented' }
-	}
+  async function orderBySku(payload: OrderBySkuPayload): Promise<OrderBySkuResult> {
+    return client.orderBySku(payload)
+  }
 
-	async function addToCartBySku(sku: string, qty: number, cartId?: string) {
-		if (client && typeof client.addCartLineItem === 'function') {
-			return client.addCartLineItem({ sku, qty, cartId })
-		}
-		return { success: false, message: 'Not implemented' }
-	}
+  async function addToCartBySku(sku: string, qty: number, cartId?: string) {
+    return client.addCartLineItem({ sku, qty, cartId })
+  }
 
-	return {
-		orderBySku,
-		addToCartBySku,
-	}
+  return {
+    orderBySku,
+    addToCartBySku,
+  }
 }
 
 export default useOrderBySku

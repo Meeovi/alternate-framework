@@ -1,7 +1,9 @@
 import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { config as loadDotenv } from "dotenv";
+// @ts-ignore
 import type { PrismaClient as BasePrismaClient, Prisma } from "@prisma/client";
+// @ts-ignore
 import type { PrismaClientOptions } from "@prisma/client/runtime/library";
 
 export type PrismaDriverAdapter = unknown; // user passes concrete adapter type

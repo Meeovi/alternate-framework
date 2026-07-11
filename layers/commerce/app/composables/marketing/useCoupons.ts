@@ -1,43 +1,84 @@
+// layers/commerce/app/composables/marketing/useCoupons.ts
+import { ref } from 'vue'
 import { getCommerceClient } from '../../utils/client'
+import type { CouponProvider, CouponRule, AppliedCoupon } from '../../types/coupons'
 
-function clientOrNull() {
-	try {
-		return getCommerceClient() as any
-	} catch {
-		return null
-	}
-}
-
+/**
+ * Coupons composable. Replaces `marketing/useCoupons.ts`, typed against
+ * `CouponProvider`.
+ */
 export function useCoupons() {
-	const client = clientOrNull()
+  const client = getCommerceClient() as unknown as CouponProvider
+  const coupons = ref<CouponRule[]>([])
+  const applied = ref<AppliedCoupon | null>(null)
+  const isLoading = ref(false)
+  const error = ref<Error | null>(null)
 
-	async function listCoupons(opts: Record<string, unknown> = {}) {
-		if (client && typeof client.listCoupons === 'function') return client.listCoupons(opts)
-		return []
-	}
+  async function fetchCoupons(params?: Record<string, any>) {
+    isLoading.value = true
+    error.value = null
+    try {
+      coupons.value = (await client.getCoupons(params)).items
+    } catch (err) {
+      error.value = err as Error
+      coupons.value = []
+    } finally {
+      isLoading.value = false
+    }
+    return coupons.value
+  }
 
-	async function applyCoupon(code: string, cartId?: string) {
-		if (client && typeof client.applyCoupon === 'function') return client.applyCoupon({ code, cartId })
-		return { success: false, reason: 'applyCoupon not implemented by provider' }
-	}
+  async function fetchCouponById(id: string) {
+    isLoading.value = true
+    error.value = null
+    try {
+      return await client.getCouponById(id)
+    } catch (err) {
+      error.value = err as Error
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
 
-	async function removeCoupon(code: string, cartId?: string) {
-		if (client && typeof client.removeCoupon === 'function') return client.removeCoupon({ code, cartId })
-		return { success: false, reason: 'removeCoupon not implemented by provider' }
-	}
+  async function validateCoupon(code: string, cartTotal?: Parameters<CouponProvider['validateCoupon']>[1], customerId?: string) {
+    isLoading.value = true
+    error.value = null
+    try {
+      applied.value = await client.validateCoupon(code, cartTotal, customerId)
+      return applied.value
+    } catch (err) {
+      error.value = err as Error
+      applied.value = null
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
 
-	async function validateCoupon(code: string) {
-		if (client && typeof client.validateCoupon === 'function') return client.validateCoupon(code)
-		if (client && typeof client.getCoupon === 'function') return !!(await client.getCoupon(code))
-		return false
-	}
+  async function generateCodes(ruleId: string, quantity: number, length?: number) {
+    isLoading.value = true
+    error.value = null
+    try {
+      return await client.generateCodes(ruleId, quantity, length)
+    } catch (err) {
+      error.value = err as Error
+      return []
+    } finally {
+      isLoading.value = false
+    }
+  }
 
-	return {
-		listCoupons,
-		applyCoupon,
-		removeCoupon,
-		validateCoupon,
-	}
+  return {
+    coupons,
+    applied,
+    isLoading,
+    error,
+    fetchCoupons,
+    fetchCouponById,
+    validateCoupon,
+    generateCodes,
+  }
 }
 
 export default useCoupons

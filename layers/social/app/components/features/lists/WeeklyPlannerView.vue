@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useLists } from '@/layers/social/composables/useLists'
+import { useLists } from '../../../composables/lists/useLists'
 
 const items = ref<any[]>([])
 const { listUpcoming } = useLists()

@@ -1,6 +1,6 @@
 import { defineStore } from '#imports'
 import { getCommerceClient } from '../utils/client'
-import type { Product } from '../types/commerce.type'
+import type { Product } from '../types/commerce'
 
 type WishlistState = { items: string[]; isLoading: boolean; products: Product[] }
 
@@ -12,34 +12,37 @@ export const useWishlistStore = defineStore('wishlist', {
     }),
     actions: {
         addToWishlist(productId: string) {
-            if (!this.items.includes(productId)) {
-                this.items.push(productId);
+            const state = this as unknown as WishlistState
+            if (!state.items.includes(productId)) {
+                state.items.push(productId);
             }
         },
         removeFromWishlist(productId: string) {
-            this.items = this.items.filter((id: string) => id !== productId);
-            this.products = this.products.filter((p: any) => p.id !== productId && p.sku !== productId);
+            const state = this as unknown as WishlistState
+            state.items = state.items.filter((id: string) => id !== productId);
+            state.products = state.products.filter((p: any) => p.id !== productId && p.sku !== productId);
         },
         async fetchWishlistProducts() {
-            this.isLoading = true
+            const state = this as unknown as WishlistState
+            state.isLoading = true
             try {
                 const client = getCommerceClient()
                 if (client && typeof client.getProducts === 'function') {
-                    this.products = await client.getProducts({ ids: this.items })
+                    state.products = await client.getProducts({ ids: state.items })
                 } else if (client && typeof client.getProductById === 'function') {
                     const loaded: Product[] = []
-                    for (const id of this.items) {
+                    for (const id of state.items) {
                         try {
                             const p = await client.getProductById(id)
                             if (p) loaded.push(p)
                         } catch (e) {}
                     }
-                    this.products = loaded
+                    state.products = loaded
                 }
             } catch (e) {
                 // ignore
             } finally {
-                this.isLoading = false
+                state.isLoading = false
             }
         }
     }

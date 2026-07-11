@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { useHead, useRuntimeConfig} from 'nuxt/app'
+import { useHead, useRuntimeConfig} from '#app'
 import useAppLocalePath from '../utils/useAppLocalePath'
 import { useAlert } from '../composables/useAlert'
 import { z } from 'zod'

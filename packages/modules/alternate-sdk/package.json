@@ -17,7 +17,7 @@
     },
     "./auth/adapter": {
       "types": "./dist/src/auth/adapter.d.ts",
-      "import": "./dist/src/auth/adapter.js"
+      "import": "./dist/src/auth/index.js"
     },
     "./auth/server": {
       "types": "./dist/src/auth/server.d.ts",
@@ -34,6 +34,10 @@
     "./commerce/server": {
       "types": "./dist/src/commerce/server.d.ts",
       "import": "./dist/src/commerce/server.js"
+    },
+    "./commerce/driver": {
+      "types": "./dist/src/commerce/driver.d.ts",
+      "import": "./dist/src/commerce/driver.js"
     },
     "./content": {
       "types": "./dist/src/content/index.d.ts",
@@ -70,6 +74,18 @@
     "./federation/server": {
       "types": "./dist/src/federation/server.d.ts",
       "import": "./dist/src/federation/server.js"
+    },
+    "./social": {
+      "types": "./dist/src/social/index.d.ts",
+      "import": "./dist/src/social/index.js"
+    },
+    "./social/adapter": {
+      "types": "./dist/src/social/adapter.d.ts",
+      "import": "./dist/src/social/adapter.js"
+    },
+    "./social/driver": {
+      "types": "./dist/src/social/driver.d.ts",
+      "import": "./dist/src/social/driver.js"
     },
     "./module": {
       "types": "./dist/src/module.d.ts",
@@ -118,6 +134,10 @@
     "./localization/types": {
       "types": "./dist/src/localization/types.d.ts",
       "import": "./dist/src/localization/types.js"
+    },
+    "./generated": {
+      "types": "./dist/src/generated/graphql-types.d.ts",
+      "import": "./dist/src/generated/graphql-types.js"
     }
   },
   "main": "./dist/index.js",
@@ -130,6 +150,7 @@
       "commerce": ["./dist/src/commerce/index.d.ts"],
       "commerce/adapter": ["./dist/src/commerce/adapter.d.ts"],
       "commerce/server": ["./dist/src/commerce/server.d.ts"],
+      "commerce/driver": ["./dist/src/commerce/driver.d.ts"],
       "content": ["./dist/src/content/index.d.ts"],
       "content/adapter": ["./dist/src/content/adapter.d.ts"],
       "content/server": ["./dist/src/content/server.d.ts"],
@@ -139,6 +160,9 @@
       "federation": ["./dist/src/federation/index.d.ts"],
       "federation/adapter": ["./dist/src/federation/adapter.d.ts"],
       "federation/server": ["./dist/src/federation/server.d.ts"],
+      "social": ["./dist/src/social/index.d.ts"],
+      "social/adapter": ["./dist/src/social/adapter.d.ts"],
+      "social/driver": ["./dist/src/social/driver.d.ts"],
       "gateway": ["./dist/src/gateway/index.d.ts"],
       "gateway/createGateway": ["./dist/src/gateway/createGateway.d.ts"],
       "gateway/registry": ["./dist/src/gateway/registry.d.ts"],
@@ -150,7 +174,8 @@
       "notifications/types": ["./dist/src/notifications/types.d.ts"],
       "localization": ["./dist/src/localization/index.d.ts"],
       "localization/adapter": ["./dist/src/localization/adapter.d.ts"],
-      "localization/types": ["./dist/src/localization/types.d.ts"]
+      "localization/types": ["./dist/src/localization/types.d.ts"],
+      "generated": ["./dist/src/generated/graphql-types.d.ts"]
     }
   },
   "files": [
@@ -166,10 +191,13 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest watch"
+    "test:watch": "vitest watch",
+    "codegen": "graphql-codegen --config ../../graphql-codegen.json"
   },
   "dependencies": {
-    "@mframework/alternate-auth": "file:../alternate-auth"
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@mframework/alternate-auth": "file:../alternate-auth",
+    "@mframework/adapter-gateway": "file:../adapters/adapter-gateway"
   },
   "devDependencies": {
     "@types/node": "latest",

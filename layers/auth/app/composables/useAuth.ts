@@ -1,1 +1,11 @@
-export { useAuth } from '@mframework/alternate-auth/runtime'
+import { createAuthClient } from "better-auth/vue";
+import { useRequestHeaders, useRequestURL } from "#app";
+
+export function useAuth() {
+	const url = useRequestURL();
+	const headers = import.meta.server ? useRequestHeaders(["cookie"]) : undefined;
+	return createAuthClient({
+		baseURL: url.origin,
+		fetchOptions: { headers },
+	});
+}

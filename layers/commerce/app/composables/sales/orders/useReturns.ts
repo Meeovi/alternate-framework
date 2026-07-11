@@ -1,37 +1,71 @@
+// layers/commerce/app/composables/sales/orders/useReturns.ts
+import { ref } from 'vue'
 import { getCommerceClient } from '../../../utils/client'
+import type { ReturnProvider, Return } from '../../../types/returns'
 
-function clientOrNull() {
-	try {
-		return getCommerceClient() as any
-	} catch {
-		return null
-	}
-}
-
+/**
+ * Returns (RMA) composable. Replaces `sales/orders/useReturns.ts` and
+ * `useCustomerReturns/*` with a single typed `ReturnProvider` entrypoint.
+ */
 export function useReturns() {
-	const client = clientOrNull()
+  const client = getCommerceClient() as unknown as ReturnProvider
+  const returns = ref<Return[]>([])
+  const current = ref<Return | null>(null)
+  const isLoading = ref(false)
+  const error = ref<Error | null>(null)
 
-	async function getReturns(opts: Record<string, unknown> = {}) {
-		if (client && typeof client.listReturns === 'function') return client.listReturns(opts)
-		return []
-	}
+  async function fetchReturns(params?: Record<string, any>) {
+    isLoading.value = true
+    error.value = null
+    try {
+      returns.value = (await client.getReturns(params)).items
+    } catch (err) {
+      error.value = err as Error
+      returns.value = []
+    } finally {
+      isLoading.value = false
+    }
+    return returns.value
+  }
 
-	async function getReturnById(id: string) {
-		if (client && typeof client.getReturn === 'function') return client.getReturn(id)
-		const returns = await getReturns()
-		return Array.isArray(returns) ? returns.find((item: any) => item?.id === id) || null : null
-	}
+  async function fetchReturnById(id: string) {
+    isLoading.value = true
+    error.value = null
+    try {
+      current.value = await client.getReturnById(id)
+      return current.value
+    } catch (err) {
+      error.value = err as Error
+      current.value = null
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
 
-	async function createReturn(payload: Record<string, unknown>) {
-		if (client && typeof client.createReturn === 'function') return client.createReturn(payload)
-		return null
-	}
+  async function createReturn(input: Parameters<ReturnProvider['createReturn']>[0]) {
+    isLoading.value = true
+    error.value = null
+    try {
+      current.value = await client.createReturn(input)
+      return current.value
+    } catch (err) {
+      error.value = err as Error
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
 
-	return {
-		getReturns,
-		getReturnById,
-		createReturn,
-	}
+  return {
+    returns,
+    current,
+    isLoading,
+    error,
+    fetchReturns,
+    fetchReturnById,
+    createReturn,
+  }
 }
 
 export default useReturns

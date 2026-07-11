@@ -37,12 +37,13 @@
             v-for="provider in socialProviders"
             :key="provider.id"
             block
+            :title="lastMethod === provider.id ? 'Continue with' : 'Sign in with' `${provider.label}`"
+            :text="`Sign in with ${provider.label}`"
             variant="outlined"
             :disabled="loading"
             :color="provider.color"
             :prepend-icon="provider.icon"
             @click="signInWithProvider(provider.id)">
-            Sign in with {{ provider.label }}
           </v-btn>
         </div>
 
@@ -75,13 +76,15 @@
   import useAppLocalePath from '../utils/useAppLocalePath';
   import {
     useAlert
-  } from '#shared/app/composables/useAlert';
+  } from '#shared/app/composables/globals/useAlert';
+  import { authClient } from "../../lib/auth-client"
 
   const auth = useAuth();
   const alert = useAlert();
   const localePath = useAppLocalePath();
   const runtimeConfig = useRuntimeConfig();
   const { providers: socialProviders, load: loadSocialProviders } = useSupportedSocialProviders();
+  const lastMethod = authClient.getLastUsedLoginMethod();
 
   const form = ref(null);
   const email = ref("");

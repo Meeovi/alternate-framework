@@ -1,69 +1,44 @@
-export const useVibez = () => {
-  const nuxtApp = (globalThis as any).__nuxtApp || {}
-  const adapter = nuxtApp?.$adapter || (globalThis as any).__adapter || null
+import type { SocialDriverContract, Vibe, LiveStream } from '@mframework/alternate-sdk/contracts/social'
 
-  const call = async (method: string, payload: any, fallback: () => Promise<any>) => {
-    if (adapter && typeof adapter[method] === 'function') {
-      return adapter[method](payload)
-    }
-    return fallback()
+const useSocialDriver = (): SocialDriverContract => {
+  const nuxtApp = useNuxtApp()
+  return nuxtApp?.$sdk?.social ?? {} as SocialDriverContract
+}
+
+export const useVibez = () => {
+  const social = useSocialDriver()
+
+  const getVibez = async (opts?: { limit?: number }): Promise<Vibe[]> => {
+    return social.getVibez?.(opts) ?? []
   }
 
-  const getVibez = (opts?: any) =>
-    call('getVibez', opts, async () => {
-      const params = new URLSearchParams({ ...(opts || {}) })
-      const res = await fetch(`/api/social/vibez?${params}`)
-      return res.json()
-    })
+  const uploadVibe = async (data: FormData): Promise<Vibe> => {
+    return social.uploadVibe?.(data) ?? { id: '', url: '' }
+  }
 
-  const uploadVibe = (data: FormData) =>
-    call('uploadVibe', data, async () => {
-      const res = await fetch(`/api/social/vibez`, {
-        method: 'POST',
-        body: data
-      })
-      return res.json()
-    })
+  const likeVibe = async (vibeId: string | number): Promise<{ success: boolean }> => {
+    return social.likeVibe?.(String(vibeId)) ?? { success: false }
+  }
 
-  const likeVibe = (vibeId: string | number) =>
-    call('likeVibe', { vibeId }, async () => {
-      const res = await fetch(`/api/social/vibez/like`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vibeId })
-      })
-      return res.json()
-    })
+  const getVibe = async (vibeId: string | number): Promise<Vibe | null> => {
+    return social.getVibe?.(String(vibeId)) ?? null
+  }
 
-  const getVibe = (vibeId: string | number) =>
-    call('getVibe', { vibeId }, async () => {
-      const res = await fetch(`/api/social/vibez/${vibeId}`)
-      return res.json()
-    })
+  const startLive = async (opts?: { title?: string }): Promise<LiveStream> => {
+    return social.startLive?.(opts) ?? { id: '', isLive: false }
+  }
 
-  const startLive = (opts?: any) =>
-    call('startLive', opts, async () => {
-      const res = await fetch(`/api/social/vibez/live/start`, { method: 'POST' })
-      return res.json()
-    })
+  const stopLive = async (liveId: string | number): Promise<{ success: boolean }> => {
+    return social.stopLive?.(String(liveId)) ?? { success: false }
+  }
 
-  const stopLive = (liveId: string | number) =>
-    call('stopLive', { liveId }, async () => {
-      const res = await fetch(`/api/social/vibez/live/${liveId}/stop`, { method: 'POST' })
-      return res.json()
-    })
+  const getLive = async (liveId: string | number): Promise<LiveStream | null> => {
+    return social.getLive?.(String(liveId)) ?? null
+  }
 
-  const getLive = (liveId: string | number) =>
-    call('getLive', { liveId }, async () => {
-      const res = await fetch(`/api/social/vibez/live/${liveId}`)
-      return res.json()
-    })
-
-  const getLiveViewers = (liveId: string | number) =>
-    call('getLiveViewers', { liveId }, async () => {
-      const res = await fetch(`/api/social/vibez/live/${liveId}/viewers`)
-      return res.json()
-    })
+  const getLiveViewers = async (liveId: string | number): Promise<{ count: number }> => {
+    return social.getLiveViewers?.(String(liveId)) ?? { count: 0 }
+  }
 
   return {
     getVibez,

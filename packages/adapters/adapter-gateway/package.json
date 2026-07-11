@@ -1,0 +1,64 @@
+{
+  "name": "@mframework/adapter-gateway",
+  "version": "1.0.0",
+  "description": "GraphQL Mesh gateway adapter for the MFramework",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    },
+    "./utils/normalizers": {
+      "import": "./dist/utils/normalizers.js",
+      "types": "./dist/utils/normalizers.d.ts"
+    },
+    "./resolvers": {
+      "import": "./dist/resolvers.js",
+      "types": "./dist/resolvers.d.ts"
+    },
+    "./nuxt": {
+      "import": "./dist/src/module.js",
+      "types": "./dist/src/module.d.ts"
+    },
+    "./mesh": {
+      "import": "./mesh.config.ts",
+      "types": "./mesh.config.ts"
+    },
+    "./client": {
+      "import": "./dist/src/mesh/client.js",
+      "types": "./dist/src/mesh/client.d.ts"
+    },
+    "./gql": {
+      "import": "./dist/src/mesh/gql.js",
+      "types": "./dist/src/mesh/gql.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "mesh.config.ts",
+    ".env.example"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "keywords": [
+    "adapter",
+    "gateway",
+    "framework",
+    "graphql-mesh"
+  ],
+  "author": "M Framework",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}

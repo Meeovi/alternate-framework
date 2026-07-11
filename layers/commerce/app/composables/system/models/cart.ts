@@ -5,6 +5,7 @@ import type {
   SfAddress,
   SfAttribute,
   SfCoupon,
+  SfCurrency,
   SfDiscountablePrice,
   SfId,
   SfImage,

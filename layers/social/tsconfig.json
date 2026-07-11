@@ -3,7 +3,9 @@
   "compilerOptions": {
     "verbatimModuleSyntax": false,
     "paths": {
-      "@mframework/adapter-prisma": ["../../packages/adapters/adapter-prisma/src/index.ts"]
+      "@mframework/adapter-prisma": ["../../packages/adapters/adapter-prisma/src/index.ts"],
+      "@mframework/alternate-sdk/contracts/social": ["../../packages/modules/alternate-sdk/src/contracts/social.ts"],
+      "@mframework/adapter-gateway/client": ["../../packages/adapters/adapter-gateway/src/mesh/client.ts"]
     }
   },
   "exclude": [

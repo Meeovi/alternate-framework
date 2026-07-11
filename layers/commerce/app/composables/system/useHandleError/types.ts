@@ -1,11 +1,9 @@
-import type { Maybe } from '../models/shared';
-import { H3Error } from 'h3';
-
-export type ErrorParams = Maybe<
-  Partial<H3Error> & {
-    status?: number;
-    statusText?: string;
-  }
->;
+export type ErrorParams = {
+  status?: number;
+  statusText?: string;
+  message?: string;
+  statusMessage?: string;
+  fatal?: boolean;
+}
 
 export type UseHandleError = (error?: unknown) => void;

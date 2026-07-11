@@ -1,18 +1,16 @@
 import { getCommerceClient } from '../../utils/client'
+import type { CommerceClient } from '../../utils/client'
 
 export function useAdminActionLogs() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function listAdminActionLogs(params = {}) {
-		if (client && typeof client.listAdminActionLogs === 'function') {
-			return client.listAdminActionLogs(params)
-		}
-		return []
-	}
+  async function listAdminActionLogs(params = {}) {
+    return client.listAdminActionLogs(params)
+  }
 
-	return {
-		listAdminActionLogs
-	}
+  return {
+    listAdminActionLogs,
+  }
 }
 
 export default useAdminActionLogs

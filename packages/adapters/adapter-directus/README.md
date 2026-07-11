@@ -1,240 +1,101 @@
-# @mframework/adapter-directus
+# adapter-directus
 
-A framework-agnostic, type-safe Directus client with optional bindings for Vue 3, Nuxt 3, and React. Includes schema introspection, auto-form and auto-table generators, validation utilities, and visual-editing / live-preview helpers.
+A deeply integrated, zero-overhead data adapter for Directus. This package utilizes **GraphQL Mesh (v1)** and **GraphQL Codegen** to automatically compose, namespace, and strictly type your entire Directus collection schema at compile time. 
 
-Designed for modular, provider-agnostic platforms like Meeovi, but usable in any Directus-powered project.
+It acts as the canonical domain layer for our frontend applications, providing complete type safety, inline autocomplete, and payload normalization.
 
 ## Features
 
-- Framework-agnostic Directus client
-- Vue 3 bindings (`useDirectus`, `DirectusVueProvider`)
-- React bindings (`useDirectus`, `DirectusReactProvider`)
-- Schema introspection
-- Auto-form engine
-- Auto-table engine
-- Validation engine
-- Widget registry
-- Visual editing utilities
-- Live preview utilities
-- Fully typed and tree-shakeable
+- 🔄 **Fully Automated Schema Mapping:** Compiles your entire Directus instance down to a single typed contract.
+- 🪄 **Dynamic Intellisense:** Auto-suggests collection names and strictly validates requested fields without manual typing overhead.
+- 🗜️ **Prefix Stripping:** Transparently manages and discards required GraphQL Mesh routing prefixes (`CMS_`), delivering pure shapes directly to your frontend app.
+- 🎛️ **Type-Safe Document Escape Hatch:** Includes a `.query()` runtime configuration for highly customized relational operations.
 
-## Installation
+---
 
-```bash
-npm install @mframework/adapter-directus
-# or
-pnpm add @mframework/adapter-directus
-```
+## Architecture Overview
 
-## Package structure
+Instead of maintaining brittle, hand-written TypeScript interfaces for hundreds of Directus database tables, this adapter pulls live introspection schemas directly from your designated environment endpoint.
 
-```
-src/
-  client/
-    createClient.ts
-  vue/
-    DirectusProvider.ts
-    useDirectus.ts
-  react/
-    DirectusProvider.tsx
-    useDirectus.ts
-  schema/
-    types.ts
-    introspect.ts
-  utils/
-    collections.ts
-    fields.ts
-  generators/
-    form-engine.ts
-    table-engine.ts
-    validation-engine.ts
-    widget-registry.ts
-  visual-editing.ts
-  live-preview.ts
-  index.ts
-```
+1. **`mesh-compose`** fetches the Directus GraphQL schema and applies isolation transforms.
+2. **`graphql-codegen`** converts that compiled schema into a comprehensive flat TypeScript file (`schema-types.ts`).
+3. **`DirectusAdapter`** leverages template-literal mapping to provide dynamic code completions based *only* on what exists in your database.
 
-## Usage
+---
 
-### 1) Framework-agnostic
+## Step-by-Step Getting Started
 
-```ts
-import { createMeeoviDirectusClient } from '@mframework/adapter-directus';
+Follow these steps to integrate or sync this adapter with a frontend website or a new Directus instance.
 
-const directus = createMeeoviDirectusClient('https://your-directus-url.com');
+### 1. Prerequisites & Environment Setup
+Ensure your local development environment or your targeted frontend layer contains a valid configuration file. Create or update your `.env` file in your frontend root directory:
 
-// Example request
-const products = await directus.client.request(directus.readItems('products'));
-```
+```env
+DIRECTUS_GRAPHQL="[https://your-directus-instance.com/graphql](https://your-directus-instance.com/graphql)"
 
-### 2) Vue 3
+### 2. Add Dependencies (Workspace Root)
+Make sure your workspace root includes dotenv-cli to handle cross-package environment injection:
 
-Wrap your app:
+Bash
+npm install -D dotenv-cli
 
-```ts
-import { DirectusVueProvider, createMeeoviDirectusClient } from '@mframework/adapter-directus';
+### 3. Configure Frontend Sync Scripts
+Add an automated synchronization script to your frontend application's package.json file. This tells the workspace to load your local credentials, jump into the adapter directory, and rebuild the type definitions:
 
-const directus = createMeeoviDirectusClient('https://cms.example.com');
-```
-
-```vue
-<template>
-  <DirectusVueProvider :client="directus">
-    <App />
-  </DirectusVueProvider>
-</template>
-```
-
-Use inside components:
-
-```ts
-import { useDirectus } from '@mframework/adapter-directus';
-
-const directus = useDirectus();
-const items = await directus.client.request(directus.readItems('articles'));
-```
-
-### 3) Nuxt 3
-
-Create a plugin:
-
-```ts
-// plugins/directus.client.ts
-import { defineNuxtPlugin, useRuntimeConfig } from '#imports';
-import { createMeeoviDirectusClient, DirectusVueProvider } from '@mframework/adapter-directus';
-
-export default defineNuxtPlugin((nuxtApp) => {
-  const config = useRuntimeConfig();
-  const directus = createMeeoviDirectusClient(config.public.directus.url);
-
-  nuxtApp.provide('directus', directus);
-  nuxtApp.vueApp.component('DirectusVueProvider', DirectusVueProvider);
-});
-```
-
-Use it:
-
-```ts
-const { $directus } = useNuxtApp();
-const posts = await $directus.client.request($directus.readItems('posts'));
-```
-
-### 4) React
-
-Wrap your app:
-
-```tsx
-import { DirectusReactProvider, createMeeoviDirectusClient } from '@mframework/adapter-directus';
-
-const directus = createMeeoviDirectusClient('https://cms.example.com');
-
-export function App() {
-  return (
-    <DirectusReactProvider client={directus}>
-      <YourRoutes />
-    </DirectusReactProvider>
-  );
+JSON
+{
+  "name": "your-frontend-site",
+  "scripts": {
+    "adapter:sync": "dotenv -- npm run --prefix ../../packages/adapters/adapter-directus mesh:build"
+  }
 }
-```
+(Note: Adjust the relative path ../../packages/adapters/adapter-directus to match your specific monorepo directory layout).
 
-Use inside components:
+### 4. Fetch Schema & Generate Types
+From the root of your frontend application, execute the sync command. This will contact your custom Directus endpoint, compose the gateway supergraph, and spit out the latest TypeScript compiler tokens.
 
-```tsx
-import { useDirectus } from '@mframework/adapter-directus';
-const directus = useDirectus();
-const items = await directus.client.request(directus.readItems('products'));
-```
+Bash
+npm run adapter:sync
+Whenever you add collections or modify system fields inside the Directus App UI, simply re-run this command to refresh your definitions.
 
-## Schema introspection
+### Usage Guide
 
-```ts
-import { introspectSchema } from '@mframework/adapter-directus';
+#### Initializing the SDK
+Import and instantiate the class inside your framework plugin or utility file (e.g., a Nuxt 4 runtime plugin):
 
-const schema = await introspectSchema(directus.client);
-console.log(schema.directus_fields);
-```
+TypeScript
+import { DirectusAdapter } from 'adapter-directus'
 
-## Auto-Form Engine
+const config = useRuntimeConfig()
 
-```ts
-import { createFormEngine } from '@mframework/adapter-directus';
+// Initialize pointing to your unified Hive Gateway / Local address
+export const cms = new DirectusAdapter(config.public.gatewayUrl)
 
-const engine = createFormEngine('products', fields, directus);
-engine.form.title = 'New Product';
-const result = await engine.submit();
-```
+#### Fetching a Dynamic Collection
+Pass the target collection name and an array of required tracking fields. You receive strict validation on your field values, structural query security, and clean runtime arrays.
 
-## Auto-Table Engine
+TypeScript
+// Autocomplete will show valid collections (e.g., 'articles', 'products')
+// Passing 'titel' instead of 'title' will trigger a compile-time IDE error!
+const articles = await cms.getCollection('articles', ['id', 'title', 'date_created'])
 
-```ts
-import { generateTableSchema } from '@mframework/adapter-directus';
-const table = generateTableSchema(fields);
-console.log(table);
-```
+// 'articles' is automatically typed and parsed:
+articles.forEach(item => {
+  console.log(item.title) // Fully typed property
+})
+Complex Queries (Escape Hatch)
+For deep nested relationships, filtration parameters, or complex data joins, pass raw GraphQL operation documents directly to the helper:
 
-## Validation Engine
+TypeScript
+const customQuery = `
+  query GetNestedData {
+    CMS_authors {
+      name
+      CMS_articles_authored {
+        title
+      }
+    }
+  }
+`
 
-```ts
-import { validateField } from '@mframework/adapter-directus';
-const error = validateField(field, value);
-if (error) console.error(error);
-```
-
-## Widget Registry
-
-```ts
-import { widgetRegistry } from '@mframework/adapter-directus';
-console.log(widgetRegistry.text.component);
-```
-
-## Visual Editing (framework-agnostic)
-
-```ts
-import { createVisualEditing } from '@mframework/adapter-directus';
-
-const visual = createVisualEditing({
-  enableVisualEditing: true,
-  directusUrl: 'https://cms.example.com',
-  query: { 'visual-editing': 'true' },
-
-Note: adapter credentials and endpoints can be centrally configured in your main app's `.env` file. See the repository `.env.example` for recommended variable names.
-});
-
-visual.apply({ elements: document.querySelectorAll('[data-editable]') });
-```
-
-## Live Preview (framework-agnostic)
-
-```ts
-import { createLivePreview } from '@mframework/adapter-directus';
-
-const preview = createLivePreview({
-  query: Object.fromEntries(new URLSearchParams(location.search)),
-});
-
-if (preview.enabled) {
-  console.log('Preview token:', preview.state.token);
-}
-```
-
-## TypeScript support
-
-Everything is fully typed: Directus schema, client methods, form/table generators, visual editing, live preview, and framework bindings.
-
-## Build
-
-If you’re working inside a monorepo:
-
-```bash
-npm --workspace @mframework/adapter-directus run build
-# or
-pnpm --filter @mframework/adapter-directus build
-```
-
-## Contributing
-
-PRs are welcome. This package is designed to be modular, extensible, and framework-agnostic — contributions that improve developer experience or expand framework bindings are encouraged.
-
-## License
-
-MIT © Meeovi
+const data = await cms.query(customQuery)

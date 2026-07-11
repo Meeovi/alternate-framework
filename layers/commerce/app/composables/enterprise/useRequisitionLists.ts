@@ -1,59 +1,42 @@
 import { getCommerceClient } from '../../utils/client'
+import type { CommerceClient } from '../../utils/client'
 import type { SfRequisitionList, SfRequisitionListItem } from '~/composables/system/models'
 
 export function useRequisitionLists() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function listRequisitionLists(customerId: string): Promise<SfRequisitionList[]> {
-		if (client && typeof client.listRequisitionLists === 'function') {
-			return client.listRequisitionLists(customerId) as Promise<SfRequisitionList[]>
-		}
-		return []
-	}
+  async function listRequisitionLists(customerId: string): Promise<SfRequisitionList[]> {
+    return client.listRequisitionLists({ customerId })
+  }
 
-	async function getRequisitionListById(id: string): Promise<SfRequisitionList | null> {
-		if (client && typeof client.getRequisitionListById === 'function') {
-			return client.getRequisitionListById(id) as Promise<SfRequisitionList>
-		}
-		return null
-	}
+  async function getRequisitionListById(id: string): Promise<SfRequisitionList | null> {
+    return client.getRequisitionListById(id)
+  }
 
-	async function createRequisitionList(customerId: string, data: Partial<SfRequisitionList>) {
-		if (client && typeof client.createRequisitionList === 'function') {
-			return client.createRequisitionList(customerId, data)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function createRequisitionList(customerId: string, data: Partial<SfRequisitionList>) {
+    return client.createRequisitionList({ customerId, ...data })
+  }
 
-	async function updateRequisitionList(id: string, data: Partial<SfRequisitionList>) {
-		if (client && typeof client.updateRequisitionList === 'function') {
-			return client.updateRequisitionList(id, data)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function updateRequisitionList(id: string, data: Partial<SfRequisitionList>) {
+    return client.updateRequisitionList({ id, ...data })
+  }
 
-	async function deleteRequisitionList(id: string) {
-		if (client && typeof client.deleteRequisitionList === 'function') {
-			return client.deleteRequisitionList(id)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function deleteRequisitionList(id: string) {
+    return client.deleteRequisitionList(id)
+  }
 
-	async function addRequisitionListItem(listId: string, item: SfRequisitionListItem) {
-		if (client && typeof client.addRequisitionListItem === 'function') {
-			return client.addRequisitionListItem(listId, item)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function addRequisitionListItem(listId: string, item: SfRequisitionListItem) {
+    return client.addRequisitionListItem({ listId, item })
+  }
 
-	return {
-		listRequisitionLists,
-		getRequisitionListById,
-		createRequisitionList,
-		updateRequisitionList,
-		deleteRequisitionList,
-		addRequisitionListItem,
-	}
+  return {
+    listRequisitionLists,
+    getRequisitionListById,
+    createRequisitionList,
+    updateRequisitionList,
+    deleteRequisitionList,
+    addRequisitionListItem,
+  }
 }
 
 export default useRequisitionLists

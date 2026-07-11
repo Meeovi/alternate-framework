@@ -1,6 +1,11 @@
-import type { SharedSearchProvider } from '../../plugins/search.client'
+export function useSearch() {
+  const adapter = SearchAdapterRegistry.getDefaultAdapter()
 
-export const useSearch = (): SharedSearchProvider => {
-  const { $search } = useNuxtApp()
-  return $search as SharedSearchProvider
+  return {
+    search: (query, options) => adapter.search(query, options),
+    suggest: (query) => adapter.suggest(query),
+    index: (doc) => adapter.index(doc),
+    stats: () => adapter.stats(),
+    getAdapter: () => adapter,
+  }
 }

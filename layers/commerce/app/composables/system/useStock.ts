@@ -1,5 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfInventorySource, SfProductStockItem, SfReservation, SfStockItem } from '../models/shared'
+import type { SfInventorySource, SfInventoryReservation, SfProductStockItem, SfStockItem } from '../models/shared'
 
 function clientOrNull() {
 	try {
@@ -33,7 +33,7 @@ export function useStock() {
 		return []
 	}
 
-	async function createReservation(payload: Partial<SfReservation>) {
+	async function createReservation(payload: Partial<SfInventoryReservation>) {
 		if (client && typeof client.createReservation === 'function') return client.createReservation(payload)
 		return null
 	}

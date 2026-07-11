@@ -1,36 +1,26 @@
 import { getCommerceClient } from '../../utils/client'
-
-function clientOrNull() {
-	try {
-		return getCommerceClient() as any
-	} catch {
-		return null
-	}
-}
+import type { CommerceClient } from '../../utils/client'
 
 export function useAffiliates() {
-	const client = clientOrNull()
+  const client = getCommerceClient() as CommerceClient
 
-	async function listAffiliates(opts: Record<string, unknown> = {}) {
-		if (client && typeof client.listAffiliates === 'function') return client.listAffiliates(opts)
-		return []
-	}
+  async function listAffiliates(opts: Record<string, unknown> = {}) {
+    return client.listAffiliates(opts)
+  }
 
-	async function getAffiliateSummary(affiliateId: string) {
-		if (client && typeof client.getAffiliateSummary === 'function') return client.getAffiliateSummary(affiliateId)
-		return null
-	}
+  async function getAffiliateSummary(affiliateId: string) {
+    return client.getAffiliateSummary(affiliateId)
+  }
 
-	async function trackReferral(payload: Record<string, unknown>) {
-		if (client && typeof client.trackReferral === 'function') return client.trackReferral(payload)
-		return { success: false, reason: 'trackReferral not implemented by provider' }
-	}
+  async function trackReferral(payload: Record<string, unknown>) {
+    return client.trackReferral(payload)
+  }
 
-	return {
-		listAffiliates,
-		getAffiliateSummary,
-		trackReferral,
-	}
+  return {
+    listAffiliates,
+    getAffiliateSummary,
+    trackReferral,
+  }
 }
 
 export default useAffiliates

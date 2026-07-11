@@ -8,7 +8,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useLists } from '@/layers/social/composables/useLists'
+import { useLists } from '../../../composables/lists/useLists'
 
 const props = defineProps({
   listId: { type: [String, Number], required: true },

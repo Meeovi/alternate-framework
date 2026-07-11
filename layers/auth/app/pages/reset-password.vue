@@ -25,10 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import { useHead, useRuntimeConfig } from 'nuxt/app'
+import { useHead, useRuntimeConfig } from '#app'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
-import { useLocate } from 'alternate-gateway/media/adapters/vue/composable'
+import { useI18n } from 'vue-i18n'
 import useAppLocalePath from '../utils/useAppLocalePath'
 import { useAlert } from '../composables/useAlert'
 import { resetPassword } from '../../lib/auth-client'
@@ -40,7 +40,7 @@ definePageMeta({
   }
 })
 
-const { t } = useLocate()
+const { t } = useI18n()
 useHead({
   title: t('resetPassword.title')
 })

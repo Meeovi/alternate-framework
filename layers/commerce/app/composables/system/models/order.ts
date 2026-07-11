@@ -1,6 +1,6 @@
 import type { InferCustom } from "../defs";
 import type { SfShippingMethod } from "./checkout";
-import type { Maybe, SfAddress, SfAttribute, SfId, SfImage, SfMoney } from "./shared";
+import type { Maybe, SfAddress, SfAttribute, SfCreditMemoId, SfCreditMemoState, SfId, SfImage, SfInvoiceId, SfInvoiceState, SfMoney, SfOrderId, SfOrderState, SfOrderStatus, SfShipmentId, SfShipmentStatus } from "./shared";
 
 export interface SfOrderLineItemCustom extends InferCustom<"normalizeOrderLineItem"> {}
 
@@ -111,7 +111,6 @@ export interface SfOrder {
   grandTotal: SfMoney;
   shippingAmount: SfMoney;
   shippingDescription: string;
-  shippingMethod: string;
   shippingTaxAmount: SfMoney;
   subtotal: SfMoney;
   subtotalInclTax: SfMoney;

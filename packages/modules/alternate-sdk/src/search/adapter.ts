@@ -1,4 +1,6 @@
 type AnyRecord = Record<string, any>
+import { SearchAdapterRegistry } from '../contracts/search.js'
+import type { SearchAdapter as SearchAdapterType } from '../contracts/search.js'
 
 function resolveGatewaySearch(): AnyRecord {
 	const runtime = globalThis as AnyRecord
@@ -17,6 +19,12 @@ function resolveGatewaySearch(): AnyRecord {
 }
 
 export default function useSearchAdapter(): AnyRecord {
+	const registryAdapter = SearchAdapterRegistry.getDefaultAdapter() as SearchAdapterType | undefined
+	
+	if (registryAdapter) {
+		return registryAdapter
+	}
+
 	const search = resolveGatewaySearch()
 
 	const searchItems = async (...args: any[]) => {
@@ -37,3 +45,7 @@ export default function useSearchAdapter(): AnyRecord {
 		suggest,
 	}
 }
+
+export { useSearchAdapter }
+
+export type { SearchAdapter, SearchContract, ProxyContract } from '../contracts/search.js'

@@ -19,6 +19,8 @@ export default defineConfig({
     include: [
       'app/composables/**/*.test.ts',
       'app/composables/**/__tests__/**/*.spec.ts',
+      'test/__tests__/**/*.spec.ts',
+      'test/tests/__tests__/**/*.spec.ts',
     ],
     exclude: ['dist/**', 'node_modules/**'],
   },

@@ -1,31 +1,21 @@
 import { getCommerceClient } from '../../utils/client'
-
-function clientOrNull() {
-	try {
-		return getCommerceClient() as any
-	} catch {
-		return null
-	}
-}
+import type { CommerceClient } from '../../utils/client'
 
 export function usePOS() {
-	const client = clientOrNull()
+  const client = getCommerceClient() as CommerceClient
 
-	async function listRegisters(opts: Record<string, unknown> = {}) {
-		if (client && typeof client.listRegisters === 'function') return client.listRegisters(opts)
-		return []
-	}
+  async function listRegisters(opts: Record<string, unknown> = {}) {
+    return client.listRegisters(opts)
+  }
 
-	async function createPosOrder(payload: Record<string, unknown>) {
-		if (client && typeof client.createPosOrder === 'function') return client.createPosOrder(payload)
-		if (client && typeof client.createOrder === 'function') return client.createOrder({ ...payload, source: 'pos' })
-		return null
-	}
+  async function createPosOrder(payload: Record<string, unknown>) {
+    return client.createPosOrder(payload)
+  }
 
-	return {
-		listRegisters,
-		createPosOrder,
-	}
+  return {
+    listRegisters,
+    createPosOrder,
+  }
 }
 
 export default usePOS

@@ -1,33 +1,56 @@
+// layers/commerce/app/composables/sales/useTransactions.ts
+import { ref } from 'vue'
 import { getCommerceClient } from '../../utils/client'
+import type { TransactionProvider, Transaction } from '../../types/transactions'
 
-function clientOrNull() {
-	try {
-		return getCommerceClient() as any
-	} catch {
-		return null
-	}
-}
-
+/**
+ * Transactions composable. Replaces `sales/useTransactions.ts`, typed against
+ * `TransactionProvider`.
+ */
 export function useTransactions() {
-	const client = clientOrNull()
+  const client = getCommerceClient() as unknown as TransactionProvider
+  const transactions = ref<Transaction[]>([])
+  const current = ref<Transaction | null>(null)
+  const isLoading = ref(false)
+  const error = ref<Error | null>(null)
 
-	async function listTransactions(opts: Record<string, unknown> = {}) {
-		if (client && typeof client.listTransactions === 'function') return client.listTransactions(opts)
-		return []
-	}
+  async function fetchTransactions(params?: Record<string, any>) {
+    isLoading.value = true
+    error.value = null
+    try {
+      transactions.value = await client.getTransactions(params)
+    } catch (err) {
+      error.value = err as Error
+      transactions.value = []
+    } finally {
+      isLoading.value = false
+    }
+    return transactions.value
+  }
 
-	async function getTransactionById(id: string) {
-		if (client && typeof client.getTransaction === 'function') return client.getTransaction(id)
-		const transactions = await listTransactions()
-		return Array.isArray(transactions)
-			? transactions.find((transaction: any) => transaction?.id === id) || null
-			: null
-	}
+  async function fetchTransactionById(id: string) {
+    isLoading.value = true
+    error.value = null
+    try {
+      current.value = await client.getTransactionById(id)
+      return current.value
+    } catch (err) {
+      error.value = err as Error
+      current.value = null
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
 
-	return {
-		listTransactions,
-		getTransactionById,
-	}
+  return {
+    transactions,
+    current,
+    isLoading,
+    error,
+    fetchTransactions,
+    fetchTransactionById,
+  }
 }
 
 export default useTransactions

@@ -1,31 +1,69 @@
 {
-  "name": "@mframework/adapter-starter",
-  "version": "0.0.1",
-  "description": "A starter adapter for Meeovi SDK",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p tsconfig.json",
-    "create": "node ./scripts/init-adapter.js",
-    "create:interactive": "node ./scripts/create-adapter-cli.cjs"
-  },
-  "keywords": [
-    "meeovi",
-    "adapter",
-    "starter"
-  ],
-  "author": "M Framework",
+  "name": "adapter-starter",
+  "version": "1.0.0",
+  "description": "My new Nuxt module",
+  "repository": "your-org/my-module",
   "license": "MIT",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "playground"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "dev": "npm run dev:prepare && nuxt dev playground",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
+  },
   "dependencies": {
-
-    "typescript": "^5.9.3"
+    "@graphql-hive/gateway": "^2.10.2",
+    "@graphql-mesh/compose-cli": "^1.5.33",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@nuxt/kit": "^4.4.8",
+    "citty": "^0.2.2",
+    "consola": "^3.4.2",
+    "giget": "^3.3.0",
+    "graphql": "^17.0.2",
+    "ufo": "^1.6.4",
+    "unstorage": "^1.17.5"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^7.2.0",
+    "@nuxt/a11y": "^1.0.0-alpha.1",
+    "@nuxt/devtools": "^3.2.4",
+    "@nuxt/eslint": "^1.16.0",
+    "@nuxt/eslint-config": "^1.15.2",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.4.8",
+    "@nuxt/test-utils": "^4.0.3",
+    "@parcel/watcher": "^2.5.6",
+    "@types/node": "latest",
+    "changelogen": "^0.6.2",
+    "eslint": "^10.4.1",
+    "nuxt": "^4.4.8",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.8",
+    "vue-tsc": "^3.3.3"
   }
 }

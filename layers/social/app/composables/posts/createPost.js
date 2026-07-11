@@ -1,30 +1,30 @@
 // composables/createPost.js
 
 export default async function createPost(postData) {
-    const route = useRoute();
-    const id = route.params.id;
-    const { $createItem } = useNuxtApp()
+  const route = useRoute()
+  const id = route.params.id
+  const { $sdk } = useNuxtApp()
 
-    try {
-      const post = await createItem('posts', {
-          title: postData.title,
-          content: postData.content,
-          status: postData.status,
-          type: postData.type,
-          image: postData.image,
-          media: postData.media,
-          audio: postData.audio,
-          video: postData.video,
-          document: postData.document,
-          coverFile: null,
-          avatarFile: null,
-          username: postData.username,
-          spaces: [{ spaces_id: { id } }]
+  try {
+    if ($sdk?.content?.createItem && typeof $sdk.content.createItem === 'function') {
+      return await $sdk.content.createItem('posts', {
+        title: postData.title,
+        content: postData.content,
+        status: postData.status,
+        type: postData.type,
+        image: postData.image,
+        media: postData.media,
+        audio: postData.audio,
+        video: postData.video,
+        document: postData.document,
+        coverFile: null,
+        avatarFile: null,
+        username: postData.username,
+        spaces: [{ spaces_id: { id } }]
       })
-      return post;
-    } catch (error) {
-      console.error('Error creating post:', error);
-      throw error;
     }
+  } catch (error) {
+    console.error('Error creating post:', error)
+    throw error
+  }
 }
-  

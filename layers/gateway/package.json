@@ -1,0 +1,52 @@
+{
+  "name": "gateway",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "start": "mesh start",
+    "build": "mesh build",
+    "generate": "graphql-codegen",
+    "prestart": "npm run generate",
+    "predev": "npm run generate",
+    "supergraph": "npx mesh-compose -o graphql/supergraph.graphql",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^7.2.0",
+    "@nuxt/eslint": "^1.15.2",
+    "@parcel/watcher": "^2.5.6",
+    "@types/node": "^24.13.1",
+    "eslint": "^10.4.1",
+    "nuxt": "^4.4.8",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.35"
+  },
+  "dependencies": {
+    "@envelop/core": "^5.5.1",
+    "@escape.tech/graphql-armor-cost-limit": "^2.4.3",
+    "@escape.tech/graphql-armor-max-aliases": "^2.6.2",
+    "@escape.tech/graphql-armor-max-depth": "^2.4.2",
+    "@escape.tech/graphql-armor-max-directives": "^2.3.1",
+    "@escape.tech/graphql-armor-max-tokens": "^2.5.1",
+    "@graphql-hive/gateway": "^2.10.2",
+    "@graphql-mesh/compose-cli": "^1.5.33",
+    "@graphql-tools/executor-http": "^3.3.0",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@graphql-yoga/plugin-apq": "^3.21.2",
+    "@graphql-yoga/plugin-defer-stream": "^3.21.2",
+    "@omnigraph/grpc": "^0.2.24",
+    "@omnigraph/json-schema": "^0.109.42",
+    "@omnigraph/mysql": "^0.9.39",
+    "@omnigraph/neo4j": "^0.11.39",
+    "@omnigraph/odata": "^0.2.46",
+    "@omnigraph/openapi": "^0.109.53",
+    "@omnigraph/soap": "^0.107.46",
+    "@omnigraph/sqlite": "^0.8.29",
+    "@omnigraph/thrift": "^0.9.39",
+    "@whatwg-node/server-plugin-cookies": "^1.0.7",
+    "graphql": "^16.14.2",
+    "graphql-yoga": "^5.21.2",
+    "tsup": "^8.5.1"
+  }
+}

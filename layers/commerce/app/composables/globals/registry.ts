@@ -1,4 +1,4 @@
-import type { ProductProvider } from '../catalog/products/useProducts/types'
+import type { ProductProvider } from '../../types/products'
 import type { CartProvider } from '../../types/cart'
 import { registerProductProvider } from '../catalog/products/registry'
 import { registerCartProvider } from '../sales/cart/useCart/registry'

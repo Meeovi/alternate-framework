@@ -1,5 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfOrder } from '~/composables/system/models'
+import type { CommerceClient } from '../../utils/client'
 
 export interface GiftMessage {
   id: string
@@ -12,42 +12,30 @@ export interface GiftMessage {
 }
 
 export function useGiftMessages() {
-	const client = getCommerceClient()
+  const client = getCommerceClient() as CommerceClient
 
-	async function addGiftMessage(orderId: string, message: string) {
-		if (client && typeof client.addGiftMessage === 'function') {
-			return client.addGiftMessage(orderId, message)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function addGiftMessage(orderId: string, message: string) {
+    return client.addGiftMessage({ orderId, message })
+  }
 
-	async function getGiftMessages(orderId: string): Promise<GiftMessage[]> {
-		if (client && typeof client.getGiftMessages === 'function') {
-			return client.getGiftMessages(orderId)
-		}
-		return []
-	}
+  async function getGiftMessages(orderId: string): Promise<GiftMessage[]> {
+    return client.getGiftMessages({ orderId })
+  }
 
-	async function updateGiftMessage(id: string, message: string) {
-		if (client && typeof client.updateGiftMessage === 'function') {
-			return client.updateGiftMessage(id, message)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function updateGiftMessage(id: string, message: string) {
+    return client.updateGiftMessage({ id, message })
+  }
 
-	async function deleteGiftMessage(id: string) {
-		if (client && typeof client.deleteGiftMessage === 'function') {
-			return client.deleteGiftMessage(id)
-		}
-		return { success: false, reason: 'Not implemented' }
-	}
+  async function deleteGiftMessage(id: string) {
+    return client.deleteGiftMessage(id)
+  }
 
-	return {
-		addGiftMessage,
-		getGiftMessages,
-		updateGiftMessage,
-		deleteGiftMessage
-	}
+  return {
+    addGiftMessage,
+    getGiftMessages,
+    updateGiftMessage,
+    deleteGiftMessage,
+  }
 }
 
 export default useGiftMessages

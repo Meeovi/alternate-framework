@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { useState, useAsyncData, useHead } from 'nuxt/app'
+import { useState, useAsyncData, useHead } from '#app'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 

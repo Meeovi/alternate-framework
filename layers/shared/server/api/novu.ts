@@ -1,5 +1,5 @@
-import { serve } from "@novu/framework/nuxt";
-import { client, emailWorkflow } from "../novu/workflows";
-import { newFollowerWorkflow } from '../novu/workflows/newFollower'
+import { defineEventHandler } from 'h3';
+import { testWorkflow } from '../novu/workflows';
+import { serve } from '@novu/framework/nuxt';
 
-export default defineEventHandler(serve({ client, workflows: [emailWorkflow, newFollowerWorkflow] }));
+export default defineEventHandler(serve({ workflows: [testWorkflow] }));
