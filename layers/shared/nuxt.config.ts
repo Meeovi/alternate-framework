@@ -1,5 +1,9 @@
-import { resolve } from 'path'
-import { defineNuxtConfig } from 'nuxt/config'
+import {
+  resolve
+} from 'path'
+import {
+  defineNuxtConfig
+} from 'nuxt/config'
 import process from 'node:process'
 import vuetify from 'vite-plugin-vuetify'
 
@@ -13,8 +17,8 @@ export default defineNuxtConfig({
   },
 
   alias: {
-    '@mframework/ui-forms': resolve(__dirname, '../../packages/modules/ui-forms/src/index.ts'),
-    '@mframework/ui-forms/': resolve(__dirname, '../../packages/modules/ui-forms/src/')
+    '@mframework/meeovi-forms': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/index.ts'),
+    '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/')
   },
 
   components: {
@@ -298,8 +302,8 @@ export default defineNuxtConfig({
       headers: {
         'Content-Security-Policy': [
           "media-src 'self' blob: https://stream.mux.com;", // Allows MSE segment blobs
-          "worker-src 'self' blob:;",                     // Allows parsing engines running on workers
-          "connect-src 'self' https://*.mux.com;"         // Allows chunk/manifest data requests
+          "worker-src 'self' blob:;", // Allows parsing engines running on workers
+          "connect-src 'self' https://*.mux.com;" // Allows chunk/manifest data requests
         ].join(' ')
       }
     },
@@ -313,6 +317,14 @@ export default defineNuxtConfig({
     mframework: {
       auth: '~/auth/authImplementation',
       user: '~/auth/currentUser'
+    },
+    opensearch: {
+      host: process.env.ALTERNATE_SEARCH_HOST || 'localhost',
+      port: parseInt(process.env.ALTERNATE_SEARCH_PORT || '9200'),
+      auth: process.env.ALTERNATE_SEARCH_AUTH || 'admin:admin',
+      protocol: process.env.ALTERNATE_SEARCH_PROTOCOL || 'https',
+      caCertsPath: process.env.ALTERNATE_SEARCH_CA_CERTS_PATH || '',
+      appName: process.env.NUXT_APP_NAME || 'nuxt-app'
     },
     turnstile: {
       // This can be overridden at runtime via the NUXT_TURNSTILE_SECRET_KEY
@@ -429,9 +441,9 @@ export default defineNuxtConfig({
   vue: {
     compilerOptions: {
       // Instruct Vue to treat all tags starting with 'video-' or 'media-' as custom elements
-      isCustomElement: (tag) => 
-        tag.startsWith('video-') || 
-        tag.startsWith('media-') || 
+      isCustomElement: (tag) =>
+        tag.startsWith('video-') ||
+        tag.startsWith('media-') ||
         tag.endsWith('-video')
     }
   }

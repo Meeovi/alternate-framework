@@ -11,35 +11,38 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from '#imports'
+    import { ref, computed, watch } from '#imports'
 
-const emit = defineEmits(['size-selected'])
-const sizes = ref([])
-const selectedSize = ref(null)
+  const emit = defineEmits(['size-selected'])
+  const selectedSize = ref(null)
 
-const { $sdk } = useNuxtApp()
+  const {
+    $directus,
+    $readItems
+  } = useNuxtApp()
 
-const loadSizes = async () => {
+  const {
+    data: attrData
+  } = await useAsyncData('attrData', async () => {
     try {
-        const res = await $sdk.content.readItems('attributes', {
-            filter: {
-                attribute_code: { _eq: 'size' }
-            },
-            sort: ['id']
-        })
-
-        const attr = (res && res[0]) || null
-        const opts = attr?.options || []
-        sizes.value = opts.map((o, i) => ({ id: `${attr?.id || 'size'}-${i}`, name: o.name }))
+      return await $directus.request($readItems('attributes', {
+        filter: {
+          attribute_code: { _eq: 'size' }
+        },
+        sort: ['id']
+      }))
     } catch (e) {
-        console.warn('Failed to load size attributes', e)
-        sizes.value = []
+      console.warn('Failed to load size attributes', e)
+      return []
     }
-}
+  })
 
-watch(selectedSize, (newSize) => emit('size-selected', newSize))
+  const sizes = computed(() => {
+    const res = attrData.value
+    const attr = (res && res[0]) || null
+    const opts = attr?.options || []
+    return opts.map((o, i) => ({ id: `${attr?.id || 'size'}-${i}`, name: o.name }))
+  })
 
-onMounted(() => {
-    loadSizes()
-})
+  watch(selectedSize, (newSize) => emit('size-selected', newSize))
 </script>

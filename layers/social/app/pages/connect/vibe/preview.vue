@@ -90,7 +90,7 @@
 
 <script setup lang="ts">
 const config = useRuntimeConfig()
-const { $sdk } = useNuxtApp()
+const { $directus, $readItem, $readItems } = useNuxtApp()
 
 // Auth handling
 const runtimeUseAuth = globalThis.useAuth
@@ -116,16 +116,16 @@ onMounted(async () => {
     if (!user.value) return
 
     // Fetch videos
-    const videoResp = await $sdk.content.readItems('videos', {
+    const videoResp = await $directus.request($readItems('videos', {
         filter: { user_id: { _eq: user.value.id } },
         sort: ['-created_at'],
         fields: ['*', 'tags.id', 'tags.name']
-    })
+    }))
 
     videos.value = unwrapList(videoResp)
 
     // Fetch tags
-    const tagResp = await $sdk.content.readItems('tags')
+    const tagResp = await $directus.request($readItems('tags'))
     tags.value = unwrapList(tagResp)
 })
 

@@ -19,38 +19,41 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from '#imports'
+    import { ref, computed, watch } from '#imports'
 
-const emit = defineEmits(['color-selected'])
-const colors = ref([])
-const selectedColor = ref(null)
+  const emit = defineEmits(['color-selected'])
+  const selectedColor = ref(null)
 
-const { $sdk } = useNuxtApp()
+  const {
+    $directus,
+    $readItems
+  } = useNuxtApp()
 
-const loadColors = async () => {
+  const {
+    data: attrData
+  } = await useAsyncData('colorAttrData', async () => {
     try {
-        const res = await $sdk.content.readItems('attributes', {
-            filter: {
-                attribute_code: { _eq: 'color' }
-            },
-            sort: ['id']
-        })
-
-        const attr = (res && res[0]) || null
-        const opts = attr?.options || []
-        colors.value = opts.map((o, i) => ({ id: `${attr?.id || 'color'}-${i}`, name: o.name, value: o.name }))
+      return await $directus.request($readItems('attributes', {
+        filter: {
+          attribute_code: { _eq: 'color' }
+        },
+        sort: ['id']
+      }))
     } catch (e) {
-        console.warn('Failed to load color attributes', e)
-        colors.value = []
+      console.warn('Failed to load color attributes', e)
+      return []
     }
-}
+  })
 
-const selectColor = (color) => {
+  const colors = computed(() => {
+    const res = attrData.value
+    const attr = (res && res[0]) || null
+    const opts = attr?.options || []
+    return opts.map((o, i) => ({ id: `${attr?.id || 'color'}-${i}`, name: o.name, value: o.name }))
+  })
+
+  const selectColor = (color) => {
     selectedColor.value = color.value ?? color.id
     emit('color-selected', color)
-}
-
-onMounted(() => {
-    loadColors()
-})
+  }
 </script>

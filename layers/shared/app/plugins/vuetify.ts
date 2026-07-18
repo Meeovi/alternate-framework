@@ -2,7 +2,7 @@
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import { aliases, fa } from 'vuetify/iconsets/fa-svg'
-import { faIconAliases } from '@mframework/ui-forms'
+import { faIconAliases } from '@mframework/meeovi-forms'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { far } from '@fortawesome/free-regular-svg-icons'

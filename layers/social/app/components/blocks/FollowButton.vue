@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loggedIn">
+  <div v-if="session">
     <v-btn
       class="follow-btn"
       :class="{ following: !!following }"

@@ -14,7 +14,7 @@ This structure is fully aligned with your monorepo conventions (packages/, gatew
 
 🚀 UI Forms Module — Full Folder Structure
 Code
-/packages/modules/ui-forms/
+/packages/plugins/meeovi-forms/
 │
 ├── package.json
 ├── tsconfig.json

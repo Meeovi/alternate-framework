@@ -33,14 +33,6 @@
 .Carbon {
   @apply p-3 flex flex-col max-w-full;
 
-  @screen sm {
-    @apply max-w-xs;
-  }
-
-  @screen lg {
-    @apply mt-0;
-  }
-
   #carbonads span {
     @apply flex flex-col justify-between;
 
@@ -53,19 +45,11 @@
         @apply flex-row;
       }
 
-      @screen lg {
-        @apply flex-col;
-      }
-
       .carbon-img {
         @apply flex items-start justify-center mb-4;
 
         @media (min-width: 320px) {
           @apply mb-0;
-        }
-
-        @screen lg {
-          @apply mb-4;
         }
       }
 
@@ -78,10 +62,6 @@
 
         @media (min-width: 320px) {
           @apply ml-4;
-        }
-
-        @screen lg {
-          @apply ml-0;
         }
       }
     }

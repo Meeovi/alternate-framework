@@ -1,15 +1,16 @@
 // import * as CommercePkg from '~/types';
 // Use CommonJS require fallback with type ignore to avoid TS errors
 // @ts-ignore
-let sdk: any = undefined;
+let staticSdk: any = undefined;
 try {
   // @ts-ignore
-  sdk = require('alternate-core').sdk;
+  staticSdk = require('alternate-core').sdk;
 } catch (e) {
-  sdk = undefined;
+  staticSdk = undefined;
 }
 
 import type * as Sf from '~/composables/system/models';
+import { useNuxtApp } from '#app'
 
 /**
  * Strict Interface Contract for the commerce backend.
@@ -250,7 +251,17 @@ export interface CommerceClient {
 }
 
 function getRawCommerceClient(provider?: string, config?: any): any {
-  return (sdk as any)?.commerce || null;
+  try {
+    const nuxtApp = useNuxtApp()
+    const runtimeSdk = (nuxtApp.$sdk || {}) as any
+    if (runtimeSdk.commerce) {
+      return runtimeSdk.commerce
+    }
+  } catch {
+    // useNuxtApp() can fail outside component context; fall back below
+  }
+
+  return (staticSdk as any)?.commerce || null
 }
 
 function createNormalizedClient(client: any) {

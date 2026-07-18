@@ -21,12 +21,12 @@
 
   const model = ref(null)
 
-  const { $sdk } = useNuxtApp()
+  const { $directus, $readItem, $readItems } = useNuxtApp()
 
   const {
     data: listsPub
   } = await useAsyncData('listsPub', () => {
-    return $sdk.content.readItems('lists', {
+    return $directus.request($readItems('lists', {
       fields: ['*', {
         '*': ['*']
       }],
@@ -38,6 +38,6 @@
           _eq: 'List'
         }
       },
-    })
+    }))
   })
 </script>

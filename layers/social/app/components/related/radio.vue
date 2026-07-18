@@ -21,7 +21,7 @@
                 </div>
 
                 <v-avatar class="ma-3" rounded="0" size="125">
-                    <NuxtImg :src="$sdk.media?.getAssetUrl?.(radio?.image)" />
+                    <NuxtImg :src="getAssetURL(radio?.image)" />
                 </v-avatar>
             </div>
         </v-card>
@@ -29,6 +29,7 @@
 </template>
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
 const props = defineProps({
   radio: {
     type: Object,

@@ -3,9 +3,11 @@ export default defineNuxtConfig({
   modules: ["@nuxt/a11y", "@nuxt/eslint"],
 
   runtimeConfig: {
-    mybackend: {
-      endpoint: process.env.MYBACKEND_ENDPOINT,
-      token: process.env.MYBACKEND_TOKEN
+    public: {
+      adapterStarter: {
+        endpoint: process.env.ADAPTER_STARTER_ENDPOINT,
+        token: process.env.ADAPTER_STARTER_TOKEN
+      }
     }
   }
 })

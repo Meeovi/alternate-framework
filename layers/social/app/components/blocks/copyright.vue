@@ -24,16 +24,16 @@
 <script setup>
     import { useRoutePath } from '#shared/app/composables/routing/useRoutePath'
 
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem } = useNuxtApp()
 
     const { normalizeRoutePath } = useRoutePath()
     const toPath = (slug) => normalizeRoutePath(slug)
 
     const { data: blocksCopyright } = await useAsyncData('blocksCopyright', () => {
-        return $sdk.content.readItem('page_blocks', '5', { fields: ['*', 'media.*.*'] })
+        return $directus.request($readItem('page_blocks', '5', { fields: ['*', 'media.*.*'] }))
     })
 
     const { data: copyright } = await useAsyncData('copyright', () => {
-        return $sdk.content.readItem('navigation', '10')
+        return $directus.request($readItem('navigation', '10'))
     })
 </script>

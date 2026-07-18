@@ -33,7 +33,7 @@
                             <template v-slot:activator="{ props }">
                                 <div class="avatarBorder" v-for="(shorts, index) in short" :key="index">
                                     <v-avatar v-bind="props" size="60">
-                                        <NuxtImg provider="cloudinary" v-if="hasAsset(shorts?.thumbnail)" loading="lazy" :src="$sdk.media?.getAssetUrl?.(shorts?.thumbnail)" :alt="shorts?.name" cover />
+                                        <NuxtImg provider="cloudinary" v-if="hasAsset(shorts?.thumbnail)" loading="lazy" :src="getAssetURL(shorts?.thumbnail)" :alt="shorts?.name" cover />
 
                                         <NuxtImg provider="cloudinary" v-else src="/images/display-2.png" :alt="shorts?.name" cover />
                                     </v-avatar>
@@ -56,6 +56,7 @@
 </template>
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import vibe from '#social/app/pages/connect/vibe/[...id].vue'
     import addlive from '#social/app/components/features/vibeSections/add-live.vue'
     import {
@@ -64,22 +65,22 @@
     } from 'vue';
     import { useRoute } from 'vue-router';
 
-    const { $sdk } = useNuxtApp()
+  const { $sdk, $directus, $readItems } = useNuxtApp()
 
-    const tab = ref(null);
-    const createdialog = ref(false);
-    const dialog = ref(false);
-    const route = useRoute();
-    const shortId = computed(() => String(route.params.id || ''));
+  const tab = ref(null);
+  const createdialog = ref(false);
+  const dialog = ref(false);
+  const route = useRoute();
+  const shortId = computed(() => String(route.params.id || ''));
 
-    const hasAsset = (file) => Boolean($sdk.media?.getAssetUrl?.(file))
+  const hasAsset = (file) => Boolean(getAssetURL(file))
 
-    const {
-        data: short
-    } = await useAsyncData('short', async () => {
-        const resp = await $sdk.content.readItems('shorts', {
-            fields: ['*', { '*': ['*'] }]
-        })
-        return Array.isArray(resp) ? resp : []
-    })
+  const {
+      data: short
+  } = await useAsyncData('short', async () => {
+      const resp = await $directus.request($readItems('shorts', {
+          fields: ['*', { '*': ['*'] }]
+      }))
+      return Array.isArray(resp) ? resp : []
+  })
 </script>

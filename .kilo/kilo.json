@@ -20,5 +20,6 @@
       "variant": "Low",
       "max_output_tokens": 8192
     }
-  }
+  },
+  "snapshot": false
 }

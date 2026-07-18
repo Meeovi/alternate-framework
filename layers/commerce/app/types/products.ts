@@ -192,6 +192,7 @@ export interface ProductBase extends Timestamps {
   attributes?: ProductAttributeValue[]
   attributeSetId?: ID
   categoryIds?: ID[]
+  category?: string
   weight?: number
   taxClass?: string
   seo?: SeoMetadata

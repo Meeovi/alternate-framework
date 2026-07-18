@@ -9,9 +9,9 @@ function toList(value: any): MediaItem[] {
   return []
 }
 
-function mediaType(item: MediaItem, request: any) {
+function mediaType(item: MediaItem, directus: any) {
   const mime = String(item?.mime_type || item?.type || item?.file?.type || '').toLowerCase()
-  const ext = String(item?.file?.filename_download || item?.filename_download || item?.extension || request?.getAssetUrl?.(item?.file || item) || '').toLowerCase()
+  const ext = String(item?.file?.filename_download || item?.filename_download || item?.extension || '').toLowerCase()
 
   if (mime.startsWith('image/') || /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(ext)) return 'image'
   if (mime.startsWith('video/') || /\.(mp4|webm|mov|mkv|avi|m3u8)$/i.test(ext)) return 'video'
@@ -19,7 +19,7 @@ function mediaType(item: MediaItem, request: any) {
   return 'other'
 }
 
-function includesToken(item: MediaItem, token: string, request: any) {
+function includesToken(item: MediaItem, token: string, directus: any) {
   const haystack = [
     item?.title,
     item?.name,
@@ -28,7 +28,6 @@ function includesToken(item: MediaItem, token: string, request: any) {
     item?.file?.filename_download,
     item?.file?.title,
     item?.filename_download,
-    request?.getAssetUrl?.(item?.file || item),
     item?.tags,
   ]
     .filter(Boolean)
@@ -39,7 +38,7 @@ function includesToken(item: MediaItem, token: string, request: any) {
 }
 
 export function useMediaCenter() {
-  const { $sdk } = useNuxtApp()
+  const { $sdk, $directus, $readItems, $createItem, $uploadFiles } = useNuxtApp()
   const allMedia = ref<MediaItem[]>([])
   const imageMedia = ref<MediaItem[]>([])
   const videoMedia = ref<MediaItem[]>([])
@@ -50,11 +49,11 @@ export function useMediaCenter() {
   const smartAlbums = ref<Array<{ id: string; label: string; items: MediaItem[] }>>([])
 
   async function loadMedia() {
-    const list = toList(await $sdk.content.readItems('media', { sort: ['-date_created'] }))
+    const list = toList(await $directus.request($readItems('media', { sort: ['-date_created'] })))
     allMedia.value = list
-    imageMedia.value = list.filter((item) => mediaType(item, $sdk.content) === 'image')
-    videoMedia.value = list.filter((item) => mediaType(item, $sdk.content) === 'video')
-    audioMedia.value = list.filter((item) => mediaType(item, $sdk.content) === 'audio')
+    imageMedia.value = list.filter((item) => mediaType(item, $directus) === 'image')
+    videoMedia.value = list.filter((item) => mediaType(item, $directus) === 'video')
+    audioMedia.value = list.filter((item) => mediaType(item, $directus) === 'audio')
     sharedWithMe.value = list.filter((item) => Boolean(item?.is_shared || item?.shared || item?.shared_with_me))
 
     smartAlbums.value = [
@@ -66,7 +65,7 @@ export function useMediaCenter() {
   }
 
   async function loadFolders() {
-    const list = toList(await $sdk.content.readItems('media_folders', { sort: ['sort', 'name'] }))
+    const list = toList(await $directus.request($readItems('media_folders', { sort: ['sort', 'name'] })))
     folders.value = list
   }
 
@@ -84,7 +83,7 @@ export function useMediaCenter() {
           return form
         })()
 
-    const uploaded = await $sdk.content.uploadFiles(formData)
+    const uploaded = await $directus.request($uploadFiles(formData))
     await loadMedia()
     return uploaded
   }
@@ -100,14 +99,14 @@ export function useMediaCenter() {
       await loadMedia()
     }
 
-    const matches = allMedia.value.filter((item) => includesToken(item, token, $sdk.content))
+    const matches = allMedia.value.filter((item) => includesToken(item, token, $directus))
     searchResults.value = matches
     return matches
   }
 
   const createFolder = async (_payload: any) => {
     const payload = typeof _payload === 'string' ? { name: _payload } : _payload
-    const created = await $sdk.content.createItem('media_folders', payload)
+    const created = await $directus.request($createItem('media_folders', payload))
     await loadFolders()
     return created
   }
@@ -131,9 +130,9 @@ export function useMediaCenter() {
 
     return {
       all: inFolder,
-        images: inFolder.filter((item) => mediaType(item, $sdk.content) === 'image'),
-        videos: inFolder.filter((item) => mediaType(item, $sdk.content) === 'video'),
-        audio: inFolder.filter((item) => mediaType(item, $sdk.content) === 'audio'),
+        images: inFolder.filter((item) => mediaType(item, $directus) === 'image'),
+        videos: inFolder.filter((item) => mediaType(item, $directus) === 'video'),
+        audio: inFolder.filter((item) => mediaType(item, $directus) === 'audio'),
     }
   }
 

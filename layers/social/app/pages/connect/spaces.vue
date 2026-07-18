@@ -78,14 +78,13 @@
     import { componentMap } from '~/types/componentMap'
     import { useContentForm } from '../../composables/useContentForm'
 
-    const { $sdk } = useNuxtApp()
+    const { $sdk, $directus, $readItem, $readItems, $readFieldsByCollection } = useNuxtApp()
 
     const dialog = ref(false)
 
     const { data: spaceFields, error: fieldsError, pending } = await useAsyncData('space-schema-fields', async () => {
-      const { readFieldsByCollection } = $sdk.content || {}
-      if (!readFieldsByCollection) return []
-      const resp = await readFieldsByCollection('spaces')
+      if (!$readFieldsByCollection) return []
+      const resp = await $directus.request($readFieldsByCollection('spaces'))
       return Array.isArray(resp) ? resp : []
     })
 
@@ -95,11 +94,11 @@
     const currentTab = ref(null);
 
     const { data: spacesPage } = await useAsyncData('spacesPage', () => {
-        return $sdk.content.readItem('pages', '99', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('pages', '99', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: spacesBar } = await useAsyncData('spacesBar', () => {
-        return $sdk.content.readItem('navigation', '79', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('navigation', '79', { fields: ['*', { '*': ['*'] }] }))
     })
 
     // Normalize menus to objects: support both string arrays and object arrays

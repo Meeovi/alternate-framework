@@ -21,12 +21,12 @@
 
   import userCard from '#social/app/components/related/memberList.vue'
 
-  const { $sdk } = useNuxtApp()
+  const { $directus, $readItem, $readItems } = useNuxtApp()
 
   const model = ref(null)
 
   const { data: users } = await useAsyncData('users', async () => {
-    const resp = await $sdk.content.readItems('tags')
+    const resp = await $directus.request($readItems('tags'))
     return resp?.data || resp || []
   })
 </script>

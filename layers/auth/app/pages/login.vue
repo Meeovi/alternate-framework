@@ -7,6 +7,18 @@
       <v-card-subtitle class="pb-4">Enter your email and password to continue</v-card-subtitle>
 
       <v-card-text class="pt-4">
+        <!-- Vuetify Alert Component -->
+        <v-alert
+          v-if="alertMessage"
+          :type="alertType"
+          variant="tonal"
+          closable
+          class="mb-4"
+          @click:close="alertMessage = ''"
+        >
+          {{ alertMessage }}
+        </v-alert>
+
         <v-form ref="form" class="login-form-content" @submit.prevent="signIn">
           <v-text-field v-model="email" label="Email" type="email" placeholder="you@example.com" required
             variant="outlined" :rules="emailRules" class="mb-4" />
@@ -16,7 +28,7 @@
 
           <div class="d-flex justify-space-between align-center mb-4">
             <v-checkbox v-model="rememberMe" label="Remember Me" density="compact" class="my-0 loginCheckbox" />
-            <NuxtLink :to="localePath('/forgot-password')" class="text-caption text-decoration-none text-primary">
+            <NuxtLink to="/forgot-password" class="text-caption text-decoration-none text-primary">
               Forgot password?
             </NuxtLink>
           </div>
@@ -37,7 +49,7 @@
             v-for="provider in socialProviders"
             :key="provider.id"
             block
-            :title="lastMethod === provider.id ? 'Continue with' : 'Sign in with' `${provider.label}`"
+            :title="lastMethod === provider.id ? `Continue with ${provider.label}` : `Sign in with ${provider.label}`"
             :text="`Sign in with ${provider.label}`"
             variant="outlined"
             :disabled="loading"
@@ -49,7 +61,7 @@
 
         <div class="mt-6 text-center">
           <span class="text-caption">Don't have an account?</span>
-          <NuxtLink :to="localePath('/register')" class="text-caption text-decoration-none text-primary font-weight-medium">
+          <NuxtLink to="/register" class="text-caption text-decoration-none text-primary font-weight-medium">
             Sign Up
           </NuxtLink>
         </div>
@@ -72,16 +84,10 @@
   import {
     useAuth
   } from '../composables/useAuth';
-  import { useSupportedSocialProviders } from '../composables/useSupportedSocialProviders';
-  import useAppLocalePath from '../utils/useAppLocalePath';
-  import {
-    useAlert
-  } from '#shared/app/composables/globals/useAlert';
+  import { useSupportedSocialProviders } from '../composables/plugins/useSupportSocialProviders';
   import { authClient } from "../../lib/auth-client"
 
   const auth = useAuth();
-  const alert = useAlert();
-  const localePath = useAppLocalePath();
   const runtimeConfig = useRuntimeConfig();
   const { providers: socialProviders, load: loadSocialProviders } = useSupportedSocialProviders();
   const lastMethod = authClient.getLastUsedLoginMethod();
@@ -91,6 +97,10 @@
   const password = ref("");
   const loading = ref(false);
   const rememberMe = ref(false);
+
+  // Alert local states
+  const alertMessage = ref("");
+  const alertType = ref("error"); // 'error' or 'success'
 
   const emailRules = [
     (v) => !!v || 'Email is required',
@@ -108,6 +118,7 @@
 
   async function signIn() {
     if (loading.value) return;
+    alertMessage.value = ""; // Reset alert on new attempt
 
     const validationResult = await form.value?.validate?.();
     const valid = typeof validationResult === 'object'
@@ -125,14 +136,17 @@
         rememberMe: rememberMe.value,
       });
       if (error) {
-        alert.error(error.message);
+        alertType.value = "error";
+        alertMessage.value = error.message;
       } else {
         await auth.fetchSession();
-        alert.success('You have been signed in!');
+        alertType.value = "success";
+        alertMessage.value = 'You have been signed in!';
         await navigateTo('/');
       }
     } catch (err) {
-      alert.error('An error occurred during sign in');
+      alertType.value = "error";
+      alertMessage.value = 'An error occurred during sign in';
       console.error('Sign in error:', err);
     } finally {
       loading.value = false;

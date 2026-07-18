@@ -19,7 +19,7 @@ const editorRef = ref<Editor | null>(null)
 export function useSpacesBuilder () {
   const nuxtApp = useNuxtApp()
   const config = useRuntimeConfig()
-  const apiBase = computed(() => config?.public?.experienceBuilder?.apiBase as string)
+  const apiBase = computed(() => (config.public as any).experienceBuilder?.apiBase as string || '')
 
   const components = computed(() => getAllComponents())
 

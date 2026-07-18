@@ -128,7 +128,7 @@
     const fetchShortData = async () => {
         try {
             const shortId = route.params.id
-            const resp = await $sdk.content.readItem('shorts', shortId)
+            const resp = await $directus.request($readItem('shorts', shortId))
             const data = resp || null
             if (!data) return
             shortData.value = {

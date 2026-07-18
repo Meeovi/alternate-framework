@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { useCurrentUser } from './useCurrentUser'
+import { navigateTo } from 'nuxt/app'
 
 export function useAuthorization() {
   const user = useCurrentUser()

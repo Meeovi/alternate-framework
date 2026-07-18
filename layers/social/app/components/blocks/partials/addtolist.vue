@@ -101,7 +101,7 @@ const { user, fetchSession } = useAuth();
 await fetchSession();
 const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null;
 
-const { $sdk } = useNuxtApp();
+    const { $directus, $readItems, $sdk, $createItem } = useNuxtApp()
 
 const dialog = ref(false);
 const tab = ref('one');
@@ -119,12 +119,12 @@ const fetchLists = async () => {
     error.value = null;
 
     try {
-        const resp = await $sdk.content.readItems('lists', {
+        const resp = await $directus.request($readItems('lists', {
             filter: {
                 user: { _eq: currentUserId }
             },
             fields: ['id', 'name', 'description']
-        })
+        }))
         lists.value = resp && resp.data ? resp.data : resp;
     } catch (err) {
         console.error('Error fetching lists:', err);
@@ -161,7 +161,7 @@ const saveToLists = async () => {
 
         // Create list items for each selected list
         const promises = newLists.map(listId => {
-            return $sdk.content.createItem('list_items', {
+            return $directus.request($createItem('list_items', {
                 list: listId,
                 magento_product_uid: props.product.uid,
                 magento_product_sku: props.product.sku,
@@ -214,12 +214,12 @@ const productPreview = computed(() => {
 
 const isProductInList = async (listId, productUid) => {
     try {
-        const resp = await $sdk.content.readItems('list_items', {
+        const resp = await $directus.request($readItems('list_items', {
             filter: {
                 list: { _eq: listId },
                 magento_product_uid: { _eq: productUid }
             }
-        })
+        }))
         const items = resp && resp.data ? resp.data : resp;
         return Array.isArray(items) && items.length > 0;
     } catch (error) {

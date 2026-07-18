@@ -28,19 +28,19 @@
     import { ref } from '#imports'
     import TagChip from '../../components/related/tag.vue'
 
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem, $readItems } = useNuxtApp()
     const tab = ref(null)
 
     const { data: hashtags } = await useAsyncData('hashtags', () => {
-        return $sdk.content.readItems('tags', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItems('tags', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: hashtagPage } = await useAsyncData('hashtagPage', () => {
-        return $sdk.content.getItem('pages', '86', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('pages', '86', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: tagBar } = await useAsyncData('tagBar', () => {
-        return $sdk.content.getItem('navigation', '78', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('navigation', '78', { fields: ['*', { '*': ['*'] }] }))
     })
 
     useHead({

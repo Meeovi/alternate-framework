@@ -1,261 +1,186 @@
 import type { SocialDriverContract, Post, Comment, Space, Vibe, LiveStream, UserProfile, PostFilters, CreatePostInput, CreateCommentInput, CreateSpaceInput, StartLiveInput, Notification } from '../contracts/social.js'
-import { executeMesh } from '@mframework/adapter-gateway/client'
-import * as PostQueries from './operations/post.queries.js'
-import * as CommentQueries from './operations/comment.queries.js'
-import * as FeedQueries from './operations/feed.queries.js'
-import * as SpaceQueries from './operations/space.queries.js'
-import * as VibeQueries from './operations/vibe.queries.js'
-import * as UserQueries from './operations/user.queries.js'
 
 class SocialMeshDriver implements SocialDriverContract {
   posts = {
     getPosts: async (filters: PostFilters = {}): Promise<Post[]> => {
-      const result = await executeMesh(PostQueries.GetPostsQuery, { filter: filters })
-      return result?.posts ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     getPost: async (id: string): Promise<Post | null> => {
-      const result = await executeMesh(PostQueries.GetPostQuery, { id })
-      return result?.post ?? null
+      throw new Error('Social driver not yet implemented.')
     },
 
     createPost: async (input: CreatePostInput): Promise<Post> => {
-      const result = await executeMesh(PostQueries.CreatePostMutation, { input })
-      if (!result?.createPost) {
-        throw new Error('MFramework Driver Exception: Failed to create post downstream.')
-      }
-      return result.createPost
+      throw new Error('Social driver not yet implemented.')
     },
 
     updatePost: async (id: string, input: Partial<CreatePostInput>): Promise<Post> => {
-      const result = await executeMesh(PostQueries.UpdatePostMutation, { id, input })
-      if (!result?.updatePost) {
-        throw new Error('MFramework Driver Exception: Failed to update post downstream.')
-      }
-      return result.updatePost
+      throw new Error('Social driver not yet implemented.')
     },
 
     deletePost: async (id: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(PostQueries.DeletePostMutation, { id })
-      return result?.deletePost ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     repost: async (postId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(PostQueries.RepostMutation, { postId })
-      return result?.repost ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     unrepost: async (postId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(PostQueries.UnrepostMutation, { postId })
-      return result?.unrepost ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     isReposted: async (postId: string): Promise<{ reposted: boolean }> => {
-      const result = await executeMesh(PostQueries.IsRepostedQuery, { postId })
-      return result?.isReposted ?? { reposted: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     getReposts: async (postId: string, opts?: PostFilters): Promise<Post[]> => {
-      const result = await executeMesh(PostQueries.GetRepostsQuery, { postId, filter: opts })
-      return result?.reposts ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     mutePost: async (postId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(PostQueries.MutePostMutation, { postId })
-      return result?.mutePost ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     blockPost: async (postId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(PostQueries.BlockPostMutation, { postId })
-      return result?.blockPost ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     }
   }
 
   comments = {
     getComments: async (postId: string, opts?: { limit?: number; offset?: number }): Promise<Comment[]> => {
-      const result = await executeMesh(CommentQueries.GetCommentsQuery, { postId, limit: opts?.limit, offset: opts?.offset })
-      return result?.comments ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     getThread: async (commentId: string): Promise<Comment | null> => {
-      const result = await executeMesh(CommentQueries.GetThreadQuery, { commentId })
-      return result?.thread ?? null
+      throw new Error('Social driver not yet implemented.')
     },
 
     createComment: async (postId: string, input: CreateCommentInput): Promise<Comment> => {
-      const result = await executeMesh(CommentQueries.CreateCommentMutation, { postId, input })
-      if (!result?.createComment) {
-        throw new Error('MFramework Driver Exception: Failed to create comment downstream.')
-      }
-      return result.createComment
+      throw new Error('Social driver not yet implemented.')
     },
 
     replyToComment: async (commentId: string, input: CreateCommentInput): Promise<Comment> => {
-      const result = await executeMesh(CommentQueries.ReplyToCommentMutation, { commentId, input })
-      if (!result?.replyToComment) {
-        throw new Error('MFramework Driver Exception: Failed to reply to comment downstream.')
-      }
-      return result.replyToComment
+      throw new Error('Social driver not yet implemented.')
     },
 
     deleteComment: async (commentId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(CommentQueries.DeleteCommentMutation, { commentId })
-      return result?.deleteComment ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     reactToComment: async (commentId: string, reaction: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(CommentQueries.ReactToCommentMutation, { commentId, reaction })
-      return result?.reactToComment ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     reportComment: async (commentId: string, reason: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(CommentQueries.ReportCommentMutation, { commentId, reason })
-      return result?.reportComment ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     }
   }
 
   feed = {
     getFeed: async (type: string, opts?: PostFilters): Promise<Post[]> => {
-      const result = await executeMesh(FeedQueries.GetFeedQuery, { type, filter: opts })
-      return result?.feed ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     getUserFeed: async (userId: string, opts?: PostFilters): Promise<Post[]> => {
-      const result = await executeMesh(FeedQueries.GetUserFeedQuery, { userId, filter: opts })
-      return result?.userFeed ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     getNotifications: async (opts?: { limit?: number; offset?: number; unreadOnly?: boolean }): Promise<Notification[]> => {
-      const result = await executeMesh(FeedQueries.GetNotificationsQuery, { limit: opts?.limit, offset: opts?.offset, unreadOnly: opts?.unreadOnly })
-      return result?.notifications ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     markNotificationRead: async (notificationId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(FeedQueries.MarkNotificationReadMutation, { notificationId })
-      return result?.markNotificationRead ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     }
   }
 
   spaces = {
     getSpaces: async (opts?: { limit?: number; query?: string }): Promise<Space[]> => {
-      const result = await executeMesh(SpaceQueries.GetSpacesQuery, { limit: opts?.limit, query: opts?.query })
-      return result?.spaces ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     getSpace: async (id: string): Promise<Space | null> => {
-      const result = await executeMesh(SpaceQueries.GetSpaceQuery, { id })
-      return result?.space ?? null
+      throw new Error('Social driver not yet implemented.')
     },
 
     createSpace: async (input: CreateSpaceInput): Promise<Space> => {
-      const result = await executeMesh(SpaceQueries.CreateSpaceMutation, { input })
-      if (!result?.createSpace) {
-        throw new Error('MFramework Driver Exception: Failed to create space downstream.')
-      }
-      return result.createSpace
+      throw new Error('Social driver not yet implemented.')
     },
 
     joinSpace: async (spaceId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(SpaceQueries.JoinSpaceMutation, { spaceId })
-      return result?.joinSpace ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     leaveSpace: async (spaceId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(SpaceQueries.LeaveSpaceMutation, { spaceId })
-      return result?.leaveSpace ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     getSpaceMembers: async (spaceId: string, opts?: { limit?: number }): Promise<UserProfile[]> => {
-      const result = await executeMesh(SpaceQueries.GetSpaceMembersQuery, { spaceId, limit: opts?.limit })
-      return result?.members ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     getSpacePosts: async (spaceId: string, opts?: PostFilters): Promise<Post[]> => {
-      const result = await executeMesh(SpaceQueries.GetSpacePostsQuery, { spaceId, filter: opts })
-      return result?.spacePosts ?? []
+      throw new Error('Social driver not yet implemented.')
     }
   }
 
   vibez = {
     getVibez: async (opts?: { limit?: number }): Promise<Vibe[]> => {
-      const result = await executeMesh(VibeQueries.GetVibezQuery, { limit: opts?.limit })
-      return result?.vibez ?? []
+      throw new Error('Social driver not yet implemented.')
     },
 
     uploadVibe: async (data: FormData): Promise<Vibe> => {
-      const file = data.get('file') as File | null
-      if (!file) {
-        throw new Error('MFramework Driver Exception: No file provided for vibe upload.')
-      }
-      const result = await executeMesh(VibeQueries.UploadVibeMutation, { file })
-      if (!result?.uploadVibe) {
-        throw new Error('MFramework Driver Exception: Failed to upload vibe downstream.')
-      }
-      return result.uploadVibe
+      throw new Error('Social driver not yet implemented.')
     },
 
     likeVibe: async (vibeId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(VibeQueries.LikeVibeMutation, { vibeId })
-      return result?.likeVibe ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     getVibe: async (vibeId: string): Promise<Vibe | null> => {
-      const result = await executeMesh(VibeQueries.GetVibeQuery, { vibeId })
-      return result?.vibe ?? null
+      throw new Error('Social driver not yet implemented.')
     },
 
     startLive: async (opts?: StartLiveInput): Promise<LiveStream> => {
-      const result = await executeMesh(VibeQueries.StartLiveMutation, { input: opts })
-      if (!result?.startLive) {
-        throw new Error('MFramework Driver Exception: Failed to start live stream downstream.')
-      }
-      return result.startLive
+      throw new Error('Social driver not yet implemented.')
     },
 
     stopLive: async (liveId: string): Promise<{ success: boolean }> => {
-      const result = await executeMesh(VibeQueries.StopLiveMutation, { liveId })
-      return result?.stopLive ?? { success: false }
+      throw new Error('Social driver not yet implemented.')
     },
 
     getLive: async (liveId: string): Promise<LiveStream | null> => {
-      const result = await executeMesh(VibeQueries.GetLiveQuery, { liveId })
-      return result?.live ?? null
+      throw new Error('Social driver not yet implemented.')
     },
 
     getLiveViewers: async (liveId: string): Promise<{ count: number }> => {
-      const result = await executeMesh(VibeQueries.GetLiveViewersQuery, { liveId })
-      return result?.liveViewers ?? { count: 0 }
+      throw new Error('Social driver not yet implemented.')
     }
   }
 
   async getUser(userId: string): Promise<UserProfile | null> {
-    const result = await executeMesh(UserQueries.GetUserQuery, { userId })
-    return result?.user ?? null
+    throw new Error('Social driver not yet implemented.')
   }
 
   async searchUsers(query: string): Promise<UserProfile[]> {
-    const result = await executeMesh(UserQueries.SearchUsersQuery, { query })
-    return result?.searchUsers ?? []
+    throw new Error('Social driver not yet implemented.')
   }
 
   async follow(userId: string): Promise<{ success: boolean }> {
-    const result = await executeMesh(UserQueries.FollowMutation, { userId })
-    return result?.follow ?? { success: false }
+    throw new Error('Social driver not yet implemented.')
   }
 
   async unfollow(userId: string): Promise<{ success: boolean }> {
-    const result = await executeMesh(UserQueries.UnfollowMutation, { userId })
-    return result?.unfollow ?? { success: false }
+    throw new Error('Social driver not yet implemented.')
   }
 
   async getFollowers(userId: string, opts?: { limit?: number }): Promise<UserProfile[]> {
-    const result = await executeMesh(UserQueries.GetFollowersQuery, { userId, limit: opts?.limit })
-    return result?.followers ?? []
+    throw new Error('Social driver not yet implemented.')
   }
 
   async getFollowing(userId: string, opts?: { limit?: number }): Promise<UserProfile[]> {
-    const result = await executeMesh(UserQueries.GetFollowingQuery, { userId, limit: opts?.limit })
-    return result?.following ?? []
+    throw new Error('Social driver not yet implemented.')
   }
 }
 

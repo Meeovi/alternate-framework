@@ -75,18 +75,18 @@ export function registerListItemField(field: string) {
  * Main composable
  */
 export function useLists() {
-  const { $sdk } = useNuxtApp() as any
+  const { $directus, $readItem, $readItems, $createItem, $updateItem, $deleteItem } = useNuxtApp() as any
 
   // -----------------------------
   // LISTS
   // -----------------------------
 
   const getList = async (id: string | number, options?: Record<string, any>) => {
-    return await $sdk.content.readItem('lists', id, options) || null
+    return await $directus.request($readItem('lists', id, options)) || null
   }
 
   const listLists = async (options?: Record<string, any>) => {
-    const result = await $sdk.content.readItems('lists', options)
+    const result = await $directus.request($readItems('lists', options))
     return Array.isArray(result) ? result : []
   }
 
@@ -100,7 +100,7 @@ export function useLists() {
     const type = payload.type || 'basic'
     const config = listTypeRegistry[type]
 
-    return await $sdk.content.createItem('lists', {
+    return await $directus.request($createItem('lists', {
       ...payload,
       type,
       color: payload.color || config?.color,
@@ -109,11 +109,11 @@ export function useLists() {
   }
 
   const updateList = async (id: string | number, payload: Record<string, any>) => {
-    return await $sdk.content.updateItem('lists', id, payload) || null
+    return await $directus.request($updateItem('lists', id, payload) as any) || null
   }
 
   const deleteList = async (id: string | number) => {
-    return await $sdk.content.deleteItem('lists', id) || null
+    return await $directus.request($deleteItem('lists', id)) || null
   }
 
   // -----------------------------
@@ -127,7 +127,7 @@ export function useLists() {
       if (listItemFieldRegistry.has(key)) safePayload[key] = payload[key]
     }
 
-    return await $sdk.content.createItem('list_items', {
+    return await $directus.request($createItem('list_items', {
       completed: false,
       ...safePayload
     }) || null
@@ -140,11 +140,11 @@ export function useLists() {
       if (listItemFieldRegistry.has(key)) safePayload[key] = payload[key]
     }
 
-    return await $sdk.content.updateItem('list_items', id, safePayload) || null
+    return await $directus.request($updateItem('list_items', id, safePayload) as any) || null
   }
 
   const deleteListItem = async (id: string | number) => {
-    return await $sdk.content.deleteItem('list_items', id) || null
+    return await $directus.request($deleteItem('list_items', id)) || null
   }
 
   const reorderItems = async (items: Array<{ id: string | number }>) => {
@@ -164,10 +164,10 @@ export function useLists() {
   }
 
   const listSubtasks = async (parentId: string | number) => {
-    const result = await $sdk.content.readItems('list_items', {
+    const result = await $directus.request($readItems('list_items', {
       filter: { parentId: { _eq: parentId } },
       sort: ['sort']
-    })
+    }))
     return Array.isArray(result) ? result : []
   }
 
@@ -178,13 +178,13 @@ export function useLists() {
   const listToday = async (userId: string | number) => {
     const today = new Date().toISOString().split('T')[0]
 
-    const result = await $sdk.content.readItems('list_items', {
+    const result = await $directus.request($readItems('list_items', {
       filter: {
         userId: { _eq: userId },
         dueDate: { _eq: today }
       },
       sort: ['sort']
-    })
+    }))
 
     return Array.isArray(result) ? result : []
   }
@@ -192,25 +192,25 @@ export function useLists() {
   const listUpcoming = async (userId: string | number) => {
     const today = new Date().toISOString().split('T')[0]
 
-    const result = await $sdk.content.readItems('list_items', {
+    const result = await $directus.request($readItems('list_items', {
       filter: {
         userId: { _eq: userId },
         dueDate: { _gt: today }
       },
       sort: ['dueDate', 'sort']
-    })
+    }))
 
     return Array.isArray(result) ? result : []
   }
 
   const listStarred = async (userId: string | number) => {
-    const result = await $sdk.content.readItems('list_items', {
+    const result = await $directus.request($readItems('list_items', {
       filter: {
         userId: { _eq: userId },
         priority: { _eq: 'high' }
       },
       sort: ['sort']
-    })
+    }))
 
     return Array.isArray(result) ? result : []
   }

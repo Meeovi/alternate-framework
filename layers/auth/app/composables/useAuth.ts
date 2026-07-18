@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/vue";
-import { useRequestHeaders, useRequestURL } from "#app";
+import { useRequestHeaders, useRequestURL } from "nuxt/app";
 
 export function useAuth() {
 	const url = useRequestURL();

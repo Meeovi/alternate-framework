@@ -17,12 +17,12 @@
 
   import postCard from '#social/app/components/related/post.vue'
 
-  const { $sdk } = useNuxtApp()
+  const { $directus, $readItem, $readItems } = useNuxtApp()
 
   const model = ref(null)
 
   const { data: note } = await useAsyncData('note', async () => {
-    const resp = await $sdk.content.readItems('posts')
+    const resp = await $directus.request($readItems('posts'))
     return resp?.data || resp || []
   })
 </script>

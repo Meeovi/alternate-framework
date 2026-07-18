@@ -17,7 +17,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Push the module options into public runtime config so our plugin can read them
     nuxt.options.runtimeConfig.public.directusAdapter = {
-      ...nuxt.options.runtimeConfig.directus,
+      ...nuxt.options.runtimeConfig.public.directus,
       ...options
     }
 

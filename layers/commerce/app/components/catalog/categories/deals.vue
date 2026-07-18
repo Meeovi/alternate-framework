@@ -1,83 +1,128 @@
 <template>
-  <div>
-    <v-card elevation="0" style="min-height: 100vh !important;">
-      <v-layout>
-        <v-main>
-          <v-tabs center-active v-model="tab" bg-color="transparent">
-            <div v-for="(menu, index) in dealbarMenus" :key="index">
-              <v-tab :value="menu?.value">{{ menu?.name }}</v-tab>
-            </div>
-          </v-tabs>
+    <div>
+        <v-card elevation="0" style="min-height: 100vh !important;">
+            <v-layout>
+                <v-main>
+                    <v-tabs center-active v-model="tab" bg-color="transparent">
+                        <div v-for="(menu, index) in dealbar?.menus" :key="index">
+                    <v-tab :value="menu?.value">{{ menu?.name }}</v-tab>
+                </div>
+                    </v-tabs>
 
-          <v-card-text>
-            <v-tabs-window v-model="tab">
-              <v-tabs-window-item :value="dealbarMenus[0]?.value">
-                <v-row>
-                  <v-col cols="3" v-for="products in dealsProducts" :key="products">
-                    <productCard :product="products" />
-                  </v-col>
-                </v-row>
-              </v-tabs-window-item>
+                    <v-card-text>
+                        <v-tabs-window v-model="tab">
+                            <v-tabs-window-item :value="dealbar?.menus[0]?.value">
+                                <v-row>
+                                    <v-col cols="3" v-for="products in dealsProducts" :key="products">
+                                        <productCard :product="products" />
+                                    </v-col>
+                                </v-row>
+                            </v-tabs-window-item>
 
-              <v-tabs-window-item :value="dealbarMenus[1]?.value">
-                <v-row>
-                  <v-col cols="3" v-for="products in dollar" :key="products">
-                    <productCard :product="products" />
-                  </v-col>
-                </v-row>
-              </v-tabs-window-item>
-            </v-tabs-window>
-          </v-card-text>
-        </v-main>
-      </v-layout>
-    </v-card>
-  </div>
+                            <v-tabs-window-item :value="dealbar?.menus[1]?.value">
+                                <v-row>
+                                    <v-col cols="3" v-for="products in dollar" :key="products">
+                                        <productCard :product="products" />
+                                    </v-col>
+                                </v-row>
+                            </v-tabs-window-item>
+
+                            <v-tabs-window-item :value="dealbar?.menus[2]?.value" id="bundled-discounts">
+                                <v-row>
+                                    <v-col cols="3" v-for="products in bundledDiscounts" :key="products">
+                                        <productCard :product="products" />
+                                    </v-col>
+                                </v-row>
+                            </v-tabs-window-item>
+                        </v-tabs-window>
+                    </v-card-text>
+                </v-main>
+            </v-layout>
+        </v-card>
+    </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, computed } from '#imports'
-import productCard from '#commerce/app/components/catalog/product/productCard.vue'
-import { useProducts } from '#commerce/app/composables/catalog/products/useProducts'
+    import {
+        ref
+    } from 'vue'
+    import productCard from '../product/productCard.vue'
 
-const { $sdk } = useNuxtApp()
-const tab = ref(null)
+    const {
+        $directus,
+        $readItem,
+        $readItems
+    } = useNuxtApp()
 
-const { data: dealbar } = await useAsyncData('dealbar', async () => {
-  return $sdk.content.getItem('navigation', '49', {
-    fields: ['*', { '*': ['*'] }]
-  })
-})
-const dealbarMenus = computed(() => Array.isArray(dealbar.value?.menus) ? dealbar.value.menus : [])
+    const {
+        data: dealbar
+    } = await useAsyncData('dealbar', () => {
+        return $directus.request($readItem('navigation', '49', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
+    })
 
-const props = defineProps({
-  category: {
-    type: String,
-    required: false,
-    default: ''
-  }
-})
+    const {
+        data: dealsProducts
+    } = await useAsyncData('dealsProducts', () => {
+        return $directus.request($readItems('products', {
+            fields: ['*', {
+                '*': ['*']
+            }],
+            filter: {
+                price: {
+                    _lte: 20
+                }
+            }
+        }))
+    })
 
-const { fetchProducts, data: productsData, loading } = useProducts()
-const allProducts = ref([])
-const dealsProducts = ref([])
-const dollar = ref([])
+    const {
+        data: dollar
+    } = await useAsyncData('dollar', () => {
+        return $directus.request($readItems('products', {
+            fields: ['*', {
+                '*': ['*']
+            }],
+            filter: {
+                price: {
+                    _lte: 1
+                }
+            }
+        }))
+    })   
+    
+    const {
+        data: bundledDiscounts
+    } = await useAsyncData('bundledDiscounts', () => {
+        return $directus.request($readItems('products', {
+            fields: ['*', {
+                '*': ['*']
+            }],
+            filter: {
+                price: {
+                    _lte: 50
+                },
+                product_types: {
+                    product_types_id: {
+                        _eq: 'Bundled Products'
+                    }
+                }
+            }
+        }))
+    })    
 
-async function loadProducts() {
-  const resultRef = await fetchProducts()
-  const all = (resultRef.value?.items || [])
-  // Filter by category if provided
-  const filtered = props.category
-    ? all.filter(p => String(p.category_id || p.category || p.categoryId) === String(props.category))
-    : all
-  allProducts.value = filtered
-  dealsProducts.value = filtered.filter(p => p.price && p.price <= 20)
-  dollar.value = filtered.filter(p => p.price && Number(p.price) === 1)
-}
+    const tab = ref(null)
+    const props = defineProps({
+        category: {
+            type: String,
+            required: true,
+        },
+    });
 
-onMounted(loadProducts)
-watch(() => props.category, loadProducts)
-
-useHead({
-  title: 'Deals',
-})
+    useHead({
+        title: 'Deals',
+    })
 </script>

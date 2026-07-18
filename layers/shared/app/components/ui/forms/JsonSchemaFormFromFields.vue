@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import JsonFormRenderer from '../../../../../../packages/modules/ui-forms/src/components/JsonFormRenderer.vue'
+import JsonFormRenderer from '@mframework/meeovi-forms/components/JsonFormRenderer.vue'
 
 type ContentField = {
   field?: string

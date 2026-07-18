@@ -6,15 +6,15 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
                         <div v-if="matchesExtension(post?.file, ['.mp4'])">
-                            <video :src="$sdk.media?.getAssetUrl?.(post?.file)"></video>
+                            <video :src="getAssetURL(post?.file)"></video>
                         </div>
 
                         <div v-else-if="matchesExtension(post?.audio, ['.mp3'])">
-                            <audio :src="$sdk.media?.getAssetUrl?.(post?.audio)"></audio>
+                            <audio :src="getAssetURL(post?.audio)"></audio>
                         </div>
 
                         <div v-else-if="matchesExtension(post?.image, ['.gif'])">
-                            <NuxtImg provider="cloudinary" loading="lazy" :src="$sdk.media?.getAssetUrl?.(post?.image)"
+                            <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 
@@ -71,7 +71,7 @@
                                 </h4>
                                 <h5 class="card-text mbr-fonts-style display-7">
                                     <NuxtLink v-if="hasAsset(post?.author?.avatar)" :to="`/user/${post?.author?.id}`">
-                                        <v-avatar :image="$sdk.media?.getAssetUrl?.(post?.author?.avatar)"></v-avatar>
+                                        <v-avatar :image="getAssetURL(post?.author?.avatar)"></v-avatar>
                                     </NuxtLink>
 
                                     <NuxtLink v-else :to="`/user/${post?.author?.id}`">
@@ -159,6 +159,7 @@
 </template>
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import tagCard from '#social/app/components/related/tag.vue';
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
@@ -173,17 +174,21 @@
 
     const { $sdk } = useNuxtApp()
     const route = useRoute();
-    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || $sdk.media?.getAssetUrl?.(file) || '')
+    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetURL(file) || '')
         .toLowerCase()
     const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
-    const hasAsset = (file) => Boolean($sdk.media?.getAssetUrl?.(file))
+    const hasAsset = (file) => Boolean(getAssetURL(file))
+    const {
+        $directus,
+        $readItems
+    } = useNuxtApp()
 
     const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
 
     const {
         data: post
     } = await useAsyncData('post', async () => {
-        const resp = await $sdk.content.readItems('posts', {
+        const resp = await $directus.request($readItems('posts', {
             filter: {
                 slug: {
                     _eq: `${slugParam}`
@@ -191,7 +196,7 @@
             },
             fields: ['*', 'author.*', 'image.*', 'file.*', 'audio.*'],
             limit: 1
-        })
+        }))
         return resp?.[0] || null
     })
 

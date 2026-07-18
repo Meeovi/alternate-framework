@@ -1,9 +1,11 @@
 import type { User } from 'better-auth'
 import { useAuth } from './useAuth'
 import { useToast } from './useSnackbar'
+import { useState } from 'nuxt/app'
+import { computed, onMounted } from 'vue'
 
 export const useImpersonation = () => {
-  const { session } = useAuth()
+  useAuth()
   const toast = useToast()
 
   const impersonatedUser = useState<User | null>('impersonated-user', () => null)

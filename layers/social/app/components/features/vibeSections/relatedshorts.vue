@@ -21,10 +21,10 @@
 
   const model = ref(null);
   
-  const { $sdk } = useNuxtApp()
+  const { $directus, $readItems } = useNuxtApp()
 
   const { data: short } = await useAsyncData('short', async () => {
-    const resp = await $sdk.content.readItems('shorts', { fields: ['*', { '*': ['*'] }] })
+    const resp = await $directus.request($readItems('shorts', { fields: ['*', { '*': ['*'] }] }))
     return resp?.data || resp || []
   })
 </script>

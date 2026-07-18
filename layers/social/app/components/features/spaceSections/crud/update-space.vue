@@ -79,7 +79,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
- const { $readItem, $deleteItem, $updateItem, $uploadFiles } = useNuxtApp()
+ const { $readItem, $deleteItem, $updateItem, $uploadFiles, $sdk } = useNuxtApp()
 import updateSpace from '#social/app/composables/spaces/updateSpace';
 
 const route = useRoute();
@@ -107,7 +107,7 @@ const loading = ref(false);
 const fetchSpaceData = async () => {
     try {
         const spaceId = route.params.id;
-        const resp = await $sdk.content.readItem('spaces', spaceId)
+        const resp = await $directus.request($readItem('spaces', spaceId))
         const response = resp || null
 
         if (response) {

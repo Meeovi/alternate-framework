@@ -576,9 +576,9 @@ const loadCommerceFeatures = async () => {
 }
 
 const loadSocialFeatures = async () => {
-  const { $sdk } = useNuxtApp()
+  const { $directus, $readItem, $readItems } = useNuxtApp()
 
-  const sdkReadItems = (collection: string, opts: any = {}) => $sdk.content.readItems(collection, opts)
+  const sdkReadItems = (collection: string, opts: any = {}) => $directus.request($readItems(collection, opts))
 
   const currentId = String((user.value as any)?.id || (customerFallback.value as any)?.id || '')
   const currentEmail = String((user.value as any)?.email || (customerFallback.value as any)?.email || '').toLowerCase()
@@ -631,7 +631,7 @@ const loadSocialFeatures = async () => {
   }
 
   const fetchEvents = async () => {
-    const res = await $sdk.content.readItems('products', {
+    const res = await $directus.request($readItems('products', {
       limit: 8,
       sort: ['-date_created'],
       fields: ['*', { '*': ['*'] }],
@@ -644,7 +644,7 @@ const loadSocialFeatures = async () => {
           },
         },
       },
-    })
+    }))
     const items = res?.data || res || []
     return items.filter((item: any) => {
       const typeName = item?.product_type?.product_types_id?.name || item?.type?.name || item?.type

@@ -1,0 +1,57 @@
+{
+  "name": "@mframework/meeovi-forms",
+  "version": "0.1.0",
+  "description": "Schema-driven, backend-agnostic JSON forms module for M Framework.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": {
+      "types": "./module.ts",
+      "import": "./module.ts"
+    },
+    "./components/*": {
+      "import": "./src/components/*"
+    },
+    "./composables/*": {
+      "import": "./src/composables/*"
+    },
+    "./schemas/*": {
+      "import": "./src/schemas/*"
+    }
+  },
+  "files": [
+    "module.ts",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "nuxt-module-build build",
+    "dev": "npm run dev:prepare && nuxt dev playground",
+    "dev:build": "nuxt build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
+    "prepack": "npm run build",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@jsonforms/core": "^3.8.0",
+    "@jsonforms/vue": "^3.8.0",
+    "@jsonforms/vue-vuetify": "^3.8.0",
+    "@nuxt/kit": "^4.4.8",
+    "maska": "^2.1.11",
+    "zod": "^3.24.0"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "^1.0.2",
+    "@types/node": "latest",
+    "nuxt": "^4.4.8",
+    "typescript": "~6.0.3",
+    "vue-tsc": "^3.3.3"
+  }
+}

@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { useJsonForm } from '../../../../../../packages/modules/ui-forms/src/composables/useJsonForm'
+import { useJsonForm } from '@mframework/meeovi-forms'
 import DynamicFormElement from './DynamicFormElement.vue'
 import useDynamicSchema, { type DynamicContentField } from '../../../composables/content/useDynamicSchema'
 import useSSF from '../../../composables/security/ssf'
@@ -54,7 +54,7 @@ const emit = defineEmits<{
   error: [value: unknown]
 }>()
 
-const { $sdk } = useNuxtApp()
+const { $directus, $createItem } = useNuxtApp()
 const { fields: schemaFields, loading, error: schemaError, loadSchema: loadSchemaForCollection } = useDynamicSchema()
 
 const submitting = ref(false)
@@ -195,7 +195,7 @@ async function submitForm() {
       return
     }
 
-    const created = await $sdk.content.createItem(props.collection, { ...form.model })
+    const created = await $directus.request($createItem(props.collection, { ...form.model }))
     emit('submitted', created)
 
     if (props.clearOnSuccess) {

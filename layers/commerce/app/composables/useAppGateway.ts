@@ -1,3 +1,4 @@
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
 function createFallbackContentApi() {
   const request = (async () => []) as any
 
@@ -12,7 +13,7 @@ function createFallbackContentApi() {
   request.deleteItem = async () => true
   request.deleteItems = async () => true
   request.uploadFiles = async () => null
-  request.getAssetUrl = () => ''
+  request.getAssetUrl = () => getAssetURL('') || ''
   request.request = async () => null
   request.readUsers = async () => []
   request.readUser = async () => null
@@ -39,8 +40,6 @@ export function useAppGateway() {
 
   if (!sdk.content || typeof sdk.content.readItems !== 'function') {
     sdk.content = createFallbackContentApi()
-  } else {
-    Object.assign(sdk.content, createFallbackContentApi())
   }
 
   sdk.auth ||= {}

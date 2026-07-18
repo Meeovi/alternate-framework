@@ -18,9 +18,9 @@
 
   const model = ref(null)
 
-  const { $sdk } = useNuxtApp()
+  const { $directus, $readItem, $readItems } = useNuxtApp()
   const { data: vibez } = await useAsyncData('vibez', async () => {
-    const resp = await $sdk.content.readItems('shorts')
+    const resp = await $directus.request($readItems('shorts'))
     return resp?.data || resp || []
   })
 </script>

@@ -38,7 +38,7 @@ type AdapterProvider = {
   name: string
   signIn: (payload: AdapterSignInPayload) => Promise<AdapterAuthResult>
   signUp: (payload: AdapterSignUpPayload) => Promise<AdapterAuthResult>
-  getSession: (token: string) => Promise<AdapterAuthUser | null>
+  getSession: (token: string, event?: H3Event) => Promise<AdapterAuthUser | null>
   signOut?: (token: string) => Promise<void>
 }
 
@@ -284,6 +284,83 @@ registerAdapter({
   },
 })
 
+const normalizeBetterAuthUser = (user: any): AdapterAuthUser => ({
+  id: String(user?.id || user?.email || ''),
+  email: user?.email || null,
+  name:
+    user?.name ||
+    [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
+    user?.email ||
+    null,
+  role: user?.role || 'customer',
+  first_name: user?.firstName || user?.first_name || null,
+  last_name: user?.lastName || user?.last_name || null,
+})
+
+// Delegates to the better-auth server already mounted at /api/auth/[...all].
+// Internal requests resolve via Nitro's patched $fetch (relative URLs).
+const callBetterAuth = async (event: H3Event | undefined, path: string, init: RequestInit = {}) => {
+  const headers: Record<string, string> = { 'content-type': 'application/json', ...(init.headers || {}) }
+  if (event) {
+    const cookie = event.headers.get('cookie')
+    if (cookie) headers.cookie = cookie
+  }
+  return $fetch(`/api/auth${path}`, {
+    method: init.method || 'GET',
+    headers,
+    body: init.body ? JSON.stringify(init.body) : undefined,
+  })
+}
+
+const signInBetterAuth = async (email: string, password: string): Promise<AdapterAuthResult> => {
+  const res: any = await callBetterAuth(undefined, '/sign-in/email', {
+    method: 'POST',
+    body: { email, password },
+  })
+  if (res?.error || !res?.user) {
+    throw createError({ statusCode: 401, statusMessage: res?.error?.message || 'Invalid credentials' })
+  }
+  return {
+    token: res?.token || res?.session?.token || '',
+    user: normalizeBetterAuthUser(res.user),
+  }
+}
+
+const signUpBetterAuth = async (input: { email: string; password: string; name?: string }) => {
+  const res: any = await callBetterAuth(undefined, '/sign-up/email', {
+    method: 'POST',
+    body: { email: input.email, password: input.password, name: input.name },
+  })
+  if (res?.error || !res?.user) {
+    throw createError({ statusCode: 400, statusMessage: res?.error?.message || 'Registration failed' })
+  }
+  return signInBetterAuth(input.email, input.password)
+}
+
+registerAdapter({
+  name: 'better-auth',
+  signIn: async (payload) => {
+    const { email, password } = ensureNonEmptyCredentials(payload)
+    return signInBetterAuth(email, password)
+  },
+  signUp: async (payload) => {
+    const { email, password } = ensureNonEmptyCredentials(payload)
+    return signUpBetterAuth({ email, password, name: payload?.name })
+  },
+  getSession: async (token, event) => {
+    try {
+      const res: any = await callBetterAuth(event, '/get-session', { method: 'GET' })
+      if (!res?.user) return null
+      return normalizeBetterAuthUser(res.user)
+    } catch {
+      return null
+    }
+  },
+  signOut: async () => {
+    await callBetterAuth(undefined, '/sign-out', { method: 'POST' }).catch(() => {})
+  },
+})
+
 const getActiveAdapterProvider = async (): Promise<AdapterProvider> => {
   await ensureRegistrarsLoaded()
 
@@ -329,7 +406,7 @@ export const getAdapterSession = async (event: H3Event) => {
   if (!token) return null
 
   try {
-    const user = await provider.getSession(token)
+    const user = await provider.getSession(token, event)
     if (!user) return null
 
     const session: AdapterSession = {

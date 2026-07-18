@@ -16,7 +16,7 @@
                 </div>
 
                 <v-avatar class="ma-3" :rounded="0" size="125">
-                    <NuxtImg :src="$sdk.media?.getAssetUrl?.(radio?.image)" />
+                    <NuxtImg :src="getAssetURL(radio?.image)" />
                 </v-avatar>
             </div>
         </v-card>
@@ -26,6 +26,7 @@
 
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
     const { $sdk } = useNuxtApp()
 

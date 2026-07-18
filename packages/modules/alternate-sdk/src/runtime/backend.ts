@@ -1,10 +1,29 @@
-import type { APISource } from '@mframework/adapter-gateway'
-import { GatewayAdapter } from '@mframework/adapter-gateway'
+type APISource = {
+  name: string
+  type: string
+  endpoint: string
+  headers?: Record<string, string>
+}
 
 type GatewayResult<T = any> = {
   ok: boolean
   data?: T
   error?: string
+}
+
+class GatewayAdapter {
+  constructor(opts: { sources: APISource[]; envPrefix?: string }) {
+    void opts
+  }
+
+  async executeRequest(_sourceName: string, _path: string, _opts?: {
+    method?: string
+    query?: Record<string, any>
+    body?: any
+    headers?: Record<string, string>
+  }): Promise<GatewayResult> {
+    throw new Error('GatewayAdapter not implemented.')
+  }
 }
 
 const isBrowser = typeof (globalThis as any).window !== 'undefined'

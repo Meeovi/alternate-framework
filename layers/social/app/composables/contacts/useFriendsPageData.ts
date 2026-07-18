@@ -30,8 +30,8 @@ const defaultFriendBar: FriendBarConfig = {
 }
 
 export default function useFriendsPageData(): UseFriendsPageDataResult {
-  const { $sdk } = useNuxtApp()
-  const readItems = $sdk.content.readItems.bind($sdk.content)
+  const { $directus, $readItems } = useNuxtApp()
+  const readItems = (collection: string, query?: any) => $directus.request($readItems(collection, query))
 
   const { data: friendBar, refresh: refreshBar } = useAsyncData<FriendBarConfig | null>('friends:bar', async () => {
     try {

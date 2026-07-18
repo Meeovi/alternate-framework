@@ -10,14 +10,17 @@
         onMounted,
         onUnmounted
     } from 'vue';
-    const { $sdk } = useNuxtApp()
+    const {
+        $directus,
+        $readItem
+    } = useNuxtApp()
 
     const {
         data: department
     } = await useAsyncData('department', () => {
-        return $sdk.content.getItem('departments', '68', {
+        return $directus.request($readItem('departments', '68', {
             fields: ['*', '*', '*']
-        })
+        }))
     })
 
     let intervalId;

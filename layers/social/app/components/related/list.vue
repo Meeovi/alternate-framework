@@ -13,17 +13,18 @@
                 </div>
             </div>
             <div class="item-img" v-if="list?.image">
-                <NuxtImg provider="cloudinary" :src="$sdk.media?.getAssetUrl?.(list?.image)" :alt="list?.name" />
+                <NuxtImg provider="cloudinary" :src="getAssetURL(list?.image)" :alt="list?.name" />
             </div>
 
             <div class="item-img" v-else>
-                <NuxtImg provider="cloudinary" src="https://via.placeholder.com/400x300" :alt="list?.name" />
+                <NuxtImg provider="cloudinary" src="../../../public/fancy-cushion.png" :alt="list?.name" />
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
     defineProps({
         list: {

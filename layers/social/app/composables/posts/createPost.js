@@ -3,11 +3,11 @@
 export default async function createPost(postData) {
   const route = useRoute()
   const id = route.params.id
-  const { $sdk } = useNuxtApp()
+  const { $directus, $createItem } = useNuxtApp()
 
   try {
-    if ($sdk?.content?.createItem && typeof $sdk.content.createItem === 'function') {
-      return await $sdk.content.createItem('posts', {
+    if ($directus && typeof $createItem === 'function') {
+      return await $directus.request($createItem('posts', {
         title: postData.title,
         content: postData.content,
         status: postData.status,

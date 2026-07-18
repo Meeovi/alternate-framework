@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { useJsonForm } from '../../../../../packages/modules/ui-forms/src/composables/useJsonForm'
+import { useJsonForm } from '@mframework/meeovi-forms'
 
 export function useContentForm(options?: any) {
   const formLogic = useJsonForm({

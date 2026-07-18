@@ -1,5 +1,5 @@
 import { reactive, ref, unref, watchEffect, type Ref } from 'vue'
-import { useJsonForm } from '../../../../packages/modules/ui-forms/src/composables/useJsonForm'
+import { useJsonForm } from '@mframework/meeovi-forms'
 import { useNuxtApp } from '#app'
 
 type ContentFormOptions = {
@@ -8,7 +8,7 @@ type ContentFormOptions = {
 }
 
 export function useContentForm(collection: string, fields: any, options: ContentFormOptions = {}) {
-  const { $sdk } = useNuxtApp()
+  const { $directus, $createItem } = useNuxtApp()
 
   const formSchema = {
     type: 'object',
@@ -65,7 +65,7 @@ export function useContentForm(collection: string, fields: any, options: Content
         return
       }
 
-      await $sdk.content.createItem(collection, { ...form })
+      await $directus.request($createItem(collection, { ...form }))
       formSuccess.value = 'Saved successfully.'
 
       if (options.clearOnSuccess) {

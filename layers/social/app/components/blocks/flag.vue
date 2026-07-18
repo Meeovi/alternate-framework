@@ -36,7 +36,7 @@
     useContentForm
   } from '../../composables/useContentForm'
 
-  const { $sdk } = useNuxtApp()
+  const { $sdk, $directus, $readItems } = useNuxtApp()
 
   const props = defineProps({
     reportId: {
@@ -56,7 +56,7 @@
     data,
     error
   } = await useAsyncData(`report-schema-fields-${String(providedReportId ?? 'new')}`, async () => {
-    const resp = await $sdk.content.readFieldsByCollection('report')
+    const resp = await $directus.request($readItems('report'))
     return Array.isArray(resp) ? resp : []
   })
 

@@ -118,7 +118,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { loadStripe } from '@stripe/stripe-js'
 import { useCartStore } from '../../stores/cart'
-import { useCart } from '../../composables/sales/cart/useCart/useCart'
+import { useCart } from '../../composables/sales/cart/useCart'
 import { useNuxtApp } from '#app'
 
 const cartNotification = ref(false)

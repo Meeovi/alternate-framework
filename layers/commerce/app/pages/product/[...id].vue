@@ -28,12 +28,12 @@
               <v-tab value="nine" v-if="product?.product_types?.product_types_id?.name === 'Gift Card'">Redeem</v-tab>
             </v-tabs>
 
-            <template>
+            <v-card-text>
               <v-window v-model="tab">
                 <!--Product Description-->
                 <v-window-item :value="productbar?.menus[0]?.value">
                   <v-card variant="text">
-                    <v-card-text style="font-size: 20px;" v-dompurify-html="product?.content"></v-card-text>
+                    <v-card-text style="font-size: 20px;" v-html="product?.content"></v-card-text>
                   </v-card>
                 </v-window-item>
 
@@ -43,8 +43,10 @@
                   <div v-for="(review, index) in product?.reviews?.items" :key="index">
                     <productReviews :review="review" />
                   </div>
-                </div>--->
-                  <comments :content-id="product?.id" />
+                </div>-->
+                  <comments :productName="product?.name"
+                    :productImage="`${$directus.url}/assets/${product?.image?.filename_disk}`"
+                    :productSku="product?.id" />
                 </v-window-item>
 
                 <!--Product Specifications-->
@@ -125,7 +127,7 @@
                   </v-row>
                 </v-window-item>
               </v-window>
-            </template>
+            </v-card-text>
           </v-card>
         </v-col>
 
@@ -169,9 +171,9 @@
             </div>
           </v-sheet>
 
-          <!--Product featured in Outlets-->
+          <!--Product featured in Shops-->
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
-            <h4>Product featured in these Outlets</h4>
+            <h4>Product featured in these Shops</h4>
             <div v-if="product?.shops?.length > 0">
               <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-for="(shops, index) in product?.shops" :key="index"
@@ -241,19 +243,17 @@
 <script setup>
   import {
     ref,
-    computed,
-    watch
-  } from '#imports';
-  import comments from '#social/app/components/blocks/comments.vue'
+    computed
+  } from 'vue';
+  import comments from '#social/app/components/comments.vue'
 
-  import productDetails from '#commerce/app/components/catalog/product/productDetails.vue'
-  import productSpecs from '#commerce/app/components/catalog/product/productSpecs.vue'
+  import productDetails from '../../components/catalog/product/productDetails.vue'
+  import productSpecs from '../../components/catalog/product/productSpecs.vue'
   import productCard from '../../components/catalog/product/productCard.vue'
-  import giftCard from '#commerce/app/components/catalog/product/giftCard.vue'
-  import short from '#social/app/components/related/short.vue'
-  import spaces from '#social/app/components/related/space.vue'
-  import shop from '#commerce/app/components/catalog/shops/stores.vue'
-  import { addViewed } from '#commerce/app/composables/catalog/products/useRecentlyViewed'
+  import giftCard from '../../components/catalog/product/giftCard.vue'
+  import short from '#social/app/components/vibez/shorts.vue'
+  import spaces from '#social/app/components/spaces/spaces.vue'
+  import shop from '../../components/catalog/shops/stores.vue'
 
   const tab = ref(null);
   const model = ref(null);
@@ -263,45 +263,87 @@
   // Product query
   const route = useRoute()
 
-  const { $commerce } = useNuxtApp()
+  const {
+    $directus,
+    $readItem
+  } = useNuxtApp()
 
-  const { data: product } = await useAsyncData('product', async () => {
-    return await $commerce.getProduct(route.params.id)
+  const {
+    data: product
+  } = await useAsyncData('product', () => {
+    return $directus.request($readItem('products', route.params.id, {
+      fields: ['*',
+        'products.products_id.*',
+        'products.products_id.image.*',
+        'showcases.showcases_id.*',
+        'comments.comments_id.*',
+        'currency.currency_id.*',
+        'shorts.shorts_id.*',
+        'categories.categories_id.*',
+        'spaces.spaces_id.*',
+        'shops.shops_id.*',
+        'image.*',
+      ]
+    }))
   })
 
-  // Grouped/bundled products: Commerce provider currently doesn't expose
-  // these specific relations via the generic interface. Fetch a small page
-  // of products as a fallback so the UI can render product cards.
-  const { data: groupedProducts } = await useAsyncData('groupedProducts', async () => {
-    return await $commerce.getProducts({ pageSize: 6 })
+  const {
+    data: groupedProducts
+  } = await useAsyncData('groupedProducts', () => {
+    return $directus.request($readItem('products', route.params.id, {
+      fields: ['*',
+        'products.products_id.*',
+        'products.products_id.image.*',
+        'image.*',
+      ],
+      filter: {
+        products: {
+          products_id: {
+            type: {
+              _eq: "Grouped Product"
+            }
+          }
+        }
+      }
+    }))
   })
 
-  const { data: bundledProducts } = await useAsyncData('bundledProducts', async () => {
-    return await $commerce.getProducts({ pageSize: 6 })
+  const {
+    data: bundledProducts
+  } = await useAsyncData('bundledProducts', () => {
+    return $directus.request($readItem('products', route.params.id, {
+      fields: ['*',
+        'products.products_id.*',
+        'products.products_id.image.*',
+        'image.*',
+      ],
+      filter: {
+        products: {
+          products_id: {
+            type: {
+              _eq: "Bundled Product"
+            }
+          }
+        }
+      }
+    }))
   })
 
   const {
     data: productBlocks
   } = await useAsyncData('productBlocks', () => {
-    return gateway.content(read('page_blocks', '8', {
-      fields: ['*', 'media.file.*', 'content.*'],
+    return $directus.request($readItem('page_blocks', '8', {
+      fields: ['*', 'media.directus_files_id.filename_disk', 'content.*'],
     }))
   })
 
   const {
     data: productbar
   } = await useAsyncData('productbar', () => {
-    return gateway.content(read('navigation', '52'))
+    return $directus.request($readItem('navigation', '52'))
   })
 
   useHead({
     title: computed(() => product?.value?.name || 'Product Page')
   })
-
-
-  watch(product, (newVal) => {
-    if (process.client && newVal?.id) {
-      addViewed(newVal.id)
-    }
-  }, { immediate: true })
 </script>

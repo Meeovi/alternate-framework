@@ -51,7 +51,7 @@ export const useSwatches: UseSwatchesReturn = (): UseSwatches & UseSwatchesCompu
   };
 
   const findAttribute = (attributeCode: string): SwatchAttribute | undefined =>
-    state.value.data?.find((a) => a.attributeCode === attributeCode);
+    state.value.data?.find((a: SwatchAttribute) => a.attributeCode === attributeCode);
 
   const getSwatchOptions: UseSwatchesComputed['getSwatchOptions'] = (attributeCode) => {
     return findAttribute(attributeCode)?.options ?? [];

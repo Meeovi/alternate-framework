@@ -1,5 +1,5 @@
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import { gql } from '@mframework/adapter-gateway/client'
+const gql = (s: TemplateStringsArray): any => s[0]
 
 export type GetSpacesQueryResponse = {
   spaces: Array<{

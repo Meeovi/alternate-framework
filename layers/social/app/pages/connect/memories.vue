@@ -26,17 +26,17 @@
     import { ref } from '#imports'
     import postsCard from '#social/app/components/related/post.vue'
     
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem, $readItems } = useNuxtApp()
 
     const route = useRoute()
     const tab = ref(null);
 
     const { data: memoryPage } = await useAsyncData('memoryPage', () => {
-        return $sdk.content.readItem('pages', '90', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('pages', '90', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: historyPosts } = await useAsyncData('historyPosts', async () => {
-        const resp = await $sdk.content.readItems('posts', { fields: ['*', { '*': ['*'] }], filter: { date_created: { _lt: new Date().toISOString() } } })
+        const resp = await $directus.request($readItems('posts', { fields: ['*', { '*': ['*'] }], filter: { date_created: { _lt: new Date().toISOString() } } }))
         return resp?.data || resp || []
     })
 

@@ -18,13 +18,13 @@
   const auth = useAuth()
   await auth.fetchSession()
 
-  const { $sdk } = useNuxtApp()
+  const { $directus, $readItem } = useNuxtApp()
   const loggedIn = computed(() => Boolean(auth.loggedIn.value))
   const user = computed(() => auth.user.value ?? null)
 
   const {
     data: hellobar
   } = await useAsyncData('hellobar', () => {
-    return $sdk.content.getItem('navigation', '50')
+    return $directus.request($readItem('navigation', '50'))
   })
 </script>

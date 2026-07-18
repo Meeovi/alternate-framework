@@ -30,15 +30,15 @@
     const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
 
     const model = ref(null)
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItems } = useNuxtApp()
 
     const { data: myImageSpaces } = await useAsyncData<any[]>('myImageSpaces', async () => {
-        const resp = await $sdk.content.readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] })
+        const resp = await $directus.request($readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] }))
         return resp?.data || resp || []
     })
 
     const { data: imageSpaces } = await useAsyncData<any[]>('imageSpaces', async () => {
-        const resp = await $sdk.content.readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] })
+        const resp = await $directus.request($readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] }))
         return resp?.data || resp || []
     })
 </script>

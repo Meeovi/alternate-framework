@@ -32,8 +32,8 @@ const defaultFeedBar: FeedBar = {
 }
 
 export default function useConnectFeedsData(currentUserId: ComputedRef<string | null>): UseConnectFeedsDataResult {
-  const { $sdk } = useNuxtApp()
-  const readItems = $sdk.content.readItems.bind($sdk.content)
+  const { $directus, $readItems } = useNuxtApp()
+  const readItems = (collection: string, query?: any) => $directus.request($readItems(collection, query))
 
   const contentStatusMessage = ref('')
 

@@ -9,7 +9,7 @@
         </div>
       </v-tabs>
 
-      <template>
+      <v-card-text>
         <v-tabs-window v-model="tab">
           <!--Bundle Products List-->
           <v-window-item :value="showcasebar?.menus[0]?.value">
@@ -38,7 +38,7 @@
             </v-row>
           </v-window-item>
         </v-tabs-window>
-      </template>
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -47,49 +47,77 @@
   import {
     ref,
     computed
-  } from '#imports'
-  import productCard from '~/components/catalog/product/productCard.vue'
+  } from 'vue'
+  import productCard from '../../../components/catalog/product/productCard.vue'
 
-  const tab = ref(null)
+  const tab = ref(null);
 
-  const { $sdk } = useNuxtApp()
+  const {
+    $directus,
+    $readItem,
+    $readItems
+  } = useNuxtApp()
 
   const {
     data: groupedProducts
-  } = await useAsyncData('groupedProducts', async () => {
-    return await $commerce.getProducts({
-      pageSize: 12
-    })
+  } = await useAsyncData('groupedProducts', () => {
+    return $directus.request($readItems('products', {
+      fields: ['*',
+        'currency.currency_id.*',
+        'image.*',
+      ],
+      filter: {
+        type: {
+          _eq: "Grouped Product"
+        }
+      }
+    }))
   })
 
   const {
     data: bundledProducts
-  } = await useAsyncData('bundledProducts', async () => {
-    return await $commerce.getProducts({
-      pageSize: 12
-    })
+  } = await useAsyncData('bundledProducts', () => {
+    return $directus.request($readItems('products', {
+      fields: ['*',
+        'currency.currency_id.*',
+        'image.*',
+      ],
+      filter: {
+        type: {
+          _eq: "Bundled Product"
+        }
+      }
+    }))
   })
 
   const {
     data: subscriptions
-  } = await useAsyncData('subscriptions', async () => {
-    return await $commerce.getProducts({
-      pageSize: 12
-    })
+  } = await useAsyncData('subscriptions', () => {
+    return $directus.request($readItems('products', {
+      fields: ['*',
+        'currency.currency_id.*',
+        'image.*',
+      ],
+      filter: {
+        type: {
+          _eq: "Subscriptions"
+        }
+      }
+    }))
   })
 
   const {
     data: productBlocks
-  } = await useAsyncData('productBlocks', async () => {
-    return await $sdk.content.getItem('page_blocks', '8', {
-      fields: ['*', 'media.file.*', 'content.*']
-    })
+  } = await useAsyncData('productBlocks', () => {
+    return $directus.request($readItem('page_blocks', '8', {
+      fields: ['*', 'media.directus_files_id.filename_disk', 'content.*'],
+    }))
   })
 
   const {
     data: showcasebar
-  } = await useAsyncData('showcasebar', async () => {
-    return await $sdk.content.getItem('navigation', '54')
+  } = await useAsyncData('showcasebar', () => {
+    return $directus.request($readItem('navigation', '54'))
   })
 
   useHead({

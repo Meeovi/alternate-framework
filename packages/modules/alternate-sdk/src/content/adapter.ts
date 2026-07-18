@@ -104,11 +104,11 @@ export default function useContentAdapter(): AnyRecord {
 	const deleteItem = adapter.deleteItem
 	const uploadFiles = adapter.uploadFiles
 
-	const getAssetUrl = (file: unknown) => {
-		const { $sdk } = globalThis.useNuxtApp?.() || {}
-		const fn = $sdk?.media?.getAssetUrl
-		return typeof fn === 'function' ? fn(file) : ''
-	}
+  const getAssetUrl = (file: unknown) => {
+    const { $sdk } = globalThis.useNuxtApp?.() || {}
+    const fn = $sdk?.media?.getAssetUrl
+    return typeof fn === 'function' ? fn(file) : ''
+  }
 
 	const requestFn = async (...args: any[]) => call('request', ...args)
 

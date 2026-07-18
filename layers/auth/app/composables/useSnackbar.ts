@@ -1,3 +1,5 @@
+import { useState } from "nuxt/app"
+
 type ToastOptions = {
   title?: string
   description?: string

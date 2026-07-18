@@ -5,10 +5,16 @@ export interface User {
   first_name?: string
   last_name?: string
   email?: string
+  stripeCustomerId?: string
+  metadata?: {
+    referralSource?: string | null
+    [key: string]: any
+  }
   [key: string]: any
 }
 
 export interface AuthUser {
+  [x: string]: any
   id: string
   email: string
   name?: string

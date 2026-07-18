@@ -2,6 +2,60 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "paths": {
+      "vue-router": [
+        "../../node_modules/nuxt/node_modules/vue-router"
+      ],
+      "nuxt": [
+        "../../node_modules/nuxt"
+      ],
+      "@unhead/vue": [
+        "../../node_modules/@unhead/vue"
+      ],
+      "@nuxt/devtools": [
+        "../../node_modules/@nuxt/devtools"
+      ],
+      "vue": [
+        "../../node_modules/vue"
+      ],
+      "@vue/runtime-core": [
+        "../../node_modules/@vue/runtime-core"
+      ],
+      "@vue/compiler-sfc": [
+        "../../node_modules/@vue/compiler-sfc"
+      ],
+      "@nuxt/schema": [
+        "../../node_modules/@nuxt/schema"
+      ],
+      "defu": [
+        "../../node_modules/defu"
+      ],
+      "h3": [
+        "../../node_modules/h3"
+      ],
+      "consola": [
+        "../../node_modules/consola"
+      ],
+      "ofetch": [
+        "../../node_modules/ofetch"
+      ],
+      "crossws": [
+        "../../node_modules/crossws"
+      ],
+      "nitropack": [
+        "../../node_modules/nitropack"
+      ],
+      "vite/client": [
+        "../../node_modules/vite/client"
+      ],
+      "nitropack/types": [
+        "../../node_modules/nitropack/types"
+      ],
+      "nitropack/runtime": [
+        "../../node_modules/nitropack/runtime"
+      ],
+      "vue-router/auto-routes": [
+        "../../node_modules/nuxt/node_modules/vue-router/vue-router-auto-routes.d.mts"
+      ],
       "~": [
         "./app"
       ],
@@ -14,11 +68,23 @@
       "@/*": [
         "./app/*"
       ],
+      "~~": [
+        "./"
+      ],
+      "~~/*": [
+        "./*"
+      ],
+      "@@": [
+        "./"
+      ],
+      "@@/*": [
+        "./*"
+      ],
       "#shared": [
-        "./shared"
+        "../shared"
       ],
       "#shared/*": [
-        "./shared/*"
+        "../shared/*"
       ],
       "#server": [
         "./server"
@@ -26,14 +92,44 @@
       "#server/*": [
         "./server/*"
       ],
+      "#layers/commerce": [
+        "./"
+      ],
+      "#layers/commerce/*": [
+        "./*"
+      ],
+      "#app": [
+        "../../node_modules/nuxt/dist/app"
+      ],
+      "#app/*": [
+        "../../node_modules/nuxt/dist/app/*"
+      ],
+      "vue-demi": [
+        "../../node_modules/nuxt/dist/app/compat/vue-demi"
+      ],
+      "#vue-router": [
+        "../../node_modules/nuxt/node_modules/vue-router"
+      ],
+      "#unhead/composables": [
+        "../../node_modules/nuxt/dist/head/runtime/composables"
+      ],
       "#imports": [
         "./.nuxt/imports"
+      ],
+      "#app-manifest": [
+        "./.nuxt/manifest/meta/19a00c9c-b191-4fa9-9625-3b572b981e04.json"
+      ],
+      "#components": [
+        "./.nuxt/components"
       ],
       "#build": [
         "./.nuxt"
       ],
       "#build/*": [
         "./.nuxt/*"
+      ],
+      "~/types/schema": [
+        "../../apps/ecosystem/meeovi-frontend/app/types/schema"
       ],
       "alternate-sdk": [
         "../../packages/modules/alternate-sdk/index.ts"
@@ -50,6 +146,7 @@
     "./**/*.ts",
     "./**/*.d.ts",
     "./**/*.vue",
-    ".nuxt/nuxt.d.ts"
+    ".nuxt/nuxt.d.ts",
+    "./nuxt.config.d.ts"
   ]
 }

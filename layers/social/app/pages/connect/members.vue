@@ -29,13 +29,13 @@
         title: 'Members Area',
     })
 
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem, $readItems } = useNuxtApp()
 
     const { data: memberPage } = await useAsyncData('memberPage', () => {
-        return $sdk.content.getItem('pages', '98', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('pages', '98', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: members } = await useAsyncData('members', () => {
-        return $sdk.content.readItems('members', { fields: ['*', 'avatar.*'], sort: '-created_on' })
+        return $directus.request($readItems('members', { fields: ['*', 'avatar.*'], sort: '-created_on' }))
     })
 </script>

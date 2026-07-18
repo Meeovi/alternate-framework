@@ -1,5 +1,5 @@
 <template>
-  <v-btn v-if="loggedIn" variant="flat" @click="signOut({ redirectTo: '/' })">Logout</v-btn>
+  <v-btn v-if="session" variant="flat" @click="signOut({ redirectTo: '/' })">Logout</v-btn>
 </template>
 
 <script setup lang="ts">

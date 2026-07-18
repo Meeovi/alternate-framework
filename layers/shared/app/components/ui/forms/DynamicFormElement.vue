@@ -10,12 +10,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import TextField from '../../../../../../packages/modules/ui-forms/src/components/fields/TextField.vue'
-import NumberField from '../../../../../../packages/modules/ui-forms/src/components/fields/NumberField.vue'
-import SelectField from '../../../../../../packages/modules/ui-forms/src/components/fields/SelectField.vue'
-import DateField from '../../../../../../packages/modules/ui-forms/src/components/fields/DateField.vue'
-import RichTextField from '../../../../../../packages/modules/ui-forms/src/components/fields/RichTextField.vue'
-import FileUploadField from '../../../../../../packages/modules/ui-forms/src/components/fields/FileUploadField.vue'
+import TextField from '@mframework/meeovi-forms/components/fields/TextField.vue'
+import NumberField from '@mframework/meeovi-forms/components/fields/NumberField.vue'
+import SelectField from '@mframework/meeovi-forms/components/fields/SelectField.vue'
+import DateField from '@mframework/meeovi-forms/components/fields/DateField.vue'
+import RichTextField from '@mframework/meeovi-forms/components/fields/RichTextField.vue'
+import FileUploadField from '@mframework/meeovi-forms/components/fields/FileUploadField.vue'
 import RelationSelect from './RelationSelect.vue'
 
 type ContentFieldSchema = {

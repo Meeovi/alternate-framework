@@ -41,12 +41,28 @@
 import { onMounted } from 'vue'
 
 const route = useRoute()
-const checkoutId = route.query.checkoutId
+const sessionId = route.query.session_id
+
+type CheckoutDetails = {
+  checkout: {
+    id: string
+    status: string | null
+    customer_email: string | null
+  } | null
+  product: {
+    name: string | null
+    description: string | null
+  } | null
+}
 
 // This needs to be fetched on the client
-const { data } = await useAsyncData('checkout-details', () => $fetch(`/api/checkout-details?checkoutId=${checkoutId}`), {
-  server: false,
-})
+const { data } = await useAsyncData<CheckoutDetails>(
+  'checkout-details',
+  () => $fetch(`/api/stripe/done?session_id=${sessionId}`),
+  {
+    server: false,
+  },
+)
 
 const checkout = computed(() => data.value?.checkout)
 const product = computed(() => data.value?.product)

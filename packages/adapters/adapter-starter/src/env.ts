@@ -1,6 +1,7 @@
-export function loadEnv(runtimeConfig: { mybackend: { endpoint: any; token: any; }; }) {
+export function loadEnv(runtimeConfig: Record<string, any>) {
+  const publicConfig = runtimeConfig?.public?.adapterStarter || {}
   return {
-    endpoint: runtimeConfig.mybackend?.endpoint || process.env.MYBACKEND_ENDPOINT,
-    token: runtimeConfig.mybackend?.token || process.env.MYBACKEND_TOKEN
+    endpoint: publicConfig.endpoint || process.env.ADAPTER_STARTER_ENDPOINT,
+    token: publicConfig.token || process.env.ADAPTER_STARTER_TOKEN
   }
 }

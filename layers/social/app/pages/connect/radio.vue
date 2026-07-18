@@ -26,16 +26,16 @@
     } from '#imports';
     import stationCard from '#social/app/components/related/radio.vue'
 
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem, $readItems } = useNuxtApp()
 
     const model = ref(null);
 
     const { data: radioPage } = await useAsyncData('radioPage', () => {
-        return $sdk.content.readItem('pages', '97', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItem('pages', '97', { fields: ['*', { '*': ['*'] }] }))
     })
 
     const { data: stations } = await useAsyncData('stations', () => {
-        return $sdk.content.readItems('radios', { fields: ['*', { '*': ['*'] }] })
+        return $directus.request($readItems('radios', { fields: ['*', { '*': ['*'] }] }))
     })
 
     useHead({

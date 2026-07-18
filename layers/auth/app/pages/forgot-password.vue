@@ -30,7 +30,6 @@
 
 <script setup lang="ts">
 import { useHead, useRuntimeConfig} from '#app'
-import useAppLocalePath from '../utils/useAppLocalePath'
 import { useAlert } from '../composables/useAlert'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
@@ -48,7 +47,7 @@ useHead({
 })
 
 const alert = useAlert()
-const localePath = useAppLocalePath()
+const localePath = useLocalePath()
 const runtimeConfig = useRuntimeConfig()
 const appName = String(runtimeConfig.public?.appName || 'App')
 

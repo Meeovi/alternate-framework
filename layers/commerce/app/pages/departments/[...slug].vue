@@ -1,16 +1,21 @@
 <template>
-    <div>
-        <div v-if="category?.name === 'Deals'">
-            <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`"
-                :title="category?.name" />
-            <deals :category="category?.id" />
+    <div class="departmentPage">
+        <div v-if="department?.slug === 'deals'">
+            <v-toolbar :style="`background-color: ${department?.color}; color: ${department?.colortext}`"
+                :title="department?.name" />
+            <deals :category="department?.slug" />
         </div>
+        <div v-if="department?.slug === 'events'">
+            <v-toolbar :style="`background-color: ${department?.color}; color: ${department?.colortext}`"
+                :title="department?.name" />
+            <events :category="department?.slug" />
+        </div>
+        
         <div v-else>
             <v-card variant="text">
-                <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`"
-                    :title="category?.name">
-                    <template #extension>
-                        <v-menu v-if="normalizedCategories.length">
+                <v-toolbar :style="`background-color: ${department?.color}; color: ${department?.colortext}`"
+                    :title="department?.name">
+                        <v-menu v-if="department?.categories?.length">
                             <template v-slot:activator="{ props }">
                                 <v-btn class="deptCatBtn ma-2" v-bind="props" append-icon="fas:fa fa-caret-down"
                                     variant="text">
@@ -19,11 +24,13 @@
                             </template>
                             <v-list class="departmentMenu">
                                 <v-row>
-                                    <v-col cols="3" v-for="cat in normalizedCategories" :key="cat.id">
+                                    <v-col cols="3" v-for="categories in department?.categories"
+                                        :key="categories?.categories_id?.id">
                                         <v-list-item>
                                             <v-chip>
-                                                <NuxtLink :to="`/departments/category/${cat.id}`">
-                                                    {{ cat.name }}
+                                                <NuxtLink
+                                                    :to="`/departments/category/${categories?.categories_id?.id}`">
+                                                    {{ categories?.categories_id?.name }}
                                                 </NuxtLink>
                                             </v-chip>
                                         </v-list-item>
@@ -32,59 +39,49 @@
                             </v-list>
                         </v-menu>
 
-                        <v-btn v-for="menu in normalizedMenus" :key="menu.id || menu.name || menu.url" class="ma-2"
-                            :href="`${menu?.url}`" variant="text">
-                            {{ menu?.name }}
-                        </v-btn>
-                    </template>
+                        <v-slide-group>
+                            <v-slide-group-item v-if="department?.menus?.length" v-for="menu in department?.menus"
+                                :key="menu" v-slot="{ isSelected, toggle }">
+                                <v-chip :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
+                                    :href="`${menu?.url}`">
+                                    {{ menu?.name }}
+                                </v-chip>
+                            </v-slide-group-item>
+                        </v-slide-group>
                 </v-toolbar>
                 <!-- Category Top Banner Section -->
                 <section data-bs-version="5.1" class="pricing6 shopm5 cid-tZY31Y2JxZ" id="apricing6-6g">
                     <div class="mbr-overlay"></div>
                     <div class="container-fluid">
-                        <div class="row align-items-stretch items-row justify-content-center">
-                            <div class="col-lg-6">
-                                <div v-if="category?.name === 'Travel'">
-                                    <travel :category="category?.name" />
-                                </div>
-                                <div v-else-if="category?.name === 'Weather'">
-                                    <weather :category="category?.name" />
-                                </div>
-                                <div v-else-if="category?.name === 'Time'">
-                                    <timeComponent :category="category?.name" />
-                                </div>
-                                <div v-else class="mbr-section-head" :style="`background-color: ${category?.color}`">
-                                    <h4 class="mbr-section-title mbr-fonts-style mb-0 display-7"
-                                        :style="`color: ${category?.colortext}`">
-                                        <strong>Meeovi</strong>
-                                    </h4>
-                                    <h5 class="mbr-section-subtitle mbr-fonts-style mb-0 display-2"
-                                        :style="`color: ${category?.colortext}`">
-                                        <strong>{{ category?.name }}</strong>
-                                    </h5>
-                                    <h5 class="main-text mbr-fonts-style mb-0 display-7"
-                                        :style="`color: ${category?.colortext}`">
-                                        {{ category?.description }}
-                                    </h5>
-                                </div>
-                            </div>
-                            <v-sheet class="mx-auto col-lg-6" style="background-color: transparent; box-shadow: none;">
-                                <h4>Products</h4>
-                                <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                                    <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                                        v-for="product in products" :key="product.id">
-                                        <productCard :product="product" :class="['ma-4', selectedClass]"
-                                            @click="toggle" />
-                                        <div class="d-flex fill-height align-center justify-center">
-                                            <v-scale-transition>
-                                                <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
-                                                    size="48"></v-icon>
-                                            </v-scale-transition>
-                                        </div>
-                                    </v-slide-group-item>
-                                </v-slide-group>
-                            </v-sheet>
-                        </div>
+                        <weather v-if="department?.slug === 'Weather' "/>
+
+                        <travel v-if="department?.slug === 'Travel' "/>
+
+                        <timeComponent v-if="department?.slug === 'Time' "/>
+
+                        <restaurants v-if="department?.slug === 'Restaurants' "/>
+
+                        <adultstore v-if="department?.slug === 'Adult' "/>
+
+                        <pantry v-if="department?.slug === 'Pantry' "/>
+
+                        <pay v-if="department?.slug === 'Pay' "/>
+
+                        <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" v-if="department?.shorts?.length">
+                            <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+                                <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
+                                    v-for="shorts in department?.shorts" :key="shorts">
+                                    <shortsCard :short="shorts?.shorts_id" :class="['ma-4', selectedClass]"
+                                        @click="toggle" />
+                                    <div class="d-flex fill-height align-center justify-center">
+                                        <v-scale-transition>
+                                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                                size="48"></v-icon>
+                                        </v-scale-transition>
+                                    </div>
+                                </v-slide-group-item>
+                            </v-slide-group>
+                        </v-sheet>
                     </div>
                 </section>
 
@@ -92,7 +89,7 @@
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar title="Products" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in products"
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in latestProducts"
                             :key="product.id">
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
@@ -109,8 +106,8 @@
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar title="Best Sellers" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                            v-for="product in bestSellingProducts" :key="product.id">
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in best"
+                            :key="product.id">
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
@@ -123,12 +120,12 @@
                 </v-sheet>
 
                 <!-- Posts about this Category Section (content) -->
-                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="posts?.length">
+                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.posts?.length">
                     <v-toolbar title="Posts" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="post in posts"
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="post in department?.posts"
                             :key="post.id">
-                            <post :post="post" :class="['ma-4', selectedClass]" @click="toggle" />
+                            <postCard :post="post" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
                                     <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
@@ -140,11 +137,11 @@
                 </v-sheet>
 
                 <!-- Event Type Products Section (commerce) -->
-                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="eventProducts?.length">
+                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="events?.length">
                     <v-toolbar title="Events" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                         <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                            v-for="product in eventProducts" :key="product.id">
+                            v-for="product in events" :key="product.id">
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
@@ -157,19 +154,19 @@
                 </v-sheet>
 
                 <!-- Category Products Section (commerce) -->
-                <v-row style="padding: 10px;" v-if="products?.length">
-                    <v-col cols="3" v-for="product in products" :key="product.id">
+                <v-row style="padding: 10px;" v-if="department?.products?.length">
+                    <v-col cols="3" v-for="product in department?.products" :key="product.id">
                         <productCard :product="product" />
                     </v-col>
                 </v-row>
 
                 <!-- Spaces about this Category Section (content) -->
-                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="departmentSpaces?.length">
+                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.spaces?.length">
                     <v-toolbar title="Spaces" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                         <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                            v-for="space in departmentSpaces" :key="space.id">
-                            <space :space="space" :class="['ma-4', selectedClass]" @click="toggle" />
+                            v-for="space in department?.spaces" :key="space.id">
+                            <spaceCard :space="space" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
                                     <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
@@ -187,145 +184,162 @@
 <script setup>
     import productCard from '../../components/catalog/product/productCard.vue'
     import travel from '#commerce/app/components/catalog/categories/travel.vue'
-    import space from '#social/app/components/related/space.vue'
-    import post from '#social/app/components/related/post.vue'
-    import shorts from '#social/app/components/related/short.vue'
     import deals from '#commerce/app/components/catalog/categories/deals.vue'
     import timeComponent from '#commerce/app/components/catalog/categories/time/time.vue'
     import weather from '#commerce/app/components/catalog/categories/weather/weather.vue'
-    import {
-        useAppGateway
-    } from '../../composables/useAppGateway'
-    import {
-        useProducts
-    } from '#commerce/app/composables/catalog/products/useProducts'
+    import restaurants from '#commerce/app/components/catalog/categories/restaurants.vue'
+    import pay from '#commerce/app/components/catalog/categories/pay/pay.vue'
+    import adultstore from '#commerce/app/components/catalog/categories/adultstore.vue'
+    import pantry from '#commerce/app/components/catalog/categories/pantry/pantry.vue'
+    import spaceCard from '#social/app/components/related/space.vue'
+    import postCard from '#social/app/components/related/post.vue'
+    import shortsCard from '#social/app/components/related/short.vue' 
+
     import {
         ref,
-        watch,
         computed
     } from '#imports'
 
     const route = useRoute()
-    const gateway = useAppGateway()
+    const model = ref(null)
     const {
-        $sdk
+        $directus,
+        $readItem,
+        $readItems
     } = useNuxtApp()
-    const category = ref(null)
 
-    function toList(input) {
-        if (Array.isArray(input)) return input
-        return []
-    }
-
-    const slug = computed(() => {
-        const raw = route.params.slug
-        return Array.isArray(raw) ? raw[0] : raw
-    })
-
-    const products = ref([])
-    const bestSellingProducts = ref([])
-    const eventProducts = ref([])
     const {
-        fetchProducts,
-        data: productsData,
-        loading
-    } = useProducts()
-    const posts = ref([])
-    const departmentSpaces = ref([])
-
-    async function loadCategory() {
-        const resp = await $sdk.content.readItems('departments', {
+        data: department
+    } = await useAsyncData('department', async () => {
+        const result = await $directus.request($readItems('departments', {
+            fields: ['*',
+                'categories.categories_id.*',
+                'spaces.spaces_id.*',
+                'products.products_id.*',
+                'products.products_id.image.*',
+                'posts.posts_id.*',
+                'menus.*',
+                'shorts.shorts_id.*',
+                'image.*'
+            ],
             filter: {
                 slug: {
-                    _eq: `${slug.value}`
+                    _eq: `${route.params.slug}`
                 }
             },
-            limit: 1,
-            fields: [
-                '*',
-                'menus.*',
-                'categories.categories_id.*'
-            ]
-        })
+            limit: 1
+        }))
+        return Array.isArray(result) ? result[0] : null
+    })
 
-        category.value = toList(resp)[0] || null
-    }
+    const {
+        data: introProducts
+    } = await useAsyncData('introProducts', () => {
+        return $directus.request($readItem('departments', route.params.slug, {
+            fields: ['*',
+                'products.products_id.*',
+                'showcases.showcases_id.*',
+                'images.*'
+            ],
+            limit: 2,
+        }))
+    })
 
-    async function loadProducts() {
-        await fetchProducts()
-        const all = (productsData.value?.items || [])
-        const catId = category.value?.id || category.value?.category_id || category.value?.categoryId || category
-            .value?.magento_category_id
-        const filtered = catId ? all.filter(p => String(p.category_id || p.category || p.categoryId) === String(
-            catId)) : all
-        products.value = filtered
-        bestSellingProducts.value = filtered.filter(p => p.bestSelling)
-        eventProducts.value = filtered.filter(p => p.type === 'event')
-    }
-
-    async function loadPosts() {
-        const resp = await $sdk.content.readItems('posts', {
+    const {
+        data: best
+    } = await useAsyncData('best', () => {
+        return $directus.request($readItem('departments', route.params.slug, {
+            fields: ['*',
+                'products.products_id.*',
+                'showcases.showcases_id.*',
+                'images.*'
+            ],
+            limit: 10,
             filter: {
-                categories: {
-                    departments_id: {
-                        slug: {
-                            _eq: `${slug.value}`
+                showcases: {
+                    showcases_id: {
+                        name: {
+                            _eq: "Best Sellers"
                         }
                     }
                 }
-            },
-            limit: 10
-        })
+            }
+        }))
+    })
 
-        posts.value = toList(resp)
-    }
-
-    async function loadSpaces() {
-        const resp = await $sdk.content.readItems('spaces', {
+    const {
+        data: latestProducts
+    } = await useAsyncData('latestProducts', () => {
+        return $directus.request($readItem('departments', route.params.slug, {
+            fields: ['*',
+                'products.products_id.*',
+                'showcases.showcases_id.*',
+                'images.*'
+            ],
+            limit: 10,
             filter: {
-                categories: {
-                    departments_id: {
-                        slug: {
-                            _eq: `${slug.value}`
+                products: {
+                    products_id: {
+                        status: {
+                            _eq: "published"
                         }
                     }
                 }
-            },
-            limit: 10
-        })
-
-        departmentSpaces.value = toList(resp)
-    }
-
-    async function loadAll() {
-        await loadCategory()
-        await Promise.all([
-            loadProducts(),
-            loadPosts(),
-            loadSpaces()
-        ])
-    }
-
-    const normalizedCategories = computed(() => {
-        if (!category.value?.categories) return []
-        return category.value.categories
-            .map(c => c.categories_id || c)
-            .filter(Boolean)
+            }
+        }))
     })
 
-    const normalizedMenus = computed(() => {
-        const menus = category.value?.menus
-        if (!Array.isArray(menus)) return []
-        return menus.filter(Boolean)
+    const {
+        data: limitProducts
+    } = await useAsyncData('limitProducts', () => {
+        return $directus.request($readItem('departments', route.params.slug, {
+            fields: ['*',
+                'products.products_id.*',
+                'showcases.showcases_id.*',
+                'images.*'
+            ],
+            limit: 2,
+            filter: {
+                products: {
+                    products_id: {
+                        status: {
+                            _eq: "published"
+                        }
+                    }
+                }
+            }
+        }))
     })
 
-    await loadAll()
+    const {
+        data: events
+    } = await useAsyncData('events', () => {
+        return $directus.request($readItem('departments', route.params.slug, {
+            fields: ['*',
+                'products.products_id.*',
+                'showcases.showcases_id.*',
+                'images.*'
+            ],
+            limit: 10,
+            filter: {
+                products: {
+                    products_id: {
+                        type: {
+                            _eq: "event"
+                        }
+                    }
+                }
+            }
+        }))
+    })
 
-    watch(() => route.params.slug, async () => {
-        await loadAll()
+    const {
+        data: callouts
+    } = await useAsyncData('callouts', () => {
+        return $directus.request($readItem('callouts', '2'))
     })
 
     useHead({
-        title: computed(() => category.value?.name || 'Department Page')
-    })
+        title: computed(() => department?.value?.name || 'Department Page')
+    });
 </script>

@@ -1,52 +1,19 @@
-import { describe, it, expect, beforeAll, vi } from 'vitest'
-import { GatewayAdapter, type APISource } from '@mframework/adapter-gateway'
-
-process.env.DIRECTUS_URL = 'https://cms.meeovicms.com'
-process.env.DIRECTUS_STATIC_TOKEN = '1_48eDyOk1e95CzuPXR5sPYCDrVqHcPM'
+import { describe, it, expect } from 'vitest'
 
 describe('GatewayAdapter integration', () => {
-  it('can create adapter with sources', () => {
-    const source: APISource = {
-      name: 'cms',
-      type: 'rest',
-      endpoint: 'https://cms.meeovicms.com',
-      headers: { Authorization: 'Bearer test-token' }
-    }
-    
-    const adapter = new GatewayAdapter({ sources: [source] })
-    expect(adapter.health()).toBe('ok')
+  it.skip('can create adapter with sources', () => {
+    // Gateway adapter removed: @mframework/adapter-gateway no longer exists.
   })
 
-  it('can detect sources from env variables', () => {
-    const sources = [
-      {
-        name: 'cms',
-        type: 'rest' as const,
-        endpoint: 'https://cms.meeovicms.com',
-        headers: { Authorization: 'Bearer test-token' }
-      }
-    ]
-    const adapter = new GatewayAdapter({ sources })
-    expect(adapter).toBeDefined()
+  it.skip('can detect sources from env variables', () => {
+    // Gateway adapter removed: @mframework/adapter-gateway no longer exists.
   })
 
-  it('returns error when source not found', async () => {
-    const adapter = new GatewayAdapter({ sources: [] })
-    const result = await adapter.executeRequest('nonexistent', '/items')
-    expect(result.ok).toBe(false)
-    expect(result.error).toContain('not found')
+  it.skip('returns error when source not found', () => {
+    // Gateway adapter removed: @mframework/adapter-gateway no longer exists.
   })
 
-  it('can add and remove sources', () => {
-    const adapter = new GatewayAdapter({ sources: [] })
-    const source: APISource = {
-      name: 'test',
-      type: 'rest',
-      endpoint: 'https://example.com'
-    }
-    
-    adapter.addSource(source)
-    expect(adapter.removeSource('test')).toBe(true)
-    expect(adapter.removeSource('nonexistent')).toBe(false)
+  it.skip('can add and remove sources', () => {
+    // Gateway adapter removed: @mframework/adapter-gateway no longer exists.
   })
 })

@@ -5,14 +5,14 @@
                 <div class="row main justify-content-center">
                     <div class="col-lg-12 p-4">
                         <div class="image-element card-wrapper">
-                            <NuxtImg class="brandLogo" :src="$sdk.media?.getAssetUrl?.(brand?.image)" :alt="brand.name" />
+                            <NuxtImg class="brandLogo" :src="getAssetURL(brand?.image)" :alt="brand.name" />
                             <!--<div class="mbr-overlay card-overlay"></div>-->
                             <div class="wrapper">
-                                <h5 class="card-title mbr-fonts-style align-left display-2">
+                                <h5 class="card-title mbr-fonts-style align-left display-2" style="color: black;">
                                     {{ brand.name }}</h5>
                                 <div class="collapsed-content">
                                     <div class="mbr-section-btn"><a class="btn btn-md btn-info display-4"
-                                            :href="`/commerce/brand/${brand.id}`">View Brand</a></div>
+                                            :href="`/brand/${brand.slug}`">View Brand</a></div>
                                 </div>
                             </div>
                         </div>
@@ -24,12 +24,11 @@
 </template>
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import {
         ref,
         onMounted
     } from '#imports'
-
-    const { $sdk } = useNuxtApp()
 
     const props = defineProps({
         brand: {
@@ -37,7 +36,4 @@
             required: true,
         },
     });
-    const {
-        brand
-    } = props;
 </script>

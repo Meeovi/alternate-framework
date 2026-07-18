@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM"],
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "ignoreDeprecations": "6.0",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "types": ["node", "vite/client"],
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@mframework/meeovi-forms/*": [
+        "src/*"
+      ]
+    }
+  },
+  "include": [
+    "module.ts",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "src/types/*.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

@@ -1,5 +1,9 @@
-import { fileURLToPath } from 'node:url'
-import { defineNuxtConfig } from 'nuxt/config'
+import {
+  fileURLToPath
+} from 'node:url'
+import {
+  defineNuxtConfig
+} from 'nuxt/config'
 
 export default defineNuxtConfig({
   $meta: {
@@ -7,13 +11,35 @@ export default defineNuxtConfig({
     description: 'Commerce Layer provides functionalities for managing and processing e-commerce transactions.',
   },
 
-  modules: ["@polar-sh/nuxt"],
+  modules: [
+    "@polar-sh/nuxt",
+    '@storefront-ui/nuxt',
+    'notivue/nuxt'
+  ],
+
+  css: [
+    'notivue/notification.css', // Only needed if using built-in notifications
+    'notivue/animations.css' // Only needed if using built-in animations
+  ],
+
+  // @ts-ignore - notivue module option
+  notivue: {
+    position: 'bottom-right',
+    limit: 4,
+    enqueue: true,
+    avoidDuplicates: true,
+    notifications: {
+      global: {
+        duration: 10000
+      }
+    }
+  },
 
   runtimeConfig: {
     mframework: {
       auth: '~/auth/commerceAuth',
       user: '~/auth/currentUser'
-    },    
+    },
     mode: process.env.POLAR_MODE,
     stripeSecretKey: process.env.NUXT_STRIPE_SECRET_KEY,
     stripeWebhookSecret: process.env.NUXT_STRIPE_WEBHOOK_SECRET,
@@ -28,6 +54,8 @@ export default defineNuxtConfig({
     public: {
       payment: process.env.NUXT_PAYMENT || 'stripe',
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
+      // Stripe publishable key (pk_live_... in prod, pk_test_... in dev)
+      stripePublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
       scripts: {
         paypal: {
           clientId: `${process.env.NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID}`, // NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID

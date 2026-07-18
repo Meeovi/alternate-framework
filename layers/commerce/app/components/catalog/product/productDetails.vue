@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div v-if="hasAsset(product?.image)">
-                        <NuxtImg provider="cloudinary" :src="$sdk.media?.getAssetUrl?.(product?.image)" :alt="product.name"
+                        <NuxtImg provider="cloudinary" :src="getAssetURL(product?.image)" :alt="product.name"
                             class="w-full rounded-md" />
                     </div>
                 </div>
@@ -88,10 +88,11 @@
     import tagCard from '#social/app/components/related/tag.vue';
     import addToCartBtn from '../../partials/addToCartBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
+    import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
     const { $sdk } = useNuxtApp()
 
-    const hasAsset = (file: any) => Boolean($sdk.media?.getAssetUrl?.(file))
+    const hasAsset = (file: any) => Boolean(getAssetURL(file))
     const inputId = useId();
     const min = ref(1);
     const max = ref(999);

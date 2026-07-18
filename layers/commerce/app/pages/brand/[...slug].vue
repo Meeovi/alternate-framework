@@ -1,7 +1,7 @@
 <template>
   <div class="accountPage" v-if="brand">
     <section data-bs-version="5.1" class="info3 cid-tuzqZ1PJf1" id="info3-39"
-      :style="`background-image: url(${$sdk.media?.getAssetUrl?.(brand?.image)});`">
+      :style="`background-image: url(${$directus.url}/assets/${brand.image?.filename_disk});`">
       <div class="mbr-overlay" style="opacity: 0.6; background-color: rgb(68, 121, 217);">
       </div>
       <div class="container">
@@ -13,7 +13,7 @@
                   <strong>{{ brand.name }}</strong>
                 </h4>
                 <p class="mbr-text mbr-fonts-style mb-4 display-7">{{ brand.code }}</p>
-                <p class="mbr-text mbr-fonts-style mb-4 display-7">{{ brand.description }}</p>
+                <p class="mbr-text mbr-fonts-style mb-4 display-7" v-html="brand.description"></p>
 
               </div>
             </div>
@@ -21,12 +21,22 @@
         </div>
       </div>
     </section>
-    <!--Brand Products-->
-    <v-row style="padding: 10px;">
-      <v-col cols="3" v-for="brand in brand?.shorts" :key="brand.id">
-        <shorts :short="brand?.shorts_id" />
-      </v-col>
-    </v-row>
+
+    <!--Brand Shorts-->
+    <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center"
+      v-if="brand?.shorts?.length">
+      <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="shorts in brand?.shorts"
+          :key="shorts">
+          <shortCard :short="shorts?.shorts_id" :class="['ma-4', selectedClass]" @click="toggle" />
+          <div class="d-flex fill-height align-center justify-center">
+            <v-scale-transition>
+              <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+            </v-scale-transition>
+          </div>
+        </v-slide-group-item>
+      </v-slide-group>
+    </v-sheet>
 
     <!--Brand Products-->
     <v-row style="padding: 10px;">
@@ -43,31 +53,49 @@
 </template>
 
 <script setup>
-import shorts from '#social/app/components/related/short.vue'
-import productCard from '../../components/catalog/product/productCard.vue'
-import relatedbrands from '../../components/catalog/product/relatedbrands.vue'
+  import {
+    ref,
+    onMounted
+  } from 'vue'
+  import shortCard from '#social/app/components/features/vibeSections/shorts.vue'
+  import productCard from '../../components/catalog/product/productCard.vue'
+  import relatedbrands from '../../components/catalog/product/relatedbrands.vue'
+  import {
+    useRuntimeConfig
+  } from 'nuxt/app';
 
-const { $sdk } = useNuxtApp()
+  const config = useRuntimeConfig();
+  const route = useRoute();
+  const {
+    $directus,
+    $readItem,
+    $readItems
+  } = useNuxtApp()
 
-const route = useRoute()
+  const {
+    data: brand
+  } = await useAsyncData('brand', async () => {
+    const result = await $directus.request($readItems('brands', {
+      fields: ['*',
+        'shorts.shorts_id.*',
+        'products.products_id.*',
+        'image.*'
+      ],
+      filter: {
+        slug: {
+          _eq: `${route.params.slug}`
+        }
+      },
+      limit: 1
+    }))
+    return Array.isArray(result) ? result[0] : null
+  })
 
-const slug = computed(() => {
-    const s = route.params.slug
-    return Array.isArray(s) ? s[0] : s
-})
+  definePageMeta({
+    layout: 'nolive',
+  });
 
-const { data: brandRaw } = await useAsyncData('brand', async () => {
-    const resp = await $sdk.content.readItems('brands', {
-        fields: ['*', 'products.products_id.*', 'products.products_id.image.*', 'shorts.shorts_id.*', 'image.*'],
-        filter: { slug: { _eq: slug.value } },
-        limit: 1
-    })
-    return resp?.data || resp || []
-})
-
-const brand = computed(() => brandRaw.value?.[0] || null)
-
-useHead({
+  useHead({
     title: computed(() => brand.value?.name || 'Brand Page')
-})
+  })
 </script>

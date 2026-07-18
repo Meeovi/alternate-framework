@@ -27,7 +27,7 @@
     <video 
       ref="videoRef"
       class="vibe-video"
-      :src="$sdk.media?.getAssetUrl?.(short?.video)"
+      :src="getAssetURL(short?.video)"
       controls
       preload="metadata"
       @click="togglePlay"
@@ -101,6 +101,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from '#imports'
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
 const { $sdk } = useNuxtApp()
 

@@ -15,7 +15,7 @@
             <div class="card-wrapper">
               <div class="item-img">
                 <NuxtImg loading="lazy" class="align-end text-white" v-if="shop?.image"
-                  :src="$sdk.media?.getAssetUrl?.(shop?.image)" :alt="shop?.name" cover />
+                  :src="getAssetURL(shop?.image)" :alt="shop?.name" cover />
                 <div class="card-box">
                   <div class="icon-wrapper">
                     <span class="mbr-iconfont mobi-mbri-contact-form mobi-mbri"></span>
@@ -100,6 +100,7 @@
 </template>
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import { ref } from '#imports'
   import showcases from '#commerce/app/components/catalog/product/relatedproducts.vue'
   import productCard from '../../components/catalog/product/productCard.vue'
@@ -107,7 +108,11 @@
   import spaces from '#social/app/components/related/space.vue'
   import events from '#social/app/components/blocks/events/about.vue'
 
-  const { $sdk } = useNuxtApp()
+  const {
+    $sdk,
+    $directus,
+    $readItem
+  } = useNuxtApp()
   const route = useRoute()
   const slug = computed(() => {
     const s = route.params.slug
@@ -140,7 +145,7 @@
   const shop = computed(() => shopRaw.value?.[0] || null)
 
   const { data: shopbar } = await useAsyncData('shopbar', () => {
-    return $sdk.content.getItem('navigation', '55')
+    return $directus.request($readItem('navigation', '55'))
   })
 
   definePageMeta({

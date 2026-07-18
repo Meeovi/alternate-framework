@@ -1,24 +1,34 @@
 import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
 import { loadEnv } from './env'
+
 // Module options TypeScript interface definition
-export interface ModuleOptions {}
+export interface ModuleOptions {
+  endpoint?: string
+  token?: string
+}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'my-module',
-    configKey: 'myModule',
+    name: 'adapter-starter',
+    configKey: 'adapterStarter'
   },
   // Default configuration options of the Nuxt module
   defaults: {
-    enabled: true
+    endpoint: '',
+    token: ''
   },
-  setup(_options, nuxt) {
+  setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
     const env = loadEnv(nuxt.options.runtimeConfig)
 
-    // Expose env to Nitro runtime
-    nuxt.options.runtimeConfig.mybackend = env
-    // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
+    // Push module options into public runtime config so the runtime plugin can read them
+    nuxt.options.runtimeConfig.public.adapterStarter = {
+      ...nuxt.options.runtimeConfig.public.adapterStarter,
+      ...env,
+      ...options
+    }
+
+    // Register the runtime plugin that exposes the adapter via $sdk
     addPlugin(resolver.resolve('./runtime/plugin'))
   },
 })

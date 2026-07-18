@@ -83,6 +83,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
 const props = defineProps({
     group: {
@@ -96,8 +97,8 @@ const { $sdk } = useNuxtApp()
 
 const backgroundImage = computed(() => {
     const image = props.group?.image
-    if (image && $sdk.media?.getAssetUrl?.(image)) {
-        return $sdk.media?.getAssetUrl?.(image)
+    if (image && getAssetURL(image)) {
+        return getAssetURL(image)
     }
     // fallback image from /assets
     return 'https://via.placeholder.com/800x450'

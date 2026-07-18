@@ -6,8 +6,29 @@
 
     <div v-if="error" class="error pa-4">Failed to load list.</div>
     <div v-else-if="!list" class="pa-4">Loading...</div>
-    <div v-else class="pa-4">
+
+    <div v-else-if="list?.type === 'Default'" class="pa-4">
       <Grid :data="list.items || list" :autoConfig="true" />
+    </div>
+
+    <div v-else-if="list?.type === 'Board'" class="pa-4">
+      <TaskBoard :listId="list.id" :items="list.items" />
+    </div>
+
+    <div v-else-if="list?.type === 'Checklist'" class="pa-4">
+      <TaskList :listId="list.id" :items="list.items" />
+    </div> 
+    
+    <div v-else-if="list?.type === 'Kanban'" class="pa-4">
+      <KanbanProjectBoard :listId="list.id" :items="list.items" />
+    </div>  
+
+    <div v-else-if="list?.type === 'Habit Tracker'" class="pa-4">
+      <HabitTrackerVIew :listId="list.id" :items="list.items" />
+    </div> 
+
+    <div v-else class="pa-4">
+      <p style="text-align: center; width: 100%; padding-top: 25%;">List Not Found.</p>
     </div>
   </div>
 </template>
@@ -17,10 +38,15 @@
     useRoute
   } from 'vue-router'
   import Grid from '../../../../../shared/app/components/ui/DataGrid/components/Grid.vue'
+  import { TaskBoard } from '../../../components/features/lists/types/TaskBoard.vue'
+  import { KanbanProjectBoard } from '../../../components/features/lists/types/Kanban.vue/index.js'
+  import { TaskList } from '../../../components/features/lists/types/TaskList.vue'
+import HabitTrackerVIew from '../../../components/features/lists/types/HabitTrackerVIew.vue'
 
   const route = useRoute();
   const {
-    $sdk
+    $directus,
+    $readItems
   } = useNuxtApp()
 
   const slug = computed(() => {
@@ -34,7 +60,7 @@
     error,
     refresh: refreshList
   } = await useAsyncData('list', () => {
-    return $sdk.content.readItems('lists', {
+    return $directus.request($readItems('lists', {
       fields: [
         '*',
         'category.categories_id.*',
@@ -56,7 +82,7 @@
         }
       },
       limit: 1
-    })
+    }))
   })
 
   const list = computed(() => listRaw.value?.[0] || null)

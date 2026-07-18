@@ -9,7 +9,8 @@ const _useHead = (globalThis as any).useHead as ((h: any) => void) | undefined
  * Used in layouts. Title can be changed in pages through the `useHead` composable.
  */
 export const usePageTitle = () => {
-  const { titleSuffix } = useAppConfig();
+  const appConfig = useAppConfig() as Record<string, any>
+  const titleSuffix = appConfig.titleSuffix
 
   const runner = _useHead || ((globalThis as any).useHead)
   if (typeof runner === 'function') {

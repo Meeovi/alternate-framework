@@ -13,6 +13,23 @@ import { setDefaultAuthAdapter } from './src/contracts/auth.js'
 import { setDefaultSearchAdapter } from './src/contracts/search.js'
 import { setDefaultNotifyAdapter } from './src/contracts/notification.js'
 
+type APISource = {
+  name: string
+  type: string
+  endpoint: string
+  headers?: Record<string, string>
+}
+
+class GatewayAdapter {
+  constructor(opts: { sources: APISource[] }) {
+    void opts
+  }
+
+  executeRequest(): Promise<any> {
+    throw new Error('GatewayAdapter not implemented.')
+  }
+}
+
 export const sdk: Record<string, any> = {
 	auth: {},
 	commerce: {},
@@ -77,10 +94,7 @@ export function initGateway(nuxtApp: any) {
 }
 
 export function initDynamicGateway(env: Record<string, string | undefined> = {}): any {
-	const GatewayAdapter = require('@mframework/adapter-gateway').GatewayAdapter
-	const loadSourcesFromEnv = require('@mframework/adapter-gateway').loadSourcesFromEnv
-
-	const sources = loadSourcesFromEnv('MESH_SOURCE_')
+	const sources: APISource[] = []
 
 	if (sources.length === 0 && env.DIRECTUS_URL) {
 		sources.push({

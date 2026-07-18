@@ -29,7 +29,6 @@ import { useHead, useRuntimeConfig } from '#app'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import useAppLocalePath from '../utils/useAppLocalePath'
 import { useAlert } from '../composables/useAlert'
 import { resetPassword } from '../../lib/auth-client'
 
@@ -46,7 +45,7 @@ useHead({
 })
 
 const alert = useAlert()
-const localePath = useAppLocalePath()
+const localePath = useLocalePath()
 const runtimeConfig = useRuntimeConfig()
 const appName = String(runtimeConfig.public?.appName || 'App')
 

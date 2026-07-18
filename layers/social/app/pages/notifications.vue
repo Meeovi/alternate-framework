@@ -30,28 +30,26 @@
         ref
     } from 'vue'
 
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem, $readItems } = useNuxtApp()
     const tab = ref(null);
 
     const {
         data: notifyBar
     } = await useAsyncData('notifyBar', async () => {
-        const resp = await $sdk.content.getItem('navigation', '93', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        })
+        const resp = await $directus.request($readItem('navigation', '93', {
+            fields: ['*', { '*': ['*'] }]
+        }))
         return resp?.data ?? resp ?? null
     })
 
     const {
         data: notifyPage
     } = await useAsyncData('notifyPage', async () => {
-        const resp = await $sdk.content.getItem('pages', '95', {
+        const resp = await $directus.request($readItem('pages', '95', {
             fields: ['*', {
                 '*': ['*']
             }]
-        })
+        }))
         return resp?.data ?? resp ?? null
     })
 

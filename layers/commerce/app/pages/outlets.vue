@@ -51,21 +51,30 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, useAsyncData, useHead, useNuxtApp } from '#imports'
+<script setup>
+  import { ref, useAsyncData, useHead, useNuxtApp } from '#imports'
   import outlet from '../components/catalog/outlets/outlets.vue'
 
   const tab = ref(null)
-  
-  import { useAppGateway } from '~/composables/useAppGateway'
-  const content = useAppGateway().content
+  const {
+    $directus,
+    $readItems,
+    $readItem
+  } = useNuxtApp()
 
   const { data: outlets } = await useAsyncData('outlets', async () => {
-    return await content.listOutlets({ fields: ['*', { '*': ['*'] }] })
-  })
+    return await $directus.request($readItems('outlets', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
+    })
 
-  // Type outletbar as any to resolve property errors
-  const outletbar: any = {};
+  const {
+    data: outletbar
+  } = await useAsyncData('outletbar', async () => {
+    return await $directus.request($readItem('outletbars', '55'))
+  })
 
   useHead({
     title: 'Outlets on Meeovi',

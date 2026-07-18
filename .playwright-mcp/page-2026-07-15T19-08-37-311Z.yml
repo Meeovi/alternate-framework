@@ -1,0 +1,199 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e4]:
+    - heading "500" [level=1] [ref=f3e5]
+    - heading "Server Error" [level=2] [ref=f3e6]
+    - paragraph [ref=f3e7]: "Cannot find module '#shared/app/components/alerts/OfflineAlert.vue' imported from '/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/app/layouts/default.vue'. - If you rely on tsconfig.json's \"paths\" to resolve modules, please install \"vite-tsconfig-paths\" plugin to handle module resolution. - Make sure you don't have relative aliases in your Vitest config. Use absolute paths instead. Read more: https://vitest.dev/guide/common-errors"
+  - status [ref=f3e8]
+  - iframe [ref=f3e9]:
+    - generic [ref=f4e2]:
+      - banner [ref=f4e3]:
+        - generic [ref=f4e5]:
+          - checkbox [ref=f4e6]
+          - generic "Light mode" [ref=f4e8] [cursor=pointer]
+      - generic [ref=f4e13]:
+        - heading "Error" [level=4] [ref=f4e14]
+        - heading "An error has occurred" [level=1] [ref=f4e15]
+      - 'heading "Cannot find module ''#shared/app/components/alerts/OfflineAlert.vue'' imported from ''/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/app/layouts/default.vue''. - If you rely on tsconfig.json''s \"paths\" to resolve modules, please install \"vite-tsconfig-paths\" plugin to handle module resolution. - Make sure you don''t have relative aliases in your Vitest config. Use absolute paths instead. Read more: https://vitest.dev/guide/common-errors Copy error with stack trace to clipboard" [level=2] [ref=f4e19]':
+        - generic [ref=f4e23]: "Cannot find module '#shared/app/components/alerts/OfflineAlert.vue' imported from '/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/app/layouts/default.vue'. - If you rely on tsconfig.json's \"paths\" to resolve modules, please install \"vite-tsconfig-paths\" plugin to handle module resolution. - Make sure you don't have relative aliases in your Vitest config. Use absolute paths instead. Read more: https://vitest.dev/guide/common-errors"
+        - button "Copy error with stack trace to clipboard" [ref=f4e24] [cursor=pointer]
+      - generic [ref=f4e30]:
+        - heading "Stack Trace" [level=3] [ref=f4e33]
+        - generic [ref=f4e35]:
+          - generic [ref=f4e36]:
+            - generic [ref=f4e38]:
+              - checkbox "View All Frames" [ref=f4e39]
+              - generic [ref=f4e40]: View All Frames
+            - generic [ref=f4e42]:
+              - button "Pretty" [ref=f4e43]
+              - button "Raw" [ref=f4e44]
+          - list [ref=f4e47]:
+            - listitem [ref=f4e48]:
+              - generic [ref=f4e49]:
+                - button [ref=f4e50]:
+                  - link "node_modules/vite-node/dist/client-C7yCjfvf.mjs" [ref=f4e51] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/vite-node/dist/client-C7yCjfvf.mjs:198
+                  - generic [ref=f4e52]:
+                    - text: in
+                    - code [ref=f4e53]: ViteNodeRunner._resolveUrl
+                  - generic [ref=f4e54]:
+                    - text: at line
+                    - code [ref=f4e55]: 198:34
+                - button [ref=f4e57]
+            - listitem [ref=f4e60]:
+              - generic [ref=f4e61]:
+                - button [ref=f4e62]:
+                  - link "node_modules/vite-node/dist/client-C7yCjfvf.mjs" [ref=f4e63] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/vite-node/dist/client-C7yCjfvf.mjs:222
+                  - generic [ref=f4e64]:
+                    - text: in
+                    - code [ref=f4e65]: async ViteNodeRunner.resolveUrl
+                  - generic [ref=f4e66]:
+                    - text: at line
+                    - code [ref=f4e67]: 222:11
+                - button [ref=f4e69]
+            - listitem [ref=f4e72]:
+              - generic [ref=f4e73]:
+                - button [ref=f4e74]:
+                  - link "node_modules/vite-node/dist/client-C7yCjfvf.mjs" [ref=f4e75] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/vite-node/dist/client-C7yCjfvf.mjs:249
+                  - generic [ref=f4e76]:
+                    - text: in
+                    - code [ref=f4e77]: async request
+                  - generic [ref=f4e78]:
+                    - text: at line
+                    - code [ref=f4e79]: 249:30
+                - button [ref=f4e81]
+            - listitem [ref=f4e84]:
+              - generic [ref=f4e86]:
+                - link "async app/layouts/default.vue" [ref=f4e87] [cursor=pointer]:
+                  - /url: vscode://file/async /home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/app/layouts/default.vue:18
+                - generic [ref=f4e88]:
+                  - text: at line
+                  - code [ref=f4e89]: 18:32
+            - listitem [ref=f4e90]:
+              - generic [ref=f4e91]:
+                - button [ref=f4e92]:
+                  - link "node_modules/vite-node/dist/client-C7yCjfvf.mjs" [ref=f4e93] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/vite-node/dist/client-C7yCjfvf.mjs:369
+                  - generic [ref=f4e94]:
+                    - text: in
+                    - code [ref=f4e95]: async ViteNodeRunner.runModule
+                  - generic [ref=f4e96]:
+                    - text: at line
+                    - code [ref=f4e97]: 369:4
+                - button [ref=f4e99]
+            - listitem [ref=f4e102]:
+              - generic [ref=f4e103]:
+                - button [ref=f4e104]:
+                  - link "node_modules/vite-node/dist/client-C7yCjfvf.mjs" [ref=f4e105] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/vite-node/dist/client-C7yCjfvf.mjs:349
+                  - generic [ref=f4e106]:
+                    - text: in
+                    - code [ref=f4e107]: async ViteNodeRunner.directRequest
+                  - generic [ref=f4e108]:
+                    - text: at line
+                    - code [ref=f4e109]: 349:3
+                - button [ref=f4e111]
+            - listitem [ref=f4e114]:
+              - generic [ref=f4e115]:
+                - button [ref=f4e116]:
+                  - link "node_modules/vite-node/dist/client-C7yCjfvf.mjs" [ref=f4e117] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/vite-node/dist/client-C7yCjfvf.mjs:182
+                  - generic [ref=f4e118]:
+                    - text: in
+                    - code [ref=f4e119]: async ViteNodeRunner.cachedRequest
+                  - generic [ref=f4e120]:
+                    - text: at line
+                    - code [ref=f4e121]: 182:11
+                - button [ref=f4e123]
+            - listitem [ref=f4e126]:
+              - generic [ref=f4e127]:
+                - button [ref=f4e128]:
+                  - link "node_modules/vite-node/dist/client-C7yCjfvf.mjs" [ref=f4e129] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/vite-node/dist/client-C7yCjfvf.mjs:229
+                  - generic [ref=f4e130]:
+                    - text: in
+                    - code [ref=f4e131]: async ViteNodeRunner.dependencyRequest
+                  - generic [ref=f4e132]:
+                    - text: at line
+                    - code [ref=f4e133]: 229:10
+                - button [ref=f4e135]
+      - generic [ref=f4e139]:
+        - heading "Error Cause" [level=3] [ref=f4e142]
+        - code [ref=f4e147]:
+          - generic [ref=f4e148]:
+            - text: "Error {"
+            - button "▼" [ref=f4e149]
+            - text: "}"
+      - generic [ref=f4e152]:
+        - heading "Request" [level=3] [ref=f4e154]
+        - generic [ref=f4e155]:
+          - generic [ref=f4e156]:
+            - heading "url" [level=4] [ref=f4e157]
+            - text: http://localhost:3001/results?q=test
+          - generic [ref=f4e158]:
+            - heading "method" [level=4] [ref=f4e159]
+            - text: GET
+          - generic [ref=f4e160]:
+            - heading "headers" [level=4] [ref=f4e161]
+            - table [ref=f4e162]:
+              - rowgroup [ref=f4e163]:
+                - row [ref=f4e164]:
+                  - cell "host" [ref=f4e165]
+                  - cell "localhost:3001" [ref=f4e166]
+                - row [ref=f4e167]:
+                  - cell "connection" [ref=f4e168]
+                  - cell "keep-alive" [ref=f4e169]
+                - row [ref=f4e170]:
+                  - cell "sec-ch-ua" [ref=f4e171]
+                  - cell "\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Google Chrome\";v=\"150\"" [ref=f4e172]
+                - row [ref=f4e173]:
+                  - cell "sec-ch-ua-mobile" [ref=f4e174]
+                  - cell "?0" [ref=f4e175]
+                - row [ref=f4e176]:
+                  - cell "sec-ch-ua-platform" [ref=f4e177]
+                  - cell "\"Linux\"" [ref=f4e178]
+                - row [ref=f4e179]:
+                  - cell "upgrade-insecure-requests" [ref=f4e180]
+                  - cell "1" [ref=f4e181]
+                - row [ref=f4e182]:
+                  - cell "user-agent" [ref=f4e183]
+                  - cell "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" [ref=f4e184]
+                - row [ref=f4e185]:
+                  - cell "accept" [ref=f4e186]
+                  - cell "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7" [ref=f4e187]
+                - row [ref=f4e188]:
+                  - cell "sec-fetch-site" [ref=f4e189]
+                  - cell "none" [ref=f4e190]
+                - row [ref=f4e191]:
+                  - cell "sec-fetch-mode" [ref=f4e192]
+                  - cell "navigate" [ref=f4e193]
+                - row [ref=f4e194]:
+                  - cell "sec-fetch-user" [ref=f4e195]
+                  - cell "?1" [ref=f4e196]
+                - row [ref=f4e197]:
+                  - cell "sec-fetch-dest" [ref=f4e198]
+                  - cell "document" [ref=f4e199]
+                - row [ref=f4e200]:
+                  - cell "accept-encoding" [ref=f4e201]
+                  - cell "gzip, deflate, br, zstd" [ref=f4e202]
+                - row [ref=f4e203]:
+                  - cell "accept-language" [ref=f4e204]
+                  - cell "en-US,en;q=0.9" [ref=f4e205]
+                - row [ref=f4e206]:
+                  - cell "x-forwarded-for" [ref=f4e207]
+                  - cell "127.0.0.1" [ref=f4e208]
+                - row [ref=f4e209]:
+                  - cell "x-forwarded-port" [ref=f4e210]
+                  - cell "3001" [ref=f4e211]
+                - row [ref=f4e212]:
+                  - cell "x-forwarded-proto" [ref=f4e213]
+                  - cell "http" [ref=f4e214]
+  - iframe [ref=f3e10]:
+    - generic [ref=f5e4]:
+      - heading "500" [level=1] [ref=f5e5]
+      - heading "Server Error" [level=2] [ref=f5e6]
+      - paragraph [ref=f5e7]: "Cannot find module '#shared/app/components/alerts/OfflineAlert.vue' imported from '/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/app/layouts/default.vue'. - If you rely on tsconfig.json's \"paths\" to resolve modules, please install \"vite-tsconfig-paths\" plugin to handle module resolution. - Make sure you don't have relative aliases in your Vitest config. Use absolute paths instead. Read more: https://vitest.dev/guide/common-errors"
+  - button "Toggle detailed error view Hide error page preview" [expanded] [ref=f3e11]:
+    - generic [ref=f3e12]: Toggle detailed error view
+    - button "Hide error page preview" [ref=f3e13] [cursor=pointer]: ×

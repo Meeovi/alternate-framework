@@ -25,7 +25,7 @@
                   </strong>
                   <v-list lines="two">
                         <v-list-item :title="list?.name" :subtitle="list?.type"
-                          :prepend-avatar="$sdk.media?.getAssetUrl(list?.image)"
+                          :prepend-avatar="getAssetURL(list?.image)"
                           @click="saveProductToList(list.id)" style="cursor: pointer;" :disabled="loading">
                           <template v-slot:append>
                             <v-progress-circular v-if="loading" indeterminate size="24"></v-progress-circular>
@@ -54,12 +54,13 @@
 
 <script setup>
 import { ref } from '#imports'
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
-const { $sdk } = useNuxtApp()
+const { $directus, $readItems, $sdk, $createItem } = useNuxtApp()
 
 const { data: lists } = await useAsyncData('lists', async () => {
   const opts = { filter: { status: { _eq: 'Public' } } }
-  const resp = await $sdk.content.readItems('lists', opts)
+  const resp = await $directus.request($readItems('lists', opts))
   return resp?.data || resp
 })
 
@@ -68,7 +69,7 @@ const loading = ref(false)
 const saveProductToList = async (listId) => {
   loading.value = true
   try {
-    await $sdk.content.createItem('list_items', { list: listId })
+    await $directus.request($createItem('list_items', { list: listId }))
   } catch (err) {
     console.error('Failed to save product to list', err)
   } finally {

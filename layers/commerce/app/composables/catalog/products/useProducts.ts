@@ -1,7 +1,6 @@
-// layers/commerce/app/composables/catalog/products/useProducts.ts
-import { ref, computed, toRefs } from 'vue'
+import { ref, computed } from 'vue'
+import { useState } from 'nuxt/app'
 import { getCommerceClient } from '../../../utils/client'
-import { useState } from '#app'
 import type {
   CommerceProductClient,
   Product,
@@ -9,36 +8,34 @@ import type {
   Paginated,
 } from '../../../types/products'
 
-/**
- * Consolidated products composable.
- *
- * Replaces the spread-out `useProducts/` directory (useBestSellingProducts,
- * useNewestProducts, useProductRecommended, useProductAttribute, useProductVideos,
- * useProducts, featured-products, *.config). All product-listing logic now lives
- * here and is driven by the typed `CommerceProductClient` contract.
- */
 export function useProducts() {
   const client = getCommerceClient() as CommerceProductClient
 
   const state = useState<{
     data: Paginated<Product> | null
     loading: boolean
-    error: Error | null
-  }>('commerce:products', () => ({ data: null, loading: false, error: null }))
+    error: string | null
+  }>('commerce:products', () => ({
+    data: null,
+    loading: false,
+    error: null,
+  }))
 
-  async function fetchProducts(params?: ProductSearchParams): Promise<Readonly<typeof state.value.data>> {
+  async function fetchProducts(params?: ProductSearchParams): Promise<Paginated<Product> | null> {
     state.value.loading = true
     state.value.error = null
+
     try {
       const response = await client.getProducts(params)
       state.value.data = response ?? null
+      return state.value.data
     } catch (err) {
-      state.value.error = err as Error
+      state.value.error = (err as Error)?.message || 'Failed to fetch products'
       state.value.data = null
+      return null
     } finally {
       state.value.loading = false
     }
-    return computed(() => state.value.data) as unknown as Readonly<typeof state.value.data>
   }
 
   async function fetchProductById(id: string) {
@@ -75,36 +72,28 @@ export function useProducts() {
   async function fetchProductsByIds(ids: string[]) {
     state.value.loading = true
     try {
-      const found = await Promise.all(ids.map((id) => client.getProductById(id)))
+      const found = await Promise.all(ids.map(id => client.getProductById(id)))
       const items = found.filter((p): p is Product => Boolean(p))
-      state.value.data = { items, total: items.length, page: 1, pageSize: items.length, totalPages: 1 }
+
+      state.value.data = {
+        items,
+        total: items.length,
+        page: 1,
+        pageSize: items.length,
+        totalPages: 1,
+      }
+
       return items
     } finally {
       state.value.loading = false
     }
   }
 
-  async function fetchRecommended(slug: string) {
-    return fetchProducts({ sku: slug, sort: 'recommended' })
-  }
-
-  async function fetchBestSelling(params?: ProductSearchParams) {
-    return fetchProducts({ ...params, sort: 'best_selling' })
-  }
-
-  async function fetchNewest(params?: ProductSearchParams) {
-    return fetchProducts({ ...params, sort: 'newest' })
-  }
-
-  async function fetchRelated(id: string) {
-    return fetchProducts({ filter: { relatedId: id } })
-  }
-
   const products = computed<Product[]>(() => state.value.data?.items ?? [])
   const totalProducts = computed<number>(() => state.value.data?.total ?? 0)
 
   return {
-    ...toRefs(state.value),
+    ...state.value,
     products,
     totalProducts,
     fetchProducts,
@@ -113,10 +102,6 @@ export function useProducts() {
     fetchProductBySlug,
     searchProducts,
     fetchProductsByIds,
-    fetchRecommended,
-    fetchBestSelling,
-    fetchNewest,
-    fetchRelated,
   }
 }
 

@@ -62,13 +62,12 @@
 	import {
 		useAuth
 	} from '../composables/useAuth'
-	import useAppLocalePath from '../utils/useAppLocalePath'
 	import {
 		useAlert
 	} from '../composables/useAlert';
 
 	const auth = useAuth();
-	const localePath = useAppLocalePath();
+	const localePath = useLocalePath();
 
 	definePageMeta({
 		layout: 'auth',

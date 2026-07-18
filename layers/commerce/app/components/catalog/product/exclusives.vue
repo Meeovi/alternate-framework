@@ -31,10 +31,13 @@
   import productCard from './productCard.vue'
 
   const model = ref(null);
-  const { $sdk } = useNuxtApp()
+  const {
+    $directus,
+    $readItems
+  } = useNuxtApp()
 
   const { data: exclusives } = await useAsyncData('exclusives', async () => {
-    const refs = await $sdk.content.readItems('products', {
+    const refs = await $directus.request($readItems('products', {
       fields: ['id', 'sku'],
       limit: 10,
       filter: {
@@ -43,7 +46,7 @@
           departments_id: { name: { _eq: 'Exclusives' } }
         }
       }
-    })
+    }))
 
     const products = await Promise.all(refs.map(async (r) => {
       try {

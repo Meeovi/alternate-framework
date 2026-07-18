@@ -58,32 +58,32 @@
     import eventCard from '../../../../commerce/app/components/catalog/product/productCard.vue'
     import yourEvents from '#social/app/components/features/event/yourEvents.vue'
 
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem, $readItems } = useNuxtApp()
     const tab = ref(null);
 
     const { data: eventsBar } = await useAsyncData('eventsBar', async () => {
-        const resp = await $sdk.content.readItem('navigation', '80', {
+        const resp = await $directus.request($readItem('navigation', '80', {
             fields: ['*', { '*': ['*'] }]
-        })
+        }))
         return resp?.data || resp || null
     })
 
     const { data: eventsPage } = await useAsyncData('eventsPage', async () => {
-        const resp = await $sdk.content.readItem('pages', '86', {
+        const resp = await $directus.request($readItem('pages', '86', {
             fields: ['*', { '*': ['*'] }]
-        })
+        }))
         return resp?.data || resp || null
     })
 
     const { data: events } = await useAsyncData('events', async () => {
-        const resp = await $sdk.content.readItems('products', {
+        const resp = await $directus.request($readItems('products', {
             fields: ['*', { '*': ['*'] }],
             filter: {
                 product_types: {
                     product_types_id: { _eq: 'Events' }
                 }
             }
-        })
+        }))
         return resp?.data || resp || []
     })
 

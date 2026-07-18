@@ -57,7 +57,7 @@
 
     const model = ref(null)
 
-    const { $sdk } = useNuxtApp()
+    const { $directus, $readItem, $readItems } = useNuxtApp()
     
     const opts = {
         fields: ['*', 'category.categories_id.*', 'department.departments_id', 'user.user.*',
@@ -69,39 +69,39 @@
     const {
         data: allLists
     } = await useAsyncData('allLists', async () => {
-        return $sdk.content.readItems('lists', opts)
+        return $directus.request($readItems('lists', opts))
     })
 
     const {
         data: myLists
     } = await useAsyncData('myLists', async () => {
-        return $sdk.content.readItems('lists', {
+        return $directus.request($readItems('lists', {
             ...opts,
             filter: {
                 user: {
                     _neq: 'null'
                 }
             }
-        })
+        }))
     })
 
     const {
         data: myBookmarks
     } = await useAsyncData('myBookmarks', async () => {
-        return $sdk.content.readItems('lists', {
+        return $directus.request($readItems('lists', {
             ...opts,
             filter: {
                 type: {
                     _eq: 'bookmarks'
                 }
             }
-        })
+        }))
     })
 
     const {
         data: page
     } = await useAsyncData('page', () => {
-        return $sdk.content.readItems('pages', {
+        return $directus.request($readItems('pages', {
             filter: {
                 id: {
                     _eq: 40
@@ -109,7 +109,7 @@
             },
             fields: ['*'],
             limit: 1
-        }).then(response => (response?.data?.[0] || response?.[0]) ?? null)
+        })).then(response => (response?.data?.[0] || response?.[0]) ?? null)
     })
 
     useHead({

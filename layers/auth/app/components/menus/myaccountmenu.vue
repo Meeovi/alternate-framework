@@ -15,9 +15,9 @@
 
 <script setup>
 
-const { $sdk } = useNuxtApp()
+const { $directus, $readItem } = useNuxtApp()
 
 const { data: navAccount } = await useAsyncData('auth-myaccount-nav-account', () => {
-  return $sdk.content.getItem('navigation', '2')
+  return $directus.request($readItem('navigation', '2'))
 })
 </script>

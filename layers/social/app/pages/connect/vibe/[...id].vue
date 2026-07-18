@@ -45,7 +45,7 @@
 
   const route = useRoute()
   const config = useRuntimeConfig()
-  const { $sdk } = useNuxtApp()
+  const { $sdk, $directus, $readItem, $readItems, $createItem, $deleteItem } = useNuxtApp()
 
   const runtimeUseAuth = globalThis.useAuth
   const auth = runtimeUseAuth ? runtimeUseAuth() : {
@@ -60,14 +60,8 @@
 
   const unwrapList = (value) => value?.data || value || []
 
-  onMounted(async () => {
-    await fetchVideo()
-    await trackView()
-    await fetchReactions()
-  })
-
   async function fetchVideo() {
-    const resp = await $sdk.content.readItems('videos', {
+    const resp = await $directus.request($readItems('videos', {
       filter: {
         id: {
           _eq: route.params.id
@@ -75,7 +69,7 @@
       },
       limit: 1,
       fields: ['*', 'tags.id', 'tags.name']
-    })
+    }))
     video.value = unwrapList(resp)?.[0] || null
   }
 
@@ -92,10 +86,11 @@
   }
 
   async function fetchReactions() {
+    // fetches the current user's like status + total reaction count for the video
     if (!user.value) {
       liked.value = false
     } else {
-      const resp = await $sdk.content.readItems('reactions', {
+      const resp = await $directus.request($readItems('reactions', {
         filter: {
           video_id: {
             _eq: route.params.id
@@ -105,23 +100,23 @@
           }
         },
         limit: 1
-      })
+      }))
       liked.value = unwrapList(resp).length > 0
     }
 
-    const all = await $sdk.content.readItems('reactions', {
+    const all = await $directus.request($readItems('reactions', {
       filter: {
         video_id: {
           _eq: route.params.id
         }
       }
-    })
+    }))
     reactionCount.value = unwrapList(all).length
   }
 
   async function toggleLike() {
     if (!user.value) return
-    const existing = await $sdk.content.readItems('reactions', {
+    const existing = await $directus.request($readItems('reactions', {
       filter: {
         video_id: {
           _eq: route.params.id
@@ -131,18 +126,18 @@
         }
       },
       limit: 1
-    })
+    }))
     const existingId = unwrapList(existing)?.[0]?.id || null
 
     if (existingId) {
-      await $sdk.content.deleteItem('reactions', existingId)
+      await $directus.request($deleteItem('reactions', existingId))
       liked.value = false
       reactionCount.value = Math.max(0, reactionCount.value - 1)
     } else {
-      await $sdk.content.createItem('reactions', {
+      await $directus.request($createItem('reactions', {
         video_id: route.params.id,
         user_id: user.value.id
-      })
+      }))
       liked.value = true
       reactionCount.value += 1
     }
@@ -150,12 +145,12 @@
 
   async function react(emoji) {
     if (!user.value) return
-    await $sdk.content.createItem('emoji_reactions', {
+    await $directus.request($createItem('emoji_reactions', {
       target_type: 'video',
       target_id: route.params.id,
       user_id: user.value.id,
       emoji
-    })
+    }))
   }
 
   // Real-time subscriptions removed; using simple polling via setInterval
@@ -173,4 +168,10 @@
   function formatDate(date) {
     return new Date(date).toLocaleString()
   }
+
+  onMounted(async () => {
+    await fetchVideo()
+    await trackView()
+    await fetchReactions()
+  })
 </script>

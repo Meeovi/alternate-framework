@@ -14,10 +14,10 @@
 </template>
 
 <script setup>
-const { $sdk } = useNuxtApp()
+const { $directus, $readItem } = useNuxtApp()
 
 const { data: social } = await useAsyncData('social', async () => {
-    const item = await $sdk.content.getItem('navigation', '76')
+    const item = await $directus.request($readItem('navigation', '76'))
     return item || { name: '', menus: [] }
 })
 </script>

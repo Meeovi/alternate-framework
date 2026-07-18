@@ -8,7 +8,6 @@
 </template>
 
 <script setup>
-import useAppLocalePath from '../utils/useAppLocalePath'
 import { useUserStore } from '../stores/user'
 
 definePageMeta({
@@ -16,10 +15,10 @@ definePageMeta({
 })
 
 const router = useRouter()
-const store = useUserStore()
 
 onMounted(async () => {
-  const localePath = useAppLocalePath()
+  const localePath = useLocalePath()
+  const store = useUserStore()
   try {
     // No server session to refresh; rely on local store state
     if (store.user) {

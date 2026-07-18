@@ -8,7 +8,7 @@
                             <v-list>
                                 <v-list-item :title="post?.author?.name"
                                     :subtitle="post?.date_created ? new Date(post?.date_created).toLocaleDateString() : 'Unknown date'"
-                                    :prepend-avatar="$sdk.media?.getAssetUrl?.(post?.author?.avatar)"></v-list-item>
+                                    :prepend-avatar="getAssetURL(post?.author?.avatar)"></v-list-item>
                             </v-list>
                         </v-toolbar-title>
 
@@ -17,15 +17,15 @@
                         <editMenu :post="post" />
                     </v-toolbar>
                     <div class="align-end text-white" height="200" v-if="post?.file">
-                        <video :src="$sdk.media?.getAssetUrl?.(post?.file)"></video>
+                        <video :src="getAssetURL(post?.file)"></video>
                     </div>
 
                     <div class="align-end text-white" height="200" v-else-if="post?.audio">
-                        <audio :src="$sdk.media?.getAssetUrl?.(post?.audio)"></audio>
+                        <audio :src="getAssetURL(post?.audio)"></audio>
                     </div>
 
                     <div class="align-end text-white" height="200" v-else-if="matchesExtension(post?.image, ['.gif'])">
-                        <NuxtImg provider="cloudinary" loading="lazy" :src="$sdk.media?.getAssetUrl?.(post?.image)"
+                        <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image)"
                             :alt="post?.title || 'No Title'" />
                     </div>
                     <v-img v-else class="align-end text-white" height="200"
@@ -79,6 +79,7 @@
 </template>
 
 <script setup>
+import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import editMenu from '#social/app/components/blocks/postEditMenu.vue';
     import share from '#social/app/components/blocks/share.vue';
     import repost from '#social/app/components/blocks/repost/repost.vue';
@@ -120,7 +121,7 @@
         }
     })
 
-    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || $sdk.media?.getAssetUrl?.(file) || '')
+    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetURL(file) || '')
         .toLowerCase()
     const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 </script>
