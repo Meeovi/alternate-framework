@@ -1,2 +1,0 @@
-[   18773ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Server Error) @ http://localhost:3002/magento-test:0
-[   18936ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ http://localhost:3002/magento-test:460
