@@ -8,6 +8,8 @@ export type NormalizerMap<Source, Target = any> = {
   [key: string]: (source: NonNullable<Source>) => Target[keyof Target] | any;
 };
 
+export type Normalizer<Source, Target> = (source: Source) => Partial<Target>;
+
 export function createNormalizer<Source, Target>(
   map: NormalizerMap<Source, Target>
 ) {

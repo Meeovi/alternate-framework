@@ -26,12 +26,10 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
     import { ref } from '#imports'
 
     import share from '../blocks/share.vue'
-    const { $sdk } = useNuxtApp()
-    const hasAsset = (file) => Boolean(getAssetURL(file))
 
     const model = ref(null)
     const props = defineProps({

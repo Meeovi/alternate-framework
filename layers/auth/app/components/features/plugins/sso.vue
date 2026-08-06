@@ -26,7 +26,6 @@
 
 <script setup lang="ts">
 	import { computed, ref } from 'vue';
-	import { useAuthCapabilities } from '../../../composables/organization/useOrganization'
 	import { useAuth } from '../../../composables/useAuth';
 
 	const props = withDefaults(defineProps<{
@@ -42,9 +41,8 @@
 	})
 
 	const auth = useAuth()
-	const { backend, hasSso } = useAuthCapabilities()
-	const isSupported = computed(() => hasSso.value)
-	const backendLabel = computed(() => backend.value)
+	const isSupported = ref(true)
+	const backendLabel = ref('better-auth')
 	const shouldRender = computed(() => props.enabled && (isSupported.value || props.showUnsupportedState))
 
 	const loadingProvider = ref<string | null>(null)
@@ -63,7 +61,7 @@
 		loadingProvider.value = provider
 		error.value = ''
 		try {
-			await (auth.signIn as any).social({ provider, callbackURL: props.callbackURL })
+			await (auth.signIn as any).sso({ provider, callbackURL: props.callbackURL })
 		} catch (err: any) {
 			error.value = err?.message || `Failed to start SSO with ${provider}`
 		} finally {

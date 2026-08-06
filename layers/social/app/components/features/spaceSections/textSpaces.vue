@@ -30,7 +30,7 @@
     const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
 
     const model = ref(null)
-    const { $directus, $readItems } = useNuxtApp()
+    const { $directus, $readItems } = useNuxtApp() as any
 
     const { data: myTextSpaces } = await useAsyncData<any[]>('myTextSpaces', async () => {
         const resp = await $directus.request($readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Forum' } } } }, fields: ['*', { '*': ['*'] }] }))

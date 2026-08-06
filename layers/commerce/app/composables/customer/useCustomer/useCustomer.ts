@@ -6,7 +6,6 @@ import type { UseCustomerReturn, UseCustomerState, FetchCustomer } from './types
 import { getCommerceClient } from '../../../utils/client';
 import type { CommerceClient } from '../../../utils/client';
 import { useAsyncData, useState } from '#app';
-import { useHandleError } from '../../system/useHandleError/useHandleError';
 
 export const useCustomer: UseCustomerReturn = () => {
   const state = useState<UseCustomerState>('useCustomer', () => ({
@@ -20,10 +19,10 @@ export const useCustomer: UseCustomerReturn = () => {
 
     try {
       const { data, error } = await useAsyncData<UseCustomerState['data']>(() => client.getCustomer())
-      useHandleError(error.value);
+      if (error.value) console.error('Customer fetch error:', error.value)
       state.value.data = data.value ?? null;
     } catch (error) {
-      useHandleError(error as any)
+      console.error('Customer fetch error:', error)
       state.value.data = null;
     } finally {
       state.value.loading = false;

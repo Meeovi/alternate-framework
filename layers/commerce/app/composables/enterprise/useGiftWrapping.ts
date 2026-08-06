@@ -1,3 +1,4 @@
+import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
 
@@ -16,24 +17,13 @@ export interface GiftWrapRequest {
 
 export function useGiftWrapping() {
   const client = getCommerceClient() as CommerceClient
-
-  async function listGiftWrappingOptions(params: Record<string, any> = {}): Promise<GiftWrappingOption[]> {
-    return client.listGiftWrappingOptions(params)
-  }
-
-  async function addGiftWrapToCart(cartId: string, request: GiftWrapRequest) {
-    return client.addGiftWrapToCart({ cartId, ...request })
-  }
-
-  async function removeGiftWrapFromCart(cartId: string, itemId: string) {
-    return client.removeGiftWrapFromCart({ cartId, itemId })
-  }
-
-  return {
-    listGiftWrappingOptions,
-    addGiftWrapToCart,
-    removeGiftWrapFromCart,
-  }
+  return createEnterpriseResource({
+    listGiftWrappingOptions: (c, params: Record<string, any> = {}) =>
+      c.listGiftWrappingOptions(params),
+    addGiftWrapToCart: (c, cartId: string, request: GiftWrapRequest) =>
+      c.addGiftWrapToCart({ cartId, ...request }),
+    removeGiftWrapFromCart: (c, cartId: string, itemId: string) =>
+      c.removeGiftWrapFromCart({ cartId, itemId }),
+  } as Record<string, (client: CommerceClient, ...args: any[]) => Promise<any>>)
 }
-
 export default useGiftWrapping

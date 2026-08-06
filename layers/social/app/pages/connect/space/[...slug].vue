@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-card elevation="0">
             <v-toolbar class="text-white" image="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg">
                 <v-toolbar-title>
@@ -16,38 +16,103 @@
             <v-sheet>
 
                 <v-tabs v-model="tab" align-tabs="center" style="background-color: transparent">
-                    <v-tab v-for="menu in visibleTabs" :key="menu?.value" :value="menu?.value">
-                        {{ menu?.name }}
-                    </v-tab>
-
-                    <template #append>
-                        <v-menu v-if="overflowTabs.length">
-                            <template v-slot:activator="{ props }">
-                                <v-btn class="align-self-center me-4" height="100%" rounded="0" variant="plain"
-                                    v-bind="props">
-                                    More
-                                    <v-icon icon="mdi-menu-down" end></v-icon>
-                                </v-btn>
-                            </template>
-                            <v-list class="bg-grey-lighten-3">
-                                <v-list-item v-for="menu in overflowTabs" :key="menu?.value" :title="menu?.name"
-                                    @click="selectOverflowTab(menu)"></v-list-item>
-                            </v-list>
-                        </v-menu>
-                        <v-btn icon="fas fa-search" variant="text" class="ml-2" @click="searchDialog = true"></v-btn>
-                    </template>
+                    <div v-for="(menu, index) in individualSpaceBar?.menus" :key="index">
+                        <v-tab :value="menu?.value">{{ menu?.name }}</v-tab>
+                    </div>
                 </v-tabs>
 
-                <SearchDialog
-                    v-model="searchDialog"
-                    :space="space"
-                    @search="handleSearch"
-                />
+                <SearchDialog v-model="searchDialog" :space="space" @search="handleSearch" />
 
                 <v-tabs-window v-model="tab" class="spaceTabs">
-                    <v-tabs-window-item v-for="menu in (individualSpaceBar?.menus || [])" :key="menu?.value"
-                        :value="menu?.value">
-                        <component :is="getTabComponent(menu)" :space="space" :user="user" :loggedIn="loggedIn" />
+                    <!--Posts Tab-->
+                    <v-tabs-window-item :value="individualSpaceBar?.menus[0]?.value">
+                        <div v-if="space?.posts && space.posts.length">
+                            <div class="text-center" v-for="(discussions, idx) in space.posts"
+                                :key="discussions?.posts_id?.id || idx">
+                                <DiscussionTab :space="discussions?.posts_id" />
+                            </div>
+                        </div>
+
+                        <div class="center-text" v-else>
+                            <p>No discussions yet</p>
+                        </div>
+                    </v-tabs-window-item>
+
+                    <!--About Tab-->
+                    <v-tabs-window-item :value="individualSpaceBar?.menus[1]?.value">
+                        <AboutTab :space="space" />
+                    </v-tabs-window-item>
+
+                    <!--Members Tab-->
+                    <v-tabs-window-item :value="individualSpaceBar?.menus[2]?.value" id="SpaceMembers">
+                        <h5 class="center-text">{{ space?.name }} Administrators</h5>
+
+                        <v-row>
+                            <v-col cols="3">
+                                <MembersTab :member="space?.owner" />
+                            </v-col>
+                        </v-row>
+
+                        <h5 class="center-text">{{ space?.name }} Members</h5>
+
+                        <v-row>
+                            <v-col cols="3" v-if="space?.members?.length" v-for="members in space?.members"
+                                :key="members.id">
+                                <MembersTab :member="members?.directus_users_id" />
+                            </v-col>
+
+                            <div class="center-text" v-else>
+                                <p>No Members yet</p>
+                            </div>
+                        </v-row>
+                    </v-tabs-window-item>
+
+                    <!--Media Tab-->
+                    <v-tabs-window-item :value="individualSpaceBar?.menus[3]?.value">
+
+                        <v-row v-if="space?.media?.length">
+                            <v-col cols="3" v-for="media in space?.media" :key="media.id">
+                                <MediaTab :media="media?.media_id" />
+                            </v-col>
+                        </v-row>
+
+                        <div class="center-text" v-else>
+                            <p>No Media yet</p>
+                        </div>
+                    </v-tabs-window-item>
+
+                    <!--Products Tab-->
+                    <v-tabs-window-item :value="individualSpaceBar?.menus[4]?.value">
+                        <v-row>
+                            <v-col cols="3" v-if="space?.products?.length" v-for="products in space?.products"
+                                :key="products.id">
+                                <ProductsTab :product="products?.products_id" />
+                            </v-col>
+
+                            <div class="center-text" v-else>
+                                <p>No Products yet</p>
+                            </div>
+                        </v-row>
+                    </v-tabs-window-item>
+
+                    <!--Lists Tab-->
+                    <v-tabs-window-item :value="individualSpaceBar?.menus[5]?.value">
+                        <v-row>
+                            <v-col cols="3" v-if="space?.lists?.length" v-for="lists in space?.lists" :key="lists.id">
+                                <ListsTab :list="lists?.lists_id" />
+                            </v-col>
+
+                            <div class="center-text" v-else>
+                                <p>No Lists yet</p>
+                            </div>
+                        </v-row>
+                    </v-tabs-window-item>
+
+                    <!--Settings Tab-->
+                    <v-tabs-window-item :value="individualSpaceBar?.menus[6]?.value">
+                        <v-sheet>
+                            <SettingsTab />
+                        </v-sheet>
                     </v-tabs-window-item>
                 </v-tabs-window>
             </v-sheet>
@@ -59,11 +124,6 @@
     import {
         ref
     } from '#imports'
-    import {
-        normalizeSpaceRecord,
-        resolveUserRelation
-    } from '#social/app/composables/content/socialMappers'
-
     import AboutTab from './AboutTab.vue'
     import DiscussionTab from './DiscussionTab.vue'
     import MembersTab from './MembersTab.vue'
@@ -74,42 +134,22 @@
     import {
         useAuth
     } from '#auth/app/composables/useAuth'
-    // Map tab names to components
-    const tabComponentMap = {
-        about: AboutTab,
-        discussion: DiscussionTab,
-        post: DiscussionTab,
-        member: MembersTab,
-        media: MediaTab,
-        product: ProductsTab,
-        list: ListsTab,
-        setting: SettingsTab
-    }
-
-    function getTabComponent(menu) {
-        if (!menu?.name) return {
-            template: '<div class="center-text">No content for this tab.</div>'
-        }
-        const name = menu.name.toLowerCase()
-        for (const key in tabComponentMap) {
-            if (name.includes(key)) return tabComponentMap[key]
-        }
-        // fallback
-        return {
-            template: '<div class="center-text">No content for this tab.</div>'
-        }
-    }
+    import {
+        watch,
+        onMounted
+    } from 'vue'
+    import SearchDialog from '../../../components/blocks/groups/SearchDialog.vue'
 
     const route = useRoute();
     const router = useRouter();
-    const tab = ref(route.query.tab || null)
+    const tab = ref(null)
     const searchDialog = ref(false)
-        const {
+    const {
         $directus,
         $readItems,
         $readItem
     } = useNuxtApp()
-    
+
     const {
         user,
         loggedIn
@@ -148,24 +188,11 @@
         }))
     })
 
-    // Tab overflow logic
-
-    // Watch tab and update query param
-    watch(tab, (newTab) => {
-        if (newTab) {
-            router.replace({ query: { ...route.query, tab: newTab } })
-        }
-    })
-
-    // On mount, set tab from query if present
-    onMounted(() => {
-        if (route.query.tab) {
-            tab.value = route.query.tab
-        }
-    })
-
     // Search dialog handler
-    function handleSearch({ query, type }) {
+    function handleSearch({
+        query,
+        type
+    }) {
         // Navigate to /results with query and type, and optionally space id
         router.push({
             path: '/results',
@@ -174,22 +201,6 @@
                 type,
                 space: space?.value?.id || space?.id || ''
             }
-        })
-    }
-    import {
-        computed,
-        nextTick,
-        watch,
-        onMounted
-    } from 'vue'
-    import SearchDialog from '../../../components/blocks/groups/SearchDialog.vue'
-    const visibleTabs = computed(() => (individualSpaceBar?.value?.menus || []).slice(0, 4))
-    const overflowTabs = computed(() => (individualSpaceBar?.value?.menus || []).slice(4))
-
-    function selectOverflowTab(menu) {
-        tab.value = menu?.value
-        nextTick(() => {
-            tab.value = menu?.value
         })
     }
 

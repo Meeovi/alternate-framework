@@ -8,56 +8,7 @@
 
             <template v-slot:default="{ isActive }">
                 <v-card title="Dialog">
-                        <v-form @submit.prevent="handleSubmit">
-                            <v-card>
-                                <div>
-                                    <UInput v-model="postData.title" id="postName" label="Post Name*" required />
-                                    <UTextarea v-model="postData.content" label="What's happening?*" variant="outlined"
-                                        required></UTextarea>
-                                    <v-row>
-                                        <v-col cols="6">
-                                            <USelect v-model="postData.type" label="What type of post is this?"
-                                                :items="['Notes', 'News']" />
-                                        </v-col>
-                                        <v-col cols="6">
-                                            <USelect v-model="postData.status" label="Is this post public or private?"
-                                                :items="['Public', 'Private']" />
-                                        </v-col>
-                                        <v-col cols="12">
-                                            <UFileUpload @change="handleImageUpload" clearable density="compact"
-                                                prepend-icon="fas fa-image" accept="image/*" label="Image"
-                                                variant="solo-inverted" />
-                                        </v-col>
-                                        <v-col cols="12">
-                                            <UFileUpload @change="handleMediaUpload" chips multiple clearable
-                                                density="compact" prepend-icon="fas fa-video" accept="video/*"
-                                                label="Live Video" variant="solo-inverted">
-                                            </UFileUpload>
-                                        </v-col>
-                                        <v-col cols="12">
-                                            <UFileUpload @change="handleAudioUpload" chips multiple clearable
-                                                density="compact" prepend-icon="fas fa-microphone" accept="audio/*"
-                                                label="Audio" variant="solo-inverted">
-                                            </UFileUpload>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                                <v-divider class="mt-12"></v-divider>
-                                <div>
-<v-btn color="blue-darken-1" variant="text" @click="dialog = false">
-                        Close
-                    </v-btn>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="blue-darken-1" variant="text" type="submit" @click="confirmDelete"
-                                        :loading="deleteLoading">
-                                        Delete Post
-                                    </v-btn>
-                                    <v-btn color="blue-darken-1" variant="text" type="submit">
-                                        Update Post
-                                    </v-btn>
-                                </div>
-                            </v-card>
-                        </v-form>
+                    <DynamicForm collection="posts" />
                 </v-card>
             </template>
         </v-dialog>
@@ -84,190 +35,35 @@
 </template>
 
 <script setup>
-
-    import {
-        ref
-    } from 'vue';
+    import { ref } from 'vue'
+    import { DynamicForm } from '@mframework/meeovi-forms'
     import uploadFiles from '../../../composables/content/uploadFiles'
-    import updatePost from '../../../composables/posts/updatePost';
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
-    import {
-        useRouter
-    } from 'vue-router'
-    import {
-        useAuth
-    } from '#auth/app/composables/useAuth'
+    import updatePost from '../../../composables/posts/updatePost'
+    import { useUserStore } from '#auth/app/stores/user'
+    import { useRouter } from 'vue-router'
+    import { useAuth } from '#auth/app/composables/useAuth'
 
-    const {
-        user
-    } = useAuth()
+    const { user } = useAuth()
 
-    // Make sure your props are properly defined
-    // Update props to include space_id
     const props = defineProps({
         space_id: {
             type: String,
             required: true
         }
-    });
+    })
 
-    // Add these new refs for delete functionality
-    const deleteDialog = ref(false);
-    const deleteLoading = ref(false);
+    const deleteDialog = ref(false)
+    const deleteLoading = ref(false)
 
     const userDisplayName = computed(() => {
         return user.user?.name || user.user?.username || 'User'
     })
 
-    const route = useRoute();
+    const route = useRoute()
 
-    const postData = ref({
-        id: '', // Add this to store the post ID
-        title: '',
-        type: '',
-        status: '',
-        content: '',
-        image: null,
-        media: null,
-        audio: null,
-        username: userDisplayName,
-        user_avatar: user.user?.photoUrl,
-        space_id: props.space_id, // Initialize with the space_id from props
-    });
-
-    const dialog = ref(false);
-    const includeFiles = ref(true);
-    const imageFile = ref(null);
-    const audioFile = ref(null);
-    const loading = ref(false);
-
-    // Function to fetch existing post data
-    const fetchPostData = async () => {
-        try {
-            const { $directus, $readItem } = useNuxtApp()
-            const listId = route.params.id; // Assuming you're passing the ID in the route
-            const response = await $directus.request($readItem('posts', listId))
-
-            // Populate the form with existing data
-            postData.value = {
-                id: response.id,
-                title: response.title,
-                type: response.type,
-                status: response.status,
-                content: response.content,
-                image: response.image,
-                audio: response.audio,
-                username: response.username,
-                user_avatar: response.user_avatar,
-            };
-        } catch (error) {
-            console.error('Error fetching post:', error);
-        }
-    };
-
-    // Load existing data when component mounts
-    onMounted(() => {
-        if (route.params.id) {
-            fetchPostData();
-        }
-    });
-
-    const handleImageUpload = (event) => {
-        imageFile.value = event.target.files[0];
-    };
-
-    const handleMediaUpload = (event) => {
-        imageFile.value = event.target.files[0];
-    };
-
-    const handleAudioUpload = (event) => {
-        audioFile.value = event.target.files[0];
-    };
-
-    const resetForm = () => {
-        postData.value = {
-            id: '', // Add this to store the post ID
-            title: '',
-            type: '',
-            status: '',
-            content: '',
-            image: null,
-            media: null,
-            audio: null,
-        };
-        imageFile.value = null;
-    };
-
-    const handleSubmit = async () => {
-    try {
-        loading.value = true;
-
-        const { $updateItem } = useNuxtApp()
-        
-        // Prepare update data
-        const updateData = {
-            title: postData.value.title,
-            type: postData.value.type,
-            status: postData.value.status,
-            content: postData.value.content,
-        };
-
-        // Handle image upload if there's a new image
-        if (imageFile.value) {
-            const uploadedFiles = await uploadFiles({
-                imageFile: imageFile.value,
-            });
-            updateData.image = uploadedFiles.imageId;
-        }
-
-            // Update the post through the content adapter updateItem
-        const updatedPost = await updateItem('posts', route.params.id, updateData)
-
-        if (updatedPost) {
-            // Refresh the post data
-            await fetchPostData();
-            
-            // Show success message
-            alert('Post updated successfully');
-        } else {
-            throw new Error('Failed to update post');
-        }
-
-    } catch (error) {
-        console.error('Error updating post:', error);
-        alert('Error updating post: ' + error.message);
-    } finally {
-        loading.value = false;
-    }
-};
-
-
-    // Add these new functions for delete functionality
-    const confirmDelete = () => {
-        deleteDialog.value = true;
-    };
-
-    const deletePost = async () => {
-        try {
-            deleteLoading.value = true;
-            const { $deleteItem } = useNuxtApp()
-            await deleteItem('posts', route.params.id)
-
-            // Close the delete dialog
-            deleteDialog.value = false;
-
-            // Show success message
-            alert('Post deleted successfully');
-
-            // Redirect to posts page
-            navigateTo('/social/newsfeed');
-        } catch (error) {
-            console.error('Error deleting post:', error);
-            alert('Error deleting post: ' + error.message);
-        } finally {
-            deleteLoading.value = false;
-        }
-    };
+    const dialog = ref(false)
+    const includeFiles = ref(true)
+    const imageFile = ref(null)
+    const audioFile = ref(null)
+    const loading = ref(false)
 </script>

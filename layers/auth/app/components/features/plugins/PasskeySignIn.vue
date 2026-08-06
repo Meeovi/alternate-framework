@@ -26,14 +26,17 @@
     const error = ref("");
 
     // Enable conditional UI autofill on mount
-    onMounted(() => {
+    onMounted(async () => {
         if (
             typeof PublicKeyCredential !== "undefined" &&
-            PublicKeyCredential.isConditionalMediationAvailable?.()
+            PublicKeyCredential.isConditionalMediationAvailable
         ) {
-            authClient.signIn.passkey({
-                autoFill: true
-            });
+            const available = await PublicKeyCredential.isConditionalMediationAvailable()
+            if (available) {
+                authClient.signIn.passkey({
+                    autoFill: true
+                });
+            }
         }
     });
 
@@ -49,7 +52,7 @@
         });
 
         if (err) {
-            error.value = err.message;
+            error.value = err.message ?? '';
             loading.value = false;
         } else {
             navigateTo("/dashboard");

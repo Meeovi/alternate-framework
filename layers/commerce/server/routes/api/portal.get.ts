@@ -8,7 +8,7 @@ export default defineEventHandler((event) => {
 
   const customerPortalHandler = CustomerPortal({
     accessToken: polarAccessToken,
-    returnUrl: 'https://myapp.com', // An optional URL which renders a back-button in the Customer Portal
+    returnUrl: `${process.env.NUXT_PUBLIC_SITE_URL}`, // An optional URL which renders a back-button in the Customer Portal
     server: polarServer,
     getCustomerId: (event) => {
       // Use your own logic to get the customer ID - from a database, session, etc.

@@ -1,0 +1,80 @@
+- generic [ref=f284e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f284e3] [cursor=pointer]:
+    - generic [ref=f284e9]: Open accessibility menu
+  - main [ref=f284e13]:
+    - generic [ref=f284e20]:
+      - generic [ref=f284e21]:
+        - generic [ref=f284e22]:
+          - heading "Welcome to Meeovi" [level=1] [ref=f284e27]
+          - paragraph [ref=f284e28]: The Decentralized Social Shopping Network.
+        - generic [ref=f284e29]:
+          - generic [ref=f284e30]: Fast & Secure Login
+          - generic [ref=f284e35]: Enterprise Grade Security
+          - generic [ref=f284e40]: Privacy First Social Marketplace
+      - generic [ref=f284e46]:
+        - status [ref=f284e108]: Register - Meeovi - Meeovi
+        - generic [ref=f284e48]:
+          - generic [ref=f284e49]: Create Account
+          - generic [ref=f284e50]: Enter your information to create an account
+          - generic [ref=f284e51]:
+            - generic [ref=f284e52]:
+              - generic [ref=f284e53]:
+                - generic [ref=f284e54]:
+                  - generic [ref=f284e56]:
+                    - textbox "First Name" [ref=f284e58]:
+                      - /placeholder: Max
+                      - text: Test2
+                    - generic: First Name
+                  - alert [ref=f284e59]
+                - generic [ref=f284e61]:
+                  - generic [ref=f284e63]:
+                    - textbox "Last Name" [ref=f284e65]:
+                      - /placeholder: Robinson
+                      - text: User2
+                    - generic: Last Name
+                  - alert [ref=f284e66]
+              - generic [ref=f284e68]:
+                - generic [ref=f284e70]:
+                  - textbox "Email" [ref=f284e72]:
+                    - /placeholder: m@example.com
+                    - text: testuser2@example.com
+                  - generic: Email
+                - alert [ref=f284e73]
+              - generic [ref=f284e75]:
+                - generic [ref=f284e77]:
+                  - textbox "Password" [ref=f284e79]:
+                    - /placeholder: Enter a secure password
+                    - text: TestPassword123!
+                  - generic: Password
+                - alert [ref=f284e80]
+              - generic [ref=f284e82]:
+                - generic [ref=f284e84]:
+                  - textbox "Confirm Password" [active] [ref=f284e86]:
+                    - /placeholder: Confirm your password
+                    - text: TestPassword123!
+                  - generic: Confirm Password
+                - alert [ref=f284e87]
+              - generic [ref=f284e89]:
+                - generic [ref=f284e90]: Profile Image (optional)
+                - generic [ref=f284e91]:
+                  - button "Select an image prepended action" [ref=f284e93] [cursor=pointer]
+                  - generic [ref=f284e98]:
+                    - generic: Select an image
+                    - button "Select an image" [ref=f284e99]
+                  - alert [ref=f284e101]
+              - button "Create Account" [ref=f284e103] [cursor=pointer]
+            - separator [ref=f284e105]
+            - generic [ref=f284e106]:
+              - text: Already have an account?
+              - link "Sign In" [ref=f284e107] [cursor=pointer]:
+                - /url: /login
+  - generic [ref=f284e109]:
+    - button "Toggle Nuxt DevTools" [ref=f284e110] [cursor=pointer]
+    - generic "Page load time" [ref=f284e114]:
+      - generic [ref=f284e115]: "329"
+      - generic [ref=f284e116]: ms
+    - button "Toggle Component Inspector" [ref=f284e118] [cursor=pointer]
+  - iframe [ref=f284e125]:
+    - generic [ref=f289e6]:
+      - text: protected by
+      - strong [ref=f289e7]: reCAPTCHA

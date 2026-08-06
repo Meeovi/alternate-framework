@@ -1,16 +1,22 @@
 // packages/adapters/adapter-magento/src/normalizers/blocks.ts
-import { createNormalizer } from './automapper'
-import type { Mage_CmsBlock } from '../graphql/schema-types'
-import type { Query as DirectusQuery } from 'adapter-directus'
+import type { Mage_CmsBlock } from "../graphql/schema-types";
 
-type DirectusBlock = NonNullable<DirectusQuery['Directus_page_blocks']>[0]
+// Directus has no dedicated `cms_blocks` collection in this schema, so we map to a
+// lightweight local shape that mirrors the Pages collection fields.
+export interface DirectusBlock {
+  id: string
+  title: string
+  content: string
+  name?: string
+  status?: string
+}
 
-export const normalizeMagentoBlock = createNormalizer<Mage_CmsBlock, DirectusBlock>({
-  id: (src) => src?.identifier ?? '',
-  name: (src) => src?.title ?? '',
-  content: (src) => src?.content ?? '',
-  description: (src) => src?.title ?? '',
-  slug: (src) => src?.identifier ?? '',
-  collection: () => 'cms_block',
-  status: () => 'published'
-})
+export function normalizeMagentoBlock(rawBlock: any): DirectusBlock {
+  return {
+    id: String(rawBlock?.identifier ?? ''),
+    title: rawBlock?.name ?? '',
+    content: rawBlock?.content ?? '',
+    name: rawBlock?.name,
+    status: 'published'
+  };
+}

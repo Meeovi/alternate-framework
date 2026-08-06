@@ -9,26 +9,28 @@
 
 <script setup>
 import { useUserStore } from '../stores/user'
+import { useAuth } from '../composables/useAuth'
 
 definePageMeta({
   layout: 'auth',
 })
 
 const router = useRouter()
+const auth = useAuth()
 
 onMounted(async () => {
-  const localePath = useLocalePath()
   const store = useUserStore()
   try {
-    // No server session to refresh; rely on local store state
-    if (store.user) {
-      await router.push(localePath('/'))
+    // Fetch the actual server session to determine redirect destination
+    const { data: session } = await auth.getSession()
+    if (session?.user) {
+      await router.push('/')
     } else {
-      await router.push(localePath('/login'))
+      await router.push('/login')
     }
   } catch (error) {
     console.error('Callback navigation failed:', error)
-    await router.push(localePath('/login'))
+    await router.push('/login')
   }
 })
 </script>

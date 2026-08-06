@@ -2,7 +2,7 @@
   <div>
     <v-form id="payment-form">
       <div id="payment-element">
-        <!-- Stripe Elements will inject the payment form here -->
+        <!-- Payment Elements will inject the payment form here -->
       </div>
       <v-btn id="submit" :disabled="isLoading">
         <span v-if="isLoading">Processing...</span>
@@ -15,45 +15,50 @@
   </div>
 </template>
 
-
-
 <script setup>
+import { ref, onMounted } from 'vue'
+import { usePayment } from '../../composables/payments/usePayment'
 
-const { $stripe } = useNuxtApp()
+const { createElements, confirmPayment, createCheckoutSession } = usePayment()
+
+const clientSecret = ref<string | null>(null)
 const elements = ref(null)
 const isLoading = ref(false)
 const errorMessage = ref('')
 
-// Initialize payment element
+// Initialize payment element — fetch clientSecret from server endpoint
 onMounted(async () => {
-  // Get clientSecret from your server
-  const response = await fetch('/api/payment/create-payment-intent', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      amount: 1000, // Amount in cents
-      currency: 'usd'
+  try {
+    const response = await $fetch('/api/payment/stripe/checkout-session', {
+      method: 'POST',
+      body: {
+        items: [],
+        mode: 'payment',
+        currency: 'usd',
+        amount: 1000,
+      }
     })
-  })
-  const { clientSecret } = await response.json()
 
-  elements.value = $stripe.elements({
-    clientSecret,
-    appearance: {
-      theme: 'stripe'
+    clientSecret.value = response?.clientSecret || response?.client_secret || null
+
+    if (clientSecret.value) {
+      elements.value = await createElements(clientSecret.value, { theme: 'stripe' })
+
+      if (elements.value) {
+        const paymentElement = elements.value.create('payment')
+        paymentElement.mount('#payment-element')
+      }
     }
-  })
-
-  const paymentElement = elements.value.create('payment')
-  paymentElement.mount('#payment-element')
+  } catch (err) {
+    console.error('Payment initialization error:', err)
+    errorMessage.value = 'Failed to initialize payment form'
+  }
 })
 
 // Handle form submission
 const handleSubmit = async (e) => {
   e.preventDefault()
-  
+
   if (!elements.value) {
     return
   }
@@ -61,11 +66,8 @@ const handleSubmit = async (e) => {
   isLoading.value = true
 
   try {
-    const { error } = await $stripe.confirmPayment({
-      elements: elements.value,
-      confirmParams: {
-        return_url: `${window.location.origin}/payment-completion`,
-      }
+    const { error } = await confirmPayment(elements.value, {
+      return_url: `${window.location.origin}/payment-completion`,
     })
 
     if (error) {

@@ -59,21 +59,7 @@
             </v-responsive>
           </section>
 
-          <div v-if="formError" class="error">{{ formError }}</div>
-          <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-          <div v-else-if="pending" class="d-flex justify-center py-6">
-            <v-progress-circular indeterminate />
-          </div>
-          <div v-else-if="error" class="error">Failed to load live form fields.</div>
-          <div v-else-if="shortFields.length === 0" class="error">No live fields available.</div>
-
-          <JsonSchemaFormFromFields
-            v-else
-            :fields="shortFields"
-            :model-value="form"
-            @update:model-value="Object.assign(form, $event)"
-            @submit="submitForm"
-          />
+          <DynamicForm collection="shorts" />
         </v-card-text>
       </v-card>
   </v-row>
@@ -81,7 +67,7 @@
 
 <script setup>
 import { ref } from '#imports'
-import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
+import { DynamicForm } from '@mframework/meeovi-forms'
 import useCreateLiveShort from '../../../composables/vibez/useCreateLiveShort'
 
 const dialog = ref(false)

@@ -1,13 +1,21 @@
 // packages/adapters/adapter-magento/src/normalizers/customers.ts
-import { createNormalizer } from './automapper'
+import { createNormalizer, type Normalizer } from './automapper'
 import type { Mage_Customer } from '../graphql/schema-types'
-import type { Query as DirectusQuery } from 'adapter-directus'
 
-// `Directus_Directus_Users` is not a top-level Query field, but it is referenced
-// by collections such as invoices, so we derive the element type from there.
-type DirectusCustomer = NonNullable<NonNullable<DirectusQuery['Directus_invoices']>[0]['user']>
+// `Directus_Directus_Users` is referenced by collections such as invoices,
+// so we derive the element type from the invoices relation.
+type DirectusCustomer = {
+  id: string
+  email?: string
+  first_name?: string
+  last_name?: string
+  external_identifier?: string
+  description?: string
+  status?: string
+  role?: string
+}
 
-export const normalizeMagentoCustomer = createNormalizer<Mage_Customer, DirectusCustomer>({
+export const normalizeMagentoCustomer: Normalizer<Mage_Customer, DirectusCustomer> = createNormalizer<Mage_Customer, DirectusCustomer>({
   id: (src) => String(src?.id ?? ''),
   email: (src) => src?.email ?? '',
   first_name: (src) => src?.firstname ?? '',

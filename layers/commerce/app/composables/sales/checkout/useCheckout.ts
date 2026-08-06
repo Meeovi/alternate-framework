@@ -1,18 +1,11 @@
 // composables/useCheckout.ts
+import { usePayment } from '../../payments/usePayment'
+
 export const useCheckout = () => {
+  const { createCheckoutSession: createSession } = usePayment()
+
   const createCheckoutSession = async (items: any[], options: any = {}) => {
-    try {
-      const response = await $fetch('/api/stripe/create-checkout-session', {
-        method: 'POST',
-        body: {
-          items,
-          ...options
-        }
-      })
-      return response
-    } catch (error: any) {
-      throw new Error(error.data?.message || 'Failed to create checkout session')
-    }
+    return createSession(items, options)
   }
 
   return {

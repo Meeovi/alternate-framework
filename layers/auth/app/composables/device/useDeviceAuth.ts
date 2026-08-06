@@ -1,13 +1,20 @@
 // composables/useDeviceAuth.ts
 import { ref, onBeforeUnmount } from 'vue'
-import { authClient } from '../../../lib/auth-client' // Ensure path matches your setup
+import { authClient } from '../../../lib/auth-client'
+import type {
+  BetterAuthPasskey,
+  BetterAuthUser,
+  BetterAuthSession,
+  DeviceCodeResponse,
+  DeviceTokenResponse,
+  DeviceActionResponse,
+} from '../../types'
 
 export function useDeviceAuth() {
   const isProcessing = ref(false)
   const errorMsg = ref<string | null>(null)
   const successMsg = ref<string | null>(null)
 
-  // 1. Client flow: requesting device code & polling
   const deviceCodeData = ref<{
     userCode: string
     verificationUri: string
@@ -16,7 +23,7 @@ export function useDeviceAuth() {
   } | null>(null)
 
   let pollingTimeoutId: NodeJS.Timeout | null = null
-  let pollingInterval = 5 // starts at 5 seconds
+  let pollingInterval = 5
 
   const requestDeviceCode = async (clientId: string = 'your-client-id') => {
     isProcessing.value = true
@@ -25,13 +32,13 @@ export function useDeviceAuth() {
     deviceCodeData.value = null
 
     try {
-      const { data, error } = await authClient?.device.code({
+      const { data, error } = await (authClient as any).device.code({
         client_id: clientId,
         scope: 'openid profile email',
       })
 
       if (error) {
-        throw new Error(error.message || 'Failed to request device code')
+        throw new Error((error as any).error_description || 'Failed to request device code')
       }
 
       if (data) {
@@ -41,8 +48,7 @@ export function useDeviceAuth() {
           verificationUriComplete: data.verification_uri_complete || '',
           deviceCode: data.device_code
         }
-        
-        // Reset interval and begin polling
+
         pollingInterval = data.interval || 5
         startPolling(clientId, data.device_code)
       }
@@ -57,7 +63,7 @@ export function useDeviceAuth() {
     stopPolling()
 
     const poll = async () => {
-      const { data, error } = await authClient.device.token({
+      const { data, error } = await (authClient as any).device.token({
         grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
         device_code: deviceCode,
         client_id: clientId,
@@ -74,7 +80,6 @@ export function useDeviceAuth() {
       } else if (error) {
         switch (error.error) {
           case 'authorization_pending':
-            // Keep going
             pollingTimeoutId = setTimeout(poll, pollingInterval * 1000)
             break
           case 'slow_down':
@@ -106,20 +111,18 @@ export function useDeviceAuth() {
     }
   }
 
-  // 2. Browser Flow: Approving or denying a request
   const submitUserCode = async (userCode: string) => {
     isProcessing.value = true
     errorMsg.value = null
     successMsg.value = null
 
     try {
-      // Validates and retrieves metadata about the requesting device
-      const { data, error } = await authClient.device.verify({
-        user_code: userCode,
+      const { data, error } = await (authClient as any).device.verify({
+        userCode: userCode,
       })
 
-      if (error) throw new Error(error.message || 'Invalid code.')
-      return data // Returns client/request details to present to the user
+      if (error) throw new Error(error.error_description || 'Invalid code.')
+      return data
     } catch (err: any) {
       errorMsg.value = err.message || 'Failed to verify code'
       return null
@@ -134,12 +137,12 @@ export function useDeviceAuth() {
     successMsg.value = null
 
     try {
-      const { error } = await authClient.device.approve({
-        user_code: userCode,
+      const { error } = await (authClient as any).device.approve({
+        userCode: userCode,
         scopes: ['openid', 'profile', 'email']
       })
 
-      if (error) throw new Error(error.message)
+      if (error) throw new Error(error.error_description || '')
       successMsg.value = 'Device successfully authorized!'
       return true
     } catch (err: any) {
@@ -156,11 +159,11 @@ export function useDeviceAuth() {
     successMsg.value = null
 
     try {
-      const { error } = await authClient.device.deny({
-        user_code: userCode,
+      const { error } = await (authClient as any).device.deny({
+        userCode: userCode,
       })
 
-      if (error) throw new Error(error.message)
+      if (error) throw new Error(error.error_description || '')
       successMsg.value = 'Device authorization request denied.'
       return true
     } catch (err: any) {

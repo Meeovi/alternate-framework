@@ -1,10 +1,6 @@
 import { ref, useRoute } from '#imports'
 import type { SocialDriverContract, Space, Post, UserProfile } from '@mframework/alternate-sdk/contracts/social'
-
-const useSocialDriver = (): SocialDriverContract => {
-  const nuxtApp = useNuxtApp()
-  return nuxtApp?.$sdk?.social ?? {} as SocialDriverContract
-}
+import { useSocialDriver } from '../useSocialDriver'
 
 export const useSpaces = () => {
   const social = useSocialDriver()
@@ -64,22 +60,11 @@ export const useSpace = async () => {
     }
 
     try {
-      const sdkContent = nuxtApp?.$sdk?.content
-      if (sdkContent && typeof sdkContent.readItems === 'function') {
-        const resp = await sdkContent.readItems('spaces', {
-          filter: { slug: { _eq: slug } },
-          fields: ['*'],
-          limit: 1
-        })
-        const data = resp?.data?.[0] || resp?.[0] || null
-        space.value = data
-        exists.value = !!data
-      } else {
-        const social = nuxtApp?.$sdk?.social
-        const data = await social?.getSpace?.(slug) ?? null
-        space.value = data
-        exists.value = !!data
-      }
+      // Try server-side social driver first (backend-agnostic API call)
+      const social = useSocialDriver()
+      const data = await social.getSpace?.(slug) ?? null
+      space.value = data
+      exists.value = !!data
     } catch {
       space.value = null
       exists.value = false

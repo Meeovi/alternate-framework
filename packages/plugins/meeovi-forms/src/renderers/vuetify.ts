@@ -1,24 +1,21 @@
 import {
   markRaw,
 } from 'vue'
-import * as VueVuetify from '@jsonforms/vue-vuetify'
 import {
   type JsonFormsCellRendererRegistryEntry,
   type JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core'
-import { fileUploadRenderer } from './custom/fileupload.renderer.js'
-import { richtextRenderer } from './custom/richtext.renderer.js'
-import { repeaterRenderer } from './custom/repeater.renderer.js'
 
 export interface JsonFormsVuetifyRegistry {
   renderers: JsonFormsRendererRegistryEntry[]
   cells: JsonFormsCellRendererRegistryEntry[]
 }
 
-export function createJsonFormsVuetifyRegistry(): JsonFormsVuetifyRegistry {
-  const extendedVuetifyRenderers = (
-    VueVuetify as unknown as { extendedVuetifyRenderers: JsonFormsRendererRegistryEntry[] }
-  ).extendedVuetifyRenderers
+export async function createJsonFormsVuetifyRegistry(): Promise<JsonFormsVuetifyRegistry> {
+  const { extendedVuetifyRenderers } = await import('@jsonforms/vue-vuetify')
+  const { fileUploadRenderer } = await import('./custom/fileupload.renderer.js')
+  const { richtextRenderer } = await import('./custom/richtext.renderer.js')
+  const { repeaterRenderer } = await import('./custom/repeater.renderer.js')
 
   return {
     renderers: markRaw([
@@ -31,6 +28,6 @@ export function createJsonFormsVuetifyRegistry(): JsonFormsVuetifyRegistry {
   }
 }
 
-export function createDefaultJsonFormsRegistry(): JsonFormsVuetifyRegistry {
+export async function createDefaultJsonFormsRegistry(): Promise<JsonFormsVuetifyRegistry> {
   return createJsonFormsVuetifyRegistry()
 }

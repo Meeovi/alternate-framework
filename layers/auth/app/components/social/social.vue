@@ -22,7 +22,8 @@
 </template>
 
 <script setup lang="ts">
-	import { useAuthCapabilities } from '../composables/useAuthCapabilities'
+	import { computed, ref } from 'vue'
+	import { useAuth } from '../../composables/useAuth'
 
 	const props = withDefaults(defineProps<{
 		enabled?: boolean;
@@ -37,9 +38,8 @@
 	})
 
 	const auth = useAuth()
-	const { backend, hasSocial } = useAuthCapabilities()
-	const isSupported = computed(() => hasSocial.value)
-	const backendLabel = computed(() => backend.value)
+	const isSupported = ref(true)
+	const backendLabel = ref('better-auth')
 	const shouldRender = computed(() => props.enabled && (isSupported.value || props.showUnsupportedState))
 
 	const loadingProvider = ref<string | null>(null)

@@ -28,6 +28,6 @@
 const { $directus, $readItem } = useNuxtApp()
 
 const { data: transactions } = await useAsyncData('transactions', () => {
-  return $directus.request($readList('transactions'))
+  return $directus.request($readItem('transactions'))
 })
 </script>

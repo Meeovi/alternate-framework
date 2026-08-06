@@ -1,9 +1,5 @@
 import type { SocialDriverContract, Vibe, LiveStream } from '@mframework/alternate-sdk/contracts/social'
-
-const useSocialDriver = (): SocialDriverContract => {
-  const nuxtApp = useNuxtApp()
-  return nuxtApp?.$sdk?.social ?? {} as SocialDriverContract
-}
+import { useSocialDriver } from '../useSocialDriver'
 
 export const useVibez = () => {
   const social = useSocialDriver()

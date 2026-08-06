@@ -1,0 +1,121 @@
+[   11789ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   11789ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   11789ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   11789ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   11789ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   11789ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   11789ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   11789ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   11789ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   11789ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   11789ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   11789ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   23163ms] [LOG] %cssr:success%c Vite server hmr 74 files 
+      background: #2ecc71;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      in 6.362ms 
+  at vite_node_entry_default (node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs)
+  at process.processTicksAndRejections (node:internal/process/task_queues)
+  at async Object.renderToString (node_modules/vue-bundle-renderer/dist/runtime.mjs)
+ @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/consola/dist/browser.mjs?v=62a7f4c0:47
+[   23926ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[   24073ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[   25157ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[   25160ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   25161ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   25162ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   25164ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   25165ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   25166ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   26131ms] [ERROR] Error fetching Directus user media: TypeError: authClient.useSession is not a function
+    at loadUserData (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/pages/media-center.vue?t=1785690996552:36:49)
+    at http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/pages/media-center.vue?t=1785690996552:291:10
+    at http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:2723:38
+    at callWithErrorHandling (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:192:17)
+    at callWithAsyncErrorHandling (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:199:15)
+    at hook.__weh.hook.__weh (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:2705:16)
+    at flushPostFlushCbs (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:372:25)
+    at flushJobs (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:410:3) @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[   27592ms] [ERROR] Connecting to 'https://ep1.adtrafficquality.google/getconfig/sodar?sv=200&tid=gda&tv=r20260729&st=env&sjk=6863397921409957' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/browser/build/npm/esm/dev/integrations/browserapierrors.js?v=62a7f4c0:94
+[   27606ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://cms.meeovicms.com/items/page_blocks/5?fields=*%2Cmedia.*.*:0
+[   27612ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://cms.meeovicms.com/items/navigation/2?fields=*%2Cmenus.*:0
+[   27797ms] [LOG] undefined @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[   27827ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27832ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27834ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27837ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27840ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27845ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27849ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27851ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27852ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27858ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27858ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27859ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=62a7f4c0:622
+[   27935ms] [WARNING] The resource http://158.69.211.52:3002/_scripts/assets/855230e132191715.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource https://assets.lemonsqueezy.com/lemon.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource http://158.69.211.52:3002/_scripts/assets/19c30be51d281b68.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource http://158.69.211.52:3002/_scripts/assets/d625edb9978bb4b4.js?id=GTM-MQ4JC38D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource http://158.69.211.52:3002/_scripts/assets/36ccdb1da002a4f2.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource http://158.69.211.52:3002/_scripts/assets/feee309636b01acc.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource http://158.69.211.52:3002/_scripts/assets/617ef9f044b38e3e.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=CXXXXXXXXXXXXXX&lib=ttq was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource https://www.google.com/recaptcha/api.js?render=6LefSp8pAAAAAPTNjynL-drL6LWYuwEJ7LzDh01O was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   27936ms] [WARNING] The resource https://www.sandbox.paypal.com/web-sdk/v6/core was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://158.69.211.52:3002/media-center:0
+[   28212ms] [WARNING] [TikTok Pixel] - Invalid pixel ID
+Issue: The pixel ID is invalid. This could prevent your pixel from receiving data.
+Suggestion: Please go to Events Manager and find the correct pixel ID. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[   28219ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/pixel' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MWI1YzJiMWRhMA.js:0
+[   28353ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://cms.meeovicms.com/items/navigation/12:0
+[   28441ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/pixel/act' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MWI1YzJiMWRhMA.js:0
+[   28733ms] [WARNING] [Stripe.js] It looks like Stripe.js was loaded more than one time. Please only load it once per page. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[   29965ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.63.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=62a7f4c0:31
+[   29965ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.63.0. Refused to connect because it violates the document's Content Security Policy. @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=62a7f4c0:31
+[   32570ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32570ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32570ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32571ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32571ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32571ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32571ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32571ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32571ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32571ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32571ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32571ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32781ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32781ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32781ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32781ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32781ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32781ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32782ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32782ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32782ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32782ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[   32782ms] [WARNING] Failed parsing 'srcset' attribute value since it has an unknown descriptor. @ :0
+[   32782ms] [WARNING] Dropped srcset candidate "https://res.cloudinary.com/\u003CYour" @ :0
+[  182299ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://cms.meeovicms.com/items/navigation/81?filter=%7B%22menus%22%3A%7B%22active%22%3A%7B%22_eq%22%3A%22Active%22%7D%7D%7D:0
+[  182340ms] [ERROR] Error fetching Directus user media: ReferenceError: authClient is not defined
+    at loadUserData (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/pages/media-center.vue?t=1785691186628:37:32)
+    at http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/pages/media-center.vue?t=1785691186628:292:10
+    at http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:2723:38
+    at callWithErrorHandling (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:192:17)
+    at callWithAsyncErrorHandling (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:199:15)
+    at hook.__weh.hook.__weh (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:2705:16)
+    at flushPostFlushCbs (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:372:25)
+    at flushJobs (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=62a7f4c0:410:3) @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[  196021ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://cms.meeovicms.com/items/navigation/81?filter=%7B%22menus%22%3A%7B%22active%22%3A%7B%22_eq%22%3A%22Active%22%7D%7D%7D:0
+[  196449ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://cms.meeovicms.com/items/media?fields=id%2Ctitle%2Cfilename_download%2Cfilesize%2Ctype%2Cfolder%2Cdate_created&filter=%7B%22uploaded_by%22%3A%7B%22_eq%22%3A%7B%7D%7D%7D&sort=-date_created&limit=-1:0
+[  196501ms] [ERROR] Error fetching Directus user media: RequestError: Invalid query. The filter value for "_eq" has to be a string, number, or boolean.
+    at http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@directus_sdk.js?v=62a7f4c0:124:173
+    at async Object.request (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@directus_sdk.js?v=62a7f4c0:2221:11)
+    at async Promise.all (index 0)
+    at async loadUserData (http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/pages/media-center.vue?t=1785691200800:45:30)
+    at async http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/pages/media-center.vue?t=1785691200800:291:4 @ http://158.69.211.52:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/@sentry/core/build/esm/instrument/console.js?v=62a7f4c0:42
+[  196606ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://cms.meeovicms.com/items/media_folders?fields=id%2Cname%2Cparent&filter=%7B%22user%22%3A%7B%22_eq%22%3A%7B%7D%7D%7D&sort=name&limit=-1:0
+[  196930ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://158.69.211.52:3002/api/auth/user/value/id/to-json:0
+[  197548ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://158.69.211.52:3002/api/auth/user/value/id/to-json:0

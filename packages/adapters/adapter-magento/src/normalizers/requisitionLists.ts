@@ -1,5 +1,5 @@
 // packages/adapters/adapter-magento/src/normalizers/requisitionLists.ts
-import { createNormalizer } from './automapper'
+import { createNormalizer, type Normalizer } from './automapper'
 import type { Query as DirectusQuery } from 'adapter-directus'
 
 type DirectusRequisitionList = NonNullable<DirectusQuery['Directus_lists']>[0]
@@ -13,7 +13,7 @@ export interface RawMagentoRequisitionList {
   items?: Array<{ sku?: string; qty?: number }>
 }
 
-export const normalizeMagentoRequisitionList = createNormalizer<RawMagentoRequisitionList, DirectusRequisitionList>({
+export const normalizeMagentoRequisitionList: Normalizer<RawMagentoRequisitionList, DirectusRequisitionList> = createNormalizer<RawMagentoRequisitionList, DirectusRequisitionList>({
   id: (src) => String(src?.entity_id ?? ''),
   name: (src) => src?.name ?? '',
   description: (src) => src?.description ?? '',

@@ -39,24 +39,26 @@
 </template>
 
 <!-- components/PasskeyManager.vue -->
-<script setup>
+<script setup lang="ts">
     import { useFetch } from "nuxt/app";
-import { ref, onMounted } from "vue";
-import {
-        authClient
+    import { ref, onMounted } from "vue";
+    import {
+            authClient
     } from "../../../../lib/auth-client";
     import {
-        getAuthenticatorName
+            getAuthenticatorName
     } from "@better-auth/passkey";
+    import type { BetterAuthPasskey } from '../../../types'
 
-    const passkeys = ref([]);
+    const passkeys = ref<BetterAuthPasskey[]>([]);
     const loading = ref(false);
     const error = ref("");
     const newPasskeyName = ref("");
 
     const {
-        data: session
-    } = await authClient.useSession(useFetch);
+            data: sessionData
+    } = await useAuth().useSession(useFetch);
+    const session = (sessionData as any).value
 
     async function fetchPasskeys() {
         const {
@@ -77,7 +79,7 @@ import {
         });
 
         if (err) {
-            error.value = err.message;
+            error.value = err.message ?? '';
         } else {
             newPasskeyName.value = "";
             await fetchPasskeys();
@@ -85,7 +87,7 @@ import {
         loading.value = false;
     }
 
-    async function deletePasskey(id) {
+    async function deletePasskey(id: string) {
         if (!confirm("Delete this passkey?")) return;
 
         const {
@@ -94,20 +96,20 @@ import {
             id
         });
         if (err) {
-            error.value = err.message;
+            error.value = err.message ?? '';
         } else {
             await fetchPasskeys();
         }
     }
 
-    async function updatePasskeyName(id, name) {
+    async function updatePasskeyName(id: string, name: string) {
         const {
             error: err
         } = await authClient.passkey.updatePasskey({
             id,
             name
         });
-        if (err) error.value = err.message;
+        if (err) error.value = err.message ?? '';
     }
 
     onMounted(fetchPasskeys);

@@ -71,7 +71,7 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     $directus,
     $readItem,
     $readItems
-  } = useNuxtApp()
+  } = useNuxtApp() as any
 
   const auth = useAuth()
   const user = computed(() => (auth as any)?.user?.value || null)

@@ -14,12 +14,12 @@
       </div>
 
       <div class="p-4 border-t border-neutral-200" style="background-color: white !important;">
-        <NuxtLink :to="`/product/${product?.id}`" variant="secondary" class="no-underline"> {{ product?.name }}
+        <NuxtLink :to="`/product/${product?.id}`" class="no-underline"> {{ product?.name }}
         </NuxtLink>
         <div class="flex items-center pt-1">
           <v-rating size="xs" active-color="warning" :model-value="product?.rating" :max="5" />
 
-          <NuxtLink :to="`/product/${product?.id}`" variant="secondary" class="pl-1 no-underline">
+          <NuxtLink :to="`/product/${product?.id}`" class="pl-1 no-underline">
             <v-chip size="xs">{{ product?.rating }}</v-chip>
           </NuxtLink>
         </div>

@@ -1,22 +1,9 @@
-import { getCommerceClient } from '../../utils/client'
-import type { CommerceClient } from '../../utils/client'
-import type { SfCompanyCredit } from '~/composables/system/models'
+import { createEnterpriseResource } from './useEnterpriseResource'
 
-export function useCompanyCredits() {
-  const client = getCommerceClient() as CommerceClient
-
-  async function getCompanyCredits(companyId: string): Promise<SfCompanyCredit | null> {
-    return client.getCompanyCredits(companyId)
-  }
-
-  async function updateCreditBalance(companyId: string, amount: number) {
-    return client.updateCreditBalance({ companyId, amount })
-  }
-
-  return {
-    getCompanyCredits,
-    updateCreditBalance,
-  }
-}
-
+export const useCompanyCredits = () =>
+  createEnterpriseResource({
+    getCompanyCredits: (client, companyId: string) => client.getCompanyCredits(companyId),
+    updateCreditBalance: (client, companyId: string, amount: number) =>
+      client.updateCreditBalance({ companyId, amount }),
+  })
 export default useCompanyCredits

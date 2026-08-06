@@ -28,9 +28,9 @@
 </template>
 
 <script setup>
-    import coupons from '~/app/components/promotions/coupons.vue'
-    import giftcards from '~/app/components/promotions/giftcards.vue'
-    import subscriptions from '~/app/components/promotions/subscriptions.vue'
+    import coupons from '../components/marketing/promotions/coupons.vue'
+    import giftcards from '../components/marketing/promotions/giftcards.vue'
+    import subscriptions from '../components/marketing/promotions/subscriptions.vue'
 
     import { ref } from 'vue'
 

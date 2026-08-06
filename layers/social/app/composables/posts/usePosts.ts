@@ -1,9 +1,5 @@
 import type { SocialDriverContract, Post, CreatePostInput, PostFilters } from '@mframework/alternate-sdk/contracts/social'
-
-const useSocialDriver = (): SocialDriverContract => {
-  const nuxtApp = useNuxtApp()
-  return nuxtApp?.$sdk?.social ?? {} as SocialDriverContract
-}
+import { useSocialDriver } from '../useSocialDriver'
 
 export const usePosts = () => {
   const social = useSocialDriver()

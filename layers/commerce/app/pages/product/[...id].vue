@@ -7,9 +7,45 @@
         <v-col cols="12">
           <v-row>
             <v-col cols="12">
-              <div>
+
+              <!--If the Product is a digital product-->
+              <div
+                v-if="product?.product_types?.product_types_id?.name === 'Audio' && product?.product_types?.product_types_id?.name === 'Audio' && product?.product_types?.product_types_id?.name === 'Course'">
+                <videoPlayer :player="product" />
+              </div>
+
+              <!--If the Product is a Gift Card-->
+              <div v-else-if="product?.product_types?.product_types_id?.name === 'Gift Card'">
+                <giftCard :gift="product" />
+              </div>
+
+              <!--If the Product/Content is a Radio Station-->
+              <div v-else-if="product?.product_types?.product_types_id?.name === 'Radio'">
+                <radioCard :radio="product" />
+              </div>
+
+              <!--If the Product is any other type-->
+              <div v-else>
                 <productDetails :productDetails="product" />
               </div>
+            </v-col>
+
+            <!--Product Videos-->
+            <v-col cols="12" v-if="product?.product_video?.length">
+              <v-sheet class="mx-auto">
+                <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+                  <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
+                    v-for="(prodVideo, index) in related" :key="index">
+                    <videoPlayer :player="prodVideo" @click="toggle" />
+
+                    <div class="d-flex fill-height align-center justify-center">
+                      <v-scale-transition>
+                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      </v-scale-transition>
+                    </div>
+                  </v-slide-group-item>
+                </v-slide-group>
+              </v-sheet>
             </v-col>
           </v-row>
         </v-col>
@@ -22,10 +58,11 @@
               </div>
               <!-- <v-tab value="four">FAQS</v-tab>
             <v-tab value="five">Compare</v-tab>-->
-              <v-tab value="six" v-if="product?.type === 'Grouped Product'">Products</v-tab>
-              <v-tab value="seven" v-if="product?.type === 'Bundled Product'">Products</v-tab>
-              <v-tab value="eight" v-if="product?.type === 'Configurable Product'">Products</v-tab>
+              <v-tab value="six" v-if="product?.product_types?.product_types_id === 'Grouped Product'">Products</v-tab>
+              <v-tab value="seven" v-if="product?.product_types?.product_types_id === 'Bundled Product'">Products</v-tab>
+              <v-tab value="eight" v-if="product?.product_types?.product_types_id === 'Configurable Product'">Products</v-tab>
               <v-tab value="nine" v-if="product?.product_types?.product_types_id?.name === 'Gift Card'">Redeem</v-tab>
+              <v-tab value="ten" v-if="product?.product_types?.product_types_id?.name === 'Subscription'">Details</v-tab>
             </v-tabs>
 
             <v-card-text>
@@ -69,7 +106,7 @@
 
                 <!-- Group Products List -->
                 <v-window-item value="six">
-                  <v-row v-if="product?.type === 'Grouped Product'">
+                  <v-row v-if="product?.product_types?.product_types_id === 'Grouped Product'">
                     <v-col cols="4" v-for="item in groupedProducts?.products" :key="item">
                       <productCard :product="item?.products_id" />
                     </v-col>
@@ -84,7 +121,7 @@
 
                 <!--Bundle Products List-->
                 <v-window-item value="seven">
-                  <v-row v-if="product?.type === 'Bundled Product'">
+                  <v-row v-if="product?.product_types?.product_types_id === 'Bundled Product'">
                     <v-col cols="4" v-for="(product, index) in bundledProducts?.products" :key="index">
                       <productCard :product="product?.products_id" />
                     </v-col>
@@ -99,7 +136,7 @@
 
                 <!--Configurable Products List-->
                 <v-window-item value="eight">
-                  <v-row v-if="product?.type === 'Configurable Product'">
+                  <v-row v-if="product?.product_types?.product_types_id === 'Configurable Product'">
                     <v-col cols="4" v-for="(product, index) in configurableProducts?.products" :key="index">
                       <productCard :product="product?.products_id" />
                     </v-col>
@@ -123,6 +160,21 @@
                   <v-row v-else>
                     <v-col cols="12">
                       <p>Not a valid Gift Card.</p>
+                    </v-col>
+                  </v-row>
+                </v-window-item>
+
+                <!--Subscription Information-->
+                <v-window-item value="ten">
+                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Subscription'">
+                    <v-col cols="12">
+                      <subscriptionCard :subscription="product" />
+                    </v-col>
+                  </v-row>
+
+                  <v-row v-else>
+                    <v-col cols="12">
+                      <p>Not a valid Subscription.</p>
                     </v-col>
                   </v-row>
                 </v-window-item>
@@ -220,7 +272,7 @@
               <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-for="(spaces, index) in product?.spaces" :key="index"
                   v-slot="{ isSelected, toggle, selectedClass }">
-                  <spaces :space="spaces?.spaces_id" :class="['ma-4', selectedClass]" @click="toggle" />
+                  <spacesCard :space="spaces?.spaces_id" :class="['ma-4', selectedClass]" @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
                       <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
@@ -245,14 +297,16 @@
     ref,
     computed
   } from 'vue';
-  import comments from '#social/app/components/comments.vue'
-
+  import comments from '#social/app/components/blocks/comments.vue'
+  import radioCard from '#social/app/components/related/radio.vue'
   import productDetails from '../../components/catalog/product/productDetails.vue'
   import productSpecs from '../../components/catalog/product/productSpecs.vue'
   import productCard from '../../components/catalog/product/productCard.vue'
   import giftCard from '../../components/catalog/product/giftCard.vue'
-  import short from '#social/app/components/vibez/shorts.vue'
-  import spaces from '#social/app/components/spaces/spaces.vue'
+  import subscriptionCard from '../../components/catalog/product/subscriptionCard.vue'
+  import short from '#social/app/components/related/short.vue'
+  import spacesCard from '#social/app/components/related/space.vue'
+  import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
   import shop from '../../components/catalog/shops/stores.vue'
 
   const tab = ref(null);
@@ -297,9 +351,9 @@
         'image.*',
       ],
       filter: {
-        products: {
-          products_id: {
-            type: {
+        product_types: {
+          product_types_id: {
+            name: {
               _eq: "Grouped Product"
             }
           }
@@ -318,9 +372,9 @@
         'image.*',
       ],
       filter: {
-        products: {
-          products_id: {
-            type: {
+        product_types: {
+          product_types_id: {
+            name: {
               _eq: "Bundled Product"
             }
           }

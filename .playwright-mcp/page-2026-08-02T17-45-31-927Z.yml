@@ -1,0 +1,64 @@
+- generic [ref=f248e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f248e3] [cursor=pointer]:
+    - generic [ref=f248e9]: Open accessibility menu
+  - main [ref=f248e13]:
+    - generic [ref=f248e20]:
+      - generic [ref=f248e21]:
+        - generic [ref=f248e22]:
+          - heading "Welcome to Meeovi" [level=1] [ref=f248e27]
+          - paragraph [ref=f248e28]: The Decentralized Social Shopping Network.
+        - generic [ref=f248e29]:
+          - generic [ref=f248e30]: Fast & Secure Login
+          - generic [ref=f248e35]: Enterprise Grade Security
+          - generic [ref=f248e40]: Privacy First Social Marketplace
+      - generic [ref=f248e46]:
+        - status [ref=f248e86]: Sign In - Meeovi - Meeovi
+        - generic [ref=f248e48]:
+          - heading "Sign In" [level=2] [ref=f248e50]
+          - generic [ref=f248e51]: Enter your email and password to continue
+          - generic [ref=f248e52]:
+            - generic [ref=f248e53]:
+              - generic [ref=f248e54]:
+                - generic [ref=f248e56]:
+                  - textbox "Email" [ref=f248e58]:
+                    - /placeholder: you@example.com
+                    - text: testuser@example.com
+                  - generic: Email
+                - alert [ref=f248e59]
+              - generic [ref=f248e61]:
+                - generic [ref=f248e63]:
+                  - textbox "Password" [active] [ref=f248e65]:
+                    - /placeholder: Enter your password
+                    - text: TestPassword123!
+                  - generic: Password
+                - alert [ref=f248e66]
+              - generic [ref=f248e68]:
+                - generic [ref=f248e69]:
+                  - generic [ref=f248e71]:
+                    - checkbox "Remember Me" [ref=f248e77] [cursor=pointer]
+                    - generic [ref=f248e78] [cursor=pointer]: Remember Me
+                  - alert [ref=f248e79]
+                - link "Forgot password?" [ref=f248e81] [cursor=pointer]:
+                  - /url: /forgot-password
+              - button "Sign In" [ref=f248e82] [cursor=pointer]
+            - generic [ref=f248e87]:
+              - separator [ref=f248e88]
+              - generic [ref=f248e89]: OR
+              - separator [ref=f248e90]
+            - generic [ref=f248e91]:
+              - button "Sign in with Google" [ref=f248e92] [cursor=pointer]
+              - button "Sign in with GitHub" [ref=f248e96] [cursor=pointer]
+            - generic [ref=f248e84]:
+              - text: Don't have an account?
+              - link "Sign Up" [ref=f248e85] [cursor=pointer]:
+                - /url: /register
+  - generic [ref=f248e100]:
+    - button "Toggle Nuxt DevTools" [ref=f248e101] [cursor=pointer]
+    - generic "Page load time" [ref=f248e105]:
+      - generic [ref=f248e106]: "346"
+      - generic [ref=f248e107]: ms
+    - button "Toggle Component Inspector" [ref=f248e109] [cursor=pointer]
+  - iframe [ref=f248e116]:
+    - generic [ref=f253e6]:
+      - text: protected by
+      - strong [ref=f253e7]: reCAPTCHA

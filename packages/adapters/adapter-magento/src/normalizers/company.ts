@@ -1,8 +1,16 @@
 // packages/adapters/adapter-magento/src/normalizers/company.ts
-import { createNormalizer } from './automapper'
-import type { Query as DirectusQuery } from 'adapter-directus'
+import { createNormalizer, type Normalizer } from './automapper'
 
-type DirectusCompany = NonNullable<DirectusQuery['Directus_websites']>[0]
+// Directus has no dedicated `companies` collection in this schema, so we map to a
+// lightweight local shape that mirrors the Websites collection fields.
+export interface DirectusCompany {
+  id: string
+  name: string
+  slug: string
+  description: string
+  status: string
+  type: string
+}
 
 // Magento B2B Company extension attributes are not fully declared in codegen,
 // so we define an explicit fallback raw shape here (mirrors vendors.ts).
@@ -14,7 +22,7 @@ export interface RawMagentoCompany {
   sales_representative_id?: number | string
 }
 
-export const normalizeMagentoCompany = createNormalizer<RawMagentoCompany, DirectusCompany>({
+export const normalizeMagentoCompany: Normalizer<RawMagentoCompany, DirectusCompany> = createNormalizer<RawMagentoCompany, DirectusCompany>({
   id: (src) => String(src?.entity_id ?? ''),
   name: (src) => src?.company_name ?? '',
   slug: (src) => src?.company_email ?? '',

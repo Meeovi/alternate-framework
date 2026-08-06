@@ -1,11 +1,11 @@
 // packages/adapters/adapter-magento/src/normalizers/category.ts
-import { createNormalizer } from './automapper'
+import { createNormalizer, type Normalizer } from './automapper'
 import type { Mage_CategoryInterface } from '../graphql/schema-types'
 import type { Query as DirectusQuery } from 'adapter-directus'
 
 type DirectusCategory = NonNullable<DirectusQuery['Directus_categories']>[0]
 
-export const normalizeMagentoCategory = createNormalizer<Mage_CategoryInterface, DirectusCategory>({
+export const normalizeMagentoCategory: Normalizer<Mage_CategoryInterface, DirectusCategory> = createNormalizer<Mage_CategoryInterface, DirectusCategory>({
   id: (src) => String(src?.uid ?? ''),
   name: (src) => src?.name ?? '',
   slug: (src) => src?.url_key ?? '',

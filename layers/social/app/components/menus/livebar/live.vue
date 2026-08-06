@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
     import vibe from '#social/app/pages/connect/vibe/[...id].vue'
     import addlive from '#social/app/components/features/vibeSections/add-live.vue'
     import {
@@ -72,8 +72,6 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
   const dialog = ref(false);
   const route = useRoute();
   const shortId = computed(() => String(route.params.id || ''));
-
-  const hasAsset = (file) => Boolean(getAssetURL(file))
 
   const {
       data: short

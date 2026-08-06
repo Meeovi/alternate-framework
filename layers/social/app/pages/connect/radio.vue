@@ -1,22 +1,49 @@
 <template>
-    <div>
-        <section data-bs-version="5.1" class="info1 cid-v5A0K07pfT" id="info1-bd" data-sortbtn="btn-primary">
-            <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(68, 121, 217);"></div>
-            <div class="align-center container">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-lg-8">
-                        <h3 class="mbr-section-title mb-4 mbr-fonts-style display-1">
-                            <strong> {{ radioPage?.name }}</strong>
-                        </h3>
-                        <p class="mbr-section-title mb-4 mbr-fonts-style display-7" v-dompurify-html="radioPage?.content"></p>
+    <div class="contentPage">
+        <v-card variant="text">
+            <v-toolbar :style="`background-color: ${radioBar?.color}; color: ${radioBar?.colortext} !important`">
+                <v-toolbar-title>
+                    <div class="listsToolbarTitle">
+                        {{ radioPage?.name }}
+                        <v-tooltip interactive>
+                            <template v-slot:activator="{ props: activatorProps }">
+                                <v-icon-btn size="small" icon="fas fa-circle-info" v-bind="activatorProps"></v-icon-btn>
+                            </template>
+                            <div>
+                                <p class="listsToolbarTooltip" v-dompurify-html="radioPage?.content"></p>
+                            </div>
+                        </v-tooltip>
                     </div>
-                </div>
-            </div>
-        </section>
+                </v-toolbar-title>
 
-        <div v-for="(result, index) in stations" :key="index">
-            <stationCard style="margin: 10px;" :radio="result" />
-        </div>
+                <v-tabs v-model="tab" align-tabs="center">
+                    <div v-for="(menu, index) in radioBar?.menus" :key="index">
+                        <v-tab :value="menu?.value">
+                            <v-btn variant="text"
+                                :style="`color: ${radioBar?.colortext} !important`">{{ menu?.name }}</v-btn>
+                        </v-tab>
+                    </div>
+                </v-tabs>
+            </v-toolbar>
+        </v-card>
+
+        <v-tabs-window v-model="tab">
+            <v-tabs-window-item :value="radioBar?.menus?.[0]?.value">
+                <v-sheet class="pa-5">
+                    <div v-for="station in stations" :key="station.id" class="d-inline-block">
+                        <stationCard :radio="station" />
+                    </div>
+                </v-sheet>
+            </v-tabs-window-item>
+
+            <v-tabs-window-item :value="radioBar?.menus?.[1]?.value">
+                <v-sheet class="pa-5">
+                    <div v-for="station in myStations" :key="station.id" class="d-inline-block">
+                        <stationCard :radio="station" />
+                    </div>
+                </v-sheet>
+            </v-tabs-window-item>
+        </v-tabs-window>
     </div>
 </template>
 
@@ -26,16 +53,60 @@
     } from '#imports';
     import stationCard from '#social/app/components/related/radio.vue'
 
-    const { $directus, $readItem, $readItems } = useNuxtApp()
+    const {
+        $directus,
+        $readItem,
+        $readItems
+    } = useNuxtApp()
 
-    const model = ref(null);
+    const tab = ref(null)
+    const loading = ref(true)
 
-    const { data: radioPage } = await useAsyncData('radioPage', () => {
-        return $directus.request($readItem('pages', '97', { fields: ['*', { '*': ['*'] }] }))
+    const {
+        data: radioPage
+    } = await useAsyncData('radioPage', () => {
+        return $directus.request($readItem('pages', '97', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
     })
 
-    const { data: stations } = await useAsyncData('stations', () => {
-        return $directus.request($readItems('radios', { fields: ['*', { '*': ['*'] }] }))
+    const {
+        data: stations
+    } = await useAsyncData('stations', () => {
+        return $directus.request($readItems('radios', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
+    })
+
+    const {
+        data: myStations
+    } = await useAsyncData('myStations', () => {
+        return $directus.request($readItems('radios', {
+            fields: ['*', {
+                '*': ['*']
+            }],
+            filter: {
+                user: {
+                    directus_users: {
+                        _eq: session.user.id
+                    }
+                }
+            }
+        }))
+    })
+
+    const {
+        data: radioBar
+    } = await useAsyncData('radioBar', () => {
+        return $directus.request($readItem('navigation', '34', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
     })
 
     useHead({

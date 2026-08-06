@@ -17,8 +17,8 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="4" href="/product/subscriptions">
-                    <v-card>
+                <v-col cols="4">
+                    <v-card href="/product/showcases#subscriptions">
                         <v-card-title>Subscriptions</v-card-title>
                         <v-card-text>
                             Manage your active subscriptions and payment methods
@@ -26,8 +26,8 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="4" href="/settings/payments">
-                    <v-card>
+                <v-col cols="4">
+                    <v-card href="/settings/payments">
                         <v-card-title>Your Payments</v-card-title>
                         <v-card-text>
                             Manage your saved payment methods and transaction history
@@ -35,8 +35,8 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="4" href="/settings/digital-content-and-devices">
-                    <v-card>
+                <v-col cols="4">
+                    <v-card href="/settings/digital-content-and-devices">
                         <v-card-title>Digital Content and Devices</v-card-title>
                         <v-card-text>
                             Manage your digital content and devices.
@@ -44,8 +44,8 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="4" href="/settings/business-account">
-                    <v-card>
+                <v-col cols="4">
+                    <v-card href="/settings/business-account">
                         <v-card-title>Your Business Account</v-card-title>
                         <v-card-text>
                             Sign up to save with business-exclusive pricing, schedule fast deliveries during business-hours, and more.
@@ -53,8 +53,8 @@
                     </v-card>
                 </v-col>
 
-                <v-col cols="4" href="/settings/shopping-programs-and-rentals">
-                    <v-card>
+                <v-col cols="4">
+                    <v-card href="/settings/shopping-programs-and-rentals">
                         <v-card-title>Shopping programs and rentals</v-card-title>
                         <v-card-text>
                             Buy now, pay over time, plus many more benefits, rewards, and great shopping benefits.

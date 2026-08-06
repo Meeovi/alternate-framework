@@ -1,20 +1,20 @@
 <script setup>
-import DynamicForm from './DynamicForm.vue'
+import { DynamicForm, useDirectusFields } from '@mframework/meeovi-forms'
 
 const route = useRoute()
-const collection = computed(() => String(route.params.collection || ''))
+const collection = route.params.collection
+
+const { fields: schemaFields, loading, error: schemaError, loadFields } = useDirectusFields()
+
 const formData = ref({})
 
-// Usage examples:
-// <DynamicForm :collection="collection" v-model="formData" :enable-turnstile="true" />
-// <DynamicForm :collection="collection" v-model="formData" :enable-turnstile="false" />
-// <DynamicForm :collection="collection" v-model="formData" />
+await loadFields(collection)
 </script>
 
 <template>
   <div>
     <h1>Dynamic Form for {{ collection }}</h1>
-    <DynamicForm :collection="collection" v-model="formData" clear-on-success />
+    <DynamicForm :collection="collection" :fields="schemaFields" v-model="formData" />
     <pre>{{ formData }}</pre>
   </div>
 </template>

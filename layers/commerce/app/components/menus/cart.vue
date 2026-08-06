@@ -119,7 +119,7 @@ import { useRouter } from 'vue-router'
 import { loadStripe } from '@stripe/stripe-js'
 import { useCartStore } from '../../stores/cart'
 import { useCart } from '../../composables/sales/cart/useCart'
-import { useNuxtApp } from '#app'
+import { useNuxtApp, useRuntimeConfig } from '#app'
 
 const cartNotification = ref(false)
 const notificationMessage = ref('')
@@ -198,7 +198,7 @@ const handleCheckout = async () => {
         return
       }
 
-      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+      const stripeKey = useRuntimeConfig().public.stripePublishableKey
       if (!stripeKey || typeof stripeKey !== 'string' || !stripeKey.startsWith('pk_')) {
         showNotification('Checkout is not available')
         return

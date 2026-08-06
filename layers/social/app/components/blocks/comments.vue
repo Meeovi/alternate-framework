@@ -1,5 +1,5 @@
 <template>
-  <Waline :serverURL="serverURL" :path="path" :reaction="true" :pageView="true" :comment="true" :noCopyright="true" :turnstileKey="true" />
+  <Waline id="commentsSection" :serverURL="serverURL" :path="path" :reaction="true" :pageView="true" :comment="true" :noCopyright="true" :turnstileKey="true" />
 </template>
 
 <script setup>

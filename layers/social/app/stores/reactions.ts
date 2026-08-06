@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from '#imports'
 import { reactive } from 'vue'
 
 // Use runtime lookups to avoid static 'nuxt/app' imports which may not be

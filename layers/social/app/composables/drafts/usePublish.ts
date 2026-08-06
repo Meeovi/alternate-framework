@@ -3,6 +3,14 @@ import type { mastodon } from 'masto'
 import type { PublishDraftItem, PublishToolsOptions } from '@mframework/adapter-federation'
 import { useUserSettings } from '../settings/storage'
 
+/**
+ * Publish a draft to a federated service (e.g., Mastodon).
+ *
+ * Previously this composable accessed `globalThis.__mastoClient` — a
+ * server-injected global that is not available in the browser. The
+ * publish call is now delegated to the server endpoint
+ * `POST /api/social/publish`, which has access to the Mastodon client.
+ */
 export function usePublish<TDraftItem extends PublishDraftItem = PublishDraftItem>(options: PublishToolsOptions<TDraftItem>) {
   const { draftItem, expanded, isUploading, isPartOfThread } = options
   const settings = useUserSettings()
@@ -65,12 +73,10 @@ export function usePublish<TDraftItem extends PublishDraftItem = PublishDraftIte
         quoteApprovalPolicy: draftItem.value.params.quoteApprovalPolicy,
       }
 
-      const client = (globalThis as any)?.__mastoClient
-      if (!client) {
-        throw new Error('Mastodon client not initialized')
-      }
-
-      const status = await client.value.v1.statuses.create(payload)
+      const status = await $fetch('/api/social/publish', {
+        method: 'POST',
+        body: { payload },
+      })
 
       return status as mastodon.v1.Status
     } catch (error) {

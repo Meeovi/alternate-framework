@@ -1,12 +1,16 @@
-export default defineNuxtRouteMiddleware(() => {
-  const snackbar = useSnackbar() // <-- your Vuetify snackbar composable
-  const { loggedIn, user, options } = useAuth()
-  
-  if (!loggedIn.value) {
-    return navigateTo(options.redirectGuestTo || '/')
+import { authClient } from "../../lib/auth-client";
+
+export default defineNuxtRouteMiddleware(async () => {
+  const snackbar = useSnackbar()
+  const { data: sessionData } = await useAuth().useSession(useFetch)
+  const session = (sessionData as any).value
+
+  if (!session) {
+    return navigateTo('/')
   }
-  
-  if ((user.value as any)?.role !== 'admin') {
+
+  const user = session.user as any
+  if (user?.role !== 'admin') {
     snackbar.show({
       message: 'You are not authorized to access this page',
       color: 'error'

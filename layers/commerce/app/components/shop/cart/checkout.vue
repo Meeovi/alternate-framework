@@ -170,10 +170,12 @@
 import { ref, onMounted, computed, watch } from '#imports'
 import { loadStripe } from '@stripe/stripe-js'
 import { useCartStore } from '~/stores/cart'
-import { usePreferredCurrency } from '~/composables/usePreferredCurrency'
+import { usePreferredCurrency } from '~/composables/catalog/usePreferredCurrency.ts'
+import { useRuntimeConfig } from '#app'
 import ShippingOptions from '../../catalog/product/shippingOptions.vue'
 
 // Component state
+const config = useRuntimeConfig()
 const loading = ref(false)
 const error = ref(null)
 const sameAsShipping = ref(true)
@@ -298,7 +300,7 @@ const handleSubmit = async () => {
 
         if (data?.id) {
             // fallback: try client redirect using session id
-            const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+            const stripeKey = config.public.stripePublishableKey as string
             if (!stripeKey || typeof stripeKey !== 'string' || !stripeKey.startsWith('pk_')) {
                 throw new Error('Stripe publishable key missing')
             }

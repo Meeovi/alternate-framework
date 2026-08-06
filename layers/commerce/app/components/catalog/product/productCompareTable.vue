@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="product-actions">
-              <addToCartBtn :productId="product.uid" />
+               <addToCartBtn :product="product" />
             </div>
           </div>
         </div>

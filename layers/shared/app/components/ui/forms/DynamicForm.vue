@@ -23,9 +23,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { useJsonForm } from '@mframework/meeovi-forms'
-import DynamicFormElement from './DynamicFormElement.vue'
-import useDynamicSchema, { type DynamicContentField } from '../../../composables/content/useDynamicSchema'
+import { useJsonForm, DynamicFormElement, useDirectusFields, mapSchemaDefaults, type DirectusField } from '@mframework/meeovi-forms'
 import useSSF from '../../../composables/security/ssf'
 
 // Usage examples from parent components:
@@ -36,7 +34,7 @@ import useSSF from '../../../composables/security/ssf'
 const props = withDefaults(defineProps<{
   collection: string
   modelValue?: Record<string, unknown>
-  fields?: DynamicContentField[]
+  fields?: any[]
   submitLabel?: string
   clearOnSuccess?: boolean
   enableTurnstile?: boolean | null
@@ -55,7 +53,7 @@ const emit = defineEmits<{
 }>()
 
 const { $directus, $createItem } = useNuxtApp()
-const { fields: schemaFields, loading, error: schemaError, loadSchema: loadSchemaForCollection } = useDynamicSchema()
+const { fields: schemaFields, loading, error: schemaError, loadFields } = useDirectusFields()
 
 const submitting = ref(false)
 const submitError = ref<string | null>(null)
@@ -69,7 +67,7 @@ const turnstileEnabled = computed(() => {
   return Boolean(flags.turnstileEnabled)
 })
 
-function mapFieldToSchema(field: DynamicContentField): Record<string, unknown> {
+function mapFieldToSchema(field: DirectusField): Record<string, unknown> {
   const dataType = String(field.type || field.schema?.data_type || '').toLowerCase()
   const fieldInterface = String(field.meta?.interface || '').toLowerCase()
 
@@ -149,6 +147,15 @@ watch(
     target.type = next.type
     target.properties = next.properties
     target.required = next.required
+    // Seed the model with schema defaults once fields load so every field has
+    // a defined value (prevents "modelValue = undefined" warnings and guarantees
+    // proper initial binding). Existing values are preserved.
+    const defaults = mapSchemaDefaults(next)
+    for (const [key, val] of Object.entries(defaults)) {
+      if (!(key in form.model)) {
+        ;(form.model as Record<string, unknown>)[key] = val
+      }
+    }
   },
   { immediate: true, deep: true },
 )
@@ -167,7 +174,7 @@ async function loadFormSchema() {
     return
   }
 
-  const loaded = await loadSchemaForCollection(props.collection)
+  const loaded = await loadFields(props.collection)
   if (!loaded.length && schemaError.value) {
     emit('error', schemaError.value)
   }

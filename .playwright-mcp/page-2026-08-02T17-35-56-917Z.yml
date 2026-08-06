@@ -1,0 +1,43 @@
+- generic [active] [ref=f223e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f223e3] [cursor=pointer]:
+    - generic [ref=f223e9]: Open accessibility menu
+  - main [ref=f223e13]:
+    - generic [ref=f223e20]:
+      - generic [ref=f223e21]:
+        - generic [ref=f223e22]:
+          - heading "Welcome to Meeovi" [level=1] [ref=f223e27]
+          - paragraph [ref=f223e28]: The Decentralized Social Shopping Network.
+        - generic [ref=f223e29]:
+          - generic [ref=f223e30]: Fast & Secure Login
+          - generic [ref=f223e35]: Enterprise Grade Security
+          - generic [ref=f223e40]: Privacy First Social Marketplace
+      - generic [ref=f223e48]:
+        - heading "Sign In" [level=2] [ref=f223e50]
+        - generic [ref=f223e51]: Enter your email and password to continue
+        - generic [ref=f223e52]:
+          - generic [ref=f223e53]:
+            - generic [ref=f223e54]:
+              - generic [ref=f223e57]:
+                - generic: Email
+                - textbox "Email" [ref=f223e58]:
+                  - /placeholder: you@example.com
+              - alert [ref=f223e59]
+            - generic [ref=f223e61]:
+              - generic [ref=f223e64]:
+                - generic: Password
+                - textbox "Password" [ref=f223e65]:
+                  - /placeholder: Enter your password
+              - alert [ref=f223e66]
+            - generic [ref=f223e68]:
+              - generic [ref=f223e69]:
+                - generic [ref=f223e71]:
+                  - checkbox "Remember Me" [ref=f223e77] [cursor=pointer]
+                  - generic [ref=f223e78] [cursor=pointer]: Remember Me
+                - alert [ref=f223e79]
+              - link "Forgot password?" [ref=f223e81] [cursor=pointer]:
+                - /url: /forgot-password
+            - button "Sign In" [ref=f223e82] [cursor=pointer]
+          - generic [ref=f223e84]:
+            - text: Don't have an account?
+            - link "Sign Up" [ref=f223e85] [cursor=pointer]:
+              - /url: /register

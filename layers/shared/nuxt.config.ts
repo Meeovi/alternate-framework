@@ -16,6 +16,30 @@ export default defineNuxtConfig({
     description: 'Nuxt-specific glue for alternate-* modules',
   },
 
+  app: {
+    head: {
+      script: [{
+          innerHTML: `
+            window._cyA11yConfig = {
+              "iconId": "default",
+              "position": { "mobile": "bottom-right", "desktop": "bottom-left" },
+              "language": { "default": "en", "selected": [] },
+              "modules": { "statement": { "enabled": true, "url": "https://meeovi.com/accessibility" } },
+              "keyboard": { "enabled": true, "shortcut": "alt+a" }
+            };
+          `,
+          type: 'text/javascript',
+          tagPosition: 'bodyClose'
+        },
+        {
+          src: 'https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da',
+          async: true,
+          tagPosition: 'bodyClose'
+        }
+      ]
+    }
+  },
+
   alias: {
     '@mframework/meeovi-forms': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/index.ts'),
     '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/')
@@ -33,17 +57,19 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@nuxt/image',
     '@vueuse/motion/nuxt',
+    '@tresjs/nuxt',
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
     '@nuxtjs/turnstile',
-    '@nuxtjs/cloudinary',
     '@nuxtjs/leaflet',
     '@nuxt/scripts',
     '@nuxt/fonts',
     '@nuxtjs/mcp-toolkit',
     '@storefront-ui/nuxt',
-    resolve(__dirname, '../../packages/plugins/experience-builder/module.ts')
+    resolve(__dirname, '../../packages/plugins/meeovi-forms/module.ts'),
+    resolve(__dirname, '../../packages/plugins/experience-builder/module.ts'),
+    'nuxt-skill-hub'
   ],
 
   // @ts-ignore - @nuxtjs/fonts module augments this key at runtime
@@ -95,11 +121,6 @@ export default defineNuxtConfig({
     url: `${process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com'}`,
     name: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'}`,
     description: `${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
-  },
-
-  // @ts-ignore - @nuxtjs/cloudinary module augments this key at runtime
-  cloudinary: {
-    cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'nuxt-cloudinary',
   },
 
   image: {
@@ -303,7 +324,7 @@ export default defineNuxtConfig({
         'Content-Security-Policy': [
           "media-src 'self' blob: https://stream.mux.com;", // Allows MSE segment blobs
           "worker-src 'self' blob:;", // Allows parsing engines running on workers
-          "connect-src 'self' https://*.mux.com;" // Allows chunk/manifest data requests
+          `connect-src 'self' https://*.mux.com ${process.env.DIRECTUS_URL ? process.env.DIRECTUS_URL.replace(/^https?:/, 'https:') : ''};` // Allows Directus API + chunk/manifest data requests
         ].join(' ')
       }
     },
@@ -314,17 +335,10 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    redisUrl: process.env.NUXT_REDIS_URL || 'redis://localhost:6379',
     mframework: {
       auth: '~/auth/authImplementation',
       user: '~/auth/currentUser'
-    },
-    opensearch: {
-      host: process.env.ALTERNATE_SEARCH_HOST || 'localhost',
-      port: parseInt(process.env.ALTERNATE_SEARCH_PORT || '9200'),
-      auth: process.env.ALTERNATE_SEARCH_AUTH || 'admin:admin',
-      protocol: process.env.ALTERNATE_SEARCH_PROTOCOL || 'https',
-      caCertsPath: process.env.ALTERNATE_SEARCH_CA_CERTS_PATH || '',
-      appName: process.env.NUXT_APP_NAME || 'nuxt-app'
     },
     turnstile: {
       // This can be overridden at runtime via the NUXT_TURNSTILE_SECRET_KEY
@@ -446,5 +460,5 @@ export default defineNuxtConfig({
         tag.startsWith('media-') ||
         tag.endsWith('-video')
     }
-  }
+  },
 })

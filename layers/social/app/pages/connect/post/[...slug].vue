@@ -5,15 +5,11 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
-                        <div v-if="matchesExtension(post?.file, ['.mp4'])">
-                            <video :src="getAssetURL(post?.file)"></video>
+                        <div v-if="post?.file === 'Video' && post?.file === 'Audio'">
+                            <videoPlayer :src="getAssetURL(post?.file)" />
                         </div>
 
-                        <div v-else-if="matchesExtension(post?.audio, ['.mp3'])">
-                            <audio :src="getAssetURL(post?.audio)"></audio>
-                        </div>
-
-                        <div v-else-if="matchesExtension(post?.image, ['.gif'])">
+                        <div v-else-if="post?.file">
                             <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
@@ -159,7 +155,7 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+    import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
     import tagCard from '#social/app/components/related/tag.vue';
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
@@ -170,20 +166,12 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     } from '#imports'
     import {
         useReactionsStore
-    } from '~/stores/reactions'
+    } from '../../../stores/reactions'
 
-    const { $sdk } = useNuxtApp()
-    const route = useRoute();
-    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetURL(file) || '')
-        .toLowerCase()
-    const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
-    const hasAsset = (file) => Boolean(getAssetURL(file))
     const {
         $directus,
         $readItems
     } = useNuxtApp()
-
-    const slugParam = Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
 
     const {
         data: post
@@ -191,7 +179,7 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
         const resp = await $directus.request($readItems('posts', {
             filter: {
                 slug: {
-                    _eq: `${slugParam}`
+                    _eq: `${route.params.slug}`
                 }
             },
             fields: ['*', 'author.*', 'image.*', 'file.*', 'audio.*'],

@@ -12,14 +12,16 @@
 
 <script setup>
 import { loadStripe } from '@stripe/stripe-js'
+import { useRuntimeConfig } from '#app'
 
 const checkoutRef = ref(null)
 const loading = ref(true)
 const error = ref('')
+const config = useRuntimeConfig()
 
 onMounted(async () => {
   try {
-    const stripe = await loadStripe(process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+      const stripe = await loadStripe(config.public.stripePublishableKey)
     
     const { clientSecret } = await $fetch('/api/create-checkout-session', {
       method: 'POST'

@@ -10,5 +10,5 @@
 </template>
 <script setup>
 defineProps({ space: Object })
-import SpaceProducts from '../../../../../commerce/app/components/catalog/product/productCard.vue'
+import SpaceProducts from '#commerce/app/components/catalog/product/productCard.vue'
 </script>

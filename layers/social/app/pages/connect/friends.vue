@@ -1,26 +1,26 @@
 <template>
     <div>
-		<section data-bs-version="5.1" class="info1 cid-v5A0K07pfT" id="info1-bd" data-sortbtn="btn-primary">
-			<div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(68, 121, 217);"></div>
-			<div class="align-center container">
-				<div class="row justify-content-center">
-					<div class="col-12 col-lg-8">
-						<h3 class="mbr-section-title mb-4 mbr-fonts-style display-1">
-							<strong> {{ friendsPage?.name }}</strong>
-						</h3>
-						<p class="mbr-section-title mb-4 mbr-fonts-style display-7" v-dompurify-html="friendsPage?.description"></p>
-					</div>
-				</div>
-			</div>
-		</section>
-
         <v-card variant="text">
             <v-toolbar :style="`background-color: ${friendBar?.color}; color: ${friendBar?.colortext} !important`">
+                <v-toolbar-title>
+                    <div class="listsToolbarTitle">
+                        {{ friendsPage?.name }}
+                        <v-tooltip interactive>
+                            <template v-slot:activator="{ props: activatorProps }">
+                                <v-icon-btn size="small" icon="fas fa-circle-info" v-bind="activatorProps"></v-icon-btn>
+                            </template>
+                            <div>
+                                <p class="listsToolbarTooltip" v-dompurify-html="friendsPage?.content"></p>
+                            </div>
+                        </v-tooltip>
+                    </div>
+                </v-toolbar-title>
 
                 <v-tabs v-model="tab" align-tabs="center">
                     <div v-for="(menu, index) in friendBar?.menus" :key="index">
                         <v-tab :value="menu?.value">
-                            <v-btn variant="text" :style="`color: ${friendBar?.colortext} !important`">{{ menu?.name }}</v-btn>
+                            <v-btn variant="text"
+                                :style="`color: ${friendBar?.colortext} !important`">{{ menu?.name }}</v-btn>
                         </v-tab>
                     </div>
                 </v-tabs>

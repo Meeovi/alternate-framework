@@ -1,12 +1,12 @@
 // packages/adapters/adapter-magento/src/runtime/plugin.ts
-import { defineNuxtPlugin, useNuxtApp, useRuntimeConfig } from '#app'
-import { MagentoAdapter } from '../index.js'
+import { defineNuxtPlugin, useNuxtApp, useRuntimeConfig } from 'nuxt/app'
+import { MagentoAdapter } from '@mframework/adapter-magento'
 import { SearchAdapterRegistry, AuthAdapterRegistry, NotifyAdapterRegistry } from 'alternate-sdk'
 
 export default defineNuxtPlugin(() => {
   const nuxtApp = useNuxtApp()
-  const config = useRuntimeConfig() as Record<string, any>
-  const options = config.public?.magento || config.public?.magentoAdapter
+  const config = useRuntimeConfig()
+  const options = (config.public?.magento || {}) as Record<string, any>
 
   const adapterInstance = new MagentoAdapter(options?.endpoint || '', options?.token)
 
@@ -18,10 +18,12 @@ export default defineNuxtPlugin(() => {
     NotifyAdapterRegistry.register('magento', adapterInstance.content.notifications as any)
   }
 
-  nuxtApp.hook('app:created', () => {
-    const target = nuxtApp.$sdk || {}
-    Object.assign(target, adapterInstance)
-  })
+  // Expose the adapter instance as $magentoAdapter on the Nuxt app context
+  nuxtApp.$magentoAdapter = adapterInstance
 
-  return {}
+  return {
+    provide: {
+      magentoAdapter: adapterInstance
+    }
+  }
 })

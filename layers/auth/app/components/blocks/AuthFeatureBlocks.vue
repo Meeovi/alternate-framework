@@ -52,13 +52,13 @@
 
 <script setup lang="ts">
 import AuthProfileEditor from './AuthProfileEditor.vue'
-import LogoutButton from './blocks/logoutButton.vue'
-import TwoFaCard from './blocks/2faCard.vue'
-import Organization from './organization.vue'
-import Social from './social.vue'
-import SsoProvisioningManager from './SSOProvisioningManager.vue'
-import Sso from './sso.vue'
-import TwoFactor from './twoFactor.vue'
+import LogoutButton from './logoutButton.vue'
+import TwoFaCard from '../features/plugins/2faCard.vue'
+import Organization from '../features/plugins/organization.vue'
+import Social from '../features/settings/social.vue'
+import SsoProvisioningManager from '../features/plugins/sso.vue'
+import Sso from '../features/plugins/sso.vue'
+import TwoFactor from '../features/plugins/twoFactor.vue'
 
 withDefaults(defineProps<{
   showProfile?: boolean

@@ -1,7 +1,7 @@
 <template>
     <div class="not-prose w-full">
         <div class="flex items-center justify-center p-5">
-            <ScriptLemonSqueezy @lemon-squeezy-event="e => events.push(e)" @ready="ready = true">
+            <ScriptLemonSqueezy @lemon-squeezy-event="(e) => events.push(e)" @ready="ready = true">
                 <v-btn href="https://harlantest.lemonsqueezy.com/buy/52a40427-36d2-4450-a514-ae80d9e1a333?embed=1"
                     class="block mb-3">
                     Buy me - $9.99
@@ -21,7 +21,7 @@
                         Buttons are live and will open the modal, tracking events:
                     </div>
                     <div v-for="(event, index) in events" :key="index" class="text-xs">
-                        {{ event.event }}
+                        {{ event?.event }}
                     </div>
                 </template>
             </UAlert>
@@ -29,7 +29,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
     import { ref } from 'vue'
 
     const ready = ref(false)

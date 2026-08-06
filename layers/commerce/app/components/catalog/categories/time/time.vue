@@ -1,7 +1,8 @@
 <template>
     <div>
-        <h1 class="mbr-section-title mbr-fonts-style mbr-white mb-3 display-1" id="dateTime">
-        </h1>
+        <h1 style="text-align: center; color: white;" class="mbr-section-title mbr-fonts-style mbr-white mb-3 display-1"
+            id="dateTime"></h1>
+
     </div>
 </template>
 
@@ -58,5 +59,7 @@
             default: ''
         },
     });
-    const { category } = props;
+    const {
+        category
+    } = props;
 </script>

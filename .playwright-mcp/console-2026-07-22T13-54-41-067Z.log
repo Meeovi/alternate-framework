@@ -1,0 +1,933 @@
+[    5971ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/auth/node_modules/.cache/vite/client/deps/@better-auth_sso_client.js?v=07a6b5ae:0
+[    5973ms] [WARNING] [Vue Router warn]: uncaught error during route navigation: @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/node_modules/vue-router/dist/devtools-DCoWQoU_.js?v=eec61883:10
+[    5973ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/node_modules/vue-router/dist/vue-router.js:1213
+[    5976ms] [ERROR] [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=eec61883:126
+[    5977ms] [WARNING] [Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/node_modules/vue-router/dist/devtools-DCoWQoU_.js?v=eec61883:10
+[    5980ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-app
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=eec61883:47
+[    5980ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-main
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=eec61883:47
+[    5980ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-icon
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=eec61883:47
+[    5981ms] [WARNING] %cssr:warn%c [Vue warn]: Non-function value encountered for default slot. Prefer function slots for better performance. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=eec61883:47
+[    5981ms] [WARNING] %cssr:warn%c [Vue warn]: Component <Anonymous> is missing template or render function. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=eec61883:47
+[    5981ms] [WARNING] %cssr:warn%c [nuxt] Your project has pages but `<NuxtPage />` has not been detected. Make sure you are using `<NuxtPage />` instead of `<RouterView />`, as `<RouterView />` will not work correctly in Nuxt. If `<NuxtPage />` is rendered conditionally, this warning can be triggered before it is mounted. You can set `pages: false` in `nuxt.config` if you do not wish to use the Nuxt `vue-router` integration. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      
+  at process.processTicksAndRejections (node:internal/process/task_queues)
+ @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=eec61883:47
+[    5988ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/auth/node_modules/.cache/vite/client/deps/@better-auth_stripe_client.js?v=1bc60292:0
+[    5991ms] [ERROR] [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=eec61883:126
+[    6004ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=eec61883:7310
+[    8614ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-app
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[    8615ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-main
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[    8615ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-icon
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[    8615ms] [WARNING] %cssr:warn%c [Vue warn]: Non-function value encountered for default slot. Prefer function slots for better performance. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[    8616ms] [WARNING] %cssr:warn%c [Vue warn]: Component <Anonymous> is missing template or render function. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[    8616ms] [WARNING] %cssr:warn%c [nuxt] Your project has pages but `<NuxtPage />` has not been detected. Make sure you are using `<NuxtPage />` instead of `<RouterView />`, as `<RouterView />` will not work correctly in Nuxt. If `<NuxtPage />` is rendered conditionally, this warning can be triggered before it is mounted. You can set `pages: false` in `nuxt.config` if you do not wish to use the Nuxt `vue-router` integration. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      
+  at process.processTicksAndRejections (node:internal/process/task_queues)
+ @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[    8632ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:7310
+[    8678ms] [WARNING] [Vue warn]: Failed to resolve component: v-icon
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8679ms] [WARNING] [Vue warn]: Failed to resolve component: v-main
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8679ms] [WARNING] [Vue warn]: Failed to resolve component: v-app
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8682ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: v-app 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8682ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:1890
+[    8697ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-title
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8698ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8699ms] [WARNING] [Vue warn]: Failed to resolve component: v-alert
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8699ms] [WARNING] [Vue warn]: Failed to resolve component: v-text-field
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8700ms] [WARNING] [Vue warn]: Failed to resolve component: v-checkbox
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8701ms] [WARNING] [Vue warn]: Failed to resolve component: v-btn
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8701ms] [WARNING] [Vue warn]: Failed to resolve component: v-form
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8702ms] [WARNING] [Vue warn]: Failed to resolve component: v-divider
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8703ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-text
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8704ms] [WARNING] [Vue warn]: Failed to resolve component: v-card
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8716ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-title
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8717ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8718ms] [WARNING] [Vue warn]: Failed to resolve component: v-alert
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8719ms] [WARNING] [Vue warn]: Failed to resolve component: v-text-field
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8719ms] [WARNING] [Vue warn]: Failed to resolve component: v-checkbox
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8720ms] [WARNING] [Vue warn]: Failed to resolve component: v-btn
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8723ms] [WARNING] [Vue warn]: Failed to resolve component: v-form
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8723ms] [WARNING] [Vue warn]: Failed to resolve component: v-divider
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8724ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-text
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8724ms] [WARNING] [Vue warn]: Failed to resolve component: v-card
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[    8796ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxt/devtools/dist/runtime/plugins/devtools.client.js?v=69cc96a7:51
+[   76633ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:3015/_nuxt/@vite/client:864
+[  106716ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/auth/node_modules/.cache/vite/client/deps/@better-auth_sso_client.js?v=09640712:0
+[  106717ms] [WARNING] [Vue Router warn]: uncaught error during route navigation: @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/node_modules/vue-router/dist/devtools-DCoWQoU_.js?v=74683ca3:10
+[  106717ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/node_modules/vue-router/dist/vue-router.js:1213
+[  106719ms] [ERROR] [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=74683ca3:126
+[  106720ms] [WARNING] [Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/node_modules/vue-router/dist/devtools-DCoWQoU_.js?v=74683ca3:10
+[  106723ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-app
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=74683ca3:47
+[  106724ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-main
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=74683ca3:47
+[  106725ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-icon
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=74683ca3:47
+[  106725ms] [WARNING] %cssr:warn%c [Vue warn]: Non-function value encountered for default slot. Prefer function slots for better performance. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=74683ca3:47
+[  106726ms] [WARNING] %cssr:warn%c [Vue warn]: Component <Anonymous> is missing template or render function. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=74683ca3:47
+[  106726ms] [WARNING] %cssr:warn%c [nuxt] Your project has pages but `<NuxtPage />` has not been detected. Make sure you are using `<NuxtPage />` instead of `<RouterView />`, as `<RouterView />` will not work correctly in Nuxt. If `<NuxtPage />` is rendered conditionally, this warning can be triggered before it is mounted. You can set `pages: false` in `nuxt.config` if you do not wish to use the Nuxt `vue-router` integration. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      
+  at process.processTicksAndRejections (node:internal/process/task_queues)
+ @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=74683ca3:47
+[  106735ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/auth/node_modules/.cache/vite/client/deps/@better-auth_stripe_client.js?v=3ba2dace:0
+[  106738ms] [ERROR] [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://localhost:3015/_nuxt/pages/login.vue @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=74683ca3:126
+[  106747ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=74683ca3:7310
+[  108720ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-app
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[  108723ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-main
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[  108724ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-icon
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[  108725ms] [WARNING] %cssr:warn%c [Vue warn]: Non-function value encountered for default slot. Prefer function slots for better performance. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[  108725ms] [WARNING] %cssr:warn%c [Vue warn]: Component <Anonymous> is missing template or render function. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <Anonymous>
+at <Auth>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[  108726ms] [WARNING] %cssr:warn%c [nuxt] Your project has pages but `<NuxtPage />` has not been detected. Make sure you are using `<NuxtPage />` instead of `<RouterView />`, as `<RouterView />` will not work correctly in Nuxt. If `<NuxtPage />` is rendered conditionally, this warning can be triggered before it is mounted. You can set `pages: false` in `nuxt.config` if you do not wish to use the Nuxt `vue-router` integration. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      
+  at process.processTicksAndRejections (node:internal/process/task_queues)
+ @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=69cc96a7:47
+[  108735ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:7310
+[  108789ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxt/devtools/dist/runtime/plugins/devtools.client.js?v=69cc96a7:51
+[  108800ms] [WARNING] [Vue warn]: Failed to resolve component: v-icon
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108800ms] [WARNING] [Vue warn]: Failed to resolve component: v-main
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108801ms] [WARNING] [Vue warn]: Failed to resolve component: v-app
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108802ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: v-app 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108803ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:1890
+[  108810ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-title
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108811ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108813ms] [WARNING] [Vue warn]: Failed to resolve component: v-alert
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108818ms] [WARNING] [Vue warn]: Failed to resolve component: v-text-field
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108820ms] [WARNING] [Vue warn]: Failed to resolve component: v-checkbox
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108822ms] [WARNING] [Vue warn]: Failed to resolve component: v-btn
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108823ms] [WARNING] [Vue warn]: Failed to resolve component: v-form
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108824ms] [WARNING] [Vue warn]: Failed to resolve component: v-divider
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108827ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-text
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108828ms] [WARNING] [Vue warn]: Failed to resolve component: v-card
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108836ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-title
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108838ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108839ms] [WARNING] [Vue warn]: Failed to resolve component: v-alert
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108840ms] [WARNING] [Vue warn]: Failed to resolve component: v-text-field
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108841ms] [WARNING] [Vue warn]: Failed to resolve component: v-checkbox
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108842ms] [WARNING] [Vue warn]: Failed to resolve component: v-btn
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108843ms] [WARNING] [Vue warn]: Failed to resolve component: v-form
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108847ms] [WARNING] [Vue warn]: Failed to resolve component: v-divider
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108848ms] [WARNING] [Vue warn]: Failed to resolve component: v-card-text
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49
+[  108850ms] [WARNING] [Vue warn]: Failed to resolve component: v-card
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <Login onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/login" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /login, hash: , query: Object, name: login, path: /login}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <Auth ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="auth" layoutProps= {ref: RefImpl} name="auth" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="auth" name="auth"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3015/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=69cc96a7:49

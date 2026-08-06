@@ -17,62 +17,29 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <div v-if="formError" class="error">{{ formError }}</div>
-        <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-        <JsonSchemaFormFromFields :fields="reportFields" :model-value="form"
-          @update:model-value="Object.assign(form, $event)" @submit="submitForm" />
+        <DynamicForm collection="report" />
       </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script setup>
-  import {
-    computed,
-    ref
-  } from '#imports'
-  import JsonSchemaFormFromFields from '#shared/app/components/ui/forms/JsonSchemaFormFromFields.vue'
-  import {
-    useContentForm
-  } from '../../composables/useContentForm'
+import { ref } from '#imports'
+import { DynamicForm } from '@mframework/meeovi-forms'
 
-  const { $sdk, $directus, $readItems } = useNuxtApp()
+const { $sdk, $directus, $readItems } = useNuxtApp()
 
-  const props = defineProps({
-    reportId: {
-      type: [String, Number, Object],
-      required: false
-    },
-    report: {
-      type: [String, Number, Object],
-      required: false
-    },
-  })
+const props = defineProps({
+  reportId: {
+    type: [String, Number, Object],
+    required: false
+  },
+  report: {
+    type: [String, Number, Object],
+    required: false
+  },
+})
 
-  const providedReportId = props.reportId ?? props.report ?? null
-  const dialog = ref(false)
-
-  const {
-    data,
-    error
-  } = await useAsyncData(`report-schema-fields-${String(providedReportId ?? 'new')}`, async () => {
-    const resp = await $directus.request($readItems('report'))
-    return Array.isArray(resp) ? resp : []
-  })
-
-  if (error.value || data.value == null || (data.value?.length ?? 0) === 0) {
-    console.warn('Report fields not available or empty', error?.value)
-  }
-
-  const reportFields = computed(() => Array.isArray(data.value) ? data.value : [])
-
-  const {
-    form,
-    formError,
-    formSuccess,
-    submitForm
-  } = useContentForm('report', reportFields, {
-    clearOnSuccess: true,
-    closeDialogRef: dialog
-  })
+const providedReportId = props.reportId ?? props.report ?? null
+const dialog = ref(false)
 </script>

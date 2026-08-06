@@ -1,5 +1,8 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import {
+  authClient
+} from '../../lib/auth-client'
+import {
   SHARED_ACCOUNT_SETTINGS_PRESETS,
   type AccountSettingDefinition,
   type AccountSettingsCategoryDefinition,
@@ -13,7 +16,6 @@ type UseAccountSettingsOptions = {
 }
 
 export function useAccountSettings(options: UseAccountSettingsOptions = {}) {
-  const auth = useAuth()
   const runtimeConfig = useRuntimeConfig()
 
   const preset = computed<AccountSettingsPresetKey>(() =>
@@ -25,8 +27,9 @@ export function useAccountSettings(options: UseAccountSettingsOptions = {}) {
   )
   const settings = computed(() => options.settings || SHARED_ACCOUNT_SETTINGS_PRESETS[preset.value].settings)
 
-  const isLoggedIn = computed(() => auth.loggedIn.value)
-  const userEmail = computed(() => auth.user.value?.email || 'Signed in')
+  const session = ref<any>(null)
+  const isLoggedIn = computed(() => !!session.value)
+  const userEmail = computed(() => session.value?.user?.email || 'Signed in')
 
   const backendLabel = computed(() =>
     String((runtimeConfig.public as any)?.auth?.backend || 'better-auth').toLowerCase(),
@@ -158,10 +161,11 @@ export function useAccountSettings(options: UseAccountSettingsOptions = {}) {
     if (!isLoggedIn.value || !supportsPersistentSettings.value) return
 
     try {
-      await auth.fetchSession()
-      const data = await $fetch<{ profile: any; availableSettings?: string[] }>('/api/profile/route')
-      profile.value = data?.profile || null
-      backendAvailableSettings.value = Array.isArray(data?.availableSettings) ? data.availableSettings : null
+      const { data } = await (authClient as any).useSession()
+      session.value = (data as any).value
+      const data2 = await $fetch<{ profile: any; availableSettings?: string[] }>('/api/profile/route')
+      profile.value = data2?.profile || null
+      backendAvailableSettings.value = Array.isArray(data2?.availableSettings) ? data2.availableSettings : null
     } catch {
       profile.value = null
       backendAvailableSettings.value = null
@@ -175,8 +179,9 @@ export function useAccountSettings(options: UseAccountSettingsOptions = {}) {
   }
 
   onMounted(async () => {
-    if (!auth.session.value) {
-      await auth.fetchSession()
+    if (!session.value) {
+      const { data } = await (authClient as any).useSession()
+      session.value = (data as any).value
     }
 
     await loadProfile()

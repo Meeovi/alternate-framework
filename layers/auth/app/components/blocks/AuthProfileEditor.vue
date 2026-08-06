@@ -23,8 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { useAuthCapabilities } from '../../composables/organization/useOrganization'
+import { onMounted, ref, computed } from 'vue'
+import { useFetch } from 'nuxt/app'
+import { authClient } from '../../../lib/auth-client'
 
 const props = withDefaults(defineProps<{
   enabled?: boolean
@@ -34,10 +35,9 @@ const props = withDefaults(defineProps<{
   showUnsupportedState: false,
 })
 
-const auth = useAuth()
-const { backend, hasProfileUpdate } = useAuthCapabilities()
-const isSupported = computed(() => hasProfileUpdate.value)
-const backendLabel = computed(() => backend.value)
+const session = ref<any>(null)
+const isSupported = ref(true)
+const backendLabel = ref('better-auth')
 const shouldRender = computed(() => props.enabled && (isSupported.value || props.showUnsupportedState))
 
 const form = ref({ name: '', email: '' })
@@ -46,13 +46,12 @@ const message = ref('')
 const loading = ref(false)
 
 async function load() {
-  if (!isSupported.value) return
-
   loading.value = true
   try {
-    await auth.fetchSession()
-    form.value.name = auth.user.value?.name || ''
-    form.value.email = auth.user.value?.email || ''
+    const { data } = await useAuth().useSession(useFetch)
+    session.value = (data as any).value
+    form.value.name = session.value?.user?.name || ''
+    form.value.email = session.value?.user?.email || ''
   } catch {
     // Silently fail to allow mounting in guest screens.
   } finally {
@@ -61,20 +60,20 @@ async function load() {
 }
 
 async function save() {
-  if (!isSupported.value) return
-
   saving.value = true
   message.value = ''
   try {
-    const updateUser = (auth.client as any)?.updateUser
-    if (typeof updateUser !== 'function') {
-      throw new Error('Profile update is not supported')
-    }
-
-    const { error } = await updateUser({ name: form.value.name, email: form.value.email })
-    if (error) throw error
-    await auth.fetchSession()
+    // better-auth does not expose a client-side updateUser method.
+    // Use a custom API route for profile updates if needed.
+    await $fetch('/api/profile/route', {
+      method: 'PUT',
+      body: {
+        name: form.value.name,
+        email: form.value.email,
+      },
+    })
     message.value = 'Saved'
+    await load()
   } catch (err: any) {
     message.value = err?.message || 'Error'
   } finally {

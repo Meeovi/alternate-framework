@@ -11,3 +11,35 @@ export interface MeeoviFormsRuntimeConfig {
   apiBase: string
   apis: ApiFormConfig[]
 }
+
+export interface DirectusField {
+  field?: string
+  type?: string
+  name?: string
+  schema?: {
+    data_type?: string
+    default_value?: unknown
+    is_nullable?: boolean
+    foreign_key_table?: string
+  }
+  meta?: {
+    interface?: string
+    note?: string
+    width?: string
+    hidden?: boolean
+    required?: boolean
+    readonly?: boolean
+    options?: Record<string, unknown>
+    validation?: Record<string, any>
+    validation_message?: string
+  }
+}
+
+export interface DirectusFormOptions {
+  collection: string
+  modelValue?: Record<string, unknown>
+  fields?: DirectusField[]
+  submitLabel?: string
+  clearOnSuccess?: boolean
+  enableTurnstile?: boolean | null
+}

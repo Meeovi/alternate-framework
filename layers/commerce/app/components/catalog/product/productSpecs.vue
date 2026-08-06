@@ -39,6 +39,14 @@
         <th>Tier Price</th>
         <td>{{ pricing?.formatted?.tier }}</td>
       </tr>
+      <tr v-if="pricing?.formatted?.manufacturer_suggested_retail_price">
+        <th>Manufacturer Suggested Retail Price</th>
+        <td>{{ pricing?.formatted?.manufacturer_suggested_retail_price }}</td>
+      </tr>     
+      <tr v-if="pricing?.formatted?.minimum_advertised_price">
+        <th>Minimum Advertised Price</th>
+        <td>{{ pricing?.formatted?.minimum_advertised_price }}</td>
+      </tr>
       <tr>
         <th>Price Source</th>
         <td>{{ pricing?.source }}</td>
@@ -126,7 +134,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { usePrice } from '../../../composables/catalog/price/price'
-import { useAppGateway } from '~/composables/useAppGateway'
+import { useAppGateway } from '#shared/app/composables/useAppGateway'
 import ratings from '../../partials/ratings.vue'
 
 const props = defineProps({

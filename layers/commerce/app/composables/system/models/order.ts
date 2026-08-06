@@ -1,8 +1,7 @@
-import type { InferCustom } from "../defs";
 import type { SfShippingMethod } from "./checkout";
 import type { Maybe, SfAddress, SfAttribute, SfCreditMemoId, SfCreditMemoState, SfId, SfImage, SfInvoiceId, SfInvoiceState, SfMoney, SfOrderId, SfOrderState, SfOrderStatus, SfShipmentId, SfShipmentStatus } from "./shared";
 
-export interface SfOrderLineItemCustom extends InferCustom<"normalizeOrderLineItem"> {}
+export interface SfOrderLineItemCustom extends Record<string, any> {}
 
 export interface SfOrderLineItem {
   id: SfId;
@@ -88,7 +87,7 @@ export interface SfOrderLineItem {
   $custom?: SfOrderLineItemCustom;
 }
 
-export interface SfOrderCustom extends InferCustom<"normalizeOrder"> {}
+export interface SfOrderCustom extends Record<string, any> {}
 
 export interface SfOrder {
   id: SfId;
@@ -159,7 +158,7 @@ export interface SfOrder {
   $custom?: SfOrderCustom;
 }
 
-export interface SfOrderListItemCustom extends InferCustom<"normalizeOrder"> {}
+export interface SfOrderListItemCustom extends Record<string, any> {}
 
 export interface SfOrderListItem
   extends Pick<
@@ -169,7 +168,7 @@ export interface SfOrderListItem
   $custom?: SfOrderListItemCustom;
 }
 
-export interface SfInvoiceCustom extends InferCustom<"normalizeInvoice"> {}
+export interface SfInvoiceCustom extends Record<string, any> {}
 
 export interface SfInvoice {
   id: SfInvoiceId;
@@ -207,7 +206,7 @@ export interface SfInvoice {
   $custom?: SfInvoiceCustom;
 }
 
-export interface SfShipmentCustom extends InferCustom<"normalizeShipment"> {}
+export interface SfShipmentCustom extends Record<string, any> {}
 
 export interface SfShipment {
   id: SfShipmentId;
@@ -280,7 +279,7 @@ export interface SfShipment {
   $custom?: SfShipmentCustom;
 }
 
-export interface SfCreditMemoCustom extends InferCustom<"normalizeCreditMemo"> {}
+export interface SfCreditMemoCustom extends Record<string, any> {}
 
 export interface SfCreditMemo {
   id: SfCreditMemoId;

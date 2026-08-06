@@ -1,0 +1,253 @@
+- generic [ref=f118e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f118e3] [cursor=pointer]:
+    - generic [ref=f118e9]: Open accessibility menu
+  - generic [ref=f118e15]:
+    - banner [ref=f118e361]:
+      - generic [ref=f118e362]:
+        - button [ref=f118e364] [cursor=pointer]
+        - link [ref=f118e372] [cursor=pointer]:
+          - /url: /
+          - paragraph
+        - generic [ref=f118e374]:
+          - generic [ref=f118e376]:
+            - button "Notifications" [ref=f118e377] [cursor=pointer]
+            - navigation:
+              - generic:
+                - generic [ref=f118e382]:
+                  - generic [ref=f118e383]: Notifications
+                  - button [ref=f118e384] [cursor=pointer]
+                - separator [ref=f118e389]
+                - alert [ref=f118e392]:
+                  - generic [ref=f118e397]: No new notifications
+          - button "Explore The Meeovi Company" [ref=f118e400] [cursor=pointer]
+          - button [ref=f118e408] [cursor=pointer]
+          - generic [ref=f118e414]:
+            - button "Account" [ref=f118e415] [cursor=pointer]
+            - navigation:
+              - generic:
+                - generic [ref=f118e420]:
+                  - generic [ref=f118e421]: Account
+                  - button [ref=f118e422] [cursor=pointer]
+                - generic [ref=f118e428]:
+                  - link "Login" [ref=f118e429] [cursor=pointer]:
+                    - /url: /login
+                  - link "Sign Up" [ref=f118e431] [cursor=pointer]:
+                    - /url: /register
+          - generic [ref=f118e434]:
+            - button "Shopping Cart" [ref=f118e435] [cursor=pointer]
+            - status "Badge" [ref=f118e440]: "0"
+            - navigation:
+              - generic:
+                - generic [ref=f118e441]:
+                  - generic [ref=f118e442]: Shopping Cart
+                  - button [ref=f118e443] [cursor=pointer]
+                - separator [ref=f118e448]
+                - alert [ref=f118e450]:
+                  - generic [ref=f118e455]: Your cart is empty
+                - generic [ref=f118e456]:
+                  - button "Clear shopping cart" [disabled]:
+                    - generic: Clear Cart
+                - generic [ref=f118e457]:
+                  - button "Proceed to checkout" [disabled]:
+                    - generic: Proceed to Checkout
+    - tablist [ref=f118e17]:
+      - generic [ref=f118e19]:
+        - tab [selected] [ref=f118e21] [cursor=pointer]
+        - tab [ref=f118e24] [cursor=pointer]
+        - tab [ref=f118e27] [cursor=pointer]
+        - tab [ref=f118e30] [cursor=pointer]
+        - tab [ref=f118e33] [cursor=pointer]
+        - tab [ref=f118e36] [cursor=pointer]
+        - tab [ref=f118e39] [cursor=pointer]
+        - tab [ref=f118e42] [cursor=pointer]
+        - tab [ref=f118e45] [cursor=pointer]
+        - tab [ref=f118e48] [cursor=pointer]
+        - tab [ref=f118e51] [cursor=pointer]
+        - tab [ref=f118e54] [cursor=pointer]
+        - tab [ref=f118e57] [cursor=pointer]
+    - main [ref=f118e59]:
+      - generic [ref=f118e60]:
+        - navigation [ref=f118e61]:
+          - generic [ref=f118e63]:
+            - link "Sign In" [ref=f118e66] [cursor=pointer]:
+              - /url: /login
+            - list [ref=f118e68]:
+              - generic [ref=f118e69]:
+                - heading "Trending" [level=5] [ref=f118e70]
+                - list [ref=f118e71]:
+                  - link "Exclusives" [ref=f118e72] [cursor=pointer]:
+                    - /url: /departments/exclusives
+                - list [ref=f118e79]:
+                  - link "Deals" [ref=f118e80] [cursor=pointer]:
+                    - /url: /departments/Deals
+                - list [ref=f118e87]:
+                  - link "Showcases" [ref=f118e88] [cursor=pointer]:
+                    - /url: /product/showcases/
+              - separator [ref=f118e95]
+              - button [ref=f118e100] [cursor=pointer]
+              - separator [ref=f118e106]
+              - button [ref=f118e111] [cursor=pointer]
+              - separator [ref=f118e117]
+              - separator [ref=f118e118]
+              - generic [ref=f118e119]:
+                - heading "Browse Meeovi" [level=5] [ref=f118e120]
+                - list [ref=f118e121]
+                - list [ref=f118e122]:
+                  - link "Lists" [ref=f118e123] [cursor=pointer]:
+                    - /url: /lists
+                - list [ref=f118e130]:
+                  - link "Collaborrate" [ref=f118e131] [cursor=pointer]:
+                    - /url: /collaborrate
+                - list [ref=f118e138]:
+                  - link "Shops" [ref=f118e139] [cursor=pointer]:
+                    - /url: /shops
+                - list [ref=f118e146]:
+                  - link "Media Center" [ref=f118e147] [cursor=pointer]:
+                    - /url: /media-center
+                - list [ref=f118e154]:
+                  - link "Showcases" [ref=f118e155] [cursor=pointer]:
+                    - /url: /showcases
+                - list [ref=f118e162]:
+                  - link "Appstore" [ref=f118e163] [cursor=pointer]:
+                    - /url: /departments/appstore
+                - list [ref=f118e170]:
+                  - link "Account" [ref=f118e171] [cursor=pointer]:
+                    - /url: /account
+              - separator [ref=f118e178]
+              - generic [ref=f118e179]:
+                - link "Help Center" [ref=f118e181] [cursor=pointer]:
+                  - /url: /connect/spaces/meeovi-help/
+                - link "Notify Center" [ref=f118e188] [cursor=pointer]:
+                  - /url: /account/user/notifications
+                - button [ref=f118e195] [cursor=pointer]
+        - generic [ref=f118e201]:
+          - tablist [ref=f118e206]:
+            - generic [ref=f118e208]:
+              - tab [selected] [ref=f118e209] [cursor=pointer]
+              - tab [ref=f118e216] [cursor=pointer]:
+                - img "Paris Snack Video" [ref=f118e506]
+          - generic [ref=f118e221]:
+            - status [ref=f118e458]: Media Center - Meeovi
+            - generic [ref=f118e222]:
+              - generic [ref=f118e224]:
+                - generic [ref=f118e225]: Media Center
+                - button "Upload" [active] [ref=f118e227] [cursor=pointer]
+              - generic [ref=f118e460]:
+                - generic [ref=f118e461]:
+                  - generic [ref=f118e462]:
+                    - generic [ref=f118e507]: Files
+                    - generic [ref=f118e464]:
+                      - generic [ref=f118e465] [cursor=pointer]: 
+                      - textbox "Search" [ref=f118e466]
+                  - generic [ref=f118e467]:
+                    - button "" [ref=f118e509] [cursor=pointer]
+                    - generic [ref=f118e472]:
+                      - button "" [ref=f118e473] [cursor=pointer]
+                      - button "" [ref=f118e475]
+                      - button "" [ref=f118e477] [cursor=pointer]
+                - generic [ref=f118e480]:
+                  - button "Choose File"
+                  - generic [ref=f118e481]:
+                    - generic [ref=f118e483]:
+                      - button "Add New" [ref=f118e486] [cursor=pointer]
+                      - list [ref=f118e488]:
+                        - listitem [ref=f118e489]:
+                          - generic [ref=f118e490]: 
+                          - generic [ref=f118e491]: My files
+                    - generic [ref=f118e495]:
+                      - generic [ref=f118e496]: 
+                      - generic [ref=f118e498] [cursor=pointer]: My files
+      - generic [ref=f118e233]:
+        - button "Post to Social Feed" [ref=f118e235] [cursor=pointer]
+        - generic [ref=f118e244]:
+          - generic:
+            - strong:
+              - heading [level=5]
+          - textbox [ref=f118e253]
+        - link "Back to Top" [ref=f118e258] [cursor=pointer]:
+          - /url: "#mainSection"
+        - generic [ref=f118e266]:
+          - generic [ref=f118e267]:
+            - heading [level=2] [ref=f118e268]:
+              - strong [ref=f118e269]: Meeovi
+            - heading [level=3] [ref=f118e271]:
+              - link "About Us" [ref=f118e272] [cursor=pointer]:
+                - /url: /about-us
+            - heading [level=3] [ref=f118e274]:
+              - link "Buyers" [ref=f118e275] [cursor=pointer]:
+                - /url: /buyers
+            - heading [level=3] [ref=f118e277]:
+              - link "Diversity and Inclusion" [ref=f118e278] [cursor=pointer]:
+                - /url: /diversity-and-inclusion
+            - heading [level=3] [ref=f118e280]:
+              - link "Licenses" [ref=f118e281] [cursor=pointer]:
+                - /url: /licenses
+            - heading [level=3] [ref=f118e283]:
+              - link "Careers" [ref=f118e284] [cursor=pointer]:
+                - /url: /careers
+            - heading [level=3] [ref=f118e286]:
+              - link "Sellers" [ref=f118e287] [cursor=pointer]:
+                - /url: /sellers
+            - heading [level=3] [ref=f118e289]:
+              - link "Applications" [ref=f118e290] [cursor=pointer]:
+                - /url: /applications
+          - generic [ref=f118e291]:
+            - heading [level=2] [ref=f118e292]:
+              - strong [ref=f118e293]: Help
+            - heading [level=3] [ref=f118e295]:
+              - link "Accessibility" [ref=f118e296] [cursor=pointer]:
+                - /url: /accessibility
+            - heading [level=3] [ref=f118e298]:
+              - link "Terms and Conditions" [ref=f118e299] [cursor=pointer]:
+                - /url: /terms
+            - heading [level=3] [ref=f118e301]:
+              - link "Privacy Policies" [ref=f118e302] [cursor=pointer]:
+                - /url: /privacy-policies
+            - heading [level=3] [ref=f118e304]:
+              - link "Return Policies" [ref=f118e305] [cursor=pointer]:
+                - /url: /return-policies
+            - heading [level=3] [ref=f118e307]:
+              - link "Payments" [ref=f118e308] [cursor=pointer]:
+                - /url: /payments
+            - heading [level=3] [ref=f118e310]:
+              - link "Allowed Products" [ref=f118e311] [cursor=pointer]:
+                - /url: /allowed-products
+            - heading [level=3] [ref=f118e313]:
+              - link "Imprint" [ref=f118e314] [cursor=pointer]:
+                - /url: /imprint
+          - generic [ref=f118e315]:
+            - heading [level=2] [ref=f118e316]:
+              - strong [ref=f118e317]: Meeovi Outlets
+            - heading [level=3] [ref=f118e319]:
+              - link "Pixanomy" [ref=f118e320] [cursor=pointer]:
+                - /url: /departments/pixanomy
+            - heading [level=3] [ref=f118e322]:
+              - link "Shopncute" [ref=f118e323] [cursor=pointer]:
+                - /url: /departments/shopncute
+            - heading [level=3] [ref=f118e325]:
+              - link "Shopnbold" [ref=f118e326] [cursor=pointer]:
+                - /url: /departments/shopnbold
+            - heading [level=3] [ref=f118e328]:
+              - link "Elite Novels" [ref=f118e329] [cursor=pointer]:
+                - /url: /departments/elite-novels
+            - heading [level=3] [ref=f118e331]:
+              - link "Showyourweird" [ref=f118e332] [cursor=pointer]:
+                - /url: /departments/showyourweird
+        - generic [ref=f118e335]:
+          - link "Customer Service" [ref=f118e337] [cursor=pointer]:
+            - /url: /customer-service
+          - link "Pickup Locations" [ref=f118e340] [cursor=pointer]:
+            - /url: /pickup-locations
+          - link "Meeovi Global" [ref=f118e343] [cursor=pointer]:
+            - /url: /meeovi-global
+          - paragraph [ref=f118e346]: "2026"
+  - generic [ref=f118e347]:
+    - button "Toggle Nuxt DevTools" [ref=f118e348] [cursor=pointer]
+    - generic "Page load time" [ref=f118e501]:
+      - generic [ref=f118e353]: "2.8"
+      - generic [ref=f118e354]: s
+    - button "Toggle Component Inspector" [ref=f118e356] [cursor=pointer]
+  - iframe [ref=f118e504]:
+    - generic [ref=f124e6]:
+      - text: protected by
+      - strong [ref=f124e7]: reCAPTCHA

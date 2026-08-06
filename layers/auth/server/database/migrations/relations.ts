@@ -23,6 +23,7 @@ export const relations = defineRelations(schema, (r) => ({
 		}),
 		webauthnChallengesInAuths: r.many.webauthnChallengesInAuth(),
 		webauthnCredentialsInAuths: r.many.webauthnCredentialsInAuth(),
+		accounts: r.many.accounts(),
 		emojiReactions: r.many.emojiReactions(),
 		profiles: r.many.profiles(),
 	},
@@ -616,6 +617,12 @@ export const relations = defineRelations(schema, (r) => ({
 		products: r.many.products({
 			from: r.platform.id.through(r.platformProducts.platformId),
 			to: r.products.id.through(r.platformProducts.productsId)
+		}),
+	},
+	accounts: {
+		usersInAuth: r.one.usersInAuth({
+			from: r.accounts.userId,
+			to: r.usersInAuth.id
 		}),
 	},
 	address: {
@@ -2520,6 +2527,10 @@ export const relations = defineRelations(schema, (r) => ({
 			from: r.currency.id.through(r.productsCurrency.currencyId),
 			to: r.products.id.through(r.productsCurrency.productsId)
 		}),
+		shops: r.many.shops({
+			from: r.currency.id.through(r.shopsCurrency.currencyId),
+			to: r.shops.id.through(r.shopsCurrency.shopsId)
+		}),
 		transactions: r.many.transactions({
 			from: r.currency.id.through(r.transactionsCurrency.currencyId),
 			to: r.transactions.id.through(r.transactionsCurrency.transactionsId)
@@ -2889,6 +2900,7 @@ export const relations = defineRelations(schema, (r) => ({
 		categories: r.many.categories(),
 		comments: r.many.comments(),
 		countries: r.many.countries(),
+		currencies: r.many.currency(),
 		departments: r.many.departments(),
 		shopsDirectusUsers: r.many.shopsDirectusUsers(),
 		shopsFiles: r.many.shopsFiles(),
@@ -2921,6 +2933,15 @@ export const relations = defineRelations(schema, (r) => ({
 			from: r.region.id.through(r.regionShippingAddress.regionId),
 			to: r.shippingAddress.id.through(r.regionShippingAddress.shippingAddressId)
 		}),
+	},
+	followsTarget: {
+		follow: r.one.follows({
+			from: r.followsTarget.followsId,
+			to: r.follows.id
+		}),
+	},
+	follows: {
+		followsTargets: r.many.followsTarget(),
 	},
 	friendRequests: {
 		addresses: r.many.address(),

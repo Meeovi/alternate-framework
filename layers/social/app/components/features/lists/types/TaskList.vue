@@ -1,6 +1,6 @@
 <template>
     <Tasklist
-        :value="list"
+        :value="list as any"
         :ondata="loadItems"
         :onchange="onChange"
         :readonly="readonly"

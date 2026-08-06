@@ -1,0 +1,158 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - heading "500" [level=1] [ref=f3e3]
+    - heading "undefined" [level=2] [ref=f3e4]
+    - paragraph [ref=f3e5]: Cannot access 'renderer' before initialization
+  - status [ref=f3e6]
+  - iframe [ref=f3e7]:
+    - generic [ref=f4e2]:
+      - banner [ref=f4e3]:
+        - generic [ref=f4e5]:
+          - checkbox [ref=f4e6]
+          - generic "Light mode" [ref=f4e8] [cursor=pointer]
+      - generic [ref=f4e13]:
+        - heading "Error" [level=4] [ref=f4e14]
+        - heading "An error has occurred" [level=1] [ref=f4e15]
+      - heading "Cannot access 'renderer' before initialization Copy error with stack trace to clipboard" [level=2] [ref=f4e19]:
+        - generic [ref=f4e23]: Cannot access 'renderer' before initialization
+        - button "Copy error with stack trace to clipboard" [ref=f4e24] [cursor=pointer]
+      - generic [ref=f4e30]:
+        - heading "Stack Trace" [level=3] [ref=f4e33]
+        - generic [ref=f4e35]:
+          - generic [ref=f4e36]:
+            - generic [ref=f4e38]:
+              - checkbox "View All Frames" [ref=f4e39]
+              - generic [ref=f4e40]: View All Frames
+            - generic [ref=f4e42]:
+              - button "Pretty" [ref=f4e43]
+              - button "Raw" [ref=f4e44]
+          - list [ref=f4e47]:
+            - listitem [ref=f4e48]:
+              - generic [ref=f4e49]:
+                - button [ref=f4e50]:
+                  - link ".nuxt/dev/index.mjs" [ref=f4e51] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/layers/auth/.nuxt/dev/index.mjs:2800
+                  - generic [ref=f4e52]:
+                    - text: at line
+                    - code [ref=f4e53]: 2800:65
+                - button [ref=f4e55]
+              - code [ref=f4e60]:
+                - generic [ref=f4e61]: "const _lazy__wg2nq = () => Promise.resolve().then(function () { return nearby_get$1; }); const _lazy_nEYqIn = () => Promise.resolve().then(function () { return accountLink_post$1; }); const _lazy_FjF9dx = () => Promise.resolve().then(function () { return balance_get$1; }); const _lazy_230YJY = () => Promise.resolve().then(function () { return payouts_get$1; }); const _lazy_LUnDaD = () => Promise.resolve().then(function () { return test$1; }); const _lazy_hBqBsr = () => Promise.resolve().then(function () { return renderer; }); const handlers = [ { route: '', handler: _s1FG5J, lazy: false, middleware: true, method: undefined }, { route: '', handler: _I1t7lj, lazy: false, middleware: true, method: undefined }, { route: '/api/auth/**:all', handler: _lazy_8lFOc2, lazy: true, middleware: false, method: undefined },"
+            - listitem [ref=f4e75]:
+              - generic [ref=f4e77]:
+                - link "async file:///home/meebuzo/github/alternate-framework/node_modules/h3/dist/index.mjs" [ref=f4e78] [cursor=pointer]:
+                  - /url: vscode://file/async file:///home/meebuzo/github/alternate-framework/node_modules/h3/dist/index.mjs:2017
+                - generic [ref=f4e79]:
+                  - text: at line
+                  - code [ref=f4e80]: 2017:19
+            - listitem [ref=f4e81]:
+              - generic [ref=f4e82]:
+                - button [ref=f4e83]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/unctx/dist/index.mjs" [ref=f4e84] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/unctx/dist/index.mjs:72
+                  - generic [ref=f4e85]:
+                    - text: in
+                    - code [ref=f4e86]: async Object.callAsync
+                  - generic [ref=f4e87]:
+                    - text: at line
+                    - code [ref=f4e88]: 72:16
+                - button [ref=f4e90]
+            - listitem [ref=f4e93]:
+              - generic [ref=f4e94]:
+                - button [ref=f4e95]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/h3/dist/index.mjs" [ref=f4e96] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/h3/dist/index.mjs:2316
+                  - generic [ref=f4e97]:
+                    - text: in
+                    - code [ref=f4e98]: async Server.toNodeHandle
+                  - generic [ref=f4e99]:
+                    - text: at line
+                    - code [ref=f4e100]: 2316:7
+                - button [ref=f4e102]
+      - generic [ref=f4e106]:
+        - heading "Error Cause" [level=3] [ref=f4e109]
+        - code [ref=f4e114]:
+          - generic [ref=f4e115]:
+            - text: "ReferenceError {"
+            - button "▼" [ref=f4e116]
+            - text: "}"
+      - generic [ref=f4e119]:
+        - heading "Request" [level=3] [ref=f4e121]
+        - generic [ref=f4e122]:
+          - generic [ref=f4e123]:
+            - heading "url" [level=4] [ref=f4e124]
+            - text: http://localhost:3001/login
+          - generic [ref=f4e125]:
+            - heading "method" [level=4] [ref=f4e126]
+            - text: GET
+          - generic [ref=f4e127]:
+            - heading "headers" [level=4] [ref=f4e128]
+            - table [ref=f4e129]:
+              - rowgroup [ref=f4e130]:
+                - row [ref=f4e131]:
+                  - cell "host" [ref=f4e132]
+                  - cell "localhost:3001" [ref=f4e133]
+                - row [ref=f4e134]:
+                  - cell "connection" [ref=f4e135]
+                  - cell "keep-alive" [ref=f4e136]
+                - row [ref=f4e137]:
+                  - cell "sec-ch-ua" [ref=f4e138]
+                  - cell "\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Google Chrome\";v=\"150\"" [ref=f4e139]
+                - row [ref=f4e140]:
+                  - cell "sec-ch-ua-mobile" [ref=f4e141]
+                  - cell "?0" [ref=f4e142]
+                - row [ref=f4e143]:
+                  - cell "sec-ch-ua-platform" [ref=f4e144]
+                  - cell "\"Linux\"" [ref=f4e145]
+                - row [ref=f4e146]:
+                  - cell "upgrade-insecure-requests" [ref=f4e147]
+                  - cell "1" [ref=f4e148]
+                - row [ref=f4e149]:
+                  - cell "user-agent" [ref=f4e150]
+                  - cell "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" [ref=f4e151]
+                - row [ref=f4e152]:
+                  - cell "accept" [ref=f4e153]
+                  - cell "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7" [ref=f4e154]
+                - row [ref=f4e155]:
+                  - cell "sec-fetch-site" [ref=f4e156]
+                  - cell "none" [ref=f4e157]
+                - row [ref=f4e158]:
+                  - cell "sec-fetch-mode" [ref=f4e159]
+                  - cell "navigate" [ref=f4e160]
+                - row [ref=f4e161]:
+                  - cell "sec-fetch-user" [ref=f4e162]
+                  - cell "?1" [ref=f4e163]
+                - row [ref=f4e164]:
+                  - cell "sec-fetch-dest" [ref=f4e165]
+                  - cell "document" [ref=f4e166]
+                - row [ref=f4e167]:
+                  - cell "accept-encoding" [ref=f4e168]
+                  - cell "gzip, deflate, br, zstd" [ref=f4e169]
+                - row [ref=f4e170]:
+                  - cell "accept-language" [ref=f4e171]
+                  - cell "en-US,en;q=0.9" [ref=f4e172]
+                - row [ref=f4e173]:
+                  - cell "cookie" [ref=f4e174]
+                  - cell [ref=f4e175]:
+                    - code [ref=f4e178]:
+                      - generic [ref=f4e179]:
+                        - text: "Object {"
+                        - button "▼" [ref=f4e180]
+                        - text: "}"
+                - row [ref=f4e182]:
+                  - cell "x-forwarded-for" [ref=f4e183]
+                  - cell "127.0.0.1" [ref=f4e184]
+                - row [ref=f4e185]:
+                  - cell "x-forwarded-port" [ref=f4e186]
+                  - cell "3001" [ref=f4e187]
+                - row [ref=f4e188]:
+                  - cell "x-forwarded-proto" [ref=f4e189]
+                  - cell "http" [ref=f4e190]
+  - iframe [ref=f3e8]:
+    - generic [ref=f5e2]:
+      - heading "500" [level=1] [ref=f5e3]
+      - heading "undefined" [level=2] [ref=f5e4]
+      - paragraph [ref=f5e5]: Cannot access 'renderer' before initialization
+  - button "Toggle detailed error view Hide error page preview" [expanded] [ref=f3e9]:
+    - generic [ref=f3e10]: Toggle detailed error view
+    - button "Hide error page preview" [ref=f3e11] [cursor=pointer]: ×

@@ -18,7 +18,7 @@
                 </v-col>
 
                 <v-col cols="4">
-                    <v-card>
+                    <v-card href="/lists/list/your-games-scores">
                         <v-card-title>Your Scores</v-card-title>
                         <v-card-text>
                             View your scores and scores of those you follow or follow you.

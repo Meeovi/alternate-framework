@@ -1,5 +1,6 @@
 // packages/adapters/adapter-directus/src/index.ts
 import { GraphQLClient } from 'graphql-request'
+import type { Query } from './graphql/schema-types'
 
 type AnyRecord = Record<string, any>
 
@@ -557,3 +558,5 @@ export class DirectusAdapter {
     return data
   }
 }
+
+export type { Query }

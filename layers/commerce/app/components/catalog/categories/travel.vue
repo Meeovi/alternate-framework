@@ -2,6 +2,18 @@
     <div>
         <div id="map" style="height: 400px;"></div>
         <p v-if="locationError">{{ locationError }}</p>
+
+        <v-toolbar>
+            <v-toolbar-title>Search for your next destination</v-toolbar-title>
+        </v-toolbar>
+
+        <template>
+            <SkyscannerWidget widget="FlightSearchWidget" locale="en-US" market="US" currency="USD" />
+
+            <v-card width="100%" class="mt-4">
+                <v-card-text class="center-text">The above widget is provided by Skyscanner and allows you to search for flights and compare prices. Meeovi is not responsible for the data shown above or the website the links direct you to.</v-card-text>
+            </v-card>
+        </template>
     </div>
 </template>
 
@@ -10,6 +22,7 @@
         onMounted,
         ref
     } from 'vue';
+    import SkyscannerWidget from '../../blocks/travelWidget.vue';
 
     const props = defineProps({
         category: {

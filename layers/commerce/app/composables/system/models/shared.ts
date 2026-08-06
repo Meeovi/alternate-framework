@@ -1,4 +1,3 @@
-import type { InferCustom } from "../defs";
 
 export type Maybe<TType> = TType | null;
 export type Nullable<TType> = TType | null | undefined;
@@ -56,7 +55,7 @@ export type SfGender = 'male' | 'female' | 'not_specified';
 export type SfSortDirection = 'ASC' | 'DESC';
 export type SfYesNo = 0 | 1;
 
-export interface SfMoneyCustom extends InferCustom<"normalizeMoney"> {}
+export interface SfMoneyCustom extends Record<string, any> {}
 
 export interface SfMoney {
   currency: string;
@@ -65,7 +64,7 @@ export interface SfMoney {
   $custom?: SfMoneyCustom;
 }
 
-export interface SfDiscountablePriceCustom extends InferCustom<"normalizeDiscountablePrice"> {}
+export interface SfDiscountablePriceCustom extends Record<string, any> {}
 
 export interface SfDiscountablePrice {
   isDiscounted: boolean;
@@ -74,7 +73,7 @@ export interface SfDiscountablePrice {
   $custom?: SfDiscountablePriceCustom;
 }
 
-export interface SfImageCustom extends InferCustom<"normalizeImage"> {}
+export interface SfImageCustom extends Record<string, any> {}
 
 export interface SfImage {
   alt: Maybe<string>;
@@ -83,7 +82,7 @@ export interface SfImage {
   $custom?: SfImageCustom;
 }
 
-export interface SfAttributeCustom extends InferCustom<"normalizeAttribute"> {}
+export interface SfAttributeCustom extends Record<string, any> {}
 
 export interface SfAttribute {
   label: string;
@@ -131,7 +130,7 @@ export interface SfAttributeType {
   sortOrder: number;
 }
 
-export interface SfAddressCustom extends InferCustom<"normalizeAddress"> {}
+export interface SfAddressCustom extends Record<string, any> {}
 
 export interface SfAddress {
   address1: Maybe<string>;

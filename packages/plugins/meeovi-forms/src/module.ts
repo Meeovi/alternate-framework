@@ -57,7 +57,7 @@ export default defineNuxtModule<MeeoviFormsModuleOptions>({
     }
 
     // Register runtime plugin
-    addPlugin(resolver.resolve('./src/runtime/plugin'))
+    addPlugin(resolver.resolve('./runtime/plugin'))
 
     // Register field/layout/control components
     addComponentsDir({

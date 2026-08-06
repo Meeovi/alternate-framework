@@ -23,8 +23,8 @@ export const faIconAliases = {
   file: 'fas fa-file',
 }
 
-export function createMeeoviFormsPlugin(nuxtApp: any, options: MeeoviFormsPluginOptions = {}): MeeoviFormsApi {
-  const renderers = options.rendererRegistry || createDefaultRendererRegistry()
+export async function createMeeoviFormsPlugin(nuxtApp: any, options: MeeoviFormsPluginOptions = {}): Promise<MeeoviFormsApi> {
+  const renderers = options.rendererRegistry || await createDefaultRendererRegistry()
   const api: MeeoviFormsApi = {
     getRenderers: () => renderers,
   }

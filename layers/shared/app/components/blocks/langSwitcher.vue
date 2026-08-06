@@ -1,39 +1,29 @@
 <template>
-    <div>
-        <v-menu>
-            <template v-slot:activator="{ props }">
-                <v-btn color="primary" v-bind="props">
-                    <v-icon left>mdi-language</v-icon>
-                    {{ locale.iso }}
-                </v-btn>
-            </template>
-            <v-list>
-                <v-list-item v-for="(item, index) in availableLocales" :key="index" :value="index"
-                    :to="switchLocalePath(item.code)">
-                    <v-list-item-icon>
-                        <v-icon>mdi-{{ item.code }}</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>{{ item.iso }}</v-list-item-title>
-                </v-list-item>
-            </v-list>
-        </v-menu>
-    </div>
+  <div>
+    <div class="gtranslate_wrapper"></div>
+  </div>
 </template>
 
 <script setup>
-    const {
-        locale,
-        locales
-    } = useI18n()
-    const switchLocalePath = useSwitchLocalePath()
+import { onMounted } from 'vue'
 
-    const items = computed(() => {
-        return locales.value.map(l => ({
-            code: l.code,
-            title: l.iso
-        }))
-    })
-    const availableLocales = computed(() => {
-        return locales.value.filter(i => i.code !== locale.value)
-    })
+useHead({
+  script: [
+    {
+      src: 'https://cdn.gtranslate.net/widgets/latest/float.js',
+      defer: true
+    }
+  ]
+})
+
+onMounted(() => {
+  // Set window settings safely after mounting in the DOM
+  window.gtranslateSettings = {
+    default_language: 'en',
+    native_language_names: true,
+    detect_browser_language: true,
+    wrapper_selector: '.gtranslate_wrapper',
+    switcher_horizontal_position: 'inline'
+  }
+})
 </script>

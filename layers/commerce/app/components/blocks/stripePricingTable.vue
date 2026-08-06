@@ -1,16 +1,23 @@
 <template>
-  <ScriptStripePricingTable
-    pricing-table-id="prctbl_1PD0MMEclFNgdHcR8t0Jop2H"
-    publishable-key="pk_live_51OhXSKEclFNgdHcRNi5xBjBClxsA0alYgt6NzBwUZ880pLG88rYSCYPQqpzM3TedzNYu5g2AynKiPI5QVLYSorLJ002iD4VZIB"
-  />
+  <ClientOnly>
+    <ScriptStripePricingTable
+      :pricing-table-id="pricingTableId"
+      :publishable-key="publishableKey"
+    />
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
-import { useScriptStripe } from '#imports'
+import { usePayment } from '~/composables/payments/usePayment'
 
-const { onLoaded } = useScriptStripe()
+const { loadProvider } = usePayment()
+const { public: publicConfig } = useRuntimeConfig()
 
-onLoaded((api: any) => {
-  console.log('Stripe API loaded:', api)
+const publishableKey = publicConfig.stripePublishableKey as string
+const pricingTableId = publicConfig.stripePricingTableId as string
+
+// Eagerly load the Stripe provider so the pricing table is ready
+onMounted(async () => {
+  await loadProvider()
 })
 </script>

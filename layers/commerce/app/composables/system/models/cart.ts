@@ -1,4 +1,3 @@
-import type { InferCustom } from "../defs";
 import type { SfShippingMethod } from "./checkout";
 import type {
   Maybe,
@@ -12,7 +11,7 @@ import type {
   SfMoney,
 } from "./shared";
 
-export interface SfCartLineItemCustom extends InferCustom<"normalizeCartLineItem"> {}
+export interface SfCartLineItemCustom extends Record<string, any> {}
 
 export interface SfCartLineItem {
   attributes: SfAttribute[];
@@ -66,7 +65,7 @@ export interface SfCartLineItem {
   $custom?: SfCartLineItemCustom;
 }
 
-export interface SfCartCouponCustom extends InferCustom<"normalizeCartCoupon"> {}
+export interface SfCartCouponCustom extends Record<string, any> {}
 
 export interface SfCartCoupon {
   code: string;
@@ -75,7 +74,7 @@ export interface SfCartCoupon {
   $custom?: SfCartCouponCustom;
 }
 
-export interface SfCartAddressCustom extends InferCustom<"normalizeCartAddress"> {}
+export interface SfCartAddressCustom extends Record<string, any> {}
 
 export interface SfCartAddress extends SfAddress {
   id: SfId;
@@ -102,7 +101,7 @@ export interface SfCartTotal {
   quoteCurrencyCode: string;
 }
 
-export interface SfCartCustom extends InferCustom<"normalizeCart"> {}
+export interface SfCartCustom extends Record<string, any> {}
 
 export interface SfCart {
   appliedCoupons: SfCartCoupon[];

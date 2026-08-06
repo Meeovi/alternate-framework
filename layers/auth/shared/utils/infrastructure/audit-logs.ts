@@ -1,4 +1,4 @@
-import { EventHandler, H3Event } from "h3";
+import type { EventHandler, H3Event } from "h3";
 import { authClient } from '../../../lib/auth-client'
 
 export const fetchAuditLogs: EventHandler = async (_event: H3Event) => {
@@ -21,7 +21,7 @@ export const fetchAuditLogs: EventHandler = async (_event: H3Event) => {
     filters.organizationId = (user as any).organizationId
   }
 
-  const logs = await authClient.dash.getAuditLogs(filters)
+  const logs = await (authClient as any).dash.getAuditLogs(filters)
 
   return {
     events: logs.data?.events,

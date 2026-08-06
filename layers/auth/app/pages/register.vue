@@ -39,7 +39,7 @@
 
 				<div class="text-center text-caption">
 					Already have an account?
-					<NuxtLink :to="localePath('/login')" class="text-decoration-none font-weight-bold">
+					<NuxtLink to="/login" class="text-decoration-none font-weight-bold">
 						Sign In
 					</NuxtLink>
 				</div>
@@ -59,15 +59,14 @@
 		useRouter,
 		useRuntimeConfig
 	} from '#imports'
-	import {
-		useAuth
-	} from '../composables/useAuth'
-	import {
-		useAlert
-	} from '../composables/useAlert';
+import {
+	useAuth
+} from '../composables/useAuth'
+import {
+	useToast
+} from '../composables/useSnackbar';
 
 	const auth = useAuth();
-	const localePath = useLocalePath();
 
 	definePageMeta({
 		layout: 'auth',
@@ -77,7 +76,7 @@
 	})
 
 	const router = useRouter();
-	const alert = useAlert();
+	const toast = useToast();
 	const runtimeConfig = useRuntimeConfig();
 
 	const firstName = ref("");
@@ -101,7 +100,7 @@
 	async function signUp() {
 		if (loading.value) return
 		if (password.value !== passwordConfirmation.value) {
-			alert.error('Passwords do not match');
+			toast.add({ title: 'Error', description: 'Passwords do not match', color: 'error' });
 			return;
 		}
 		loading.value = true
@@ -114,9 +113,9 @@
 			image: imageFile.value ? await convertImageToBase64(imageFile.value) : undefined,
 		})
 		if (error) {
-			alert.error(error.message);
+			toast.add({ title: 'Error', description: error.message, color: 'error' });
 		} else {
-			alert.success('You have been signed up!');
+			toast.add({ title: 'Success', description: 'You have been signed up!', color: 'success' });
 			await navigateTo('/login')
 		}
 		loading.value = false

@@ -250,18 +250,50 @@ export interface CommerceClient {
   request<T = any>(document: string, variables?: Record<string, any>): Promise<T>;
 }
 
+function createCommerceProxyClient(): any {
+  // A Proxy that forwards every method call to the server-side commerce
+  // driver via $fetch, preserving the same method-name contract.
+  //
+  // Note: we must return false for __normalized so that
+  // createNormalizedClient() applies its data-normalization wrappers
+  // (product, cart, order, etc.) to the proxy client.
+  return new Proxy({} as Record<string, (...args: any[]) => Promise<any>>, {
+    get(_target, prop: string) {
+      if (prop === '__normalized') return false
+      // Skip symbol properties and then/catch/finally that JS runtime checks
+      if (typeof prop === 'symbol') return undefined
+      return (...args: any[]) => {
+        return $fetch('/api/commerce/driver', {
+          method: 'POST',
+          body: { method: prop, args: args.length > 0 ? args : undefined },
+        }).catch(() => null)
+      }
+    },
+  })
+}
+
 function getRawCommerceClient(provider?: string, config?: any): any {
   try {
     const nuxtApp = useNuxtApp()
     const runtimeSdk = (nuxtApp.$sdk || {}) as any
-    if (runtimeSdk.commerce) {
+    if (runtimeSdk.commerce && typeof runtimeSdk.commerce === 'object' && Object.keys(runtimeSdk.commerce).length > 0) {
       return runtimeSdk.commerce
     }
   } catch {
     // useNuxtApp() can fail outside component context; fall back below
   }
 
-  return (staticSdk as any)?.commerce || null
+  // Server-side static SDK (alternate-core)
+  if ((staticSdk as any)?.commerce) {
+    return (staticSdk as any).commerce
+  }
+
+  // Client-side fallback: proxy to the server API endpoint.
+  // This is used when initGateway() is server-only (after the sdk.ts
+  // plugin fix) and nuxtApp.$sdk.commerce is an empty object on the
+  // client. Each method call is forwarded via $fetch to the server
+  // proxy endpoint which has access to the real commerce driver.
+  return createCommerceProxyClient()
 }
 
 function createNormalizedClient(client: any) {

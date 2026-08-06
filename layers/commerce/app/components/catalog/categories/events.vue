@@ -130,7 +130,7 @@
 
     const {
         data: session
-    } = await authClient.useSession(useFetch);
+    } = await authClient.useSession();
 
     const {
         $directus,

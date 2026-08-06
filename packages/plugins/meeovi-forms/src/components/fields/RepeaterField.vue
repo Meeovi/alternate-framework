@@ -31,7 +31,7 @@ export interface RepeaterFieldProps {
   disabled?: boolean
 }
 
-defineProps<RepeaterFieldProps>()
+const props = defineProps<RepeaterFieldProps>()
 const emit = defineEmits<{
   'update:modelValue': [value: string[]]
 }>()

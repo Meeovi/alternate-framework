@@ -46,9 +46,15 @@
      "alternate-sdk/notifications": [
         "../../packages/modules/alternate-sdk/notifications/index.ts"
      ],
-     "alternate-sdk/localization": [
+      "alternate-sdk/localization": [
         "../../packages/modules/alternate-sdk/localization/index.ts"
-     ]
+      ],
+      "@mframework/meeovi-forms": [
+        "../../packages/plugins/meeovi-forms/src/index.ts"
+      ],
+      "@mframework/meeovi-forms/*": [
+        "../../packages/plugins/meeovi-forms/src/*"
+      ]
     }
  },
  "exclude": [

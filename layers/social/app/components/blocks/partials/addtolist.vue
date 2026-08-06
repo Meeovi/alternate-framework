@@ -168,7 +168,7 @@ const saveToLists = async () => {
                 magento_product_name: props.product.name,
                 magento_product_image: props.product.image?.url || null,
                 date_added: new Date().toISOString()
-            })
+            }))
         })
 
         await Promise.all(promises)

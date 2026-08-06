@@ -49,7 +49,8 @@
                                 <span class="mbr-iconfont mobi-mbri-users mobi-mbri"
                                     style="color: rgb(255, 153, 102); fill: rgb(255, 153, 102);"></span>
                                 <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
-                                    <strong># of Members</strong><br><br>{{ group?.numberOfMembers }}
+                                    <strong># of Members</strong><br><br>
+                                    <NuxtLink :to="`/connect/space/${group?.slug}#SpaceMembers`">{{ group?.members?.length }}</NuxtLink>
                                 </h4>
                             </div>
                         </div>
@@ -61,8 +62,8 @@
                                     style="color: rgb(255, 153, 102); fill: rgb(255, 153, 102);"></span>
                                 <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
                                     <strong>Owner</strong><br><br>
-                                    <NuxtLink :to="`/user/\${group?.owner?.id}`">{{ group?.owner?.first_name }}
-                                        {{ group?.owner?.last_name }}</NuxtLink>
+                                    <a :href="`/u/${group?.owner?.id}`">{{ group?.owner?.first_name }}
+                                        {{ group?.owner?.last_name }}</a>
                                 </h4>
                             </div>
                         </div>

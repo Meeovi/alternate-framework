@@ -1,6 +1,8 @@
 import { useCart } from '../cart/useCart';
+import { usePayment } from '../../payments/usePayment'
 
 const { cart } = useCart();
+const { createCheckoutSession } = usePayment();
 
 // Define what your server endpoint returns
 interface CheckoutResponse {
@@ -10,8 +12,6 @@ interface CheckoutResponse {
   url?: string;
 }
 
-
-
 async function handleCheckout() {
   try {
     const formattedItems = cart.value.map((item) => ({
@@ -20,15 +20,14 @@ async function handleCheckout() {
       quantity: item.quantity,
     }));
 
-    // Pass <CheckoutResponse> type to $fetch
-    const response = await $fetch<CheckoutResponse>('/api/stripe/create-checkout-session', {
-      method: 'POST',
-      body: {
-        items: formattedItems,
+    // Delegate to the payment provider abstraction
+    const response = await createCheckoutSession(
+      formattedItems,
+      {
         mode: 'payment',
         currency: 'gbp',
-      }
-    });
+      },
+    );
 
     // TypeScript now safely recognizes response.url and response.clientSecret!
     if (response.url) {
@@ -41,3 +40,5 @@ async function handleCheckout() {
     console.error('Checkout error:', error);
   }
 }
+
+export default handleCheckout;

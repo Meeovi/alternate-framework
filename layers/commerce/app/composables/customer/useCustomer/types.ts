@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import type { Maybe, SfCustomer } from '../models';
+import type { Maybe, SfCustomer } from '~/composables/system/models';
 
 export interface UseCustomerState {
   data: Maybe<SfCustomer>;

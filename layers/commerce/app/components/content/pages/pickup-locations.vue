@@ -43,14 +43,14 @@
               <div>{{ pickupBlocks?.menus?.[5]?.name }} {{ location?.region }}</div>
               <div>{{ pickupBlocks?.menus?.[6]?.name }} {{ location?.description }}</div>
               <div v-if="location.distance">Distance: {{ formatDistance(location.distance) }}</div>
-            </template>
+            </v-card-text>
           </v-card>
         </template>
         <template v-else>
           <v-card class="mx-auto mb-4" width="100%" elevation="0">
             <v-card-text class="text-center">
               <p class="text-h6" v-dompurify-html="pickupBlocks?.content?.[0]?.content"></p>
-            </template>
+            </v-card-text>
           </v-card>
         </template>
       </v-col>
@@ -79,16 +79,13 @@
   </div>
 </template>
 
-
-
 <script setup>
-
   import {
     ref,
     computed,
     onMounted
   } from '#imports';
-  import latestproducts from '#commerce/app/components/catalog/product/latestproducts.vue';
+  import latestproducts from '../../catalog/product/latestproducts.vue';
 
   // State
   const locations = ref([]);

@@ -45,7 +45,7 @@ const emit = defineEmits<{
   reset: []
 }>()
 
-const { renderers: unprocessedRenderers, cells: unprocessedCells } = createDefaultRendererRegistry()
+const { renderers: unprocessedRenderers, cells: unprocessedCells } = await createDefaultRendererRegistry()
 const renderers = markRaw(unprocessedRenderers)
 const cells = markRaw(unprocessedCells)
 

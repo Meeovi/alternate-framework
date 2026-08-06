@@ -20,7 +20,7 @@
 
         <div class="mt-4 text-center">
           <p>Remember your password?
-            <NuxtLink :to="localePath('/login')">Sign In</NuxtLink>
+            <NuxtLink to="/login">Sign In</NuxtLink>
           </p>
         </div>
       </v-card-text>
@@ -29,11 +29,11 @@
 </template>
 
 <script setup lang="ts">
-import { useHead, useRuntimeConfig} from '#app'
+import { useHead, useRuntimeConfig } from '#app'
 import { useAlert } from '../composables/useAlert'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
-import { forgetPassword } from '../../lib/auth-client'
+import { authClient } from '../../lib/auth-client'
 
 definePageMeta({
   layout: 'auth',
@@ -47,7 +47,6 @@ useHead({
 })
 
 const alert = useAlert()
-const localePath = useLocalePath()
 const runtimeConfig = useRuntimeConfig()
 const appName = String(runtimeConfig.public?.appName || 'App')
 
@@ -72,7 +71,7 @@ const handleForgetPassword = async () => {
 	}
   loading.value = true
   message.value = null
-  await forgetPassword(
+  await (authClient as any).forgetPassword(
 		{
       email: state.email,
 			redirectTo: "/reset-password",

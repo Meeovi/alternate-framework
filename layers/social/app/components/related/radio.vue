@@ -11,13 +11,8 @@
                         {{ radio?.description }}
                     </v-card-text>
 
-                    <v-btn
-                        class="ms-2"
-                        size="small"
-                        text="LISTEN"
-                        variant="outlined"
-                        :href="`/departments/categories/station/${radio?.id}`"
-                    />
+                    <v-btn class="ms-2" size="small" text="LISTEN" variant="outlined"
+                        :href="`/product/${radio?.id}`" />
                 </div>
 
                 <v-avatar class="ma-3" rounded="0" size="125">
@@ -29,14 +24,17 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
-const props = defineProps({
-  radio: {
-    type: Object,
-    required: true,
-  },
-})
+    import {
+        getAssetURL
+    } from '#shared/app/utils/get-asset-url'
+    const props = defineProps({
+        radio: {
+            type: Object,
+            required: true,
+        },
+    })
 
-const { $sdk } = useNuxtApp()
-const { radio } = props
+    const {
+        radio
+    } = props
 </script>

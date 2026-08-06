@@ -1,40 +1,23 @@
-import type {
-  CodegenConfig
-} from '@graphql-codegen/cli'
-
+import type { CodegenConfig } from '@graphql-codegen/cli'
+ 
 const config: CodegenConfig = {
-  schema: [
-    './src/graphql/supergraph.graphql'
-  ],
-  documents: [
-    './playground/components/**/*.{vue,graphql}',
-    './playground/pages/**/*.{vue,graphql}',
-    './playground/layouts/**/*.{vue,graphql}',
-    './playground/composables/**/*.{ts,graphql}',
-    './playground/plugins/**/*.{ts,graphql}',
-  ],
+  schema: 'https://meeovi.com/graphql/',
+  documents: ['src/api/**/*.ts'],
   ignoreNoDocuments: true,
   generates: {
-    './src/graphql/gql/': {
+    './src/graphql/': {
       preset: 'client',
-      plugins: [
-        'typescript', // <-- This plugin forces it to output ALL types, enums, and inputs from the supergraph
-      ],
       config: {
-        skipTypename: false,
-        // Optional: keeps the output cleaner if you don't use scalars
-        avoidOptionals: true,
-        useTypeImports: true
+        documentMode: 'string'
       }
     },
-    './src/graphql/schema-types.ts': {
-      plugins: ['typescript'],
+    './schema.graphql': {
+      plugins: ['schema-ast'],
       config: {
-        // Enforce that your types match exactly what comes from the mesh
-        useTypeImports: true,
-      },
-    },
+        includeDirectives: true
+      }
+    }
   }
 }
-
+ 
 export default config

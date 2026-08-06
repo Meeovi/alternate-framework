@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!--<profilebar />-->
         <section class="firmm4_features1 features1">
             <div class="container-fluid">
                 <div class="row">
@@ -34,26 +33,31 @@
 </template>
 
 <script setup lang="ts">
-
     import {
-        ref,
-        onMounted
-    } from 'vue';
-    import {
-        useCommerceQuery
-    } from '../../composables/globals/useCommerceQuery';
+        authClient
+    } from "#auth/lib/auth-client";    
 
-    const shipments = ref<any[]>([]);
+    const session = authClient.useSession as any;
     const {
-        data,
-        refetch
-    } = useCommerceQuery('getCustomerShipments');
+        $directus,
+        $readItems
+    } = useNuxtApp() as any
 
-    onMounted(() => {
-        if (data.value?.activeCustomer?.shipments?.items) {
-            shipments.value = data.value.activeCustomer.shipments.items;
-        }
-    });
+    const {
+        data: shipments
+    } = await useAsyncData('shipments', async () => {
+        const resp = await $directus.request($readItems('shipments', {
+            fields: ['*', {
+                '*': ['*']
+            }],
+            filter: {
+                user_id: {
+                    _eq: session?.user.id
+                }
+            }
+        }))
+        return resp?.data ?? resp ?? []
+    })
 
     useHead({
         title: 'Shipments',

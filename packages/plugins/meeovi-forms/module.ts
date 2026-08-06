@@ -1,3 +1,2 @@
-export { default } from './src/module.js'
-export * from './src/types.js'
-export * from './src/index.js'
+export { default } from './src/module.ts'
+export * from './src/types.ts'

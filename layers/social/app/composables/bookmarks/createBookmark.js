@@ -26,8 +26,11 @@ export default async function createWebsite(websiteData) {
         slug: websiteData.slug,
         coverFile: null,
         username: websiteData.username
-      })
-      return resp?.data || resp
+      }))
+      if (resp) {
+        return resp.data || resp
+      }
+      return resp
     }
 
     // Fallback to lists provider in-memory implementation

@@ -1,7 +1,6 @@
-import type { InferCustom } from "../defs";
 import type { Maybe, SfId, SfImage } from "./shared";
 
-export interface SfCategoryCustom extends InferCustom<"normalizeCartCoupon"> {}
+export interface SfCategoryCustom extends Record<string, any> {}
 
 export interface SfCategory {
   id: SfId;

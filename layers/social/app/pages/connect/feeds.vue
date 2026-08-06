@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-card variant="text">
             <v-toolbar :style="`background-color: ${feedBar?.color}; color: ${feedBar?.colortext} !important`">
                 <v-toolbar-title>
@@ -29,14 +29,19 @@
 
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="feedBar?.menus?.[0]?.value">
-                <v-row class="media-container-row">
-                    <template v-if="posts?.length">
-                        <v-col class="wrap col-sm-12 col-lg-6 feedPost" v-for="post in posts" :key="post.id">
-                            <postCard :post="post" />
-                        </v-col>
-                    </template>
-                    <div class="center-text" v-else>No Activity yet</div>
-                </v-row>
+                <div ref="postsScrollContainer" class="feed-scroll-container">
+                    <v-row class="media-container-row">
+                        <template v-if="posts?.length">
+                            <v-col class="wrap col-sm-12 col-lg-6 feedPost" v-for="post in posts" :key="post.id">
+                                <postCard :post="post" />
+                            </v-col>
+                        </template>
+                        <div class="center-text" v-else-if="!loadingPosts">No Activity yet</div>
+                    </v-row>
+                    <div v-if="loadingPosts" class="text-center py-4">
+                        <v-progress-circular indeterminate color="primary" size="24"></v-progress-circular>
+                    </div>
+                </div>
             </v-tabs-window-item>
             <v-tabs-window-item :value="feedBar?.menus?.[1]?.value">
                 <v-row class="media-container-row">
@@ -77,12 +82,16 @@
         ref
     } from 'vue'
     import postCard from '../../components/related/post.vue'
+    import { authClient } from "#auth/lib/auth-client";
+    import { useInfiniteScroll } from '@vueuse/core'
+
+    const { data: session } = await authClient.useSession();
 
     const {
-        user
-    } = useAuth()
-
-    const { $sdk, $directus, $readItem, $readItems } = useNuxtApp()
+        $directus,
+        $readItem,
+        $readItems
+    } = useNuxtApp()
     const tab = ref(null);
 
     const {
@@ -107,16 +116,12 @@
         return resp?.data ?? resp ?? null
     })
 
-    const {
-        data: posts
-    } = await useAsyncData('posts', async () => {
-        const resp = await $directus.request($readItems('posts', {
-            fields: ['*', {
-                '*': ['*']
-            }]
-        }))
-        return resp?.data ?? resp ?? []
-    })
+    const posts = ref([])
+    const postsPage = ref(1)
+    const postsLimit = ref(10)
+    const loadingPosts = ref(false)
+    const hasMorePosts = ref(true)
+    const postsScrollContainer = ref(null)
 
     const {
         data: circles
@@ -125,11 +130,49 @@
             fields: ['*', 'posts.posts_id.*', 'products.products_id.*', 'users.*'],
             filter: {
                 creator: {
-                    _eq: user?.id
+                    _eq: session.user?.id
                 }
             }
         }))
         return resp?.data ?? resp ?? []
+    })
+
+    const loadPosts = async (page) => {
+        if (loadingPosts.value || !hasMorePosts.value) return
+
+        loadingPosts.value = true
+        try {
+            const resp = await $directus.request($readItems('posts', {
+                fields: ['*', {
+                    '*': ['*']
+                }],
+                filter: {
+                    author: {
+                        _eq: session.user?.id
+                    }
+                },
+                limit: postsLimit.value,
+                page: page
+            }))
+
+            const newPosts = resp?.data ?? resp ?? []
+            if (newPosts.length === 0) {
+                hasMorePosts.value = false
+            } else {
+                posts.value.push(...newPosts)
+                postsPage.value = page + 1
+            }
+        } finally {
+            loadingPosts.value = false
+        }
+    }
+
+    const loadMorePosts = () => {
+        loadPosts(postsPage.value)
+    }
+
+    useInfiniteScroll(postsScrollContainer, loadMorePosts, {
+        distance: 200,
     })
 
     useHead({
@@ -140,3 +183,10 @@
         //middleware: ['authenticated']
     })
 </script>
+
+<style scoped>
+.feed-scroll-container {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+</style>

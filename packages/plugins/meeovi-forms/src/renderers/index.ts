@@ -11,6 +11,6 @@ export interface UiFormsRendererRegistry {
 
 export * from './vuetify.js'
 
-export function createDefaultRendererRegistry(): UiFormsRendererRegistry {
+export async function createDefaultRendererRegistry(): Promise<UiFormsRendererRegistry> {
   return createDefaultJsonFormsRegistry()
 }

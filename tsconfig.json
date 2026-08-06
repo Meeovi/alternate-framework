@@ -32,6 +32,10 @@
         "./layers/shared/app/*",
         "./layers/shared/*",
         "./apps/Meeovi/*"
+      ],
+      "#shared/*": [
+        "./layers/shared/app/*",
+        "./layers/shared/*"
       ]
     },
     "typeRoots": ["./types", "./node_modules/@types"]
@@ -44,7 +48,7 @@
     "layers/auth/server/api/org-members.get.ts",
     "layers/auth/server/utils/commerce-admin.ts",
     "layers/auth/server/utils/admin-access.ts"
-  ],
+, "layers/search/server/routes"  ],
   "exclude": [
     "node_modules",
     "dist",

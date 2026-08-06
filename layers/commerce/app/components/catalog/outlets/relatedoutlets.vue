@@ -27,20 +27,18 @@
     import {
         ref
     } from '#imports'
-    import store from '~/components/catalog/product/stores.vue'
+    import store from './outlet.vue'
 
     const model = ref(null)
     const {
-        read,
+        $directus,
+        $readItems,
     } = useNuxtApp()
-
-    const { fetchSession } = useAuth()
-    await fetchSession()
 
     const {
         data: shops
     } = await useAsyncData('shops', () => {
-        return gateway.content(read('shops', {
+        return $directus.request($readItems('shops', {
             fields: ['*', {
                 '*': ['*']
             }]

@@ -11,13 +11,12 @@ import type { Subscription } from '@polar-sh/sdk/models/components/subscription.
 import { checkout, polar, portal, usage, webhooks } from '@polar-sh/better-auth'
 import { Polar } from '@polar-sh/sdk'
 import type { User } from 'alternate-sdk/contracts'
-import { createPrismaClient } from '@mframework/adapter-prisma'
+import { sql } from 'drizzle-orm'
+import { db } from '#auth/server/utils/drizzle'
 import { useRuntimeConfig } from '#imports'
 
-const getRuntimeConfig = () => useRuntimeConfig()
-
 const createPolarClient = () => {
-  const runtimeConfig = getRuntimeConfig()
+  const runtimeConfig = useRuntimeConfig()
 
   return new Polar({
     accessToken: runtimeConfig.polarAccessToken as string,
@@ -74,11 +73,11 @@ const addPaymentLog = async (
     const customer = data as Customer
 
     if (hookType == 'customer.created' && customer.externalId) {
-      const prisma = createPrismaClient()
-      await prisma.user.updateMany({
-        where: { id: customer.externalId as any },
-        data: { polarCustomerId: customer.id } as any,
-      })
+      await db.execute(sql`
+        UPDATE auth.users
+        SET polar_customer_id = ${customer.id}
+        WHERE id = ${customer.externalId}
+      `)
     }
 
     console.info('[polar webhook]', `polar:${hookType}`, {
@@ -95,7 +94,7 @@ const addPaymentLog = async (
 }
 
 export const setupPolar = () => {
-  const runtimeConfig = getRuntimeConfig()
+  const runtimeConfig = useRuntimeConfig()
 
   return polar({
     client: createPolarClient(),

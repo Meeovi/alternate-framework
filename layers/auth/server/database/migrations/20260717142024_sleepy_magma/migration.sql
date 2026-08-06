@@ -7694,3 +7694,11 @@ CREATE INDEX "organization_members_user_id_idx" ON "organization_members" USING 
 CREATE INDEX "organization_members_organization_id_idx" ON "organization_members" USING btree ("organization_id");
 --> statement-breakpoint
 ALTER TABLE "organization_members" ENABLE ROW LEVEL SECURITY;
+
+-- Add slug + metadata columns required by the better-auth organization plugin
+-- (the organizations table is otherwise managed by Directus).
+ALTER TABLE "organizations" ADD COLUMN "slug" varchar(255);
+--> statement-breakpoint
+ALTER TABLE "organizations" ADD COLUMN "metadata" jsonb;
+--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "organizations_slug_unique" ON "organizations" ("slug");

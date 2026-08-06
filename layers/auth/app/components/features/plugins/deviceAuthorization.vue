@@ -40,7 +40,8 @@ import { authClient } from "../../../../lib/auth-client";
 const route = useRoute();
 const router = useRouter();
 
-const { data: session } = authClient.useSession() as any;
+const { data: sessionData } = await useAuth().useSession(useFetch)
+const session = (sessionData as any).value
 
 const userCode = ref(route.query.user_code?.toString() || "");
 const error = ref<string | null>(null);

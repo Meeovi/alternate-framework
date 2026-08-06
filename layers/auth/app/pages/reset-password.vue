@@ -18,7 +18,7 @@
       </v-alert>
 
       <div class="mt-4 text-center">
-        <NuxtLink :to="localePath('/login')">Back to Login</NuxtLink>
+        <NuxtLink to="/login">Back to Login</NuxtLink>
       </div>
     </v-card>
   </div>
@@ -28,9 +28,8 @@
 import { useHead, useRuntimeConfig } from '#app'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useAlert } from '../composables/useAlert'
-import { resetPassword } from '../../lib/auth-client'
+import { authClient } from '../../lib/auth-client'
 
 definePageMeta({
   layout: 'auth',
@@ -39,13 +38,11 @@ definePageMeta({
   }
 })
 
-const { t } = useI18n()
 useHead({
-  title: t('resetPassword.title')
+  title: 'Reset Password'
 })
 
 const alert = useAlert()
-const localePath = useLocalePath()
 const runtimeConfig = useRuntimeConfig()
 const appName = String(runtimeConfig.public?.appName || 'App')
 
@@ -55,9 +52,9 @@ const state = reactive({
 })
 
 const schema = z.object({
-  password: z.string().min(8, t('resetPassword.errors.minLength', { min: 8 })),
-  confirmPassword: z.string().min(8, t('resetPassword.errors.minLength', { min: 8 })).refine(val => val === state.password, {
-    message: t('resetPassword.errors.passwordMismatch')
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string().min(8, 'Password must be at least 8 characters').refine(val => val === state.password, {
+    message: 'Passwords do not match'
   })
 })
 
@@ -75,13 +72,13 @@ const handleResetPassword = async () => {
   loading.value = true
   message.value = null
 
-  await resetPassword({
+  await (authClient as any).resetPassword({
     newPassword: state.password,
 		fetchOptions: {
       onSuccess() {
         messageType.value = 'success'
         message.value = 'Your password has been reset. Redirecting to login.'
-        navigateTo(localePath('/login'))
+        navigateTo('/login')
 			},
       onError(context: any) {
         messageType.value = 'error'

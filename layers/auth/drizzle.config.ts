@@ -7,5 +7,7 @@ export default defineConfig({
   out: './server/database/migrations',
   dbCredentials: {
     url: process.env.NUXT_DATABASE_URL!
-  }
+  },
+  tablesFilter: ["^users$|^sessions$|^accounts$"],
+  schemaFilters: ["^public$"]
 })

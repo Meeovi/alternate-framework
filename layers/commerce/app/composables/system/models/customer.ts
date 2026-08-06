@@ -1,7 +1,6 @@
-import type { InferCustom } from "../defs";
 import type { SfAddress, SfCustomerGroup, SfGender, SfId } from "./shared";
 
-export interface SfCustomerCustom extends InferCustom<"normalizeCustomer"> {}
+export interface SfCustomerCustom extends Record<string, any> {}
 
 export interface SfCustomer {
   id: SfId;

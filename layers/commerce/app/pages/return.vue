@@ -16,6 +16,6 @@
 const route = useRoute()
 const sessionId = route.query.session_id
 
-const { data: session } = await $fetch(`/api/stripe/checkout-session/${sessionId}`)
+const { data: session } = await $fetch(`/api/payment/stripe/checkout-session/${sessionId}`)
 const status = session?.status
 </script>

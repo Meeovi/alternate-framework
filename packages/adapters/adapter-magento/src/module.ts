@@ -13,7 +13,7 @@ export interface ModuleOptions {
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: '@mframework/adapter-magento',
-    configKey: 'magentoAdapter'
+    configKey: 'magento'
   },
   defaults: {
     endpoint: '',
@@ -24,12 +24,12 @@ export default defineNuxtModule<ModuleOptions>({
     const resolver = createResolver(import.meta.url)
 
     // 1. Push module configurations into public runtime config so the runtime plugin can read them
-    nuxt.options.runtimeConfig.public.magentoAdapter = {
-      ...nuxt.options.runtimeConfig.public.magentoAdapter,
+    nuxt.options.runtimeConfig.public.magento = {
+      ...nuxt.options.runtimeConfig.public.magento,
       ...options
     }
 
-    // 2. Register the local runtime plugin that exposes the $magentoSdk global context
+    // 2. Register the local runtime plugin that exposes the $magentoAdapter global context
     addPlugin(resolver.resolve('./runtime/plugin'))
   }
 })

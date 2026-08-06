@@ -1,5 +1,5 @@
 <template>
-    <v-card height="200">
+    <v-card height="200" class="contentPage">
         <v-toolbar extended
             :style="`background-color: ${settingsBar?.color}; color: ${settingsBar?.colortext} !important`">
             <v-toolbar-title>{{ settingsBar?.name }}</v-toolbar-title>
@@ -15,34 +15,31 @@
         </v-toolbar>
 
         <v-tabs-window v-model="tab">
-            <v-tabs-window-item value="one">
+            <v-tabs-window-item :value="settingsBar?.menus?.[0]?.value">
                 <Home />
             </v-tabs-window-item>
-            <v-tabs-window-item value="two">
+            <v-tabs-window-item :value="settingsBar?.menus?.[1]?.value">
                 <Social />
             </v-tabs-window-item>
-            <v-tabs-window-item value="three">
+            <v-tabs-window-item :value="settingsBar?.menus?.[2]?.value">
                 <Personalization />
             </v-tabs-window-item>
-            <v-tabs-window-item value="four">
+            <v-tabs-window-item :value="settingsBar?.menus?.[3]?.value">
                 <Devices />
             </v-tabs-window-item>
-            <v-tabs-window-item value="five">
+            <v-tabs-window-item :value="settingsBar?.menus?.[4]?.value">
                 <Gaming />
             </v-tabs-window-item>
-            <v-tabs-window-item value="six">
+            <v-tabs-window-item :value="settingsBar?.menus?.[5]?.value">
                 <Languages />
             </v-tabs-window-item>
-            <v-tabs-window-item value="seven">
+            <v-tabs-window-item :value="settingsBar?.menus?.[6]?.value">
                 <Privacy />
             </v-tabs-window-item>
-            <v-tabs-window-item value="eight">
-                <Subscriptions />
-            </v-tabs-window-item>
-            <v-tabs-window-item value="nine">
+            <v-tabs-window-item :value="settingsBar?.menus?.[7]?.value">
                 <Accessibility />
             </v-tabs-window-item>
-            <v-tabs-window-item value="ten">
+            <v-tabs-window-item :value="settingsBar?.menus?.[8]?.value">
                 <Shopping />
             </v-tabs-window-item>
         </v-tabs-window>
@@ -63,7 +60,7 @@
     import Privacy from '../../components/features/settings/privacy.vue'
     import Subscriptions from '../../components/features/settings/subscriptions.vue'
     import Accessibility from '../../components/features/settings/accessibility.vue'
-    import Shopping from '../../components/features/settings/devices.vue'
+    import Shopping from '../../components/features/settings/shopping.vue'
 
     const {
         $directus,

@@ -1,0 +1,27 @@
+{
+  "name": "search",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "dev": "nuxi dev .playground",
+    "dev:prepare": "nuxt prepare .playground",
+    "build": "nuxt build .playground",
+    "generate": "nuxt generate .playground",
+    "preview": "nuxt preview .playground",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.16.0",
+    "@types/node": "^24.13.3",
+    "eslint": "^10.8.0",
+    "nuxt": "^4.5.1",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.40"
+  },
+  "dependencies": {
+    "@opensearch-project/opensearch": "^3.6.0",
+    "instantsearch.css": "^8.18.0",
+    "vue-instantsearch": "^4.28.1"
+  }
+}

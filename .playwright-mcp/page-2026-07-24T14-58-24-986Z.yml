@@ -1,0 +1,235 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e4]:
+    - heading "500" [level=1] [ref=f3e5]
+    - heading "Vite Error" [level=2] [ref=f3e6]
+    - paragraph [ref=f3e7]: /pages/forgot-password.vue — Missing "#i18n" specifier in "nuxt" package
+  - status [ref=f3e8]
+  - iframe [ref=f3e9]:
+    - generic [ref=f4e2]:
+      - banner [ref=f4e3]:
+        - generic [ref=f4e5]:
+          - checkbox [ref=f4e6]
+          - generic "Light mode" [ref=f4e8] [cursor=pointer]
+      - generic [ref=f4e13]:
+        - heading "Error" [level=4] [ref=f4e14]
+        - heading "An error has occurred" [level=1] [ref=f4e15]
+      - heading "/pages/forgot-password.vue — Missing \"#i18n\" specifier in \"nuxt\" package Copy error with stack trace to clipboard" [level=2] [ref=f4e19]:
+        - generic [ref=f4e23]: /pages/forgot-password.vue — Missing "#i18n" specifier in "nuxt" package
+        - button "Copy error with stack trace to clipboard" [ref=f4e24] [cursor=pointer]
+      - generic [ref=f4e30]:
+        - heading "Stack Trace" [level=3] [ref=f4e33]
+        - generic [ref=f4e35]:
+          - generic [ref=f4e36]:
+            - generic [ref=f4e38]:
+              - checkbox "View All Frames" [ref=f4e39]
+              - generic [ref=f4e40]: View All Frames
+            - generic [ref=f4e42]:
+              - button "Pretty" [ref=f4e43]
+              - button "Raw" [ref=f4e44]
+          - list [ref=f4e47]:
+            - listitem [ref=f4e48]:
+              - generic [ref=f4e49]:
+                - button [ref=f4e50]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e51] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:6667
+                  - generic [ref=f4e52]:
+                    - text: in
+                    - code [ref=f4e53]: e
+                  - generic [ref=f4e54]:
+                    - text: at line
+                    - code [ref=f4e55]: 6667:8
+                - button [ref=f4e57]
+              - code [ref=f4e62]:
+                - generic [ref=f4e63]: "}; //#endregion //#region ../../node_modules/.pnpm/resolve.exports@2.0.3/node_modules/resolve.exports/dist/index.mjs function e(e$1, n$2, r$1) { throw new Error(r$1 ? `No known conditions for \"${n$2}\" specifier in \"${e$1}\" package` : `Missing \"${n$2}\" specifier in \"${e$1}\" package`); } function n(n$2, i$1, o$1, f$1) { let s, u, l = r(n$2, o$1), c = function(e$1) { let n$3 = new Set([\"default\", ...e$1.conditions || []]); return e$1.unsafe || n$3.add(e$1.require ? \"require\" : \"import\"), e$1.unsafe || n$3.add(e$1.browser ? \"browser\" : \"node\"), n$3;"
+            - listitem [ref=f4e77]:
+              - generic [ref=f4e78]:
+                - button [ref=f4e79]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e80] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:6679
+                  - generic [ref=f4e81]:
+                    - text: in
+                    - code [ref=f4e82]: "n"
+                  - generic [ref=f4e83]:
+                    - text: at line
+                    - code [ref=f4e84]: 6679:14
+                - button [ref=f4e86]
+            - listitem [ref=f4e89]:
+              - generic [ref=f4e90]:
+                - button [ref=f4e91]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e92] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:6711
+                  - generic [ref=f4e93]:
+                    - text: in
+                    - code [ref=f4e94]: f
+                  - generic [ref=f4e95]:
+                    - text: at line
+                    - code [ref=f4e96]: 6711:26
+                - button [ref=f4e98]
+            - listitem [ref=f4e101]:
+              - generic [ref=f4e102]:
+                - button [ref=f4e103]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e104] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:32907
+                  - generic [ref=f4e105]:
+                    - text: in
+                    - code [ref=f4e106]: resolveExportsOrImports
+                  - generic [ref=f4e107]:
+                    - text: at line
+                    - code [ref=f4e108]: 32907:45
+                - button [ref=f4e110]
+            - listitem [ref=f4e113]:
+              - generic [ref=f4e114]:
+                - button [ref=f4e115]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e116] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:32697
+                  - generic [ref=f4e117]:
+                    - text: in
+                    - code [ref=f4e118]: resolveSubpathImports
+                  - generic [ref=f4e119]:
+                    - text: at line
+                    - code [ref=f4e120]: 32697:20
+                - button [ref=f4e122]
+            - listitem [ref=f4e125]:
+              - generic [ref=f4e126]:
+                - button [ref=f4e127]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e128] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:32568
+                  - generic [ref=f4e129]:
+                    - text: in
+                    - code [ref=f4e130]: ResolveIdContext.handler
+                  - generic [ref=f4e131]:
+                    - text: at line
+                    - code [ref=f4e132]: 32568:29
+                - button [ref=f4e134]
+            - listitem [ref=f4e137]:
+              - generic [ref=f4e138]:
+                - button [ref=f4e139]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.Fv_Ybe1U.mjs" [ref=f4e140] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.Fv_Ybe1U.mjs:458
+                  - generic [ref=f4e141]:
+                    - text: at line
+                    - code [ref=f4e142]: 458:26
+                - button [ref=f4e144]
+            - listitem [ref=f4e147]:
+              - generic [ref=f4e148]:
+                - button [ref=f4e149]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.Fv_Ybe1U.mjs" [ref=f4e150] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/vite-plugin-inspect/dist/shared/vite-plugin-inspect.Fv_Ybe1U.mjs:376
+                  - generic [ref=f4e151]:
+                    - text: in
+                    - code [ref=f4e152]: hook.handler
+                  - generic [ref=f4e153]:
+                    - text: at line
+                    - code [ref=f4e154]: 376:14
+                - button [ref=f4e156]
+            - listitem [ref=f4e159]:
+              - generic [ref=f4e160]:
+                - button [ref=f4e161]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e162] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:28797
+                  - generic [ref=f4e163]:
+                    - text: in
+                    - code [ref=f4e164]: EnvironmentPluginContainer.resolveId
+                  - generic [ref=f4e165]:
+                    - text: at line
+                    - code [ref=f4e166]: 28797:56
+                - button [ref=f4e168]
+            - listitem [ref=f4e171]:
+              - generic [ref=f4e172]:
+                - button [ref=f4e173]:
+                  - link "/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js" [ref=f4e174] [cursor=pointer]:
+                    - /url: vscode://file//home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/node_modules/vite/dist/node/chunks/config.js:29009
+                  - generic [ref=f4e175]:
+                    - text: in
+                    - code [ref=f4e176]: async ResolveIdContext.resolve
+                  - generic [ref=f4e177]:
+                    - text: at line
+                    - code [ref=f4e178]: 29009:13
+                - button [ref=f4e180]
+      - generic [ref=f4e184]:
+        - heading "Error Cause" [level=3] [ref=f4e187]
+        - code [ref=f4e192]:
+          - generic [ref=f4e193]:
+            - text: "Error {"
+            - button "▼" [ref=f4e194]
+            - text: "}"
+      - generic [ref=f4e197]:
+        - heading "Request" [level=3] [ref=f4e199]
+        - generic [ref=f4e200]:
+          - generic [ref=f4e201]:
+            - heading "url" [level=4] [ref=f4e202]
+            - text: http://localhost:3026/forgot-password
+          - generic [ref=f4e203]:
+            - heading "method" [level=4] [ref=f4e204]
+            - text: GET
+          - generic [ref=f4e205]:
+            - heading "headers" [level=4] [ref=f4e206]
+            - table [ref=f4e207]:
+              - rowgroup [ref=f4e208]:
+                - row [ref=f4e209]:
+                  - cell "host" [ref=f4e210]
+                  - cell "localhost:3026" [ref=f4e211]
+                - row [ref=f4e212]:
+                  - cell "connection" [ref=f4e213]
+                  - cell "keep-alive" [ref=f4e214]
+                - row [ref=f4e215]:
+                  - cell "sec-ch-ua" [ref=f4e216]
+                  - cell "\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Google Chrome\";v=\"150\"" [ref=f4e217]
+                - row [ref=f4e218]:
+                  - cell "sec-ch-ua-mobile" [ref=f4e219]
+                  - cell "?0" [ref=f4e220]
+                - row [ref=f4e221]:
+                  - cell "sec-ch-ua-platform" [ref=f4e222]
+                  - cell "\"Linux\"" [ref=f4e223]
+                - row [ref=f4e224]:
+                  - cell "upgrade-insecure-requests" [ref=f4e225]
+                  - cell "1" [ref=f4e226]
+                - row [ref=f4e227]:
+                  - cell "user-agent" [ref=f4e228]
+                  - cell "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" [ref=f4e229]
+                - row [ref=f4e230]:
+                  - cell "accept" [ref=f4e231]
+                  - cell "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7" [ref=f4e232]
+                - row [ref=f4e233]:
+                  - cell "sec-fetch-site" [ref=f4e234]
+                  - cell "none" [ref=f4e235]
+                - row [ref=f4e236]:
+                  - cell "sec-fetch-mode" [ref=f4e237]
+                  - cell "navigate" [ref=f4e238]
+                - row [ref=f4e239]:
+                  - cell "sec-fetch-user" [ref=f4e240]
+                  - cell "?1" [ref=f4e241]
+                - row [ref=f4e242]:
+                  - cell "sec-fetch-dest" [ref=f4e243]
+                  - cell "document" [ref=f4e244]
+                - row [ref=f4e245]:
+                  - cell "accept-encoding" [ref=f4e246]
+                  - cell "gzip, deflate, br, zstd" [ref=f4e247]
+                - row [ref=f4e248]:
+                  - cell "accept-language" [ref=f4e249]
+                  - cell "en-US,en;q=0.9" [ref=f4e250]
+                - row [ref=f4e251]:
+                  - cell "cookie" [ref=f4e252]
+                  - cell [ref=f4e253]:
+                    - code [ref=f4e256]:
+                      - generic [ref=f4e257]:
+                        - text: "Object {"
+                        - button "▼" [ref=f4e258]
+                        - text: "}"
+                - row [ref=f4e260]:
+                  - cell "x-forwarded-for" [ref=f4e261]
+                  - cell "127.0.0.1" [ref=f4e262]
+                - row [ref=f4e263]:
+                  - cell "x-forwarded-port" [ref=f4e264]
+                  - cell "3026" [ref=f4e265]
+                - row [ref=f4e266]:
+                  - cell "x-forwarded-proto" [ref=f4e267]
+                  - cell "http" [ref=f4e268]
+  - iframe [ref=f3e10]:
+    - generic [ref=f5e4]:
+      - heading "500" [level=1] [ref=f5e5]
+      - heading "Vite Error" [level=2] [ref=f5e6]
+      - paragraph [ref=f5e7]: /pages/forgot-password.vue — Missing "#i18n" specifier in "nuxt" package
+  - button "Toggle detailed error view Hide error page preview" [expanded] [ref=f3e11]:
+    - generic [ref=f3e12]: Toggle detailed error view
+    - button "Hide error page preview" [ref=f3e13] [cursor=pointer]: ×

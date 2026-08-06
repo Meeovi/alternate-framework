@@ -2,8 +2,7 @@
   <div>
     <v-dialog v-model="dialogOpen" justify="center">
       <template v-slot:activator="{ props }">
-        <v-btn size="m" variant="tertiary" v-bind="props">
-          <SfIconFavorite size="m" />
+        <v-btn prepend-icon="fas fa-list" variant="outlined" v-bind="props">
           Add to list
         </v-btn>
       </template>
@@ -65,6 +64,7 @@ const { data: lists } = await useAsyncData('lists', async () => {
 })
 
 const loading = ref(false)
+const dialogOpen = ref(null)
 
 const saveProductToList = async (listId) => {
   loading.value = true

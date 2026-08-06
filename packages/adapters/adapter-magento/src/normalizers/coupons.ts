@@ -1,5 +1,5 @@
 // packages/adapters/adapter-magento/src/normalizers/coupons.ts
-import { createNormalizer } from './automapper'
+import { createNormalizer, type Normalizer } from './automapper'
 import type { Mage_AppliedCoupon } from '../graphql/schema-types'
 
 // Directus has no dedicated `coupons` collection in this schema, so we map to a
@@ -9,7 +9,7 @@ export interface DirectusCoupon {
   status?: string
 }
 
-export const normalizeMagentoCoupon = createNormalizer<Mage_AppliedCoupon, DirectusCoupon>({
+export const normalizeMagentoCoupon: Normalizer<Mage_AppliedCoupon, DirectusCoupon> = createNormalizer<Mage_AppliedCoupon, DirectusCoupon>({
   code: (src) => src?.code ?? '',
   status: () => 'applied'
 })

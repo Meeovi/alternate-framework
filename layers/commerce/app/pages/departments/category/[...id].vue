@@ -69,13 +69,13 @@
   import ProductCard from '../../../components/catalog/product/productCard.vue'
   import {
     useAppGateway
-  } from '../../../composables/useAppGateway'
+  } from '#shared/app/composables/useAppGateway'
   import {
     useRoute,
     useNuxtApp,
     useHead
   } from '#app'
-  //import useDirectusRequest from '../../../composables/content/useDirectusRequest'
+  import Restaurants from '../../../components/catalog/categories/restaurants.vue'
 
   const route = useRoute()
   const gateway = useAppGateway()

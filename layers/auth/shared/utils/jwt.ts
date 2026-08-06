@@ -1,6 +1,6 @@
 import {
     betterAuth,
-    JWTPayload
+    type JWTPayload
 } from "better-auth"
 import {
     jwt

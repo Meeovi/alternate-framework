@@ -50,40 +50,7 @@
                 <v-card>
                     <template>Modify Rewards</template>
                     <template>
-                        <v-form ref="form" v-model="valid" @submit.prevent="handleModify">
-                            <v-row>
-                                <v-col cols="12" md="6">
-                                    <v-select v-model="formData.cartId" :items="activeRewards" item-text="cartId"
-                                        item-value="cartId" label="Select Cart" required
-                                        :rules="[v => !!v || 'Cart is required']"></v-select>
-                                </v-col>
-
-                                <v-col cols="12" md="6">
-                                    <v-text-field v-model="formData.points" label="New Points Amount" type="number"
-                                        required :rules="[
-                        v => !!v || 'Points are required',
-                        v => v >= 0 || 'Points must be non-negative'
-                      ]"></v-text-field>
-                                </v-col>
-
-                                <v-col cols="12">
-                                    <v-textarea v-model="formData.reason" label="Modification Reason" rows="3" required
-                                        :rules="[v => !!v || 'Reason is required']"></v-textarea>
-                                </v-col>
-                            </v-row>
-
-                            <!-- Action Buttons -->
-                            <v-row>
-                                <v-col cols="12" class="text-right">
-                                    <v-btn color="error" class="mr-4" @click="resetForm">
-                                        Reset
-                                    </v-btn>
-                                    <v-btn color="primary" type="submit" :loading="loading" :disabled="!valid">
-                                        Update Rewards
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-form>
+                        <DynamicForm collection="incentives" />
                     </template>
                 </v-card>
             </v-col>
@@ -129,6 +96,7 @@
         ref,
         onMounted
     } from 'vue';
+    import { DynamicForm } from '@mframework/meeovi-forms'
     import {
         getRewardBalance,
         useRewardPoints,

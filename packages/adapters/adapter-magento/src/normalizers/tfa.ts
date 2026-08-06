@@ -1,10 +1,13 @@
 // packages/adapters/adapter-magento/src/normalizers/tfa.ts
-import { createNormalizer } from './automapper'
-import type { Query as DirectusQuery } from 'adapter-directus'
+import { createNormalizer, type Normalizer } from './automapper'
 
-// `Directus_Directus_Users` is not a top-level Query field, but it is referenced
-// by collections such as team, so we derive the element type from there.
-type DirectusTfa = NonNullable<NonNullable<DirectusQuery['Directus_team']>[0]['user_created']>
+// `Directus_Directus_Users` is referenced by collections such as team,
+// so we derive the element type from the team relation.
+type DirectusTfa = {
+  id: string
+  external_identifier?: string
+  status?: string
+}
 
 // Magento two-factor-authentication records are not fully declared in codegen,
 // so we define an explicit fallback raw shape here.
@@ -14,7 +17,7 @@ export interface RawMagentoTfa {
   enabled?: boolean
 }
 
-export const normalizeMagentoTfa = createNormalizer<RawMagentoTfa, DirectusTfa>({
+export const normalizeMagentoTfa: Normalizer<RawMagentoTfa, DirectusTfa> = createNormalizer<RawMagentoTfa, DirectusTfa>({
   id: (src) => String(src?.user_id ?? ''),
   external_identifier: (src) => String(src?.user_id ?? ''),
   status: (src) => (src?.enabled ? 'active' : 'inactive')

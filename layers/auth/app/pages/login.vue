@@ -21,7 +21,7 @@
 
         <v-form ref="form" class="login-form-content" @submit.prevent="signIn">
           <v-text-field v-model="email" label="Email" type="email" placeholder="you@example.com" required
-            variant="outlined" :rules="emailRules" class="mb-4" />
+            autocomplete="email" variant="outlined" :rules="emailRules" class="mb-4" />
 
           <v-text-field v-model="password" label="Password" type="password" placeholder="Enter your password"
             autocomplete="current-password" required variant="outlined" :rules="passwordRules" class="mb-4" />
@@ -155,7 +155,23 @@
 
   const signInWithProvider = async (provider) => {
     if (loading.value) return;
-    await auth.signIn.social({ provider, callbackURL: '/' });
+    loading.value = true;
+    alertMessage.value = '';
+    try {
+      const res = await auth.signIn.social({ provider, callbackURL: '/' });
+      if (res?.error) {
+        alertType.value = 'error';
+        alertMessage.value = res.error.message || `Failed to sign in with ${provider}`;
+      }
+      // On success the Better-Auth redirect plugin performs window.location.href
+      // to the OAuth provider automatically when res.data.redirect === true.
+    } catch (err) {
+      alertType.value = 'error';
+      alertMessage.value = err?.message || `Failed to sign in with ${provider}`;
+      console.error('Social sign in error:', err);
+    } finally {
+      loading.value = false;
+    }
   };
 
 useHead({

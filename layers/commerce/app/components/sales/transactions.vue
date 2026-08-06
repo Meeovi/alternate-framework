@@ -47,45 +47,57 @@
     </div>
 </template>
 
-<script setup lang="ts">
-
+<script setup>
     import {
         ref,
-        computed
-    } from '#imports'
-    import postCard from '~/components/related/post.vue'
+    } from 'vue'
+    import postCard from '../related/post.vue'
+    import {
+        useUserStore
+    } from '#auth/app/stores/user'
 
+    const user = useSupabaseUser()
 
-    // @ts-ignore - useAuth may not be globally available
-    // import { useAuth } from '#auth/app/composables/useAuth'
-    // const { user, fetchSession } = useAuth()
-    // await fetchSession()
-    // const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = null;
-
-    const nuxtApp = useNuxtApp();
-    const $gateway = nuxtApp.$gateway as any;
-    const read = nuxtApp.read as any;
+    const {
+        $directus,
+        $readItem,
+        $readItems
+    } = useNuxtApp()
     const tab = ref(null);
 
-    const { data: transactionBar } = await useAsyncData<any>('transactionBar', async () => {
-        const resp = await $gateway.content?.(read('navigation', '118', {
-            fields: ['*', { '*': ['*'] }]
+    const {
+        data: transactionBar
+    } = await useAsyncData('transactionBar', async () => {
+        const resp = await $directus.request($readItem('navigation', '118', {
+            fields: ['*', {
+                '*': ['*']
+            }]
         }))
         return resp?.data ?? resp ?? null
     })
 
-    const { data: transactionPage } = await useAsyncData<any>('transactionPage', () => {
-        return $gateway.content?.(read('pages', '86', {
-            fields: ['*', { '*': ['*'] }]
+    const {
+        data: transactionPage
+    } = await useAsyncData('transactionPage', () => {
+        return $directus.request($readItem('pages', '86', {
+            fields: ['*', {
+                '*': ['*']
+            }]
         }))
     })
 
-    const { data: transactions } = await useAsyncData<any>('transactions', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('transactions', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId } }
+    const {
+        data: transactions
+    } = await useAsyncData('transactions', async () => {
+        const resp = await $directus.request($readItems('transactions', {
+            fields: ['*', {
+                '*': ['*']
+            }],
+            filter: {
+                user_id: {
+                    _eq: user?.id
+                }
+            }
         }))
         return resp?.data ?? resp ?? []
     })

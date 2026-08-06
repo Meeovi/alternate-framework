@@ -27,7 +27,9 @@
 </template>
 
 <script setup lang="ts">
-    import {
+    import { navigateTo } from "nuxt/app";
+import { ref } from "vue";
+import {
         authClient
     } from "../../../lib/auth-client";
 
@@ -59,7 +61,7 @@
         }
 
         if (res.error) {
-            error.value = res.error.message;
+            error.value = res.error.message ?? '';
         } else {
             navigateTo("/dashboard");
         }
@@ -67,9 +69,9 @@
     }
 
     async function sendOTP() {
-        await authClient.twoFactor.sendOtp({
+        await (authClient as any).twoFactor.sendOtp({
             trustDevice: true
-        });
+        } as any);
         method.value = "otp";
     }
 </script>

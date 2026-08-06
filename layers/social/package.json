@@ -48,7 +48,7 @@
     "@tiptap/suggestion": "2.27.2",
     "@tiptap/vue-3": "2.27.2",
     "emoji-mart-vue-fast": "^15.0.5",
-    "nuxt": "^4.4.8",
+    "nuxt": "^4.5.1",
     "pinia": "^2.1.7",
     "typescript": "^6.0.3"
   },

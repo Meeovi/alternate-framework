@@ -1,4 +1,3 @@
-import type { InferCustom } from "../defs";
 import type { Maybe } from "./shared";
 
 export enum SfFacetTypes {
@@ -18,7 +17,7 @@ export interface SfFacetItem {
   productCount: Maybe<number>;
 }
 
-export interface SfFacetCustom extends InferCustom<"normalizeFacet"> {}
+export interface SfFacetCustom extends Record<string, any> {}
 
 export interface SfFacet {
   label: string;

@@ -42,7 +42,7 @@
                         <v-slide-group>
                             <v-slide-group-item v-if="department?.menus?.length" v-for="menu in department?.menus"
                                 :key="menu" v-slot="{ isSelected, toggle }">
-                                <v-chip :color="isSelected ? 'primary' : undefined" class="ma-2" @click="toggle"
+                                <v-chip :color="`${department?.colortext}`" class="ma-2" @click="toggle"
                                     :href="`${menu?.url}`">
                                     {{ menu?.name }}
                                 </v-chip>
@@ -53,19 +53,19 @@
                 <section data-bs-version="5.1" class="pricing6 shopm5 cid-tZY31Y2JxZ" id="apricing6-6g">
                     <div class="mbr-overlay"></div>
                     <div class="container-fluid">
-                        <weather v-if="department?.slug === 'Weather' "/>
+                        <weather v-if="department?.slug === 'weather' "/>
 
-                        <travel v-if="department?.slug === 'Travel' "/>
+                        <travel v-if="department?.slug === 'travel' "/>
 
-                        <timeComponent v-if="department?.slug === 'Time' "/>
+                        <timeComponent v-if="department?.slug === 'time' "/>
 
-                        <restaurants v-if="department?.slug === 'Restaurants' "/>
+                        <adultstore v-if="department?.slug === 'adult' "/>
 
-                        <adultstore v-if="department?.slug === 'Adult' "/>
+                        <pantry v-if="department?.slug === 'pantry' "/>
 
-                        <pantry v-if="department?.slug === 'Pantry' "/>
+                        <pay v-if="department?.slug === 'pay' "/>
 
-                        <pay v-if="department?.slug === 'Pay' "/>
+                        <finance v-if="department?.slug === 'finance' "/>
 
                         <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" v-if="department?.shorts?.length">
                             <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
@@ -187,10 +187,10 @@
     import deals from '#commerce/app/components/catalog/categories/deals.vue'
     import timeComponent from '#commerce/app/components/catalog/categories/time/time.vue'
     import weather from '#commerce/app/components/catalog/categories/weather/weather.vue'
-    import restaurants from '#commerce/app/components/catalog/categories/restaurants.vue'
     import pay from '#commerce/app/components/catalog/categories/pay/pay.vue'
     import adultstore from '#commerce/app/components/catalog/categories/adultstore.vue'
     import pantry from '#commerce/app/components/catalog/categories/pantry/pantry.vue'
+    import finance from '#commerce/app/components/catalog/categories/finance.vue'
     import spaceCard from '#social/app/components/related/space.vue'
     import postCard from '#social/app/components/related/post.vue'
     import shortsCard from '#social/app/components/related/short.vue' 
@@ -290,8 +290,8 @@
     })
 
     const {
-        data: limitProducts
-    } = await useAsyncData('limitProducts', () => {
+        data: localProducts
+    } = await useAsyncData('localProducts', () => {
         return $directus.request($readItem('departments', route.params.slug, {
             fields: ['*',
                 'products.products_id.*',
@@ -324,8 +324,12 @@
             filter: {
                 products: {
                     products_id: {
-                        type: {
-                            _eq: "event"
+                        products_type: {
+                            products_type_id: {
+                                name: {
+                                    _eq: "Event"
+                                }
+                            }
                         }
                     }
                 }

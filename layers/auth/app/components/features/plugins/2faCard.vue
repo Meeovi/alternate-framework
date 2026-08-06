@@ -50,8 +50,8 @@
     </template>
 </template>
 <script setup lang="ts">
-    import { authClient } from '../../../lib/auth-client'
-    import { useAuthCapabilities } from '../../composables/organization/useOrganization'
+    import { authClient } from '../../../../lib/auth-client'
+    import { useAuthCapabilities } from '../../../composables/organization/useOrganization'
 
     const props = withDefaults(defineProps<{
         enabled?: boolean;
@@ -64,7 +64,7 @@
     })
 
     const { backend, hasTwoFactor } = useAuthCapabilities()
-    const session = authClient.useSession();
+    const session = (authClient as any).useSession();
     const isSupported = computed(() => hasTwoFactor.value)
     const backendLabel = computed(() => backend.value)
     const shouldRender = computed(() => props.enabled && (isSupported.value || props.showUnsupportedState))

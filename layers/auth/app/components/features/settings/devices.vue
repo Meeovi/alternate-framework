@@ -145,7 +145,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useDeviceAuth } from '../../../composables/devices/useDeviceAuth'
+import { useDeviceAuth } from '../../../composables/device/useDeviceAuth'
 
 const activeTab = ref('verify')
 const inputCode = ref('')

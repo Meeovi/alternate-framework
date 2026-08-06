@@ -1,51 +1,38 @@
 <template>
     <div>
-        <section data-bs-version="5.1" class="info1 cid-v5A0K07pfT" id="info1-bd" data-sortbtn="btn-primary">
-            <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(68, 121, 217);"></div>
-            <div class="align-center container">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-lg-8">
-                        <h3 class="mbr-section-title mb-4 mbr-fonts-style display-1">
-                            <strong> {{ spacesPage?.name }}</strong>
-                        </h3>
-                        <p class="mbr-section-title mb-4 mbr-fonts-style display-7" v-dompurify-html="spacesPage?.content"></p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <v-card variant="text">
             <v-toolbar :style="`background-color: ${spacesPage?.color}; color: ${spacesPage?.colortext} !important`">
                 <v-toolbar-title>{{ spacesPage?.name }}</v-toolbar-title>
 
-                <v-dialog v-model="dialog" :scrim="false" max-width="720" transition="dialog-bottom-transition">
-                  <template v-slot:activator="{ props }">
-                    <v-btn v-bind="props" class="ms-2" variant="outlined" size="small">
-                      <v-icon start icon="fas fa-plus"></v-icon>New Space
-                    </v-btn>
-                  </template>
-                  <v-card class="b-1">
-                    <v-card-title>
-                      <h3>Create New Space</h3>
-                    </v-card-title>
+                <v-toolbar-title>
+                    <div class="listsToolbarTitle">
+                        {{ spacePage?.name }}
+                        <v-tooltip interactive>
+                            <template v-slot:activator="{ props: activatorProps }">
+                                <v-icon-btn size="small" icon="fas fa-circle-info" v-bind="activatorProps"></v-icon-btn>
+                            </template>
+                            <div>
+                                <p class="listsToolbarTooltip" v-dompurify-html="spacePage?.content"></p>
+                            </div>
+                        </v-tooltip>
+                    </div>
+                </v-toolbar-title>
 
-                    <v-card-text>
-                      <div v-if="formError" class="error">{{ formError }}</div>
-                      <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                      <div v-else-if="pending" class="d-flex justify-center py-6">
-                        <v-progress-circular indeterminate />
-                      </div>
-                      <div v-else-if="error" class="error">Failed to load space form fields.</div>
-                      <div v-else-if="spaceFields.length === 0" class="error">No space fields available.</div>
-                      <JsonSchemaFormFromFields
-                        v-else
-                        :fields="spaceFields"
-                        :model-value="form"
-                        @update:model-value="Object.assign(form, $event)"
-                        @submit="submitForm"
-                      />
-                    </v-card-text>
-                  </v-card>
+                <v-dialog v-model="dialog" :scrim="false" max-width="720" transition="dialog-bottom-transition">
+                    <template v-slot:activator="{ props }">
+                        <v-btn v-bind="props" class="ms-2" variant="outlined" size="small">
+                            <v-icon start icon="fas fa-plus"></v-icon>New Space
+                        </v-btn>
+                    </template>
+                    <v-card class="b-1">
+                        <v-card-title>
+                            <h3>Create New Space</h3>
+                        </v-card-title>
+
+                        <v-card-text>
+                            <DynamicForm collection="spaces" />
+                        </v-card-text>
+                    </v-card>
                 </v-dialog>
 
                 <v-spacer></v-spacer>
@@ -75,30 +62,32 @@
         defineAsyncComponent,
         markRaw
     } from '#imports'
-    import { componentMap } from '~/types/componentMap'
-    import { useContentForm } from '../../composables/useContentForm'
-
-    const { $sdk, $directus, $readItem, $readItems, $readFieldsByCollection } = useNuxtApp()
-
-    const dialog = ref(false)
-
-    const { data: spaceFields, error: fieldsError, pending } = await useAsyncData('space-schema-fields', async () => {
-      if (!$readFieldsByCollection) return []
-      const resp = await $directus.request($readFieldsByCollection('spaces'))
-      return Array.isArray(resp) ? resp : []
-    })
-
-    const { form, formError, formSuccess, submitForm } = useContentForm('spaces', spaceFields, { clearOnSuccess: true, closeDialogRef: dialog })
+    import {
+        componentMap
+    } from '~/types/componentMap'
+    import { DynamicForm } from '@mframework/meeovi-forms'
 
     // current selected tab value (matches menu.value)
     const currentTab = ref(null);
 
-    const { data: spacesPage } = await useAsyncData('spacesPage', () => {
-        return $directus.request($readItem('pages', '99', { fields: ['*', { '*': ['*'] }] }))
+    const {
+        data: spacesPage
+    } = await useAsyncData('spacesPage', () => {
+        return $directus.request($readItem('pages', '99', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
     })
 
-    const { data: spacesBar } = await useAsyncData('spacesBar', () => {
-        return $directus.request($readItem('navigation', '79', { fields: ['*', { '*': ['*'] }] }))
+    const {
+        data: spacesBar
+    } = await useAsyncData('spacesBar', () => {
+        return $directus.request($readItem('navigation', '79', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
     })
 
     // Normalize menus to objects: support both string arrays and object arrays

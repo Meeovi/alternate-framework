@@ -1,5 +1,5 @@
 // packages/adapters/adapter-magento/src/normalizers/quotes.ts
-import { createNormalizer } from './automapper'
+import { createNormalizer, type Normalizer } from './automapper'
 import type { Query as DirectusQuery } from 'adapter-directus'
 
 type DirectusQuote = NonNullable<DirectusQuery['Directus_cart']>[0]
@@ -13,7 +13,7 @@ export interface RawMagentoQuote {
   status?: string
 }
 
-export const normalizeMagentoQuote = createNormalizer<RawMagentoQuote, DirectusQuote>({
+export const normalizeMagentoQuote: Normalizer<RawMagentoQuote, DirectusQuote> = createNormalizer<RawMagentoQuote, DirectusQuote>({
   id: (src) => String(src?.entity_id ?? ''),
   total: (src) => src?.grand_total ?? 0,
   items_count: (src) => src?.items?.length ?? 0,

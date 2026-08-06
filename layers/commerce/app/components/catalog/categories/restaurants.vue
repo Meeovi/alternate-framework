@@ -3,7 +3,7 @@
         <v-card elevation="0" style="min-height: 100vh !important;">
             <v-layout>
                 <v-main>
-                    <v-tabs center-active v-model="tab" bg-color="transparent">
+                    <v-tabs center-active v-model="tab" :style="`background-color: ${restaurantbar?.color}; color: ${restaurantbar?.colorText}`">
                         <div v-for="(menu, index) in restaurantbar?.menus" :key="index">
                     <v-tab :value="menu?.value">{{ menu?.name }}</v-tab>
                 </div>
@@ -41,7 +41,7 @@
     const {
         data: restaurantbar
     } = await useAsyncData('restaurantbar', () => {
-        return $directus.request($readItem('navigation', '49', {
+        return $directus.request($readItem('navigation', '128', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -75,8 +75,4 @@
             required: true,
         },
     });
-
-    useHead({
-        title: 'Deals',
-    })
 </script>

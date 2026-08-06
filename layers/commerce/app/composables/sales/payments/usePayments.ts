@@ -4,8 +4,7 @@ import { getCommerceClient } from '../../../utils/client'
 import type { PaymentProvider, Payment, PaymentMethod } from '../../../types/payments'
 
 /**
- * Payments composable. Replaces `catalog/payments/gateways.ts` and the
- * payment-script helpers' responsibilities, typed against `PaymentProvider`.
+ * Payments composable. Typed against `PaymentProvider`.
  */
 export function usePayments() {
   const client = getCommerceClient() as unknown as PaymentProvider

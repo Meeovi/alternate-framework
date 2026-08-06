@@ -1,10 +1,5 @@
-// Make sure to install the 'pg' package
-import { drizzle } from 'drizzle-orm/node-postgres'
+import { drizzle } from 'drizzle-orm/postgres-js'
 
-// You can specify any property from the node-postgres connection options
-export const db = drizzle({
-  connection: {
-    connectionString: process.env.NUXT_DATABASE_URL,
-    ssl: false
-  }
-})
+// Default db instance for the application (better-auth + all other queries).
+// Only public schema tables are exposed: public.users, public.sessions, public.accounts.
+export const db = drizzle(`${process.env.NUXT_DATABASE_URL}`)

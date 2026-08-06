@@ -1,4 +1,3 @@
-import type { InferCustom } from "../defs";
 import type {
   Maybe,
   SfAddress,
@@ -24,7 +23,7 @@ import type {
   SfWebsiteId,
 } from "./shared";
 
-export interface SfProductVariantCustom extends InferCustom<"normalizeProductVariant"> {}
+export interface SfProductVariantCustom extends Record<string, any> {}
 
 export interface SfProductVariant {
   id: string;
@@ -82,7 +81,7 @@ export interface SfProductVariant {
 
 export type SfProductVisibility = 'not_visible_individually' | 'catalog' | 'search' | 'catalog_search';
 
-export interface SfProductReviewCustom extends InferCustom<"normalizeProductReview"> {}
+export interface SfProductReviewCustom extends Record<string, any> {}
 
 export interface SfProductReview {
   id: SfId;
@@ -94,7 +93,7 @@ export interface SfProductReview {
   $custom?: SfProductReviewCustom;
 }
 
-export interface SfProductCustom extends InferCustom<"normalizeProduct"> {}
+export interface SfProductCustom extends Record<string, any> {}
 
 export interface SfProduct {
   categories?: SfProductCategoryLink[];
@@ -164,7 +163,7 @@ export interface SfProduct {
   $custom?: SfProductCustom;
 }
 
-export interface SfProductCatalogItemCustom extends InferCustom<"normalizeProductCatalogItem"> {}
+export interface SfProductCatalogItemCustom extends Record<string, any> {}
 
 export interface SfProductCatalogItem
   extends Pick<
@@ -216,7 +215,7 @@ export interface SfProductSearchResult {
   }>;
 }
 
-export interface SfPaginationCustom extends InferCustom<"normalizePagination"> {}
+export interface SfPaginationCustom extends Record<string, any> {}
 
 export interface SfPagination {
   currentPage: number;

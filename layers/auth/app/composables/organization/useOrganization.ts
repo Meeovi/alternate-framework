@@ -1,10 +1,11 @@
 // shared/app/composables/organization/useOrganization.ts
 import { authClient } from '../../../lib/auth-client'
 import { ref } from 'vue'
+import type { BetterAuthOrganization, BetterAuthMember, BetterAuthTeam, BetterAuthInvitation, BetterAuthRole } from '../../types'
 
 export function useOrganization() {
-  const organizations = authClient.useListOrganizations()
-  const activeOrgState = authClient.useActiveOrganization?.()
+  const organizations = (authClient as any).useListOrganizations()
+  const activeOrgState = (authClient as any).useActiveOrganization?.()
 
   const activeOrganizationId = ref(activeOrgState?.value?.data?.id || null)
 
@@ -21,7 +22,7 @@ export function useOrganization() {
     error.value = null
 
     try {
-      const { data, error: listError } = await authClient.organization.list({ limit: 50 })
+      const { data, error: listError } = await (authClient as any).organization.list({ query: { limit: 50 } })
       if (listError) throw listError
       organizations.value = Array.isArray(data) ? data : []
     } catch (err: any) {
@@ -38,7 +39,7 @@ export function useOrganization() {
     message.value = null
 
     try {
-      await authClient.organization.create({ name })
+      await (authClient as any).organization.create({ name, slug: name.toLowerCase().replace(/\s+/g, '-') })
       message.value = 'Organization created'
       await loadOrganizations()
     } catch (err: any) {
@@ -54,7 +55,7 @@ export function useOrganization() {
     message.value = null
 
     try {
-      await authClient.organization.setActive({ organizationId })
+      await (authClient as any).organization.setActive({ organizationId })
       message.value = 'Active organization updated'
       await loadOrganizations()
     } catch (err: any) {
@@ -70,7 +71,7 @@ export function useOrganization() {
     message.value = null
 
     try {
-      await authClient.organization.leave({ organizationId })
+      await (authClient as any).organization.leave({ organizationId })
       message.value = 'You left the organization'
       await loadOrganizations()
     } catch (err: any) {
@@ -84,11 +85,11 @@ export function useOrganization() {
   // ROLES
   // ---------------------------
   async function listRoles(organizationId: string) {
-    return await authClient.organization.listRoles({ query: { organizationId } })
+    return await (authClient as any).organization.listRoles({ query: { organizationId } })
   }
 
   async function createRole(organizationId: string, roleName: string, permission: any) {
-    return await authClient.organization.createRole({
+    return await (authClient as any).organization.createRole({
       role: roleName,
       permission,
       organizationId,
@@ -96,7 +97,7 @@ export function useOrganization() {
   }
 
   async function updateRole(organizationId: string, roleId: string, roleName: string, permission: any) {
-    return await authClient.organization.updateRole({
+    return await (authClient as any).organization.updateRole({
       roleId,
       roleName,
       organizationId,
@@ -105,7 +106,7 @@ export function useOrganization() {
   }
 
   async function deleteRole(organizationId: string, roleId: string) {
-    return await authClient.organization.deleteRole({
+    return await (authClient as any).organization.deleteRole({
       roleId,
       organizationId,
     })
@@ -115,52 +116,52 @@ export function useOrganization() {
   // TEAMS
   // ---------------------------
   async function listTeams(organizationId: string) {
-    return await authClient.organization.listTeams({ query: { organizationId } })
+    return await (authClient as any).organization.listTeams({ query: { organizationId } })
   }
 
   async function createTeam(organizationId: string, name: string) {
-    return await authClient.organization.createTeam({
+    return await (authClient as any).organization.createTeam({
       name,
       organizationId,
     })
   }
 
   async function updateTeam(teamId: string, data: any) {
-    return await authClient.organization.updateTeam({
+    return await (authClient as any).organization.updateTeam({
       teamId,
       data,
     })
   }
 
   async function removeTeam(teamId: string, organizationId: string) {
-    return await authClient.organization.removeTeam({
+    return await (authClient as any).organization.removeTeam({
       teamId,
       organizationId,
     })
   }
 
   async function setActiveTeam(teamId: string) {
-    return await authClient.organization.setActiveTeam({ teamId })
+    return await (authClient as any).organization.setActiveTeam({ teamId })
   }
 
   async function listUserTeams() {
-    return await authClient.organization.listUserTeams()
+    return await (authClient as any).organization.listUserTeams()
   }
 
   async function listTeamMembers(teamId: string) {
-    return await authClient.organization.listTeamMembers({ query: { teamId } })
+    return await (authClient as any).organization.listTeamMembers({ query: { teamId } })
   }
 
   async function addTeamMember(teamId: string, userId: string) {
-    return await authClient.organization.addTeamMember({ teamId, userId })
+    return await (authClient as any).organization.addTeamMember({ teamId, userId })
   }
 
   async function removeTeamMember(teamId: string, userId: string) {
-    return await authClient.organization.removeTeamMember({ teamId, userId })
+    return await (authClient as any).organization.removeTeamMember({ teamId, userId })
   }
 
   async function inviteMember(email: string, role: string, teamId?: string) {
-    return await authClient.organization.inviteMember({ email, role, teamId })
+    return await (authClient as any).organization.inviteMember({ email, role, teamId })
   }
 
   return {
@@ -191,5 +192,24 @@ export function useOrganization() {
     addTeamMember,
     removeTeamMember,
     inviteMember,
+  }
+}
+
+// ---------------------------
+// AUTH CAPABILITIES
+// ---------------------------
+export function useAuthCapabilities() {
+  const backend = ref('better-auth')
+  const hasProfileUpdate = ref(true)
+  const hasSocial = ref(true)
+  const hasSso = ref(true)
+  const hasTwoFactor = ref(true)
+
+  return {
+    backend,
+    hasProfileUpdate,
+    hasSocial,
+    hasSso,
+    hasTwoFactor,
   }
 }

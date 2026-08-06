@@ -1,42 +1,38 @@
 <template>
     <div>
-        <div v-if="store">
-            <div class="card col-12 col-md-6 col-lg-4">
-                <div class="card-wrapper">
-                    <div class="img-wrapper">
-                        <NuxtImg loading="lazy" class="align-end text-white" v-if="store?.image"
-                            :src="getAssetURL(store?.image)" :alt="store?.name || 'Store Name'"
-                            cover />
-                    </div>
-                    <div class="card-box align-center">
-                        <h5 class="card-title mbr-fonts-style display-5">
-                            {{ store?.name }}
-                        </h5>
-                        <p class="mbr-text mbr-fonts-style display-4">{{ store?.description }}</p>
-                    </div>
-                    <div class="mbr-section-btn mt-3">
-                        <NuxtLink class="btn btn-secondary display-4" :href="`/shops/${store?.id}`">Enter
-                        </NuxtLink>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <p v-else>No stores found.</p>
+        <v-card class="mx-auto" max-width="400">
+            <v-img class="align-end" height="200" :src="getAssetURL(store?.image)" :alt="store?.name || 'Store Name'" cover>
+                <v-card-title>{{ store?.name }}</v-card-title>
+            </v-img>
+
+            <v-card-subtitle class="pt-4">
+                {{ store?.type }}
+            </v-card-subtitle>
+
+            <v-card-text>
+                <div>{{ store?.description }}</div>
+            </v-card-text>
+
+            <v-card-actions>
+                <share />
+
+                <v-btn color="orange" :href="`/outlets/${store?.slug}`" text="Explore"></v-btn>
+            </v-card-actions>
+        </v-card>
     </div>
 
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
-    const { $sdk } = useNuxtApp()
+    import {
+        getAssetURL
+    } from '#shared/app/utils/get-asset-url'
+    import share from '#social/app/components/blocks/share.vue'
+
     const props = defineProps({
         store: {
             type: Object,
             required: true,
         },
     });
-
-    const {
-        store
-    } = props;
 </script>

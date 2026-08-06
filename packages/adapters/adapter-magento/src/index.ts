@@ -19,24 +19,35 @@ export class MagentoAdapter {
       argumentsPayload: Record<string, any>,
       options: { fields: string[] | Record<string, any>[] | any }
     ): Promise<any> => {
-      
-      const meshKey = `MGT_${entity}`
       const selectionString = this.parseFieldsToQuery(options.fields as any[])
-      
-      // Serialize runtime object arguments into stringified inline GraphQL variables/arguments
       const inlineArgs = this.serializeArguments(argumentsPayload)
       const argumentString = inlineArgs ? `(${inlineArgs})` : ''
 
-      const query = `
-        query GetMagentoEntity {
-          ${String(meshKey)}${argumentString} {
-            ${selectionString}
-          }
-        }
-      `
+      // Support both raw Magento (lowercase root fields) and GraphQL Mesh (prefixed)
+      const candidates = [
+        `Mage_${entity}`,                            // GraphQL Mesh with Mage_ prefix
+        entity,                                      // Raw Magento if already lowercase
+        `${entity.charAt(0).toLowerCase()}${entity.slice(1)}`, // Raw Magento PascalCase -> camelCase
+      ]
 
-      const data = await this.client.request<Record<string, any>>(query)
-      return data[meshKey]
+      for (const meshKey of candidates) {
+        try {
+          const query = `
+            query GetMagentoEntity {
+              ${String(meshKey)}${argumentString} {
+                ${selectionString}
+              }
+            }
+          `
+          const data = await this.client.request<Record<string, any>>(query)
+          const result = data[meshKey] ?? data[meshKey.toLowerCase()]
+          if (result !== undefined) return result
+        } catch {
+          // Try next candidate
+        }
+      }
+
+      throw new Error(`Failed to query Magento entity: ${entity}`)
     }
   }
 

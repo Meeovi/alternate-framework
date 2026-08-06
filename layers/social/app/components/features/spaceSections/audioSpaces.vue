@@ -3,7 +3,7 @@
         <v-col cols="12">
             <v-sheet class="mx-auto">
                 <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
-                    <v-slide-group-item v-for="space in myAudioSpaces" :key="space.id"
+                    <v-slide-group-item v-for="space in myAudioSpaces" :key="space?.id"
                         v-slot="{ isSelected, toggle, selectedClass }">
                         <spaceCard :space="space" :class="['ma-4', selectedClass]" v-if="isSelected" @click="toggle" />
                     </v-slide-group-item>
@@ -12,7 +12,7 @@
         </v-col>
 
         <v-row class="member-cards">
-            <v-col cols="3" v-for="space in audioSpaces" :key="space.id" class="d-inline-block">
+            <v-col cols="3" v-for="space in audioSpaces" :key="space?.id" class="d-inline-block">
                 <spaceCard :space="space" />
             </v-col>
         </v-row>
@@ -30,7 +30,7 @@
     const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
 
     const model = ref(null)
-    const { $directus, $readItems } = useNuxtApp()
+    const { $directus, $readItems } = useNuxtApp() as any
 
     const { data: myAudioSpaces } = await useAsyncData<any[]>('myAudioSpaces', async () => {
         const resp = await $directus.request($readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Audio' } } } }, fields: ['*', { '*': ['*'] }] }))

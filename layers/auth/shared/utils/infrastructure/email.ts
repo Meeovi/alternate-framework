@@ -3,7 +3,7 @@ import { organization } from "better-auth/plugins";
 import { sendEmail } from "@better-auth/infra";
 import { token } from "viem/tempo/actions";
 
-export const auth = betterAuth({
+export const emailAuth = betterAuth({
   emailAndPassword: {
     enabled: true,
     async sendResetPassword({ user, url }) {

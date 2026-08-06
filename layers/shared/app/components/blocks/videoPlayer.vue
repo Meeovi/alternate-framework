@@ -40,7 +40,7 @@
 <script setup lang="ts">
     import {
         useVideoPlayer
-    } from '@/composables/useVideoPlayer'
+    } from '../../composables/media/useVideoPlayer'
 
     const props = defineProps({
         player: {

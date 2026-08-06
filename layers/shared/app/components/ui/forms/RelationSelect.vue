@@ -3,12 +3,12 @@
         item-value="id" clearable />
 </template>
 
-<script setup lang="ts">
+<script setup>
     import {
         ref,
         onMounted,
         computed
-    } from 'vue';
+    } from "vue";
 
     const props = defineProps({
         modelValue: {
@@ -30,22 +30,34 @@
     });
 
     const emit = defineEmits(["update:modelValue"]);
-    const { $directus, $readItems } = useNuxtApp()
+    const {
+        $directus,
+        $readItems
+    } = useNuxtApp();
 
     const internalValue = computed({
         get: () => props.modelValue,
-        set: (v: string | string[] | null) => emit("update:modelValue", v),
+        set: (v) => emit("update:modelValue", v),
     });
 
-    const options = ref<Array<{ id: string; display: string }>>([]);
+    const options = ref([]);
 
-    const { data: relationOptions } = await useAsyncData(`relation-${props.collection}`, async () => {
-        const items = await $directus.request($readItems(props.collection, { limit: 50 }))
-        return (items || []).map((item: any) => ({
-            id: item.id,
-            display: item.name || item.title || `Item ${item.id}`,
-        }))
-    })
-
-    const options = computed(() => relationOptions.value || [])
+    onMounted(async () => {
+        try {
+            const {
+                data
+            } = await $directus.request(
+                $readItems(props.collection, {
+                    limit: 50, // adjust as needed
+                })
+            );
+            // Map to display-friendly format
+            options.value = data.map((item) => ({
+                id: item.id,
+                display: item.name || item.title || `Item ${item.id}`,
+            }));
+        } catch (err) {
+            console.error("Failed to load relation options:", err);
+        }
+    });
 </script>

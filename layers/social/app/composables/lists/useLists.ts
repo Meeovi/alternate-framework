@@ -105,7 +105,7 @@ export function useLists() {
       type,
       color: payload.color || config?.color,
       icon: payload.icon || config?.icon
-    }) || null
+    })) || null
   }
 
   const updateList = async (id: string | number, payload: Record<string, any>) => {
@@ -130,7 +130,7 @@ export function useLists() {
     return await $directus.request($createItem('list_items', {
       completed: false,
       ...safePayload
-    }) || null
+    })) || null
   }
 
   const updateListItem = async (id: string | number, payload: Record<string, any>) => {

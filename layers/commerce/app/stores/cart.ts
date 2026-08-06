@@ -7,11 +7,45 @@ export const useCartStore = defineStore('cart', () => {
   const error = ref(null)
 
   function addItem(item: any) {
-    items.value.push(item)
+    const existingIndex = items.value.findIndex(
+      (existing) => existing.productId === item.productId || existing.id === item.id,
+    )
+    if (existingIndex >= 0) {
+      const next = [...items.value]
+      const current = next[existingIndex]
+      const incomingQty = Number(item.qty ?? item.quantity ?? 1)
+      next[existingIndex] = {
+        ...current,
+        ...item,
+        quantity: (current.qty ?? current.quantity ?? 0) + incomingQty,
+        qty: (current.qty ?? current.quantity ?? 0) + incomingQty,
+      }
+      items.value = next
+    } else {
+      const incomingQty = Number(item.qty ?? item.quantity ?? 1)
+      items.value.push({
+        ...item,
+        qty: incomingQty,
+        quantity: incomingQty,
+        key: item.key ?? item.id ?? `cart-${Date.now()}-${Math.random()}`,
+      })
+    }
   }
 
-  function removeItem(index: number) {
-    items.value.splice(index, 1)
+  function removeItemByKey(key: string) {
+    const next = items.value.filter((item) => item.key !== key)
+    items.value = next
+  }
+
+  function updateQuantity(key: string, quantity: number) {
+    if (quantity <= 0) {
+      items.value = items.value.filter((item) => item.key !== key)
+      return
+    }
+    const next = items.value.map((item) =>
+      item.key === key ? { ...item, quantity, qty: quantity } : item,
+    )
+    items.value = next
   }
 
   function clearCart() {
@@ -20,13 +54,23 @@ export const useCartStore = defineStore('cart', () => {
 
   const itemCount = computed(() => items.value.length)
 
+  const total = computed(() =>
+    items.value.reduce((sum, item) => {
+      const qty = Number(item.qty ?? item.quantity ?? 0)
+      const price = Number(item.price ?? 0)
+      return sum + qty * price
+    }, 0),
+  )
+
   return {
     items: readonly(items),
     loading: readonly(loading),
     error: readonly(error),
     itemCount,
+    total,
     addItem,
-    removeItem,
-    clearCart
+    removeItemByKey,
+    updateQuantity,
+    clearCart,
   }
 })

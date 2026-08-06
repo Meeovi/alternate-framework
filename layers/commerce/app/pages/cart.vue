@@ -8,13 +8,13 @@
       </div>
       
       <div v-else>
-        <div v-for="item in cart.items" :key="item.id" class="cart-item">
+        <div v-for="item in cart.items" :key="item.key || item.id" class="cart-item">
           <div class="item-details">
             <h3>{{ item.name }}</h3>
             <p>Price: ${{ item.price }}</p>
-            <p>Quantity: {{ item.quantity }}</p>
+            <p>Quantity: {{ item.quantity ?? item.qty }}</p>
           </div>
-          <v-btn @click="cart.removeItem(item.id)" color="error">
+          <v-btn @click="cart.removeItemByKey(item.key || item.id)" color="error">
             Remove
           </v-btn>
         </div>

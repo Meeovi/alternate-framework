@@ -1,5 +1,5 @@
 // packages/adapters/adapter-magento/src/normalizers/invoice.ts
-import { createNormalizer } from './automapper'
+import { createNormalizer, type Normalizer } from './automapper'
 import type { Mage_Invoice } from '../graphql/schema-types'
 import type { Query as DirectusQuery } from 'adapter-directus'
 
@@ -8,7 +8,7 @@ type DirectusInvoice = NonNullable<DirectusQuery['Directus_invoices']>[0]
 const money = (m?: { value?: number | null } | null): number =>
   m?.value ?? 0
 
-export const normalizeMagentoInvoice = createNormalizer<Mage_Invoice, DirectusInvoice>({
+export const normalizeMagentoInvoice: Normalizer<Mage_Invoice, DirectusInvoice> = createNormalizer<Mage_Invoice, DirectusInvoice>({
   id: (src) => String(src?.id ?? ''),
   increment_id: (src) => src?.number ?? '',
   grand_total: (src) => money((src?.total as any)?.grand_total),

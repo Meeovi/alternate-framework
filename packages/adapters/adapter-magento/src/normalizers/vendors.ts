@@ -1,6 +1,5 @@
 // packages/adapters/adapter-magento/src/normalizers/vendors.ts
-import { createNormalizer } from './automapper'
-import type { Query as DirectusQuery } from 'adapter-directus'
+import { createNormalizer, type Normalizer } from './automapper'
 
 // Directus has no dedicated `vendors` collection in this schema, so we map to a
 // lightweight local shape that mirrors the Magento marketplace vendor structure.
@@ -21,7 +20,7 @@ export interface RawMagentoVendor {
   logo?: string
 }
 
-export const normalizeMagentoVendor = createNormalizer<RawMagentoVendor, DirectusVendor>({
+export const normalizeMagentoVendor: Normalizer<RawMagentoVendor, DirectusVendor> = createNormalizer<RawMagentoVendor, DirectusVendor>({
   id: (src) => String(src?.entity_id ?? ''),
   company_name: (src) => src?.vendor_shop_title ?? '',
   slug: (src) => src?.vendor_shop_url ?? '',

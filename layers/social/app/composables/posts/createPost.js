@@ -21,7 +21,7 @@ export default async function createPost(postData) {
         avatarFile: null,
         username: postData.username,
         spaces: [{ spaces_id: { id } }]
-      })
+      }))
     }
   } catch (error) {
     console.error('Error creating post:', error)

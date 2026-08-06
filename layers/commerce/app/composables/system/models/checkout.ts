@@ -1,7 +1,6 @@
-import type { InferCustom } from "../defs";
 import type { Maybe, SfMoney } from "./shared";
 
-export interface SfShippingMethodCustom extends InferCustom<"normalizeCartCoupon"> {}
+export interface SfShippingMethodCustom extends Record<string, any> {}
 
 export interface SfShippingMethod {
   carrierCode: string;

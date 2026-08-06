@@ -48,6 +48,7 @@ export default defineNuxtConfig({
     // Polar
     polarServer: process.env.NUXT_POLAR_SERVER,
     polarAccessToken: process.env.NUXT_POLAR_ACCESS_TOKEN,
+    polarSuccessUrl: process.env.POLAR_SUCCESS_URL,
     polarWebhookSecret: process.env.NUXT_POLAR_WEBHOOK_SECRET,
     polarProductIdProMonth: process.env.NUXT_POLAR_PRODUCT_ID_PRO_MONTH,
     polarProductIdProYear: process.env.NUXT_POLAR_PRODUCT_ID_PRO_YEAR,
@@ -56,11 +57,18 @@ export default defineNuxtConfig({
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
       // Stripe publishable key (pk_live_... in prod, pk_test_... in dev)
       stripePublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      stripePricingTableId: process.env.NUXT_PUBLIC_STRIPE_PRICING_TABLE_ID,
       scripts: {
         paypal: {
           clientId: `${process.env.NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID}`, // NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID
         },
       },
+      // PayPal server credentials (server-side only, never exposed to client)
+      paypalClientId: process.env.PAYPAL_CLIENT_ID,
+      paypalClientSecret: process.env.PAYPAL_CLIENT_SECRET,
+      paypalMode: process.env.PAYPAL_MODE || 'sandbox',
+      // Shippo server credentials (server-side only, never exposed to client)
+      shippoApiKey: process.env.SHIPPO_API_KEY,
       // Directus
       directus: {
         url: process.env.DIRECTUS_URL,

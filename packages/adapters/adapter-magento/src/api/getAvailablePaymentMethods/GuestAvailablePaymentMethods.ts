@@ -1,0 +1,10 @@
+export default `
+  query GuestAvailablePaymentMethods($cartId: String!) {
+    cart(cart_id: $cartId) {
+      available_payment_methods {
+        code
+        title
+      }
+    }
+  }
+`;

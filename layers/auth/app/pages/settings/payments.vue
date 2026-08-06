@@ -29,17 +29,7 @@
                         <v-divider></v-divider>
 
                         <v-card-text>
-                            <v-card class="b-1">
-                                <template>
-                                    <div v-if="formError" class="error">{{ formError }}</div>
-                                    <div v-else-if="formSuccess" class="success">{{ formSuccess }}</div>
-                                    <v-form @submit.prevent="submitForm">
-                                        <DataFormElement v-for="field in paymentsFields" :key="field.field"
-                                            :field="field" v-model="form[field.field]" />
-                                        <v-btn type="submit">Save</v-btn>
-                                    </v-form>
-                                </template>
-                            </v-card>
+                            <DynamicForm collection="payments" />
                         </v-card-text>
                     </div>
                 </v-expand-transition>
@@ -52,47 +42,7 @@
     import {
         ref
     } from 'vue'
+    import { DynamicForm } from '@mframework/meeovi-forms'
 
     const show = ref(false)
-    const {
-        $directus,
-        $readFieldsByCollection
-    } = useNuxtApp()
-
-    const {
-        data: payments,
-        error
-    } = await useAsyncData('payments', async () => {
-        return $directus.request($readFieldsByCollection('payments'))
-    })
-
-    const {
-        data: createPaymentsFields,
-        error: createPaymentsError
-    } = await useAsyncData('createPayments', async () => {
-        return $directus.request($readFieldsByCollection('payments'))
-    })
-
-    // guard against undefined/null data.value and empty arrays
-    if (createPaymentsError.value || createPaymentsFields.value == null || (createPaymentsFields.value?.length ?? 0) ===
-        0) {
-        console.error(createPaymentsError)
-        throw createError({
-            statusCode: 404,
-            statusMessage: 'Payment fields not found'
-        })
-    }
-
-    const paymentsFields = createPaymentsFields
-
-    // use composable for form handling (validation, submit, provide context)
-    const {
-        form,
-        formError,
-        formSuccess,
-        submitForm
-    } = useDataForm('payments', paymentsFields, {
-        clearOnSuccess: true,
-        closeDialogRef: dialog
-    })
 </script>

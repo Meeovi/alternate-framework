@@ -1,4 +1,4 @@
-import { pgSchema, pgEnum, pgTable, serial, uuid, bigserial, text, varchar, integer, bigint, json, boolean, timestamp, customType, numeric, jsonb, char, smallint, inet, date, real, time, index, uniqueIndex, foreignKey, type AnyPgColumn, primaryKey, unique, check, pgPolicy, doublePrecision } from "drizzle-orm/pg-core"
+import { pgSchema, pgEnum, pgTable, bigserial, uuid, serial, varchar, text, integer, bigint, boolean, json, timestamp, customType, numeric, jsonb, char, smallint, inet, date, real, time, index, uniqueIndex, foreignKey, type AnyPgColumn, primaryKey, unique, check, pgPolicy, doublePrecision } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const auth = pgSchema("auth");
@@ -31,7 +31,7 @@ export const factorTypeInAuth = auth.enum("factor_type", ["totp", "webauthn", "p
 export const oneTimeTokenTypeInAuth = auth.enum("one_time_token_type", ["confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new", "email_change_token_current", "phone_change_token"])
 export const colorSource = pgEnum("color_source", ["99COLORS_NET", "ART_PAINTS_YG07S", "BYRNE", "CRAYOLA", "CMYK_COLOR_MODEL", "COLORCODE_IS", "COLORHEXA", "COLORXS", "CORNELL_UNIVERSITY", "COLUMBIA_UNIVERSITY", "DUKE_UNIVERSITY", "ENCYCOLORPEDIA_COM", "ETON_COLLEGE", "FANTETTI_AND_PETRACCHI", "FINDTHEDATA_COM", "FERRARIO_1919", "FEDERAL_STANDARD_595", "FLAG_OF_INDIA", "FLAG_OF_SOUTH_AFRICA", "GLAZEBROOK_AND_BALDRY", "GOOGLE", "HEXCOLOR_CO", "ISCC_NBS", "KELLY_MOORE", "MATTEL", "MAERZ_AND_PAUL", "MILK_PAINT", "MUNSELL_COLOR_WHEEL", "NATURAL_COLOR_SYSTEM", "PANTONE", "PLOCHERE", "POURPRE_COM", "RAL", "RESENE", "RGB_COLOR_MODEL", "THOM_POOLE", "UNIVERSITY_OF_ALABAMA", "UNIVERSITY_OF_CALIFORNIA_DAVIS", "UNIVERSITY_OF_CAMBRIDGE", "UNIVERSITY_OF_NORTH_CAROLINA", "UNIVERSITY_OF_TEXAS_AT_AUSTIN", "X11_WEB", "XONA_COM"])
 export const actionInRealtime = realtime.enum("action", ["INSERT", "UPDATE", "DELETE", "TRUNCATE", "ERROR"])
-export const equalityOpInRealtime = realtime.enum("equality_op", ["eq", "neq", "lt", "lte", "gt", "gte", "in"])
+export const equalityOpInRealtime = realtime.enum("equality_op", ["eq", "neq", "lt", "lte", "gt", "gte", "in", "like", "ilike", "is", "match", "imatch", "isdistinct"])
 export const buckettypeInStorage = storage.enum("buckettype", ["STANDARD", "ANALYTICS", "VECTOR"])
 export const oauthRegistrationTypeInAuth = auth.enum("oauth_registration_type", ["dynamic", "manual"])
 export const oauthAuthorizationStatusInAuth = auth.enum("oauth_authorization_status", ["pending", "approved", "denied", "expired"])
@@ -300,6 +300,17 @@ export const schemaMigrationsInAuth = auth.table.withRLS("schema_migrations", {
 	version: varchar({ length: 255 }).primaryKey(),
 });
 
+export const publicSessions = pgTable("sessions", {
+	id: uuid().primaryKey(),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	token: text().notNull(),
+	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+	ipAddress: text("ip_address"),
+	userAgent: text("user_agent"),
+});
+
 export const sessionsInAuth = auth.table.withRLS("sessions", {
 	id: uuid().primaryKey(),
 	userId: uuid("user_id").notNull().references(() => usersInAuth.id, { onDelete: "cascade" } ),
@@ -321,7 +332,19 @@ export const sessionsInAuth = auth.table.withRLS("sessions", {
 	index("sessions_oauth_client_id_idx").using("btree", table.oauthClientId.asc().nullsLast()),
 	index("sessions_user_id_idx").using("btree", table.userId.asc().nullsLast()),
 	index("user_id_created_at_idx").using("btree", table.userId.asc().nullsLast(), table.createdAt.asc().nullsLast()),
-check("sessions_scopes_length", sql`(char_length(scopes) <= 4096)`),]);
+ check("sessions_scopes_length", sql`(char_length(scopes) <= 4096)`),]);
+
+export const verification = pgTable("verification", {
+	id: uuid().defaultRandom().primaryKey(),
+	identifier: text().notNull(),
+	value: text().notNull(),
+	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`).notNull(),
+}, (table) => [
+	index("verification_identifier_idx").using("btree", table.identifier.asc().nullsLast()),
+	index("verification_expires_at_idx").using("btree", table.expiresAt.asc().nullsLast()),
+]);
 
 export const ssoDomainsInAuth = auth.table.withRLS("sso_domains", {
 	id: uuid().primaryKey(),
@@ -351,6 +374,8 @@ export const usersInAuth = auth.table.withRLS("users", {
 	aud: varchar({ length: 255 }),
 	role: varchar({ length: 255 }),
 	email: varchar({ length: 255 }),
+	name: varchar({ length: 255 }),
+	emailVerified: boolean("email_verified").default(false).notNull(),
 	encryptedPassword: varchar("encrypted_password", { length: 255 }),
 	emailConfirmedAt: timestamp("email_confirmed_at", { withTimezone: true }),
 	invitedAt: timestamp("invited_at", { withTimezone: true }),
@@ -1259,6 +1284,17 @@ export const aboutDepartmentsPlatform = pgTable.withRLS("about_departments_platf
 	platformId: integer("platform_id").references(() => platform.id, { onDelete: "set null" } ),
 });
 
+export const accounts = pgTable.withRLS("accounts", {
+	id: uuid().defaultRandom().primaryKey(),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	providerId: text("provider_id").default("email-password").notNull(),
+	password: text(),
+	accessToken: text("access_token"),
+	refreshToken: text("refresh_token"),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`),
+});
+
 export const address = pgTable.withRLS("address", {
 	id: serial().primaryKey(),
 	status: varchar({ length: 255 }).default("draft").notNull(),
@@ -1453,6 +1489,16 @@ export const auctionLots = pgTable.withRLS("auction_lots", {
 	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`),
 	uuid: uuid().defaultRandom(),
 });
+
+export const auditLogEntries = pgTable.withRLS("audit_log_entries", {
+	instanceId: uuid("instance_id"),
+	id: uuid().primaryKey(),
+	payload: json(),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	ipAddress: varchar("ip_address", { length: 64 }).default("").notNull(),
+}, (table) => [
+	index("audit_logs_instance_id_idx").using("btree", table.instanceId.asc().nullsLast()),
+check("audit_logs_instance_id_idx_dummy", sql`true`),]);
 
 export const bids = pgTable.withRLS("bids", {
 	id: serial().primaryKey(),
@@ -1658,6 +1704,7 @@ export const brands = pgTable.withRLS("brands", {
 	name: text(),
 	description: text(),
 	image: uuid().references(() => directusFiles.id, { onDelete: "set null" } ),
+	slug: varchar({ length: 255 }),
 });
 
 export const brandsCategories = pgTable.withRLS("brands_categories", {
@@ -3030,6 +3077,23 @@ export const followers = pgTable.withRLS("followers", {
 }, (table) => [
 	unique("followers_profile_followers_key").on(table.profileFollowers),	unique("followers_profile_following_key").on(table.profileFollowing),]);
 
+export const follows = pgTable.withRLS("follows", {
+	id: serial().primaryKey(),
+	sort: integer(),
+	dateCreated: timestamp("date_created", { withTimezone: true }),
+	followerId: uuid("follower_id"),
+}, (table) => [
+
+	pgPolicy("Users can manage their own follows", { using: sql`(auth.uid() = follower_id)`, withCheck: sql`(auth.uid() = follower_id)` }),
+]);
+
+export const followsTarget = pgTable.withRLS("follows_target", {
+	id: serial().primaryKey(),
+	followsId: integer("follows_id").references(() => follows.id, { onDelete: "set null" } ),
+	item: varchar({ length: 255 }),
+	collection: varchar({ length: 255 }),
+});
+
 export const forms = pgTable("forms", {
 	dateCreated: timestamp("date_created", { withTimezone: true }),
 	dateUpdated: timestamp("date_updated", { withTimezone: true }),
@@ -3828,6 +3892,30 @@ export const notifications = pgTable.withRLS("notifications", {
 	recipient: uuid().references(() => directusUsers.id, { onDelete: "set null" } ),
 });
 
+export const oauthClients = pgTable.withRLS("oauth_clients", {
+	id: uuid().primaryKey(),
+	clientSecretHash: text("client_secret_hash"),
+	registrationType: customType({ dataType: () => 'oauth_registration_type' })("registration_type").notNull(),
+	redirectUris: text("redirect_uris").notNull(),
+	grantTypes: text("grant_types").notNull(),
+	clientName: text("client_name"),
+	clientUri: text("client_uri"),
+	logoUri: text("logo_uri"),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	deletedAt: timestamp("deleted_at", { withTimezone: true }),
+	clientType: text("client_type").default("confidential").notNull(),
+	tokenEndpointAuthMethod: text("token_endpoint_auth_method").notNull(),
+}, (table) => [
+	index("oauth_clients_deleted_at_idx").using("btree", table.deletedAt.asc().nullsFirst()),
+check("oauth_clients_client_name_length", sql`(char_length(client_name) <= 1024)`),check("oauth_clients_client_uri_length", sql`(char_length(client_uri) <= 2048)`),check("oauth_clients_logo_uri_length", sql`(char_length(logo_uri) <= 2048)`),check("oauth_clients_token_endpoint_auth_method_check", sql`(token_endpoint_auth_method = ANY (ARRAY['client_secret_basic'::text, 'client_secret_post'::text, 'none'::text]))`),]);
+
+export const oauthRegistrationType = pgTable.withRLS("oauth_registration_type", {
+	id: uuid().primaryKey(),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`).notNull(),
+});
+
 export const orderItems = pgTable.withRLS("order_items", {
 	id: serial().primaryKey(),
 	quantity: integer(),
@@ -4028,18 +4116,6 @@ export const organizations = pgTable("organizations", {
 	stripeCustomerId: varchar("stripe_customer_id", { length: 255 }).default(sql`NULL`),
 });
 
-export const organizationMembers = pgTable.withRLS("organization_members", {
-	id: uuid().defaultRandom().primaryKey(),
-	userId: uuid("user_id").notNull().references(() => directusUsersInEnovels.id, { onDelete: "cascade" } ),
-	organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" } ),
-	role: varchar({ length: 255 }).default("member").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
-}, (table) => [
-	index("organization_members_user_id_idx").using("btree", table.userId.asc().nullsLast()),
-	index("organization_members_organization_id_idx").using("btree", table.organizationId.asc().nullsLast()),
-	unique("organization_members_user_org_unique").on(table.userId, table.organizationId),
-]);
-
 export const organizationsContacts = pgTable("organizations_contacts", {
 	id: uuid().primaryKey(),
 	contactsId: uuid("contacts_id").references(() => contacts.id, { onDelete: "cascade" } ),
@@ -4202,7 +4278,7 @@ export const osItems = pgTable("os_items", {
 	unitCost: numeric("unit_cost", { mode: 'number', precision: 10, scale: 2 }).default(sql`NULL`),
 });
 
-export const osPaymentTerms = pgTable("os_payment_terms", {
+export const osPaymentTerms = pgTable.withRLS("os_payment_terms", {
 	id: uuid().primaryKey(),
 	userCreated: uuid("user_created").references(() => directusUsers.id),
 	dateCreated: timestamp("date_created", { withTimezone: true }),
@@ -4743,6 +4819,7 @@ export const products = pgTable.withRLS("products", {
 	price: numeric({ precision: 10, scale: 5 }),
 	ratings: varchar({ length: 255 }).default("0"),
 	uuid: uuid().defaultRandom(),
+	coordinates: varchar({ length: 255 }),
 });
 
 export const productsAttributes = pgTable.withRLS("products_attributes", {
@@ -4833,6 +4910,8 @@ export const profiles = pgTable.withRLS("profiles", {
 	links: json(),
 	magentoCustomerId: varchar("magento_customer_id", { length: 255 }),
 	avatar: uuid().references(() => directusFiles.id, { onDelete: "set null" } ),
+	firstName: text("first_name"),
+	lastName: text("last_name"),
 }, (table) => [
 	index("profiles_supabase_user_id_index").using("btree", table.supabaseUserId.asc().nullsLast()),
 	unique("profiles_slug_unique").on(table.slug),	unique("profiles_supabase_user_id_unique").on(table.supabaseUserId),	unique("profiles_user_unique").on(table.user),	unique("profiles_username_unique").on(table.username),]);
@@ -5014,6 +5093,13 @@ export const radiosDepartments = pgTable.withRLS("radios_departments", {
 export const radiosMusicchart = pgTable.withRLS("radios_musicchart", {
 	id: serial().primaryKey(),
 	radiosId: integer("radios_id").references(() => radios.id, { onDelete: "set null" } ),
+});
+
+export const rateLimit = pgTable.withRLS("rate_limit", {
+	key: varchar({ length: 255 }).primaryKey(),
+	count: integer().notNull(),
+	lastRequest: bigint("last_request", { mode: 'number' }).notNull(),
+	id: varchar({ length: 255 }).default(sql`gen_random_uuid()`),
 });
 
 export const ratings = pgTable.withRLS("ratings", {
@@ -5392,6 +5478,8 @@ export const shops = pgTable.withRLS("shops", {
 	customDomain: varchar("custom_domain", { length: 255 }),
 	theme: json(),
 	trustedScore: json("trusted_score"),
+	hours: json(),
+	cuisine: varchar({ length: 255 }),
 });
 
 export const shopsAgreements = pgTable.withRLS("shops_agreements", {
@@ -5415,6 +5503,12 @@ export const shopsCountries = pgTable.withRLS("shops_countries", {
 	id: serial().primaryKey(),
 	shopsId: integer("shops_id").references(() => shops.id, { onDelete: "set null" } ),
 	countriesId: integer("countries_id").references(() => countries.id, { onDelete: "set null" } ),
+});
+
+export const shopsCurrency = pgTable("shops_currency", {
+	id: serial().primaryKey(),
+	shopsId: integer("shops_id").references(() => shops.id, { onDelete: "set null" } ),
+	currencyId: integer("currency_id").references(() => currency.id, { onDelete: "set null" } ),
 });
 
 export const shopsDepartments = pgTable.withRLS("shops_departments", {
@@ -5995,6 +6089,49 @@ export const userProfile = pgTable.withRLS("user_profile", {
 	age: integer(),
 });
 
+export const users = pgTable.withRLS("users", {
+	instanceId: uuid("instance_id"),
+	id: uuid().primaryKey(),
+	aud: varchar({ length: 255 }),
+	role: varchar({ length: 255 }),
+	email: varchar({ length: 255 }),
+	encryptedPassword: varchar("encrypted_password", { length: 255 }),
+	emailConfirmedAt: timestamp("email_confirmed_at", { withTimezone: true }),
+	invitedAt: timestamp("invited_at", { withTimezone: true }),
+	confirmationToken: varchar("confirmation_token", { length: 255 }),
+	confirmationSentAt: timestamp("confirmation_sent_at", { withTimezone: true }),
+	recoveryToken: varchar("recovery_token", { length: 255 }),
+	recoverySentAt: timestamp("recovery_sent_at", { withTimezone: true }),
+	emailChangeTokenNew: varchar("email_change_token_new", { length: 255 }),
+	emailChange: varchar("email_change", { length: 255 }),
+	emailChangeSentAt: timestamp("email_change_sent_at", { withTimezone: true }),
+	lastSignInAt: timestamp("last_sign_in_at", { withTimezone: true }),
+	rawAppMetaData: jsonb("raw_app_meta_data"),
+	rawUserMetaData: jsonb("raw_user_meta_data"),
+	isSuperAdmin: boolean("is_super_admin"),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+	phone: text(),
+	phoneConfirmedAt: timestamp("phone_confirmed_at", { withTimezone: true }),
+	phoneChange: text("phone_change").default(""),
+	phoneChangeToken: varchar("phone_change_token", { length: 255 }).default(""),
+	phoneChangeSentAt: timestamp("phone_change_sent_at", { withTimezone: true }),
+	confirmedAt: timestamp("confirmed_at", { withTimezone: true }).generatedAlwaysAs(sql`LEAST(email_confirmed_at, phone_confirmed_at)`),
+	emailChangeTokenCurrent: varchar("email_change_token_current", { length: 255 }).default(""),
+	emailChangeConfirmStatus: smallint("email_change_confirm_status").default(0),
+	bannedUntil: timestamp("banned_until", { withTimezone: true }),
+	reauthenticationToken: varchar("reauthentication_token", { length: 255 }).default(""),
+	reauthenticationSentAt: timestamp("reauthentication_sent_at", { withTimezone: true }),
+	isSsoUser: boolean("is_sso_user").default(false).notNull(),
+	deletedAt: timestamp("deleted_at", { withTimezone: true }),
+	isAnonymous: boolean("is_anonymous").default(false).notNull(),
+	name: text().notNull(),
+	emailVerified: boolean("email_verified").default(false).notNull(),
+	polarCustomerId: varchar("polar_customer_id", { length: 255 }),
+	locale: varchar({ length: 10 }),
+}, (table) => [
+	unique("users_phone_key").on(table.phone),check("users_email_change_confirm_status_check", sql`((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2))`),]);
+
 export const variants = pgTable.withRLS("variants", {
 	id: serial().primaryKey(),
 	productId: integer("product_id").references(() => products.id, { onDelete: "cascade" } ),
@@ -6086,6 +6223,33 @@ export const videosTags = pgTable.withRLS("videos_tags", {
 	id: serial().primaryKey(),
 	videosId: integer("videos_id").references(() => videos.id, { onDelete: "set null" } ),
 	tagsId: integer("tags_id").references(() => tags.id, { onDelete: "set null" } ),
+});
+
+export const webauthnChallenges = pgTable.withRLS("webauthn_challenges", {
+	id: uuid().defaultRandom().primaryKey(),
+	userId: uuid("user_id"),
+	challengeType: text("challenge_type").notNull(),
+	sessionData: jsonb("session_data").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+}, (table) => [
+check("webauthn_challenges_challenge_type_check", sql`(challenge_type = ANY (ARRAY['signup'::text, 'registration'::text, 'authentication'::text]))`),]);
+
+export const webauthnCredentials = pgTable.withRLS("webauthn_credentials", {
+	id: uuid().defaultRandom().primaryKey(),
+	userId: uuid("user_id").notNull(),
+	credentialId: customType({ dataType: () => 'bytea' })("credential_id").notNull(),
+	publicKey: customType({ dataType: () => 'bytea' })("public_key").notNull(),
+	attestationType: text("attestation_type").default("").notNull(),
+	aaguid: uuid(),
+	signCount: bigint("sign_count", { mode: 'number' }).default(0).notNull(),
+	transports: jsonb().default([]).notNull(),
+	backupEligible: boolean("backup_eligible").default(false).notNull(),
+	backedUp: boolean("backed_up").default(false).notNull(),
+	friendlyName: text("friendly_name").default("").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
 });
 
 export const websites = pgTable.withRLS("websites", {

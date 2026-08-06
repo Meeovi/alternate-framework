@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { useState } from '#app'
-import { useAppGateway } from '../useAppGateway'
+import { useAppGateway } from '#shared/app/composables/useAppGateway'
 
 type DotdigitalChatConfig = {
   provider: 'dotdigital'
