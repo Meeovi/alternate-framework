@@ -116,13 +116,18 @@
 
     const {
         $directus,
-        $readItem
+        $readItems
     } = useNuxtApp()
 
+    // NOTE: these queries list products by type only — they are not yet
+    // scoped to what the signed-in user actually purchased (there is no
+    // established link from an order's line items back to a per-user
+    // "owned products" list in this app yet). Until that exists, this page
+    // shows every published product of each type, not a personal library.
     const {
         data: books
     } = await useAsyncData('books', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 type: {
                     _eq: 'Book'
@@ -134,7 +139,7 @@
     const {
         data: games
     } = await useAsyncData('games', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 type: {
                     _eq: 'Game'
@@ -146,7 +151,7 @@
     const {
         data: moviesTv
     } = await useAsyncData('moviesTv', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 type: {
                     _eq: 'Video'
@@ -158,7 +163,7 @@
     const {
         data: music
     } = await useAsyncData('music', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 type: {
                     _eq: 'Music'
@@ -170,7 +175,7 @@
     const {
         data: images
     } = await useAsyncData('images', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 type: {
                     _eq: 'Image'
@@ -182,14 +187,14 @@
     const {
         data: podcasts
     } = await useAsyncData('podcasts', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 type: {
                     _eq: 'Podcast'
                 }
             }
         }))
-    })    
+    })
 
     useHead({
         title: 'Your Downloads',

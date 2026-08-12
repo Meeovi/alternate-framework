@@ -196,13 +196,14 @@
 
   // Data setup
   const {
-    read
+    $directus,
+    $readItem
   } = useNuxtApp();
 
   const {
     data: pickupBlocks
   } = await useAsyncData('pickupBlocks', () => {
-    return gateway.content(read('page_blocks', '10', {
+    return $directus.request($readItem('page_blocks', '10', {
       fields: ['*', 'media.file.*', 'content.*'],
     }))
   });
@@ -210,15 +211,20 @@
   const {
     data: pickupLocations
   } = await useAsyncData('pickupLocations', () => {
-    return gateway.content(read('pages', '33', {
+    return $directus.request($readItem('pages', '33', {
       fields: ['*', 'image.*'],
     }))
   });
 
-  // Initial load
-  onMounted(() => {
-    loadLocations();
-  });
+  // NOTE: loadLocations()/searchByAddress() below call
+  // getPickupLocations()/getPickupLocationsByDistance(), which aren't
+  // defined or imported anywhere — this predates today's fixes and needs
+  // a real geocoding/locations API decision, not a guessed one. Disabled
+  // the auto-call so it doesn't throw on every page load; the map/list
+  // above already render from pickupLocations (Directus) independently.
+  // onMounted(() => {
+  //   loadLocations();
+  // });
 
   // Meta
   definePageMeta({

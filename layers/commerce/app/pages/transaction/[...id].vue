@@ -21,15 +21,15 @@
                                         <h4 class="card-title mbr-fonts-style display-7">
                                             Transaction Information
                                         </h4>
-                                        <a class="card-text mbr-fonts-style display-7" :href="`/order/${transaction?.orders?.orders_id?.id}`">Order #:
-                                            {{ transaction?.orders?.orders_id?.id }}</a>
-                                        <p class="card-text mbr-fonts-style display-7">Transaction ID: {{ transaction?.id }}</p>    
+                                        <a class="card-text mbr-fonts-style display-7" :href="`/order/${transaction?.order}`">Order #:
+                                            {{ transaction?.order }}</a>
+                                        <p class="card-text mbr-fonts-style display-7">Transaction ID: {{ transaction?.id }}</p>
                                         <p class="card-text mbr-fonts-style display-7">Transaction Date:
-                                            {{ new Date(transaction?.created_at).toLocaleDateString() }}</p>
-                                        <p class="card-text mbr-fonts-style display-7">Is it Closed?
-                                            {{ transaction?.is_closed }}</p>
-                                        <p class="card-text mbr-fonts-style display-7">Parent Transaction ID: {{ transaction?.parent_id }}</p>
-                                        <p class="card-text mbr-fonts-style display-7">Payment ID: {{ transaction?.payment_id }}</p>
+                                            {{ transaction?.date_created ? new Date(transaction.date_created).toLocaleDateString() : '' }}</p>
+                                        <p class="card-text mbr-fonts-style display-7">Type: {{ transaction?.type }}</p>
+                                        <p class="card-text mbr-fonts-style display-7">Payment Method: {{ transaction?.payment_method }}</p>
+                                        <p class="card-text mbr-fonts-style display-7">Amount: {{ transaction?.amount }}</p>
+                                        <p class="card-text mbr-fonts-style display-7">Status: {{ transaction?.status }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -43,35 +43,40 @@
 </template>
 
 <script setup>
+    import { useAuth } from '#auth/app/composables/useAuth'
+
     const route = useRoute();
-    
+
+    // [...id].vue is a catch-all route, so route.params.id is an array.
+    const transactionId = computed(() =>
+        Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+    )
+
     const {
-        read
+        $directus,
+        $readItems
     } = useNuxtApp()
-    const { user, fetchSession } = useAuth()
-    await fetchSession()
-    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = getCurrentUserId()
+
+    const { data: session } = await useAuth().getSession()
+    const currentUserId = session?.user?.id ?? null
 
     const {
         data: transaction
-    } = await useAsyncData('transaction', () => {
+    } = await useAsyncData('transaction', async () => {
         if (!currentUserId) return null
-        return gateway.content(read('transactions', route.params.id, {
+        const results = await $directus.request($readItems('transactions', {
             filter: {
-                user: {
-                    _eq: `${currentUserId}`
+                id: { _eq: transactionId.value },
+                order: {
+                    user_id: { _eq: currentUserId }
                 }
             },
             limit: 1
-        })).then(response => response?.[0])
+        }))
+        return results?.[0] ?? null
     })
 
     useHead({
-        title: 'Transaction' + transaction?.value?.id || 'Transaction Page',
-    })
-
-    definePageMeta({
-        //middleware: ['auth-logged-in'],
+        title: transaction?.value?.id ? `Transaction ${transaction.value.id}` : 'Transaction Page',
     })
 </script>

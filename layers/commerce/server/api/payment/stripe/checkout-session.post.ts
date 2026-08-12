@@ -53,7 +53,13 @@ const requestSchema = Joi.object({
       promotion_code: Joi.string().optional()
     })
   ).optional(),
-  metadata: Joi.object().optional(),
+  // Client-supplied session metadata is intentionally NOT accepted here.
+  // The webhook trusts session metadata (listing_type/listing_id,
+  // contact_id/organization_id/invoice_id) to decide what to fulfill and
+  // which CRM records to attach a payment to — accepting arbitrary
+  // metadata from this endpoint would let a caller pay for one thing and
+  // claim fulfillment/attribution for another. All session metadata is
+  // built server-side below.
   locale: Joi.string().valid(
     'auto', 'bg', 'cs', 'da', 'de', 'el', 'en', 'en-GB', 'es', 'es-419',
     'et', 'fi', 'fil', 'fr', 'fr-CA', 'hr', 'hu', 'id', 'it', 'ja', 'ko',
@@ -103,8 +109,6 @@ interface CheckoutRequest {
   discounts ? : Array < {
       coupon ? : string;promotion_code ? : string
     } >
-    metadata ? : Record < string,
-  string >
   locale ? : string
   subscriptionData ? : {
     trial_period_days ? : number
@@ -159,7 +163,6 @@ export default defineEventHandler(async (event) => {
       collectBillingAddress,
       taxRates,
       discounts,
-      metadata,
       locale,
       subscriptionData,
       shippingOptions,
@@ -304,11 +307,12 @@ export default defineEventHandler(async (event) => {
       ...(allowPromotionCodes && {
         allow_promotion_codes: allowPromotionCodes
       }),
-      // buyer_id always comes from the resolved session, never from the
-      // client-supplied metadata object — the webhook uses it to attribute
-      // the resulting order, so it must not be spoofable.
+      // Session metadata is built entirely server-side, from values this
+      // endpoint has itself resolved and trusts — never from a client
+      // payload. The webhook uses these keys to decide what to fulfill
+      // and which CRM records to attach a payment to, so none of it can
+      // be caller-supplied.
       metadata: {
-        ...(metadata || {}),
         ...(buyerId && { buyer_id: buyerId }),
         // Read back by the webhook after payment to purchase the actual
         // shipping label for the rate the buyer was charged for.

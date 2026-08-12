@@ -71,14 +71,14 @@
             <v-card-text>
               <v-window v-model="tab">
                 <!--Product Description-->
-                <v-window-item :value="productbar?.menus[0]?.value">
+                <v-window-item :value="productbar?.menus?.[0]?.value">
                   <v-card variant="text">
                     <v-card-text style="font-size: 20px;" v-html="product?.content"></v-card-text>
                   </v-card>
                 </v-window-item>
 
                 <!--Product Reviews-->
-                <v-window-item :value="productbar?.menus[1]?.value">
+                <v-window-item :value="productbar?.menus?.[1]?.value">
                   <!---<div v-if="product?.reviews?.items?.length > 0">
                   <div v-for="(review, index) in product?.reviews?.items" :key="index">
                     <productReviews :review="review" />
@@ -90,12 +90,12 @@
                 </v-window-item>
 
                 <!--Product Specifications-->
-                <v-window-item :value="productbar?.menus[2]?.value">
+                <v-window-item :value="productbar?.menus?.[2]?.value">
                   <productSpecs :product="product" />
                 </v-window-item>
 
                 <!--Product FAQs-->
-                <v-window-item :value="productbar?.menus[3]?.value">
+                <v-window-item :value="productbar?.menus?.[3]?.value">
                   <v-expansion-panels v-for="(faqs, index) in product?.faqs?.faqs_id" :key="index">
                     <v-expansion-panel :title="faqs.question" :text="faqs.answer">
                     </v-expansion-panel>

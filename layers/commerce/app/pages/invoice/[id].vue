@@ -1,6 +1,5 @@
 <template>
     <div>
-        <profilebar />
         <section data-bs-version="5.1" class="features07 scalem5 cid-uhB4hw1yxB mbr-fullscreen" id="features07-9l">
             <div class="container">
                 <div class="row">
@@ -278,35 +277,32 @@
 </script>
 
 <script setup>
+    import { useAuth } from '#auth/app/composables/useAuth'
+
     const route = useRoute();
     const {
-        read
+        $directus,
+        $readItems
     } = useNuxtApp()
-    const { user, fetchSession } = useAuth()
-    await fetchSession()
-    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = getCurrentUserId()
+
+    const { data: session } = await useAuth().getSession()
+    const currentUserId = session?.user?.id ?? null
 
     const {
         data: invoice
-    } = await useAsyncData('invoice', () => {
+    } = await useAsyncData('invoice', async () => {
         if (!currentUserId) return null
-        return gateway.content(read('invoices', route.params.id, {
+        const results = await $directus.request($readItems('invoices', {
             filter: {
-                user: {
-                    _eq: `${currentUserId}`
-                }
+                id: { _eq: route.params.id },
+                user: { _eq: currentUserId }
             },
             limit: 1
-        })).then(response => response?.[0])
+        }))
+        return results?.[0] ?? null
     })
 
     useHead({
-        title: 'Invoice' + invoice?.value?.id || 'Invoice Page',
-    })
-
-
-    definePageMeta({
-        //middleware: ['auth-logged-in'],
+        title: invoice?.value?.id ? `Invoice ${invoice.value.id}` : 'Invoice Page',
     })
 </script>

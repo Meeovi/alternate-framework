@@ -54,13 +54,14 @@
 <script setup>
 
     const {
-        read
+        $directus,
+        $readItem
     } = useNuxtApp()
 
     const {
         data: page
     } = await useAsyncData('page', () => {
-        return gateway.content(read('page', '46', {
+        return $directus.request($readItem('pages', '46', {
             fields: ['*', {
                 '*': ['*']
             }]

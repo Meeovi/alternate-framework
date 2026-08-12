@@ -193,7 +193,18 @@ export default defineEventHandler(async (event) => {
           }),
         )
 
-        // Fulfillment by listing type
+        // Fulfillment by listing type — this branch is for marketplace
+        // listings sold by third-party sellers (Stripe Connect), separate
+        // from the standard storefront cart purchase handled in the `else`
+        // branch below. Session metadata is now built entirely server-side
+        // in checkout-session.post.ts and never sets listing_type/
+        // listing_id, so this only fires for a Checkout Session created
+        // outside this app (e.g. directly via the Stripe API/Dashboard) —
+        // there is currently no in-app marketplace purchase flow that
+        // reaches it. digital_fulfillment_tokens (below) is also not read
+        // by the digital-download endpoint (server/api/download/[orderId]
+        // .get.ts, which reads orders.file_id/download_token instead) —
+        // these two are not yet wired together.
         const listingMeta = normalizeMetadata(metadata)
         const { listing_type, listing_id, buyer_id } = listingMeta
 
@@ -244,6 +255,26 @@ export default defineEventHandler(async (event) => {
           // Standard multi-item cart purchase (no marketplace listing_type)
           // — this is the path a normal storefront checkout takes, and it
           // previously never wrote an order at all.
+          //
+          // Idempotency here is checked against `orders` specifically, not
+          // just the `os_payments` guard above — os_payments is written
+          // before this point, so if order creation (or the Shippo label
+          // purchase before it) throws, Stripe's retry would otherwise
+          // short-circuit on the os_payments check and silently never
+          // create the order at all despite the customer having been
+          // charged. Checking here means a retry after a partial failure
+          // still creates the missing order instead of skipping it.
+          const existingOrder = await directusServer.request(
+            readItems('orders', {
+              filter: { stripe_payment_id: { _eq: paymentIntentId } },
+              fields: ['id'],
+              limit: 1,
+            }),
+          )
+          if (Array.isArray(existingOrder) && existingOrder.length > 0) {
+            break
+          }
+
           const lineItems = await stripe.checkout.sessions.listLineItems(checkoutSession.id, {
             expand: ['data.price.product'],
           })

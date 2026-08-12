@@ -1,25 +1,21 @@
 import Joi from 'joi'
 import { createManifest } from '../../utils/shippo'
+import { requireShippingAdmin } from '../../utils/shipping-admin'
+import { getShippingOrigin } from '../../utils/shipping-origin'
 import { createError } from 'h3'
-
-const addressSchema = Joi.object({
-  street1: Joi.string().required(),
-  street2: Joi.string().optional(),
-  city: Joi.string().required(),
-  state: Joi.string().required(),
-  zip: Joi.string().required(),
-  country: Joi.string().length(2).required(),
-})
 
 const schema = Joi.object({
   carrier_account: Joi.string().required(),
   shipment_date: Joi.string().optional(),
-  address_from: addressSchema.required(),
   transactions: Joi.array().items(Joi.string()).optional(),
 })
 
 export default defineEventHandler(async (event) => {
   try {
+    // Closing a carrier manifest is an ops/batch action, not something a
+    // shopper ever does — only trusted backend callers may hit it.
+    requireShippingAdmin(event)
+
     const body = await readBody(event)
     const { error, value } = schema.validate(body, { abortEarly: false })
 
@@ -31,7 +27,10 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await createManifest(value)
+    const result = await createManifest({
+      ...value,
+      address_from: getShippingOrigin(),
+    })
 
     return {
       success: result.object_status === 'SUCCESS',

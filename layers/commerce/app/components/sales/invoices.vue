@@ -34,8 +34,8 @@
             <v-tabs-window-item :value="invoiceBar?.menus?.[0]?.value">
                 <v-row class="media-container-row">
                     <template v-if="invoices?.length">
-                        <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="transaction in invoices" :key="transaction.id">
-                            <invoiceCard :post="transaction" />
+                        <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="invoiceItem in invoices" :key="invoiceItem.id">
+                            <invoiceCard :invoice="invoiceItem" />
                         </v-col>
                     </template>
                     <div class="center-text" v-else>No Invoices Available</div>
@@ -51,11 +51,10 @@
         computed
     } from 'vue'
     import invoiceCard from '../related/invoiceCard.vue'
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
+    import { useAuth } from '#auth/app/composables/useAuth'
 
-    const user = useSupabaseUser()
+    const { data: session } = await useAuth().getSession()
+    const userId = session?.user?.id ?? null
 
     const {
         $directus,
@@ -88,13 +87,12 @@
     const {
         data: invoices
     } = await useAsyncData('invoices', async () => {
+        if (!userId) return []
         const resp = await $directus.request($readItems('invoices', {
-            fields: ['*', {
-                '*': ['*']
-            }],
+            fields: ['*'],
             filter: {
-                user_id: {
-                    _eq: user.id
+                user: {
+                    _eq: userId
                 }
             }
         }))

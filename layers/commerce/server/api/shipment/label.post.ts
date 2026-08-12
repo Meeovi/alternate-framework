@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import { createTransaction } from '../../utils/shippo'
+import { requireShippingAdmin } from '../../utils/shipping-admin'
 import { createError } from 'h3'
 
 const schema = Joi.object({
@@ -15,6 +16,12 @@ const schema = Joi.object({
 
 export default defineEventHandler(async (event) => {
   try {
+    // This actually spends money against the merchant's Shippo balance —
+    // only trusted backend/ops callers may hit it directly. The buyer-
+    // facing checkout flow purchases labels via the Stripe webhook after
+    // payment clears, never through this endpoint.
+    requireShippingAdmin(event)
+
     const body = await readBody(event)
     const { error, value } = schema.validate(body, { abortEarly: false })
 

@@ -20,8 +20,8 @@
                                     </div>
                                 </div>
                                 <p class="card-text mbr-fonts-style display-4">Invoice: {{ invoice?.id }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Invoice Date: {{ new Date(invoice?.created_at).toLocaleDateString() }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Bill to Name: {{ invoice?.user?.first_name }} {{ invoice?.user?.last_name }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Invoice Date: {{ invoice?.created_at ? new Date(invoice.created_at).toLocaleDateString() : '' }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Grand Total: {{ invoice?.grand_total }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Status: {{ invoice?.state }}</p>
                                 <p class="btn_link mbr-fonts-style display-4"><NuxtLink :to="`/invoice/${invoice?.id}`" class="text-secondary">View<span class="mobi-mbri mobi-mbri-right mbr-iconfont"></span></NuxtLink></p>
                             </div>

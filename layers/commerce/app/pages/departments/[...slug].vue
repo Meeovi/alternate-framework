@@ -208,6 +208,13 @@
         $readItems
     } = useNuxtApp()
 
+    // [...slug].vue is a catch-all route, so route.params.slug is an array
+    // of segments — every query below filters by slug rather than passing
+    // the raw array as a Directus primary key.
+    const departmentSlug = computed(() =>
+        Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
+    )
+
     const {
         data: department
     } = await useAsyncData('department', async () => {
@@ -224,7 +231,7 @@
             ],
             filter: {
                 slug: {
-                    _eq: `${route.params.slug}`
+                    _eq: departmentSlug.value
                 }
             },
             limit: 1
@@ -234,21 +241,35 @@
 
     const {
         data: introProducts
-    } = await useAsyncData('introProducts', () => {
-        return $directus.request($readItem('departments', route.params.slug, {
+    } = await useAsyncData('introProducts', async () => {
+        const result = await $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
                 'showcases.showcases_id.*',
                 'images.*'
             ],
+            filter: {
+                slug: { _eq: departmentSlug.value }
+            },
             limit: 2,
         }))
+        return Array.isArray(result) ? result[0] : null
     })
+
+    // These department-scoped queries filter the `departments` collection
+    // itself (to match slug + the relevant products/showcases condition)
+    // but the template renders a flat list of products, so the nested
+    // products.products_id relation is extracted out here.
+    const extractProducts = (departments) =>
+        (Array.isArray(departments) ? departments : [])
+            .flatMap((dept) => dept?.products || [])
+            .map((p) => p?.products_id)
+            .filter(Boolean)
 
     const {
         data: best
-    } = await useAsyncData('best', () => {
-        return $directus.request($readItem('departments', route.params.slug, {
+    } = await useAsyncData('best', async () => {
+        const result = await $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
                 'showcases.showcases_id.*',
@@ -256,6 +277,7 @@
             ],
             limit: 10,
             filter: {
+                slug: { _eq: departmentSlug.value },
                 showcases: {
                     showcases_id: {
                         name: {
@@ -265,12 +287,13 @@
                 }
             }
         }))
+        return extractProducts(result)
     })
 
     const {
         data: latestProducts
-    } = await useAsyncData('latestProducts', () => {
-        return $directus.request($readItem('departments', route.params.slug, {
+    } = await useAsyncData('latestProducts', async () => {
+        const result = await $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
                 'showcases.showcases_id.*',
@@ -278,6 +301,7 @@
             ],
             limit: 10,
             filter: {
+                slug: { _eq: departmentSlug.value },
                 products: {
                     products_id: {
                         status: {
@@ -287,12 +311,13 @@
                 }
             }
         }))
+        return extractProducts(result)
     })
 
     const {
         data: localProducts
     } = await useAsyncData('localProducts', () => {
-        return $directus.request($readItem('departments', route.params.slug, {
+        return $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
                 'showcases.showcases_id.*',
@@ -300,6 +325,7 @@
             ],
             limit: 2,
             filter: {
+                slug: { _eq: departmentSlug.value },
                 products: {
                     products_id: {
                         status: {
@@ -313,8 +339,8 @@
 
     const {
         data: events
-    } = await useAsyncData('events', () => {
-        return $directus.request($readItem('departments', route.params.slug, {
+    } = await useAsyncData('events', async () => {
+        const result = await $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
                 'showcases.showcases_id.*',
@@ -322,6 +348,7 @@
             ],
             limit: 10,
             filter: {
+                slug: { _eq: departmentSlug.value },
                 products: {
                     products_id: {
                         products_type: {
@@ -335,6 +362,7 @@
                 }
             }
         }))
+        return extractProducts(result)
     })
 
     const {

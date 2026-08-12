@@ -27,14 +27,15 @@
   } from '#imports'
 
   const {
-    read,
+    $directus,
+    $readItems,
   } = useNuxtApp()
 
   const {
     data: stationSlide,
   } = await useAsyncData('stationSlide', async () => {
     try {
-      const result = await gateway.content(read('radios', {
+      const result = await $directus.request($readItems('radios', {
         fields: ['id', 'name'],
         filter: {
           status: {
@@ -43,7 +44,7 @@
         },
       }))
 
-      return Array.isArray(result) ? result : (result?.data || [])
+      return Array.isArray(result) ? result : []
     } catch {
       return []
     }

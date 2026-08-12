@@ -15,7 +15,7 @@
       </tr>
       <tr>
         <th>Category Name</th>
-        <td><div style="display: inline-block;" v-for="categories in product?.categories" :key="categories">{{ categories?.categories_id?.name.join(', ') }}</div></td>
+        <td><div style="display: inline-block;" v-for="categories in product?.categories" :key="categories?.categories_id?.id ?? categories">{{ categories?.categories_id?.name }}</div></td>
       </tr>
       <tr>
         <th>Price</th>

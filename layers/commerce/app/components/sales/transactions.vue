@@ -37,7 +37,7 @@
                 <v-row class="media-container-row">
                     <template v-if="transactions?.length">
                         <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="transaction in transactions" :key="transaction.id">
-                            <postCard :post="transaction" />
+                            <transactionCard :transaction="transaction" />
                         </v-col>
                     </template>
                     <div class="center-text" v-else>No Transactions Available</div>
@@ -51,12 +51,11 @@
     import {
         ref,
     } from 'vue'
-    import postCard from '../related/post.vue'
-    import {
-        useUserStore
-    } from '#auth/app/stores/user'
+    import transactionCard from '../related/transactionCard.vue'
+    import { useAuth } from '#auth/app/composables/useAuth'
 
-    const user = useSupabaseUser()
+    const { data: session } = await useAuth().getSession()
+    const userId = session?.user?.id ?? null
 
     const {
         $directus,
@@ -89,13 +88,14 @@
     const {
         data: transactions
     } = await useAsyncData('transactions', async () => {
+        if (!userId) return []
         const resp = await $directus.request($readItems('transactions', {
-            fields: ['*', {
-                '*': ['*']
-            }],
+            fields: ['*'],
             filter: {
-                user_id: {
-                    _eq: user?.id
+                order: {
+                    user_id: {
+                        _eq: userId
+                    }
                 }
             }
         }))

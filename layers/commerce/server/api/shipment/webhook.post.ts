@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import { createWebhook, listWebhooks } from '../../utils/shippo'
+import { requireShippingAdmin } from '../../utils/shipping-admin'
 import { createError } from 'h3'
 
 const createSchema = Joi.object({
@@ -10,6 +11,12 @@ const createSchema = Joi.object({
 
 export default defineEventHandler(async (event) => {
   try {
+    // Registering/listing webhooks reconfigures where the merchant's live
+    // Shippo account sends shipment events — an anonymous caller must
+    // never be able to do this (they could redirect tracking events to
+    // their own server, or enumerate existing webhook URLs).
+    requireShippingAdmin(event)
+
     const method = event.node.req.method
 
     if (method === 'POST') {
