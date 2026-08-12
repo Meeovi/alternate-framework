@@ -11,31 +11,57 @@
 </template>
 
 <script setup>
-import { loadStripe } from '@stripe/stripe-js'
-import { useRuntimeConfig } from '#app'
+  import {
+    loadStripe
+  } from '@stripe/stripe-js'
+  import {
+    useRuntimeConfig
+  } from '#app'
+  import { useCartStore } from '../stores/cart'
 
-const checkoutRef = ref(null)
-const loading = ref(true)
-const error = ref('')
-const config = useRuntimeConfig()
+  const checkoutRef = ref(null)
+  const loading = ref(true)
+  const error = ref('')
+  const config = useRuntimeConfig()
+  const cartStore = useCartStore()
 
-onMounted(async () => {
-  try {
+  onMounted(async () => {
+    try {
+      if (cartStore.items.length === 0) {
+        error.value = 'Your cart is empty'
+        loading.value = false
+        return
+      }
+
       const stripe = await loadStripe(config.public.stripePublishableKey)
-    
-    const { clientSecret } = await $fetch('/api/create-checkout-session', {
-      method: 'POST'
-    })
 
-    const checkout = await stripe.initEmbeddedCheckout({
-      clientSecret
-    })
+      // The server resolves each item's real price from the catalog by id —
+      // it never trusts a price sent from here.
+      const items = cartStore.items.map((item) => ({
+        id: String(item.productId ?? item.id),
+        quantity: Number(item.quantity ?? item.qty ?? 1)
+      }))
 
-    checkout.mount('#checkout')
-    loading.value = false
-  } catch (err) {
-    error.value = 'Failed to load checkout'
-    loading.value = false
-  }
-})
+      const {
+        clientSecret
+      } = await $fetch('/api/payment/stripe/checkout-session', {
+        method: 'POST',
+        body: { items }
+      })
+
+      const checkout = await stripe.initEmbeddedCheckout({
+        clientSecret
+      })
+
+      checkout.mount('#checkout')
+      loading.value = false
+    } catch (err) {
+      error.value = 'Failed to load checkout'
+      loading.value = false
+    }
+  })
+
+  definePageMeta({
+    layout: 'nolive',
+  });
 </script>

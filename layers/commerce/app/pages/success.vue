@@ -36,9 +36,11 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useCartStore } from '../stores/cart'
 
 const route = useRoute()
 const sessionId = route.query.session_id
+const cartStore = useCartStore()
 
 type CheckoutDetails = {
   checkout: {
@@ -65,6 +67,10 @@ const checkout = computed(() => data.value?.checkout)
 const product = computed(() => data.value?.product)
 
 onMounted(() => {
+  if (checkout.value) {
+    cartStore.clearCart()
+  }
+
   const countdownElement = document.createElement('p')
   let countdown = 10
   countdownElement.className = 'text-sm text-muted-foreground mt-4'

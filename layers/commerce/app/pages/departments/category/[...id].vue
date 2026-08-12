@@ -10,7 +10,7 @@
       <v-card variant="text">
         <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`">
           <v-toolbar-title>
-            <NuxtLink :to="`/departments/${category?.departments?.[0]?.departments_id?.name}`">
+            <NuxtLink :to="`/departments/${category?.departments?.[0]?.departments_id?.name?.toLowerCase()}`">
               Meeovi {{ category?.departments?.[0]?.departments_id?.name }}
             </NuxtLink>
             - {{ category?.name }}
@@ -78,7 +78,6 @@
   import Restaurants from '../../../components/catalog/categories/restaurants.vue'
 
   const route = useRoute()
-  const gateway = useAppGateway()
   const {
     $directus,
     $readItems

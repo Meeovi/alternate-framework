@@ -64,16 +64,17 @@
     })
 
     const {
-        read
+        $directus,
+        $readItems,
+        $readItem
     } = useNuxtApp()
 
     const {
         data: cards
     } = await useAsyncData('cards', () => {
-        return gateway.content(read('products', {
+        return $directus.request($readItems('products', {
             fields: ['*',
                 'image.*',
-                'currency.currency_id.*'
             ],
             filter: {
                 product_types: {
@@ -90,10 +91,10 @@
     const {
         data: mycards
     } = await useAsyncData('mycards', () => {
-        return gateway.content(read('products', {
+        if (!userStore.user?.id) return []
+        return $directus.request($readItems('products', {
             fields: ['*',
                 'image.*',
-                'currency.currency_id.*'
             ],
             filter: {
                 product_types: {
@@ -105,7 +106,7 @@
                 },
                 user: {
                     data_users: {
-                        _eq: `${userDisplayName.user.displayName}`
+                        _eq: userStore.user.id
                     }
                 }
             }
@@ -115,14 +116,10 @@
     const {
         data: callouts
     } = await useAsyncData('callouts', () => {
-        return gateway.content(read('callouts', '4'))
+        return $directus.request($readItem('callouts', '4'))
     })
 
     useHead({
         title: 'Gift Cards',
-    })
-
-    definePageMeta({
-        middleware: ['auth'],
     })
 </script>

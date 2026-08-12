@@ -1,7 +1,16 @@
 // server/api/payment/stripe/checkout-session.post.ts
 import Stripe from 'stripe'
 import Joi from 'joi'
+import { createDirectus, rest, staticToken, readItem } from '@directus/sdk'
 import { stripe } from '../../../utils/stripe'
+import { getAuthSession } from '#auth/server/utils/sessions'
+
+// A privileged client used only to look up each item's authoritative price —
+// never trust a client-supplied `item.price`, since that would let a caller
+// dictate what they get charged.
+const directus = createDirectus(process.env.DIRECTUS_URL!)
+  .with(rest())
+  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
 
 // 8 random letters for the integration_identifier suffix (per stripe skill).
 const randomSuffix = Array.from({ length: 8 }, () =>
@@ -9,20 +18,16 @@ const randomSuffix = Array.from({ length: 8 }, () =>
 ).join('')
 
 // Validation schemas
+// Note: `name`, `description`, `price`, and `images` are intentionally NOT
+// trusted from the client when `priceId` is absent — see the lookup below.
+// They're accepted here only so older callers don't fail validation; the
+// values are discarded in favor of the authoritative Directus product record.
 const itemSchema = Joi.object({
   id: Joi.string().required(),
   priceId: Joi.string().optional(),
-  name: Joi.string().when('priceId', {
-    is: Joi.exist(),
-    then: Joi.optional(),
-    otherwise: Joi.required()
-  }),
+  name: Joi.string().optional(),
   description: Joi.string().optional(),
-  price: Joi.number().positive().when('priceId', {
-    is: Joi.exist(),
-    then: Joi.optional(),
-    otherwise: Joi.required()
-  }),
+  price: Joi.number().positive().optional(),
   quantity: Joi.number().integer().min(1).max(100).required(),
   images: Joi.array().items(Joi.string().uri()).max(8).optional(),
   metadata: Joi.object().optional()
@@ -128,6 +133,13 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Resolve the buyer from the request's own session — never from a
+    // client-supplied field — so the webhook can attribute the resulting
+    // order to the right account. Guests (no session) can still check out;
+    // their order just won't have a buyer_id to look up later.
+    const authSession = await getAuthSession(event).catch(() => null)
+    const buyerId = authSession?.user?.id as string | undefined
+
     const {
       items,
       mode,
@@ -179,21 +191,53 @@ export default defineEventHandler(async (event) => {
             lineItem.tax_rates = taxRates
           }
         } else {
+          // Never trust item.price/name/description/images from the client —
+          // resolve the real product from Directus and price it from there.
+          // Note: `description` is intentionally not requested — the static
+          // token used here does not have field-level read access to it on
+          // `products`, and it's not essential to computing a safe price.
+          const product = await directus.request(
+            readItem('products', item.id, {
+              fields: ['id', 'name', 'price', 'image.filename_disk']
+            })
+          ).catch(() => null) as {
+            id: string
+            name?: string
+            price?: number | string
+            image?: { filename_disk?: string }
+          } | null
+
+          // Directus serializes decimal columns as strings, so this must be
+          // coerced rather than checked with typeof — otherwise every
+          // correctly-priced product gets rejected as "unpriced".
+          const productPrice = Number(product?.price)
+
+          if (!product || !Number.isFinite(productPrice)) {
+            throw createError({
+              statusCode: 400,
+              statusMessage: `Unknown or unpriced product: ${item.id}`
+            })
+          }
+
+          const productImageUrl = product.image?.filename_disk
+            ? `${process.env.DIRECTUS_URL}/assets/${product.image.filename_disk}`
+            : undefined
+
           lineItem.price_data = {
             currency: activeCurrency, // Fixed: guaranteed string, never undefined
             product_data: {
-              name: item.name!,
-              ...(item.description && {
-                description: item.description
+              name: product.name || item.id,
+              ...(productImageUrl && {
+                images: [productImageUrl]
               }),
-              ...(item.images && item.images.length > 0 && {
-                images: item.images
-              }),
-              ...(item.metadata && {
-                metadata: item.metadata
-              })
+              // internal_product_id lets the webhook re-link this Stripe line
+              // item back to the real Directus product when it writes the order.
+              metadata: {
+                ...(item.metadata || {}),
+                internal_product_id: item.id
+              }
             },
-            unit_amount: Math.round(item.price! * 100)
+            unit_amount: Math.round(productPrice * 100)
           }
 
           if (mode === 'subscription') {
@@ -243,8 +287,9 @@ export default defineEventHandler(async (event) => {
       line_items: lineItems,
       mode: sessionMode,
       ui_mode: 'embedded_page',
-      // Stripe docs: redirect back with the session id so the app can load details
-      return_url: successUrl || `${domain}/done?session_id={CHECKOUT_SESSION_ID}`,
+      // Stripe docs: redirect back with the session id so the app can load
+      // details — /success reads it via /api/payment/stripe/done.
+      return_url: successUrl || `${domain}/success?session_id={CHECKOUT_SESSION_ID}`,
       // Tag the session for Dashboard checkout-flow tracking/comparison.
       integration_identifier: `alternate-checkout-${randomSuffix}`,
       ...(locale && locale !== 'auto' && {
@@ -253,9 +298,13 @@ export default defineEventHandler(async (event) => {
       ...(allowPromotionCodes && {
         allow_promotion_codes: allowPromotionCodes
       }),
-      ...(metadata && {
-        metadata
-      })
+      // buyer_id always comes from the resolved session, never from the
+      // client-supplied metadata object — the webhook uses it to attribute
+      // the resulting order, so it must not be spoofable.
+      metadata: {
+        ...(metadata || {}),
+        ...(buyerId && { buyer_id: buyerId })
+      }
     }
 
     // Add customer information

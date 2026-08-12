@@ -44,7 +44,6 @@
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',
-        'currency.currency_id.*',
         'brands.brands_id.*',
         'image.*',
       ],

@@ -31,18 +31,18 @@
 
   const model = ref(null);
   const {
-    read
+    $directus,
+    $readItems
   } = useNuxtApp()
 
   const {
     data: latest
   } = await useAsyncData('latest', async () => {
     try {
-      return await gateway.content(read('products', {
+      return await $directus.request($readItems('products', {
         fields: ['*',
           'products.products_id.*',
           'products.products_id.image.*',
-          'currency.currency_id.*',
           'brands.brands_id.*',
           'image.*',
         ],

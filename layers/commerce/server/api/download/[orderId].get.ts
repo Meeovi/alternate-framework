@@ -1,21 +1,23 @@
 // server/api/download/[orderId].get.ts
-import { createDirectus, rest, readItem, readItems } from '@directus/sdk'
-
-const { auth } = useNuxtApp() as any
+import { createDirectus, rest, readItem, staticToken } from '@directus/sdk'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 export default defineEventHandler(async (event) => {
   // 1. Validate the user session via Better Auth
-  const session = await auth.api.getSession({ headers: event.node.req.headers })
-  if (!session?.user) {
-    throw createError({ statusCode: 401, message: 'Unauthorized' })
-  }
+  const user = await requireAuth(event)
 
   const orderId = getRouterParam(event, 'orderId')
   if (!orderId) {
     throw createError({ statusCode: 400, message: 'Missing orderId' })
   }
 
-  const directus = createDirectus(process.env.DIRECTUS_URL!).with(rest())
+  // A privileged, static-token client is required here — the order lookup
+  // must be authoritative regardless of the requesting user's own Directus
+  // permissions, since the whole point of this endpoint is to check
+  // ownership *before* trusting anything the caller claims.
+  const directus = createDirectus(process.env.DIRECTUS_URL!)
+    .with(rest())
+    .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
 
   // 2. Fetch the order record to verify ownership and status
   const order = await directus.request(
@@ -28,7 +30,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Order not found' })
   }
 
-  if (order.buyer_id !== session.user.id) {
+  if (order.buyer_id !== user.id) {
     throw createError({ statusCode: 403, message: 'Access denied to this asset.' })
   }
 

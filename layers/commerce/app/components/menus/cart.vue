@@ -22,9 +22,9 @@
       <v-divider></v-divider>
 
       <div class="cart-items">
-        <template v-if="cartStore?.items?.length">
+        <template v-if="cartStore.items.length">
           <v-list>
-            <v-list-item v-for="item in cartStore?.items || []" :key="item.id" class="cart-item">
+            <v-list-item v-for="item in cartStore.items" :key="item.key" class="cart-item">
               <v-row align="center">
                 <v-col cols="3">
                   <v-img :src="item.image || '/images/placeholder.png'" height="60" width="60" contain></v-img>
@@ -33,18 +33,18 @@
                   <div class="text-subtitle-1">{{ item.name }}</div>
                   <div class="text-caption">${{ item.price }}</div>
                   <div class="d-flex align-center mt-2">
-                    <v-btn icon size="x-small" @click="updateQuantity(item.id, item.quantity - 1)"
+                    <v-btn icon size="x-small" @click="cartStore.updateQuantity(item.key, item.quantity - 1)"
                       :disabled="item.quantity <= 1">
                       <v-icon>mdi-minus</v-icon>
                     </v-btn>
                     <span class="mx-2">{{ item.quantity }}</span>
-                    <v-btn icon size="x-small" @click="updateQuantity(item.id, item.quantity + 1)">
+                    <v-btn icon size="x-small" @click="cartStore.updateQuantity(item.key, item.quantity + 1)">
                       <v-icon>mdi-plus</v-icon>
                     </v-btn>
                   </div>
                 </v-col>
                 <v-col cols="3" class="text-right">
-                  <v-btn color="error" icon size="small" @click="removeFromCart(item.id)" aria-label="Remove item">
+                  <v-btn color="error" icon size="small" @click="cartStore.removeItemByKey(item.key)" aria-label="Remove item">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </v-col>
@@ -57,7 +57,7 @@
           <div class="px-4">
             <div class="d-flex justify-space-between mb-2">
               <span>Subtotal:</span>
-              <span>${{ cartStore?.totalPrice || 0 }}</span>
+              <span>${{ cartStore.total }}</span>
             </div>
             <div class="d-flex justify-space-between mb-2">
               <span>Shipping:</span>
@@ -66,7 +66,7 @@
             <v-divider class="my-2"></v-divider>
             <div class="d-flex justify-space-between font-weight-bold">
               <span>Total:</span>
-              <span>${{ cartStore?.totalPrice || 0 }}</span>
+              <span>${{ cartStore.total }}</span>
             </div>
           </div>
         </template>
@@ -79,7 +79,7 @@
 
       <!-- Cart Actions -->
       <v-card-actions class="checkout-section">
-        <v-btn color="error" block @click="handleClearCart" :disabled="!cartStore?.items?.length"
+        <v-btn color="error" block @click="handleClearCart" :disabled="!cartStore.items.length"
           aria-label="Clear shopping cart">
           Clear Cart
         </v-btn>
@@ -87,7 +87,7 @@
 
       <!-- Checkout Button -->
       <v-card-actions class="checkout-section">
-        <v-btn color="primary" block @click="handleCheckout" :disabled="!cartStore?.items?.length"
+        <v-btn color="primary" block :loading="loading" @click="handleCheckout" :disabled="!cartStore.items.length"
           aria-label="Proceed to checkout">
           Proceed to Checkout
         </v-btn>
@@ -114,117 +114,28 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { loadStripe } from '@stripe/stripe-js'
+import { ref, computed } from 'vue'
 import { useCartStore } from '../../stores/cart'
-import { useCart } from '../../composables/sales/cart/useCart'
-import { useNuxtApp, useRuntimeConfig } from '#app'
 
 const cartNotification = ref(false)
 const notificationMessage = ref('')
 const drawer = ref(false)
-const router = useRouter()
 const showConfirmDialog = ref(false)
 const loading = ref(false)
-const cartId = useCookie('magento_cart_id')
 
-const cartStore = process.client ? useCartStore() : null
-const { removeFromCart, updateCartItem, fetchCart, clearCart: clearCartItems } = process.client
-  ? useCart()
-  : { removeFromCart: () => {}, updateCartItem: () => {}, fetchCart: () => {}, clearCart: () => {} }
+const cartStore = useCartStore()
 
-onMounted(async () => {
-  if (process.client) await fetchCart()
-})
+const totalQuantity = computed(() =>
+  cartStore.items.reduce((total, item) => total + (item?.quantity || 0), 0)
+)
 
-const totalQuantity = computed(() => {
-  if (!process.client || !cartStore || !cartStore.items) return 0
-  return cartStore.items.reduce((total, item) => total + (item?.quantity || 0), 0)
-})
-
-const updateQuantity = async (itemId, newQuantity) => {
-  try {
-    loading.value = true
-    await updateCartItem(itemId, newQuantity)
-    showNotification('Cart updated')
-  } catch (error) {
-    console.error('Error updating quantity:', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-const nuxtApp = useNuxtApp()
 const handleCheckout = async () => {
   try {
     loading.value = true
-    const createCheckoutSession = cartStore?.createCheckoutSession
-    const currentCartId = cartStore?.cart?.id
-    if (typeof createCheckoutSession !== 'function' || !currentCartId) {
-      showNotification('Checkout is not available')
-      return
-    }
-
-    const data = await createCheckoutSession(currentCartId)
-    const checkoutUrl = typeof data?.url === 'string' ? data.url.trim() : ''
-
-    if (checkoutUrl) {
-      let parsedCheckoutUrl
-      try {
-        parsedCheckoutUrl = new URL(checkoutUrl)
-      } catch {
-        showNotification('Failed to start checkout')
-        return
-      }
-
-      if (parsedCheckoutUrl.protocol !== 'https:') {
-        showNotification('Failed to start checkout')
-        return
-      }
-
-      window.location.assign(parsedCheckoutUrl.toString())
-      return
-    }
-
-    if (data?.id) {
-      const injectedStripe = nuxtApp?.$stripe || (typeof useStripe === 'function' ? useStripe() : null)
-
-      if (injectedStripe && typeof injectedStripe.redirectToCheckout === 'function') {
-        const result = await injectedStripe.redirectToCheckout({ sessionId: data.id })
-        if (result?.error) {
-          showNotification('Failed to start checkout')
-        }
-        return
-      }
-
-      const stripeKey = useRuntimeConfig().public.stripePublishableKey
-      if (!stripeKey || typeof stripeKey !== 'string' || !stripeKey.startsWith('pk_')) {
-        showNotification('Checkout is not available')
-        return
-      }
-
-      const stripe = await loadStripe(stripeKey)
-      if (!stripe) {
-        showNotification('Checkout is not available')
-        return
-      }
-
-      const { error: stripeError } = await stripe.redirectToCheckout({ sessionId: data.id })
-      if (stripeError) {
-        showNotification('Failed to start checkout')
-      }
-      return
-    }
-
-    showNotification('Failed to start checkout')
+    await cartStore.createCheckoutSession()
   } catch (error) {
-    if (import.meta.dev) {
-      console.error('Checkout error:', error)
-    } else {
-      console.error('Checkout error')
-    }
-    showNotification('Error starting checkout')
+    console.error('Checkout error:', import.meta.dev ? error : '')
+    showNotification('Unable to start checkout')
   } finally {
     loading.value = false
   }
@@ -234,15 +145,11 @@ const handleClearCart = () => {
   showConfirmDialog.value = true
 }
 
-const confirmClear = async () => {
-  try {
-    await clearCartItems()
-    showConfirmDialog.value = false
-    showNotification('Cart cleared')
-    drawer.value = false
-  } catch (error) {
-    console.error('Error clearing cart:', error)
-  }
+const confirmClear = () => {
+  cartStore.clearCart()
+  showConfirmDialog.value = false
+  showNotification('Cart cleared')
+  drawer.value = false
 }
 
 const showNotification = (message) => {

@@ -135,7 +135,7 @@
 import { computed, ref, watch } from 'vue'
 import { usePrice } from '../../../composables/catalog/price/price'
 import { useAppGateway } from '#shared/app/composables/useAppGateway'
-import ratings from '../../partials/ratings.vue'
+import ratings from '../../blocks/ratings.vue'
 
 const props = defineProps({
   product: {

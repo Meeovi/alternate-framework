@@ -1,5 +1,7 @@
 import { stripe } from '../../../utils/stripe'
+import { CONNECT_OWNER_METADATA_KEY } from '../../../utils/connect-auth'
 import { createError, defineEventHandler, readBody } from 'h3'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 /**
  * POST /api/commerce/connect/account
@@ -11,6 +13,8 @@ import { createError, defineEventHandler, readBody } from 'h3'
  * Body: { email?: string }
  */
 export default defineEventHandler(async (event) => {
+  const user = await requireAuth(event)
+
   const body = await readBody(event)
   const email = typeof body?.email === 'string' ? body.email.trim() : ''
 
@@ -25,6 +29,11 @@ export default defineEventHandler(async (event) => {
       integration_identifier: `alternate-connect-${Array.from({ length: 8 }, () =>
         'abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)]
       ).join('')}`,
+      // Tags the account with the owning user so account-link, account-status,
+      // login-link, and product routes can verify ownership before acting on it.
+      metadata: {
+        [CONNECT_OWNER_METADATA_KEY]: user.id,
+      },
     })
 
     return { accountId: account.id }

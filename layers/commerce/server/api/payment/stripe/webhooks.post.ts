@@ -1,6 +1,14 @@
 import Stripe from 'stripe'
+import { createDirectus, rest, staticToken, createItem, readItems, updateItem } from '@directus/sdk'
 import { centsToDollars } from '../../../utils/currency'
 import { stripe } from '../../../utils/stripe'
+
+// A privileged, static-token client — webhook fulfillment writes orders,
+// payments, and fulfillment tokens on behalf of the buyer, so it must not
+// depend on any user's own Directus permissions.
+const directusServer = createDirectus(process.env.DIRECTUS_URL!)
+  .with(rest())
+  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
 
 const relevantEvents = [
   'checkout.session.async_payment_failed',
@@ -104,8 +112,6 @@ function buildLocalBusinessEmail(listingId: string): { html: string; text: strin
 }
 
 export default defineEventHandler(async (event) => {
-  const { directusServer, createItem, readItems, updateItem } = useNuxtApp() as any
-
   const sig = getHeader(event, 'stripe-signature')
   const { stripeWebhookSecret } = useRuntimeConfig()
 
@@ -233,6 +239,43 @@ export default defineEventHandler(async (event) => {
             const { html, text } = buildLocalBusinessEmail(listing_id)
             await sendConfirmationEmail({ to: buyerEmail, subject: 'Order confirmed', html, text })
           }
+        } else {
+          // Standard multi-item cart purchase (no marketplace listing_type)
+          // — this is the path a normal storefront checkout takes, and it
+          // previously never wrote an order at all.
+          const lineItems = await stripe.checkout.sessions.listLineItems(checkoutSession.id, {
+            expand: ['data.price.product'],
+          })
+
+          const items = lineItems.data.map((lineItem) => {
+            const product = lineItem.price?.product
+            const productMetadata =
+              product && typeof product === 'object' && !('deleted' in product && product.deleted)
+                ? (product as Stripe.Product).metadata
+                : undefined
+
+            return {
+              product_id: productMetadata?.internal_product_id ?? null,
+              name: lineItem.description,
+              quantity: lineItem.quantity,
+              unit_amount: centsToDollars(lineItem.price?.unit_amount ?? 0),
+              subtotal: centsToDollars(lineItem.amount_total ?? 0),
+            }
+          })
+
+          await directusServer.request(
+            createItem('orders', {
+              buyer_id: buyer_id || null,
+              user_id: buyer_id || null,
+              stripe_payment_id: paymentIntentId,
+              payment_status: 'completed',
+              total: centsToDollars(checkoutSession.amount_total ?? 0),
+              currency: checkoutSession.currency,
+              buyer_email: buyerEmail || null,
+              items,
+              dated_created: new Date().toISOString(),
+            }),
+          )
         }
 
         break

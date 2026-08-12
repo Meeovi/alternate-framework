@@ -1,7 +1,17 @@
-import { defineEventHandler } from 'h3'
+import { defineEventHandler, createError } from 'h3'
 import { useRuntimeConfig } from '#imports'
+import { requireAuth } from '#auth/server/utils/sessions'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
+  const user = await requireAuth(event)
+
+  if (!user.polarCustomerId) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'No billing account found for this user',
+    })
+  }
+
   const runtimeConfig = useRuntimeConfig() as any
   const polarAccessToken = runtimeConfig.polarAccessToken as string
   const polarServer = (runtimeConfig.polarServer || 'sandbox') as 'sandbox' | 'production'
@@ -10,10 +20,7 @@ export default defineEventHandler((event) => {
     accessToken: polarAccessToken,
     returnUrl: `${process.env.NUXT_PUBLIC_SITE_URL}`, // An optional URL which renders a back-button in the Customer Portal
     server: polarServer,
-    getCustomerId: (event) => {
-      // Use your own logic to get the customer ID - from a database, session, etc.
-      return Promise.resolve('9d89909b-216d-475e-8005-053dba7cff07')
-    },
+    getCustomerId: () => Promise.resolve(user.polarCustomerId as string),
   })
 
   return customerPortalHandler(event)

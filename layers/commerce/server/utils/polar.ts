@@ -50,7 +50,7 @@ export const ensurePolarCustomer = async (user: User) => {
   }
 }
 
-const addPaymentLog = async (
+export const addPaymentLog = async (
   hookType: string,
   data:
     | Customer

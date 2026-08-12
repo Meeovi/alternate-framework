@@ -62,6 +62,18 @@ export const useCartStore = defineStore('cart', () => {
     }, 0),
   )
 
+  // Every "go to checkout" trigger in the app should call this rather than
+  // hitting the payment API directly — it hands off to the single routed
+  // checkout page, which creates the session and mounts Stripe's embedded
+  // checkout. The server re-prices every item from the catalog itself, so
+  // nothing here needs (or should send) a price.
+  async function createCheckoutSession() {
+    if (items.value.length === 0) {
+      throw new Error('Cart is empty')
+    }
+    return navigateTo('/checkout')
+  }
+
   return {
     items: readonly(items),
     loading: readonly(loading),
@@ -72,5 +84,6 @@ export const useCartStore = defineStore('cart', () => {
     removeItemByKey,
     updateQuantity,
     clearCart,
+    createCheckoutSession,
   }
 })

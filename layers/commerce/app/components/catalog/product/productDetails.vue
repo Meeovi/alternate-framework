@@ -181,7 +181,7 @@
     } from '@vueuse/core';
     import {
         usePreferredCurrency
-    } from '~/composables/catalog/usePreferredCurrency.ts';
+    } from '../../../composables/catalog/price/usePreferredCurrency';
     import {
         usePrice
     } from '../../../composables/catalog/price/price';
@@ -189,8 +189,8 @@
         useAppGateway
     } from '#shared/app/composables/useAppGateway';
     import tagCard from '#social/app/components/related/tag.vue';
-    import addToCartBtn from '../../partials/addToCartBtn.vue';
-    import compareBtn from '../../partials/compareBtn.vue';
+    import addToCartBtn from '../../blocks/addToCartBtn.vue';
+    import compareBtn from '../../blocks/compareBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
     import {
         getAssetURL,

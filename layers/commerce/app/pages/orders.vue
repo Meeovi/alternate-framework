@@ -162,122 +162,55 @@
         computed
     } from '#imports'
     import orderCard from '../components/related/orderCard.vue'
+    import { useAuth } from '#auth/app/composables/useAuth'
 
+    const {
+        $directus,
+        $readItem,
+        $readItems
+    } = useNuxtApp()
 
-    // @ts-ignore - useAuth may not be globally available
-    // import { useAuth } from '#auth/app/composables/useAuth'
-    // const { user, fetchSession } = useAuth()
-    // await fetchSession()
-    // const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = null;
+    const { data: session } = await useAuth().getSession()
+    const currentUserId = session?.user?.id ?? null
 
-    const nuxtApp = useNuxtApp();
-    const $gateway = nuxtApp.$gateway as any;
-    const read = nuxtApp.read as any;
     const tab = ref(null);
 
-    const { data: orderBar } = await useAsyncData<any>('orderBar', async () => {
-        const resp = await $gateway.content?.(read('navigation', '84', {
+    const fetchOrders = (status?: string) => useAsyncData<any>(
+        status ? `orders-${status}` : 'orders',
+        async () => {
+            if (!currentUserId) return []
+            return $directus.request($readItems('orders', {
+                fields: ['*', { '*': ['*'] }],
+                filter: {
+                    user_id: { _eq: currentUserId },
+                    ...(status && { payment_status: { _eq: status } })
+                },
+                sort: ['-dated_created']
+            }))
+        }
+    )
+
+    const { data: orderBar } = await useAsyncData<any>('orderBar', () => {
+        return $directus.request($readItem('navigation', '84', {
             fields: ['*', { '*': ['*'] }]
         }))
-        return resp?.data ?? resp ?? null
     })
 
     const { data: ordersPage } = await useAsyncData<any>('ordersPage', () => {
-        return $gateway.content?.(read('pages', '86', {
+        return $directus.request($readItem('pages', '86', {
             fields: ['*', { '*': ['*'] }]
         }))
     })
 
-    const { data: orders } = await useAsyncData<any>('orders', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: pending } = await useAsyncData<any>('pending', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'pending' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: processing } = await useAsyncData<any>('processing', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'processing' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: onHold } = await useAsyncData<any>('onHold', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'on-hold' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: failed } = await useAsyncData<any>('failed', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'failed' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: disputed } = await useAsyncData<any>('disputed', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'disputed' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: completed } = await useAsyncData<any>('completed', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'completed' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: refunded } = await useAsyncData<any>('refunded', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'refunded' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const { data: cancelled } = await useAsyncData<any>('cancelled', async () => {
-        if (!currentUserId) return []
-        const resp = await $gateway.content?.(read('orders', {
-            fields: ['*', { '*': ['*'] }],
-            filter: { user_id: { _eq: currentUserId }, payment_status: { _eq: 'cancelled' } },
-            sort: '-dated_created'
-        }))
-        return resp?.data ?? resp ?? []
-    })
+    const { data: orders } = await fetchOrders()
+    const { data: pending } = await fetchOrders('pending')
+    const { data: processing } = await fetchOrders('processing')
+    const { data: onHold } = await fetchOrders('on-hold')
+    const { data: failed } = await fetchOrders('failed')
+    const { data: disputed } = await fetchOrders('disputed')
+    const { data: completed } = await fetchOrders('completed')
+    const { data: refunded } = await fetchOrders('refunded')
+    const { data: cancelled } = await fetchOrders('cancelled')
 
     useHead({
         title: 'Activity Feed',

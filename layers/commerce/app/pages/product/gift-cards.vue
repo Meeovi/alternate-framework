@@ -79,16 +79,19 @@
         useHead
     } from 'nuxt/app';
     import productCard from '../../components/catalog/product/productCard.vue'
+    import { useAuth } from '#auth/app/composables/useAuth'
 
     const {
         $directus,
-        $readItem
+        $readItems
     } = useNuxtApp()
+
+    const { data: session } = await useAuth().getSession()
 
     const {
         data: giftCards
     } = await useAsyncData('giftCards', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 product_types: {
                     product_types_id: {
@@ -102,7 +105,7 @@
     const {
         data: meeGiftCards
     } = await useAsyncData('meeGiftCards', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 product_types: {
                     product_types_id: {
@@ -121,7 +124,8 @@
     const {
         data: myGiftCards
     } = await useAsyncData('myGiftCards', () => {
-        return $directus.request($readItem('products', {
+        if (!session?.user?.username) return []
+        return $directus.request($readItems('products', {
             filter: {
                 product_types: {
                     product_types_id: {
@@ -130,7 +134,7 @@
                 },
                 user: {
                     directus_users: {
-                        _eq: `${session.user.username}`
+                        _eq: session.user.username
                     }
                 }
             }
@@ -140,7 +144,7 @@
     const {
         data: giftCertificates
     } = await useAsyncData('giftCertificates', () => {
-        return $directus.request($readItem('products', {
+        return $directus.request($readItems('products', {
             filter: {
                 product_types: {
                     product_types_id: {

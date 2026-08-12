@@ -10,9 +10,9 @@
         </div>
         <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
           <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
-            <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="(products, index) in exclusives"
+            <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="(product, index) in exclusives"
               :key="index">
-              <productCard :product="products?.products_id" :class="['ma-4', selectedClass]" @click="toggle" />
+              <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
 
               <div class="d-flex fill-height align-center justify-center">
                 <v-scale-transition>
@@ -37,8 +37,14 @@
   } = useNuxtApp()
 
   const { data: exclusives } = await useAsyncData('exclusives', async () => {
-    const refs = await $directus.request($readItems('products', {
-      fields: ['id', 'sku'],
+    return $directus.request($readItems('products', {
+      fields: ['*',
+        'products.products_id.*',
+        'products.products_id.image.*',
+        'brands.brands_id.*',
+        'shops.shops_id.*',
+        'image.*',
+      ],
       limit: 10,
       filter: {
         status: { _eq: 'published' },
@@ -47,15 +53,5 @@
         }
       }
     }))
-
-    const products = await Promise.all(refs.map(async (r) => {
-      try {
-        return await $commerce.getProduct(String(r.sku || r.id))
-      } catch (e) {
-        return null
-      }
-    }))
-
-    return products.filter(Boolean)
   })
 </script>

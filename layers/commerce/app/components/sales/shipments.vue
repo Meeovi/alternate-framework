@@ -37,7 +37,7 @@
         authClient
     } from "#auth/lib/auth-client";    
 
-    const session = authClient.useSession as any;
+    const { data: session } = authClient.useSession() as any;
     const {
         $directus,
         $readItems
@@ -52,7 +52,7 @@
             }],
             filter: {
                 user_id: {
-                    _eq: session?.user.id
+                    _eq: session.value?.user?.id
                 }
             }
         }))

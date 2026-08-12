@@ -1,5 +1,7 @@
 import { stripe } from '../../../utils/stripe'
+import { assertOwnsConnectAccount } from '../../../utils/connect-auth'
 import { createError, defineEventHandler, readBody } from 'h3'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 /**
  * POST /api/commerce/connect/product
@@ -10,6 +12,7 @@ import { createError, defineEventHandler, readBody } from 'h3'
  *   productPrice is in cents.
  */
 export default defineEventHandler(async (event) => {
+  const user = await requireAuth(event)
   const body = await readBody(event)
   const { accountId, productName, productDescription, productPrice } = body as {
     accountId?: string
@@ -32,6 +35,8 @@ export default defineEventHandler(async (event) => {
   if (!Number.isFinite(priceNum) || priceNum < 0) {
     throw createError({ statusCode: 400, statusMessage: 'productPrice must be a non-negative number (cents)' })
   }
+
+  await assertOwnsConnectAccount(safeAccountId, user.id)
 
   try {
     // Create the product under the connected account

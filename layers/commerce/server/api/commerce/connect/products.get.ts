@@ -1,5 +1,7 @@
 import { stripe } from '../../../utils/stripe'
+import { assertOwnsConnectAccount } from '../../../utils/connect-auth'
 import { createError, defineEventHandler, getQuery } from 'h3'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 /**
  * GET /api/commerce/connect/products?accountId=...
@@ -8,12 +10,15 @@ import { createError, defineEventHandler, getQuery } from 'h3'
  * Returns an array of product objects.
  */
 export default defineEventHandler(async (event) => {
+  const user = await requireAuth(event)
   const query = getQuery(event)
   const accountId = typeof query.accountId === 'string' ? query.accountId.trim() : ''
 
   if (!accountId) {
     throw createError({ statusCode: 400, statusMessage: 'accountId query parameter is required' })
   }
+
+  await assertOwnsConnectAccount(accountId, user.id)
 
   try {
     const products = await stripe.products.list(

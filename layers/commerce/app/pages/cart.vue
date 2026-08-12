@@ -8,44 +8,47 @@
       </div>
       
       <div v-else>
-        <div v-for="item in cart.items" :key="item.key || item.id" class="cart-item">
+        <div v-for="item in cart.items" :key="item.key" class="cart-item">
           <div class="item-details">
             <h3>{{ item.name }}</h3>
             <p>Price: ${{ item.price }}</p>
             <p>Quantity: {{ item.quantity ?? item.qty }}</p>
           </div>
-          <v-btn @click="cart.removeItemByKey(item.key || item.id)" color="error">
+          <v-btn @click="cart.removeItemByKey(item.key)" color="error">
             Remove
           </v-btn>
         </div>
-        
+
         <div class="cart-total">
           <h3>Total: ${{ cart.total }}</h3>
         </div>
-        
-        <PayPalButtons
-          @payment-success="handlePaymentSuccess"
-          @payment-error="handlePaymentError"
-        />
+
+        <v-btn color="primary" :loading="checkingOut" @click="goToCheckout">
+          Proceed to Checkout
+        </v-btn>
+        <p v-if="checkoutError" class="checkout-error">{{ checkoutError }}</p>
       </div>
     </div>
   </template>
-  
+
   <script setup>
-  import { useCartStore } from '~/app/stores/cart'
-  
+  import { ref } from 'vue'
+  import { useCartStore } from '~/stores/cart'
+
   const cart = useCartStore()
-  
-  const handlePaymentSuccess = (order) => {
-    // Handle successful payment
-    console.log('Payment successful:', order)
-    // You might want to redirect to a success page or show a success message
-  }
-  
-  const handlePaymentError = (error) => {
-    // Handle payment error
-    console.error('Payment failed:', error)
-    // Show error message to user
+  const checkingOut = ref(false)
+  const checkoutError = ref('')
+
+  const goToCheckout = async () => {
+    checkoutError.value = ''
+    checkingOut.value = true
+    try {
+      await cart.createCheckoutSession()
+    } catch (error) {
+      checkoutError.value = 'Unable to start checkout'
+    } finally {
+      checkingOut.value = false
+    }
   }
   </script>
   
@@ -70,6 +73,11 @@
   .empty-cart {
     text-align: center;
     padding: 50px;
+  }
+
+  .checkout-error {
+    color: #df1b41;
+    margin-top: 10px;
   }
   </style>
   

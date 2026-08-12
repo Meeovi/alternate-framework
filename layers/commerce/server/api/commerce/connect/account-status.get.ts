@@ -1,5 +1,6 @@
-import { stripe } from '../../../utils/stripe'
+import { assertOwnsConnectAccount } from '../../../utils/connect-auth'
 import { createError, defineEventHandler, getQuery } from 'h3'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 /**
  * GET /api/commerce/connect/account-status?accountId=...
@@ -8,6 +9,7 @@ import { createError, defineEventHandler, getQuery } from 'h3'
  * render an account dashboard without touching the backend SDK.
  */
 export default defineEventHandler(async (event) => {
+  const user = await requireAuth(event)
   const query = getQuery(event)
   const accountId = typeof query.accountId === 'string' ? query.accountId.trim() : ''
 
@@ -16,7 +18,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const account = await stripe.accounts.retrieve(accountId)
+    const account = await assertOwnsConnectAccount(accountId, user.id)
 
     return {
       id: account.id,

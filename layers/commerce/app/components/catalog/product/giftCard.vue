@@ -37,26 +37,23 @@
 <script setup>
   const props = defineProps({
     gift: {
-      type: String,
+      type: Object,
       required: true,
     },
   });
 
   const {
-    read
+    $directus,
+    $readItem
   } = useNuxtApp()
 
   const {
     data: callouts
   } = await useAsyncData('callouts', () => {
-    return gateway.content(read('callouts', '4'))
+    return $directus.request($readItem('callouts', '4'))
   })
 
   useHead({
     title: 'Redeem an Meeovi Gift Card'
-  })
-
-  definePageMeta({
-    middleware: ['auth'],
   })
 </script>

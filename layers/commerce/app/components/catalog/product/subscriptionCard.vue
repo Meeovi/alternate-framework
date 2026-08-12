@@ -84,14 +84,13 @@
                                 <h6 class="card-title mbr-fonts-style mb-1 display-5">
                                     <strong>Order Summary</strong>
                                 </h6>
-                                <p class="mbr-text mbr-fonts-style display-7"
-                                    v-for="customers in subscription?.customer?.customers_id">Item(s) Subtotal:
-                                    ${{ customer?.subscription?.orders_id?.total_before_tax }}
+                                <p class="mbr-text mbr-fonts-style display-7">Item(s) Subtotal:
+                                    ${{ subscription?.customer?.customers_id?.subscription?.orders_id?.total_before_tax }}
                                     <br>Shipping &amp; Handling:
-                                    ${{ customer?.subscription?.orders_id?.shipping_handling }}
-                                    <br>Total before tax: ${{ customer?.subscription?.orders_id?.total_before_tax }}
-                                    <br>Estimated tax to be collected: ${{ customer?.subscription?.orders_id?.tax }}
-                                    <br>Grand Total: ${{ customer?.subscription?.orders_id?.total_price }}
+                                    ${{ subscription?.customer?.customers_id?.subscription?.orders_id?.shipping_handling }}
+                                    <br>Total before tax: ${{ subscription?.customer?.customers_id?.subscription?.orders_id?.total_before_tax }}
+                                    <br>Estimated tax to be collected: ${{ subscription?.customer?.customers_id?.subscription?.orders_id?.tax }}
+                                    <br>Grand Total: ${{ subscription?.customer?.customers_id?.subscription?.orders_id?.total_price }}
                                 </p>
                             </div>
                         </div>

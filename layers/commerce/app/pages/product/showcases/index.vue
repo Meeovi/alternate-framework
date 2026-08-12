@@ -63,7 +63,6 @@
   } = await useAsyncData('groupedProducts', () => {
     return $directus.request($readItems('products', {
       fields: ['*',
-        'currency.currency_id.*',
         'image.*',
       ],
       filter: {
@@ -79,7 +78,6 @@
   } = await useAsyncData('bundledProducts', () => {
     return $directus.request($readItems('products', {
       fields: ['*',
-        'currency.currency_id.*',
         'image.*',
       ],
       filter: {
@@ -95,7 +93,6 @@
   } = await useAsyncData('subscriptions', () => {
     return $directus.request($readItems('products', {
       fields: ['*',
-        'currency.currency_id.*',
         'image.*',
       ],
       filter: {

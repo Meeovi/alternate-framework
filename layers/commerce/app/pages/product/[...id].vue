@@ -10,7 +10,7 @@
 
               <!--If the Product is a digital product-->
               <div
-                v-if="product?.product_types?.product_types_id?.name === 'Audio' && product?.product_types?.product_types_id?.name === 'Audio' && product?.product_types?.product_types_id?.name === 'Course'">
+                v-if="product?.product_types?.product_types_id?.name === 'Audio' || product?.product_types?.product_types_id?.name === 'Video' || product?.product_types?.product_types_id?.name === 'Course'">
                 <videoPlayer :player="product" />
               </div>
 
@@ -58,11 +58,14 @@
               </div>
               <!-- <v-tab value="four">FAQS</v-tab>
             <v-tab value="five">Compare</v-tab>-->
-              <v-tab value="six" v-if="product?.product_types?.product_types_id === 'Grouped Product'">Products</v-tab>
-              <v-tab value="seven" v-if="product?.product_types?.product_types_id === 'Bundled Product'">Products</v-tab>
-              <v-tab value="eight" v-if="product?.product_types?.product_types_id === 'Configurable Product'">Products</v-tab>
+              <v-tab value="six" v-if="product?.product_types?.product_types_id?.name === 'Grouped Product'">Products</v-tab>
+              <v-tab value="seven"
+                v-if="product?.product_types?.product_types_id?.name === 'Bundled Product'">Products</v-tab>
+              <v-tab value="eight"
+                v-if="product?.product_types?.product_types_id?.name === 'Configurable Product'">Products</v-tab>
               <v-tab value="nine" v-if="product?.product_types?.product_types_id?.name === 'Gift Card'">Redeem</v-tab>
-              <v-tab value="ten" v-if="product?.product_types?.product_types_id?.name === 'Subscription'">Details</v-tab>
+              <v-tab value="ten"
+                v-if="product?.product_types?.product_types_id?.name === 'Subscription'">Details</v-tab>
             </v-tabs>
 
             <v-card-text>
@@ -106,7 +109,7 @@
 
                 <!-- Group Products List -->
                 <v-window-item value="six">
-                  <v-row v-if="product?.product_types?.product_types_id === 'Grouped Product'">
+                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Grouped Product'">
                     <v-col cols="4" v-for="item in groupedProducts?.products" :key="item">
                       <productCard :product="item?.products_id" />
                     </v-col>
@@ -121,7 +124,7 @@
 
                 <!--Bundle Products List-->
                 <v-window-item value="seven">
-                  <v-row v-if="product?.product_types?.product_types_id === 'Bundled Product'">
+                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Bundled Product'">
                     <v-col cols="4" v-for="(product, index) in bundledProducts?.products" :key="index">
                       <productCard :product="product?.products_id" />
                     </v-col>
@@ -136,7 +139,7 @@
 
                 <!--Configurable Products List-->
                 <v-window-item value="eight">
-                  <v-row v-if="product?.product_types?.product_types_id === 'Configurable Product'">
+                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Configurable Product'">
                     <v-col cols="4" v-for="(product, index) in configurableProducts?.products" :key="index">
                       <productCard :product="product?.products_id" />
                     </v-col>
@@ -286,6 +289,11 @@
             </div>
           </v-sheet>
         </v-col>
+
+        <v-col cols="12" v-if="productComparison.length > 1">
+          <h4>Compare with similar products</h4>
+          <productCompare :products="productComparison" />
+        </v-col>
       </v-row>
     </div>
     <div v-else>No product found</div>
@@ -308,6 +316,7 @@
   import spacesCard from '#social/app/components/related/space.vue'
   import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
   import shop from '../../components/catalog/shops/stores.vue'
+  import productCompare from '../../components/catalog/product/compare.vue'
 
   const tab = ref(null);
   const model = ref(null);
@@ -317,34 +326,52 @@
   // Product query
   const route = useRoute()
 
+  // [...id].vue is a catch-all route, so route.params.id is an array of
+  // segments — Directus's readItem() expects a scalar primary key, not an
+  // array, so this must be unwrapped before every lookup below.
+  const productId = computed(() =>
+    Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  )
+
   const {
     $directus,
-    $readItem
+    $readItem,
+    $readItems
   } = useNuxtApp()
 
   const {
     data: product
   } = await useAsyncData('product', () => {
-    return $directus.request($readItem('products', route.params.id, {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'showcases.showcases_id.*',
-        'comments.comments_id.*',
-        'currency.currency_id.*',
-        'shorts.shorts_id.*',
-        'categories.categories_id.*',
-        'spaces.spaces_id.*',
-        'shops.shops_id.*',
-        'image.*',
-      ]
-    }))
+    const baseFields = ['*',
+      'products.products_id.*',
+      'products.products_id.image.*',
+      'showcases.showcases_id.*',
+      'comments.comments_id.*',
+      'shorts.shorts_id.*',
+      'categories.categories_id.*',
+      'spaces.spaces_id.*',
+      'shops.shops_id.*',
+      'image.*',
+    ]
+
+    return $directus.request($readItem('products', productId.value, {
+      fields: [...baseFields, 'currency.currency_id.*']
+    })).catch(() => {
+      // The Directus `currency` collection is currently returning a server
+      // error on any request that expands currency.currency_id.* — fall
+      // back to the raw foreign key so the product page still renders
+      // instead of failing outright. Remove this fallback once that
+      // collection is fixed on the Directus side.
+      return $directus.request($readItem('products', productId.value, {
+        fields: [...baseFields, 'currency.currency_id']
+      }))
+    })
   })
 
   const {
     data: groupedProducts
   } = await useAsyncData('groupedProducts', () => {
-    return $directus.request($readItem('products', route.params.id, {
+    return $directus.request($readItem('products', productId.value, {
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',
@@ -365,7 +392,7 @@
   const {
     data: bundledProducts
   } = await useAsyncData('bundledProducts', () => {
-    return $directus.request($readItem('products', route.params.id, {
+    return $directus.request($readItem('products', productId.value, {
       fields: ['*',
         'products.products_id.*',
         'products.products_id.image.*',
@@ -381,6 +408,54 @@
         }
       }
     }))
+  })
+
+  const categoryIds = computed(() => {
+    return (product.value?.categories || [])
+      .map((category) => category?.categories_id?.id)
+      .filter((id) => id !== undefined && id !== null)
+  })
+
+  const {
+    data: similarProducts
+  } = await useAsyncData('similarProducts', () => {
+    if (!product.value?.id || !categoryIds.value.length) {
+      return Promise.resolve([])
+    }
+
+    return $directus.request($readItems('products', {
+      fields: ['*',
+        'image.*',
+        'categories.categories_id.*',
+        'manufacturer.manufacturer_id.*',
+      ],
+      filter: {
+        _and: [{
+            id: {
+              _neq: product.value.id
+            } // Exclude the current product
+          },
+          {
+            categories: {
+              categories_id: {
+                id: {
+                  _in: categoryIds.value
+                } // Match any of the current product's category IDs
+              }
+            }
+          }
+        ]
+      },
+      limit: 2 // Compare against the top 2 similar products
+    }))
+  }, {
+    watch: [categoryIds]
+  })
+
+  // The current product plus its top 2 similar products, for side-by-side comparison
+  const productComparison = computed(() => {
+    if (!product.value) return []
+    return [product.value, ...(similarProducts.value || [])]
   })
 
   const {
