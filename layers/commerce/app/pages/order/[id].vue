@@ -21,13 +21,12 @@
                                       <h4 class="card-title mbr-fonts-style display-7">
                                           Order Information
                                       </h4>
-                                      <NuxtLink class="card-text mbr-fonts-style display-7" :to="`/order/${order?.order_id}`">Order #:
-                                          {{ order?.order_id }}</NuxtLink>
+                                      <NuxtLink class="card-text mbr-fonts-style display-7" :to="`/order/${order?.id}`">Order #:
+                                          {{ order?.id }}</NuxtLink>
                                       <p class="card-text mbr-fonts-style display-7">Order Date:
-                                          {{ new Date(order?.created_at).toLocaleDateString() }}</p>
+                                          {{ order?.date_created ? new Date(order.date_created).toLocaleDateString() : '' }}</p>
                                       <p class="card-text mbr-fonts-style display-7">Order Status:
-                                          {{ order?.status }}</p>
-                                      <p class="card-text mbr-fonts-style display-7">Purchased From: {{ order?.store_id }}</p>
+                                          {{ order?.payment_status }}</p>
                                   </div>
                               </div>
                           </div>
@@ -40,9 +39,8 @@
                                       <h4 class="card-title mbr-fonts-style display-7">
                                           Account Information
                                       </h4>
-                                      <p class="card-text mbr-fonts-style display-7">Customer Name: {{ order?.user_id?.first_name }} {{ order?.user_id?.last_name }}</p>
-                                      <p class="card-text mbr-fonts-style display-7">Email: {{ order?.user_id?.email }}</p>
-                                      <p class="card-text mbr-fonts-style display-7">Customer Group: {{ order?.user_id?.group_id }}</p>
+                                      <p class="card-text mbr-fonts-style display-7">Customer Name: {{ order?.customer_firstname }} {{ order?.customer_lastname }}</p>
+                                      <p class="card-text mbr-fonts-style display-7">Email: {{ order?.customer_email }}</p>
                                   </div>
                               </div>
                           </div>
@@ -53,24 +51,14 @@
                                           <span class="mbr-iconfont mobi-mbri-delivery mobi-mbri"></span>
                                       </div>
                                       <h4 class="card-title mbr-fonts-style display-7">
-                                          Billing Address
+                                          Shipment Tracking
                                       </h4>
-                                      <p class="card-text mbr-fonts-style display-7">{{ order?.billing_address?.prefix }} {{ order?.billing_address?.street }} {{ order?.billing_address?.suffix }} {{ order?.billing_address?.city }} {{ order?.billing_address?.postcode }} {{ order?.billing_address?.country_code }} {{ order?.billing_address?.telephone }}
+                                      <p v-if="order?.tracking_number" class="card-text mbr-fonts-style display-7">
+                                          {{ order?.shipment_carrier }} — {{ order?.tracking_number }}
+                                          <span v-if="order?.shipment_status">({{ order.shipment_status }})</span>
                                       </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="item features-without-image item-mb">
-                              <div class="item-wrapper">
-                                  <div class="card-box">
-                                      <div class="icon-wrapper">
-                                          <span class="mbr-iconfont mobi-mbri-refresh mobi-mbri"></span>
-                                      </div>
-                                      <h4 class="card-title mbr-fonts-style display-7">
-                                          Shipping Address
-                                      </h4>
-                                      <p class="card-text mbr-fonts-style display-7">{{ order?.shipping_address?.prefix }} {{ order?.shipping_address?.street }} {{ order?.shipping_address?.suffix }} {{ order?.shipping_address?.city }} {{ order?.shipping_address?.postcode }} {{ order?.shipping_address?.country_code }} {{ order?.shipping_address?.telephone }}
-                                      </p>
+                                      <p v-else class="card-text mbr-fonts-style display-7">Not yet shipped.</p>
+                                      <NuxtLink v-if="order?.tracking_url" :to="order.tracking_url" target="_blank">Track this shipment</NuxtLink>
                                   </div>
                               </div>
                           </div>
@@ -83,7 +71,7 @@
                                       <h4 class="card-title mbr-fonts-style display-7">
                                           Payment Information
                                       </h4>
-                                      <p class="card-text mbr-fonts-style display-7">Paid with {{ order?.cc_type }} {{ order?.cc_last4 }}</p>
+                                      <p class="card-text mbr-fonts-style display-7">Payment status: {{ order?.payment_status }}</p>
                                       <p class="card-text mbr-fonts-style display-7">The order was placed using {{ order?.order_currency_code }}</p>
                                   </div>
                               </div>
@@ -118,37 +106,18 @@
 
       <v-card title="Order Items" flat>
           <div class="container">
-              <v-data-table :headers="headers" :items="order?.products" :items-per-page="5" class="elevation-1">
+              <v-data-table :headers="headers" :items="order?.line_items_snapshot || []" :items-per-page="5" class="elevation-1">
                   <template v-slot:[`item.name`]="{ item }">
                       <strong>{{ item.name }}</strong>
-                  SKU: {{ item?.sku }}
                   </template>
-                  <template v-slot:[`item.tax_amount`]="{ item }">
-                      <span v-dompurify-html="item.status"></span>
+                  <template v-slot:[`item.quantity`]="{ item }">
+                      {{ item.quantity }}
                   </template>
-                  <template v-slot:[`item.original_price`]="{ item }">
-                      {{ item.original_price }}
+                  <template v-slot:[`item.unit_amount`]="{ item }">
+                      {{ item.unit_amount }}
                   </template>
-                  <template v-slot:[`item.price_incl_tax`]="{ item }">
-                      {{ item.price_incl_tax }}
-                  </template>
-                  <template v-slot:[`item.qty_ordered`]="{ item }">
-                      {{ item.qty_ordered }}
-                  </template>
-                  <template v-slot:[`item.price`]="{ item }">
-                      {{ item.price }}
-                  </template>
-                  <template v-slot:[`item.tax_amount`]="{ item }">
-                      <span v-dompurify-html="item.tax_amount"></span>
-                  </template>
-                  <template v-slot:[`item.tax_percent`]="{ item }">
-                      <span v-dompurify-html="item.tax_percent"></span>
-                  </template>
-                  <template v-slot:[`item.discount_amount`]="{ item }">
-                      {{ item.discount_amount }}
-                  </template>
-                  <template v-slot:[`item.row_total`]="{ item }">
-                      {{ item.row_total }}
+                  <template v-slot:[`item.subtotal`]="{ item }">
+                      {{ item.subtotal }}
                   </template>
               </v-data-table>
           </div>
@@ -268,27 +237,15 @@
               },
               {
                   text: 'Price',
-                  value: 'price_incl_tax'
+                  value: 'unit_amount'
               },
               {
                   text: 'Quantity',
-                  value: 'qty'
+                  value: 'quantity'
               },
               {
                   text: 'Subtotal',
-                  value: 'price'
-              },
-              {
-                  text: 'Tax Amount',
-                  value: 'tax_amount'
-              },
-              {
-                  text: 'Discount Amount',
-                  value: 'discount_amount'
-              },
-              {
-                  text: 'Row Total',
-                  value: 'tow_total',
+                  value: 'subtotal'
               },
           ],
       }),
@@ -296,35 +253,33 @@
 </script>
 
 <script setup>
+    import { useAuth } from '#auth/app/composables/useAuth'
+
     const route = useRoute();
-    
+
     const {
-        read
+        $directus,
+        $readItems
     } = useNuxtApp()
-    const { user, fetchSession } = useAuth()
-    await fetchSession()
-    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = getCurrentUserId()
+
+    const { data: session } = await useAuth().getSession()
+    const currentUserId = session?.user?.id ?? null
 
     const {
         data: order
-    } = await useAsyncData('order', () => {
+    } = await useAsyncData('order', async () => {
         if (!currentUserId) return null
-        return gateway.content(read('orders', route.params.id, {
+        const results = await $directus.request($readItems('orders', {
             filter: {
-                user: {
-                    _eq: `${currentUserId}`
-                }
+                id: { _eq: route.params.id },
+                user_id: { _eq: currentUserId }
             },
             limit: 1
-        })).then(response => response?.[0])
+        }))
+        return results?.[0] ?? null
     })
 
     useHead({
-        title: 'Order' + order?.value?.id || 'Order Page',
+        title: order?.value?.id ? `Order ${order.value.id}` : 'Order Page',
     })
-
-  definePageMeta({
-      //middleware: ['auth-logged-in'],
-  })
 </script>

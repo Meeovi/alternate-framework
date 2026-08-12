@@ -4,6 +4,7 @@ import Joi from 'joi'
 import { createDirectus, rest, staticToken, readItem } from '@directus/sdk'
 import { stripe } from '../../../utils/stripe'
 import { getAuthSession } from '#auth/server/utils/sessions'
+import { getRate } from '../../../utils/shippo'
 
 // A privileged client used only to look up each item's authoritative price —
 // never trust a client-supplied `item.price`, since that would let a caller
@@ -68,7 +69,10 @@ const requestSchema = Joi.object({
     Joi.object({
       shipping_rate: Joi.string().required()
     })
-  ).optional()
+  ).optional(),
+  // An opaque Shippo rate id selected during checkout — the amount is
+  // re-fetched from Shippo below and is never taken from the client.
+  shippoRateId: Joi.string().optional()
 })
 
 interface CartItem {
@@ -111,6 +115,7 @@ interface CheckoutRequest {
   shippingOptions ? : Array < {
     shipping_rate: string
   } >
+  shippoRateId ? : string
 }
 
 export default defineEventHandler(async (event) => {
@@ -157,7 +162,8 @@ export default defineEventHandler(async (event) => {
       metadata,
       locale,
       subscriptionData,
-      shippingOptions
+      shippingOptions,
+      shippoRateId
     }: CheckoutRequest = value
 
     // Transform items for Stripe.
@@ -303,7 +309,10 @@ export default defineEventHandler(async (event) => {
       // the resulting order, so it must not be spoofable.
       metadata: {
         ...(metadata || {}),
-        ...(buyerId && { buyer_id: buyerId })
+        ...(buyerId && { buyer_id: buyerId }),
+        // Read back by the webhook after payment to purchase the actual
+        // shipping label for the rate the buyer was charged for.
+        ...(shippoRateId && { shippo_rate_id: shippoRateId })
       }
     }
 
@@ -336,6 +345,34 @@ export default defineEventHandler(async (event) => {
     // Add shipping options
     if (shippingOptions && shippingOptions.length > 0) {
       sessionConfig.shipping_options = shippingOptions
+    } else if (shippoRateId) {
+      // The client only sends the Shippo rate id it displayed to the buyer —
+      // the amount actually charged is re-fetched from Shippo here, never
+      // taken from the client, the same way product prices are re-resolved
+      // from Directus above.
+      const rate = await getRate(shippoRateId).catch(() => null)
+      const rateAmount = Number(rate?.amount)
+
+      if (!rate || !Number.isFinite(rateAmount)) {
+        throw createError({ statusCode: 400, statusMessage: 'Unknown or expired shipping rate' })
+      }
+
+      const serviceName = (rate as any).servicelevel?.name || (rate as any).servicelevel_name || rate.provider
+
+      sessionConfig.shipping_options = [{
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: Math.round(rateAmount * 100),
+            currency: (rate.currency || activeCurrency).toLowerCase(),
+          },
+          display_name: `${rate.provider} ${serviceName}`.trim(),
+          delivery_estimate: rate.estimated_days ? {
+            minimum: { unit: 'business_day', value: rate.estimated_days },
+            maximum: { unit: 'business_day', value: rate.estimated_days },
+          } : undefined,
+        },
+      }]
     }
 
     // Add discounts

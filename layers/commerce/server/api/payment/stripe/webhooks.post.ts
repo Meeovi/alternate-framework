@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { createDirectus, rest, staticToken, createItem, readItems, updateItem } from '@directus/sdk'
 import { centsToDollars } from '../../../utils/currency'
 import { stripe } from '../../../utils/stripe'
+import { createTransaction, getRate } from '../../../utils/shippo'
 
 // A privileged, static-token client — webhook fulfillment writes orders,
 // payments, and fulfillment tokens on behalf of the buyer, so it must not
@@ -263,17 +264,65 @@ export default defineEventHandler(async (event) => {
             }
           })
 
+          // Buy the actual shipping label now that payment has cleared —
+          // never before, since an abandoned/failed checkout must not
+          // result in a purchased (and non-refundable) label.
+          const shippoRateId = metadata?.shippo_rate_id
+          let shipment: {
+            tracking_number?: string
+            tracking_url?: string
+            label_url?: string
+            carrier?: string
+          } | null = null
+
+          if (shippoRateId) {
+            try {
+              const transaction = await createTransaction({
+                rate: shippoRateId,
+                reference: paymentIntentId,
+                metadata: { payment_intent_id: paymentIntentId },
+              })
+
+              if (transaction.object_status === 'SUCCESS') {
+                const rate = await getRate(shippoRateId).catch(() => null)
+                shipment = {
+                  tracking_number: transaction.tracking_number,
+                  tracking_url: transaction.tracking_url_provider,
+                  label_url: transaction.label_url,
+                  carrier: rate?.provider,
+                }
+              } else {
+                console.error('[webhook] Shippo label purchase did not succeed', transaction.messages)
+              }
+            } catch (shippoError) {
+              // Don't fail the whole webhook (and retry payment fulfillment
+              // forever) just because label purchase failed — the order
+              // still needs to exist so support can buy the label manually.
+              console.error('[webhook] Shippo label purchase failed', shippoError)
+            }
+          }
+
+          // Field names below match the real `orders` collection, which
+          // mirrors a Magento sales_order schema (grand_total,
+          // order_currency_code, customer_email, date_created are Magento's
+          // own columns) — a handful of fields with no Magento equivalent
+          // (stripe_payment_id, line_items_snapshot, tracking_*,
+          // shipment_*, fulfillment_status) were added specifically for
+          // this integration.
           await directusServer.request(
             createItem('orders', {
-              buyer_id: buyer_id || null,
               user_id: buyer_id || null,
               stripe_payment_id: paymentIntentId,
               payment_status: 'completed',
-              total: centsToDollars(checkoutSession.amount_total ?? 0),
-              currency: checkoutSession.currency,
-              buyer_email: buyerEmail || null,
-              items,
-              dated_created: new Date().toISOString(),
+              fulfillment_status: shipment ? 'shipped' : 'pending',
+              grand_total: centsToDollars(checkoutSession.amount_total ?? 0),
+              order_currency_code: checkoutSession.currency,
+              customer_email: buyerEmail || null,
+              line_items_snapshot: items,
+              tracking_number: shipment?.tracking_number || null,
+              tracking_url: shipment?.tracking_url || null,
+              label_url: shipment?.label_url || null,
+              shipment_carrier: shipment?.carrier || null,
             }),
           )
         }

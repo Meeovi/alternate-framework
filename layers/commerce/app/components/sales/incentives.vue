@@ -104,9 +104,11 @@
         ref,
         computed
     } from 'vue'
-    import incentiveCard from '~/components/related/post.vue'
+    import incentiveCard from '../related/incentiveCard.vue'
+    import { useAuth } from '#auth/app/composables/useAuth'
 
-    const user = useSupabaseUser()
+    const { data: session } = await useAuth().getSession()
+    const userId = session?.user?.id ?? null
 
     const {
         $directus,
@@ -136,110 +138,29 @@
         }))
     })
 
-    const {
-        data: coupons
-    } = await useAsyncData('coupons', async () => {
-        const resp = await $directus.request($readItems('incentives', {
-            fields: ['*', {
-                '*': ['*']
-            }],
+    // incentive_type is a plain string field on `incentives` (e.g. "Coupon",
+    // "Reward", "Credit Memo") — not a relation, so it's compared directly.
+    const fetchIncentives = (type) => useAsyncData(`incentives-${type}`, async () => {
+        if (!userId) return []
+        return $directus.request($readItems('incentives', {
+            fields: ['*'],
             filter: {
-                user_id: {
-                    _eq: user?.id
-                },
-                incentive_type: {
-                    name: {
-                        _eq: 'Coupon'
-                    }
-                }
+                user_id: { _eq: userId },
+                incentive_type: { _eq: type }
             }
         }))
-        return resp?.data ?? resp ?? []
     })
 
-    const {
-        data: rewards
-    } = await useAsyncData('rewards', async () => {
-        const resp = await $directus.request($readItems('incentives', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: user?.id
-                },                
-                incentive_type: {
-                    name: {
-                        _eq: 'Reward'
-                    }
-                }
-            }
-        }))
-        return resp?.data ?? resp ?? []
-    })
+    const { data: coupons } = await fetchIncentives('Coupon')
+    const { data: rewards } = await fetchIncentives('Reward')
+    const { data: creditMemos } = await fetchIncentives('Credit Memo')
 
-    const {
-        data: creditMemos
-    } = await useAsyncData('creditMemos', async () => {
-        const resp = await $directus.request($readItems('incentives', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: user?.id
-                },
-                incentive_type: {
-                    name: {
-                        _eq: 'Credit Memo'
-                    }
-                }
-            }
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const {
-        data: giftCards
-    } = await useAsyncData('giftCards', async () => {
-        const resp = await $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: user?.id
-                },                
-                incentive_type: {
-                    name: {
-                        _eq: 'Gift Card'
-                    }
-                }
-            }
-        }))
-        return resp?.data ?? resp ?? []
-    })
-
-    const {
-        data: certificates
-    } = await useAsyncData('certificates', async () => {
-        const resp = await $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                user_id: {
-                    _eq: user?.id
-                },
-                incentive_type: {
-                    name: {
-                        _eq: 'Gift Certificate'
-                    }
-                }
-            }
-        }))
-        return resp?.data ?? resp ?? []
-    })
+    // Gift cards and gift certificates are products, not incentives — the
+    // dedicated /product/gift-cards page already covers this; the two tabs
+    // that duplicated it here queried `products` for fields that don't
+    // exist on that collection and always failed.
+    const giftCards = ref([])
+    const certificates = ref([])
 
     useHead({
         title: 'Incentives',

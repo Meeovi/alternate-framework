@@ -20,9 +20,9 @@
                                     </div>
                                 </div>
                                 <p class="card-text mbr-fonts-style display-4">Order: {{ order?.id }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Order Date: {{ new Date(order?.created_at).toLocaleDateString() }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Bill to Name: {{ order?.user_id?.first_name }} {{ order?.user_id?.last_name }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Payment Status: {{ order?.status }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Order Date: {{ order?.date_created ? new Date(order.date_created).toLocaleDateString() : '' }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Bill to Name: {{ order?.customer_firstname }} {{ order?.customer_lastname }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Payment Status: {{ order?.payment_status }}</p>
                                 <p class="btn_link mbr-fonts-style display-4"><NuxtLink :to="`/order/${order?.id}`" class="text-secondary">View<span class="mobi-mbri mobi-mbri-right mbr-iconfont"></span></NuxtLink></p>
                             </div>
                         </div>

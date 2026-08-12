@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import { createShipment } from '../../utils/shippo'
+import { getShippingOrigin } from '../../utils/shipping-origin'
 import { createError } from 'h3'
 
 const parcelSchema = Joi.object({
@@ -25,7 +26,6 @@ const addressSchema = Joi.object({
 })
 
 const schema = Joi.object({
-  address_from: addressSchema.required(),
   address_to: addressSchema.required(),
   parcels: Joi.array().items(parcelSchema).min(1).max(100).required(),
   async: Joi.boolean().default(false),
@@ -48,7 +48,10 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await createShipment(value)
+    const result = await createShipment({
+      ...value,
+      address_from: getShippingOrigin(),
+    })
 
     return { success: true, rates: result.rates, shipmentId: result.object_id }
   } catch (error: any) {

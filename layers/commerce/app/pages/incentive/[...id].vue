@@ -12,16 +12,15 @@
                                         <span class="mbr-iconfont mobi-mbri-cart-full mobi-mbri"></span>
                                     </div>
                                 </div>
-                                <p class="card-text mbr-fonts-style display-4">Invoice: {{ invoice?.id }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Invoice Date: {{ new Date(invoice?.created_at).toLocaleDateString() }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Order #: {{ invoice?.order_id?.orders_id?.id }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Order Date: {{ new Date(invoice?.updated_at).toLocaleDateString() }}
-                                </p>
-                                <p class="card-text mbr-fonts-style display-4">Bill to Name: {{ invoice?.user?.first_name }} {{ invoice?.user?.last_name }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Status: {{ invoice?.state }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Grand Total (Base): {{ invoice?.base_grand_total }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Grand Total (Purchased): {{ invoice?.grand_total }}</p>
-                                <p class="btn_link mbr-fonts-style display-4"><NuxtLink :to="`/commerce/invoice/${invoice?.id}`" class="text-secondary">View<span class="mobi-mbri mobi-mbri-right mbr-iconfont"></span></NuxtLink></p>
+                                <template v-if="incentive">
+                                    <p class="card-text mbr-fonts-style display-4">Incentive: {{ incentive?.id }}</p>
+                                    <p class="card-text mbr-fonts-style display-4">Type: {{ incentive?.incentive_type }}</p>
+                                    <p class="card-text mbr-fonts-style display-4">Amount: {{ incentive?.amount }}</p>
+                                    <p class="card-text mbr-fonts-style display-4">Status: {{ incentive?.status }}</p>
+                                    <p class="card-text mbr-fonts-style display-4">Issued: {{ incentive?.date_created ? new Date(incentive.date_created).toLocaleDateString() : '' }}</p>
+                                    <p v-if="incentive?.expires_at" class="card-text mbr-fonts-style display-4">Expires: {{ new Date(incentive.expires_at).toLocaleDateString() }}</p>
+                                </template>
+                                <p v-else class="card-text mbr-fonts-style display-4">This incentive could not be found.</p>
                             </div>
                         </div>
                     </div>
@@ -32,38 +31,33 @@
 </template>
 
 <script setup>
-    import {
-        ref,
-        onMounted
-    } from '#imports';
+    import { useAuth } from '#auth/app/composables/useAuth'
+
     const route = useRoute();
-    const {
-        read
-    } = useNuxtApp()
-    const { user, fetchSession } = useAuth()
-    await fetchSession()
-    const getCurrentUserId = () => (user.value && (user.value.id || user.value.userId)) || null
-    const currentUserId = getCurrentUserId()
 
     const {
-        data: invoice
-    } = await useAsyncData('invoice', () => {
-        if (!currentUserId) return null
-        return gateway.content(read('invoices', route.params.id, {
+        $directus,
+        $readItems
+    } = useNuxtApp()
+
+    const { data: session } = await useAuth().getSession()
+    const userId = session?.user?.id ?? null
+
+    const {
+        data: incentive
+    } = await useAsyncData('incentive', async () => {
+        if (!userId) return null
+        const results = await $directus.request($readItems('incentives', {
             filter: {
-                user: {
-                    _eq: `${currentUserId}`
-                }
+                id: { _eq: route.params.id },
+                user_id: { _eq: userId }
             },
             limit: 1
-        })).then(response => response?.[0])
+        }))
+        return results?.[0] ?? null
     })
 
     useHead({
-        title: 'Invoice' + invoice?.value?.id || 'Invoice Page',
-    })
-
-    definePageMeta({
-        //middleware: ['auth-logged-in'],
+        title: incentive?.value?.id ? `Incentive ${incentive.value.id}` : 'Incentive',
     })
 </script>

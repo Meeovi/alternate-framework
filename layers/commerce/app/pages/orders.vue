@@ -185,7 +185,7 @@
                     user_id: { _eq: currentUserId },
                     ...(status && { payment_status: { _eq: status } })
                 },
-                sort: ['-dated_created']
+                sort: ['-date_created']
             }))
         }
     )

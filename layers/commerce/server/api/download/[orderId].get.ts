@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   // 2. Fetch the order record to verify ownership and status
   const order = await directus.request(
     readItem('orders', orderId, {
-      fields: ['id', 'buyer_id', 'fulfillment_status', 'file_id', 'download_token', 'download_expires_at'],
+      fields: ['id', 'user_id', 'fulfillment_status', 'file_id', 'download_token', 'download_expires_at'],
     }),
   )
 
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Order not found' })
   }
 
-  if (order.buyer_id !== user.id) {
+  if (order.user_id !== user.id) {
     throw createError({ statusCode: 403, message: 'Access denied to this asset.' })
   }
 

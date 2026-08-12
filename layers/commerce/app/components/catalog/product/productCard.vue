@@ -8,8 +8,9 @@
         </NuxtLink>
         <v-btn variant="flat" size="sm" square
           class="absolute bottom-0 right-0 mr-2 mb-2 bg-white ring-1 ring-inset ring-neutral-200 rounded-full!"
-          aria-label="Add to wishlist">
-          <v-icon icon="fas fa-heart" size="sm"></v-icon>
+          :aria-label="inWishlist ? 'Remove from wishlist' : 'Add to wishlist'"
+          @click="wishlistStore.toggleItem(product?.id)">
+          <v-icon icon="fas fa-heart" size="sm" :color="inWishlist ? 'red' : undefined"></v-icon>
         </v-btn>
       </div>
 
@@ -49,8 +50,10 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
   import { computed } from 'vue'
   import { usePrice } from '../../../composables/catalog/price/price'
+  import { useWishlistStore } from '../../../stores/wishlist/useWishlistStore'
 
   const { getProductPrice } = usePrice()
+  const wishlistStore = useWishlistStore()
 
   const props = defineProps({
     product: {
@@ -60,4 +63,5 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
   });
 
   const pricing = computed(() => getProductPrice(props.product || {}))
+  const inWishlist = computed(() => wishlistStore.hasItem(props.product?.id))
 </script>

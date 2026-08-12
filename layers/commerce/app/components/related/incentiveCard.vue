@@ -20,10 +20,11 @@
                                     </div>
                                 </div>
                                 <p class="card-text mbr-fonts-style display-4">Incentive: {{ incentive?.id }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Incentive Date: {{ new Date(incentive?.date_created).toLocaleDateString() }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Bill to Name: {{ incentive?.user_id?.first_name }} {{ incentive?.user_id?.last_name }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Incentive Date: {{ incentive?.date_created ? new Date(incentive.date_created).toLocaleDateString() : '' }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Amount: {{ incentive?.amount }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Status: {{ incentive?.status }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Type: {{ incentive?.incentive_type }}</p>
+                                <p v-if="incentive?.expires_at" class="card-text mbr-fonts-style display-4">Expires: {{ new Date(incentive.expires_at).toLocaleDateString() }}</p>
                                 <p class="btn_link mbr-fonts-style display-4"><NuxtLink :to="`/incentive/${incentive?.id}`" class="text-secondary">View<span class="mobi-mbri mobi-mbri-right mbr-iconfont"></span></NuxtLink></p>
                             </div>
                         </div>

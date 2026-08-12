@@ -172,6 +172,23 @@ export async function createShipment(shipment: {
 }
 
 /**
+ * Retrieve a single rate by id. Used to re-verify a rate's amount
+ * server-side before charging for it — never trust a shipping cost sent
+ * from the client, the same way a product price is never trusted.
+ */
+export async function getRate(rateId: string) {
+  return shippoFetch<{
+    object_id: string
+    provider: string
+    servicelevel: { name: string; token: string }
+    amount: string
+    currency: string
+    estimated_days: number
+    object_status: string
+  }>(`/rates/${encodeURIComponent(rateId)}`)
+}
+
+/**
  * Purchase a label by creating a transaction from a rate.
  */
 export async function createTransaction(transaction: {
