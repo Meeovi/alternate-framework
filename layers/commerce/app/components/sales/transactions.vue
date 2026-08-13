@@ -64,6 +64,10 @@
     } = useNuxtApp()
     const tab = ref(null);
 
+    // NOTE: no dedicated "Transactions" navigation record exists in the
+    // live CMS (checked) — this still reuses navigation 118 ("Incentives"),
+    // so the single tab this page reads via transactionBar?.menus?.[0]
+    // will show "Coupons" as its label until a real one is authored.
     const {
         data: transactionBar
     } = await useAsyncData('transactionBar', async () => {
@@ -78,7 +82,7 @@
     const {
         data: transactionPage
     } = await useAsyncData('transactionPage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $directus.request($readItem('pages', '108', {
             fields: ['*', {
                 '*': ['*']
             }]

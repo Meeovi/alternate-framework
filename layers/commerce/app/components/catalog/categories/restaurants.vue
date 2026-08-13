@@ -48,6 +48,13 @@
         }))
     })
 
+    // product_types is a M2M relation (products -> product_types via
+    // product_types_id, an integer FK) — filtering product_types_id
+    // directly against a string name is an int-vs-string mismatch Directus
+    // rejects outright. `status` values are lowercase, confirmed against
+    // the live field's choices. NOTE: 'Restaurant' also isn't a real
+    // product_types name in the live vocabulary (checked) — this stays
+    // empty by design rather than guessing at a type that doesn't exist.
     const {
         data: restaurants
     } = await useAsyncData('restaurants', () => {
@@ -57,11 +64,11 @@
             }],
             filter: {
                 status: {
-                    _eq: 'Published'
+                    _eq: 'published'
                 },
                 product_types: {
                     product_types_id: {
-                        _eq: 'Restaurant'
+                        name: { _eq: 'Restaurant' }
                     }
                 }
             }

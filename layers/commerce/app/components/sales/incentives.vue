@@ -84,7 +84,7 @@
             </v-tabs-window-item>
 
             <!--Certificates-->
-            <v-tabs-window-item :value="incentiveBar?.menus?.[3]?.value">
+            <v-tabs-window-item :value="incentiveBar?.menus?.[4]?.value">
                 <v-row class="media-container-row">
                     <template v-if="certificates?.length">
                         <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="certificate in certificates"
@@ -131,7 +131,7 @@
     const {
         data: incentivePage
     } = await useAsyncData('incentivePage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $directus.request($readItem('pages', '146', {
             fields: ['*', {
                 '*': ['*']
             }]

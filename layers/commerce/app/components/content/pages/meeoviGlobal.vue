@@ -67,4 +67,12 @@
             }]
         }))
     })
+
+    // NOTE: the country/region switcher menu has no real data source —
+    // pages/46 has no field for it (checked live), and the navigation
+    // record this page's `navigation` relation points at (id 23) is
+    // inaccessible to this app's token (confirmed FORBIDDEN). Declared
+    // explicitly empty rather than left as an undefined template
+    // reference, which rendered nothing anyway but for the wrong reason.
+    const sites = ref([])
 </script>

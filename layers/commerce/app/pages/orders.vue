@@ -211,7 +211,7 @@
     })
 
     const { data: ordersPage } = await useAsyncData<any>('ordersPage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $directus.request($readItem('pages', '106', {
             fields: ['*', { '*': ['*'] }]
         }))
     })

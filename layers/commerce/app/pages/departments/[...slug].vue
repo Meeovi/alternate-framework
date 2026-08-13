@@ -351,8 +351,8 @@
                 slug: { _eq: departmentSlug.value },
                 products: {
                     products_id: {
-                        products_type: {
-                            products_type_id: {
+                        product_types: {
+                            product_types_id: {
                                 name: {
                                     _eq: "Event"
                                 }

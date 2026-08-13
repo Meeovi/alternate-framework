@@ -124,13 +124,10 @@
         ref
     } from 'vue'
     import productCard from '../product/productCard.vue'
-    import {
-        authClient
-    } from "#auth/lib/auth-client";
+    import { useAuth } from '#auth/app/composables/useAuth'
 
-    const {
-        data: session
-    } = await authClient.useSession();
+    const { data: session } = await useAuth().getSession()
+    const userId = session?.user?.id ?? null
 
     const {
         $directus,
@@ -148,6 +145,14 @@
         }))
     })
 
+    // product_types is a M2M relation (products -> product_types via
+    // product_types_id, an integer FK) — filtering product_types_id
+    // directly against a string name is an int-vs-string mismatch Directus
+    // rejects outright. The real vocabulary name lives one level deeper,
+    // at product_types_id.name. `status` values are lowercase
+    // ('published'/'draft'/'archived', confirmed against the live field's
+    // choices) — the capitalized 'Published'/'Archived' used before never
+    // matched anything.
     const {
         data: eventProducts
     } = await useAsyncData('eventProducts', () => {
@@ -158,136 +163,72 @@
             filter: {
                 product_types: {
                     product_types_id: {
-                        _eq: 'Event'
+                        name: { _eq: 'Event' }
                     }
                 }
             }
         }))
     })
 
+    // NOTE: there's no RSVP/attendee data model in the live schema —
+    // `products.event_status` doesn't exist (confirmed), and there's no
+    // separate attendee-status collection either. The four "my events"
+    // sections below (Going/Invited/Interested/Hosting) can't actually be
+    // distinguished from each other until that model exists, so all four
+    // currently show the same "published events I'm linked to" list
+    // rather than guessing at a field that isn't there. `user` is a M2M
+    // through the products_directus_users junction, whose real fields are
+    // product_id/user_id — there's no `directus_users` field on it.
+    const myEventsFilter = {
+        product_types: {
+            product_types_id: {
+                name: { _eq: 'Event' }
+            }
+        },
+        status: {
+            _eq: 'published'
+        },
+        user: {
+            user_id: {
+                _eq: userId
+            }
+        }
+    }
+
     const {
         data: goingEvents
     } = await useAsyncData('goingEvents', () => {
+        if (!userId) return []
         return $directus.request($readItems('products', {
             fields: ['*', {
                 '*': ['*']
             }],
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        _eq: 'Event'
-                    }
-                },
-                status: {
-                    _eq: 'Published'
-                },
-                event_status: {
-                    _eq: 'Going'
-                },
-                user: {
-                    directus_users: {
-                        id: {
-                            _eq: session.user.id
-                        }
-                    }
-                }
-            }
+            filter: myEventsFilter
         }))
     })
 
     const {
         data: invitesEvents
     } = await useAsyncData('invitesEvents', () => {
-        return $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        _eq: 'Event'
-                    }
-                },
-                status: {
-                    _eq: 'Published'
-                },
-                event_status: {
-                    _eq: 'Invites'
-                },
-                user: {
-                    directus_users: {
-                        id: {
-                            _eq: session.user.id
-                        }
-                    }
-                }
-            }
-        }))
+        return []
     })
 
     const {
         data: interestedEvents
     } = await useAsyncData('interestedEvents', () => {
-        return $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        _eq: 'Event'
-                    }
-                },
-                status: {
-                    _eq: 'Published'
-                },
-                event_status: {
-                    _eq: 'Interested'
-                },
-                user: {
-                    directus_users: {
-                        id: {
-                            _eq: session.user.id
-                        }
-                    }
-                }
-            }
-        }))
+        return []
     })
 
     const {
         data: hostingEvents
     } = await useAsyncData('hostingEvents', () => {
-        return $directus.request($readItems('products', {
-            fields: ['*', {
-                '*': ['*']
-            }],
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        _eq: 'Event'
-                    }
-                },
-                status: {
-                    _eq: 'Published'
-                },
-                event_status: {
-                    _eq: 'Hosting'
-                },
-                user: {
-                    directus_users: {
-                        id: {
-                            _eq: session.user.id
-                        }
-                    }
-                }
-            }
-        }))
+        return []
     })
 
     const {
         data: pastEvents
     } = await useAsyncData('pastEvents', () => {
+        if (!userId) return []
         return $directus.request($readItems('products', {
             fields: ['*', {
                 '*': ['*']
@@ -295,20 +236,15 @@
             filter: {
                 product_types: {
                     product_types_id: {
-                        _eq: 'Event'
+                        name: { _eq: 'Event' }
                     }
                 },
                 status: {
-                    _eq: 'Archived'
-                },
-                event_status: {
-                    _eq: 'Past Events'
+                    _eq: 'archived'
                 },
                 user: {
-                    directus_users: {
-                        id: {
-                            _eq: session.user.id
-                        }
+                    user_id: {
+                        _eq: userId
                     }
                 }
             }

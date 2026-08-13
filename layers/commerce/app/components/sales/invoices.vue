@@ -66,7 +66,7 @@
     const {
         data: invoiceBar
     } = await useAsyncData('invoiceBar', async () => {
-        const resp = await $directus.request($readItem('navigation', '118', {
+        const resp = await $directus.request($readItem('navigation', '85', {
             fields: ['*', {
                 '*': ['*']
             }]
@@ -77,7 +77,7 @@
     const {
         data: invoicePage
     } = await useAsyncData('invoicePage', () => {
-        return $directus.request($readItem('pages', '86', {
+        return $directus.request($readItem('pages', '107', {
             fields: ['*', {
                 '*': ['*']
             }]

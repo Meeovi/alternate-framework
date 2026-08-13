@@ -27,7 +27,7 @@
 
       <!-- Locations List -->
       <v-col cols="4">
-        <template v-if="pickupLocations.length">
+        <template v-if="pickupLocations?.length">
           <v-card class="mx-auto mb-4" prepend-icon="$vuetify" :subtitle="pickupBlocks?.content?.[0]?.url_name"
             width="100%" v-for="location in pickupLocations" :key="location?.id" @click="selectLocation(location)">
             <template v-slot:title>
@@ -35,13 +35,12 @@
             </template>
 
             <v-card-text class="bg-surface-light pt-4">
-              <div>{{ pickupBlocks?.menus?.[0]?.name }} {{ location?.street }}</div>
+              <div>{{ pickupBlocks?.menus?.[0]?.name }} {{ location?.address }}</div>
               <div>{{ pickupBlocks?.menus?.[1]?.name }} {{ location?.city }}</div>
               <div>{{ pickupBlocks?.menus?.[2]?.name }} {{ location?.postcode }}</div>
               <div>{{ pickupBlocks?.menus?.[3]?.name }} {{ location?.phone }}</div>
               <div>{{ pickupBlocks?.menus?.[4]?.name }} {{ location?.email }}</div>
-              <div>{{ pickupBlocks?.menus?.[5]?.name }} {{ location?.region }}</div>
-              <div>{{ pickupBlocks?.menus?.[6]?.name }} {{ location?.description }}</div>
+              <div>{{ pickupBlocks?.menus?.[5]?.name }} {{ location?.state }}</div>
               <div v-if="location.distance">Distance: {{ formatDistance(location.distance) }}</div>
             </v-card-text>
           </v-card>
@@ -62,7 +61,7 @@
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; 'https://www.openstreetmap.org'; contributors" layer-type="base"
               name="OpenStreetMap" />
-            <template v-if="pickupLocations.length">
+            <template v-if="pickupLocations?.length">
               <Marker v-for="location in pickupLocations" :key="location.id"
                 :lat-lng="[location?.latitude, location?.longitude]" @click="selectLocation(location)">
                 <Popup>{{ location?.name }}</Popup>
@@ -197,7 +196,8 @@
   // Data setup
   const {
     $directus,
-    $readItem
+    $readItem,
+    $readItems
   } = useNuxtApp();
 
   const {
@@ -208,11 +208,16 @@
     }))
   });
 
+  // pickup_locations is a real, dedicated Directus collection (confirmed
+  // via schema — currently has zero rows, but the fields below are real).
+  // This previously fetched a single static content page (pages/33) via
+  // readItem and treated the result as an array, which never matched what
+  // the template actually needed.
   const {
     data: pickupLocations
   } = await useAsyncData('pickupLocations', () => {
-    return $directus.request($readItem('pages', '33', {
-      fields: ['*', 'image.*'],
+    return $directus.request($readItems('pickup_locations', {
+      fields: ['id', 'name', 'address', 'city', 'postcode', 'state', 'country', 'phone', 'email', 'latitude', 'longitude'],
     }))
   });
 

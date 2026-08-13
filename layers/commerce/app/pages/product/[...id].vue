@@ -10,17 +10,17 @@
 
               <!--If the Product is a digital product-->
               <div
-                v-if="product?.product_types?.product_types_id?.name === 'Audio' || product?.product_types?.product_types_id?.name === 'Video' || product?.product_types?.product_types_id?.name === 'Course'">
+                v-if="productTypeNames.includes('Audio') || productTypeNames.includes('Video') || productTypeNames.includes('Course')">
                 <videoPlayer :player="product" />
               </div>
 
               <!--If the Product is a Gift Card-->
-              <div v-else-if="product?.product_types?.product_types_id?.name === 'Gift Card'">
+              <div v-else-if="productTypeNames.includes('Gift Card')">
                 <giftCard :gift="product" />
               </div>
 
               <!--If the Product/Content is a Radio Station-->
-              <div v-else-if="product?.product_types?.product_types_id?.name === 'Radio'">
+              <div v-else-if="productTypeNames.includes('Radio')">
                 <radioCard :radio="product" />
               </div>
 
@@ -31,12 +31,12 @@
             </v-col>
 
             <!--Product Videos-->
-            <v-col cols="12" v-if="product?.product_video?.length">
+            <v-col cols="12" v-if="product?.product_videos?.length">
               <v-sheet class="mx-auto">
                 <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
                   <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                    v-for="(prodVideo, index) in related" :key="index">
-                    <videoPlayer :player="prodVideo" @click="toggle" />
+                    v-for="(prodVideo, index) in product?.product_videos" :key="index">
+                    <videoPlayer :player="prodVideo?.product_videos_id" @click="toggle" />
 
                     <div class="d-flex fill-height align-center justify-center">
                       <v-scale-transition>
@@ -58,14 +58,14 @@
               </div>
               <!-- <v-tab value="four">FAQS</v-tab>
             <v-tab value="five">Compare</v-tab>-->
-              <v-tab value="six" v-if="product?.product_types?.product_types_id?.name === 'Grouped Product'">Products</v-tab>
+              <v-tab value="six" v-if="productTypeNames.includes('Grouped Product')">Products</v-tab>
               <v-tab value="seven"
-                v-if="product?.product_types?.product_types_id?.name === 'Bundled Product'">Products</v-tab>
+                v-if="productTypeNames.includes('Bundled Product')">Products</v-tab>
               <v-tab value="eight"
-                v-if="product?.product_types?.product_types_id?.name === 'Configurable Product'">Products</v-tab>
-              <v-tab value="nine" v-if="product?.product_types?.product_types_id?.name === 'Gift Card'">Redeem</v-tab>
+                v-if="productTypeNames.includes('Configurable Product')">Products</v-tab>
+              <v-tab value="nine" v-if="productTypeNames.includes('Gift Card')">Redeem</v-tab>
               <v-tab value="ten"
-                v-if="product?.product_types?.product_types_id?.name === 'Subscription'">Details</v-tab>
+                v-if="productTypeNames.includes('Subscription')">Details</v-tab>
             </v-tabs>
 
             <v-card-text>
@@ -109,7 +109,7 @@
 
                 <!-- Group Products List -->
                 <v-window-item value="six">
-                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Grouped Product'">
+                  <v-row v-if="productTypeNames.includes('Grouped Product')">
                     <v-col cols="4" v-for="item in groupedProducts?.products" :key="item">
                       <productCard :product="item?.products_id" />
                     </v-col>
@@ -124,7 +124,7 @@
 
                 <!--Bundle Products List-->
                 <v-window-item value="seven">
-                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Bundled Product'">
+                  <v-row v-if="productTypeNames.includes('Bundled Product')">
                     <v-col cols="4" v-for="(product, index) in bundledProducts?.products" :key="index">
                       <productCard :product="product?.products_id" />
                     </v-col>
@@ -139,7 +139,7 @@
 
                 <!--Configurable Products List-->
                 <v-window-item value="eight">
-                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Configurable Product'">
+                  <v-row v-if="productTypeNames.includes('Configurable Product')">
                     <v-col cols="4" v-for="(product, index) in configurableProducts?.products" :key="index">
                       <productCard :product="product?.products_id" />
                     </v-col>
@@ -154,7 +154,7 @@
 
                 <!--Gift Cards Redeem Information-->
                 <v-window-item value="nine">
-                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Gift Card'">
+                  <v-row v-if="productTypeNames.includes('Gift Card')">
                     <v-col cols="12">
                       <giftCard :gift="product" />
                     </v-col>
@@ -169,7 +169,7 @@
 
                 <!--Subscription Information-->
                 <v-window-item value="ten">
-                  <v-row v-if="product?.product_types?.product_types_id?.name === 'Subscription'">
+                  <v-row v-if="productTypeNames.includes('Subscription')">
                     <v-col cols="12">
                       <subscriptionCard :subscription="product" />
                     </v-col>
@@ -333,6 +333,19 @@
     Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
   )
 
+  // product_types is a M2M relation (an array of junction rows), not a
+  // single object — `product?.product_types?.product_types_id?.name` was
+  // reading a property off an array and always evaluating to undefined,
+  // so every type-specific branch in this template (digital-content
+  // player, gift card, radio station, grouped/bundled/configurable tabs)
+  // silently never matched. Collected once here into a plain list of
+  // names so the template can just check membership.
+  const productTypeNames = computed(() =>
+    (product.value?.product_types || [])
+      .map((pt) => pt?.product_types_id?.name)
+      .filter(Boolean)
+  )
+
   const {
     $directus,
     $readItem,
@@ -343,14 +356,14 @@
     data: product
   } = await useAsyncData('product', () => {
     const baseFields = ['*',
-      'products.products_id.*',
-      'products.products_id.image.*',
       'showcases.showcases_id.*',
       'comments.comments_id.*',
       'shorts.shorts_id.*',
       'categories.categories_id.*',
       'spaces.spaces_id.*',
       'shops.shops_id.*',
+      'product_types.product_types_id.*',
+      'product_videos.product_videos_id.*',
       'image.*',
     ]
 
@@ -368,46 +381,67 @@
     })
   })
 
+  // readItem fetches a single item by primary key and doesn't accept a
+  // filter param at all (confirmed: throws 403) — these three need
+  // readItems instead, filtering on id + product_types together so the
+  // result is only non-empty when this specific product really is that
+  // type. `products.products_id.*` also isn't a real field — there's no
+  // self-referential relation on `products` for "which products make up
+  // this bundle/group" in the live schema, so that sub-products list
+  // can't be populated from real data; dropped rather than requesting a
+  // nonexistent field.
   const {
     data: groupedProducts
-  } = await useAsyncData('groupedProducts', () => {
-    return $directus.request($readItem('products', productId.value, {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'image.*',
-      ],
+  } = await useAsyncData('groupedProducts', async () => {
+    const results = await $directus.request($readItems('products', {
+      fields: ['*', 'image.*'],
       filter: {
+        id: { _eq: productId.value },
         product_types: {
           product_types_id: {
-            name: {
-              _eq: "Grouped Product"
-            }
+            name: { _eq: "Grouped Product" }
           }
         }
-      }
+      },
+      limit: 1
     }))
+    return results?.[0] ?? null
   })
 
   const {
     data: bundledProducts
-  } = await useAsyncData('bundledProducts', () => {
-    return $directus.request($readItem('products', productId.value, {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'image.*',
-      ],
+  } = await useAsyncData('bundledProducts', async () => {
+    const results = await $directus.request($readItems('products', {
+      fields: ['*', 'image.*'],
       filter: {
+        id: { _eq: productId.value },
         product_types: {
           product_types_id: {
-            name: {
-              _eq: "Bundled Product"
-            }
+            name: { _eq: "Bundled Product" }
           }
         }
-      }
+      },
+      limit: 1
     }))
+    return results?.[0] ?? null
+  })
+
+  const {
+    data: configurableProducts
+  } = await useAsyncData('configurableProducts', async () => {
+    const results = await $directus.request($readItems('products', {
+      fields: ['*', 'image.*'],
+      filter: {
+        id: { _eq: productId.value },
+        product_types: {
+          product_types_id: {
+            name: { _eq: "Configurable Product" }
+          }
+        }
+      },
+      limit: 1
+    }))
+    return results?.[0] ?? null
   })
 
   const categoryIds = computed(() => {
