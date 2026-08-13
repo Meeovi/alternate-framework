@@ -175,17 +175,25 @@ export default defineEventHandler(async (event) => {
           break
         }
 
+        // PaymentIntent.charges was removed from this API version in favor
+        // of latest_charge (confirmed live: retrieving with
+        // expand: ['charges'] silently returns no `charges` property at
+        // all, not an error — every field derived from it below silently
+        // fell back to its default, e.g. payment_date landing on the Unix
+        // epoch and receipt_url staying null).
         const paymentIntentResponse = await stripe.paymentIntents.retrieve(paymentIntentId, {
-          expand: ['charges'],
+          expand: ['latest_charge'],
         }) as Stripe.PaymentIntent & {
-          charges?: { data: Stripe.Charge[] }
+          latest_charge?: Stripe.Charge | string | null
         }
 
         const metadata = checkoutSession.metadata
         const contact_id = metadata?.contact_id
         const organization_id = metadata?.organization_id
         const invoice_id = metadata?.invoice_id
-        const charge = paymentIntentResponse?.charges?.data[0]
+        const charge = typeof paymentIntentResponse?.latest_charge === 'object'
+          ? paymentIntentResponse.latest_charge
+          : undefined
         const createdSeconds = charge?.created ?? 0
         const buyerEmail = checkoutSession.customer_details?.email ?? charge?.billing_details?.email ?? ''
 
