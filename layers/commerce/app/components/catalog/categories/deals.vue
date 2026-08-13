@@ -11,7 +11,7 @@
 
                     <v-card-text>
                         <v-tabs-window v-model="tab">
-                            <v-tabs-window-item :value="dealbar?.menus[0]?.value">
+                            <v-tabs-window-item :value="dealbar?.menus?.[0]?.value">
                                 <v-row>
                                     <v-col cols="3" v-for="products in dealsProducts" :key="products">
                                         <productCard :product="products" />
@@ -19,7 +19,7 @@
                                 </v-row>
                             </v-tabs-window-item>
 
-                            <v-tabs-window-item :value="dealbar?.menus[1]?.value">
+                            <v-tabs-window-item :value="dealbar?.menus?.[1]?.value">
                                 <v-row>
                                     <v-col cols="3" v-for="products in dollar" :key="products">
                                         <productCard :product="products" />
@@ -27,7 +27,7 @@
                                 </v-row>
                             </v-tabs-window-item>
 
-                            <v-tabs-window-item :value="dealbar?.menus[2]?.value" id="bundled-discounts">
+                            <v-tabs-window-item :value="dealbar?.menus?.[2]?.value" id="bundled-discounts">
                                 <v-row>
                                     <v-col cols="3" v-for="products in bundledDiscounts" :key="products">
                                         <productCard :product="products" />

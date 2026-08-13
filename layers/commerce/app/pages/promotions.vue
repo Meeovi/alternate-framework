@@ -10,15 +10,15 @@
 
             <v-card-text>
                 <v-tabs-window v-model="tab">
-                    <v-tabs-window-item :value="promotionbar?.menus[0]?.value">
+                    <v-tabs-window-item :value="promotionbar?.menus?.[0]?.value">
                         <coupons />
                     </v-tabs-window-item>
 
-                    <v-tabs-window-item :value="promotionbar?.menus[1]?.value">
+                    <v-tabs-window-item :value="promotionbar?.menus?.[1]?.value">
                         <giftcards />
                     </v-tabs-window-item>
 
-                    <v-tabs-window-item :value="promotionbar?.menus[2]?.value">
+                    <v-tabs-window-item :value="promotionbar?.menus?.[2]?.value">
                         <subscriptions />
                     </v-tabs-window-item>
                 </v-tabs-window>
@@ -49,7 +49,7 @@
 
     definePageMeta({
       layout: "nolive",
-      middleware: ['authenticated'],
+      middleware: ['auth'],
     });
 
     useHead({

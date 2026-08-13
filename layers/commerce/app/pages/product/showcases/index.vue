@@ -12,7 +12,7 @@
       <v-card-text>
         <v-tabs-window v-model="tab">
           <!--Bundle Products List-->
-          <v-window-item :value="showcasebar?.menus[0]?.value">
+          <v-window-item :value="showcasebar?.menus?.[0]?.value">
             <v-row>
               <v-col cols="4" v-for="(product, index) in bundledProducts" :key="index">
                 <productCard :product="product" />
@@ -21,7 +21,7 @@
           </v-window-item>
 
           <!-- Group Products List -->
-          <v-window-item :value="showcasebar?.menus[1]?.value">
+          <v-window-item :value="showcasebar?.menus?.[1]?.value">
             <v-row>
               <v-col cols="4" v-for="item in groupedProducts" :key="item">
                 <productCard :product="item" />
@@ -30,7 +30,7 @@
           </v-window-item>
 
           <!--Bundle Products List-->
-          <v-window-item :value="showcasebar?.menus[2]?.value">
+          <v-window-item :value="showcasebar?.menus?.[2]?.value">
             <v-row>
               <v-col cols="4" v-for="(product, index) in subscriptions" :key="index">
                 <productCard :product="product" />

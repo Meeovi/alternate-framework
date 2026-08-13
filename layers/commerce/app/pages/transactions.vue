@@ -4,30 +4,45 @@
             <v-col cols="12" v-for="transaction in transactions" :key="transaction.id">
                 <v-card>
                     <v-toolbar flat>
-                        <v-toolbar-title>{{ transaction?.name }}</v-toolbar-title>
+                        <v-toolbar-title>Transaction {{ transaction?.id }}</v-toolbar-title>
 
                         <v-toolbar-items>
                             {{ transaction?.amount }}
                         </v-toolbar-items>
                     </v-toolbar>
-                    <v-card-title>{{ transaction?.name }}</v-card-title>
                     <v-card-text>
-                        {{ transaction?.date }}
+                        {{ transaction?.date_created ? new Date(transaction.date_created).toLocaleDateString() : '' }}
                         <br>
                         {{ transaction?.status }}
                         <br>
-                        <NuxtLink :to="`/order/${transaction?.order?.order_id?.id}`"></NuxtLink>
+                        <NuxtLink :to="`/order/${transaction?.order}`">View order</NuxtLink>
                     </v-card-text>
                 </v-card>
+            </v-col>
+            <v-col cols="12" v-if="!transactions?.length">
+                No transactions yet.
             </v-col>
         </v-row>
     </div>
 </template>
 
 <script setup>
-const { $directus, $readItem } = useNuxtApp()
+import { useAuth } from '#auth/app/composables/useAuth'
+
+const { $directus, $readItems } = useNuxtApp()
+
+const { data: session } = await useAuth().getSession()
+const userId = session?.user?.id ?? null
 
 const { data: transactions } = await useAsyncData('transactions', () => {
-  return $directus.request($readItem('transactions'))
+  if (!userId) return []
+  return $directus.request($readItems('transactions', {
+    fields: ['*'],
+    filter: {
+      order: {
+        user_id: { _eq: userId }
+      }
+    }
+  }))
 })
 </script>

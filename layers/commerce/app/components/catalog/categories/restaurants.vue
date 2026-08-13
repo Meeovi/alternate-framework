@@ -11,7 +11,7 @@
 
                     <v-card-text>
                         <v-tabs-window v-model="tab">
-                            <v-tabs-window-item :value="restaurantbar?.menus[0]?.value">
+                            <v-tabs-window-item :value="restaurantbar?.menus?.[0]?.value">
                                 <v-row>
                                     <v-col cols="3" v-for="products in restaurants" :key="products">
                                         <restaurantCard :product="products" />

@@ -62,42 +62,27 @@
 </template>
 
 <script setup lang="ts">
-import productCard from '../../catalog/product/productCard.vue'
-import { computed, ref } from '#imports'
-import { useAuth } from '../../../composables/globals/useAuth'
+import { ref } from '#imports'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
   const {
     $directus,
-    $readItem,
     $readItems
   } = useNuxtApp() as any
 
-  const auth = useAuth()
-  const user = computed(() => (auth as any)?.user?.value || null)
-  const userId = computed(() => user.value?.id || null)
-
   const tab = ref(null)
 
-  const { data: incentiveBar } = await useAsyncData('incentiveBar', async () => {
-    return $directus.request($readItem('navigation', '118', { fields: ['*', { '*': ['*'] }] }))
-  })
-
-  const { data: incentivePage } = await useAsyncData('incentivePage', async () => {
-    return $directus.request($readItem('pages', '86', { fields: ['*', { '*': ['*'] }] }))
-  })
-
+  // NOTE: like product/downloads.vue, this isn't yet scoped to what the
+  // signed-in user actually purchased — there is no established link from
+  // an order back to a per-user "owned subscriptions" list in this app.
+  // Both sections below list every Subscription-type product until that
+  // exists.
   const { data: allSubscriptions } = await useAsyncData('allSubscriptions', async () => {
     const resp = await $directus.request($readItems('products', {
-        fields: ['*', { '*': ['*'] }],
+        fields: ['*', 'image.*'],
         filter: {
-            user_id: {
-                _eq: userId.value
-            },
             type: {
-                name: {
-                    _eq: 'Subscription'
-                }
+                _eq: 'Subscription'
             }
         }
     }))

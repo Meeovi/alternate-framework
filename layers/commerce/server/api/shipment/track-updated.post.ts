@@ -1,5 +1,6 @@
 import { createDirectus, rest, staticToken, readItems, updateItem } from '@directus/sdk'
 import { createError, defineEventHandler, getQuery, readBody } from 'h3'
+import { safeEqual } from '../../utils/shipping-admin'
 
 // Shippo doesn't sign webhook payloads with an HMAC the way Stripe/Polar do,
 // so this route is secured with a shared-secret token in the webhook URL
@@ -19,7 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const token = getQuery(event).token
-  if (token !== expectedToken) {
+  if (typeof token !== 'string' || !safeEqual(token, expectedToken)) {
     throw createError({ statusCode: 401, statusMessage: 'Invalid webhook token' })
   }
 

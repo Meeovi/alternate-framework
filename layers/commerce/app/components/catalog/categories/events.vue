@@ -11,7 +11,7 @@
 
                     <v-card-text>
                         <v-tabs-window v-model="tab">
-                            <v-tabs-window-item :value="eventbar?.menus[0]?.value">
+                            <v-tabs-window-item :value="eventbar?.menus?.[0]?.value">
                                 <v-row>
                                     <v-col cols="3" v-for="products in eventProducts" :key="products">
                                         <productCard :product="products" />
@@ -19,7 +19,7 @@
                                 </v-row>
                             </v-tabs-window-item>
 
-                            <v-tabs-window-item :value="eventbar?.menus[1]?.value">
+                            <v-tabs-window-item :value="eventbar?.menus?.[1]?.value">
                                 <!-- Going To Event -->
                                 <v-sheet style="background-color: transparent; box-shadow: none;"
                                     v-if="goingEvents?.length">

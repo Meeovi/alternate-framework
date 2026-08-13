@@ -155,8 +155,8 @@
 
                 <!-- Category Products Section (commerce) -->
                 <v-row style="padding: 10px;" v-if="department?.products?.length">
-                    <v-col cols="3" v-for="product in department?.products" :key="product.id">
-                        <productCard :product="product" />
+                    <v-col cols="3" v-for="product in department?.products" :key="product?.products_id?.id ?? product.id">
+                        <productCard :product="product?.products_id" />
                     </v-col>
                 </v-row>
 
