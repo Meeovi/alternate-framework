@@ -15,6 +15,8 @@ const relevantEvents = [
   'checkout.session.async_payment_failed',
   'checkout.session.async_payment_succeeded',
   'checkout.session.completed',
+  'charge.refunded',
+  'charge.dispute.created',
 ]
 
 interface ListingMetadata {
@@ -279,6 +281,11 @@ export default defineEventHandler(async (event) => {
             expand: ['data.price.product'],
           })
 
+          // total_details (tax/discount/shipping breakdown) isn't always
+          // populated on the event's embedded session object, so re-fetch
+          // rather than guessing at values.
+          const fullSession = await stripe.checkout.sessions.retrieve(checkoutSession.id)
+
           const items = lineItems.data.map((lineItem) => {
             const product = lineItem.price?.product
             const productMetadata =
@@ -294,6 +301,53 @@ export default defineEventHandler(async (event) => {
               subtotal: centsToDollars(lineItem.amount_total ?? 0),
             }
           })
+
+          // Digital fulfillment for the standard cart checkout — distinct
+          // from the marketplace listing_type branch above, which has no
+          // reachable purchase flow of its own. `products.type` doesn't
+          // exist as a field (confirmed against the live schema) — the
+          // real vocabulary is a `product_types` M2M relation, and it's
+          // sparsely/inconsistently populated on real product rows (some
+          // products with a real `file` attached have no product_types at
+          // all). Attaching a file to a product is itself the fulfillment
+          // signal here, so detection keys directly on `file` being set
+          // rather than on a type tag.
+          const purchasedProductIds = items
+            .map((item) => item.product_id)
+            .filter((id): id is string => !!id)
+
+          let digitalFileId: string | null = null
+          let downloadToken: string | null = null
+          let downloadExpiresAt: string | null = null
+
+          if (purchasedProductIds.length > 0) {
+            const purchasedProducts = await directusServer.request(
+              readItems('products', {
+                filter: { id: { _in: purchasedProductIds } },
+                fields: ['id', 'file'],
+              }),
+            )
+            const digitalProducts = Array.isArray(purchasedProducts)
+              ? purchasedProducts.filter((p: any) => !!p.file)
+              : []
+
+            if (digitalProducts.length > 0) {
+              // orders.file_id/download_token are single-asset fields — an
+              // order with more than one digital item can only expose the
+              // first for download here. A real multi-item digital order
+              // needs a join table instead of two scalar columns; flagging
+              // rather than silently dropping the rest.
+              if (digitalProducts.length > 1) {
+                console.warn(
+                  '[webhook] Order has multiple digital items; only the first is downloadable via orders.file_id',
+                  { paymentIntentId, productIds: purchasedProductIds },
+                )
+              }
+              digitalFileId = digitalProducts[0].file ?? null
+              downloadToken = crypto.randomUUID()
+              downloadExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString()
+            }
+          }
 
           // Buy the actual shipping label now that payment has cleared —
           // never before, since an abandoned/failed checkout must not
@@ -333,38 +387,174 @@ export default defineEventHandler(async (event) => {
             }
           }
 
+          // Stripe's own payment_status is the source of truth — 'unpaid'
+          // happens with delayed payment methods where the session
+          // completes before funds actually clear. Hardcoding 'completed'
+          // here would mark unpaid orders as paid.
+          const orderPaymentStatus = checkoutSession.payment_status === 'unpaid' ? 'pending' : 'completed'
+
+          const buyerName = checkoutSession.customer_details?.name?.trim() ?? ''
+          const [customerFirstname, ...customerLastnameParts] = buyerName ? buyerName.split(/\s+/) : ['', '']
+          const customerLastname = customerLastnameParts.join(' ')
+
+          // orders.grand_total/subtotal/tax_amount/shipping_amount/
+          // total_paid/total_refunded/total_due are `integer` columns in
+          // the live schema (confirmed by direct write — a decimal dollar
+          // value throws "invalid input syntax for type integer"), unlike
+          // os_payments.amount which is `decimal` and correctly uses
+          // centsToDollars above. Stripe's own amounts are already integer
+          // cents, so these are written raw/unconverted.
+          const orderGrandTotal = checkoutSession.amount_total ?? 0
+          // total_paid reflects funds actually captured — for 'unpaid'
+          // (delayed payment methods still clearing), nothing has been
+          // captured yet; async_payment_succeeded reconciles this later.
+          const orderTotalPaid = orderPaymentStatus === 'completed' ? orderGrandTotal : 0
+
           // Field names below match the real `orders` collection, which
           // mirrors a Magento sales_order schema (grand_total,
-          // order_currency_code, customer_email, date_created are Magento's
-          // own columns) — a handful of fields with no Magento equivalent
+          // order_currency_code, customer_email, customer_firstname,
+          // customer_lastname, subtotal, tax_amount, shipping_amount,
+          // total_paid, total_due, date_created are Magento's own columns)
+          // — a handful of fields with no Magento equivalent
           // (stripe_payment_id, line_items_snapshot, tracking_*,
           // shipment_*, fulfillment_status) were added specifically for
-          // this integration.
-          await directusServer.request(
+          // this integration. tax_amount will read 0 for every order until
+          // Stripe Tax (automatic_tax) is enabled in checkout-session.post.ts
+          // — no tax is currently being calculated or collected. The more
+          // Magento-specific tax-compensation/base-currency fields
+          // (shipping_incl_tax, shipping_tax_amount,
+          // shipping_discount_tax_compensation_amount, base_*,
+          // shipping_address_id) have no real source of truth in this
+          // Stripe-based flow and are intentionally left unset rather than
+          // populated with fabricated values.
+          const createdOrder = await directusServer.request(
             createItem('orders', {
               user_id: buyer_id || null,
               stripe_payment_id: paymentIntentId,
-              payment_status: 'completed',
-              fulfillment_status: shipment ? 'shipped' : 'pending',
-              grand_total: centsToDollars(checkoutSession.amount_total ?? 0),
+              payment_status: orderPaymentStatus,
+              // A shipping label being purchased takes precedence (it means
+              // at least one physical item shipped); a fully-digital order
+              // with nothing to ship is delivered as soon as it's paid.
+              fulfillment_status: shipment ? 'shipped' : digitalFileId ? 'delivered' : 'pending',
+              grand_total: orderGrandTotal,
+              subtotal: fullSession.amount_subtotal ?? checkoutSession.amount_total ?? 0,
+              tax_amount: fullSession.total_details?.amount_tax ?? 0,
+              shipping_amount: fullSession.shipping_cost?.amount_total ?? 0,
+              total_paid: orderTotalPaid,
+              total_refunded: 0,
+              total_due: orderGrandTotal - orderTotalPaid,
               order_currency_code: checkoutSession.currency,
               customer_email: buyerEmail || null,
+              customer_firstname: customerFirstname || null,
+              customer_lastname: customerLastname || null,
               line_items_snapshot: items,
               tracking_number: shipment?.tracking_number || null,
               tracking_url: shipment?.tracking_url || null,
               label_url: shipment?.label_url || null,
               shipment_carrier: shipment?.carrier || null,
+              file_id: digitalFileId,
+              download_token: downloadToken,
+              download_expires_at: downloadExpiresAt,
             }),
           )
+
+          if (digitalFileId && downloadToken && buyerEmail) {
+            const orderId = (createdOrder as any)?.id
+            const downloadUrl = `${process.env.NUXT_PUBLIC_SITE_URL}/api/download/${orderId}?token=${downloadToken}`
+            await sendConfirmationEmail({
+              to: buyerEmail,
+              subject: 'Your digital purchase is ready',
+              html: `<h1>Your digital purchase is ready</h1><p>You can download it using the link below:</p><p><a href="${downloadUrl}">Download now</a></p><p>This link expires in 7 days.</p>`,
+              text: `Your digital purchase is ready.\nDownload: ${downloadUrl}\nThis link expires in 7 days.`,
+            }).catch((emailError) => {
+              // The order and its download entitlement already exist — a
+              // failed email must not fail the whole webhook (and trigger a
+              // Stripe retry that would re-run label purchase, etc). The
+              // customer can still reach the file from their order history.
+              console.error('[webhook] Digital fulfillment email failed', emailError)
+            })
+          }
         }
 
         break
       }
 
-      case 'checkout.session.async_payment_failed':
       case 'checkout.session.async_payment_succeeded':
-        // Payment state is reconciled on checkout.session.completed
+      case 'checkout.session.async_payment_failed': {
+        // Delayed payment methods (e.g. bank transfers) fire
+        // checkout.session.completed with payment_status 'unpaid' first,
+        // then resolve later via one of these two events — reconcile the
+        // order's payment_status against whichever order that first event
+        // already created.
+        const asyncSession = stripeEvent.data.object as Stripe.Checkout.Session
+        const asyncPaymentIntentId = asyncSession.payment_intent as string | null
+        if (!asyncPaymentIntentId) break
+
+        const ordersToUpdate = await directusServer.request(
+          readItems('orders', {
+            filter: { stripe_payment_id: { _eq: asyncPaymentIntentId } },
+            fields: ['id', 'grand_total'],
+            limit: 1,
+          }),
+        )
+        const orderToUpdate = Array.isArray(ordersToUpdate) ? ordersToUpdate[0] : null
+        if (!orderToUpdate) break
+
+        const succeeded = stripeEvent.type === 'checkout.session.async_payment_succeeded'
+        await directusServer.request(
+          updateItem('orders', orderToUpdate.id, {
+            payment_status: succeeded ? 'completed' : 'failed',
+            total_paid: succeeded ? orderToUpdate.grand_total : 0,
+            total_due: succeeded ? 0 : orderToUpdate.grand_total,
+          }),
+        )
         break
+      }
+
+      case 'charge.refunded': {
+        const charge = stripeEvent.data.object as Stripe.Charge
+        const refundedPaymentIntentId = charge.payment_intent as string | null
+        if (!refundedPaymentIntentId) break
+
+        const refundedOrders = await directusServer.request(
+          readItems('orders', {
+            filter: { stripe_payment_id: { _eq: refundedPaymentIntentId } },
+            fields: ['id'],
+            limit: 1,
+          }),
+        )
+        const refundedOrder = Array.isArray(refundedOrders) ? refundedOrders[0] : null
+        if (!refundedOrder) break
+
+        await directusServer.request(
+          updateItem('orders', refundedOrder.id, {
+            payment_status: 'refunded',
+            total_refunded: charge.amount_refunded ?? 0,
+          }),
+        )
+        break
+      }
+
+      case 'charge.dispute.created': {
+        const dispute = stripeEvent.data.object as Stripe.Dispute
+        const disputedPaymentIntentId = dispute.payment_intent as string | null
+        if (!disputedPaymentIntentId) break
+
+        const disputedOrders = await directusServer.request(
+          readItems('orders', {
+            filter: { stripe_payment_id: { _eq: disputedPaymentIntentId } },
+            fields: ['id'],
+            limit: 1,
+          }),
+        )
+        const disputedOrder = Array.isArray(disputedOrders) ? disputedOrders[0] : null
+        if (!disputedOrder) break
+
+        await directusServer.request(
+          updateItem('orders', disputedOrder.id, { payment_status: 'disputed' }),
+        )
+        break
+      }
 
       default:
         throw new Error('Unhandled relevant event!')

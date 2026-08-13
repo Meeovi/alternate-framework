@@ -1,4 +1,10 @@
-
+// Unused end to end: PayPal is a fully implemented backend integration
+// (this file plus server/api/payment/paypal/*) with zero frontend caller
+// anywhere in the app (grepped app/ across every layer, none found) — no
+// button, page, or composable ever hits /api/payment/paypal/*. Stripe is
+// the only checkout rail actually reachable from the storefront. Kept
+// rather than deleted since the code isn't broken, just disconnected —
+// remove if PayPal is confirmed permanently out of scope for this app.
 interface PayPalConfig {
   clientId: string
   clientSecret: string

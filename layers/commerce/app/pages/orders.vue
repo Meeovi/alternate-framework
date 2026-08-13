@@ -99,7 +99,7 @@
             </v-tabs-window-item>
 
             <!--Disputed Orders-->
-            <v-tabs-window-item :value="orderBar?.menus?.[2]?.value">
+            <v-tabs-window-item :value="orderBar?.menus?.[5]?.value">
                 <v-row class="media-container-row">
                     <template v-if="disputed?.length">
                         <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="disputedOrder in disputed"
@@ -113,7 +113,7 @@
             </v-tabs-window-item>
 
             <!--Completed Orders-->
-            <v-tabs-window-item :value="orderBar?.menus?.[5]?.value">
+            <v-tabs-window-item :value="orderBar?.menus?.[6]?.value">
                 <v-row class="media-container-row">
                     <template v-if="completed?.length">
                         <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="completedOrder in completed"
@@ -126,7 +126,7 @@
             </v-tabs-window-item>
 
             <!--Refunded Orders-->
-            <v-tabs-window-item :value="orderBar?.menus?.[4]?.value">
+            <v-tabs-window-item :value="orderBar?.menus?.[7]?.value">
                 <v-row class="media-container-row">
                     <template v-if="refunded?.length">
                         <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="refundedOrder in refunded"
@@ -139,7 +139,7 @@
             </v-tabs-window-item>
 
             <!--Cancelled Orders-->
-            <v-tabs-window-item :value="orderBar?.menus?.[2]?.value">
+            <v-tabs-window-item :value="orderBar?.menus?.[8]?.value">
                 <v-row class="media-container-row">
                     <template v-if="cancelled?.length">
                         <v-col class="wrap col-sm-12 col-lg-4 feedPost" v-for="cancelOrder in cancelled"
@@ -175,6 +175,12 @@
 
     const tab = ref(null);
 
+    // payment_status now genuinely reaches 'pending'/'completed'/'failed'
+    // (checkout.session.*), 'refunded' (charge.refunded), and 'disputed'
+    // (charge.dispute.created) via server/api/payment/stripe/webhooks.post.ts.
+    // 'processing', 'on-hold', and 'cancelled' have no producer anywhere in
+    // this app yet — there's no admin/staff action that sets them — so
+    // those three tabs will legitimately stay empty until that exists.
     const fetchOrders = (status?: string) => useAsyncData<any>(
         status ? `orders-${status}` : 'orders',
         async () => {

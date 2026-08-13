@@ -87,7 +87,7 @@
                                       </h4>
                                       <p class="card-text mbr-fonts-style display-7">{{ order?.shipping_address_id }}
                                       </p>
-                                      <p class="card-text mbr-fonts-style display-7">Total Shipping Charges: {{ order?.shipping_amount }}</p>
+                                      <p class="card-text mbr-fonts-style display-7">Total Shipping Charges: {{ order?.shipping_amount != null ? formatPrice(order.shipping_amount) : '' }}</p>
                                       <p class="card-text mbr-fonts-style display-7">
                                           {{ order?.shipping_discount_tax_compensation_amount }}</p>
                                       <p class="card-text mbr-fonts-style display-7">{{ order?.shipping_incl_tax }}</p>
@@ -140,7 +140,7 @@
                               </div>
                               <div class="tabl-item-column">
                                   <p class="card-text mbr-fonts-style mb-0 display-7">
-                                      {{ order?.subtotal }}
+                                      {{ order?.subtotal != null ? formatPrice(order.subtotal) : '' }}
                                   </p>
                               </div>
 
@@ -154,7 +154,7 @@
                               </div>
                               <div class="tabl-item-column">
                                   <p class="card-text mbr-fonts-style mb-0 display-7">
-                                      {{ order?.base_shipping_incl_tax }}
+                                      {{ order?.shipping_amount != null ? formatPrice(order.shipping_amount) : '' }}
                                   </p>
                               </div>
 
@@ -167,7 +167,7 @@
                               </div>
                               <div class="tabl-item-column">
                                   <p class="card-text mbr-fonts-style mb-0 display-7">
-                                      {{ order?.tax_amount }}
+                                      {{ order?.tax_amount != null ? formatPrice(order.tax_amount) : '' }}
                                   </p>
                               </div>
                           </div>
@@ -179,7 +179,7 @@
                               </div>
                               <div class="tabl-item-column">
                                   <p class="card-text mbr-fonts-style mb-0 display-7">
-                                      <strong>{{ order?.grand_total }}</strong>
+                                      <strong>{{ order?.grand_total != null ? formatPrice(order.grand_total) : '' }}</strong>
                                   </p>
                               </div>
                           </div>
@@ -191,7 +191,7 @@
                               </div>
                               <div class="tabl-item-column">
                                   <p class="card-text mbr-fonts-style mb-0 display-7">
-                                      <strong>{{ order?.total_paid }}</strong>
+                                      <strong>{{ order?.total_paid != null ? formatPrice(order.total_paid) : '' }}</strong>
                                   </p>
                               </div>
                           </div>
@@ -203,7 +203,7 @@
                               </div>
                               <div class="tabl-item-column">
                                   <p class="card-text mbr-fonts-style mb-0 display-7">
-                                      <strong>{{ order?.total_refunded }}</strong>
+                                      <strong>{{ order?.total_refunded != null ? formatPrice(order.total_refunded) : '' }}</strong>
                                   </p>
                               </div>
                           </div>
@@ -215,7 +215,7 @@
                               </div>
                               <div class="tabl-item-column">
                                   <p class="card-text mbr-fonts-style mb-0 display-7">
-                                      <strong>{{ order?.total_due }}</strong>
+                                      <strong>{{ order?.total_due != null ? formatPrice(order.total_due) : '' }}</strong>
                                   </p>
                               </div>
                           </div>
@@ -254,8 +254,15 @@
 
 <script setup>
     import { useAuth } from '#auth/app/composables/useAuth'
+    import { useCurrencyStore } from '../../stores/currency'
 
     const route = useRoute();
+
+    // grand_total/subtotal/tax_amount/shipping_amount/total_paid/
+    // total_refunded/total_due are `integer` columns storing raw cents
+    // (confirmed against the live schema) — format for display rather than
+    // interpolating the raw integer.
+    const { formatPrice } = useCurrencyStore()
 
     const {
         $directus,

@@ -21,7 +21,7 @@
                                 </div>
                                 <p class="card-text mbr-fonts-style display-4">Invoice: {{ invoice?.id }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Invoice Date: {{ invoice?.created_at ? new Date(invoice.created_at).toLocaleDateString() : '' }}</p>
-                                <p class="card-text mbr-fonts-style display-4">Grand Total: {{ invoice?.grand_total }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Grand Total: {{ invoice?.grand_total != null ? formatPrice(invoice.grand_total) : '' }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Status: {{ invoice?.state }}</p>
                                 <p class="btn_link mbr-fonts-style display-4"><NuxtLink :to="`/invoice/${invoice?.id}`" class="text-secondary">View<span class="mobi-mbri mobi-mbri-right mbr-iconfont"></span></NuxtLink></p>
                             </div>
@@ -34,10 +34,16 @@
 </template>
 
 <script setup>
+    import { useCurrencyStore } from '../../stores/currency'
+
     const props = defineProps({
         invoice: {
             type: Object,
             required: true,
         },
     });
+
+    // invoices.grand_total is an `integer` column storing raw cents
+    // (confirmed against the live schema, same convention as orders).
+    const { formatPrice } = useCurrencyStore()
 </script>

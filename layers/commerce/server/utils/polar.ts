@@ -93,6 +93,13 @@ export const addPaymentLog = async (
   }
 }
 
+// Unused: this factory is never called by the registered betterAuth
+// instance (layers/auth/shared/utils/plugins.ts uses @better-auth/stripe
+// for subscription billing, not this polar() plugin), and its only caller
+// (setupPolarSafe in server/api/payment/polar/polar.ts) is itself never
+// called from anywhere. checkout()/portal()/usage() below are therefore
+// unreachable in production. The Polar webhook route that IS live
+// (server/routes/webhook/polar.post.ts) doesn't depend on this function.
 export const setupPolar = () => {
   const runtimeConfig = useRuntimeConfig()
 

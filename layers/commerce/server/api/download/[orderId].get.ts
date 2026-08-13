@@ -1,12 +1,12 @@
 // server/api/download/[orderId].get.ts
 //
-// Auth/ownership below is authoritative and correct, but nothing in the
-// current storefront checkout flow ever populates file_id/download_token/
-// download_expires_at/fulfillment_status on an order — the webhook's
-// digital-listing branch (server/api/payment/stripe/webhooks.post.ts)
-// writes fulfillment to a separate digital_fulfillment_tokens collection
-// instead, and that branch currently has no reachable purchase flow of its
-// own. This endpoint is ready for whichever side gets built first.
+// file_id/download_token/download_expires_at/fulfillment_status are
+// populated by the standard cart-checkout branch of
+// server/api/payment/stripe/webhooks.post.ts when an order contains a
+// digital-type product (Book/Game/Video/Music/Image/Podcast). The separate
+// digital_fulfillment_tokens collection written by the webhook's
+// marketplace listing_type branch is unrelated — that branch has no
+// reachable purchase flow of its own and isn't read by this endpoint.
 import { createDirectus, rest, readItem, staticToken } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
 

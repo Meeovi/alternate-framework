@@ -1,5 +1,7 @@
 import { getPolarClient } from '../../utils/polar'
 
+// Unused scaffolding — no frontend caller (grepped, none found). See
+// checkout.get.ts for context on the disconnected Polar checkout surface.
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const checkoutId = query.checkoutId as string

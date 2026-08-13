@@ -81,8 +81,12 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     const resp = await $directus.request($readItems('products', {
         fields: ['*', 'image.*'],
         filter: {
-            type: {
-                _eq: 'Subscription'
+            product_types: {
+                product_types_id: {
+                    name: {
+                        _eq: 'Subscription'
+                    }
+                }
             }
         }
     }))
