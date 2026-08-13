@@ -152,8 +152,12 @@ export async function createShipment(shipment: {
 }) {
   return shippoFetch<{
     object_id: string
-    object_status: string
+    // Confirmed live: the shipment result field is `status`, not
+    // `object_status` (see createTransaction below for the same mixup).
+    status: string
     object_created: string
+    // Confirmed live: individual rate objects don't carry a status field
+    // at all — they're just quotes, not a processing result.
     rates: Array<{
       object_id: string
       provider: string
@@ -162,7 +166,6 @@ export async function createShipment(shipment: {
       amount: string
       currency: string
       estimated_days: number
-      object_status: string
       object_created: string
     }>
   }>('/shipments', {
@@ -184,9 +187,28 @@ export async function getRate(rateId: string) {
     amount: string
     currency: string
     estimated_days: number
-    object_status: string
   }>(`/rates/${encodeURIComponent(rateId)}`)
 }
+
+export interface ShippoTransaction {
+  object_id: string
+  status: string
+  tracking_number: string
+  tracking_url_provider: string
+  label_url: string
+  messages: string[]
+  eta: string | null
+}
+
+/**
+ * Retrieve a single transaction by id — used to poll a just-created
+ * transaction through to a terminal state (see createTransaction below).
+ */
+export async function getTransaction(transactionId: string) {
+  return shippoFetch<ShippoTransaction>(`/transactions/${encodeURIComponent(transactionId)}`)
+}
+
+const TERMINAL_TRANSACTION_STATUSES = new Set(['SUCCESS', 'ERROR'])
 
 /**
  * Purchase a label by creating a transaction from a rate.
@@ -196,21 +218,40 @@ export async function createTransaction(transaction: {
   label_file_type?: string
   async?: boolean
   reference?: string
-  metadata?: Record<string, string>
+  // Shippo's real API expects a plain string here (confirmed live: a
+  // structured object throws "metadata: Not a valid string"), not a
+  // structured object — it's a free-text notes field, not JSON.
+  metadata?: string
   extra?: Record<string, unknown>
 }) {
-  return shippoFetch<{
-    object_id: string
-    object_status: string
-    tracking_number: string
-    tracking_url_provider: string
-    label_url: string
-    messages: string[]
-    eta: string | null
-  }>('/transactions', {
+  // Confirmed live: the transaction's result field is `status`
+  // ("SUCCESS"/"ERROR"/etc) — `object_status` doesn't exist on this
+  // response at all (that name only applies to some other Shippo
+  // resources). `object_state` also exists but means something different
+  // (whether the object itself is valid/not deleted, not the transaction
+  // outcome) — easy to confuse with `status` since both are present.
+  //
+  // Confirmed live (twice, reproducibly): even with async left at its
+  // default (false/synchronous), this POST can return before the carrier
+  // purchase has actually finished — status comes back in a non-terminal
+  // state (empty messages, not SUCCESS or ERROR) while the same
+  // transaction, queried moments later, shows SUCCESS with a real
+  // tracking number and label. Poll briefly until it reaches a terminal
+  // status rather than treating "not immediately SUCCESS" as a failure.
+  const initial = await shippoFetch<ShippoTransaction>('/transactions', {
     method: 'POST',
     body: JSON.stringify(transaction),
   })
+
+  let current = initial
+  const maxAttempts = 6
+  const delayMs = 1500
+  for (let attempt = 0; attempt < maxAttempts && !TERMINAL_TRANSACTION_STATUSES.has(current.status); attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, delayMs))
+    current = await getTransaction(current.object_id).catch(() => current)
+  }
+
+  return current
 }
 
 /**
@@ -281,9 +322,12 @@ export async function createCustomsDeclaration(delaration: {
     hs_code?: string
   }>
 }) {
+  // Unused elsewhere in this codebase, so unverified live like the other
+  // fixes in this file — applying the same field name Shippo actually
+  // uses on every other resource checked (status, not object_status).
   return shippoFetch<{
     object_id: string
-    object_status: string
+    status: string
   }>('/customs/declarations', {
     method: 'POST',
     body: JSON.stringify(delaration),
@@ -306,7 +350,7 @@ export async function createCustomsItem(item: {
 }) {
   return shippoFetch<{
     object_id: string
-    object_status: string
+    status: string
   }>('/customs/items', {
     method: 'POST',
     body: JSON.stringify(item),
@@ -346,7 +390,7 @@ export async function createManifest(manifest: {
 }) {
   return shippoFetch<{
     object_id: string
-    object_status: string
+    status: string
     shipment_count: number
     label_url: string[]
   }>('/manifests', {
@@ -393,7 +437,7 @@ export async function createBatch(batch: {
 }) {
   return shippoFetch<{
     object_id: string
-    object_status: string
+    status: string
     batch_shipments: Array<{
       object_id: string
       status: string
@@ -411,7 +455,7 @@ export async function createBatch(batch: {
 export async function getBatch(batchId: string) {
   return shippoFetch<{
     object_id: string
-    object_status: string
+    status: string
     batch_shipments: Array<{
       object_id: string
       status: string
@@ -428,7 +472,7 @@ export async function getBatch(batchId: string) {
 export async function purchaseBatch(batchId: string) {
   return shippoFetch<{
     object_id: string
-    object_status: string
+    status: string
   }>(`/batches/${batchId}/purchase`, {
     method: 'POST',
   })
@@ -450,7 +494,7 @@ export async function listTransactions(params?: {
   return shippoFetch<{
     results: Array<{
       object_id: string
-      object_status: string
+      status: string
       tracking_number: string
       carrier: string
       provider: string
@@ -460,7 +504,7 @@ export async function listTransactions(params?: {
       label_url: string
       tracking_url_provider: string
       object_created: string
-      metadata?: Record<string, string>
+      metadata?: string
     }>
   }>(`/transactions?${query.toString()}`)
 }

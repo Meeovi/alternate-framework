@@ -10,7 +10,9 @@ const schema = Joi.object({
   ).default('PDF_4x6'),
   async: Joi.boolean().default(false),
   reference: Joi.string().optional(),
-  metadata: Joi.object().optional(),
+  // Shippo's real API expects a plain string (confirmed live) — a
+  // structured object throws "metadata: Not a valid string".
+  metadata: Joi.string().optional(),
   extra: Joi.object().optional(),
 }).required()
 
@@ -36,7 +38,7 @@ export default defineEventHandler(async (event) => {
     const result = await createTransaction(value)
 
     const response = {
-      success: result.object_status === 'SUCCESS',
+      success: result.status === 'SUCCESS',
       transactionId: result.object_id,
       trackingNumber: result.tracking_number,
       labelUrl: result.label_url,

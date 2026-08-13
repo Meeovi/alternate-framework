@@ -404,15 +404,34 @@ export default defineEventHandler(async (event) => {
               const transaction = await createTransaction({
                 rate: shippoRateId,
                 reference: paymentIntentId,
-                metadata: { payment_intent_id: paymentIntentId },
+                metadata: `payment_intent_id=${paymentIntentId}`,
               })
 
-              if (transaction.object_status === 'SUCCESS') {
+              if (transaction.status === 'SUCCESS') {
                 const rate = await getRate(shippoRateId).catch(() => null)
+                // orders.label_url is `varchar(255)` in the live schema —
+                // confirmed this static token can't widen it (a PATCH to
+                // /fields/orders/label_url returns 200 but silently
+                // doesn't change the underlying column). Real Shippo
+                // label URLs are long signed links that reliably exceed
+                // 255 chars, and this field is written in the same
+                // createItem call as the rest of the order — previously
+                // that meant a successful, paid-for label purchase would
+                // make the ENTIRE order write fail with no order record
+                // at all. Dropping the URL (not the whole order) when
+                // it's too long to store; the label can still be found in
+                // the Shippo dashboard via tracking_number.
+                const labelUrl = transaction.label_url
+                if (labelUrl && labelUrl.length > 255) {
+                  console.error('[webhook] Shippo label_url exceeds orders.label_url column length, storing null', {
+                    paymentIntentId,
+                    length: labelUrl.length,
+                  })
+                }
                 shipment = {
                   tracking_number: transaction.tracking_number,
                   tracking_url: transaction.tracking_url_provider,
-                  label_url: transaction.label_url,
+                  label_url: labelUrl && labelUrl.length <= 255 ? labelUrl : undefined,
                   carrier: rate?.provider,
                 }
               } else {

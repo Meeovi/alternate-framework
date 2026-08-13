@@ -52,6 +52,25 @@ export default defineNuxtConfig({
     polarWebhookSecret: process.env.NUXT_POLAR_WEBHOOK_SECRET,
     polarProductIdProMonth: process.env.NUXT_POLAR_PRODUCT_ID_PRO_MONTH,
     polarProductIdProYear: process.env.NUXT_POLAR_PRODUCT_ID_PRO_YEAR,
+    // Shippo and PayPal secrets must stay out of `public` — anything under
+    // `runtimeConfig.public` is serialized into the client bundle/initial
+    // HTML payload and is visible to every visitor regardless of whether
+    // any client-side code reads it. These were previously nested under
+    // `public` below despite their own comments saying "server-side only,
+    // never exposed to client" — a real secret-exposure bug, and also why
+    // server/utils/shippo.ts's `useRuntimeConfig().shippoApiKey` read
+    // undefined (it reads the top-level key; the value only existed at
+    // `public.shippoApiKey`).
+    shippoApiKey: process.env.SHIPPO_API_KEY,
+    paypalClientSecret: process.env.PAYPAL_CLIENT_SECRET,
+    // server/utils/paypal.ts reads these two as top-level config as well
+    // (config.paypalClientId / config.paypalMode, not config.public.*) —
+    // there's already a separate, genuinely-public
+    // public.scripts.paypal.clientId (a different env var) for the
+    // client-side PayPal SDK script, so these don't need to be public at
+    // all; they were just as unreachable as the two secrets above.
+    paypalClientId: process.env.PAYPAL_CLIENT_ID,
+    paypalMode: process.env.PAYPAL_MODE || 'sandbox',
     public: {
       payment: process.env.NUXT_PAYMENT || 'stripe',
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
@@ -63,12 +82,6 @@ export default defineNuxtConfig({
           clientId: `${process.env.NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID}`, // NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID
         },
       },
-      // PayPal server credentials (server-side only, never exposed to client)
-      paypalClientId: process.env.PAYPAL_CLIENT_ID,
-      paypalClientSecret: process.env.PAYPAL_CLIENT_SECRET,
-      paypalMode: process.env.PAYPAL_MODE || 'sandbox',
-      // Shippo server credentials (server-side only, never exposed to client)
-      shippoApiKey: process.env.SHIPPO_API_KEY,
       // Directus
       directus: {
         url: process.env.DIRECTUS_URL,

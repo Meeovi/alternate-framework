@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     })
 
     return {
-      success: result.object_status === 'SUCCESS',
+      success: result.status === 'SUCCESS',
       manifestId: result.object_id,
       shipmentCount: result.shipment_count,
       labelUrls: result.label_url,

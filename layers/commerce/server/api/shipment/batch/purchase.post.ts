@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       batchId: result.object_id,
-      status: result.object_status,
+      status: result.status,
     }
   } catch (error: any) {
     console.error('[shippo:batch:purchase] Error:', error)
