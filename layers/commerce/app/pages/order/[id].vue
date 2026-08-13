@@ -62,6 +62,20 @@
                                   </div>
                               </div>
                           </div>
+                          <div class="item features-without-image item-mb" v-if="order?.file_id">
+                              <div class="item-wrapper">
+                                  <div class="card-box">
+                                      <div class="icon-wrapper">
+                                          <span class="mbr-iconfont mobi-mbri-download mobi-mbri"></span>
+                                      </div>
+                                      <h4 class="card-title mbr-fonts-style display-7">
+                                          Digital Download
+                                      </h4>
+                                      <p v-if="downloadExpired" class="card-text mbr-fonts-style display-7">Your download link has expired. Contact support for a new one.</p>
+                                      <NuxtLink v-else :to="downloadUrl" target="_blank" class="card-text mbr-fonts-style display-7">Download your file</NuxtLink>
+                                  </div>
+                              </div>
+                          </div>
                           <div class="item features-without-image item-mb">
                               <div class="item-wrapper">
                                   <div class="card-box">
@@ -288,5 +302,19 @@
 
     useHead({
         title: order?.value?.id ? `Order ${order.value.id}` : 'Order Page',
+    })
+
+    // Fallback to the confirmation email's download link (server/api/
+    // payment/stripe/webhooks.post.ts) — surfaced here too since that email
+    // can fail to send or land in spam, and previously there was no other
+    // way for a buyer to ever reach their digital purchase.
+    const downloadExpired = computed(() => {
+        const expiresAt = order?.value?.download_expires_at
+        return !!expiresAt && new Date(expiresAt) < new Date()
+    })
+    const downloadUrl = computed(() => {
+        if (!order?.value?.id) return ''
+        const token = order.value.download_token
+        return token ? `/api/download/${order.value.id}?token=${token}` : `/api/download/${order.value.id}`
     })
 </script>

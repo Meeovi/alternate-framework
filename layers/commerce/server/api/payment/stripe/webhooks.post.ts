@@ -53,8 +53,13 @@ async function sendConfirmationEmail(params: {
   // project's email transport. Swap this block for your actual mailer.
   const { to, subject, html, text } = params
 
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('[webhook] RESEND_API_KEY missing; skipping confirmation email')
+  // The real deployed env only sets NUXT_RESEND_API_KEY (confirmed) — the
+  // unprefixed RESEND_API_KEY this previously checked is never set, so
+  // every confirmation/fulfillment email (including digital-download
+  // links) silently no-opped in production regardless of anything else
+  // being correct.
+  if (!process.env.NUXT_RESEND_API_KEY) {
+    console.warn('[webhook] NUXT_RESEND_API_KEY missing; skipping confirmation email')
     return
   }
 
@@ -62,9 +67,11 @@ async function sendConfirmationEmail(params: {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      Authorization: `Bearer ${process.env.NUXT_RESEND_API_KEY}`,
     },
     body: JSON.stringify({
+      // No RESEND_FROM_EMAIL-equivalent var exists in the real env either
+      // — falls back to a placeholder sender until one is configured.
       from: process.env.RESEND_FROM_EMAIL || 'no-reply@example.com',
       to,
       subject,
@@ -182,6 +189,26 @@ export default defineEventHandler(async (event) => {
         const createdSeconds = charge?.created ?? 0
         const buyerEmail = checkoutSession.customer_details?.email ?? charge?.billing_details?.email ?? ''
 
+        // Informational only (see checkout-session.post.ts) — the buyer's
+        // own shipping address, already collected once for the Shippo rate
+        // quote. orders.shipping_addresses is an M2M relation to an
+        // address collection this app's token can't introspect the fields
+        // of, so rather than risk a malformed nested-create there, this
+        // rides along in os_payments.metadata where support/ops can still
+        // see it — better than the previous behavior of discarding it
+        // entirely after the rate quote.
+        const shippingAddress = {
+          name: metadata?.shipping_name,
+          street1: metadata?.shipping_street1,
+          street2: metadata?.shipping_street2,
+          city: metadata?.shipping_city,
+          state: metadata?.shipping_state,
+          zip: metadata?.shipping_zip,
+          country: metadata?.shipping_country,
+          phone: metadata?.shipping_phone,
+        }
+        const hasShippingAddress = Object.values(shippingAddress).some(Boolean)
+
         await directusServer.request(
           createItem('os_payments', {
             organization: organization_id,
@@ -190,7 +217,11 @@ export default defineEventHandler(async (event) => {
             payment_date: new Date(createdSeconds * 1000).toISOString(),
             stripe_payment_id: paymentIntentId,
             amount: centsToDollars(checkoutSession.amount_total ?? 0),
-            metadata: { checkoutSession, paymentIntent: paymentIntentResponse },
+            metadata: {
+              checkoutSession,
+              paymentIntent: paymentIntentResponse,
+              ...(hasShippingAddress && { shippingAddress }),
+            },
             receipt_url: charge?.receipt_url ?? null,
           }),
         )

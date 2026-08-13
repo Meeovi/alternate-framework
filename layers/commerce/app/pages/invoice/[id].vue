@@ -98,12 +98,7 @@
                                         </h4>
                                         <p class="card-text mbr-fonts-style display-7">{{ invoice?.shipping_address_id }}
                                         </p>
-                                        <p class="card-text mbr-fonts-style display-7">Total Shipping Charges: {{ invoice?.shipping_amount }}</p>
-                                        <p class="card-text mbr-fonts-style display-7">
-                                            {{ invoice?.shipping_discount_tax_compensation_amount }}</p>
-                                        <p class="card-text mbr-fonts-style display-7">{{ invoice?.shipping_incl_tax }}</p>
-                                        <p class="card-text mbr-fonts-style display-7">{{ invoice?.shipping_tax_amount }}
-                                        </p>
+                                        <p class="card-text mbr-fonts-style display-7">Total Shipping Charges: {{ invoice?.shipping_amount != null ? formatPrice(invoice.shipping_amount) : '' }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -115,33 +110,6 @@
               <NuxtImg provider="cloudinary" src="https://via.placeholder.com/1200x400" alt="Invoices" />
         </section>
 
-        <v-card title="Invoice Items" flat>
-            <div class="container">
-                <v-data-table :headers="headers" :items="invoice?.items" :items-per-page="5" class="elevation-1">
-                    <template v-slot:[`item.name`]="{ item }">
-                        <strong>{{ item.name }}</strong>
-                    </template>
-                    <template v-slot:[`item.price_incl_tax`]="{ item }">
-                        {{ item.price_incl_tax }}
-                    </template>
-                    <template v-slot:[`item.qty`]="{ item }">
-                        {{ item.qty }}
-                    </template>
-                    <template v-slot:[`item.price`]="{ item }">
-                        {{ item.price }}
-                    </template>
-                    <template v-slot:[`item.tax_amount`]="{ item }">
-                        <span v-dompurify-html="item.tax_amount"></span>
-                    </template>
-                    <template v-slot:[`item.discount_amount`]="{ item }">
-                        {{ item.discount_amount }}
-                    </template>
-                    <template v-slot:[`item.row_total`]="{ item }">
-                        {{ item.row_total }}
-                    </template>
-                </v-data-table>
-            </div>
-        </v-card>
         <section data-bs-version="5.1" class="pricing1 lodgem5 cid-uhBqGPVpcI" id="apricing1-9s">
             <div class="container">
                 <div class="row">
@@ -160,7 +128,7 @@
                                 </div>
                                 <div class="tabl-item-column">
                                     <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        {{ invoice?.subtotal }}
+                                        {{ invoice?.subtotal != null ? formatPrice(invoice.subtotal) : '' }}
                                     </p>
                                 </div>
 
@@ -174,35 +142,7 @@
                                 </div>
                                 <div class="tabl-item-column">
                                     <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        {{ invoice?.base_shipping_incl_tax }}
-                                    </p>
-                                </div>
-
-                            </div>
-                            <div class="tabl-item-row">
-                                <div class="tabl-item-column">
-                                    <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        Adjustment Refund
-                                    </p>
-                                </div>
-                                <div class="tabl-item-column">
-                                    <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        {{ invoice?.adjustment_negative }} {{ invoice?.adjustment }}
-                                        {{ invoice?.adjustment_positive }}
-                                    </p>
-                                </div>
-
-                            </div>
-                            <div class="tabl-item-row">
-                                <div class="tabl-item-column">
-                                    <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        Adjustment Fee
-                                    </p>
-                                </div>
-                                <div class="tabl-item-column">
-                                    <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        {{ invoice?.base_adjustment_negative }} {{ invoice?.base_adjustment }}
-                                        {{ invoice?.base_adjustment_positive }}
+                                        {{ invoice?.shipping_amount != null ? formatPrice(invoice.shipping_amount) : '' }}
                                     </p>
                                 </div>
 
@@ -215,7 +155,7 @@
                                 </div>
                                 <div class="tabl-item-column">
                                     <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        {{ invoice?.tax_amount }}
+                                        {{ invoice?.tax_amount != null ? formatPrice(invoice.tax_amount) : '' }}
                                     </p>
                                 </div>
                             </div>
@@ -227,7 +167,7 @@
                                 </div>
                                 <div class="tabl-item-column">
                                     <p class="card-text mbr-fonts-style mb-0 display-7">
-                                        <strong>{{ invoice?.grand_total }}</strong>
+                                        <strong>{{ invoice?.grand_total != null ? formatPrice(invoice.grand_total) : '' }}</strong>
                                     </p>
                                 </div>
                             </div>
@@ -239,51 +179,21 @@
     </div>
 </template>
 
-<script>
-
-    export default {
-        data: () => ({
-            headers: [{
-                    text: 'Product',
-                    value: 'name'
-                },
-                {
-                    text: 'Price',
-                    value: 'price_incl_tax'
-                },
-                {
-                    text: 'Quantity',
-                    value: 'qty'
-                },
-                {
-                    text: 'Subtotal',
-                    value: 'price'
-                },
-                {
-                    text: 'Tax Amount',
-                    value: 'tax_amount'
-                },
-                {
-                    text: 'Discount Amount',
-                    value: 'discount_amount'
-                },
-                {
-                    text: 'Row Total',
-                    value: 'tow_total',
-                },
-            ],
-        }),
-    }
-</script>
-
 <script setup>
     import { useAuth } from '#auth/app/composables/useAuth'
+    import { useCurrencyStore } from '../../stores/currency'
 
     const route = useRoute();
     const {
         $directus,
         $readItems
     } = useNuxtApp()
+
+    // grand_total/subtotal/tax_amount/shipping_amount are `integer` columns
+    // storing raw cents (confirmed against the live schema, same
+    // convention as orders) — format for display rather than interpolating
+    // the raw integer.
+    const { formatPrice } = useCurrencyStore()
 
     const { data: session } = await useAuth().getSession()
     const currentUserId = session?.user?.id ?? null
@@ -300,10 +210,9 @@
         const results = await $directus.request($readItems('invoices', {
             fields: [
                 'id', 'created_at', 'grand_total', 'subtotal', 'tax_amount',
-                'shipping_amount', 'shipping_incl_tax', 'shipping_tax_amount',
-                'shipping_discount_tax_compensation_amount', 'state',
-                'order_currency_code', 'order_id', 'billing_address_id',
-                'shipping_address_id', 'email_sent', 'store_id'
+                'shipping_amount', 'state', 'order_currency_code', 'order_id',
+                'billing_address_id', 'shipping_address_id', 'email_sent',
+                'store_id'
             ],
             filter: {
                 id: { _eq: route.params.id },

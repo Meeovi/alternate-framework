@@ -96,6 +96,13 @@
 
   const cartEmpty = computed(() => cartStore.items.length === 0)
 
+  // Generated once per page load and reused across every checkout attempt
+  // on this visit (including a retry after a network error or a double
+  // click), so the server can dedupe against Stripe rather than create a
+  // second Checkout Session/order for the same purchase. A fresh page load
+  // gets a fresh key, matching a genuinely new checkout attempt.
+  const checkoutIdempotencyKey = crypto.randomUUID()
+
   const step = ref('address')
 
   const address = ref({
@@ -189,7 +196,27 @@
         // system — Stripe is the trusted source for whether a code is
         // valid and what it discounts, the same way it's the trusted
         // source for prices.
-        body: { items, shippoRateId: selectedRateId.value, allowPromotionCodes: true }
+        body: {
+          items,
+          shippoRateId: selectedRateId.value,
+          allowPromotionCodes: true,
+          idempotencyKey: checkoutIdempotencyKey,
+          // Already collected above for the Shippo rate quote — passed
+          // through so it's not just discarded after fetchRates(). The
+          // server treats it as informational only (never used for
+          // pricing/fulfillment authorization), same as the rest of
+          // metadata handling in checkout-session.post.ts.
+          shippingAddress: {
+            name: address.value.name,
+            street1: address.value.street1,
+            street2: address.value.street2,
+            city: address.value.city,
+            state: address.value.state,
+            zip: address.value.zip,
+            country: address.value.country,
+            phone: address.value.phone
+          }
+        }
       })
 
       const checkout = await stripe.initEmbeddedCheckout({

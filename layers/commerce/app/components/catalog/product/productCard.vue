@@ -25,7 +25,7 @@
           </NuxtLink>
         </div>
         <p class="block py-2 font-normal leading-5 typography-text-sm text-neutral-700">
-          By: {{ product?.shops?.shops_id?.name }}
+          By: {{ product?.shops?.[0]?.shops_id?.name }}
         </p>
         <span class="block pb-1 font-bold typography-text-lg">
           {{ pricing?.formatted?.final || product?.price }}

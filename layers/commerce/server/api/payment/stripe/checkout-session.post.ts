@@ -77,7 +77,29 @@ const requestSchema = Joi.object({
   ).optional(),
   // An opaque Shippo rate id selected during checkout — the amount is
   // re-fetched from Shippo below and is never taken from the client.
-  shippoRateId: Joi.string().optional()
+  shippoRateId: Joi.string().optional(),
+  // Client-generated, reused across retries of the same checkout attempt
+  // (see checkout.vue) so a double-click or network-retry doesn't create a
+  // second Stripe Checkout Session for one purchase. Purely a dedupe hint
+  // to Stripe — doesn't affect price, fulfillment, or attribution, so it's
+  // safe to accept as-is (unlike accountId/metadata elsewhere in this
+  // file, which are never trusted from the client).
+  idempotencyKey: Joi.string().max(255).optional(),
+  // Informational only — never used for pricing, fulfillment, or
+  // authorization decisions, so (unlike accountId/metadata elsewhere in
+  // this file) it's fine to accept from the client as-is. Stored via the
+  // webhook so it's not just discarded after the Shippo rate quote that
+  // collected it in the first place.
+  shippingAddress: Joi.object({
+    name: Joi.string().allow('').max(200).optional(),
+    street1: Joi.string().allow('').max(200).optional(),
+    street2: Joi.string().allow('').max(200).optional(),
+    city: Joi.string().allow('').max(100).optional(),
+    state: Joi.string().allow('').max(100).optional(),
+    zip: Joi.string().allow('').max(20).optional(),
+    country: Joi.string().allow('').max(2).optional(),
+    phone: Joi.string().allow('').max(30).optional()
+  }).optional()
 })
 
 interface CartItem {
@@ -118,6 +140,17 @@ interface CheckoutRequest {
     shipping_rate: string
   } >
   shippoRateId ? : string
+  idempotencyKey ? : string
+  shippingAddress ? : {
+    name ? : string
+    street1 ? : string
+    street2 ? : string
+    city ? : string
+    state ? : string
+    zip ? : string
+    country ? : string
+    phone ? : string
+  }
 }
 
 export default defineEventHandler(async (event) => {
@@ -161,9 +194,10 @@ export default defineEventHandler(async (event) => {
       taxRates,
       discounts,
       locale,
-      subscriptionData,
       shippingOptions,
-      shippoRateId
+      shippoRateId,
+      idempotencyKey,
+      shippingAddress
     }: CheckoutRequest = value
 
     // Transform items for Stripe.
@@ -270,6 +304,21 @@ export default defineEventHandler(async (event) => {
       'subscription' :
       'payment'
 
+    // The webhook (webhooks.post.ts) only fulfills `mode: 'payment'`
+    // sessions — it hard-exits on anything else, so a subscription-mode
+    // session created here would take payment with zero app-side record of
+    // it. No reachable caller in this app sends a recurring priceId or
+    // mode: 'subscription' today (checked: cart/checkout.vue never does),
+    // and real subscription billing already exists via the @better-auth
+    // /stripe plugin (layers/auth) with its own checkout/webhook/portal
+    // flow — so this stays blocked rather than duplicating that system.
+    if (sessionMode === 'subscription' || sessionMode === 'setup') {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Subscription/setup checkout is not supported here — use the account subscription flow instead.',
+      })
+    }
+
     // 3. Strip out the temporary '_mode' property before passing to Stripe
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = tempLineItems.map(
       ({
@@ -304,16 +353,28 @@ export default defineEventHandler(async (event) => {
       ...(allowPromotionCodes && {
         allow_promotion_codes: allowPromotionCodes
       }),
-      // Session metadata is built entirely server-side, from values this
-      // endpoint has itself resolved and trusts — never from a client
-      // payload. The webhook uses these keys to decide what to fulfill
-      // and which CRM records to attach a payment to, so none of it can
-      // be caller-supplied.
+      // Session metadata used for fulfillment/attribution decisions
+      // (buyer_id, shippo_rate_id) is built entirely server-side, from
+      // values this endpoint has itself resolved and trusts — never from a
+      // client payload. shipping_* below is the one exception: it's
+      // informational only (the webhook writes it straight through for
+      // support/ops visibility, never uses it to decide what to fulfill or
+      // to authorize anything), and it's the same address the buyer just
+      // used to fetch their own Shippo rate one step earlier — accepting
+      // it as-is here just means it's no longer discarded after that.
       metadata: {
         ...(buyerId && { buyer_id: buyerId }),
         // Read back by the webhook after payment to purchase the actual
         // shipping label for the rate the buyer was charged for.
-        ...(shippoRateId && { shippo_rate_id: shippoRateId })
+        ...(shippoRateId && { shippo_rate_id: shippoRateId }),
+        ...(shippingAddress?.name && { shipping_name: shippingAddress.name }),
+        ...(shippingAddress?.street1 && { shipping_street1: shippingAddress.street1 }),
+        ...(shippingAddress?.street2 && { shipping_street2: shippingAddress.street2 }),
+        ...(shippingAddress?.city && { shipping_city: shippingAddress.city }),
+        ...(shippingAddress?.state && { shipping_state: shippingAddress.state }),
+        ...(shippingAddress?.zip && { shipping_zip: shippingAddress.zip }),
+        ...(shippingAddress?.country && { shipping_country: shippingAddress.country }),
+        ...(shippingAddress?.phone && { shipping_phone: shippingAddress.phone })
       }
     }
 
@@ -394,9 +455,8 @@ export default defineEventHandler(async (event) => {
     // reachable caller in this app currently sends accountId at all — so
     // this stays unset rather than either trusting the client or building
     // out unrelated marketplace-seller-attribution scope here.
-    if (sessionMode === 'subscription' && subscriptionData) {
-      sessionConfig.subscription_data = subscriptionData
-    }
+    // (subscription_data is not set here — sessionMode === 'subscription'
+    // is rejected above, before this point is ever reached.)
 
     // Add cancel URL for hosted checkout (optional)
     if (cancelUrl) {
@@ -404,7 +464,10 @@ export default defineEventHandler(async (event) => {
     }
 
     // Create Stripe Checkout Session
-    const session = await stripe.checkout.sessions.create(sessionConfig)
+    const session = await stripe.checkout.sessions.create(
+      sessionConfig,
+      idempotencyKey ? { idempotencyKey } : undefined,
+    )
 
     return {
       success: true,

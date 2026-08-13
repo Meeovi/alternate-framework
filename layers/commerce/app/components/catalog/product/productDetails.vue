@@ -25,7 +25,7 @@
                             <!-- Product Made By -->
                             <v-list-item>
                                 <v-list-item-title>
-                                    By: <strong>{{ productDetails?.shop?.shop_id?.name || 'Unknown' }}</strong>
+                                    By: <strong>{{ productDetails?.shops?.[0]?.shops_id?.name || 'Unknown' }}</strong>
                                 </v-list-item-title>
                             </v-list-item>
 
@@ -114,7 +114,7 @@
                                         </div>
 
                                         <div class="flex flex-col items-stretch xs:items-center xs:inline-flex" v-else>
-                                            <v-btn prepend-icon="fas fa-download" :product="productDetails" text="Download" :href="productDetails?.file" download />
+                                            <v-btn prepend-icon="fas fa-download" :product="productDetails" text="Download" :href="getAssetURL(productDetails?.file)" download />
                                         </div>
                                     </v-list-item>
 

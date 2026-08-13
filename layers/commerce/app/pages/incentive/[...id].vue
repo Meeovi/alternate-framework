@@ -35,6 +35,11 @@
 
     const route = useRoute();
 
+    // [...id].vue is a catch-all route, so route.params.id is an array.
+    const incentiveId = computed(() =>
+        Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+    )
+
     const {
         $directus,
         $readItems
@@ -49,7 +54,7 @@
         if (!userId) return null
         const results = await $directus.request($readItems('incentives', {
             filter: {
-                id: { _eq: route.params.id },
+                id: { _eq: incentiveId.value },
                 user_id: { _eq: userId }
             },
             limit: 1
