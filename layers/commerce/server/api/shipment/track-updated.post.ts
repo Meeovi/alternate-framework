@@ -11,7 +11,7 @@ import { safeEqual } from '../../utils/shipping-admin'
 
 const directusServer = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
-  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
+  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 export default defineEventHandler(async (event) => {
   const expectedToken = process.env.SHIPPO_WEBHOOK_TOKEN

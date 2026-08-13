@@ -4,7 +4,7 @@ import { requireAuth } from '#auth/server/utils/sessions'
 
 const directusServer = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
-  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
+  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 // Same ownership model as order-tracking.get.ts, but listing every shipped
 // order for the signed-in buyer rather than looking up one by id. Scoped

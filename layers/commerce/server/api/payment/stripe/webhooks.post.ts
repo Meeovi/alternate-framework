@@ -9,7 +9,7 @@ import { createTransaction, getRate } from '../../../utils/shippo'
 // depend on any user's own Directus permissions.
 const directusServer = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
-  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
+  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 const relevantEvents = [
   'checkout.session.async_payment_failed',
@@ -557,10 +557,19 @@ export default defineEventHandler(async (event) => {
         const refundedOrder = Array.isArray(refundedOrders) ? refundedOrders[0] : null
         if (!refundedOrder) break
 
+        // charge.amount_refunded is cumulative across every refund issued
+        // against this charge, so comparing it to the original charge
+        // amount tells a full refund from a partial one — a $5 refund on a
+        // $50 order shouldn't flip the order's payment_status to
+        // 'refunded' (misleadingly implying nothing was actually paid for
+        // it), only a refund covering the whole charge should.
+        const amountRefunded = charge.amount_refunded ?? 0
+        const isFullyRefunded = amountRefunded >= (charge.amount ?? 0)
+
         await directusServer.request(
           updateItem('orders', refundedOrder.id, {
-            payment_status: 'refunded',
-            total_refunded: charge.amount_refunded ?? 0,
+            ...(isFullyRefunded && { payment_status: 'refunded' }),
+            total_refunded: amountRefunded,
           }),
         )
         break

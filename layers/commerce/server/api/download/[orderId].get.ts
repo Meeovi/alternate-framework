@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   // ownership *before* trusting anything the caller claims.
   const directus = createDirectus(process.env.DIRECTUS_URL!)
     .with(rest())
-    .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
+    .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
   // 2. Fetch the order record to verify ownership and status
   const order = await directus.request(
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
   // 4. Stream the asset from Directus private storage
   const assetUrl = `${process.env.DIRECTUS_URL}/assets/${order.file_id}`
   const fileStream = await $fetch.raw(assetUrl, {
-    headers: { Authorization: `Bearer ${process.env.DIRECTUS_STATIC_TOKEN}` },
+    headers: { Authorization: `Bearer ${process.env.NUXTUS_DIRECTUS_STATIC_TOKEN}` },
     responseType: 'stream',
   })
 

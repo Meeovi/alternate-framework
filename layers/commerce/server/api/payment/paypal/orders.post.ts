@@ -7,7 +7,7 @@ import Joi from 'joi'
 // dictate what they get charged.
 const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
-  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
+  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 const createOrderSchema = Joi.object({
   items: Joi.array().items(

@@ -5,7 +5,7 @@ import { requireAuth } from '#auth/server/utils/sessions'
 
 const directusServer = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
-  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
+  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 // Tracking is only visible to the signed-in buyer who placed the order —
 // the `orders` collection has no reliably-readable email field to check

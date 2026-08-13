@@ -11,7 +11,7 @@ import { getRate } from '../../../utils/shippo'
 // dictate what they get charged.
 const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
-  .with(staticToken(process.env.DIRECTUS_STATIC_TOKEN!))
+  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 // 8 random letters for the integration_identifier suffix (per stripe skill).
 const randomSuffix = Array.from({ length: 8 }, () =>
