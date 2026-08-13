@@ -1,6 +1,7 @@
 import Joi from 'joi'
 import { purchaseBatch, getBatch } from '../../../utils/shippo'
 import { createError } from 'h3'
+import { requireShippingAdmin } from '../../../utils/shipping-admin'
 
 const purchaseSchema = Joi.object({
   batchId: Joi.string().required(),
@@ -8,6 +9,11 @@ const purchaseSchema = Joi.object({
 
 export default defineEventHandler(async (event) => {
   try {
+    // This spends real money against the merchant's Shippo balance —
+    // must never be reachable by an anonymous caller (same fail-closed
+    // shared-secret gate as label.post.ts/manifest.post.ts).
+    requireShippingAdmin(event)
+
     const body = await readBody(event)
     const { error, value } = purchaseSchema.validate(body, { abortEarly: false })
 

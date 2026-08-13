@@ -89,8 +89,12 @@
         data: transactions
     } = await useAsyncData('transactions', async () => {
         if (!userId) return []
+        // Explicit field list — transactions.invoices is a broken M2M
+        // alias field (no relation config behind it in Directus), so
+        // fields: ['*'] throws a 500. Needs a real schema fix; until then,
+        // only request what transactionCard.vue renders.
         const resp = await $directus.request($readItems('transactions', {
-            fields: ['*'],
+            fields: ['id', 'order', 'date_created', 'type', 'payment_method', 'amount', 'status'],
             filter: {
                 order: {
                     user_id: {

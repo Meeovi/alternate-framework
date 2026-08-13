@@ -107,7 +107,7 @@
                 },
                 product_types: {
                     product_types_id: {
-                        _eq: 'Bundled Products'
+                        name: { _eq: 'Bundled Product' }
                     }
                 }
             }

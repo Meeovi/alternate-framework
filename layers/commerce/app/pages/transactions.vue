@@ -34,10 +34,14 @@ const { $directus, $readItems } = useNuxtApp()
 const { data: session } = await useAuth().getSession()
 const userId = session?.user?.id ?? null
 
+// Explicit field list — transactions.invoices is a broken M2M alias field
+// (no relation config behind it in Directus), so fields: ['*'] throws a
+// 500. Needs a real schema fix; until then, only request what this page
+// renders.
 const { data: transactions } = await useAsyncData('transactions', () => {
   if (!userId) return []
   return $directus.request($readItems('transactions', {
-    fields: ['*'],
+    fields: ['id', 'amount', 'date_created', 'status', 'order'],
     filter: {
       order: {
         user_id: { _eq: userId }

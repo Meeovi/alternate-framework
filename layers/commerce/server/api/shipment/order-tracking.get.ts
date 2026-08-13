@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
         id: { _eq: orderId },
         user_id: { _eq: user.id },
       },
-      fields: ['id', 'tracking_number', 'tracking_url', 'shipment_carrier', 'shipment_status', 'fulfillment_status', 'date_created'],
+      fields: ['id', 'date_created', 'payment_status', 'tracking_number', 'tracking_url', 'shipment_carrier', 'shipment_status', 'fulfillment_status', 'line_items_snapshot'],
       limit: 1,
     }),
   )
@@ -44,6 +44,8 @@ export default defineEventHandler(async (event) => {
 
   return {
     orderId: order.id,
+    dateCreated: order.date_created,
+    paymentStatus: order.payment_status,
     fulfillmentStatus: order.fulfillment_status,
     trackingNumber: order.tracking_number,
     trackingUrl: order.tracking_url,
@@ -52,5 +54,6 @@ export default defineEventHandler(async (event) => {
     statusDetails: live?.tracking_status?.status_details || null,
     history: live?.tracking_history || [],
     eta: live?.eta || null,
+    lineItems: order.line_items_snapshot || [],
   }
 })

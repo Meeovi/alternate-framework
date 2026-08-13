@@ -88,6 +88,14 @@
 
     const { data: session } = await useAuth().getSession()
 
+    // product_types is a M2M relation (products -> product_types via
+    // product_types_id, an integer FK) — filtering product_types_id
+    // directly against a string name is an int-vs-string mismatch that
+    // Directus rejects outright (confirmed live: HTTP 400 "Invalid numeric
+    // value"). The real vocabulary name lives one level deeper, at
+    // product_types_id.name. Likewise `user` is a M2M through the
+    // products_directus_users junction, whose real fields are
+    // product_id/user_id — there's no `directus_users` field on it.
     const {
         data: giftCards
     } = await useAsyncData('giftCards', () => {
@@ -95,13 +103,18 @@
             filter: {
                 product_types: {
                     product_types_id: {
-                        _eq: 'Gift Card'
+                        name: { _eq: 'Gift Card' }
                     }
                 }
             }
         }))
     })
 
+    // NOTE: there's no established concept of a platform-official
+    // "Meeovi" user id anywhere else in this app — this can't be fixed to
+    // a real value without one (a hardcoded 'Meeovi' string will never
+    // match a real user_id UUID either way), so it stays empty by design
+    // rather than guessing at a user id.
     const {
         data: meeGiftCards
     } = await useAsyncData('meeGiftCards', () => {
@@ -109,12 +122,12 @@
             filter: {
                 product_types: {
                     product_types_id: {
-                        _eq: 'Gift Card'
+                        name: { _eq: 'Gift Card' }
                     }
                 },
                 user: {
-                    directus_users: {
-                        _eq: 'Meeovi'
+                    user_id: {
+                        _eq: '00000000-0000-0000-0000-000000000000'
                     }
                 }
             }
@@ -124,17 +137,17 @@
     const {
         data: myGiftCards
     } = await useAsyncData('myGiftCards', () => {
-        if (!session?.user?.username) return []
+        if (!session?.user?.id) return []
         return $directus.request($readItems('products', {
             filter: {
                 product_types: {
                     product_types_id: {
-                        _eq: 'Gift Card'
+                        name: { _eq: 'Gift Card' }
                     }
                 },
                 user: {
-                    directus_users: {
-                        _eq: session.user.username
+                    user_id: {
+                        _eq: session.user.id
                     }
                 }
             }
@@ -148,7 +161,7 @@
             filter: {
                 product_types: {
                     product_types_id: {
-                        _eq: 'Gift Certificate'
+                        name: { _eq: 'Gift Certificate' }
                     }
                 }
             }

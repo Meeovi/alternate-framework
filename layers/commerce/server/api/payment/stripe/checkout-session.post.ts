@@ -40,7 +40,6 @@ const requestSchema = Joi.object({
   currency: Joi.string().length(3).lowercase().default('usd'),
   customerEmail: Joi.string().email().optional(),
   customerId: Joi.string().optional(),
-  accountId: Joi.string().optional(),
   successUrl: Joi.string().uri().optional(),
   cancelUrl: Joi.string().uri().optional(),
   allowPromotionCodes: Joi.boolean().default(false),
@@ -99,7 +98,6 @@ interface CheckoutRequest {
   currency ? : string
   customerEmail ? : string
   customerId ? : string
-  accountId ? : string
   successUrl ? : string
   cancelUrl ? : string
   allowPromotionCodes ? : boolean
@@ -155,7 +153,6 @@ export default defineEventHandler(async (event) => {
       currency,
       customerEmail,
       customerId,
-      accountId,
       successUrl,
       cancelUrl,
       allowPromotionCodes,
@@ -384,22 +381,21 @@ export default defineEventHandler(async (event) => {
       sessionConfig.discounts = discounts
     }
 
-    // Connected account payouts + subscription data (Stripe docs pattern)
-    if (sessionMode === 'subscription') {
-      sessionConfig.subscription_data = {
-        ...(accountId ? {
-          transfer_data: {
-            destination: accountId
-          }
-        } : {}),
-        ...(subscriptionData || {}),
-      }
-    } else if (sessionMode === 'payment' && accountId) {
-      sessionConfig.payment_intent_data = {
-        transfer_data: {
-          destination: accountId
-        }
-      }
+    // Connect transfer destinations are intentionally NOT accepted from the
+    // client here. This endpoint previously took an `accountId` and used it
+    // directly as payment_intent_data/subscription_data.transfer_data
+    // .destination with no ownership check — any authenticated caller could
+    // create their own Connect Express account (server/api/commerce/connect
+    // /account.post.ts requires only requireAuth) and pass its id here to
+    // redirect a real cart charge to themselves instead of the platform.
+    // There's also no product/shop → Connect-account relation in the live
+    // schema yet (checked: `shops` has no such field) for a marketplace
+    // purchase to derive a real seller destination from server-side, and no
+    // reachable caller in this app currently sends accountId at all — so
+    // this stays unset rather than either trusting the client or building
+    // out unrelated marketplace-seller-attribution scope here.
+    if (sessionMode === 'subscription' && subscriptionData) {
+      sessionConfig.subscription_data = subscriptionData
     }
 
     // Add cancel URL for hosted checkout (optional)

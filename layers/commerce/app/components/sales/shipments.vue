@@ -36,30 +36,15 @@
 </template>
 
 <script setup lang="ts">
-    import { useAuth } from '#auth/app/composables/useAuth'
-
-    const { data: session } = await useAuth().getSession()
-    const userId = session?.user?.id ?? null
-
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
-
-    // Shipment tracking lives on `orders` now (see server/api/payment/
-    // stripe/webhooks.post.ts) — the legacy `shipments` collection this
-    // component originally queried isn't accessible to this app's token.
+    // Ownership is enforced server-side by server/api/shipment/my-
+    // shipments.get.ts (requireAuth + orders.user_id scoping with a
+    // privileged token) rather than by querying Directus directly from the
+    // client — the client-exposed static Directus token has no per-session
+    // scoping of its own.
     const {
         data: shippedOrders
-    } = await useAsyncData('shippedOrders', async () => {
-        if (!userId) return []
-        return $directus.request($readItems('orders', {
-            fields: ['id', 'date_created', 'tracking_number', 'shipment_carrier', 'shipment_status'],
-            filter: {
-                user_id: { _eq: userId },
-                tracking_number: { _nnull: true }
-            }
-        }))
+    } = await useAsyncData('shippedOrders', () => {
+        return $fetch('/api/shipment/my-shipments').catch(() => [])
     })
 
     useHead({

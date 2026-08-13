@@ -185,8 +185,16 @@
         status ? `orders-${status}` : 'orders',
         async () => {
             if (!currentUserId) return []
+            // Explicit field list — orders/invoices/transactions have a
+            // broken Directus M2M relation between invoices and
+            // transactions (invoices.transaction_id / transactions.invoices
+            // are declared alias fields with no relation config behind
+            // them), so any wildcard/deep-expand fields param here throws
+            // a Directus 500. This needs a real schema fix in Directus
+            // (reconfigure or remove that relation); until then, only
+            // request fields orderCard.vue actually renders.
             return $directus.request($readItems('orders', {
-                fields: ['*', { '*': ['*'] }],
+                fields: ['id', 'date_created', 'customer_firstname', 'customer_lastname', 'payment_status'],
                 filter: {
                     user_id: { _eq: currentUserId },
                     ...(status && { payment_status: { _eq: status } })

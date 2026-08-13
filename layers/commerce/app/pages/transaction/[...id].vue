@@ -64,7 +64,11 @@
         data: transaction
     } = await useAsyncData('transaction', async () => {
         if (!currentUserId) return null
+        // Explicit field list — transactions.invoices is a broken M2M
+        // alias field (no relation config behind it in Directus), so an
+        // unspecified/wildcard fields param throws a 500.
         const results = await $directus.request($readItems('transactions', {
+            fields: ['id', 'order', 'date_created', 'type', 'payment_method', 'amount', 'status'],
             filter: {
                 id: { _eq: transactionId.value },
                 order: {
