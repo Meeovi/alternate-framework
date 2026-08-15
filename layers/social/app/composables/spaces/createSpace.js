@@ -1,10 +1,10 @@
 // composables/cms/spaces/createSpace.js
 
 export default async function createSpace(spaceData) {
-    const { $createItem } = useNuxtApp()
+    const { $directus, $createItem } = useNuxtApp()
 
     try {
-        const space = await createItem('spaces', {
+        const space = await $directus.request($createItem('spaces', {
             name: spaceData.name,
             description: spaceData.description,
             status: spaceData.status,
@@ -13,7 +13,7 @@ export default async function createSpace(spaceData) {
             avatarFile: spaceData.avatarFile,
             creator: spaceData.creator,
             departments: { create: [{ departments_id: spaceData.departments }] }
-        })
+        }))
         return space;
     } catch (error) {
         console.error('Error creating space:', error);

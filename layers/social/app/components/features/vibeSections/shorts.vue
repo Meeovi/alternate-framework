@@ -57,43 +57,23 @@
       <span class="text-caption">{{ likesCount }}</span>
       
       <v-btn icon="mdi-comment" variant="text" @click="toggleComments" />
-      <span class="text-caption">{{ commentsCount }}</span>
+      <span class="text-caption">{{ short?.comments_count || 0 }}</span>
       
       <v-btn icon="fas share-nodes" variant="text" @click="shareVibe" />
       <span class="text-caption">{{ short?.shares_count || 0 }}</span>
       
       <v-spacer />
-      <v-btn :to="`/social/vibe/${short?.id}`" variant="text" size="small">View Vibe</v-btn>
+      <v-btn :to="`/connect/vibe/${short?.id}`" variant="text" size="small">View Vibe</v-btn>
     </template>
 
-    <!-- Comments Section -->
+    <!-- Comments Section — Waline, the real comment system this app runs
+         (see components/blocks/comments.vue), given a per-vibe thread via
+         commentId rather than the custom mock comment list this used to
+         render. -->
     <v-expand-transition>
       <div v-show="showComments">
         <v-divider />
-        <template>
-          <v-text-field
-            v-model="newComment"
-            label="Add a comment..."
-            variant="outlined"
-            density="compact"
-            append-inner-icon="mdi-send"
-            @click:append-inner="addComment"
-            @keyup.enter="addComment"
-          />
-          
-          <div v-for="comment in vibeComments" :key="comment.id" class="mb-2">
-            <div class="d-flex align-start">
-              <v-avatar size="32" class="mr-2">
-                <v-img :src="comment.user_avatar || '/default-avatar.png'" />
-              </v-avatar>
-              <div>
-                <div class="font-weight-bold text-caption">{{ comment.username }}</div>
-                <div class="text-body-2">{{ comment.content }}</div>
-                <div class="text-caption text-grey">{{ formatDate(comment.date_created) }}</div>
-              </div>
-            </div>
-          </div>
-        </template>
+        <comments v-if="short?.id" :commentId="`vibe-${short.id}`" />
       </div>
     </v-expand-transition>
   </v-card>
@@ -102,6 +82,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from '#imports'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import comments from '../../blocks/comments.vue'
 
 const { $sdk } = useNuxtApp()
 
@@ -119,12 +100,6 @@ const videoRef = ref(null)
 const isLiked = ref(false)
 const likesCount = ref(short?.likes_count || 0)
 const showComments = ref(false)
-const newComment = ref('')
-const vibeComments = ref([])
-const commentsLoaded = ref(false)
-const commentsCount = computed(() =>
-  commentsLoaded.value ? vibeComments.value.length : (short?.comments_count || 0)
-)
 
 onMounted(async () => {
   try {
@@ -184,37 +159,6 @@ const toggleLike = async () => {
 
 const toggleComments = () => {
   showComments.value = !showComments.value
-  if (showComments.value && vibeComments.value.length === 0) {
-    loadComments()
-  }
-}
-
-const addComment = async () => {
-  const content = newComment.value.trim()
-  if (!content) return
-
-  try {
-    const comment = await $fetch('/api/social/comments', {
-      method: 'POST',
-      body: { targetType: 'shorts', targetId: short?.id, content },
-    })
-    vibeComments.value.unshift(comment)
-    newComment.value = ''
-  } catch (error) {
-    console.error('Failed to post comment:', error)
-  }
-}
-
-const loadComments = async () => {
-  try {
-    const { data } = await $fetch('/api/social/comments', {
-      params: { targetType: 'shorts', targetId: short?.id },
-    })
-    vibeComments.value = data
-    commentsLoaded.value = true
-  } catch (error) {
-    console.error('Failed to load comments:', error)
-  }
 }
 
 const shareVibe = () => {

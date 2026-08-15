@@ -31,6 +31,9 @@
 import { ref, onMounted } from 'vue';
 import { DynamicForm } from '@mframework/meeovi-forms'
 import updateSpace from '#social/app/composables/spaces/updateSpace';
+import deleteSpaceRequest from '#social/app/composables/spaces/deleteSpace';
+
+const props = defineProps({ space: Object })
 
 const route = useRoute();
 const router = useRouter();
@@ -40,4 +43,23 @@ const deleteDialog = ref(false);
 const deleteLoading = ref(false);
 
 const dialog = ref(false);
+
+// Delete button in the template called `deleteSpace` as if it were a
+// local function — nothing by that name was ever declared, so clicking
+// Delete threw a ReferenceError. Named deleteSpace (matching the template)
+// while importing the actual request as deleteSpaceRequest to avoid
+// shadowing it.
+async function deleteSpace() {
+  if (!props.space?.id) return
+  deleteLoading.value = true
+  try {
+    await deleteSpaceRequest(props.space.id)
+    deleteDialog.value = false
+    router.push('/connect/spaces')
+  } catch (error) {
+    console.error('Failed to delete space:', error)
+  } finally {
+    deleteLoading.value = false
+  }
+}
 </script>

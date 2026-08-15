@@ -111,7 +111,7 @@
                     <!--Settings Tab-->
                     <v-tabs-window-item :value="individualSpaceBar?.menus[6]?.value">
                         <v-sheet>
-                            <SettingsTab />
+                            <SettingsTab :space="space" :user="user" :logged-in="loggedIn" />
                         </v-sheet>
                     </v-tabs-window-item>
                 </v-tabs-window>

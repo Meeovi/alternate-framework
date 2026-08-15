@@ -36,13 +36,17 @@
     getMenuOptions,
     type KanbanCard,
   } from '@svar-ui/vue-kanban'
+  import { useDirectusRequest } from '#social/composables/content/useDirectusRequest'
 
   const props = defineProps({
     listId: { type: [String, Number], required: true },
   })
 
   const COLLECTION = 'list_items'
-  const { readItems, createItem, updateItem, deleteItem } = useNuxtApp() as any
+  // useNuxtApp() exposes $readItems/$createItem/etc (dollar-prefixed) — the
+  // bare, unprefixed names destructured here were always undefined, so the
+  // board never loaded and every CRUD handler below threw.
+  const { readItems, createItem, updateItem, deleteItem } = useDirectusRequest()
 
   // Board stages. Each `id` maps to the Directus `list_items.status` value
   // via `columnAccessor` below.
@@ -78,43 +82,45 @@
   // ---- Directus <-> Kanban mapping ----------------------------------------
 
   async function load() {
+    // Field names below are the real list_items columns — the previous
+    // list (content/list/sort/deadline/progress) didn't match the live
+    // schema at all (real names: title/list_id/position/due_date, and
+    // there's no progress column). filter: { list: ... } in particular
+    // referenced a column that doesn't exist, which errors on Directus's
+    // side rather than just coming back empty, so this never loaded.
     const records = (await readItems(COLLECTION, {
       fields: [
         'id',
-        'content',
         'title',
         'status',
         'description',
         'priority',
-        'progress',
-        'deadline',
-        'sort',
+        'due_date',
+        'position',
       ],
-      filter: { list: { _eq: props.listId } },
-      sort: ['sort'],
+      filter: { list_id: { _eq: props.listId } },
+      sort: ['position'],
       limit: -1,
     })) as Array<Record<string, any>>
 
     cards.value = records.map((r) => ({
       id: r.id,
-      label: r.content ?? r.title ?? 'Untitled',
+      label: r.title ?? 'Untitled',
       column: r.status ?? 'todo',
       description: r.description ?? '',
       priority: r.priority ?? 0,
-      progress: r.progress ?? 0,
-      deadline: r.deadline ? new Date(r.deadline) : undefined,
+      deadline: r.due_date ? new Date(r.due_date) : undefined,
     }))
   }
 
   function toRecord(card: any) {
     return {
-      list: props.listId,
-      content: card.label ?? 'Untitled',
+      list_id: props.listId,
+      title: card.label ?? 'Untitled',
       status: card.column ?? 'todo',
       description: card.description ?? null,
       priority: card.priority ?? 0,
-      progress: card.progress ?? 0,
-      deadline: card.deadline ? new Date(card.deadline).toISOString() : null,
+      due_date: card.deadline ? new Date(card.deadline).toISOString() : null,
     }
   }
 

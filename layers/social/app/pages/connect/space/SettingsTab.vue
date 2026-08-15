@@ -1,7 +1,7 @@
 <template>
   <v-sheet>
     <template v-if="loggedIn && user && space && user.id === space.owner?.id">
-      <SpaceSettings />
+      <SpaceSettings :space="space" />
     </template>
     <template v-else-if="loggedIn">
       <div class="center-text">

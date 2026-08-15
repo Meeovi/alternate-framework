@@ -11,13 +11,20 @@ import '@waline/client/style'
 import '@waline/client/meta'
 
 const serverURL = useRuntimeConfig().public.walineServerURL
-const path = computed(() => useRoute().path)
 
-defineProps({
+const props = defineProps({
   commentId: {
     type: String,
-    required: true
+    required: false,
+    default: undefined
   }
 })
+
+// commentId was previously declared but never actually used — path always
+// fell back to the page route, so every embedded thread on the same page
+// (e.g. one per card in a feed) collided into a single shared thread
+// instead of each having its own. Falls back to the route path for
+// callers that render exactly one thread per page (station, bookmark).
+const path = computed(() => props.commentId ? `/${props.commentId}` : useRoute().path)
 
 </script>

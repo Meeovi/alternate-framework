@@ -14,6 +14,8 @@ const props = defineProps({
   listId: { type: [String, Number], required: true },
   items: { type: Array, required: true }
 })
+// emit('updated') below was called with no defineEmits declaration at all.
+const emit = defineEmits(['updated'])
 
 const { reorderItems, moveItemToList, updateListItem } = useLists()
 

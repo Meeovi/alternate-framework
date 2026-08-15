@@ -59,6 +59,8 @@
         $readItems
     } = useNuxtApp()
 
+    const currentUser = useCurrentUser()
+
     const tab = ref(null)
     const loading = ref(true)
 
@@ -85,15 +87,21 @@
     const {
         data: myStations
     } = await useAsyncData('myStations', () => {
+        // `session` was referenced here but never declared anywhere in this
+        // file — this threw on every load. radios also has no per-user
+        // ownership field of its own (only Directus's auto-managed
+        // user_created/user_updated), so "my stations" is approximated by
+        // who Directus recorded as the creator — accurate only if stations
+        // are ever created under each user's own Directus identity rather
+        // than a single shared service token.
+        if (!currentUser.value?.id) return []
         return $directus.request($readItems('radios', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
-                user: {
-                    directus_users: {
-                        _eq: session.user.id
-                    }
+                user_created: {
+                    _eq: currentUser.value.id
                 }
             }
         }))

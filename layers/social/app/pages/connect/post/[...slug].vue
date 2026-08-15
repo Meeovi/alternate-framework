@@ -149,7 +149,7 @@
         <div class="col-sm-6 col-lg-12 feedPost">
             <v-divider></v-divider>
 
-            <comments id="postComments" :contentId="post?.id" />
+            <comments id="postComments" :commentId="post?.id" />
         </div>
     </div>
 </template>

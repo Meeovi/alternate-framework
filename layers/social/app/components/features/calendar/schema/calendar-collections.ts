@@ -1,14 +1,19 @@
-// Directus collection schema for the calendar feature.
+// Directus collection schema for the calendar feature — applied live via
+// the Directus API (see useCalendar.ts). Field names map 1:1 to
+// `useCalendar.ts` in `#social/composables/calendar/useCalendar`.
 //
-// Apply these via the Directus Admin UI (Settings > Data Model) or a migration
-// tool. Field names map 1:1 to `useCalendar.ts` in
-// `#social/composables/calendar/useCalendar`.
+//   social_calendar_groups  (calendar group / filter sidebar source)
+//   social_calendar_events  (individual events, including recurring masters)
 //
-//   calendar_groups  (calendar group / filter sidebar source)
-//   calendar_events  (individual events, including recurring masters)
+// Named social_calendar_* rather than calendar_*/calendar_events — those
+// names are already a real, active M2M junction table linking the legacy
+// `calendar`/`events` collections; reusing them would have collided.
+// user (on events) is a flat uuid, not a directus_users relation —
+// better-auth users (the app's real user accounts) live in a separate
+// database from Directus.
 
 export const calendarGroupsCollection = {
-  collection: 'calendar_groups',
+  collection: 'social_calendar_groups',
   meta: {
     icon: 'calendar_month',
     note: 'Calendar groups used for filtering and coloring events',
@@ -29,7 +34,7 @@ export const calendarGroupsCollection = {
 }
 
 export const calendarEventsCollection = {
-  collection: 'calendar_events',
+  collection: 'social_calendar_events',
   meta: {
     icon: 'event',
     note: 'Calendar events (supports iCal RRULE recurrence)',
@@ -79,10 +84,12 @@ export const calendarEventsCollection = {
       { text: 'Cancelled', value: 'cancelled' },
     ] } } },
     {
+      // Flat reference to a better-auth user id, not a directus_users
+      // relation — better-auth users live in a separate database.
       field: 'user',
       type: 'uuid',
-      meta: { interface: 'select-dropdown-m2o', options: { collection: 'directus_users', displayTemplate: '{{email}}' } },
-      schema: { foreign_key_column: 'user', foreign_key_table: 'directus_users', on_delete: 'SET NULL' },
+      meta: { interface: 'input', note: 'better-auth user id' },
+      schema: { is_nullable: true },
     },
   ],
 }
