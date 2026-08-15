@@ -41,13 +41,17 @@ import {
 } from './sessions'
 
 import { plugins } from '../../shared/utils/plugins'
+import { sendAuthEmail } from '../../shared/utils/infrastructure/email'
 
 const runtimeConfig = {
   public: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
     appEnv: process.env.NODE_ENV || 'development',
-    appName: process.env.APP_NAME || 'App',
-    appNotifyEmail: process.env.APP_NOTIFY_EMAIL || 'no-reply@example.com'
+    // NUXT_-prefixed: matches the real vars set in .env (APP_NAME/
+    // APP_NOTIFY_EMAIL are never set there — this previously always fell
+    // through to the hardcoded fallbacks below, regardless of config).
+    appName: process.env.NUXT_APP_NAME || 'App',
+    appNotifyEmail: process.env.NUXT_APP_NOTIFY_EMAIL || 'no-reply@example.com'
   },
   preset: process.env.PRESET || 'node-server'
 }
@@ -79,16 +83,6 @@ const trustedOrigins = Array.from(
     ].filter(Boolean) as string[],
   ),
 )
-
-// Minimal resend stub — in this isolated layer we don't require a full
-// transactional email provider; returning a shape compatible with callers
-const resendInstance = {
-  emails: {
-    send: async (_opts ? : any) => ({
-      error: null
-    })
-  }
-}
 
 export const auth = betterAuth({
   appName: `${process.env.NUXT_APP_NAME}`,
@@ -158,8 +152,26 @@ export const auth = betterAuth({
       },
     },
     additionalFields: {
+      // Referenced by deleteUser.beforeDelete above and needed by the
+      // stripe() plugin's createCustomerOnSignUp — was never actually
+      // declared here, and the live users table has no matching column,
+      // so Stripe customer creation on signup has likely never worked.
+      stripeCustomerId: {
+        type: 'string',
+        required: false,
+        defaultValue: null
+      },
       polarCustomerId: {
         type: 'string',
+        required: false,
+        defaultValue: null
+      },
+      // Generic, backend-agnostic anchor for a commerce backend's customer
+      // record — populated by CommerceCustomerLinkRegistry hooks
+      // (see server/utils/audits.ts). Never used for login; better-auth
+      // remains the sole authentication system.
+      magentoCustomerId: {
+        type: 'number',
         required: false,
         defaultValue: null
       },
@@ -178,10 +190,10 @@ export const auth = betterAuth({
       user,
       url
     }) => {
-      const response = await resendInstance.emails.send({
-        from: `${runtimeConfig.public.appName} <${runtimeConfig.public.appNotifyEmail}>`,
+      const response = await sendAuthEmail({
         to: user.email,
         subject: 'Reset your password',
+        html: `<p>Click the link below to reset your password:</p><p><a href="${url}">${url}</a></p>`,
         text: `Click the link to reset your password: ${url}`
       })
       await logAuditEvent({
@@ -191,11 +203,11 @@ export const auth = betterAuth({
         targetType: 'email',
         targetId: user.email,
         status: response.error ? 'failure' : 'success',
-        details: (response as any).error?.message,
+        details: response.error ?? undefined,
         id: ''
       })
       if (response.error) {
-        console.error(`Failed to send reset password email: ${(response as any).error.message}`)
+        console.error(`Failed to send reset password email: ${response.error}`)
         throw createError({
           statusCode: 500,
           statusMessage: 'Internal Server Error'
@@ -210,10 +222,10 @@ export const auth = betterAuth({
       user,
       url
     }) => {
-      const response = await resendInstance.emails.send({
-        from: `${runtimeConfig.public.appName} <${runtimeConfig.public.appNotifyEmail}>`,
+      const response = await sendAuthEmail({
         to: user.email,
         subject: 'Verify your email address',
+        html: `<p>Click the link below to verify your email address:</p><p><a href="${url}">${url}</a></p>`,
         text: `Click the link to verify your email address: ${url}`
       })
       await logAuditEvent({
@@ -223,11 +235,11 @@ export const auth = betterAuth({
         targetType: 'email',
         targetId: user.email,
         status: response.error ? 'failure' : 'success',
-        details: (response as any).error?.message,
+        details: response.error ?? undefined,
         id: ''
       })
       if (response.error) {
-        console.error(`Failed to send verification email: ${(response as any).error.message}`)
+        console.error(`Failed to send verification email: ${response.error}`)
         throw createError({
           statusCode: 500,
           statusMessage: 'Internal Server Error'

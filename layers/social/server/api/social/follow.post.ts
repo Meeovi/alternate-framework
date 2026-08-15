@@ -1,10 +1,11 @@
 import { and, eq } from 'drizzle-orm'
 import { db } from '#auth/server/utils/drizzle'
 import { follows } from '#auth/server/database/migrations/schema'
-
-const { auth } = useNuxtApp() as any
+import { useNuxtApp } from 'nuxt/app'
 
 export default defineEventHandler(async (event) => {
+  const { auth } = useNuxtApp() as any
+
   // 1. Guard route using Better Auth session context
   const session = await auth.api.getSession({ headers: event.node.req.headers })
   if (!session) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })

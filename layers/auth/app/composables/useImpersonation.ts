@@ -17,7 +17,10 @@ export const useImpersonation = () => {
 
   async function startImpersonation(user: User) {
     try {
-      await $fetch('/api/impersonate-user', {
+      // The admin plugin's real server endpoint — mounted under
+      // /api/auth/[...all] like every other better-auth route. There is no
+      // custom /api/impersonate-user route in this app.
+      await $fetch('/api/auth/admin/impersonate-user', {
         method: 'POST',
         body: { userId: user.id },
       })
@@ -38,7 +41,7 @@ export const useImpersonation = () => {
 
   async function stopImpersonation() {
     try {
-      await $fetch('/api/stop-impersonation', {
+      await $fetch('/api/auth/admin/stop-impersonating', {
         method: 'POST',
       })
       impersonatedUser.value = null

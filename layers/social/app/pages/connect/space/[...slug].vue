@@ -29,7 +29,7 @@
                         <div v-if="space?.posts && space.posts.length">
                             <div class="text-center" v-for="(discussions, idx) in space.posts"
                                 :key="discussions?.posts_id?.id || idx">
-                                <DiscussionTab :space="discussions?.posts_id" />
+                                <postsCard :post="discussions?.posts_id" />
                             </div>
                         </div>
 
@@ -63,7 +63,7 @@
 
                             <div class="center-text" v-else>
                                 <p>No Members yet</p>
-                            </div>
+                            </div>    
                         </v-row>
                     </v-tabs-window-item>
 
@@ -86,7 +86,7 @@
                         <v-row>
                             <v-col cols="3" v-if="space?.products?.length" v-for="products in space?.products"
                                 :key="products.id">
-                                <ProductsTab :product="products?.products_id" />
+                                <productCard :product="products?.products_id" />
                             </v-col>
 
                             <div class="center-text" v-else>
@@ -99,7 +99,7 @@
                     <v-tabs-window-item :value="individualSpaceBar?.menus[5]?.value">
                         <v-row>
                             <v-col cols="3" v-if="space?.lists?.length" v-for="lists in space?.lists" :key="lists.id">
-                                <ListsTab :list="lists?.lists_id" />
+                                <listsCard :list="lists?.lists_id" />
                             </v-col>
 
                             <div class="center-text" v-else>
@@ -124,20 +124,16 @@
     import {
         ref
     } from '#imports'
-    import AboutTab from './AboutTab.vue'
-    import DiscussionTab from './DiscussionTab.vue'
-    import MembersTab from './MembersTab.vue'
-    import MediaTab from './MediaTab.vue'
-    import ProductsTab from './ProductsTab.vue'
-    import ListsTab from './ListsTab.vue'
+    import AboutTab from '../../../components/blocks/groups/about.vue'
+    import postsCard from '../../../components/features/feed/posts.vue'
+    import MembersTab from '../../../components/related/memberList.vue'
+    import MediaTab from '../../../components/blocks/groups/media.vue'
+    import productCard from '#commerce/app/components/catalog/product/products.vue'
+    import listsCard from '../../../components/features/lists/lists.vue'
     import SettingsTab from './SettingsTab.vue'
     import {
         useAuth
     } from '#auth/app/composables/useAuth'
-    import {
-        watch,
-        onMounted
-    } from 'vue'
     import SearchDialog from '../../../components/blocks/groups/SearchDialog.vue'
 
     const route = useRoute();

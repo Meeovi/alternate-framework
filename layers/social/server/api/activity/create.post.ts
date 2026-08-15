@@ -1,3 +1,10 @@
+// layers/social only aliases '#shared' (see nuxt.config.ts) rather than
+// using a real Nuxt `extends` layer relationship, so layers/shared's
+// server/utils/redis.ts is not auto-imported here — it must be imported
+// explicitly. Previously this referenced a bare `redis` identifier that
+// was never declared anywhere, throwing ReferenceError on every call.
+import { redis } from '#shared/server/utils/redis'
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const authHeader = getRequestHeader(event, 'authorization');

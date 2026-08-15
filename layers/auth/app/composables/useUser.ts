@@ -9,7 +9,7 @@ export function useUser() {
 	const auth = createAuthAdapter(runtimeAuth, useAppGateway().auth || {}) as any
 
 	const fetchUser = async (...args: any[]) => {
-		const session = await (auth.fetchSession?.(...args) ?? auth.getSession?.(...args) ?? null)
+		const session = await (auth.useSession?.(...args) ?? auth.fetchSession?.(...args) ?? auth.getSession?.(...args) ?? null)
 		const user = session?.user ?? runtimeAuth.user ?? null
 		state.value = user
 		return user

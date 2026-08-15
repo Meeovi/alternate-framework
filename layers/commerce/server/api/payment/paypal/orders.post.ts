@@ -1,13 +1,7 @@
-import { createDirectus, rest, staticToken, readItem } from '@directus/sdk'
+import { readItem } from '@directus/sdk'
 import { createPayPalOrder } from '../../../utils/paypal'
+import { getDirectusFacade } from '../../../utils/directusClient'
 import Joi from 'joi'
-
-// A privileged client used only to look up each item's authoritative price —
-// never trust a client-supplied amount, since that would let a caller
-// dictate what they get charged.
-const directus = createDirectus(process.env.DIRECTUS_URL!)
-  .with(rest())
-  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 const createOrderSchema = Joi.object({
   items: Joi.array().items(
@@ -37,6 +31,11 @@ export default defineEventHandler(async (event) => {
     }
 
     const { items, currency, idempotencyKey } = value
+
+    // A privileged client used only to look up each item's authoritative
+    // price — never trust a client-supplied amount, since that would let a
+    // caller dictate what they get charged.
+    const directus = getDirectusFacade()
 
     const amount = await items.reduce(async (totalPromise: Promise<number>, item: { id: string; quantity: number }) => {
       const total = await totalPromise

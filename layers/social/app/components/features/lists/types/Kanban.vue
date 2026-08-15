@@ -1,21 +1,26 @@
 <template>
-  <Willow>
-    <div class="kanban-wrap pa-2">
-      <ContextMenu :api="api" :options="menuOptions" :onclick="onMenuClick">
-        <Kanban
-          :cards="cards"
-          :columns="columns"
-          :columnAccessor="columnAccessor"
-          :card="cardShape"
-          :cardCss="cardCss"
-          :init="init"
-        />
-      </ContextMenu>
+  <ClientOnly>
+    <Willow>
+      <div class="kanban-wrap pa-2">
+        <ContextMenu :api="api" :options="menuOptions" :onclick="onMenuClick">
+          <Kanban
+            :cards="cards"
+            :columns="columns"
+            :columnAccessor="columnAccessor"
+            :card="cardShape"
+            :cardCss="cardCss"
+            :init="init"
+          />
+        </ContextMenu>
 
-      <Toolbar v-if="api" :api="api" :undo="true" :sort="true" :add="true" />
-      <Editor v-if="api" :api="api" :items="editorItems" />
-    </div>
-  </Willow>
+        <Toolbar v-if="api" :api="api" :undo="true" :sort="true" :add="true" />
+        <Editor v-if="api" :api="api" :items="editorItems" />
+      </div>
+    </Willow>
+    <template #fallback>
+      <div class="pa-4">Loading kanban...</div>
+    </template>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

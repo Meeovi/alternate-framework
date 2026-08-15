@@ -1,11 +1,8 @@
-import { createDirectus, rest, staticToken, readItems } from '@directus/sdk'
+import { readItems } from '@directus/sdk'
 import { createError, defineEventHandler, getQuery } from 'h3'
 import { getTrack } from '../../utils/shippo'
 import { requireAuth } from '#auth/server/utils/sessions'
-
-const directusServer = createDirectus(process.env.DIRECTUS_URL!)
-  .with(rest())
-  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
+import { getDirectusFacade } from '../../utils/directusClient'
 
 // Tracking is only visible to the signed-in buyer who placed the order —
 // the `orders` collection has no reliably-readable email field to check
@@ -13,6 +10,7 @@ const directusServer = createDirectus(process.env.DIRECTUS_URL!)
 // same session-ownership check used by the digital download endpoint.
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  const directusServer = getDirectusFacade()
 
   const query = getQuery(event)
   const orderId = String(query.orderId || '').trim()

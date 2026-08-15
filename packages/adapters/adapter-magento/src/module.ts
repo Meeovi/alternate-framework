@@ -1,5 +1,5 @@
 // packages/adapters/adapter-magento/src/module.ts
-import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, addServerPlugin, createResolver } from '@nuxt/kit'
 
 export interface ModuleOptions {
   /** The endpoint URL for your Magento instance or Hive Gateway endpoint */
@@ -31,5 +31,11 @@ export default defineNuxtModule<ModuleOptions>({
 
     // 2. Register the local runtime plugin that exposes the $magentoAdapter global context
     addPlugin(resolver.resolve('./runtime/plugin'))
+
+    // 3. Register a Nitro-only server plugin that links better-auth users to
+    // Magento customer records (see runtime/server/commerce-link.ts) —
+    // separate from #2 above since better-auth signup runs in Nitro, not
+    // through the Vue app's plugin lifecycle.
+    addServerPlugin(resolver.resolve('./runtime/server/commerce-link'))
   }
 })

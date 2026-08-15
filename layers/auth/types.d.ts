@@ -38,3 +38,7 @@ declare module '../../../../lib/auth-client' {
 declare module '../../../../../lib/auth-client' {
   export const authClient: any
 }
+
+declare module '#auth/lib/auth-client' {
+  export const authClient: any
+}

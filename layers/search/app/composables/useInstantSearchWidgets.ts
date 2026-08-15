@@ -6,6 +6,7 @@ export type InstantSearchWidgetConfig = {
   component?: Component
   props?: Record<string, any>
   condition?: () => boolean
+  panel?: { header: string }
 }
 
 export const widgetRegistry: Record<string, Component> = {

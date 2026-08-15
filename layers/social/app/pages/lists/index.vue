@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-toolbar class="listToolbar" color="green">
             <v-toolbar-title>
                 <div class="listsToolbarTitle">
@@ -16,7 +16,7 @@
             </v-toolbar-title>
 
             <v-toolbar-items>
-                <createList class="createListsToolbarItems" />
+                <createList style="top: 20px; position: relative;" class="createListsToolbarItems" />
             </v-toolbar-items>
         </v-toolbar>
 
@@ -53,10 +53,11 @@
         ref    } from '#imports'
     import listCard from '#social/app/components/related/list.vue'
     import RelatedLists from '#social/app/components/related/relatedlists.vue'
-    import createList from '#social/app/components/features/lists/add-list.vue'
+    import createList from '#social/app/components/blocks/partials/listBtn.vue'
+    import { authClient } from '#auth/lib/auth-client'
 
     const model = ref(null)
-
+    const { data: session } = await authClient.useSession();
     const { $directus, $readItem, $readItems } = useNuxtApp()
     
     const opts = {
@@ -79,7 +80,7 @@
             ...opts,
             filter: {
                 user: {
-                    _neq: 'null'
+                    _eq: `${session?.user?.email}`
                 }
             }
         }))

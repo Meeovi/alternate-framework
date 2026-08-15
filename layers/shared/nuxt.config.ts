@@ -9,6 +9,7 @@ import vuetify from 'vite-plugin-vuetify'
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
+const newsletterProvider = process.env.NEWSLETTER_PROVIDER || 'mailchimp'
 
 export default defineNuxtConfig({
   $meta: {
@@ -53,6 +54,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    "nuxt-newsletter",
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
@@ -71,6 +73,16 @@ export default defineNuxtConfig({
     resolve(__dirname, '../../packages/plugins/experience-builder/module.ts'),
     'nuxt-skill-hub'
   ],
+
+  // @ts-ignore - nuxt-newsletter module augments this key at runtime
+  newsletter: {
+    newsletterProvider: {
+      apiKey: process.env.NEWSLETTER_API_KEY || '',
+      serverPrefix: process.env.MAILCHIMP_SERVER_PREFIX, // Mailchimp only
+      audienceId: process.env.MAILCHIMP_AUDIENCE_ID, // Mailchimp only
+      component: true,
+    }
+  },
 
   // @ts-ignore - @nuxtjs/fonts module augments this key at runtime
   fonts: {

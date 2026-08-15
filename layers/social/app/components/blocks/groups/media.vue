@@ -1,11 +1,11 @@
 <template>
     <div>
         <div v-if="image?.image">
-            <photoCard :media="image?.image" />
+            <v-img :src="image?.image" />
         </div>
 
         <div v-if="visual?.media">
-            <videoCard :media="visual?.media" />
+            <videoPlayer :player="visual?.media" />
         </div>
 
         <div v-else>
@@ -15,6 +15,8 @@
 </template>
 
 <script setup>
+    import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
+
     defineProps({
         image: {
             type: Object,

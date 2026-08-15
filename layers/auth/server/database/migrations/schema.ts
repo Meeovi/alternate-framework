@@ -309,6 +309,10 @@ export const publicSessions = pgTable("sessions", {
 	updatedAt: timestamp("updated_at", { withTimezone: true }),
 	ipAddress: text("ip_address"),
 	userAgent: text("user_agent"),
+	activeOrganizationId: text("active_organization_id"),
+	customField: text("custom_field"),
+	// Renamed from impersonatedBy — see users.authRole's comment.
+	authImpersonatedBy: text("auth_impersonated_by"),
 });
 
 export const sessionsInAuth = auth.table.withRLS("sessions", {
@@ -1293,6 +1297,201 @@ export const accounts = pgTable.withRLS("accounts", {
 	refreshToken: text("refresh_token"),
 	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`),
 	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`),
+});
+
+// ---------------------------------------------------------------------
+// better-auth plugin tables (dedicated, not shared with Directus content
+// of the same conceptual name — see plugins.ts for why organizations/
+// subscriptions in particular were pointed here instead of the
+// pre-existing Directus tables).
+// ---------------------------------------------------------------------
+
+export const authOrganizations = pgTable("auth_organizations", {
+	id: uuid().defaultRandom().primaryKey(),
+	name: text().notNull(),
+	slug: text().notNull().unique(),
+	logo: text(),
+	dateCreated: timestamp("date_created", { withTimezone: true }).notNull().default(sql`now()`),
+	metadata: text(),
+});
+
+export const authOrganizationMembers = pgTable("auth_organization_members", {
+	id: uuid().defaultRandom().primaryKey(),
+	organizationId: uuid("organization_id").notNull().references(() => authOrganizations.id, { onDelete: "cascade" }),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+	role: text().notNull().default("member"),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+});
+
+export const invitation = pgTable("invitation", {
+	id: uuid().defaultRandom().primaryKey(),
+	organizationId: uuid("organization_id").notNull().references(() => authOrganizations.id, { onDelete: "cascade" }),
+	email: text().notNull(),
+	role: text(),
+	status: text().notNull().default("pending"),
+	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+	inviterId: uuid("inviter_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+});
+
+export const deviceCode = pgTable("device_code", {
+	id: uuid().defaultRandom().primaryKey(),
+	deviceCode: text("device_code").notNull(),
+	userCode: text("user_code").notNull(),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+	status: text().notNull(),
+	lastPolledAt: timestamp("last_polled_at", { withTimezone: true }),
+	pollingInterval: integer("polling_interval"),
+	clientId: text("client_id"),
+	scope: text(),
+});
+
+export const twoFactor = pgTable("two_factor", {
+	id: uuid().defaultRandom().primaryKey(),
+	secret: text().notNull(),
+	backupCodes: text("backup_codes").notNull(),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+	verified: boolean().default(true),
+	failedVerificationCount: integer("failed_verification_count").default(0),
+	lockedUntil: timestamp("locked_until", { withTimezone: true }),
+});
+
+export const ssoProvider = pgTable("sso_provider", {
+	id: uuid().defaultRandom().primaryKey(),
+	issuer: text().notNull(),
+	oidcConfig: text("oidc_config"),
+	samlConfig: text("saml_config"),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	providerId: text("provider_id").notNull().unique(),
+	organizationId: text("organization_id"),
+	domain: text().notNull(),
+});
+
+export const passkey = pgTable("passkey", {
+	id: uuid().defaultRandom().primaryKey(),
+	name: text(),
+	publicKey: text("public_key").notNull(),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+	credentialID: text("credential_id").notNull(),
+	counter: integer().notNull(),
+	deviceType: text("device_type").notNull(),
+	backedUp: boolean("backed_up").notNull(),
+	transports: text(),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	aaguid: text(),
+});
+
+export const apikey = pgTable("apikey", {
+	id: uuid().defaultRandom().primaryKey(),
+	configId: text("config_id").notNull().default("default"),
+	name: text(),
+	start: text(),
+	referenceId: text("reference_id").notNull(),
+	prefix: text(),
+	key: text().notNull(),
+	refillInterval: integer("refill_interval"),
+	refillAmount: integer("refill_amount"),
+	lastRefillAt: timestamp("last_refill_at", { withTimezone: true }),
+	enabled: boolean().default(true),
+	rateLimitEnabled: boolean("rate_limit_enabled").default(true),
+	rateLimitTimeWindow: integer("rate_limit_time_window").default(86400000),
+	rateLimitMax: integer("rate_limit_max").default(10),
+	requestCount: integer("request_count").default(0),
+	remaining: integer(),
+	lastRequest: timestamp("last_request", { withTimezone: true }),
+	expiresAt: timestamp("expires_at", { withTimezone: true }),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().default(sql`now()`),
+	permissions: text(),
+	metadata: text(),
+});
+
+export const scimProvider = pgTable("scim_provider", {
+	id: uuid().defaultRandom().primaryKey(),
+	providerId: text("provider_id").notNull().unique(),
+	scimToken: text("scim_token").notNull().unique(),
+	organizationId: text("organization_id"),
+});
+
+export const jwks = pgTable("jwks", {
+	id: uuid().defaultRandom().primaryKey(),
+	publicKey: text("public_key").notNull(),
+	privateKey: text("private_key").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+	expiresAt: timestamp("expires_at", { withTimezone: true }),
+});
+
+export const walletAddress = pgTable("wallet_address", {
+	id: uuid().defaultRandom().primaryKey(),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+	address: text().notNull(),
+	chainId: integer("chain_id").notNull(),
+	isPrimary: boolean("is_primary").default(false),
+	createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
+});
+
+export const oauthApplication = pgTable("oauth_application", {
+	id: uuid().defaultRandom().primaryKey(),
+	name: text(),
+	icon: text(),
+	metadata: text(),
+	clientId: text("client_id").unique(),
+	clientSecret: text("client_secret"),
+	redirectUrls: text("redirect_urls"),
+	type: text(),
+	disabled: boolean().default(false),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+});
+
+export const oauthAccessToken = pgTable("oauth_access_token", {
+	id: uuid().defaultRandom().primaryKey(),
+	accessToken: text("access_token").unique(),
+	refreshToken: text("refresh_token").unique(),
+	accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true }),
+	refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true }),
+	clientId: text("client_id").references(() => oauthApplication.clientId, { onDelete: "cascade" }),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	scopes: text(),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+});
+
+export const oauthConsent = pgTable("oauth_consent", {
+	id: uuid().defaultRandom().primaryKey(),
+	clientId: text("client_id").references(() => oauthApplication.clientId, { onDelete: "cascade" }),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	scopes: text(),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+	consentGiven: boolean("consent_given"),
+});
+
+export const authSubscriptions = pgTable("auth_subscriptions", {
+	id: uuid().defaultRandom().primaryKey(),
+	plan: text().notNull(),
+	referenceId: text("reference_id").notNull(),
+	stripeCustomerId: text("stripe_customer_id"),
+	stripeSubscriptionId: text("stripe_subscription_id"),
+	status: text().default("incomplete"),
+	periodStart: timestamp("period_start", { withTimezone: true }),
+	periodEnd: timestamp("period_end", { withTimezone: true }),
+	trialStart: timestamp("trial_start", { withTimezone: true }),
+	trialEnd: timestamp("trial_end", { withTimezone: true }),
+	cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
+	seats: integer(),
+});
+
+// Plan catalog for the Stripe subscription plugin's plans() lookup (see
+// plugins.ts) — starts empty; insert real pricing plans before checkout
+// has anything to offer.
+export const authSubscriptionPlans = pgTable("auth_subscription_plans", {
+	id: uuid().defaultRandom().primaryKey(),
+	name: text().notNull(),
+	stripePriceId: text("stripe_price_id").notNull(),
+	limits: text(),
 });
 
 export const address = pgTable.withRLS("address", {
@@ -6127,8 +6326,32 @@ export const users = pgTable.withRLS("users", {
 	isAnonymous: boolean("is_anonymous").default(false).notNull(),
 	name: text().notNull(),
 	emailVerified: boolean("email_verified").default(false).notNull(),
+	// Missing on the live table despite the stripe() plugin and
+	// deleteUser.beforeDelete both depending on it — see auth.ts.
+	stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
 	polarCustomerId: varchar("polar_customer_id", { length: 255 }),
+	// bigint, not varchar — matches the live column (added directly via
+	// Supabase, mirrors Magento's own numeric customer entity_id). .unique()
+	// matters here, not just documentation — without it drizzle-kit push
+	// diffs against a schema that doesn't declare the live unique
+	// constraint and offers to drop it.
+	magentoCustomerId: bigint("magento_customer_id", { mode: 'number' }).unique(),
 	locale: varchar({ length: 10 }),
+	// --- better-auth plugin fields below ---
+	twoFactorEnabled: boolean("two_factor_enabled").default(false),
+	username: text().unique(),
+	displayUsername: text("display_username"),
+	phoneNumber: text("phone_number").unique(),
+	phoneNumberVerified: boolean("phone_number_verified"),
+	// Deliberately NOT named role/banned/banReason/banExpires — those would
+	// collide with this table's existing Supabase-native `role` and
+	// `bannedUntil` columns (role in particular is used in Postgres RLS
+	// policy checks), which must not be repurposed. See plugins.ts's admin
+	// plugin schema override, which maps to these exact column names.
+	authRole: text("auth_role"),
+	authBanned: boolean("auth_banned").default(false),
+	authBanReason: text("auth_ban_reason"),
+	authBanExpires: timestamp("auth_ban_expires", { withTimezone: true }),
 }, (table) => [
 	unique("users_phone_key").on(table.phone),check("users_email_change_confirm_status_check", sql`((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2))`),]);
 

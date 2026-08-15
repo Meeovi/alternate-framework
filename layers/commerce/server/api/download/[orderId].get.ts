@@ -7,8 +7,9 @@
 // digital_fulfillment_tokens collection written by the webhook's
 // marketplace listing_type branch is unrelated — that branch has no
 // reachable purchase flow of its own and isn't read by this endpoint.
-import { createDirectus, rest, readItem, staticToken } from '@directus/sdk'
+import { readItem } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
+import { getDirectusFacade } from '../../utils/directusClient'
 
 export default defineEventHandler(async (event) => {
   // 1. Validate the user session via Better Auth
@@ -23,9 +24,7 @@ export default defineEventHandler(async (event) => {
   // must be authoritative regardless of the requesting user's own Directus
   // permissions, since the whole point of this endpoint is to check
   // ownership *before* trusting anything the caller claims.
-  const directus = createDirectus(process.env.DIRECTUS_URL!)
-    .with(rest())
-    .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
+  const directus = getDirectusFacade()
 
   // 2. Fetch the order record to verify ownership and status
   const order = await directus.request(

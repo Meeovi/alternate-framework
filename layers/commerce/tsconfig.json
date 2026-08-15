@@ -137,12 +137,6 @@
       "~/types/schema": [
         "../../apps/ecosystem/meeovi-frontend/app/types/schema"
       ],
-      "alternate-sdk": [
-        "../../packages/modules/alternate-sdk/index.ts"
-      ],
-      "alternate-sdk/contracts": [
-        "../../packages/modules/alternate-sdk/contracts/index.ts"
-      ],
       "@mframework/adapter-prisma": [
         "../../packages/adapters/adapter-prisma/src/index.ts"
       ]

@@ -1,6 +1,5 @@
 <template>
-  <!-- Using your existing loggedIn state from Better Auth -->
-  <div v-if="loggedIn">
+  <div v-if="session">
     <v-btn
       class="follow-btn"
       :class="{ following: following }"
@@ -14,57 +13,71 @@
     </v-btn>
   </div>
   <div v-else>
-    <v-btn class="follow-btn" disabled variant="outlined">Sign in to join</v-btn>
+    <v-btn class="follow-btn" disabled variant="outlined">Sign in to follow</v-btn>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useSocialStore } from '../../stores/social'
+import { authClient } from '#auth/lib/auth-client'
 
-const { useAuth } = useNuxtApp() as any
-// Explicitly type check against Directus collection targets
-export type DirectusTargetType = 'users' | 'spaces'
+export type DirectusTargetType = 'users' | 'spaces' | 'outlets' | string
 
-const props = defineProps({
-  // Align with Directus M2A collection strings ('users', 'spaces')
-  entityType: { type: String as () => DirectusTargetType, required: true },
-  entityId: { type: String, required: true },
-  initialFollowing: { type: Boolean, default: undefined },
-  followLabel: { type: String, default: 'Join' },
-  unfollowLabel: { type: String, default: 'Leave' },
-  size: { type: String as () => 'sm' | 'md' | 'lg', default: 'md' }
-})
+const props = withDefaults(
+  defineProps<{
+    entityType: DirectusTargetType
+    id: string
+    initialFollowing?: boolean
+    followLabel?: string
+    unfollowLabel?: string
+    size?: 'sm' | 'md' | 'lg'
+  }>(),
+  {
+    initialFollowing: undefined,
+    followLabel: 'Follow',
+    unfollowLabel: 'Following',
+    size: 'md'
+  }
+)
 
 const emit = defineEmits(['update:following', 'change'])
 
 const socialStore = useSocialStore()
-const { loggedIn } = useAuth()
 
+// Local session ref
+const session = ref<any>(null)
 const following = ref<boolean>(props.initialFollowing ?? false)
 const loading = ref(false)
 
-// Sync up local state if a dynamic parent updates it asynchronously
-watch(() => props.initialFollowing, (newVal) => {
-  if (newVal !== undefined) following.value = newVal
-})
+watch(
+  () => props.initialFollowing,
+  (newVal) => {
+    if (newVal !== undefined) following.value = newVal
+  }
+)
 
 onMounted(async () => {
-  if (!loggedIn.value) return
+  // 1. Await the session call directly
+  const { data } = await authClient.useSession()
+  session.value = data
 
-  // Check if the state already lives in your Pinia social registry first to save an API hit
-  if (socialStore.followRegistry[props.entityId] !== undefined) {
-    following.value = socialStore.followRegistry[props.entityId]
+  if (!session.value) return
+
+  // 2. Check registry cache
+  if (socialStore.followRegistry?.[props.id] !== undefined) {
+    following.value = socialStore.followRegistry[props.id]
     return
   }
 
-  // Fallback: If initialState wasn't passed, look it up through your Directus-backed store
+  // 3. Fallback check
   if (props.initialFollowing === undefined) {
     loading.value = true
     try {
-      // Assuming your useFollow was migrated inside socialStore or an update endpoint
-      const isFollowingTarget = socialStore.isFollowing(props.entityId).value
-      following.value = isFollowingTarget
+      const targetState = socialStore.isFollowing?.(props.id)
+      following.value = typeof targetState === 'object' && 'value' in targetState 
+        ? targetState.value 
+        : Boolean(targetState)
     } catch (_) {
       following.value = false
     } finally {
@@ -76,14 +89,11 @@ onMounted(async () => {
 async function onClick() {
   if (loading.value) return
   loading.value = true
-  
+
   try {
-    // Fire action directly via your unified Pinia store handler
-    await socialStore.toggleFollow(props.entityId, props.entityType)
-    
-    // Read the resulting mutated reactive value straight out of the store registry
-    following.value = socialStore.followRegistry[props.entityId] ?? false
-    
+    await socialStore.toggleFollow(props.id, props.entityType)
+    following.value = socialStore.followRegistry?.[props.id] ?? !following.value
+
     emit('update:following', following.value)
     emit('change', following.value)
   } catch (error) {
@@ -98,8 +108,8 @@ async function onClick() {
 .follow-btn {
   padding: 0.35rem 0.75rem;
   border-radius: 6px;
-  text-transform: none; /* Keeps standard casual styling clean over Vuetify force-caps */
-  border: 1px solid rgba(0,0,0,0.08);
+  text-transform: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   background: white;
 }
 .follow-btn.following {

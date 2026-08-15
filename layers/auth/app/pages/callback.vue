@@ -8,7 +8,6 @@
 </template>
 
 <script setup>
-import { useUserStore } from '../stores/user'
 import { useAuth } from '../composables/useAuth'
 
 definePageMeta({
@@ -19,10 +18,9 @@ const router = useRouter()
 const auth = useAuth()
 
 onMounted(async () => {
-  const store = useUserStore()
   try {
     // Fetch the actual server session to determine redirect destination
-    const { data: session } = await auth.getSession()
+    const { data: session } = await auth.useSession(useFetch)
     if (session?.user) {
       await router.push('/')
     } else {

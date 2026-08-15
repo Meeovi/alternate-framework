@@ -13,6 +13,9 @@ import { requireAuth } from '#auth/server/utils/sessions'
  */
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  if (!user.id) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
   const body = await readBody(event)
   const { accountId, productName, productDescription, productPrice } = body as {
     accountId?: string

@@ -48,23 +48,85 @@ export class MagentoAdapter {
       }
 
       throw new Error(`Failed to query Magento entity: ${entity}`)
+    },
+
+    /**
+     * Same shape as readEntity, but emits a `mutation` document instead of a
+     * `query` — readEntity's candidates never match a mutation root field,
+     * so writes need their own path.
+     */
+    mutateEntity: async (
+      mutationName: string,
+      argumentsPayload: Record<string, any>,
+      options: { fields: string[] | Record<string, any>[] | any }
+    ): Promise<any> => {
+      const selectionString = this.parseFieldsToQuery(options.fields as any[])
+      const inlineArgs = this.serializeArguments(argumentsPayload)
+      const argumentString = inlineArgs ? `(${inlineArgs})` : ''
+
+      const query = `
+        mutation MutateMagentoEntity {
+          ${mutationName}${argumentString} {
+            ${selectionString}
+          }
+        }
+      `
+      const data = await this.client.request<Record<string, any>>(query)
+      return data[mutationName]
+    },
+
+    /**
+     * Queries an exact root query field, with no Mage_/camelCase candidate
+     * guessing — readEntity's candidates assume a singular per-entity root
+     * field (Mage_Product/Product/product), which doesn't exist on stock
+     * Magento's GraphQL schema. The real storefront schema exposes plural,
+     * search-style root fields instead (products/categories), each with
+     * its own filter argument name and a paginated `{ items, total_count }`
+     * shape — this calls one of those directly.
+     */
+    queryField: async (
+      fieldName: string,
+      argumentsPayload: Record<string, any>,
+      options: { fields: string[] | Record<string, any>[] | any }
+    ): Promise<any> => {
+      const selectionString = this.parseFieldsToQuery(options.fields as any[])
+      const inlineArgs = this.serializeArguments(argumentsPayload)
+      const argumentString = inlineArgs ? `(${inlineArgs})` : ''
+
+      const query = `
+        query GetMagentoField {
+          ${fieldName}${argumentString} {
+            ${selectionString}
+          }
+        }
+      `
+      const data = await this.client.request<Record<string, any>>(query)
+      return data[fieldName]
     }
   }
 
   public content = {
-    // Search namespace - implements SearchAdapter interface
+    // Search namespace - implements SearchAdapter interface.
+    // Uses the real `products(search: ...)` root field (full-text search)
+    // rather than readEntity — Magento's storefront schema has no singular
+    // Product/Mage_Product query field for readEntity's candidates to match.
     search: async (query: string, options?: Record<string, any>) => {
-      const data = await this.store.readEntity('Product', { 
-        filter: { name: { like: `%${query}%` } } 
-      }, { fields: options?.fields || ['sku', 'name', 'price'] })
-      return Array.isArray(data) ? data : (data?.items ?? [])
+      // `price` is not a scalar on ProductInterface (confirmed live) — only
+      // `price_range` (an object) exists, hence the default field shape below.
+      const defaultFields = ['sku', 'name', { price_range: [{ minimum_price: [{ final_price: ['value'] }] }] }]
+      const result = await this.store.queryField('products', {
+        search: query,
+        pageSize: options?.pageSize || 20,
+      }, { fields: [{ items: options?.fields || defaultFields }, 'total_count'] })
+      return result?.items ?? []
     },
 
     suggest: async (query: string) => {
-      const data = await this.store.readEntity('Product', { 
-        filter: { name: { like: `%${query}%` } } 
-      }, { fields: ['name'] })
-      const items = Array.isArray(data) ? data : (data?.items ?? [])
+      const result = await this.store.queryField('products', {
+        search: query,
+        pageSize: 10,
+      }, { fields: [{ items: ['name'] }] })
+      const items = result?.items ?? []
       return items.map((item: any) => item.name).filter(Boolean)
     },
 
@@ -233,6 +295,44 @@ export class MagentoAdapter {
     },
 
     getCustomer: async () => null,
+
+    /**
+     * Creates a real Magento customer record. Used to give a customer/order
+     * scope anchor for a user that authenticated elsewhere (better-auth) —
+     * this customer is never used for Magento login, so the password is a
+     * throwaway random value the caller never sees.
+     *
+     * Confirmed live against a real Magento instance: `Customer.id` always
+     * resolves to null over GraphQL here (both immediately after creation
+     * and when queried with the customer's own fresh token) — this store's
+     * config doesn't expose it. The real numeric id IS embedded in the
+     * customer token's JWT payload (`uid` claim) though, so a token is
+     * generated right after creation purely to recover the id.
+     */
+    createCustomer: async (payload: { firstname: string; lastname: string; email: string }) => {
+      const password = `${Math.random().toString(36).slice(2)}${Date.now().toString(36)}Aa1!`
+      const data = await this.store.mutateEntity('createCustomerV2', {
+        input: { firstname: payload.firstname, lastname: payload.lastname, email: payload.email, password },
+      }, { fields: [{ customer: ['id', 'email', 'firstname', 'lastname'] }] })
+      const customer = data?.customer
+      if (!customer) return null
+      if (customer.id) return customer
+
+      try {
+        const tokenData = await this.store.mutateEntity('generateCustomerToken', {
+          email: payload.email,
+          password,
+        }, { fields: ['token'] })
+        const token = tokenData?.token
+        const payloadJson = token ? Buffer.from(token.split('.')[1], 'base64').toString('utf8') : null
+        const uid = payloadJson ? JSON.parse(payloadJson)?.uid : null
+        return uid ? { ...customer, id: uid } : customer
+      } catch {
+        // Id recovery failing shouldn't fail the whole signup — the caller
+        // just won't get a linkable id this time.
+        return customer
+      }
+    },
 
     createCustomerAddress: async (payload: Record<string, any>) => {
       return await this.store.readEntity('CustomerAddress', payload, { fields: ['id', 'name'] })

@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import Search from './search.vue'
+import Search from './searchBar.vue'
 import SearchSkeleton from './SearchSkeleton.vue'
 
 const showSkeleton = ref(true)

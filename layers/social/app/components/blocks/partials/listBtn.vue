@@ -7,20 +7,22 @@
             </template>
 
             <template v-slot:default="{ isActive }">
-                <div v-if="target.type === 'product'">
-                    <addtolist :target="productId.id" />
-                </div>
+                <v-card title="Create A List">
+                    <addList style="padding: 15px;" />
 
-                <div v-if="target.type === 'post'">
-                    <addtolist :target="postId.id" />
-                </div>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+
+                        <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                    </v-card-actions>
+                </v-card>
             </template>
         </v-dialog>
     </div>
 </template>
 
 <script setup>
-    import addtolist from '../lists/add-list.vue'
+    import addList from '../../features/lists/add-list.vue'
 
     defineProps({
         productId: {
@@ -32,6 +34,4 @@
             required: true
         }
     });
-
-const { $sdk } = useNuxtApp()
 </script>

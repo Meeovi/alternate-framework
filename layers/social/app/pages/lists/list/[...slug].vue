@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="contentPage">
     <v-toolbar :color="list?.color || 'primary'" dark>
       <v-toolbar-title>{{ list?.name || 'List' }}</v-toolbar-title>
     </v-toolbar>
@@ -7,29 +7,25 @@
     <div v-if="error" class="error pa-4">Failed to load list.</div>
     <div v-else-if="!list" class="pa-4">Loading...</div>
 
-    <div v-else-if="list?.type === 'Default'" class="pa-4">
+    <div v-else-if="list?.list_type?.list_type_id?.name === 'Checklist'" class="pa-4">
       <Grid :data="list.items || list" :autoConfig="true" />
     </div>
 
-    <div v-else-if="list?.type === 'Board'" class="pa-4">
+    <div v-else-if="list?.list_type?.list_type_id?.name === 'Board'" class="pa-4">
       <TaskBoard :listId="list.id" :items="list.items" />
     </div>
 
-    <div v-else-if="list?.type === 'Checklist'" class="pa-4">
-      <TaskList :listId="list.id" :items="list.items" />
-    </div> 
-    
-    <div v-else-if="list?.type === 'Kanban'" class="pa-4">
+    <div v-else-if="list?.list_type?.list_type_id?.name === 'Kanban'" class="pa-4">
       <KanbanProjectBoard :listId="list.id" :items="list.items" />
     </div>  
 
-    <div v-else-if="list?.type === 'Habit Tracker'" class="pa-4">
+    <div v-else-if="list?.list_type?.list_type_id?.name === 'Habit Tracker'" class="pa-4">
       <HabitTrackerVIew :listId="list.id" :items="list.items" />
     </div> 
 
     <div v-else class="pa-4">
-      <p style="text-align: center; width: 100%; padding-top: 25%;">List Not Found.</p>
-    </div>
+      <TaskList :listId="list.id" :items="list.items" />
+    </div> 
   </div>
 </template>
 
@@ -37,10 +33,10 @@
   import {
     useRoute
   } from 'vue-router'
-  import Grid from '../../../../../shared/app/components/ui/DataGrid/components/Grid.vue'
-  import { TaskBoard } from '../../../components/features/lists/types/TaskBoard.vue'
-  import { KanbanProjectBoard } from '../../../components/features/lists/types/Kanban.vue/index.js'
-  import { TaskList } from '../../../components/features/lists/types/TaskList.vue'
+  import Grid from '#shared/app/components/ui/DataGrid/components/Grid.vue'
+  import TaskBoard from '../../../components/features/lists/types/TaskBoard.vue'
+  import KanbanProjectBoard from '../../../components/features/lists/types/Kanban.vue'
+  import TaskList from '../../../components/features/lists/types/TaskList.vue'
 import HabitTrackerVIew from '../../../components/features/lists/types/HabitTrackerVIew.vue'
 
   const route = useRoute();

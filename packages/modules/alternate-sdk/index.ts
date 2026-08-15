@@ -130,3 +130,7 @@ export { SearchAdapterRegistry, registerSearchAdapter, setDefaultSearchAdapter }
 export { NotifyAdapterRegistry, registerNotifyAdapter, setDefaultNotifyAdapter } from './src/contracts/notification.js'
 export { SocialDriverRegistry, registerSocialDriver, setDefaultSocialDriver } from './src/contracts/social.js'
 export { CommerceDriverRegistry, registerCommerceDriver, setDefaultCommerceDriver } from './src/contracts/commerce.js'
+export { CommerceBackendRegistry, registerCommerceBackendAdapter } from './src/contracts/commerce-backend.js'
+export type { CommerceBackendAdapter, DirectusRequestDescriptor } from './src/contracts/commerce-backend.js'
+export { CommerceCustomerLinkRegistry, registerCommerceCustomerLinker } from './src/contracts/commerce-customer-link.js'
+export type { CommerceCustomerLinker } from './src/contracts/commerce-customer-link.js'

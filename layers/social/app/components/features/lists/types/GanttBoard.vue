@@ -1,15 +1,20 @@
 <template>
-    <Willow>
-        <div class="gantt-wrap pa-2">
-            <Gantt
-                :tasks="tasks"
-                :links="links"
-                :scales="scales"
-                :columns="columns"
-                :init="init"
-            />
-        </div>
-    </Willow>
+    <ClientOnly>
+        <Willow>
+            <div class="gantt-wrap pa-2">
+                <Gantt
+                    :tasks="tasks"
+                    :links="links"
+                    :scales="scales"
+                    :columns="columns"
+                    :init="init"
+                />
+            </div>
+        </Willow>
+        <template #fallback>
+            <div class="pa-4">Loading gantt...</div>
+        </template>
+    </ClientOnly>
 </template>
 
 <script setup lang="ts">

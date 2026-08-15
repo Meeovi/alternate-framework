@@ -1,6 +1,7 @@
 import { createDirectus, rest, staticToken, readItems, updateItem } from '@directus/sdk'
 import { createError, defineEventHandler, getQuery, readBody } from 'h3'
 import { safeEqual } from '../../utils/shipping-admin'
+import { getDirectusFacade } from '../../utils/directusClient'
 
 // Shippo doesn't sign webhook payloads with an HMAC the way Stripe/Polar do,
 // so this route is secured with a shared-secret token in the webhook URL
@@ -8,10 +9,6 @@ import { safeEqual } from '../../utils/shipping-admin'
 // /api/shipment/webhook — e.g. https://.../api/shipment/track-updated?token=...).
 // Without this, anyone who discovers the URL could post fake "delivered"
 // events for arbitrary tracking numbers.
-
-const directusServer = createDirectus(process.env.DIRECTUS_URL!)
-  .with(rest())
-  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 export default defineEventHandler(async (event) => {
   const expectedToken = process.env.SHIPPO_WEBHOOK_TOKEN
@@ -40,7 +37,8 @@ export default defineEventHandler(async (event) => {
 
   const { tracking_number, carrier, tracking_status } = body.data
 
-  const orders = await directusServer.request(
+  const directusRead = getDirectusFacade()
+  const orders = await directusRead.request(
     readItems('orders', {
       filter: { tracking_number: { _eq: tracking_number } },
       fields: ['id'],
@@ -55,7 +53,14 @@ export default defineEventHandler(async (event) => {
     return { received: true, matched: false }
   }
 
-  await directusServer.request(
+  // Writes always go to real Directus, regardless of active commerce
+  // backend — shipment-tracking fields are Directus/Stripe-specific
+  // bookkeeping with no Magento normalizer.
+  const directusWrite = createDirectus(process.env.DIRECTUS_URL!)
+    .with(rest())
+    .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
+
+  await directusWrite.request(
     updateItem('orders', order.id, {
       shipment_status: tracking_status?.status || null,
       shipment_status_details: tracking_status?.status_details || null,

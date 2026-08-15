@@ -94,8 +94,6 @@ const props = defineProps({
     },
 })
 
-const { $sdk } = useNuxtApp()
-
 const backgroundImage = computed(() => {
     const image = props.group?.image
     if (image && getAssetURL(image)) {

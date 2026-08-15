@@ -5,24 +5,31 @@
   "repository": "@mframework/adapter-magento",
   "license": "MIT",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./module": {
       "types": "./dist/types.d.mts",
       "import": "./dist/module.mjs"
+    },
+    "./normalizers": {
+      "types": "./dist/normalizers/normalizers.d.ts",
+      "import": "./dist/normalizers/normalizers.js"
     }
   },
   "typesVersions": {
     "*": {
       ".": [
-        "./src/index.ts"
+        "./dist/index.d.ts"
       ],
       "module": [
         "./dist/types.d.mts"
+      ],
+      "normalizers": [
+        "./dist/normalizers/normalizers.d.ts"
       ]
     }
   },
@@ -33,7 +40,8 @@
     "playground"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "prepack": "nuxt-module-build build; npm run build:index",
+    "build:index": "tsc src/index.ts --outDir dist --rootDir src --target es2022 --module esnext --moduleResolution bundler --declaration --esModuleInterop --skipLibCheck",
     "dev": "npm run dev:prepare && nuxt dev playground",
     "dev:build": "nuxt build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",

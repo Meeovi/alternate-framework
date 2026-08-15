@@ -3,6 +3,8 @@ import * as schema from '../database/migrations/schema';
 import { v7 as uuidv7 } from 'uuid';
 import { createAuthMiddleware } from 'better-auth/api';
 import { stripeClient } from './stripe';
+import { CommerceCustomerLinkRegistry } from 'alternate-sdk';
+import { eq } from 'drizzle-orm';
 
 export const logAuditEvent = async (entry: {
   userId?: string;
@@ -82,6 +84,43 @@ export const auditDatabaseHooks = {
     }
   },
   user: {
+    create: {
+      after: async (user: any, _context: any) => {
+        await logAuditEvent({
+            userId: user.id,
+            category: "user",
+            action: "user.created",
+            targetType: "user",
+            targetId: user.id,
+            status: "success",
+            id: ''
+        })
+        // Give any registered commerce backend (e.g. adapter-magento) a
+        // chance to create/link its own customer record for this user —
+        // this layer never imports a specific adapter, it only ever calls
+        // through the generic registry contract.
+        for (const linker of CommerceCustomerLinkRegistry.getAll()) {
+          if (!linker.isEnabled()) continue
+          try {
+            const result = await linker.onUserCreated({ id: user.id, email: user.email, name: user.name })
+            if (result?.externalCustomerId) {
+              // magentoCustomerId's live column is bigint (mirrors Magento's
+              // own numeric customer entity_id) — coerce when the id is
+              // numeric; a future string-id backend's column would just
+              // keep the raw string.
+              const numericId = Number(result.externalCustomerId)
+              const value = Number.isFinite(numericId) ? numericId : result.externalCustomerId
+              await (db as any).update(schema.users)
+                .set({ [`${linker.id}CustomerId`]: value })
+                .where(eq(schema.users.id, user.id))
+            }
+          } catch (e) {
+            // Never break signup because a commerce backend is unreachable.
+            console.error(`[commerce-customer-link] "${linker.id}" failed for user ${user.id}`, e)
+          }
+        }
+      }
+    },
     update: {
       after: async (user: any, _context: any) => {
         await logAuditEvent({

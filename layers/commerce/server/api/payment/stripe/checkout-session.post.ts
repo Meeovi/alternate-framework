@@ -1,17 +1,11 @@
 // server/api/payment/stripe/checkout-session.post.ts
 import Stripe from 'stripe'
 import Joi from 'joi'
-import { createDirectus, rest, staticToken, readItem } from '@directus/sdk'
+import { readItem } from '@directus/sdk'
 import { stripe } from '../../../utils/stripe'
 import { getAuthSession } from '#auth/server/utils/sessions'
 import { getRate } from '../../../utils/shippo'
-
-// A privileged client used only to look up each item's authoritative price —
-// never trust a client-supplied `item.price`, since that would let a caller
-// dictate what they get charged.
-const directus = createDirectus(process.env.DIRECTUS_URL!)
-  .with(rest())
-  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
+import { getDirectusFacade } from '../../../utils/directusClient'
 
 // 8 random letters for the integration_identifier suffix (per stripe skill).
 const randomSuffix = Array.from({ length: 8 }, () =>
@@ -205,6 +199,11 @@ export default defineEventHandler(async (event) => {
     // checkout mode (subscription vs payment) and flag recurring line items.
     // Ensure we have a guaranteed currency string
     const activeCurrency = currency || 'usd';
+
+    // A privileged client used only to look up each item's authoritative
+    // price — never trust a client-supplied `item.price`, since that would
+    // let a caller dictate what they get charged.
+    const directus = getDirectusFacade()
 
     // 1. Explicitly type our temporary processing array
     interface TempLineItem {

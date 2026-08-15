@@ -1,10 +1,7 @@
-import { createDirectus, rest, staticToken, readItems } from '@directus/sdk'
+import { readItems } from '@directus/sdk'
 import { defineEventHandler } from 'h3'
 import { requireAuth } from '#auth/server/utils/sessions'
-
-const directusServer = createDirectus(process.env.DIRECTUS_URL!)
-  .with(rest())
-  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
+import { getDirectusFacade } from '../../utils/directusClient'
 
 // Same ownership model as order-tracking.get.ts, but listing every shipped
 // order for the signed-in buyer rather than looking up one by id. Scoped
@@ -13,6 +10,7 @@ const directusServer = createDirectus(process.env.DIRECTUS_URL!)
 // browser (see sales/shipments.vue, which previously did exactly that).
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  const directusServer = getDirectusFacade()
 
   const orders = await directusServer.request(
     readItems('orders', {

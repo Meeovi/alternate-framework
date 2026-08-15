@@ -22,7 +22,7 @@ export function useSession() {
 		state.value.loading = true
 		state.value.error = null
 		try {
-			const session = await (auth.fetchSession?.(...args) ?? auth.getSession?.(...args) ?? null)
+			const session = await (auth.useSession?.(...args) ?? auth.fetchSession?.(...args) ?? auth.getSession?.(...args) ?? null)
 			state.value.data = session
 			return session
 		} catch (error) {

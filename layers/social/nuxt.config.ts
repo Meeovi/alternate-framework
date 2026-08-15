@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   ],
   
   alias: {
-    '#auth': fileURLToPath(new URL('../auth/app/composables/users', import.meta.url)),
+    '#auth': fileURLToPath(new URL('../auth', import.meta.url)),
     '#shared': fileURLToPath(new URL('../shared', import.meta.url)),
     '#social': fileURLToPath(new URL('./', import.meta.url)),
     '#social/types': fileURLToPath(new URL('../shared/types/index.ts', import.meta.url)),

@@ -73,6 +73,11 @@ export default defineNuxtConfig({
     paypalMode: process.env.PAYPAL_MODE || 'sandbox',
     public: {
       payment: process.env.NUXT_PAYMENT || 'stripe',
+      // Selects which CommerceBackendRegistry adapter (see alternate-sdk)
+      // the layers/commerce Directus facade routes product/category/order
+      // reads to. 'directus' (default) means every request passes straight
+      // through to the real Directus client, unmodified.
+      commerceBackend: process.env.NUXT_PUBLIC_COMMERCE_BACKEND || 'directus',
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
       // Stripe publishable key (pk_live_... in prod, pk_test_... in dev)
       stripePublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,

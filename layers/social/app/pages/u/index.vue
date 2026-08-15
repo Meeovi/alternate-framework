@@ -400,10 +400,9 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 
-const { user, fetchSession, signOut: authSignOut } = useAuth()
+const { user, fetchSession, signOut: authSignOut } = useAuth() as any
 const loading = ref(false)
 const theme = useTheme()
-const nuxtApp = useNuxtApp()
 const config = useRuntimeConfig()
 const authConfig = (config.public as any)?.auth ?? {}
 const token = useCookie<string | null>(authConfig?.cookieName || 'auth-token')

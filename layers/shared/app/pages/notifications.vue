@@ -1,5 +1,5 @@
 <template>
-  <div class="notifications-page">
+  <div class="contentPage">
     <v-toolbar>
       <v-toolbar-title>Notifications Center</v-toolbar-title>
       <v-spacer></v-spacer>

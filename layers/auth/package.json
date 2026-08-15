@@ -36,6 +36,7 @@
     "@polar-sh/better-auth": "^1.8.4",
     "@polar-sh/checkout": "^0.2.0",
     "@vercel/functions": "^3.7.5",
+    "alternate-sdk": "file:../../packages/modules/alternate-sdk",
     "better-auth": "^1.4.12",
     "defu": "^6.1.4",
     "dotenv": "^17.4.2",

@@ -1,119 +1,64 @@
 <template>
-  <ClientOnly>
-    <ais-instant-search :search-client="searchClient" index-name="products">
-      <div class="shared-filters">
-        <template v-for="widget in filterWidgets" :key="widget.name">
-          <ais-panel v-if="widget.condition?.() ?? true">
-            <template #header>{{ widget.panel?.header }}</template>
-            <component
-              :is="resolveWidgetComponent(widget)"
-              v-bind="widget.props"
-            />
-          </ais-panel>
-        </template>
-      </div>
-    </ais-instant-search>
-  </ClientOnly>
+  <!-- Filters container: keep mounted and hide with v-show to preserve state easily
+       or let parent unmount and rely on preserveSharedStateOnUnmount on ais-instant-search -->
+  <aside v-show="visible" class="search-filters" :class="{ closed: !visible }">
+    <!-- Current refinements + clear -->
+    <ais-current-refinements :excluded-attributes="[]"/>
+    <ais-clear-refinements :excluded-attributes="[]">
+      <template #resetLabel>Clear all</template>
+    </ais-clear-refinements>
+
+    <!-- These map 1:1 onto the flat `category` / `brand` / `type` term
+         aggregations and the `price` / `rating` numeric fields produced by
+         layers/search/server/api/search.ts. Dynamic widgets aren't used
+         here because the OpenSearch-backed index has no hierarchical
+         (categories.lvlN) fields to introspect. -->
+    <ais-panel>
+      <template #header>Category</template>
+      <ais-refinement-list attribute="category" :limit="10" searchable searchable-placeholder="Find categories" />
+    </ais-panel>
+
+    <ais-panel>
+      <template #header>Brand</template>
+      <ais-refinement-list attribute="brand" :limit="8" searchable searchable-placeholder="Find brands" />
+    </ais-panel>
+
+    <ais-panel v-if="showTypeFilter">
+      <template #header>Type</template>
+      <ais-refinement-list attribute="type" :limit="8" />
+    </ais-panel>
+
+    <ais-panel>
+      <template #header>Rating</template>
+      <ais-rating-menu attribute="rating" :max="5" />
+    </ais-panel>
+
+    <ais-panel>
+      <template #header>Price</template>
+      <ais-numeric-menu attribute="price" :items="priceRanges" />
+    </ais-panel>
+  </aside>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useSearchClient } from '#shared/app/composables/search/useSearchClient'
-import { useInstantSearchWidgets, resolveWidgetComponent, type InstantSearchWidgetConfig } from '#shared/app/composables/search/useInstantSearchWidgets'
-
-const props = withDefaults(
-  defineProps<{
-    facets?: string[]
-  }>(),
-  {
-    facets: () => ['category', 'brand', 'type', 'price'],
-  }
-)
-
-const { searchClient } = useSearchClient()
-const { widgetRegistry } = useInstantSearchWidgets()
-
-const filterWidgets = computed<InstantSearchWidgetConfig[]>(() => {
-  const widgets: InstantSearchWidgetConfig[] = []
-
-  if (props.facets.includes('category')) {
-    widgets.push({
-      name: 'refinement-list',
-      props: { attribute: 'category', limit: 20, searchable: true },
-      panel: { header: 'Category' },
-      condition: () => true,
-    })
-  }
-
-  if (props.facets.includes('brand')) {
-    widgets.push({
-      name: 'refinement-list',
-      props: { attribute: 'brand', limit: 20, searchable: true },
-      panel: { header: 'Brand' },
-      condition: () => true,
-    })
-  }
-
-  if (props.facets.includes('type')) {
-    widgets.push({
-      name: 'refinement-list',
-      props: { attribute: 'type', limit: 20 },
-      panel: { header: 'Type' },
-      condition: () => true,
-    })
-  }
-
-  if (props.facets.includes('price')) {
-    widgets.push({
-      name: 'range-input',
-      props: { attribute: 'price' },
-      panel: { header: 'Price' },
-      condition: () => true,
-    })
-  }
-
-  return widgets
+withDefaults(defineProps<{
+  visible?: boolean
+  showTypeFilter?: boolean
+}>(), {
+  visible: true,
+  showTypeFilter: true,
 })
+
+const priceRanges = [
+  { label: 'All prices', value: {} },
+  { label: 'Under $25', value: { end: 25 } },
+  { label: '$25 to $50', value: { start: 25, end: 50 } },
+  { label: '$50 to $100', value: { start: 50, end: 100 } },
+  { label: '$100 & above', value: { start: 100 } },
+]
 </script>
 
 <style scoped>
-.shared-filters {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.shared-filters :deep(.ais-Panel) {
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-}
-
-.shared-filters :deep(.ais-Panel-header) {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.shared-filters :deep(.ais-RefinementList-list) {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.shared-filters :deep(.ais-RefinementList-item) {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0;
-}
-
-.shared-filters :deep(.ais-RefinementList-label) {
-  cursor: pointer;
-}
-
-.shared-filters :deep(.ais-RangeInput-form) {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+.search-filters { width: 280px; padding: 12px; border-right: 1px solid #eee; }
+.search-filters.closed { display: none; }
 </style>

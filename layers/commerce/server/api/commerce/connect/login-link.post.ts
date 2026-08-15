@@ -13,6 +13,9 @@ import { requireAuth } from '#auth/server/utils/sessions'
  */
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  if (!user.id) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
   const body = await readBody(event)
   const accountId = typeof body?.accountId === 'string' ? body.accountId.trim() : ''
 
@@ -23,9 +26,11 @@ export default defineEventHandler(async (event) => {
   await assertOwnsConnectAccount(accountId, user.id)
 
   try {
-    const loginLink = await stripe.accounts.createLoginLink(accountId, {
-      requestedCapabilities: ['transfers'],
-    })
+    // Login links only ever accept `expand` (per Stripe's real
+    // AccountCreateLoginLinkParams) — there is no capability-request
+    // param here. Capabilities are requested at account-creation time
+    // instead (see account.post.ts).
+    const loginLink = await stripe.accounts.createLoginLink(accountId)
 
     return { url: loginLink.url }
   } catch (error: any) {

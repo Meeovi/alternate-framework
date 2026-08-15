@@ -382,7 +382,7 @@ export default defineEventHandler(async (event) => {
                   { paymentIntentId, productIds: purchasedProductIds },
                 )
               }
-              digitalFileId = digitalProducts[0].file ?? null
+              digitalFileId = digitalProducts[0]?.file ?? null
               downloadToken = crypto.randomUUID()
               downloadExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString()
             }
