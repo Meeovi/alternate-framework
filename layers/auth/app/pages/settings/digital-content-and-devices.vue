@@ -87,7 +87,7 @@
     import {
         useHead
     } from 'nuxt/app';
-    import productCard from '#commerce/app/components/product/productCard.vue'
+    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 
     const {
         $directus,

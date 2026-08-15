@@ -27,7 +27,7 @@
         computed
     } from '#imports'
     import LangSwitcher from '#shared/app/components/blocks/langSwitcher.vue'
-    import currencyPageWidget from './currencyPage.vue'
+    import currencyPageWidget from './currency.vue'
 
     const {
         $directus,

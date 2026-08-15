@@ -1,10 +1,17 @@
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.NUXT_REDIS_URL || 'redis://localhost:6379');
+import { inArray } from 'drizzle-orm'
+import { requireAuth } from '#auth/server/utils/sessions'
+import { db } from '#auth/server/utils/drizzle'
+import { users } from '#auth/server/database/migrations/schema'
+import { redis } from '#shared/server/utils/redis'
 
 export default defineEventHandler(async (event) => {
+  // requireAuth sets event.context.user — event.context.auth was never
+  // populated anywhere in this app (better-auth doesn't use that key), so
+  // userId/token below were always undefined regardless of who was signed
+  // in, and the actor-profile fetch always sent "Bearer undefined".
+  const user = await requireAuth(event)
+  const userId = user.id
   const query = getQuery(event);
-  const userId = event.context.auth?.user?.id;
   const page = Number(query.page) || 1;
   const limit = Number(query.limit) || 20;
 
@@ -44,17 +51,19 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // 3. Batch fetch actor user profiles from Directus in 1 query
-  const config = useRuntimeConfig();
-  const actorsData = await $fetch<{ data: any[] }>(`${config.public.directusUrl}/users`, {
-    params: {
-      'filter[id][_in]': Array.from(allActorIds).join(','),
-      fields: 'id,first_name,last_name,avatar',
-    },
-    headers: { Authorization: `Bearer ${event.context.auth?.token}` },
-  });
+  // 3. Batch fetch actor profiles — actors here are better-auth users
+  // (Supabase-side uuids), not Directus's own directus_users, so this
+  // reads the real auth DB directly rather than Directus's /users endpoint
+  // (which was always querying the wrong user system and always came back
+  // empty for real actor ids).
+  const actorRows = allActorIds.size
+    ? await db
+        .select({ id: users.id, name: users.name, username: users.username })
+        .from(users)
+        .where(inArray(users.id, Array.from(allActorIds)))
+    : []
 
-  const actorMap = new Map(actorsData.data.map((u) => [u.id, u]));
+  const actorMap = new Map(actorRows.map((u) => [u.id, u]));
 
   // 4. Assemble final GetStream-style clustered payload
   const payload = groups.map((g) => ({

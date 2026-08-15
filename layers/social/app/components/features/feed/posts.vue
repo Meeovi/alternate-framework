@@ -43,7 +43,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-import createListBtn from '~/components/partials/globals/createListBtn.vue'
+import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
 const { $sdk } = useNuxtApp()

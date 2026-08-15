@@ -43,7 +43,7 @@
 <script setup>
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 import { useRoute } from 'vue-router'
-  import comments from '../../../blocks/comments.vue'
+  import comments from '../../../components/blocks/comments.vue'
 
     const {
         $directus,

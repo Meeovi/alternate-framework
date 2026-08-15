@@ -12,9 +12,13 @@ export default defineEventHandler(async (event) => {
 
   const { actor, verb, object, target } = body;
 
+  // config.public.directus.url (nested, declared in layers/commerce's
+  // nuxt.config.ts) — config.public.directusUrl (flat) was referenced here
+  // and in several other files but never declared anywhere, so it was
+  // always undefined and every Directus request below always 404'd.
   // 1. Write the raw activity to Directus
   const directusActivity = await $fetch<{ data: { id: string; date_created: string } }>(
-    `${config.public.directusUrl}/items/feeds`,
+    `${(config.public as any).directus?.url}/items/feeds`,
     {
       method: 'POST',
       headers: {
@@ -28,12 +32,18 @@ export default defineEventHandler(async (event) => {
   const activityId = directusActivity.data.id;
   const timestamp = new Date(directusActivity.data.date_created || Date.now()).getTime();
 
-  // 2. Fetch actor's followers from Directus
+  // 2. Fetch actor's followers from Directus — follows.target_id/target_type
+  // is a flat cross-system reference (see follow.post.ts), not a relation,
+  // so "who follows this user" is target_type='user' + target_id=actor.
+  // The collection previously had no following_id field at all — this
+  // query always returned nothing (or errored), so fan-out to followers'
+  // timelines never actually happened.
   const followersData = await $fetch<{ data: Array<{ follower_id: string }> }>(
-    `${config.public.directusUrl}/items/follows`,
+    `${(config.public as any).directus?.url}/items/follows`,
     {
       params: {
-        'filter[following_id][_eq]': actor,
+        'filter[target_type][_eq]': 'user',
+        'filter[target_id][_eq]': actor,
         fields: 'follower_id',
       },
       headers: { Authorization: authHeader || '' },

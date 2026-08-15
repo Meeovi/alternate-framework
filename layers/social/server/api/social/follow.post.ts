@@ -1,58 +1,57 @@
-import { and, eq } from 'drizzle-orm'
-import { db } from '#auth/server/utils/drizzle'
-import { follows } from '#auth/server/database/migrations/schema'
-import { useNuxtApp } from 'nuxt/app'
+import { createDirectus, rest, staticToken, readItems, createItem, deleteItem } from '@directus/sdk'
+import { requireAuth } from '#auth/server/utils/sessions'
+
+// Directus's `follows` collection: follower_id (uuid) + target_id/target_type
+// (added specifically for this — see follows.target_id/target_type, a flat
+// cross-system reference rather than a real Directus relation, since the
+// target is either a better-auth user id or a Directus spaces.id and
+// neither maps onto directus_users). Toggle semantics match the real UI
+// (FollowButton.vue -> stores/social.ts), which only ever POSTs here.
+const directus = createDirectus(process.env.DIRECTUS_URL!)
+  .with(rest())
+  .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 export default defineEventHandler(async (event) => {
-  const { auth } = useNuxtApp() as any
-
-  // 1. Guard route using Better Auth session context
-  const session = await auth.api.getSession({ headers: event.node.req.headers })
-  if (!session) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
-
-  const userId = session.user.id
+  const user = await requireAuth(event)
+  const userId = user.id
   const body = await readBody(event)
-  
-  const { targetId, targetType } = body // targetType: 'user' | 'space'
 
-  if (!targetId || !['user', 'space'].includes(targetType)) {
-    throw createError({ statusCode: 400, statusMessage: 'Invalid payload Parameters' })
+  const { targetId, targetType } = body as { targetId?: string; targetType?: 'user' | 'space' }
+
+  if (!targetId || !['user', 'space'].includes(targetType as string)) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid payload parameters' })
   }
 
-  // Prevent self-following loops if target is a user
   if (targetType === 'user' && targetId === userId) {
     throw createError({ statusCode: 400, statusMessage: 'You cannot follow yourself' })
   }
 
-  // 2. Check if relationship already exists
-  const existingFollow = await db.select().from(follows).where(
-    and(
-      eq(follows.followerId, userId),
-      eq(follows.targetId, targetId),
-      eq(follows.targetType, targetType)
-    )
-  ).limit(1)
+  const existing = await directus.request(
+    readItems('follows', {
+      filter: {
+        follower_id: { _eq: userId },
+        target_id: { _eq: targetId },
+        target_type: { _eq: targetType },
+      },
+      fields: ['id'],
+      limit: 1,
+    }),
+  )
 
-  if (existingFollow.length > 0) {
-    // Unfollow action
-    await db.delete(follows).where(
-      and(
-        eq(follows.followerId, userId),
-        eq(follows.targetId, targetId),
-        eq(follows.targetType, targetType)
-      )
-    )
+  if (Array.isArray(existing) && existing.length > 0) {
+    await directus.request(deleteItem('follows', existing[0]!.id))
     return { following: false, message: 'Successfully unfollowed' }
-  } else {
-    // Follow action
-    await db.insert(follows).values({
-      followerId: userId,
-      targetId,
-      targetType
-    })
-    
-    // NOTE: This is where you trigger Better Notify to alert targetId if targetType === 'user'
-    
-    return { following: true, message: 'Successfully followed' }
   }
+
+  await directus.request(
+    createItem('follows', {
+      follower_id: userId,
+      target_id: targetId,
+      target_type: targetType,
+    }),
+  )
+
+  // NOTE: This is where you trigger Better Notify to alert targetId if targetType === 'user'
+
+  return { following: true, message: 'Successfully followed' }
 })

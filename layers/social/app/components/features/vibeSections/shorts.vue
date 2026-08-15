@@ -54,10 +54,10 @@
 
     <template>
       <v-btn icon="mdi-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
-      <span class="text-caption">{{ short?.likes_count || 0 }}</span>
+      <span class="text-caption">{{ likesCount }}</span>
       
       <v-btn icon="mdi-comment" variant="text" @click="toggleComments" />
-      <span class="text-caption">{{ short?.comments_count || 0 }}</span>
+      <span class="text-caption">{{ commentsCount }}</span>
       
       <v-btn icon="fas share-nodes" variant="text" @click="shareVibe" />
       <span class="text-caption">{{ short?.shares_count || 0 }}</span>
@@ -117,9 +117,26 @@ const emit = defineEmits(['hashtag-click', 'comment-click', 'share'])
 const { short } = props
 const videoRef = ref(null)
 const isLiked = ref(false)
+const likesCount = ref(short?.likes_count || 0)
 const showComments = ref(false)
 const newComment = ref('')
 const vibeComments = ref([])
+const commentsLoaded = ref(false)
+const commentsCount = computed(() =>
+  commentsLoaded.value ? vibeComments.value.length : (short?.comments_count || 0)
+)
+
+onMounted(async () => {
+  try {
+    const reaction = await $fetch('/api/social/reactions', {
+      params: { targetType: 'shorts', targetId: short?.id },
+    })
+    isLiked.value = reaction.reacted
+    likesCount.value = reaction.count
+  } catch (error) {
+    console.error('Failed to load reaction state:', error)
+  }
+})
 
 const hashtags = computed(() => {
   if (!short?.description) return []
@@ -149,8 +166,20 @@ const togglePlay = () => {
 }
 
 const toggleLike = async () => {
-  isLiked.value = !isLiked.value
-  // TODO: Persist likes through the content gateway
+  const wasLiked = isLiked.value
+  // Optimistic update — reverted below if the request fails.
+  isLiked.value = !wasLiked
+  likesCount.value += wasLiked ? -1 : 1
+  try {
+    await $fetch('/api/social/reactions', {
+      method: 'POST',
+      body: { targetType: 'shorts', targetId: short?.id, emoji: '❤️' },
+    })
+  } catch (error) {
+    isLiked.value = wasLiked
+    likesCount.value += wasLiked ? 1 : -1
+    console.error('Failed to toggle like:', error)
+  }
 }
 
 const toggleComments = () => {
@@ -161,30 +190,31 @@ const toggleComments = () => {
 }
 
 const addComment = async () => {
-  if (!newComment.value.trim()) return
-  
-  // TODO: Persist comment creation through the content gateway
-  const comment = {
-    id: Date.now(),
-    username: 'Current User',
-    content: newComment.value,
-    date_created: new Date().toISOString()
+  const content = newComment.value.trim()
+  if (!content) return
+
+  try {
+    const comment = await $fetch('/api/social/comments', {
+      method: 'POST',
+      body: { targetType: 'shorts', targetId: short?.id, content },
+    })
+    vibeComments.value.unshift(comment)
+    newComment.value = ''
+  } catch (error) {
+    console.error('Failed to post comment:', error)
   }
-  
-  vibeComments.value.unshift(comment)
-  newComment.value = ''
 }
 
 const loadComments = async () => {
-  // TODO: Load comments through the content gateway
-  vibeComments.value = [
-    {
-      id: 1,
-      username: 'User1',
-      content: 'Great vibe!',
-      date_created: new Date().toISOString()
-    }
-  ]
+  try {
+    const { data } = await $fetch('/api/social/comments', {
+      params: { targetType: 'shorts', targetId: short?.id },
+    })
+    vibeComments.value = data
+    commentsLoaded.value = true
+  } catch (error) {
+    console.error('Failed to load comments:', error)
+  }
 }
 
 const shareVibe = () => {

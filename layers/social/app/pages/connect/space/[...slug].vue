@@ -128,7 +128,7 @@
     import postsCard from '../../../components/features/feed/posts.vue'
     import MembersTab from '../../../components/related/memberList.vue'
     import MediaTab from '../../../components/blocks/groups/media.vue'
-    import productCard from '#commerce/app/components/catalog/product/products.vue'
+    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
     import listsCard from '../../../components/features/lists/lists.vue'
     import SettingsTab from './SettingsTab.vue'
     import {
