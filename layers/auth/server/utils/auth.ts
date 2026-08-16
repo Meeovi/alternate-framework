@@ -92,7 +92,10 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema,
-    debugLogs: true
+    // Every query logged verbatim, including rate-limit keys (raw IP
+    // addresses) and other request data — fine for local debugging, a
+    // real volume/PII concern left on in production.
+    debugLogs: !isProduction
   }),
   updateAccountOnSignIn: true,
   account: {
@@ -119,9 +122,14 @@ export const auth = betterAuth({
   session: {
     modelName: "publicSessions",
     expiresIn: 604800,
+    // Sliding-window session: active users get extended (up to once per
+    // updateAge) rather than always hitting a hard 7-day cutoff.
+    // disableSessionRefresh: true previously made updateAge inert
+    // (better-auth's own docs: "session is not updated regardless of the
+    // updateAge option") — every session expired exactly 7 days after
+    // login no matter how active the user was.
     updateAge: 86400,
     freshAge: 3600,
-    disableSessionRefresh: true,
     additionalFields: {
       customField: {
         type: "string",
@@ -282,7 +290,7 @@ export const auth = betterAuth({
   plugins,
   telemetry: {
     enabled: true,
-    debug: true
+    debug: !isProduction
   },
   advanced: {
     ipAddress: {
@@ -337,8 +345,10 @@ export const auth = betterAuth({
   }
 })
 
-// Diagnostic: log effective auth config for session debugging.
-console.info('[better-auth][diag] baseURL:', process.env.NUXT_PUBLIC_SITE_URL, 'crossSubDomainCookies.enabled: false', 'cookie session_token name: custom_session_token')
+if (!isProduction) {
+  // Diagnostic: log effective auth config for session debugging.
+  console.info('[better-auth][diag] baseURL:', process.env.NUXT_PUBLIC_SITE_URL, 'crossSubDomainCookies.enabled: false', 'cookie session_token name: custom_session_token')
+}
 
 let _auth: ReturnType < typeof betterAuth > | any
 

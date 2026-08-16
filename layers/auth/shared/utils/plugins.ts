@@ -48,6 +48,10 @@ import { verifyMessage, createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { ac, admin, user, myCustomRole } from './permissions'
 
+if (!process.env.NUXT_STRIPE_WEBHOOK_SECRET) {
+  console.warn('[stripe] NUXT_STRIPE_WEBHOOK_SECRET is not set — the stripe plugin\'s own webhook endpoint will reject every incoming event with a signature-verification failure.')
+}
+
 export const plugins = [
   dash(),
   multiSession(),
@@ -81,7 +85,10 @@ export const plugins = [
   }),
   stripe({
     stripeClient,
-    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+    // Real var is NUXT_STRIPE_WEBHOOK_SECRET — the unprefixed name was
+    // never set anywhere in .env, so webhook signature verification for
+    // this plugin's own webhook handling has never actually worked.
+    stripeWebhookSecret: process.env.NUXT_STRIPE_WEBHOOK_SECRET!,
     createCustomerOnSignUp: true,
     onCustomerCreate: async ({
       stripeCustomer,
