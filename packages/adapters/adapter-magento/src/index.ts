@@ -110,18 +110,54 @@ export class MagentoAdapter {
     // Uses the real `products(search: ...)` root field (full-text search)
     // rather than readEntity — Magento's storefront schema has no singular
     // Product/Mage_Product query field for readEntity's candidates to match.
-    search: async (query: string, options?: Record<string, any>) => {
+    search: async (query: string, options?: {
+      pageSize?: number
+      /** Magento's own 1-indexed page argument — same convention as
+       *  layers/search's SearchProviderOptions.page, no off-by-one to fix. */
+      currentPage?: number
+      /** Raw ProductAttributeFilterInput shape, e.g.
+       *  { category_uid: { in: ['10','11'] } } — passed straight through,
+       *  not translated here (the caller owns the attribute-code mapping). */
+      filter?: Record<string, any>
+      /** Keys must be one of ProductAttributeSortInput's fields (name,
+       *  position, price, relevance) — that's the full set Magento's schema
+       *  exposes, there is no arbitrary-field sort. */
+      sort?: Record<string, 'ASC' | 'DESC'>
+      /** Also requests layered-navigation aggregations (facet buckets) on
+       *  the response when true. */
+      aggregations?: boolean
+      fields?: any[]
+    }) => {
       // `price` is not a scalar on ProductInterface (confirmed live) — only
       // `price_range` (an object) exists, hence the default field shape below.
       const defaultFields = ['sku', 'name', { price_range: [{ minimum_price: [{ final_price: ['value'] }] }] }]
-      const result = await this.store.queryField('products', {
+
+      const args: Record<string, any> = {
         search: query,
         pageSize: options?.pageSize || 20,
-      }, { fields: [{ items: options?.fields || defaultFields }, 'total_count'] })
+      }
+      if (options?.currentPage) args.currentPage = options.currentPage
+      if (options?.filter && Object.keys(options.filter).length) args.filter = options.filter
+      if (options?.sort && Object.keys(options.sort).length) {
+        args.sort = Object.fromEntries(
+          Object.entries(options.sort).map(([field, direction]) => [field, this.rawGraphQLEnum(direction)]),
+        )
+      }
+
+      const resultFields: any[] = [{ items: options?.fields || defaultFields }, 'total_count']
+      if (options?.aggregations) {
+        resultFields.push({ aggregations: ['attribute_code', 'label', { options: ['label', 'value', 'count'] }] })
+      }
+
+      const result = await this.store.queryField('products', args, { fields: resultFields })
       // total_count was already being queried here but discarded — callers
       // that need the real match count (not just this page's item count,
       // e.g. layers/search's federated pagination) had no way to get it.
-      return { items: result?.items ?? [], total: result?.total_count ?? (result?.items?.length ?? 0) }
+      return {
+        items: result?.items ?? [],
+        total: result?.total_count ?? (result?.items?.length ?? 0),
+        aggregations: result?.aggregations ?? [],
+      }
     },
 
     suggest: async (query: string) => {
@@ -1164,5 +1200,16 @@ export class MagentoAdapter {
     return Object.entries(args)
       .map(([key, val]) => `${key}: ${JSON.stringify(val).replace(/"([^"]+)":/g, '$1:')}`)
       .join(', ')
+      // rawGraphQLEnum() below marks enum values (e.g. SortEnum's ASC/DESC)
+      // with a sentinel so they survive JSON.stringify as strings, then get
+      // unquoted here — GraphQL enum arguments are bare identifiers, and
+      // sending them as quoted strings is a schema validation error.
+      .replace(/" ENUM:([^"]*) "/g, '$1')
+  }
+
+  /** See serializeArguments — wraps a value so it's emitted as a bare
+   *  GraphQL enum identifier instead of a quoted string. */
+  private rawGraphQLEnum(value: string): { toJSON(): string } {
+    return { toJSON: () => ` ENUM:${value} ` }
   }
 }
