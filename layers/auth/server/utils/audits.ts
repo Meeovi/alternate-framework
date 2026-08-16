@@ -19,12 +19,17 @@ export const logAuditEvent = async (entry: {
   details?: string;
 }) => {
   try {
-    await (db as any).insert(schema.auditLogEntriesInAuth).values({
+    // Was writing created_at/ip_address (snake_case) against a schema
+    // whose real Drizzle property names are createdAt/ipAddress — the
+    // `as any` cast let this pass silently, and Drizzle just ignored both
+    // unrecognized keys, so every audit log entry landed with a null
+    // timestamp and empty IP regardless of what was actually passed in.
+    await db.insert(schema.auditLogEntriesInAuth).values({
       id: entry.id || uuidv7(),
       payload: entry,
-      created_at: new Date(),
-      ip_address: entry.ipAddress || ''
-    } as any)
+      createdAt: new Date(),
+      ipAddress: entry.ipAddress || ''
+    })
   } catch (e) {
     // swallow logging errors to avoid breaking auth flows
     console.error('Failed to write audit log', e)

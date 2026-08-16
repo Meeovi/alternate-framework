@@ -2,6 +2,7 @@ import { createClient } from '@betternotify/core'
 import { createDirectus, rest, readItems, staticToken } from '@directus/sdk'
 import { notificationService } from '#shared/server/notifications/notify'
 import { directusTransport } from '#shared/server/notifications/transports/directus'
+import { requireAuth } from '#auth/server/utils/sessions'
 import { z } from 'zod'
 
 /**
@@ -20,8 +21,16 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  // Previously had no auth check at all — any caller who knew or guessed
+  // another user's id could trigger a notification email to their address.
+  // Only letting a user trigger notifications for themselves.
+  const currentUser = await requireAuth(event)
   const body = bodySchema.parse(await readBody(event))
   const { userId, route, input } = body
+
+  if (userId !== currentUser.id) {
+    throw createError({ statusCode: 403, statusMessage: 'Cannot send notifications for another user' })
+  }
 
   const runtimeConfig = useRuntimeConfig()
   const directusUrl = runtimeConfig.public.directus?.url as string | undefined

@@ -118,7 +118,10 @@ export class MagentoAdapter {
         search: query,
         pageSize: options?.pageSize || 20,
       }, { fields: [{ items: options?.fields || defaultFields }, 'total_count'] })
-      return result?.items ?? []
+      // total_count was already being queried here but discarded — callers
+      // that need the real match count (not just this page's item count,
+      // e.g. layers/search's federated pagination) had no way to get it.
+      return { items: result?.items ?? [], total: result?.total_count ?? (result?.items?.length ?? 0) }
     },
 
     suggest: async (query: string) => {

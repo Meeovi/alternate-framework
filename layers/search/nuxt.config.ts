@@ -57,6 +57,12 @@ export default defineNuxtConfig({
           enabled: Boolean(connectionString),
           connectionString,
           ssl: process.env.ALTERNATE_SEARCH_PG_SSL || (connectionString.includes('supabase') ? 'require' : ''),
+          // Certificate validation stays on by default even when ssl is
+          // required — Supabase's own Postgres uses a publicly-trusted CA,
+          // so Node's default trust store already validates it correctly.
+          // Only set this to disable validation for a genuinely
+          // self-signed/internal Postgres deployment.
+          sslRejectUnauthorized: process.env.ALTERNATE_SEARCH_PG_SSL_INSECURE !== 'true',
           table: process.env.ALTERNATE_SEARCH_PG_TABLE || 'products',
           idColumn: process.env.ALTERNATE_SEARCH_PG_ID_COLUMN || 'id',
           searchColumns: (process.env.ALTERNATE_SEARCH_PG_COLUMNS || 'title,description')

@@ -24,6 +24,7 @@ type PostgresConfig = {
   enabled: boolean
   connectionString: string
   ssl: string
+  sslRejectUnauthorized: boolean
   table: string
   idColumn: string
   searchColumns: string[]
@@ -40,9 +41,14 @@ function getPool(): pg.Pool {
   if (_pool) return _pool
 
   const config = getConfig()
+  // Previously always { rejectUnauthorized: false } whenever ssl was
+  // truthy — including the Supabase auto-detect path — accepting any
+  // certificate and making the connection vulnerable to MITM. Certificate
+  // validation now stays on by default; ALTERNATE_SEARCH_PG_SSL_INSECURE=true
+  // opts out for a genuinely self-signed/internal deployment.
   _pool = new pg.Pool({
     connectionString: config.connectionString,
-    ssl: config.ssl ? { rejectUnauthorized: false } : undefined,
+    ssl: config.ssl ? { rejectUnauthorized: config.sslRejectUnauthorized } : undefined,
     max: 5,
   })
   return _pool

@@ -52,12 +52,13 @@ export const magentoProvider: SearchProvider = {
     // adapter-magento's src/index.ts) — reused as-is rather than
     // duplicating query-building logic here. `price` isn't a scalar on
     // ProductInterface (confirmed live) — only `price_range` exists.
-    const rawItems = await magento.content.search(options.query, {
+    const searchResult = await magento.content.search(options.query, {
       pageSize: options.pageSize,
       fields: ['sku', 'name', { price_range: [{ minimum_price: [{ final_price: ['value'] }] }] }, { small_image: ['url'] }],
     })
 
-    const items = (Array.isArray(rawItems) ? rawItems : []).map((item: any) => ({
+    const rawItems = searchResult?.items ?? []
+    const items = rawItems.map((item: any) => ({
       id: String(item.sku ?? item.id ?? ''),
       score: 1,
       source: {
@@ -71,7 +72,10 @@ export const magentoProvider: SearchProvider = {
     return {
       provider: this.id,
       items,
-      total: items.length,
+      // Real Magento match count (total_count), not just this page's item
+      // count — the adapter previously discarded it, which undercounted
+      // federated pagination whenever Magento matched more than one page.
+      total: searchResult?.total ?? items.length,
       facets: {},
       tookMs: Date.now() - start,
     }

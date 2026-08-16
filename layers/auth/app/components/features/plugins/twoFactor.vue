@@ -49,7 +49,12 @@
     import {
         authClient
     } from "../../../../lib/auth-client";
-    import { useQRCode } from '@vueuse/integrations'
+    // Importing from the specific submodule (not the '@vueuse/integrations'
+    // barrel) — the barrel re-exports useDrauu/useFocusTrap/useIDBKeyval
+    // too, each needing its own optional peer dep (drauu/focus-trap/
+    // idb-keyval) that isn't installed and isn't actually used here,
+    // which broke every production build.
+    import { useQRCode } from '@vueuse/integrations/useQRCode'
 
     const password = ref("");
     const totpCode = ref("");

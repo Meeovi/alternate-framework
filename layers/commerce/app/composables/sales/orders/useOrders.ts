@@ -32,7 +32,9 @@ export function useOrders() {
     isLoading.value = true
     error.value = null
     try {
-      current.value = await client.getOrderById(id)
+      // The adapter's real method is getOrder, not getOrderById — this
+      // threw TypeError on every call against Magento.
+      current.value = await client.getOrder(id)
       return current.value
     } catch (err) {
       error.value = err as Error
@@ -62,6 +64,16 @@ export function useOrders() {
     isLoading.value = true
     error.value = null
     try {
+      // No adapter implements order cancellation today (Magento has no
+      // cancelOrder method at all — this previously threw an opaque
+      // TypeError instead of a clear "not supported" error). Real
+      // cancellation needs a verified Magento mutation; adapter-magento's
+      // existing mutation methods have not been live-tested against a
+      // real Magento write (see the wider readEntity/mutateEntity
+      // mismatch across most of its write methods).
+      if (typeof client.cancelOrder !== 'function') {
+        throw new Error('Order cancellation is not supported by the active commerce backend yet.')
+      }
       current.value = await client.cancelOrder(id, reason)
       return current.value
     } catch (err) {
