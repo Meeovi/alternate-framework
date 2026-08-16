@@ -1,16 +1,11 @@
 <template>
-    <div>
-  <Comments
-    :ondata="v => url.get(v)"
-    :onchange="({ action, comment, id, originalValue: v }) =>
-      url.path(v).save(action, comment, id)"
-  />
-    </div>
+  <div />
 </template>
 
 <script setup>
-  import { RestURL } from "@svar-ui/lib-data-provider";
-  import { Comments } from '@svar-ui/vue-comments';
-
-  const url = new RestURL("https://some.com/api/comments");
+// Was an unmodified SVAR comments-widget demo pointed at a placeholder
+// domain — identical dead boilerplate to messages.vue, which is now the
+// real, working DM page. Redirecting rather than leaving two broken
+// duplicates of the same never-built feature.
+await navigateTo('/collaborrate/messages', { replace: true })
 </script>

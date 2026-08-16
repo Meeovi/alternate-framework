@@ -1,49 +1,20 @@
 <template>
-  <ExperienceBuilder
-    :items="items"
-    :config="builderConfig"
-    @update="onUpdate"
-  />
+  <Kanban :listId="listId" />
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useLists } from '../../../../composables/lists/useLists'
+// ExperienceBuilder, previously rendered here, does not exist anywhere in
+// this codebase (only an unrelated ExperienceBuilderCanvas.vue) — every
+// list with list_type 'Board' hit an unresolved-component error. There's
+// no spec for what ExperienceBuilder was meant to look like beyond the
+// draggable/droppable/editable card config below, which is exactly what
+// the real, already-working Kanban.vue (used for list_type 'Kanban')
+// already provides — so 'Board' now renders the same real widget rather
+// than staying broken.
+import Kanban from './Kanban.vue'
 
-const props = defineProps({
+defineProps({
   listId: { type: [String, Number], required: true },
-  items: { type: Array, required: true }
+  items: { type: Array, required: false, default: () => [] }
 })
-// emit('updated') below was called with no defineEmits declaration at all.
-const emit = defineEmits(['updated'])
-
-const { reorderItems, moveItemToList, updateListItem } = useLists()
-
-const builderConfig = computed(() => ({
-  draggable: true,
-  droppable: true,
-  editable: true,
-  fields: {
-    title: { type: 'text', editable: true },
-    notes: { type: 'textarea', editable: true },
-    dueDate: { type: 'date', editable: true },
-    priority: { type: 'select', items: ['low', 'medium', 'high'] }
-  }
-}))
-
-const onUpdate = async ({ type, payload }) => {
-  if (type === 'reorder') {
-    await reorderItems(payload.items)
-  }
-
-  if (type === 'move') {
-    await moveItemToList(payload.itemId, payload.newListId)
-  }
-
-  if (type === 'edit') {
-    await updateListItem(payload.itemId, payload.changes)
-  }
-
-  emit('updated')
-}
 </script>

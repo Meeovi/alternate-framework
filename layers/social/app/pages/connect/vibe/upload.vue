@@ -26,9 +26,10 @@
 <script setup>
 import { ref } from '#imports'
 
-const runtimeUseAuth = globalThis.useAuth
-const auth = runtimeUseAuth ? runtimeUseAuth() : { user: useState('social:user', () => null) }
-const user = auth.user
+// globalThis.useAuth was never a real thing anywhere in this app — this
+// always fell through to a plain empty local ref, so the logged-in check
+// below could never actually pass.
+const user = useCurrentUser()
 
 const name = ref('')
 const file = ref(null)
@@ -61,14 +62,13 @@ async function handleUpload() {
   formData.append('name', name.value)
   formData.append('video', file.value)
 
-  // Try to read an API access token from cookies (common names: access_token or sb:token)
-  const cookies = typeof document !== 'undefined' ? document.cookie : ''
-  const match = cookies.match(/access_token=([^;]+)/) || cookies.match(/sb:token=([^;]+)/)
-  const accessToken = match && match[1] ? decodeURIComponent(match[1]) : null
-
+  // No manual auth header needed — requireAuth() on the server reads the
+  // real better-auth session cookie, which the browser already sends
+  // automatically on this same-origin request. The previous code tried to
+  // read a Supabase-style access_token/sb:token cookie that this app's
+  // real auth (better-auth) never actually sets.
   const res = await fetch('/api/upload-video', {
     method: 'POST',
-    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
     body: formData,
   })
 
