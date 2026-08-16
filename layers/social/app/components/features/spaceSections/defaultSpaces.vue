@@ -22,23 +22,28 @@
 <script setup lang="ts">
     import spaceCard from '../../related/space.vue'
 
-    const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
-    const { user } = runtimeUseAuth
-        ? runtimeUseAuth()
-        : { user: useState<any>('social:user', () => null) }
-    const currentFirstName = computed(() => (user.value as any)?.firstName || (user.value as any)?.first_name || '')
-    const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
+    // globalThis.useAuth was never a real thing anywhere in this app, and
+    // even if it had been, spaces.owner relates to directus_users (not
+    // this app's real users — better-auth users live in a separate
+    // database), and better-auth's user object has no firstName/lastName
+    // fields anyway (just name) — this filter could never have matched
+    // anything. user_created (Directus's own auto-tracked field) is the
+    // closest real approximation, same caveat as elsewhere: accurate only
+    // if spaces are ever created under each user's own Directus identity
+    // rather than a single shared service token.
+    const currentUser = useCurrentUser()
 
     const model = ref(null)
     const { $directus, $readItems } = useNuxtApp()
 
     const { data: myDefaultSpaces } = await useAsyncData<any[]>('myDefaultSpaces', async () => {
-        const resp = await $directus.request($readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'default' } } } }, fields: ['*', { '*': ['*'] }] }))
+        if (!currentUser.value?.id) return []
+        const resp = await $directus.request($readItems('spaces', { filter: { user_created: { _eq: currentUser.value.id }, space_type: { space_types_id: { name: { _eq: 'Default' } } } }, fields: ['*', { '*': ['*'] }] }))
         return resp?.data || resp || []
     })
 
     const { data: defaultSpaces } = await useAsyncData<any[]>('defaultSpaces', async () => {
-        const resp = await $directus.request($readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'default' } } } }, fields: ['*', { '*': ['*'] }] }))
+        const resp = await $directus.request($readItems('spaces', { filter: { space_type: { space_types_id: { name: { _eq: 'Default' } } } }, fields: ['*', { '*': ['*'] }] }))
         return resp?.data || resp || []
     })
 </script>

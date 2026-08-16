@@ -22,18 +22,17 @@
 <script setup lang="ts">
     import spaceCard from '../../related/space.vue'
 
-    const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
-    const { user } = runtimeUseAuth
-        ? runtimeUseAuth()
-        : { user: useState<any>('social:user', () => null) }
-    const currentFirstName = computed(() => (user.value as any)?.firstName || (user.value as any)?.first_name || '')
-    const currentLastName = computed(() => (user.value as any)?.lastName || (user.value as any)?.last_name || '')
+    // See defaultSpaces.vue for why: globalThis.useAuth was never real,
+    // and owner/name-based filtering could never have matched real
+    // better-auth users. user_created is the closest real approximation.
+    const currentUser = useCurrentUser()
 
     const model = ref(null)
     const { $directus, $readItems } = useNuxtApp()
 
     const { data: myImageSpaces } = await useAsyncData<any[]>('myImageSpaces', async () => {
-        const resp = await $directus.request($readItems('spaces', { filter: { owner: { first_name: { _eq: currentFirstName.value }, last_name: { _eq: currentLastName.value } }, space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] }))
+        if (!currentUser.value?.id) return []
+        const resp = await $directus.request($readItems('spaces', { filter: { user_created: { _eq: currentUser.value.id }, space_type: { space_types_id: { name: { _eq: 'Images' } } } }, fields: ['*', { '*': ['*'] }] }))
         return resp?.data || resp || []
     })
 
