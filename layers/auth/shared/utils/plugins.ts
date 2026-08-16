@@ -47,6 +47,7 @@ import { generateRandomString } from 'better-auth/crypto'
 import { verifyMessage, createPublicClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 import { ac, admin, user, myCustomRole } from './permissions'
+import { normalizeUsername } from './username'
 
 if (!process.env.NUXT_STRIPE_WEBHOOK_SECRET) {
   console.warn('[stripe] NUXT_STRIPE_WEBHOOK_SECRET is not set — the stripe plugin\'s own webhook endpoint will reject every incoming event with a signature-verification failure.')
@@ -236,13 +237,7 @@ export const plugins = [
     maxUsernameLength: 100,
     usernameValidator: (username) => username !== 'admin',
     displayUsernameValidator: (displayUsername) => /^[a-zA-Z0-9_-]+$/.test(displayUsername),
-    // Was username.replace('0', 'o')... — String.replace with a string
-    // argument (not a /g-flagged regex) only replaces the FIRST match, so
-    // e.g. "4dm1n1strat0r" only got its single leading '4' replaced. Also
-    // never covered '1', the most common admin-lookalike substitution
-    // (e.g. "adm1n" wasn't caught by the usernameValidator below at all).
-    usernameNormalization: (username) =>
-      username.toLowerCase().replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a'),
+    usernameNormalization: normalizeUsername,
     displayUsernameNormalization: (displayUsername) => displayUsername.toLowerCase(),
     validationOrder: {
       username: 'post-normalization',

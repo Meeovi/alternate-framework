@@ -36,6 +36,9 @@
       "#shared/*": [
         "./layers/shared/app/*",
         "./layers/shared/*"
+      ],
+      "#auth/*": [
+        "./layers/auth/*"
       ]
     },
     "typeRoots": ["./types", "./node_modules/@types"]

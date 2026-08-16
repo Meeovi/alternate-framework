@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "main": "./nuxt.config.ts",
   "scripts": {
+    "test": "vitest run",
     "dev": "nuxi dev .playground",
     "dev:prepare": "nuxt prepare .playground",
     "build": "nuxt build .playground",

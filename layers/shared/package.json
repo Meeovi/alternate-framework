@@ -4,7 +4,7 @@
   "description": "Shared Layer for the M Framework",
   "main": "./nuxt.config.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run --project unit",
     "dev": "nuxt dev",
     "build": "tsc -p tsconfig.json"
   },
