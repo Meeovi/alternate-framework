@@ -27,7 +27,10 @@ export default defineEventHandler(async (event) => {
     return { balance: null, connected: false }
   }
 
-  const balance = await stripeClient.balance.retrieve({
+  // stripeAccount belongs in the second argument (RequestOptions), not the
+  // first (BalanceRetrieveParams, which only accepts `expand`) — Stripe
+  // rejected this as "unknown parameter: stripeAccount" on every call.
+  const balance = await stripeClient.balance.retrieve({}, {
     stripeAccount: stripeAccountId
   })
 

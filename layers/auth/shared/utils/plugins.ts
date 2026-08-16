@@ -90,9 +90,13 @@ export const plugins = [
       console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
     },
     getCustomerCreateParams: async (user: User, ctx) => {
+      // Previously read user.metadata?.referralSource — `metadata` was
+      // never declared as an additionalField anywhere on the user model,
+      // so this was always undefined regardless of who signed up. Attach
+      // the one piece of real, available data instead.
       return {
         metadata: {
-          referralSource: user.metadata?.referralSource ?? ''
+          appUserId: user.id
         }
       };
     },
@@ -145,9 +149,13 @@ export const plugins = [
                 message: "We'll start your subscription right away"
               }
             },
+            // Previously hardcoded planType: "business" regardless of
+            // which plan was actually purchased, and referralCode read
+            // user.metadata?.referralCode — never declared anywhere, so
+            // always undefined. Use the real plan name instead of both.
             metadata: {
-              planType: "business",
-              referralCode: user.metadata?.referralCode
+              planName: plan.name,
+              appUserId: user.id
             }
           },
           options: {
@@ -221,8 +229,13 @@ export const plugins = [
     maxUsernameLength: 100,
     usernameValidator: (username) => username !== 'admin',
     displayUsernameValidator: (displayUsername) => /^[a-zA-Z0-9_-]+$/.test(displayUsername),
+    // Was username.replace('0', 'o')... — String.replace with a string
+    // argument (not a /g-flagged regex) only replaces the FIRST match, so
+    // e.g. "4dm1n1strat0r" only got its single leading '4' replaced. Also
+    // never covered '1', the most common admin-lookalike substitution
+    // (e.g. "adm1n" wasn't caught by the usernameValidator below at all).
     usernameNormalization: (username) =>
-      username.toLowerCase().replace('0', 'o').replace('3', 'e').replace('4', 'a'),
+      username.toLowerCase().replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a'),
     displayUsernameNormalization: (displayUsername) => displayUsername.toLowerCase(),
     validationOrder: {
       username: 'post-normalization',
@@ -378,8 +391,11 @@ export const plugins = [
 
   lastLoginMethod(),
 
+  // The real sign-in page is layers/auth/app/pages/login.vue (route
+  // /login) — '/sign-in' doesn't exist anywhere in this app, so an MCP
+  // client's auth redirect would have 404'd.
   mcp({
-    loginPage: '/sign-in',
+    loginPage: '/login',
   }),
 
   openAPI(),
