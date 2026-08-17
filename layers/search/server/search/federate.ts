@@ -20,11 +20,26 @@ import { openSearchProvider } from '../providers/opensearch'
 import { postgresProvider } from '../providers/postgres'
 import { mysqlProvider } from '../providers/mysql'
 import { magentoProvider } from '../providers/magento'
+import { algoliaProvider } from '../providers/algolia'
+import { meilisearchProvider } from '../providers/meilisearch'
+import { typesenseProvider } from '../providers/typesense'
+import { databaseProvider } from '../providers/database'
+import { memoryProvider } from '../providers/memory'
 import type { FacetBucket, NormalizedHit, ProviderStatus, SearchProvider, SearchProviderOptions } from '../providers/types'
 
 const MAX_FEDERATED_DEPTH = 500
 
-const ALL_PROVIDERS: SearchProvider[] = [openSearchProvider, postgresProvider, mysqlProvider, magentoProvider]
+const ALL_PROVIDERS: SearchProvider[] = [
+  openSearchProvider,
+  postgresProvider,
+  mysqlProvider,
+  magentoProvider,
+  algoliaProvider,
+  meilisearchProvider,
+  typesenseProvider,
+  databaseProvider,
+  memoryProvider,
+]
 
 export function getEnabledProviders(): SearchProvider[] {
   return ALL_PROVIDERS.filter((provider) => {

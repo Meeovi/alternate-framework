@@ -85,6 +85,51 @@ export default defineNuxtConfig({
         endpoint: process.env.MAGENTO_GRAPHQL_URL || '',
         token: process.env.GQL_KEY || '',
       },
+      algolia: {
+        enabled: Boolean(process.env.ALTERNATE_SEARCH_ALGOLIA_APP_ID && process.env.ALTERNATE_SEARCH_ALGOLIA_API_KEY),
+        appId: process.env.ALTERNATE_SEARCH_ALGOLIA_APP_ID || '',
+        apiKey: process.env.ALTERNATE_SEARCH_ALGOLIA_API_KEY || '',
+        indexName: process.env.ALTERNATE_SEARCH_ALGOLIA_INDEX || 'products',
+      },
+      meilisearch: {
+        enabled: Boolean(process.env.ALTERNATE_SEARCH_MEILISEARCH_HOST),
+        host: process.env.ALTERNATE_SEARCH_MEILISEARCH_HOST || '',
+        apiKey: process.env.ALTERNATE_SEARCH_MEILISEARCH_API_KEY || '',
+        indexUid: process.env.ALTERNATE_SEARCH_MEILISEARCH_INDEX || 'products',
+        idField: process.env.ALTERNATE_SEARCH_MEILISEARCH_ID_FIELD || 'id',
+      },
+      typesense: {
+        enabled: Boolean(process.env.ALTERNATE_SEARCH_TYPESENSE_HOST),
+        host: process.env.ALTERNATE_SEARCH_TYPESENSE_HOST || '',
+        port: parseInt(process.env.ALTERNATE_SEARCH_TYPESENSE_PORT || '443'),
+        protocol: process.env.ALTERNATE_SEARCH_TYPESENSE_PROTOCOL || 'https',
+        apiKey: process.env.ALTERNATE_SEARCH_TYPESENSE_API_KEY || '',
+        collectionName: process.env.ALTERNATE_SEARCH_TYPESENSE_COLLECTION || 'products',
+        idField: process.env.ALTERNATE_SEARCH_TYPESENSE_ID_FIELD || 'id',
+      },
+      // A third, zero-infra SQL option alongside postgres/mysql above —
+      // local dev or small deployments that don't want a database server
+      // just for search. Uses SQLite's own FTS5 virtual tables when
+      // available (see server/providers/database.ts), LIKE otherwise.
+      database: {
+        enabled: Boolean(process.env.ALTERNATE_SEARCH_SQLITE_PATH),
+        filePath: process.env.ALTERNATE_SEARCH_SQLITE_PATH || '',
+        table: process.env.ALTERNATE_SEARCH_SQLITE_TABLE || 'products',
+        idColumn: process.env.ALTERNATE_SEARCH_SQLITE_ID_COLUMN || 'id',
+        searchColumns: (process.env.ALTERNATE_SEARCH_SQLITE_COLUMNS || 'title,description')
+          .split(',').map((column) => column.trim()).filter(Boolean),
+      },
+      // Zero-dependency, in-process fallback — no connection config at all,
+      // so it can't be enabled by "presence of config" like every other
+      // provider here. Opt in explicitly; seed it via
+      // server/providers/memory.ts's seedMemoryIndex()/addMemoryDocuments()
+      // (e.g. from a Nitro plugin loading a small catalog once at boot).
+      memory: {
+        enabled: process.env.ALTERNATE_SEARCH_MEMORY_ENABLED === 'true',
+        idField: process.env.ALTERNATE_SEARCH_MEMORY_ID_FIELD || 'id',
+        searchFields: (process.env.ALTERNATE_SEARCH_MEMORY_FIELDS || 'title,description')
+          .split(',').map((field) => field.trim()).filter(Boolean),
+      },
       // To add a new backend: implement `SearchProvider` in
       // server/providers/<name>.ts, add its config block here (enabled by
       // presence of connection config, same as above), and register the

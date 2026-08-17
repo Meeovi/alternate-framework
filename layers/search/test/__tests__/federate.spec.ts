@@ -13,6 +13,21 @@ vi.mock('../../server/providers/mysql', () => ({
 vi.mock('../../server/providers/magento', () => ({
   magentoProvider: { id: 'magento', isEnabled: vi.fn(), search: vi.fn() },
 }))
+vi.mock('../../server/providers/algolia', () => ({
+  algoliaProvider: { id: 'algolia', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
+}))
+vi.mock('../../server/providers/meilisearch', () => ({
+  meilisearchProvider: { id: 'meilisearch', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
+}))
+vi.mock('../../server/providers/typesense', () => ({
+  typesenseProvider: { id: 'typesense', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
+}))
+vi.mock('../../server/providers/database', () => ({
+  databaseProvider: { id: 'database', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
+}))
+vi.mock('../../server/providers/memory', () => ({
+  memoryProvider: { id: 'memory', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
+}))
 
 import { openSearchProvider } from '../../server/providers/opensearch'
 import { postgresProvider } from '../../server/providers/postgres'
