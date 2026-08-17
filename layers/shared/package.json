@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run --project unit",
     "dev": "nuxt dev",
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "lint:i18n": "eslint \"app/**/*.vue\""
   },
   "dependencies": {
     "@betternotify/core": "^1.0.0-beta.10",
@@ -74,6 +75,7 @@
     "@fortawesome/free-regular-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/vue-fontawesome": "^3.2.0",
+    "@intlify/eslint-plugin-vue-i18n": "^4.5.1",
     "@nuxt/test-utils": "^4.0.3",
     "@nuxtjs/turnstile": "^1.0.0",
     "@storefront-ui/nuxt": "^3.3.1",
