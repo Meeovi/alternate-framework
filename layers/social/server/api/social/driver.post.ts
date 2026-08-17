@@ -1,5 +1,5 @@
 import { getSocialDriver } from '../../utils/social'
-import type { SocialDriverContract } from '@mframework/alternate-sdk/contracts/social'
+import type { SocialDriverContract } from 'alternate-sdk/contracts'
 
 /**
  * POST /api/social/driver
@@ -24,7 +24,18 @@ export default defineEventHandler(async (event) => {
   }
 
   const social = getSocialDriver()
-  const fn = social?.[method as keyof SocialDriverContract]
+
+  // Most operations live under a sub-driver (e.g. "posts.getPosts", not a
+  // flat "getPosts") — see SocialDriverContract in alternate-sdk/contracts.
+  // Only getUser/searchUsers/follow/unfollow/getFollowers/getFollowing are
+  // flat on the top-level contract.
+  const segments = method.split('.')
+  const key = segments.pop() as string
+  let target: any = social
+  for (const segment of segments) {
+    target = target?.[segment]
+  }
+  const fn = target?.[key]
 
   if (typeof fn !== 'function') {
     throw createError({
@@ -34,7 +45,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    return await (fn as (...a: unknown[]) => any).apply(social, args as any[])
+    return await (fn as (...a: unknown[]) => any).apply(target, args as any[])
   } catch (error: any) {
     const statusCode = error?.$statusCode || error?.statusCode || 500
     const message = error?.message || 'Social driver call failed'

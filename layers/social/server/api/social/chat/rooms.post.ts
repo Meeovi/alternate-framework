@@ -6,6 +6,9 @@ import { findDirectRoom, createRoom } from '#social/server/utils/chat-store'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  if (!user.id) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
   const body = await readBody(event)
   let targetUserId = body?.targetUserId as string | undefined
   const targetEmail = body?.targetEmail as string | undefined

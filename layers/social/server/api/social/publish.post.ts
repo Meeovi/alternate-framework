@@ -16,7 +16,9 @@ import { z } from 'zod'
  * Response: the created status object, or { error: string } on failure.
  */
 const bodySchema = z.object({
-  payload: z.record(z.any()),
+  // Zod v4's z.record() requires an explicit key schema (v3 defaulted it
+  // to string).
+  payload: z.record(z.string(), z.any()),
 })
 
 export default defineEventHandler(async (event) => {

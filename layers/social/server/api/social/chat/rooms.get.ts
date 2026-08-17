@@ -6,6 +6,9 @@ import { listRoomsForUser } from '#social/server/utils/chat-store'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  if (!user.id) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
   const rooms = listRoomsForUser(user.id)
 
   const otherUserIds = [...new Set(rooms.map((r) => r.memberIds.find((id) => id !== user.id)).filter(Boolean))] as string[]

@@ -1,39 +1,39 @@
-import type { SocialDriverContract, Vibe, LiveStream } from '@mframework/alternate-sdk/contracts/social'
+import type { SocialDriverContract, Vibe, LiveStream } from 'alternate-sdk/contracts'
 import { useSocialDriver } from '../useSocialDriver'
 
 export const useVibez = () => {
   const social = useSocialDriver()
 
   const getVibez = async (opts?: { limit?: number }): Promise<Vibe[]> => {
-    return social.getVibez?.(opts) ?? []
+    return social.vibez.getVibez?.(opts) ?? []
   }
 
   const uploadVibe = async (data: FormData): Promise<Vibe> => {
-    return social.uploadVibe?.(data) ?? { id: '', url: '' }
+    return social.vibez.uploadVibe?.(data) ?? { id: '', url: '' }
   }
 
   const likeVibe = async (vibeId: string | number): Promise<{ success: boolean }> => {
-    return social.likeVibe?.(String(vibeId)) ?? { success: false }
+    return social.vibez.likeVibe?.(String(vibeId)) ?? { success: false }
   }
 
   const getVibe = async (vibeId: string | number): Promise<Vibe | null> => {
-    return social.getVibe?.(String(vibeId)) ?? null
+    return social.vibez.getVibe?.(String(vibeId)) ?? null
   }
 
   const startLive = async (opts?: { title?: string }): Promise<LiveStream> => {
-    return social.startLive?.(opts) ?? { id: '', isLive: false }
+    return social.vibez.startLive?.(opts) ?? { id: '', isLive: false }
   }
 
   const stopLive = async (liveId: string | number): Promise<{ success: boolean }> => {
-    return social.stopLive?.(String(liveId)) ?? { success: false }
+    return social.vibez.stopLive?.(String(liveId)) ?? { success: false }
   }
 
   const getLive = async (liveId: string | number): Promise<LiveStream | null> => {
-    return social.getLive?.(String(liveId)) ?? null
+    return social.vibez.getLive?.(String(liveId)) ?? null
   }
 
   const getLiveViewers = async (liveId: string | number): Promise<{ count: number }> => {
-    return social.getLiveViewers?.(String(liveId)) ?? { count: 0 }
+    return social.vibez.getLiveViewers?.(String(liveId)) ?? { count: 0 }
   }
 
   return {

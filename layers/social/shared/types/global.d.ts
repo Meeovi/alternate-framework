@@ -1,5 +1,6 @@
 import 'masto'
 
+
 declare module 'masto/mastodon/entities/v1/index.js' {
   // fedibird non-mastodon emoji reaction
   interface FedibirdEmojiReaction {

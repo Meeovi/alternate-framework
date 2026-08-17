@@ -71,12 +71,15 @@ export type FederatedPostPayload = ActivityPubPostPayload | AtProtoPostPayload
 
 const normalizeMastoStatus = (status: mastodon.v1.Status): FederatedPost => {
   const hashtags = status.tags?.map((t: { name: any }) => t.name) || []
+  // Mastodon's real Poll entity has no hideTotals field (it's an input-only
+  // concept at creation time, never echoed back on the response), and
+  // expiresAt can be null/absent even though FederatedPost.poll requires a
+  // string — so it's defaulted rather than passed through as-is.
   const poll = status.poll
     ? {
         options: status.poll.options.map((o: { title: any }) => o.title),
-        expiresAt: status.poll.expiresAt,
-        multiple: status.poll.multiple,
-        hideTotals: status.poll.hideTotals
+        expiresAt: status.poll.expiresAt || '',
+        multiple: status.poll.multiple
       }
     : null
 
@@ -92,7 +95,7 @@ const normalizeMastoStatus = (status: mastodon.v1.Status): FederatedPost => {
     visibility: status.visibility as ActivityPubVisibility,
     createdAt: status.createdAt,
     hashtags,
-    url: status.url,
+    url: status.url ?? undefined,
     inReplyToId: status.inReplyToId || null,
     quotedPostId: (status as any).quotedStatusId || null,
     poll

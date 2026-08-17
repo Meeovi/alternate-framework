@@ -1,6 +1,6 @@
 // layers/social/plugins/social-adapter.ts
 
-import { useSocialAdapter, setDefaultSocialAdapter, SocialDriverRegistry } from '@mframework/alternate-sdk/social/adapter'
+import { useSocialAdapter, setDefaultSocialAdapter, SocialDriverRegistry } from 'alternate-sdk/social/adapter'
 
 export default defineNuxtPlugin(() => {
   const runtimeConfig = useRuntimeConfig()

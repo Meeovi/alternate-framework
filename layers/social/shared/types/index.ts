@@ -1,9 +1,6 @@
 import type { mastodon } from 'masto'
-import type { ChartInput, ChartResponse, ChartOptions, AxisOptions } from './charts.js'
 import type { RouteLocationRaw } from 'vue-router'
 import type { MarkNonNullable, Mutable } from './utils'
-
-export { type ChartInput, type ChartResponse, type ChartOptions, type AxisOptions }
 
 export interface AppInfo {
   id: string

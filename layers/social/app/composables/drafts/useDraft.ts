@@ -14,7 +14,7 @@ export function useDraft(draftKey: DraftKey, initial?: () => DraftItem): { draft
   return { draftItems }
 }
 
-export function getDefaultDraftItem(options: Partial<mastodon.rest.v1.CreateScheduledStatusParams & { draftKey?: DraftKey }> = {}): DraftItem {
+export function getDefaultDraftItem(options: Partial<mastodon.rest.v1.CreateScheduledStatusParams & { draftKey?: DraftKey; attachments?: mastodon.v1.MediaAttachment[]; mentions?: string[] }> = {}): DraftItem {
   const {
     attachments = [],
     status = '',
@@ -38,7 +38,7 @@ export function getDefaultDraftItem(options: Partial<mastodon.rest.v1.CreateSche
     attachments,
     initialText: '',
     params: {
-      status,
+      status: status ?? '',
       poll,
       scheduledAt,
       inReplyToId,

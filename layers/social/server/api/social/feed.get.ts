@@ -10,6 +10,9 @@ export default defineEventHandler(async (event) => {
   // userId/token below were always undefined regardless of who was signed
   // in, and the actor-profile fetch always sent "Bearer undefined".
   const user = await requireAuth(event)
+  if (!user.id) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
   const userId = user.id
   const query = getQuery(event);
   const page = Number(query.page) || 1;
@@ -30,13 +33,14 @@ export default defineEventHandler(async (event) => {
     pipeline.smembers(`group:${key}:actors`);
   }
   const results = await pipeline.exec();
+  if (!results) return { data: [] };
 
   const groups = [];
   const allActorIds = new Set<string>();
 
   for (let i = 0; i < groupKeys.length; i++) {
-    const meta = results[i * 2][1] as Record<string, string>;
-    const actorIds = results[i * 2 + 1][1] as string[];
+    const meta = results[i * 2]?.[1] as Record<string, string> | undefined;
+    const actorIds = (results[i * 2 + 1]?.[1] as string[] | undefined) || [];
 
     if (meta && meta.groupKey) {
       actorIds.forEach((id) => allActorIds.add(id));

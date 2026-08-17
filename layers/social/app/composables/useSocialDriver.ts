@@ -1,4 +1,4 @@
-import type { SocialDriverContract } from '@mframework/alternate-sdk/contracts/social'
+import type { SocialDriverContract } from 'alternate-sdk/contracts'
 
 /**
  * Client-side proxy to the server-side social driver.
@@ -21,14 +21,26 @@ function callSocial(method: string, ...args: unknown[]): Promise<any> {
   }).catch(() => undefined)
 }
 
-export function useSocialDriver(): SocialDriverContract {
-  return new Proxy({} as SocialDriverContract, {
+// SocialDriverContract nests most operations under posts/comments/feed/
+// spaces/vibez (e.g. `social.posts.getPosts()`, not `social.getPosts()`).
+// Building the proxy on a callable target (rather than a plain object)
+// lets each property access chain into another proxy that is itself both
+// traversable (`.get`) and invocable (`.apply`), so arbitrary nesting depth
+// forwards to the server as a dotted method path (e.g. "posts.getPosts")
+// without this composable needing to special-case which names are nested.
+function createSocialProxy(path: string[]): any {
+  return new Proxy(() => {}, {
     get(_target, prop: string) {
-      // Only proxy known function-like property names; non-method access
-      // returns undefined so callers can use optional chaining (?.)
-      return (...args: unknown[]) => callSocial(prop, ...args)
+      return createSocialProxy([...path, prop])
+    },
+    apply(_target, _thisArg, args: unknown[]) {
+      return callSocial(path.join('.'), ...args)
     },
   })
+}
+
+export function useSocialDriver(): SocialDriverContract {
+  return createSocialProxy([])
 }
 
 export default useSocialDriver

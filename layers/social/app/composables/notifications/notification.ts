@@ -1,5 +1,5 @@
 import type { mastodon } from 'masto'
-import type { ElkNotificationFilterType } from '../../constants'
+import type { ElkNotificationFilterType } from '../../types/constants'
 
 const FILTERS: ElkNotificationFilterType[] = [
   'all',

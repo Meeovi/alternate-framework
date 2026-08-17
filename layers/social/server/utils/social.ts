@@ -1,4 +1,4 @@
-import type { SocialDriverContract } from '@mframework/alternate-sdk/contracts/social'
+import type { SocialDriverContract } from 'alternate-sdk/contracts'
 
 let cachedDriver: SocialDriverContract | null = null
 let cacheKey: string | null = null

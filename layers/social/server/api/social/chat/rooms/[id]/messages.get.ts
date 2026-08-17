@@ -3,6 +3,9 @@ import { getRoom, getMessages } from '#social/server/utils/chat-store'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
+  if (!user.id) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
   const roomId = getRouterParam(event, 'id')!
 
   const room = getRoom(roomId)

@@ -1,7 +1,7 @@
 import { storeToRefs } from '#imports'
 import { useReactionsStore } from '../stores/useReactionsStore'
 
-export function useReactions(reactionId, type) {
+export function useReactions(reactionId: string | number, type: string) {
   const store = useReactionsStore()
   const { getItem } = storeToRefs(store)
 

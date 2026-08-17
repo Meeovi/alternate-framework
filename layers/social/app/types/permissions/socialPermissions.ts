@@ -1,6 +1,6 @@
 // layers/social/permissions/socialPermissions.ts
 
-import type { SocialUser, SocialPost } from '../types/socialModels'
+import type { SocialUser, SocialPost } from '../socialModels'
 
 export type Visibility =
   | 'public'

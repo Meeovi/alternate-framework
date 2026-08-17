@@ -7,7 +7,7 @@ import { useVibez } from '../../composables/vibez/useVibez'
 import { useSpaces } from '../../composables/spaces/useSpaces'
 import { useUser } from '../../composables/profiles/useUser'
 import { useSocialFederation } from './socialFederation'
-import { emitSocialEvent } from '../events/socialEvents'
+import { emitSocialEvent } from '../socialEvents'
 import {
   canViewPost,
   isShadowBanned,
@@ -138,9 +138,11 @@ export const useSocialService = () => {
     }
   ): Promise<any | null> => {
     const post = await posts.getPost(postId)
+    if (!post) return null
+
     const minimalPost: MinimalPost = {
       id: post.id,
-      userId: post.userId,
+      userId: post.authorId,
       spaceId: post.spaceId
     }
 

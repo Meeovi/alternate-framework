@@ -1,8 +1,10 @@
-declare function useNuxtApp(): any
-
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
 export default function useDirectusRequest() {
+  // Previously referenced a bare `nuxt` identifier that was never assigned
+  // anywhere in this file — every call (resolveDirectusClient,
+  // resolveBuilder, _toast) would throw ReferenceError at runtime.
+  const nuxt = useNuxtApp() as any
 
   function _toast(message: string) {
     try {

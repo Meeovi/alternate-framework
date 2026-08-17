@@ -1,4 +1,3 @@
-import { ChatProvider } from '../../types/chat'
 import { getChatProvider } from './registry'
 
 export function useMessages(providerName: string) {

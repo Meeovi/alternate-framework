@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
   const uploadForm = new FormData()
   uploadForm.append(
     'file',
-    new Blob([videoPart.data], { type: videoPart.type || 'video/mp4' }),
+    new Blob([new Uint8Array(videoPart.data)], { type: videoPart.type || 'video/mp4' }),
     videoPart.filename || 'video.mp4',
   )
 

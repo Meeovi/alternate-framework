@@ -1,36 +1,36 @@
 import { ref, useRoute } from '#imports'
-import type { SocialDriverContract, Space, Post, UserProfile } from '@mframework/alternate-sdk/contracts/social'
+import type { SocialDriverContract, Space, Post, UserProfile } from 'alternate-sdk/contracts'
 import { useSocialDriver } from '../useSocialDriver'
 
 export const useSpaces = () => {
   const social = useSocialDriver()
 
   const getSpaces = async (opts?: { limit?: number; query?: string }): Promise<Space[]> => {
-    return social.getSpaces?.(opts) ?? []
+    return social.spaces.getSpaces?.(opts) ?? []
   }
 
   const getSpace = async (spaceId: string | number): Promise<Space | null> => {
-    return social.getSpace?.(String(spaceId)) ?? null
+    return social.spaces.getSpace?.(String(spaceId)) ?? null
   }
 
   const createSpace = async (data: { name: string; slug?: string; description?: string }): Promise<Space> => {
-    return social.createSpace?.(data) as Promise<Space>
+    return social.spaces.createSpace?.(data) as Promise<Space>
   }
 
   const joinSpace = async (spaceId: string | number): Promise<{ success: boolean }> => {
-    return social.joinSpace?.(String(spaceId)) ?? { success: false }
+    return social.spaces.joinSpace?.(String(spaceId)) ?? { success: false }
   }
 
   const leaveSpace = async (spaceId: string | number): Promise<{ success: boolean }> => {
-    return social.leaveSpace?.(String(spaceId)) ?? { success: false }
+    return social.spaces.leaveSpace?.(String(spaceId)) ?? { success: false }
   }
 
   const getSpaceMembers = async (spaceId: string | number, opts?: { limit?: number }): Promise<UserProfile[]> => {
-    return social.getSpaceMembers?.(String(spaceId), opts) ?? []
+    return social.spaces.getSpaceMembers?.(String(spaceId), opts) ?? []
   }
 
   const getSpacePosts = async (spaceId: string | number, opts?: { limit?: number; offset?: number }): Promise<Post[]> => {
-    return social.getSpacePosts?.(String(spaceId), opts) ?? []
+    return social.spaces.getSpacePosts?.(String(spaceId), opts) ?? []
   }
 
   return {
@@ -62,7 +62,7 @@ export const useSpace = async () => {
     try {
       // Try server-side social driver first (backend-agnostic API call)
       const social = useSocialDriver()
-      const data = await social.getSpace?.(slug) ?? null
+      const data = await social.spaces.getSpace?.(slug) ?? null
       space.value = data
       exists.value = !!data
     } catch {
