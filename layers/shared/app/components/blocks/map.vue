@@ -9,7 +9,7 @@ import {
   useLeafletMap,
   LatLngTuple,
   HeatPoint,
-} from '~/composables/useLeafletMap'
+} from '~/composables/globals/useMap'
 
 const props = defineProps<{
   address?: string

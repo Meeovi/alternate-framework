@@ -1,6 +1,6 @@
 <template>
     <ClientOnly>
-        <video-player ref="playerEl" :src="player.sources?.[0]?.src" :poster="player.poster"
+        <video-player :src="player.sources?.[0]?.src" :poster="player.poster"
             :stream-type="player.streamType ?? 'on-demand'" :controls="true" :playsinline="true"
             class="video-player-root">
             <media-container>
@@ -30,40 +30,27 @@
                 <media-popover></media-popover>
             </media-container>
         </video-player>
-
-        <div v-if="error" class="video-error">
-            {{ error.message }}
-        </div>
     </ClientOnly>
 </template>
 
 <script setup lang="ts">
-    import {
-        useVideoPlayer
-    } from '../../composables/media/useVideoPlayer'
-
-    const props = defineProps({
+    // Video.js 10's <video-player>/<media-*> custom elements are fully
+    // declarative and self-initializing via the Custom Elements lifecycle —
+    // registered once in app/plugins/videojs.client.ts. No imperative setup
+    // composable is needed (there previously was one, useVideoPlayer, but it
+    // dynamically imported the unrelated classic `video.js` package, which
+    // isn't a dependency of this project and always failed).
+    defineProps({
         player: {
             type: Object,
             required: true
         }
     })
-
-    const {
-        playerEl,
-        isReady,
-        error
-    } = useVideoPlayer(props.player)
 </script>
 
 <style scoped>
     .video-player-root {
         width: 100%;
         height: auto;
-    }
-
-    .video-error {
-        color: red;
-        padding: 1rem;
     }
 </style>
