@@ -6,60 +6,30 @@
       Your browser does not support the video tag.
     </video>
 
-    <template>
-      {{ short?.name }}
-    </template>
+    {{ short?.name }}
 
-    <template>
-      <div>Type: {{ short?.type }}</div>
+    <div>Type: {{ short?.type }}</div>
 
-      <div>{{ short?.description }}</div>
-    </template>
+    <div>{{ short?.description }}</div>
 
-    <template>
-      <v-btn color="orange" text="View" :href="`/social/vibe/${short?.id}`"></v-btn>
-    </template>
+    <v-btn color="orange" text="View" :href="`/social/vibe/${short?.id}`"></v-btn>
   </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
-const { $sdk } = useNuxtApp()
-
-const model = ref(null)
-const player = ref(null)
-
-const props = defineProps({
+// Real playback comes from the native <video controls> element above — no
+// videojs setup needed. This previously dynamically imported the classic
+// `video.js` package (not a dependency; the real installed player is
+// @videojs/html v10, a completely different web-components API with no
+// factory function to call this way), so it always failed and only ever
+// fell back to the plain <video> tag anyway.
+const { short } = defineProps({
   short: {
     type: Object,
     required: true,
   },
-})
-const { short } = props
-
-onMounted(async () => {
-  try {
-    const importFn = new Function('return import("video.js")')
-    const mod = await importFn()
-    const videojs = mod?.default || mod
-    player.value = videojs('my-video', {
-      controls: true,
-      autoplay: false,
-      preload: 'auto',
-      fluid: true
-    })
-  } catch (e) {
-    console.warn('video.js not available or failed to load at runtime:', e)
-  }
-})
-
-// Clean up on component unmount
-onUnmounted(() => {
-  if (player.value) {
-    player.value.dispose()
-  }
 })
 </script>
 

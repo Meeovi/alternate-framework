@@ -106,17 +106,10 @@
 import { ref, onMounted } from 'vue'
 import { useLists } from '../../../../composables/lists/useLists'
 
-const props = withDefaults(
-  defineProps<{
-    listId: string | number
-    readonly?: boolean
-  }>(),
-  {
-    readonly: false
-  }
-)
-
-const { listId, readonly } = props
+const { listId, readonly = false } = defineProps<{
+  listId: string | number
+  readonly?: boolean
+}>()
 const { updateListItem, deleteListItem } = useLists()
 const { $directus, $readItems, $createItem, $updateItem, $deleteItem } = useNuxtApp() as any
 

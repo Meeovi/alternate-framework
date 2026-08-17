@@ -166,7 +166,7 @@
     } from '#imports'
     import {
         useReactionsStore
-    } from '../../../stores/reactions'
+    } from '../../../stores/useReactionsStore'
 
     const {
         $directus,

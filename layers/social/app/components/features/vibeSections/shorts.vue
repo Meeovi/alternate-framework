@@ -86,7 +86,7 @@ import comments from '../../blocks/comments.vue'
 
 const { $sdk } = useNuxtApp()
 
-const props = defineProps({
+const { short } = defineProps({
   short: {
     type: Object,
     required: true,
@@ -95,7 +95,6 @@ const props = defineProps({
 
 const emit = defineEmits(['hashtag-click', 'comment-click', 'share'])
 
-const { short } = props
 const videoRef = ref(null)
 const isLiked = ref(false)
 const likesCount = ref(short?.likes_count || 0)

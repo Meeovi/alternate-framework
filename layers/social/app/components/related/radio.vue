@@ -27,14 +27,12 @@
     import {
         getAssetURL
     } from '#shared/app/utils/get-asset-url'
-    const props = defineProps({
+    const {
+        radio
+    } = defineProps({
         radio: {
             type: Object,
             required: true,
         },
     })
-
-    const {
-        radio
-    } = props
 </script>
