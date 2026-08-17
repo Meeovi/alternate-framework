@@ -134,3 +134,5 @@ export { CommerceBackendRegistry, registerCommerceBackendAdapter } from './src/c
 export type { CommerceBackendAdapter, DirectusRequestDescriptor } from './src/contracts/commerce-backend.js'
 export { CommerceCustomerLinkRegistry, registerCommerceCustomerLinker } from './src/contracts/commerce-customer-link.js'
 export type { CommerceCustomerLinker } from './src/contracts/commerce-customer-link.js'
+export { ContentAdapterRegistry, registerContentAdapter, getContentAdapter } from './src/contracts/content.js'
+export type { ContentAdapter, ContentChangeEvent, DynamicSchemaField, MediaFolder } from './src/contracts/content.js'

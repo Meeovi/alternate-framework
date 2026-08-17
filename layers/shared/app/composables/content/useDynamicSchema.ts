@@ -29,9 +29,11 @@ function normalizeFields(input: unknown): DynamicContentField[] {
   return list.filter((field: unknown) => Boolean((field as DynamicContentField)?.field)) as DynamicContentField[]
 }
 
+// Talks to /api/content/schema/[collection] (server/api/content/schema/
+// [collection].get.ts), which resolves whatever adapter (Directus, Magento,
+// Vendure, ...) is registered in ContentAdapterRegistry — this composable
+// has no backend-specific SDK dependency.
 export function useDynamicSchema() {
-  const { $directus, $readFieldsByCollection } = useNuxtApp()
-
   const fields = ref<DynamicContentField[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -41,7 +43,7 @@ export function useDynamicSchema() {
     error.value = null
 
     try {
-      const response = await $directus.request($readFieldsByCollection(collection))
+      const response = await $fetch(`/api/content/schema/${collection}`)
       fields.value = normalizeFields(response)
       return fields.value
     } catch (err: any) {

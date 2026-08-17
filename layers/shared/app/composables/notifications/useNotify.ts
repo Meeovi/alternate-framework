@@ -1,84 +1,68 @@
-// composables/useDirectusNotifications.ts
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { createDirectus, realtime, authentication } from '@directus/sdk';
 
-// Define the shape of incoming update notifications
-export interface NotificationEvent {
+// Shape returned by /api/content/subscribe's SSE stream — see
+// alternate-sdk's ContentChangeEvent contract, which this mirrors.
+export interface ContentChangeEvent {
   event: 'create' | 'update' | 'delete';
   collection: string;
   data: any[];
 }
 
-export function useDirectusNotifications(
-  directusUrl: string,
+/**
+ * Live content-change subscription for a collection, filtered to items
+ * belonging to a given user. Talks to /api/content/subscribe (an SSE
+ * bridge — see server/api/content/subscribe.get.ts), which resolves
+ * whatever adapter (Directus, Magento, Vendure, ...) is registered in
+ * ContentAdapterRegistry. This composable has no backend-specific SDK
+ * dependency and no direct WebSocket/realtime-transport knowledge — that's
+ * entirely the registered adapter's concern.
+ *
+ * Previously (as useDirectusNotifications) this constructed its own
+ * @directus/sdk realtime client directly in the browser, hardcoding this
+ * layer to Directus specifically despite layers/shared being meant to work
+ * with any registered backend.
+ */
+export function useContentSubscription(
   collectionName: string,
   userId: string,
   userField: string = 'user_created' // The field relating the item to the user
 ) {
-  const notifications = ref<NotificationEvent[]>([]);
+  const events = ref<ContentChangeEvent[]>([]);
   const isConnected = ref(false);
-  let unsubscribeFn: (() => void) | null = null;
-
-  // Initialize the composable Directus SDK client
-  const client = createDirectus(directusUrl)
-    .with(authentication('json', { autoRefresh: true })) // JSON authentication helper
-    .with(realtime()); // Adds WebSockets/Subscription support
-
-  const startSubscription = async () => {
-    try {
-      // 1. Subscribe specifically to actions on this collection
-      // We filter changes so the client only receives updates they are connected to
-      const { subscription, unsubscribe } = await client.subscribe(collectionName, {
-        event: 'update', // Triggers on 'create', 'update', or 'delete'
-        query: {
-          fields: ['*'],
-          filter: {
-            [userField]: {
-              _eq: userId,
-            },
-          },
-        },
-      });
-
-      unsubscribeFn = unsubscribe;
-      isConnected.value = true;
-
-      // 2. Listen to incoming payload stream using an asynchronous generator loop
-      for await (const message of subscription) {
-        if (message) {
-          notifications.value.unshift({
-            event: message.event as any,
-            collection: collectionName,
-            data: message.data,
-          });
-        }
-      }
-    } catch (error) {
-      console.error(`Failed to subscribe to ${collectionName}:`, error);
-    }
-  };
+  let eventSource: EventSource | null = null;
 
   onMounted(() => {
-    // Wait for the WebSocket handshake authentication success, then subscribe
-    const cleanupWs = client.onWebSocket('message', (message) => {
-      if (message.type === 'auth' && message.status === 'ok') {
-        startSubscription();
-      }
-    });
+    const params = new URLSearchParams({ collection: collectionName, userField, userId });
+    eventSource = new EventSource(`/api/content/subscribe?${params.toString()}`);
 
-    client.connect();
+    eventSource.onopen = () => {
+      isConnected.value = true;
+    };
 
-    onBeforeUnmount(() => {
-      cleanupWs();
-      if (unsubscribeFn) {
-        unsubscribeFn();
+    eventSource.onmessage = (message) => {
+      try {
+        const payload = JSON.parse(message.data) as ContentChangeEvent;
+        events.value.unshift(payload);
+      } catch (error) {
+        console.error('[useContentSubscription] Failed to parse event payload:', error);
       }
-    });
+    };
+
+    eventSource.onerror = () => {
+      isConnected.value = false;
+    };
+  });
+
+  onBeforeUnmount(() => {
+    eventSource?.close();
+    eventSource = null;
   });
 
   return {
-    notifications,
+    events,
     isConnected,
-    clearNotifications: () => (notifications.value = []),
+    clearEvents: () => (events.value = []),
   };
 }
+
+export default useContentSubscription

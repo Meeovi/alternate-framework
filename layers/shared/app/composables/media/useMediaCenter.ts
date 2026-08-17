@@ -2,14 +2,7 @@ import { ref } from 'vue'
 
 type MediaItem = Record<string, any>
 
-function toList(value: any): MediaItem[] {
-  if (Array.isArray(value)) return value
-  if (Array.isArray(value?.data)) return value.data
-  if (Array.isArray(value?.items)) return value.items
-  return []
-}
-
-function mediaType(item: MediaItem, directus: any) {
+function mediaType(item: MediaItem) {
   const mime = String(item?.mime_type || item?.type || item?.file?.type || '').toLowerCase()
   const ext = String(item?.file?.filename_download || item?.filename_download || item?.extension || '').toLowerCase()
 
@@ -19,7 +12,7 @@ function mediaType(item: MediaItem, directus: any) {
   return 'other'
 }
 
-function includesToken(item: MediaItem, token: string, directus: any) {
+function includesToken(item: MediaItem, token: string) {
   const haystack = [
     item?.title,
     item?.name,
@@ -37,8 +30,11 @@ function includesToken(item: MediaItem, token: string, directus: any) {
   return haystack.includes(token)
 }
 
+// Talks to /api/content/* (server/api/content/*.ts), never a specific
+// backend SDK directly — those routes resolve whatever adapter (Directus,
+// Magento, Vendure, ...) registered itself into ContentAdapterRegistry, so
+// this composable works unchanged regardless of which one is active.
 export function useMediaCenter() {
-  const { $sdk, $directus, $readItems, $createItem, $uploadFiles } = useNuxtApp()
   const allMedia = ref<MediaItem[]>([])
   const imageMedia = ref<MediaItem[]>([])
   const videoMedia = ref<MediaItem[]>([])
@@ -49,11 +45,11 @@ export function useMediaCenter() {
   const smartAlbums = ref<Array<{ id: string; label: string; items: MediaItem[] }>>([])
 
   async function loadMedia() {
-    const list = toList(await $directus.request($readItems('media', { sort: ['-date_created'] })))
+    const list = await $fetch<MediaItem[]>('/api/content/media')
     allMedia.value = list
-    imageMedia.value = list.filter((item) => mediaType(item, $directus) === 'image')
-    videoMedia.value = list.filter((item) => mediaType(item, $directus) === 'video')
-    audioMedia.value = list.filter((item) => mediaType(item, $directus) === 'audio')
+    imageMedia.value = list.filter((item) => mediaType(item) === 'image')
+    videoMedia.value = list.filter((item) => mediaType(item) === 'video')
+    audioMedia.value = list.filter((item) => mediaType(item) === 'audio')
     sharedWithMe.value = list.filter((item) => Boolean(item?.is_shared || item?.shared || item?.shared_with_me))
 
     smartAlbums.value = [
@@ -65,8 +61,7 @@ export function useMediaCenter() {
   }
 
   async function loadFolders() {
-    const list = toList(await $directus.request($readItems('media_folders', { sort: ['sort', 'name'] })))
-    folders.value = list
+    folders.value = await $fetch<MediaItem[]>('/api/content/media-folders')
   }
 
   if (process.client) {
@@ -83,7 +78,7 @@ export function useMediaCenter() {
           return form
         })()
 
-    const uploaded = await $directus.request($uploadFiles(formData))
+    const uploaded = await $fetch<MediaItem>('/api/content/media', { method: 'POST', body: formData })
     await loadMedia()
     return uploaded
   }
@@ -99,14 +94,14 @@ export function useMediaCenter() {
       await loadMedia()
     }
 
-    const matches = allMedia.value.filter((item) => includesToken(item, token, $directus))
+    const matches = allMedia.value.filter((item) => includesToken(item, token))
     searchResults.value = matches
     return matches
   }
 
   const createFolder = async (_payload: any) => {
     const payload = typeof _payload === 'string' ? { name: _payload } : _payload
-    const created = await $directus.request($createItem('media_folders', payload))
+    const created = await $fetch<MediaItem>('/api/content/media-folders', { method: 'POST', body: payload })
     await loadFolders()
     return created
   }
@@ -130,9 +125,9 @@ export function useMediaCenter() {
 
     return {
       all: inFolder,
-        images: inFolder.filter((item) => mediaType(item, $directus) === 'image'),
-        videos: inFolder.filter((item) => mediaType(item, $directus) === 'video'),
-        audio: inFolder.filter((item) => mediaType(item, $directus) === 'audio'),
+      images: inFolder.filter((item) => mediaType(item) === 'image'),
+      videos: inFolder.filter((item) => mediaType(item) === 'video'),
+      audio: inFolder.filter((item) => mediaType(item) === 'audio'),
     }
   }
 
