@@ -225,10 +225,11 @@ export async function createPayPalSubscriptionPlan(
 
 /**
  * Activate a PayPal subscription plan (plans must be active to be subscribed to).
+ * Per PayPal's real API, this action endpoint always returns 204 No Content
+ * on success (confirmed against the live docs — Prefer: return=representation
+ * has no effect here) — there is no body to parse.
  */
-export async function activatePayPalSubscriptionPlan(
-  planId: string,
-): Promise<{ id: string; status: string }> {
+export async function activatePayPalSubscriptionPlan(planId: string): Promise<void> {
   const accessToken = await getPayPalAccessToken()
   const { baseUrl } = getPayPalConfig()
 
@@ -237,18 +238,15 @@ export async function activatePayPalSubscriptionPlan(
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
-      Prefer: 'return=representation',
     },
   })
 
-  if (!response.ok) {
+  if (!response.ok && response.status !== 204) {
     const error = await response.json().catch(() => ({}))
     throw new Error(
       `PayPal plan activation failed: ${JSON.stringify(error)}`,
     )
   }
-
-  return response.json()
 }
 
 /**
@@ -298,11 +296,16 @@ export async function createPayPalSubscription(
 }
 
 /**
- * Suspend a PayPal subscription.
+ * Suspend a PayPal subscription. Per PayPal's real API this — like
+ * activate/cancel below — always returns 204 No Content on success; there
+ * is no body to parse (confirmed live: the previous version of this
+ * function called response.json() unconditionally here, which would throw
+ * on every successful call).
  */
 export async function suspendPayPalSubscription(
   subscriptionId: string,
-): Promise<{ id: string; status: string }> {
+  reason?: string,
+): Promise<void> {
   const accessToken = await getPayPalAccessToken()
   const { baseUrl } = getPayPalConfig()
 
@@ -313,27 +316,27 @@ export async function suspendPayPalSubscription(
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
-        Prefer: 'return=representation',
       },
+      body: JSON.stringify(reason ? { reason } : {}),
     },
   )
 
-  if (!response.ok) {
+  if (!response.ok && response.status !== 204) {
     const error = await response.json().catch(() => ({}))
     throw new Error(
       `PayPal subscription suspension failed: ${JSON.stringify(error)}`,
     )
   }
-
-  return response.json()
 }
 
 /**
- * Reactivate a suspended PayPal subscription.
+ * Reactivate a suspended PayPal subscription. Same 204-no-body convention
+ * as suspend/cancel above.
  */
 export async function reactivatePayPalSubscription(
   subscriptionId: string,
-): Promise<{ id: string; status: string }> {
+  reason?: string,
+): Promise<void> {
   const accessToken = await getPayPalAccessToken()
   const { baseUrl } = getPayPalConfig()
 
@@ -344,19 +347,17 @@ export async function reactivatePayPalSubscription(
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
-        Prefer: 'return=representation',
       },
+      body: JSON.stringify(reason ? { reason } : {}),
     },
   )
 
-  if (!response.ok) {
+  if (!response.ok && response.status !== 204) {
     const error = await response.json().catch(() => ({}))
     throw new Error(
       `PayPal subscription reactivation failed: ${JSON.stringify(error)}`,
     )
   }
-
-  return response.json()
 }
 
 /**
@@ -474,35 +475,73 @@ export async function searchPayPalTransactions(
 }
 
 /**
- * Create a PayPal vault token for a saved payment method.
- * Allows customers to save credit card or bank account details
- * for future transactions.
+ * Create a PayPal setup token — the first step of saving a payment method.
+ * Per PayPal's real Payment Method Tokens API (v3), vaulting is a two-step
+ * flow: a setup token is created first (which, for a PayPal payment_source,
+ * returns an approval link the payer must visit before the setup token can
+ * be redeemed), then swapped for a payment token via
+ * createPayPalPaymentToken() below. There is no single-call vaulting
+ * endpoint — this file previously called a fabricated /v2/customer/
+ * tokenizations path that has no equivalent anywhere in PayPal's real REST
+ * API surface.
  */
-export async function createPayPalVaultToken(
-  tokenType: 'CARD' | 'PAYPAL',
-  tokenDetails: Record<string, unknown>,
-): Promise<{ id: string; status: string; token_type: string }> {
+export async function createPayPalSetupToken(
+  paymentSource: Record<string, unknown>,
+  customerId?: string,
+): Promise<{ id: string; status: string; links: Array<{ href: string; rel: string; method: string }> }> {
   const accessToken = await getPayPalAccessToken()
   const { baseUrl } = getPayPalConfig()
 
-  const response = await fetch(`${baseUrl}/v2/customer/tokenizations`, {
+  const body: Record<string, unknown> = { payment_source: paymentSource }
+  if (customerId) body.customer = { id: customerId }
+
+  const response = await fetch(`${baseUrl}/v3/vault/setup-tokens`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
-      Prefer: 'return=representation',
     },
+    body: JSON.stringify(body),
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(`PayPal setup token creation failed: ${JSON.stringify(error)}`)
+  }
+
+  return response.json()
+}
+
+/**
+ * Swaps an approved setup token for a reusable payment token. The setup
+ * token must already be approved (for a PayPal payment_source, the payer
+ * completes this by visiting the "approve" link from
+ * createPayPalSetupToken()'s response).
+ */
+export async function createPayPalPaymentToken(
+  setupTokenId: string,
+  idempotencyKey?: string,
+): Promise<{ id: string; status: string; customer?: { id: string } }> {
+  const accessToken = await getPayPalAccessToken()
+  const { baseUrl } = getPayPalConfig()
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+  }
+  if (idempotencyKey) headers['PayPal-Request-Id'] = idempotencyKey
+
+  const response = await fetch(`${baseUrl}/v3/vault/payment-tokens`, {
+    method: 'POST',
+    headers,
     body: JSON.stringify({
-      token_type: tokenType,
-      token_details: tokenDetails,
+      payment_source: { token: { id: setupTokenId, type: 'SETUP_TOKEN' } },
     }),
   })
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}))
-    throw new Error(
-      `PayPal vault token creation failed: ${JSON.stringify(error)}`,
-    )
+    throw new Error(`PayPal payment token creation failed: ${JSON.stringify(error)}`)
   }
 
   return response.json()
@@ -511,14 +550,14 @@ export async function createPayPalVaultToken(
 /**
  * List saved payment method tokens for a customer.
  */
-export async function listPayPalVaultTokens(
+export async function listPayPalPaymentTokens(
   customerId: string,
-): Promise<{ tokens: Array<{ id: string; status: string; token_type: string }> }> {
+): Promise<{ payment_tokens: Array<{ id: string; customer?: { id: string } }> }> {
   const accessToken = await getPayPalAccessToken()
   const { baseUrl } = getPayPalConfig()
 
   const response = await fetch(
-    `${baseUrl}/v2/customer/tokenizations?customer_id=${customerId}`,
+    `${baseUrl}/v3/vault/payment-tokens?customer_id=${encodeURIComponent(customerId)}`,
     {
       method: 'GET',
       headers: {
@@ -530,9 +569,7 @@ export async function listPayPalVaultTokens(
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}))
-    throw new Error(
-      `PayPal vault token list failed: ${JSON.stringify(error)}`,
-    )
+    throw new Error(`PayPal payment token list failed: ${JSON.stringify(error)}`)
   }
 
   return response.json()
@@ -541,14 +578,14 @@ export async function listPayPalVaultTokens(
 /**
  * Delete a saved payment method token from the vault.
  */
-export async function deletePayPalVaultToken(
+export async function deletePayPalPaymentToken(
   tokenId: string,
 ): Promise<void> {
   const accessToken = await getPayPalAccessToken()
   const { baseUrl } = getPayPalConfig()
 
   const response = await fetch(
-    `${baseUrl}/v2/customer/tokenizations/${tokenId}`,
+    `${baseUrl}/v3/vault/payment-tokens/${tokenId}`,
     {
       method: 'DELETE',
       headers: {
@@ -560,8 +597,6 @@ export async function deletePayPalVaultToken(
 
   if (!response.ok && response.status !== 204) {
     const error = await response.json().catch(() => ({}))
-    throw new Error(
-      `PayPal vault token deletion failed: ${JSON.stringify(error)}`,
-    )
+    throw new Error(`PayPal payment token deletion failed: ${JSON.stringify(error)}`)
   }
 }

@@ -1,13 +1,23 @@
 import Joi from 'joi'
 import {
-  createPayPalVaultToken,
-  listPayPalVaultTokens,
-  deletePayPalVaultToken,
+  createPayPalSetupToken,
+  createPayPalPaymentToken,
+  listPayPalPaymentTokens,
+  deletePayPalPaymentToken,
 } from '../../../utils/paypal'
 
-const createTokenSchema = Joi.object({
-  tokenType: Joi.string().valid('CARD', 'PAYPAL').required(),
-  tokenDetails: Joi.object().unknown().required(),
+// PayPal's real Payment Method Tokens API (v3) vaults a payment method in
+// two steps: create a setup token (POST), then — once the payer has
+// approved it, for a PayPal payment_source — swap it for a reusable
+// payment token (PUT). This route exposes both steps rather than a single
+// fabricated "create vault token" call.
+const createSetupTokenSchema = Joi.object({
+  paymentSource: Joi.object().unknown().required(),
+  customerId: Joi.string().optional(),
+})
+
+const createPaymentTokenSchema = Joi.object({
+  setupTokenId: Joi.string().required(),
 })
 
 const listTokensSchema = Joi.object({
@@ -24,62 +34,46 @@ export default defineEventHandler(async (event) => {
 
     if (method === 'POST') {
       const body = await readBody(event)
-      const { error, value } = createTokenSchema.validate(body, {
-        abortEarly: false,
-      })
 
-      if (error) {
-        const messages = error.details.map((d) => d.message).join(', ')
-        throw createError({
-          statusCode: 400,
-          statusMessage: `Validation error: ${messages}`,
-        })
+      // Two POST shapes on the same route, distinguished by which field
+      // is present: { paymentSource, customerId? } starts a new vaulting
+      // flow (step 1); { setupTokenId } completes an already-approved one
+      // (step 2).
+      if (body?.setupTokenId) {
+        const { error, value } = createPaymentTokenSchema.validate(body, { abortEarly: false })
+        if (error) {
+          throw createError({ statusCode: 400, statusMessage: `Validation error: ${error.details.map((d) => d.message).join(', ')}` })
+        }
+        const token = await createPayPalPaymentToken(value.setupTokenId)
+        return { success: true, token }
       }
 
-      const { tokenType, tokenDetails } = value
-      const token = await createPayPalVaultToken(tokenType, tokenDetails)
-
-      return { success: true, token }
+      const { error, value } = createSetupTokenSchema.validate(body, { abortEarly: false })
+      if (error) {
+        throw createError({ statusCode: 400, statusMessage: `Validation error: ${error.details.map((d) => d.message).join(', ')}` })
+      }
+      const setupToken = await createPayPalSetupToken(value.paymentSource, value.customerId)
+      return { success: true, setupToken }
     }
 
     if (method === 'GET') {
       const query = getQuery(event)
-      const { error, value } = listTokensSchema.validate(query, {
-        abortEarly: false,
-      })
-
+      const { error, value } = listTokensSchema.validate(query, { abortEarly: false })
       if (error) {
-        const messages = error.details.map((d) => d.message).join(', ')
-        throw createError({
-          statusCode: 400,
-          statusMessage: `Validation error: ${messages}`,
-        })
+        throw createError({ statusCode: 400, statusMessage: `Validation error: ${error.details.map((d) => d.message).join(', ')}` })
       }
-
-      const { customerId } = value
-      const tokens = await listPayPalVaultTokens(customerId)
-
+      const tokens = await listPayPalPaymentTokens(value.customerId)
       return { success: true, tokens }
     }
 
     if (method === 'DELETE') {
       const body = await readBody(event)
-      const { error, value } = deleteTokenSchema.validate(body, {
-        abortEarly: false,
-      })
-
+      const { error, value } = deleteTokenSchema.validate(body, { abortEarly: false })
       if (error) {
-        const messages = error.details.map((d) => d.message).join(', ')
-        throw createError({
-          statusCode: 400,
-          statusMessage: `Validation error: ${messages}`,
-        })
+        throw createError({ statusCode: 400, statusMessage: `Validation error: ${error.details.map((d) => d.message).join(', ')}` })
       }
-
-      const { tokenId } = value
-      await deletePayPalVaultToken(tokenId)
-
-      return { success: true, tokenId }
+      await deletePayPalPaymentToken(value.tokenId)
+      return { success: true, tokenId: value.tokenId }
     }
 
     throw createError({

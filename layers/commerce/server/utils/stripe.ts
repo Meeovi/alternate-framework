@@ -10,10 +10,27 @@ import Stripe from 'stripe'
 //   another.
 const apiVersion = '2026-06-24.dahlia' as Stripe.LatestApiVersion
 
-const secretKey = process.env.NUXT_STRIPE_SECRET_KEY
+let client: Stripe | null = null
 
-if (!secretKey) {
-  throw new Error('NUXT_STRIPE_SECRET_KEY is required to initialize the Stripe client')
+// Constructing Stripe() throws synchronously when the key is missing, and
+// every server/api/**/stripe/* route (plus the connect/* routes) imports
+// `stripe` at module scope — a top-level throw here would fail to import in
+// any Nitro bundling mode that evaluates route modules eagerly, taking down
+// far more than just Stripe. Lazily initializing means the missing-key
+// error only surfaces inside a route handler's own try/catch, the first
+// time Stripe functionality is actually used.
+function getClient(): Stripe {
+  if (client) return client
+  const secretKey = process.env.NUXT_STRIPE_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('NUXT_STRIPE_SECRET_KEY is required to initialize the Stripe client')
+  }
+  client = new Stripe(secretKey, { apiVersion })
+  return client
 }
 
-export const stripe = new Stripe(secretKey, { apiVersion })
+export const stripe: Stripe = new Proxy({} as Stripe, {
+  get(_target, prop, receiver) {
+    return Reflect.get(getClient(), prop, receiver)
+  },
+})

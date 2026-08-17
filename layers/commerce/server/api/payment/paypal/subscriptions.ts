@@ -14,6 +14,7 @@ const createSchema = Joi.object({
 
 const manageSchema = Joi.object({
   subscriptionId: Joi.string().required(),
+  action: Joi.string().valid('suspend', 'reactivate').default('reactivate'),
   reason: Joi.string().optional(),
 })
 
@@ -59,10 +60,16 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const { subscriptionId } = value
-      const subscription = await reactivatePayPalSubscription(subscriptionId)
+      const { subscriptionId, action, reason } = value
+      if (action === 'suspend') {
+        await suspendPayPalSubscription(subscriptionId, reason)
+      } else {
+        await reactivatePayPalSubscription(subscriptionId, reason)
+      }
 
-      return { success: true, subscription }
+      // PayPal's suspend/activate endpoints return 204 No Content — there
+      // is no updated subscription resource to echo back here.
+      return { success: true, subscriptionId, action }
     }
 
     if (method === 'DELETE') {

@@ -62,8 +62,7 @@
                                     style="color: rgb(255, 153, 102); fill: rgb(255, 153, 102);"></span>
                                 <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
                                     <strong>Owner</strong><br><br>
-                                    <a :href="`/u/${group?.owner?.id}`">{{ group?.owner?.first_name }}
-                                        {{ group?.owner?.last_name }}</a>
+                                    {{ group?.owner?.first_name }} {{ group?.owner?.last_name }}
                                 </h4>
                             </div>
                         </div>
