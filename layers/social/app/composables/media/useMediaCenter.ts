@@ -201,7 +201,7 @@ export function useMediaCenter() {
 		// Lazy-load folder contents from our pre-loaded flat list.
 		apiInstance.on('request-data', ({ id }: any) => {
 			const targetId = id || '/'
-			const items = rawdata.value.filter((e) => e.pId === targetId)
+			const items = rawdata.value.filter((e: any) => e.pId === targetId)
 
 			apiInstance.exec('provide-data', {
 				id: targetId,
@@ -384,10 +384,10 @@ export function useMediaCenter() {
 		const state = api.value.getState?.()
 		const activePanel = state?.panels?.[state?.activePanel ?? 0]
 		const currentPath = activePanel?.path || '/'
-		console.log('[MediaCenter] refreshFilemanagerView: path', currentPath, 'items', rawdata.value.filter((e) => e.pId === currentPath).length)
+		console.log('[MediaCenter] refreshFilemanagerView: path', currentPath, 'items', rawdata.value.filter((e: any) => e.pId === currentPath).length)
 		api.value.exec('provide-data', {
 			id: currentPath,
-			data: rawdata.value.filter((e) => e.pId === currentPath),
+			data: rawdata.value.filter((e: any) => e.pId === currentPath),
 		})
 		// Reset the flag after a short delay to allow the Filemanager to process the data
 		// without triggering a recursive request-data → provide-data loop.

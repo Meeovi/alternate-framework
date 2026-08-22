@@ -37,7 +37,7 @@ const dismissAlert = () => {
 // Show alert again when connection is lost
 watch(
   () => isOnline.value,
-  (online) => {
+  (online: boolean) => {
     if (!online) {
       showAlert.value = true
     }

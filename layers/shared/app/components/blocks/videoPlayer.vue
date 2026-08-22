@@ -1,7 +1,6 @@
 <template>
     <ClientOnly>
-        <video-player :src="player.sources?.[0]?.src" :poster="player.poster"
-            :stream-type="player.streamType ?? 'on-demand'" :controls="true" :playsinline="true"
+        <video-player v-bind="(playerAttrs as any)"
             class="video-player-root">
             <media-container>
                 <media-poster></media-poster>
@@ -40,12 +39,20 @@
     // composable is needed (there previously was one, useVideoPlayer, but it
     // dynamically imported the unrelated classic `video.js` package, which
     // isn't a dependency of this project and always failed).
-    defineProps({
+    const props = defineProps({
         player: {
             type: Object,
             required: true
         }
     })
+
+    const playerAttrs = computed(() => ({
+        src: (props.player as any).sources?.[0]?.src,
+        poster: (props.player as any).poster,
+        'stream-type': (props.player as any).streamType ?? 'on-demand',
+        controls: true,
+        playsinline: true,
+    }))
 </script>
 
 <style scoped>

@@ -73,8 +73,10 @@
   import {
     useRoute,
     useNuxtApp,
-    useHead
-  } from '#app'
+    useHead,
+    useRuntimeConfig
+  } from '#imports'
+  import { CommerceBackendRegistry } from 'alternate-sdk'
   import Restaurants from '../../../components/catalog/categories/restaurants.vue'
 
   const route = useRoute()
@@ -97,7 +99,7 @@
 
   const {
     data: categoryRaw
-  } = await useAsyncData(categoryKey, async () => {
+  } = await useAsyncData<any>(() => categoryKey.value, async () => {
     try {
       const filter = route.params.id ? {
         id: {
@@ -121,7 +123,33 @@
     }
   })
 
-  const category = computed(() => categoryRaw.value)
+  // Cross-references this category's products grid with whichever commerce
+  // backend is active. See the matching comment in
+  // departments/[...slug].vue — same rationale, same scope (category
+  // metadata always stays Directus-sourced; only its products swap).
+  // Uses categoryRaw.value.slug rather than routeslug.value: this page's
+  // own route is a catch-all on `id`, so route.params.slug is effectively
+  // always undefined here — the fetched record's own slug is the reliable
+  // cross-reference key regardless of which route param resolved it.
+  const activeCommerceBackend = useRuntimeConfig().public.commerceBackend || 'directus'
+
+  const {
+    data: backendCategoryProducts
+  } = await useAsyncData(() => `${categoryKey.value}-backend-products`, async () => {
+    if (activeCommerceBackend === 'directus' || !categoryRaw.value) return null
+    const adapter = CommerceBackendRegistry.get(activeCommerceBackend) as any
+    if (!adapter?.isEnabled?.() || typeof adapter.getProductsByCategory !== 'function') return null
+    return adapter.getProductsByCategory({
+      slug: categoryRaw.value.slug,
+      externalId: categoryRaw.value.uid || undefined,
+    })
+  })
+
+  if (backendCategoryProducts.value) {
+    categoryRaw.value.products = backendCategoryProducts.value.map((product: any) => ({ products_id: product }))
+  }
+
+  const category = computed(() => categoryRaw.value as any)
 
   useHead({
     title: computed(() => category.value?.name || 'Category Page'),

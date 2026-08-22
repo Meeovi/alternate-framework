@@ -54,12 +54,12 @@
 
                                 <v-btn icon @click.stop="toggleLike(video)" :color="video.liked ? 'red' : 'grey'"
                                     class="ml-2">
-                                    <v-icon>{{ video.liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+                                    <v-icon>{{ video.liked ? 'fas fa-heart' : 'far fa-heart' }}</v-icon>
                                 </v-btn>
                                 <span>{{ video.reaction_count || 0 }}</span>
 
                                 <v-btn icon @click.stop="openComments(video)" class="ml-2">
-                                    <v-icon>mdi-comment-outline</v-icon>
+                                    <v-icon>far fa-comment</v-icon>
                                 </v-btn>
                                 <span>{{ video.comment_count || 0 }}</span>
                             </div>
@@ -119,7 +119,7 @@ async function fetchVideos() {
             filter.visibility = { _eq: 'public' }
         }
 
-        const sort = sortBy.value === 'popularity' ? ['-view_count'] : ['-created_at']
+        const sort = sortBy.value === 'popularity' ? ['-view_count'] : ['-date_created']
 
         const resp = await $directus.request($readItems('videos', { filter, sort, fields: ['*', 'tags.id', 'tags.name'] }))
         const data = resp?.data || resp || []

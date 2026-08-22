@@ -135,7 +135,18 @@ function addFilterClauses(builder: WhereBuilder, options: SearchProviderOptions)
 }
 
 function buildBaseQuery(options: SearchProviderOptions, config: PostgresConfig, builder: WhereBuilder) {
-  const columns = options.fields?.length ? options.fields : config.searchColumns
+  // /api/search.ts always sends a generic, OpenSearch-shaped field list
+  // (title/name/description/brand/category) as options.fields by default —
+  // it has no idea what this deployment's table actually looks like.
+  // config.searchColumns (ALTERNATE_SEARCH_PG_COLUMNS) is this provider's
+  // own, deployment-configured ground truth, so it takes priority; the
+  // generic default previously overrode it unconditionally, always
+  // querying columns that don't exist in a non-default schema (`column
+  // "title" does not exist` here, whose real column is "name"). Postgres
+  // also has no OpenSearch-style "^N" boost syntax — stripped rather than
+  // passed through to quoteIdentifier, which would reject it outright.
+  const columns = (config.searchColumns?.length ? config.searchColumns : options.fields ?? [])
+    .map(field => field.replace(/\^\d+$/, ''))
   const tsVector = buildTsVectorExpression(columns)
 
   let scoreExpr = '1'
@@ -193,7 +204,16 @@ export const postgresProvider: SearchProvider = {
       const facetBuilder: WhereBuilder = { clauses: [], params: [] }
       const { where: facetWhere } = buildBaseQuery(options, config, facetBuilder)
 
-      await Promise.all(options.facets.map(async (field) => {
+      // /api/search.ts's default facet list (category/brand/type) is just as
+      // generic/OpenSearch-shaped as its default search fields — this
+      // deployment's table doesn't have those columns. Promise.all previously
+      // let one nonexistent-column query reject the whole batch, which
+      // rejected search() itself and discarded the real hits already fetched
+      // above (see the same-shaped fix on buildBaseQuery's columns for the
+      // main query). allSettled + a per-field try/catch skips only the
+      // faceted fields that don't exist, same as federate.ts already does
+      // one level up for whole providers.
+      await Promise.allSettled(options.facets.map(async (field) => {
         const column = quoteIdentifier(field)
         const facetSql = `
           SELECT ${column} AS value, count(*) AS count
@@ -208,7 +228,21 @@ export const postgresProvider: SearchProvider = {
           .filter((row) => row.value !== null && row.value !== undefined)
           .map((row) => ({ value: String(row.value), count: Number(row.count) }))
         if (buckets.length) facets[field] = buckets
-      }))
+      })).then((results) => {
+        results.forEach((result, index) => {
+          if (result.status !== 'rejected') return
+          const field = options.facets![index]
+          // Postgres error code 42703 = undefined_column: expected noise when
+          // /api/search.ts's generic facet defaults (category/brand/type)
+          // don't match this deployment's actual schema — already handled
+          // (the field is just skipped above), so warn instead of erroring.
+          if ((result.reason as { code?: string })?.code === '42703') {
+            console.warn(`[postgresProvider] facet "${field}" skipped: column does not exist on "${config.table}"`)
+          } else {
+            console.error(`[postgresProvider] facet "${field}" failed:`, result.reason)
+          }
+        })
+      })
     }
 
     return {

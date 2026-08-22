@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfEvent } from '~/composables/system/models'
+import type { SfEvent } from '../system/models'
 
 export function useCatalogEvents() {
   const client = getCommerceClient() as CommerceClient

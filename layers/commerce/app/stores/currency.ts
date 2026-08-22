@@ -40,7 +40,7 @@ export const useCurrencyStore = defineStore('currency', () => {
     if (found) {
       activeCurrency.value = found
       // Optional: Sync choice to cookie for Nuxt SSR persistence
-      const currencyCookie = useCookie('marketplace_currency')
+      const currencyCookie = useCookie('marketplace_currency') as any
       currencyCookie.value = code
     }
   }

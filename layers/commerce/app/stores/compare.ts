@@ -36,7 +36,7 @@ export const useCompareStore = defineStore('compare', () => {
   }
 
   const removeComparedProductSku = (sku: string) => {
-    productSkus.value = productSkus.value.filter((item) => item !== sku)
+    productSkus.value = productSkus.value.filter((item: string) => item !== sku)
     persist()
   }
 

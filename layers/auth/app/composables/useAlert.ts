@@ -30,7 +30,7 @@ export function useAlert() {
   const getUserEmail = async (userId: string): Promise<string> => {
     try {
       const users = await $directus.request(
-        readItems('directus_users', {
+        (readItems as any)('directus_users', {
           filter: { id: { _eq: userId } },
           fields: ['email'],
           limit: 1,
@@ -55,8 +55,8 @@ export function useAlert() {
     if (!email) return;
 
     const directus = directusTransport({
-      url: runtimeConfig.public.directus.url as string,
-      token: runtimeConfig.public.directus.auth.token as string,
+      url: (runtimeConfig.public as any).directus.url as string,
+      token: (runtimeConfig.public as any).directus.auth.token as string,
     });
 
     const client = createClient({

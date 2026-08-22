@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfPermission, SfRole } from '~/composables/system/models'
+import type { SfPermission, SfRole } from '../system/models'
 
 export function useCatalogPermissions() {
   const client = getCommerceClient() as CommerceClient

@@ -83,7 +83,7 @@ export interface UseOrdersState {
 
 export interface OrderProvider {
   getOrders(params?: OrderSearchParams): Promise<Paginated<Order>>
-  getOrderById(id: ID): Promise<Maybe<Order>>
+  getOrder(id: ID): Promise<Maybe<Order>>
   getOrderByIncrementId(incrementId: string): Promise<Maybe<Order>>
   cancelOrder(id: ID, reason?: string): Promise<Maybe<Order>>
 }

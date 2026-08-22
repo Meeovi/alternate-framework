@@ -421,8 +421,8 @@ const commerce = notificationService.catalog({
     .subject(({ input }) => `Order confirmed: ${input.orderId}`)
     .template({
       render: async ({ input }) => ({
-        text: `Order ${input.orderId} confirmed. Total: ${input.orderTotal}. Items: ${input.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}. View order: ${input.orderUrl}`,
-        html: `<p>Order <strong>${input.orderId}</strong> confirmed. Total: <strong>${input.orderTotal}</strong>.</p><p>Items: ${input.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}</p><p><a href="${input.orderUrl}">View order details</a></p>`,
+        text: `Order ${input.orderId} confirmed. Total: ${input.orderTotal}. Items: ${input.items.map((i: { name: string; quantity: number }) => `${i.name} (x${i.quantity})`).join(', ')}. View order: ${input.orderUrl}`,
+        html: `<p>Order <strong>${input.orderId}</strong> confirmed. Total: <strong>${input.orderTotal}</strong>.</p><p>Items: ${input.items.map((i: { name: string; quantity: number }) => `${i.name} (x${i.quantity})`).join(', ')}</p><p><a href="${input.orderUrl}">View order details</a></p>`,
       }),
     }),
   orderShipped: notificationService

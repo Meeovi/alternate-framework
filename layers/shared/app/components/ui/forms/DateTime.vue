@@ -25,7 +25,7 @@ const dateTimeValue = computed({
     get() {
         return props.modelValue || props.defaultValue || ''
     },
-    set(value) {
+    set(value: string) {
         emit('update:modelValue', value)
     }
 })

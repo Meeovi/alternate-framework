@@ -43,7 +43,7 @@ export default defineNuxtConfig({
 
   alias: {
     '@mframework/meeovi-forms': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/index.ts'),
-    '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/')
+    '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/'),
   },
 
   components: {
@@ -369,6 +369,12 @@ export default defineNuxtConfig({
     novuSecretKey: process.env.NOVU_SECRET_KEY,
 
     public: {
+      // Read by getAssetURL() (layers/shared/app/utils/get-asset-url.ts) to
+      // build <img src> URLs for Directus-hosted files in the browser.
+      // Vite's import.meta.env only exposes VITE_-prefixed vars, so the
+      // previous `import.meta.env.DIRECTUS_URL` read was always undefined,
+      // producing broken "undefined/assets/<file>" image URLs site-wide.
+      directusUrl: process.env.DIRECTUS_URL || '',
       novuAppId: process.env.NUXT_PUBLIC_NOVU_APP_ID,
       novuSubscriberId: process.env.NUXT_PUBLIC_NOVU_SUBSCRIBER_ID,
       segmentWriteKey: process.env.NUXT_PUBLIC_SEGMENT_WRITE_KEY || '',
@@ -467,7 +473,7 @@ export default defineNuxtConfig({
   vue: {
     compilerOptions: {
       // Instruct Vue to treat all tags starting with 'video-' or 'media-' as custom elements
-      isCustomElement: (tag) =>
+      isCustomElement: (tag: string) =>
         tag.startsWith('video-') ||
         tag.startsWith('media-') ||
         tag.endsWith('-video')

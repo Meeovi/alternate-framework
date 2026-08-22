@@ -9,14 +9,14 @@
                 <v-toolbar-items>
                     <v-btn class="text-white" variant="plain">{{ space?.status }} Space</v-btn>
 
-                    <v-btn class="text-white" variant="plain">Members: {{ space?.numberOfMembers }}</v-btn>
+                    <v-btn class="text-white" variant="plain">Members: {{ space?.members?.length }}</v-btn>
                 </v-toolbar-items>
             </v-toolbar>
 
             <v-sheet>
 
                 <v-tabs v-model="tab" align-tabs="center" style="background-color: transparent">
-                    <div v-for="(menu, index) in individualSpaceBar?.menus" :key="index">
+                    <div v-for="(menu, index) in spaceTabs?.menus" :key="index">
                         <v-tab :value="menu?.value">{{ menu?.name }}</v-tab>
                     </div>
                 </v-tabs>
@@ -25,7 +25,7 @@
 
                 <v-tabs-window v-model="tab" class="spaceTabs">
                     <!--Posts Tab-->
-                    <v-tabs-window-item :value="individualSpaceBar?.menus[0]?.value">
+                    <v-tabs-window-item :value="spaceTabs?.menus[0]?.value?.name">
                         <div v-if="space?.posts && space.posts.length">
                             <div class="text-center" v-for="(discussions, idx) in space.posts"
                                 :key="discussions?.posts_id?.id || idx">
@@ -39,12 +39,12 @@
                     </v-tabs-window-item>
 
                     <!--About Tab-->
-                    <v-tabs-window-item :value="individualSpaceBar?.menus[1]?.value">
-                        <AboutTab :space="space" />
+                    <v-tabs-window-item :value="spaceTabs?.menus[1]?.value">
+                        <AboutTab :group="space" />
                     </v-tabs-window-item>
 
                     <!--Members Tab-->
-                    <v-tabs-window-item :value="individualSpaceBar?.menus[2]?.value" id="SpaceMembers">
+                    <v-tabs-window-item :value="spaceTabs?.menus[2]?.value" id="SpaceMembers">
                         <h5 class="center-text">{{ space?.name }} Administrators</h5>
 
                         <v-row>
@@ -68,7 +68,7 @@
                     </v-tabs-window-item>
 
                     <!--Media Tab-->
-                    <v-tabs-window-item :value="individualSpaceBar?.menus[3]?.value">
+                    <v-tabs-window-item :value="spaceTabs?.menus[3]?.value">
 
                         <v-row v-if="space?.media?.length">
                             <v-col cols="3" v-for="media in space?.media" :key="media.id">
@@ -82,7 +82,7 @@
                     </v-tabs-window-item>
 
                     <!--Products Tab-->
-                    <v-tabs-window-item :value="individualSpaceBar?.menus[4]?.value">
+                    <v-tabs-window-item :value="spaceTabs?.menus[4]?.value">
                         <v-row>
                             <v-col cols="3" v-if="space?.products?.length" v-for="products in space?.products"
                                 :key="products.id">
@@ -96,7 +96,7 @@
                     </v-tabs-window-item>
 
                     <!--Lists Tab-->
-                    <v-tabs-window-item :value="individualSpaceBar?.menus[5]?.value">
+                    <v-tabs-window-item :value="spaceTabs?.menus[5]?.value">
                         <v-row>
                             <v-col cols="3" v-if="space?.lists?.length" v-for="lists in space?.lists" :key="lists.id">
                                 <listsCard :list="lists?.lists_id" />
@@ -109,7 +109,7 @@
                     </v-tabs-window-item>
 
                     <!--Settings Tab-->
-                    <v-tabs-window-item :value="individualSpaceBar?.menus[6]?.value">
+                    <v-tabs-window-item :value="spaceTabs?.menus[6]?.value">
                         <v-sheet>
                             <SettingsTab :space="space" :user="user" :logged-in="loggedIn" />
                         </v-sheet>
@@ -122,6 +122,7 @@
 
 <script setup>
     import {
+        computed,
         ref
     } from '#imports'
     import AboutTab from '../../../components/blocks/groups/about.vue'
@@ -175,8 +176,8 @@
     })
 
     const {
-        data: individualSpaceBar
-    } = await useAsyncData('individualSpaceBar', () => {
+        data: spaceTabs
+    } = await useAsyncData('spaceTabs', () => {
         return $directus.request($readItem('navigation', '83', {
             fields: ['*', {
                 '*': ['*']

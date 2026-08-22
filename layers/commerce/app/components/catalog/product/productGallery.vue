@@ -16,8 +16,8 @@
 
   const galleryItems = computed(() => {
     return (props.assets || [])
-      .filter((asset) => Boolean(asset?.preview))
-      .map((asset) => ({
+      .filter((asset: { id: string; preview: string }) => Boolean(asset?.preview))
+      .map((asset: { id: string; preview: string }) => ({
         id: asset.id,
         src: asset.preview,
         thumb: asset.preview,

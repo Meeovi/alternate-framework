@@ -48,7 +48,7 @@ function deslugify(str: string | undefined): string | undefined {
 
 function getDomainNameFromEmail(email: string): string {
 	const temp = email.replace(/.*@/, '').split('.');
-	return temp[temp.length - 2];
+	return temp[temp.length - 2] ?? '';
 }
 
 function toTitleCase(str: string | undefined): string | undefined {
@@ -60,7 +60,7 @@ function toTitleCase(str: string | undefined): string | undefined {
 
 function snakeToCamel(s: string): string {
 	return s.replace(/(_\w)/g, function (m) {
-		return m[1].toUpperCase();
+		return m[1]!.toUpperCase();
 	});
 }
 
@@ -77,7 +77,7 @@ function convertIconName(name: string): string | null | undefined {
 
 function snakeToKebab(s: string): string {
 	return s.replace(/(_\w)/g, function (m) {
-		return '-' + m[1].toLowerCase();
+		return '-' + m[1]!.toLowerCase();
 	});
 }
 

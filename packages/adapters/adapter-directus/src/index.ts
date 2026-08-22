@@ -171,7 +171,7 @@ export class DirectusAdapter {
       },
 
       clear: async (userId: string) => {
-        const items = await this.listNotifications({ userId })
+        const items = await this.content.notifications.listNotifications({ userId })
         for (const item of items) {
           await this.restDelete(`/items/notifications/${item.id}`)
         }
@@ -200,10 +200,10 @@ export class DirectusAdapter {
       },
 
       getNotificationsSnapshot: async (args: Record<string, any> = {}) => {
-        const notifications = await this.listNotifications(args)
+        const notifications = await this.content.notifications.listNotifications(args)
         return {
           notifications,
-          unreadCount: notifications.filter((n) => !n.read).length,
+          unreadCount: notifications.filter((n: { read: boolean }) => !n.read).length,
         }
       },
 
@@ -214,10 +214,10 @@ export class DirectusAdapter {
       markAllNotificationsAsRead: async (args: Record<string, any> = {}) => {
         const userId = args.userId
         if (!userId) return
-        const notifications = await this.listNotifications({ userId })
-        const unread = notifications.filter((n) => !n.read)
+        const notifications = await this.content.notifications.listNotifications({ userId })
+        const unread = notifications.filter((n: { read: boolean }) => !n.read)
         await Promise.all(
-          unread.map((n) => this.restPatch(`/items/notifications/${n.id}`, { data: { is_read: true } }))
+          unread.map((n: { id: string }) => this.restPatch(`/items/notifications/${n.id}`, { data: { is_read: true } }))
         )
       },
     },

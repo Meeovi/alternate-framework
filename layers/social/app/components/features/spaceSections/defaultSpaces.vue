@@ -34,7 +34,7 @@
     const currentUser = useCurrentUser()
 
     const model = ref(null)
-    const { $directus, $readItems } = useNuxtApp()
+    const { $directus, $readItems } = useNuxtApp() as any
 
     const { data: myDefaultSpaces } = await useAsyncData<any[]>('myDefaultSpaces', async () => {
         if (!currentUser.value?.id) return []

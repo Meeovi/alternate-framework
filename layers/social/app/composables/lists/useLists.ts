@@ -1,6 +1,6 @@
 // layers/social/composables/useLists.ts
 
-import { useNuxtApp } from '#app'
+import { useNuxtApp } from '#imports'
 
 /**
  * Core list types + plugin‑extensible registry
@@ -79,14 +79,34 @@ export function useLists() {
 
   // -----------------------------
   // LISTS
+  //
+  // Previously these called $directus directly with a static/admin token
+  // and no `user` filter — any authenticated user could read, edit, or
+  // delete any other user's lists. Routed through authenticated,
+  // owner-scoped server endpoints instead (server/api/social/lists/*).
+  // list_items below is unchanged (still direct $directus) — the relation
+  // field linking items to their list is inconsistent across call sites
+  // (`list`/`listId`/`list_id` all appear elsewhere in the codebase), which
+  // needs its own investigation before it can be safely migrated too.
   // -----------------------------
 
-  const getList = async (id: string | number, options?: Record<string, any>) => {
-    return await $directus.request($readItem('lists', id, options)) || null
+  const getList = async (id: string | number, _options?: Record<string, any>) => {
+    try {
+      return await $fetch<any>(`/api/social/lists/${id}`)
+    } catch {
+      return null
+    }
   }
 
   const listLists = async (options?: Record<string, any>) => {
-    const result = await $directus.request($readItems('lists', options))
+    const query: Record<string, string> = {}
+    if (options?.sort) {
+      query.sort = Array.isArray(options.sort) ? options.sort.join(',') : String(options.sort)
+    }
+    if (options?.filter?.type?._eq) {
+      query.type = String(options.filter.type._eq)
+    }
+    const result = await $fetch<any[]>('/api/social/lists', { query })
     return Array.isArray(result) ? result : []
   }
 
@@ -100,20 +120,23 @@ export function useLists() {
     const type = payload.type || 'basic'
     const config = listTypeRegistry[type]
 
-    return await $directus.request($createItem('lists', {
-      ...payload,
-      type,
-      color: payload.color || config?.color,
-      icon: payload.icon || config?.icon
-    })) || null
+    return await $fetch<any>('/api/social/lists', {
+      method: 'POST',
+      body: {
+        name: payload.name,
+        type,
+        color: payload.color || config?.color,
+        icon: payload.icon || config?.icon,
+      },
+    }) || null
   }
 
   const updateList = async (id: string | number, payload: Record<string, any>) => {
-    return await $directus.request($updateItem('lists', id, payload) as any) || null
+    return await $fetch<any>(`/api/social/lists/${id}`, { method: 'PATCH', body: payload }) || null
   }
 
   const deleteList = async (id: string | number) => {
-    return await $directus.request($deleteItem('lists', id)) || null
+    return await $fetch<any>(`/api/social/lists/${id}`, { method: 'DELETE' }) || null
   }
 
   // -----------------------------

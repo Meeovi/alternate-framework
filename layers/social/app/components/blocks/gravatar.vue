@@ -10,7 +10,7 @@ const { onLoaded } = useScriptGravatar()
 
 const avatarUrl = ref('')
 
-onLoaded((api) => {
+onLoaded((api: { getAvatarUrlFromEmail: (email: string, options?: { size?: number }) => string }) => {
   avatarUrl.value = api.getAvatarUrlFromEmail('user@example.com', { size: 120 })
 })
 </script>

@@ -21,7 +21,7 @@
 
                     <v-spacer></v-spacer>
 
-                    <v-btn :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="show = !show"></v-btn>
+                    <v-btn :icon="show ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" @click="show = !show"></v-btn>
                 </v-card-actions>
 
                 <v-expand-transition>
@@ -45,4 +45,9 @@
     import { DynamicForm } from '@mframework/meeovi-forms'
 
     const show = ref(false)
+    // TODO: no payment-methods data source is wired up yet (Stripe customer
+    // payment methods? a Directus `payments` collection row per user?) —
+    // declared empty so the template doesn't reference an undefined
+    // property; the list renders empty until that's decided and implemented.
+    const payments = ref([])
 </script>

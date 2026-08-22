@@ -14,7 +14,7 @@ import type {
     UseTaxReturn,
     TaxItem
 } from '../../types/tax';
-import type { SfTaxRate, SfTaxRule, SfTaxClass } from '~/composables/system/models/shared'
+import type { SfTaxRate, SfTaxRule, SfTaxClass } from '../system/models/shared'
 
 export function useTax(): UseTaxReturn {
     const state = ref < {

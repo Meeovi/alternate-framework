@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col cols="12" md="8">
         <v-card class="pa-6">
-          <v-icon color="success" size="64" class="mb-4">mdi-check-circle</v-icon>
+          <v-icon color="success" size="64" class="mb-4">fas fa-circle-check</v-icon>
           <h1 class="text-h4 mb-4">Thank You for Your Purchase!</h1>
           <p class="text-body-1 mb-4">
             Your order has been successfully placed. We've sent a confirmation email to your registered email address.

@@ -1,4 +1,3 @@
-import { fileURLToPath } from 'node:url'
 import { defineNuxtConfig } from 'nuxt/config'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -14,13 +13,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     ...(isProd ? ['nuxt-module-feed'] : [])
   ],
-  
-  alias: {
-    '#auth': fileURLToPath(new URL('../auth', import.meta.url)),
-    '#shared': fileURLToPath(new URL('../shared', import.meta.url)),
-    '#social': fileURLToPath(new URL('./', import.meta.url)),
-    '#social/types': fileURLToPath(new URL('./shared/types/index.ts', import.meta.url)),
-  },
 
   runtimeConfig: {
     adminKey: '',

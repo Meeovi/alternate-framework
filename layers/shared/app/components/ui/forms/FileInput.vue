@@ -28,12 +28,12 @@ const fileInputValue = computed({
     get() {
         return props.modelValue || props.defaultValue || null
     },
-    set(value) {
+    set(value: File[] | null) {
         selectedFile.value = value
         
         // If we have a file, prepare it for upload
         if (value && value.length > 0) {
-            const file = value[0]
+            const file = value[0]!
             
             // Create FormData for file upload
             const formData = new FormData()

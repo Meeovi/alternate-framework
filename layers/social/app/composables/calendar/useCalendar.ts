@@ -28,10 +28,6 @@
 // actually live — the file itself still documents the original, colliding
 // names for now).
 
-import { useDirectusRequest } from '#social/composables/content/useDirectusRequest'
-
-const COLLECTION = 'social_calendar_events'
-
 export interface CalendarEventRecord {
   id?: string | number
   text: string
@@ -53,69 +49,45 @@ export interface CalendarGroupRecord {
   active?: boolean
 }
 
-const FIELDS = [
-  'id',
-  'text',
-  'start_date',
-  'end_date',
-  'all_day',
-  'rrule',
-  'exdates',
-  'calendar_id',
-  'description',
-  'status',
-  'user',
-]
-
 export function useCalendar() {
-  const { readItems, createItem, updateItem, deleteItem } = useDirectusRequest()
-
+  // Previously called $directus directly from the client with a static/
+  // admin token and no `user` filter at all — any authenticated user could
+  // read, edit, or delete every other user's calendar. Routed through
+  // authenticated, owner-scoped server endpoints instead
+  // (server/api/social/calendar/*) — see those files for the enforcement.
   async function fetchEvents(range?: { start: Date; end: Date }): Promise<CalendarEventRecord[]> {
-    const now = new Date()
-    const opts: any = {
-      fields: FIELDS,
-      sort: ['start_date'],
-      limit: -1,
-    }
-    // Optional window filter to bound the query.
+    const query: Record<string, string> = {}
     if (range?.start && range?.end) {
-      opts.filter = {
-        start_date: { _lte: range.end.toISOString() },
-        end_date: { _gte: range.start.toISOString() },
-      }
-    } else {
-      // Default: pull a generous window so recurring masters are present.
-      const past = new Date(now.getFullYear() - 1, 0, 1).toISOString()
-      const future = new Date(now.getFullYear() + 2, 11, 31).toISOString()
-      opts.filter = {
-        start_date: { _lte: future },
-        end_date: { _gte: past },
-      }
+      query.start = range.start.toISOString()
+      query.end = range.end.toISOString()
     }
-    return (await readItems(COLLECTION, opts)) as CalendarEventRecord[]
+    return await $fetch<CalendarEventRecord[]>('/api/social/calendar/events', { query })
   }
 
   async function fetchGroups(): Promise<CalendarGroupRecord[]> {
     try {
-      return (await readItems('social_calendar_groups', {
-        fields: ['id', 'label', 'color', 'active'],
-        limit: -1,
-      })) as CalendarGroupRecord[]
+      return await $fetch<CalendarGroupRecord[]>('/api/social/calendar/groups')
     } catch {
       return []
     }
   }
 
   async function createEvent(record: CalendarEventRecord): Promise<CalendarEventRecord> {
-    return (await createItem(COLLECTION, record)) as CalendarEventRecord
+    return await $fetch<CalendarEventRecord>('/api/social/calendar/events', {
+      method: 'POST',
+      body: record,
+    })
   }
 
   async function updateEvent(id: string | number, record: Partial<CalendarEventRecord>): Promise<void> {
-    await updateItem(COLLECTION, id, record)
+    await $fetch(`/api/social/calendar/events/${id}`, {
+      method: 'PATCH',
+      body: record,
+    })
   }
 
   async function deleteEvent(id: string | number): Promise<void> {
-    await deleteItem(COLLECTION, id)
+    await $fetch(`/api/social/calendar/events/${id}`, { method: 'DELETE' })
   }
 
   return { fetchEvents, fetchGroups, createEvent, updateEvent, deleteEvent }

@@ -74,8 +74,8 @@
 
                 <v-row>
                     <v-col>
-                        <v-card append-icon="mdi-open-in-new" class="mx-auto"
-                            :href="dial?.products?.products_id?.slug" max-width="344" prepend-icon="mdi-github"
+                        <v-card append-icon="fas fa-up-right-from-square" class="mx-auto"
+                            :href="dial?.products?.products_id?.slug" max-width="344" prepend-icon="fas fa-link"
                             rel="noopener" :subtitle="dial?.products?.products_id?.description" target="_blank"
                             :title="dial?.products?.products_id?.name"></v-card>
                     </v-col>

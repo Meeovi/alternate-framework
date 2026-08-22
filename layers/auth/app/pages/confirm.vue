@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { navigateTo } from '#app'
+import { navigateTo } from '#imports'
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { useUserStore } from '../stores/user'
 

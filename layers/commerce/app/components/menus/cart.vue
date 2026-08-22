@@ -35,17 +35,17 @@
                   <div class="d-flex align-center mt-2">
                     <v-btn icon size="x-small" @click="cartStore.updateQuantity(item.key, item.quantity - 1)"
                       :disabled="item.quantity <= 1">
-                      <v-icon>mdi-minus</v-icon>
+                      <v-icon>fas fa-minus</v-icon>
                     </v-btn>
                     <span class="mx-2">{{ item.quantity }}</span>
                     <v-btn icon size="x-small" @click="cartStore.updateQuantity(item.key, item.quantity + 1)">
-                      <v-icon>mdi-plus</v-icon>
+                      <v-icon>fas fa-plus</v-icon>
                     </v-btn>
                   </div>
                 </v-col>
                 <v-col cols="3" class="text-right">
                   <v-btn color="error" icon size="small" @click="cartStore.removeItemByKey(item.key)" aria-label="Remove item">
-                    <v-icon>mdi-delete</v-icon>
+                    <v-icon>fas fa-trash</v-icon>
                   </v-btn>
                 </v-col>
               </v-row>

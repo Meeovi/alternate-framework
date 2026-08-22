@@ -12,7 +12,7 @@ interface PayPalConfig {
 }
 
 function getPayPalConfig(): PayPalConfig {
-  const config = useRuntimeConfig()
+  const config = useRuntimeConfig() as any
   const mode = (config.paypalMode || 'sandbox') as string
   return {
     clientId: config.paypalClientId as string,

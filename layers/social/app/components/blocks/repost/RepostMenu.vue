@@ -2,7 +2,7 @@
   <v-menu>
     <template #activator="{ props }">
       <v-btn v-bind="props" variant="text">
-        <v-icon icon="mdi-repeat" />
+        <v-icon icon="fas fa-repeat" />
       </v-btn>
     </template>
 

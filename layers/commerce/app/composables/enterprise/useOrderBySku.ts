@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfCart } from '~/composables/system/models'
+import type { SfCart } from '../system/models'
 
 export interface OrderBySkuPayload {
   sku: string

@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
   const isDev = process.env.NODE_ENV !== 'production'
   const domain =
     process.env.DOMAIN ||
-    (config.public?.siteUrl as string | undefined) ||
+    ((config.public as any)?.siteUrl as string | undefined) ||
     (isDev ? 'http://localhost:3000' : '')
 
   if (!domain) {

@@ -5,13 +5,13 @@ function useEventBus<T = any, P = any>(key: symbol) {
   const listeners = ref<EventHandler<P>[]>([])
   return {
     emit: (event: T, payload?: P) => {
-      listeners.value.forEach(fn => fn(payload as P))
+      listeners.value.forEach((fn: EventHandler<P>) => fn(payload as P))
     },
     on: (fn: EventHandler<P>) => {
       listeners.value.push(fn)
     },
     off: (fn: EventHandler<P>) => {
-      listeners.value = listeners.value.filter(f => f !== fn)
+      listeners.value = listeners.value.filter((f: EventHandler<P>) => f !== fn)
     },
   }
 }

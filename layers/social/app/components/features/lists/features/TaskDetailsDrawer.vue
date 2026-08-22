@@ -8,7 +8,7 @@
     <v-toolbar flat>
       <v-toolbar-title>Task details</v-toolbar-title>
       <v-spacer />
-      <v-btn icon="mdi-close" @click="open = false" />
+      <v-btn icon="fas fa-xmark" @click="open = false" />
     </v-toolbar>
 
     <v-card flat>

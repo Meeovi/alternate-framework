@@ -1,6 +1,6 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const runtimeConfig = useRuntimeConfig()
-  const config = runtimeConfig.public?.meeoviForms as
+  const config = (runtimeConfig.public as any)?.meeoviForms as
     | { apiBase: string; apis: any[] }
     | undefined
 

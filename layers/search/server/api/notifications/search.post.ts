@@ -17,7 +17,7 @@ import { z } from 'zod'
 const bodySchema = z.object({
   userId: z.string().min(1, 'userId is required'),
   route: z.enum(['alertCreated', 'newResults']),
-  input: z.record(z.unknown()),
+  input: z.record(z.string(), z.unknown()),
 })
 
 export default defineEventHandler(async (event) => {
@@ -33,8 +33,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const runtimeConfig = useRuntimeConfig()
-  const directusUrl = runtimeConfig.public.directus?.url as string | undefined
-  const directusToken = runtimeConfig.public.directus?.auth?.token as string | undefined
+  const directusUrl = (runtimeConfig.public as any).directus?.url as string | undefined
+  const directusToken = (runtimeConfig.public as any).directus?.auth?.token as string | undefined
 
   if (!directusUrl || !directusToken) {
     throw createError({

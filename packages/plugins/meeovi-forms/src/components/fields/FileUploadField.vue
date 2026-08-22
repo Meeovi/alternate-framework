@@ -17,7 +17,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: File | null] }>()
 
 const onChange = (event: Event) => {
   const files = (event.target as HTMLInputElement).files
-  emit('update:modelValue', files && files.length > 0 ? files[0] : null)
+  emit('update:modelValue', files && files.length > 0 ? files[0]! : null)
 }
 </script>
 

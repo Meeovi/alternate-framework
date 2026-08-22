@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-card variant="text">
-            <v-toolbar :style="`background-color: ${feedBar?.color}; color: ${feedBar?.colortext} !important`">
+            <v-toolbar :style="`background-color: ${birthdayBar?.color}; color: ${birthdayBar?.colortext} !important`">
                 <v-toolbar-title>
                     <div class="listsToolbarTitle">
                         {{ birthdayPage?.name }}

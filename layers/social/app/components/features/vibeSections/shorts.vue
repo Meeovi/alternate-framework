@@ -11,7 +11,7 @@
       <v-spacer />
       <v-menu>
         <template v-slot:activator="{ props }">
-          <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props" />
+          <v-btn icon="fas fa-ellipsis-vertical" variant="text" v-bind="props" />
         </template>
         <v-list>
           <v-list-item @click="shareVibe">
@@ -53,10 +53,10 @@
     </template>
 
     <template>
-      <v-btn icon="mdi-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
+      <v-btn icon="fas fa-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
       <span class="text-caption">{{ likesCount }}</span>
       
-      <v-btn icon="mdi-comment" variant="text" @click="toggleComments" />
+      <v-btn icon="fas fa-comment" variant="text" @click="toggleComments" />
       <span class="text-caption">{{ short?.comments_count || 0 }}</span>
       
       <v-btn icon="fas share-nodes" variant="text" @click="shareVibe" />

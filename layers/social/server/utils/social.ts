@@ -15,10 +15,19 @@ let cacheKey: string | null = null
  * every request within the same server context.
  */
 export function getSocialDriver(): SocialDriverContract {
-  // eslint-disable-next-line no-undef
-  const nuxtApp: any = useNuxtApp?.()
-  const sdk = nuxtApp?.$sdk as Record<string, unknown> | undefined
-  const driver = sdk?.social as SocialDriverContract | undefined
+  // useNuxtApp isn't a real, resolvable binding in a Nitro server route (no
+  // import wires it up, and Nitro doesn't auto-import it here) —
+  // referencing it unguarded threw an uncaught ReferenceError on every
+  // request. typeof is the one reference form that doesn't throw on a
+  // genuinely undeclared identifier, so use that to probe for it safely.
+  let driver: SocialDriverContract | undefined
+  try {
+    const nuxtApp: any = typeof useNuxtApp === 'function' ? useNuxtApp() : undefined
+    const sdk = nuxtApp?.$sdk as Record<string, unknown> | undefined
+    driver = sdk?.social as SocialDriverContract | undefined
+  } catch {
+    // useNuxtApp not available in this server context
+  }
 
   if (driver) {
     return driver

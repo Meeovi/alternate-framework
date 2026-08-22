@@ -7,9 +7,9 @@ import { onMounted, ref, watch } from 'vue'
 import * as L from 'leaflet'
 import {
   useLeafletMap,
-  LatLngTuple,
-  HeatPoint,
-} from '~/composables/globals/useMap'
+  type LatLngTuple,
+  type HeatPoint,
+} from '../../composables/globals/useMap'
 
 const props = defineProps<{
   address?: string
@@ -81,7 +81,7 @@ onMounted(async () => {
   }
 
   // WMS layers
-  props.wmsConfig?.forEach(cfg => {
+  props.wmsConfig?.forEach((cfg: { url: string; options: any }) => {
     addWmsLayer(cfg.url, cfg.options)
   })
 
@@ -96,7 +96,7 @@ onMounted(async () => {
   }
 
   // Custom icon markers
-  props.customIconMarkers?.forEach(mk => {
+  props.customIconMarkers?.forEach((mk: { latlng: LatLngTuple; iconOptions: L.IconOptions; popup?: string }) => {
     addMarkerWithIcon(mk.latlng, mk.iconOptions, mk.popup)
   })
 
@@ -105,11 +105,11 @@ onMounted(async () => {
 })
 
 // React to address / geosearch changes
-watch(() => props.address, async (newVal) => {
+watch(() => props.address, async (newVal: string | undefined) => {
   if (newVal) await centerOnAddress(newVal)
 })
 
-watch(() => props.geosearchQuery, async (newVal) => {
+watch(() => props.geosearchQuery, async (newVal: string | undefined) => {
   if (newVal) await geosearch(newVal)
 })
 

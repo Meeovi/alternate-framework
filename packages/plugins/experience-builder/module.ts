@@ -57,7 +57,7 @@ export default defineNuxtModule<ExperienceBuilderOptions>({
 
     // Provide runtime config
     nuxt.options.runtimeConfig.public.experienceBuilder = {
-      apiBase: options.apiBase
+      apiBase: options.apiBase ?? '/api/experience-pages'
     }
   }
 })

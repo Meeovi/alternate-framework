@@ -50,7 +50,7 @@ const emit = defineEmits<{
   error: [value: unknown]
 }>()
 
-const { $directus, $readItem, $updateItem, $createItem } = useNuxtApp()
+const { $directus, $readItem, $updateItem, $createItem } = useNuxtApp() as any
 const { fields: schemaFields, loading, error: schemaError, loadFields } = useDirectusFields()
 
 const submitting = ref(false)

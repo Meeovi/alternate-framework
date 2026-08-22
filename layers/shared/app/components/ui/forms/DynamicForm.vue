@@ -9,7 +9,7 @@
         :key="String(field.field || field.name || '')"
         :field="field"
         :model-value="form.model[String(field.field || '')]"
-        @update:model-value="(value) => updateField(String(field.field || ''), value)"
+        @update:model-value="(value: unknown) => updateField(String(field.field || ''), value)"
       />
       <NuxtTurnstile
         v-if="turnstileEnabled"
@@ -52,7 +52,7 @@ const emit = defineEmits<{
   error: [value: unknown]
 }>()
 
-const { $directus, $createItem } = useNuxtApp()
+const { $directus, $createItem } = useNuxtApp() as any
 const { fields: schemaFields, loading, error: schemaError, loadFields } = useDirectusFields()
 
 const submitting = ref(false)
@@ -96,7 +96,7 @@ function mapFieldToSchema(field: DirectusField): Record<string, unknown> {
 
 const visibleFields = computed(() => {
   const source = props.fields.length ? props.fields : schemaFields.value
-  return (source || []).filter((field) => !field?.meta?.hidden)
+  return (source || []).filter((field: any) => !field?.meta?.hidden)
 })
 
 const formSchema = computed(() => {
@@ -126,7 +126,7 @@ const form = useJsonForm({
 
 watch(
   () => props.modelValue,
-  (value) => {
+  (value: Record<string, unknown> | undefined) => {
     const next = value || {}
     for (const key of Object.keys(form.model)) {
       if (!(key in next)) {
@@ -142,7 +142,7 @@ watch(
 
 watch(
   formSchema,
-  (next) => {
+  (next: { type: string; properties: Record<string, unknown>; required: string[] }) => {
     const target = form.schema as Record<string, any>
     target.type = next.type
     target.properties = next.properties

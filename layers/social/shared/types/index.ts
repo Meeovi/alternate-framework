@@ -1,5 +1,8 @@
 import type { mastodon } from 'masto'
-import type { RouteLocationRaw } from 'vue-router'
+// Not imported from 'vue-router' — this file sits outside layers/social's
+// app/ srcDir, where vue-router's package/type resolution isn't reliably
+// reachable across the monorepo's per-workspace node_modules layout.
+type RouteLocationRaw = string | Record<string, any>
 import type { MarkNonNullable, Mutable } from './utils'
 
 export interface AppInfo {

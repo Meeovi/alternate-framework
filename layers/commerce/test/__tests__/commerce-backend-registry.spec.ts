@@ -141,9 +141,37 @@ describe('getDirectusFacade routing (server/utils/directusClient.ts)', () => {
     })
 
     const facade = getDirectusFacade()
-    await facade.request(() => ({ path: '/items/products', method: 'POST', body: { name: 'New' } }))
+    await facade.request(() => ({ path: '/items/products', method: 'POST', body: { name: 'New' } }) as any)
 
     expect(adapterRequest).not.toHaveBeenCalled()
     expect(realRequest).toHaveBeenCalledOnce()
+  })
+
+  // departments/categories are Directus-only CMS taxonomy — no backend
+  // adapter should ever see a request for either, regardless of what the
+  // adapter itself claims to support. This is defense in depth beyond "the
+  // adapter no longer declares them" (see adapter-magento's
+  // commerce-backend.spec.ts): even a misconfigured/future adapter that
+  // still lists them in `collections` must never receive them, since
+  // IN_SCOPE_COLLECTIONS gates before `adapter.collections` is ever
+  // consulted.
+  it('never routes departments/categories to the adapter, even if the adapter still declares them', async () => {
+    const { getDirectusFacade, realRequest } = await loadFacadeWithBackend('magento')
+    const { CommerceBackendRegistry: Registry } = await import('alternate-sdk')
+
+    const adapterRequest = vi.fn()
+    Registry.register({
+      id: 'magento',
+      collections: ['products', 'categories', 'departments', 'orders'], // stale/misconfigured on purpose
+      isEnabled: () => true,
+      request: adapterRequest,
+    })
+
+    const facade = getDirectusFacade()
+    await facade.request(() => ({ path: '/items/departments', method: 'GET' }))
+    await facade.request(() => ({ path: '/items/categories', method: 'GET' }))
+
+    expect(adapterRequest).not.toHaveBeenCalled()
+    expect(realRequest).toHaveBeenCalledTimes(2)
   })
 })

@@ -22,7 +22,7 @@ export const useCartStore = defineStore('cart', () => {
   // Cart is client-only state — persist across page loads/tabs so a reload
   // doesn't silently empty someone's cart.
   if (typeof window !== 'undefined') {
-    watch(items, (value) => {
+    watch(items, (value: any[]) => {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(value))
       } catch {
@@ -34,7 +34,7 @@ export const useCartStore = defineStore('cart', () => {
 
   function addItem(item: any) {
     const existingIndex = items.value.findIndex(
-      (existing) => existing.productId === item.productId || existing.id === item.id,
+      (existing: any) => existing.productId === item.productId || existing.id === item.id,
     )
     if (existingIndex >= 0) {
       const next = [...items.value]
@@ -59,16 +59,16 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   function removeItemByKey(key: string) {
-    const next = items.value.filter((item) => item.key !== key)
+    const next = items.value.filter((item: any) => item.key !== key)
     items.value = next
   }
 
   function updateQuantity(key: string, quantity: number) {
     if (quantity <= 0) {
-      items.value = items.value.filter((item) => item.key !== key)
+      items.value = items.value.filter((item: any) => item.key !== key)
       return
     }
-    const next = items.value.map((item) =>
+    const next = items.value.map((item: any) =>
       item.key === key ? { ...item, quantity, qty: quantity } : item,
     )
     items.value = next
@@ -81,7 +81,7 @@ export const useCartStore = defineStore('cart', () => {
   const itemCount = computed(() => items.value.length)
 
   const total = computed(() =>
-    items.value.reduce((sum, item) => {
+    items.value.reduce((sum: number, item: any) => {
       const qty = Number(item.qty ?? item.quantity ?? 0)
       const price = Number(item.price ?? 0)
       return sum + qty * price

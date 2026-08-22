@@ -28,7 +28,7 @@
     const currentUser = useCurrentUser()
 
     const model = ref(null)
-    const { $directus, $readItems } = useNuxtApp()
+    const { $directus, $readItems } = useNuxtApp() as any
 
     const { data: myVideoSpaces } = await useAsyncData<any[]>('myVideoSpaces', async () => {
         if (!currentUser.value?.id) return []

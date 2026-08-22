@@ -33,12 +33,12 @@
                         :subtitle="permission.subtitle" :title="permission.title">
                         <template v-slot:prepend>
                             <v-avatar color="grey-lighten-1">
-                                <v-icon color="white">mdi-permission</v-icon>
+                                <v-icon color="white">fas fa-shield-halved</v-icon>
                             </v-avatar>
                         </template>
 
                         <template v-slot:append>
-                            <v-switch label="Enable" true-icon="mdi-check" false-icon="mdi-close"></v-switch>
+                            <v-switch label="Enable" true-icon="fas fa-check" false-icon="fas fa-xmark"></v-switch>
                         </template>
                     </v-list-item>
 
@@ -55,7 +55,7 @@
                         </template>
 
                         <template v-slot:append>
-                            <v-switch label="Enable" true-icon="mdi-check" false-icon="mdi-close"></v-switch>
+                            <v-switch label="Enable" true-icon="fas fa-check" false-icon="fas fa-xmark"></v-switch>
                         </template>
                     </v-list-item>
                 </v-list>
@@ -73,13 +73,13 @@
 
     const security = [{
             color: 'blue',
-            icon: 'mdi-clipboard-text',
+            icon: 'fas fa-clipboard',
             subtitle: 'We keep your data secure',
             title: 'Meeovi Security',
         },
         {
             color: 'amber',
-            icon: 'mdi-gesture-tap-button',
+            icon: 'fas fa-hand-pointer',
             subtitle: 'Enable two-factor authentication',
             title: 'Two-Factor Authentication',
         },

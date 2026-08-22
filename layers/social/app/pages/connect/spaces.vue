@@ -6,13 +6,13 @@
 
                 <v-toolbar-title>
                     <div class="listsToolbarTitle">
-                        {{ spacePage?.name }}
+                        {{ spacesPage?.name }}
                         <v-tooltip interactive>
                             <template v-slot:activator="{ props: activatorProps }">
                                 <v-icon-btn size="small" icon="fas fa-circle-info" v-bind="activatorProps"></v-icon-btn>
                             </template>
                             <div>
-                                <p class="listsToolbarTooltip" v-dompurify-html="spacePage?.content"></p>
+                                <p class="listsToolbarTooltip" v-dompurify-html="spacesPage?.content"></p>
                             </div>
                         </v-tooltip>
                     </div>
@@ -69,6 +69,7 @@
 
     // current selected tab value (matches menu.value)
     const currentTab = ref(null);
+    const dialog = ref(false);
 
     const {
         data: spacesPage

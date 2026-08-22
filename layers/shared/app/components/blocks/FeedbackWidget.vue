@@ -12,7 +12,7 @@
                     <v-btn v-for="item in ratingOptions"
                         :key="item.value"
                         class="btn"
-                        @click="handleSubmission(item.value)"> // [!code ++]
+                        @click="handleSubmission(item.value)">
                         <span>{{ item.label }}</span>
                     </v-btn>
                 </div>
@@ -32,7 +32,7 @@
                 <v-btn
                     class="btn btn-primary"
                     :disabled="!feedback.content"
-                    @click="handleSubmission()"> // [!code ++]
+                    @click="handleSubmission()">
                     Send Us Your Feedback
                 </v-btn>
             </div>
@@ -53,6 +53,11 @@ const feedback = reactive<{
     rating?: number;
     content?: string;
 }>({});
+
+const loading = ref(false);
+const success = ref(false);
+const error = ref<unknown>(null);
+const config = useRuntimeConfig();
 
 const ratingOptions = [ 
     { label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' }, 
@@ -78,7 +83,7 @@ async function handleSubmission(rating?: number) {
     };
 
     // Replace this with your own Directus URL
-    const directusBaseUrl = `${config.public.directus.url}`;
+    const directusBaseUrl = `${(config.public as any).directus.url}`;
 
     try {
         let response;

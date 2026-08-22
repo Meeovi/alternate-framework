@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { useState } from '#app'
+import { useState } from '#imports'
 import { useAppGateway } from '#shared/app/composables/useAppGateway'
 
 type DotdigitalChatConfig = {

@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfProduct } from '~/composables/system/models'
+import type { SfProduct } from '../system/models'
 
 export function useSensei() {
   const client = getCommerceClient() as CommerceClient

@@ -5,7 +5,9 @@ export function getAssetURL(id: string | undefined | unknown): string | null {
       ? (id as any)?.filename_download || (id as any)?.filename || (id as any)?.id
       : String(id)
   if (!filename) return null
-  return `${import.meta.env.DIRECTUS_URL}/assets/${filename}`
+  const directusUrl = useRuntimeConfig().public.directusUrl
+  if (!directusUrl) return null
+  return `${directusUrl}/assets/${filename}`
 }
 
 export function hasAsset(id: string | undefined | unknown): boolean {

@@ -41,12 +41,12 @@ const week = computed(() => {
   for (let i = 0; i < 7; i++) {
     const d = new Date(base)
     d.setDate(base.getDate() + i)
-    const date = d.toISOString().split('T')[0]
+    const date = d.toISOString().split('T')[0]!
     const label = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
     days.push({
       date,
       label,
-      items: items.value.filter(i => i.dueDate === date)
+      items: items.value.filter((it: any) => it.dueDate === date)
     })
   }
   return days

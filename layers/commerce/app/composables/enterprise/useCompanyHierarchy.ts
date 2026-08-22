@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfTeam } from '~/composables/system/models'
+import type { SfTeam } from '../system/models'
 
 export function useCompanyHierarchy() {
   const client = getCommerceClient() as CommerceClient

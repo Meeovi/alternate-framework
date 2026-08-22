@@ -25,10 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import { useHead, useRuntimeConfig } from '#app'
+import { useHead, useRuntimeConfig } from '#imports'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
-import { useAlert } from '../composables/useAlert'
 import { authClient } from '../../lib/auth-client'
 
 definePageMeta({
@@ -42,7 +41,6 @@ useHead({
   title: 'Reset Password'
 })
 
-const alert = useAlert()
 const runtimeConfig = useRuntimeConfig()
 const appName = String(runtimeConfig.public?.appName || 'App')
 
@@ -65,7 +63,8 @@ const message = ref<string | null>(null)
 const messageType = ref<'info' | 'success' | 'error' | 'warning'>('info')
 const handleResetPassword = async () => {
   if (state.confirmPassword !== state.password) {
-    alert.error('Please enter matching passwords');
+    messageType.value = 'error'
+    message.value = 'Please enter matching passwords'
 		return;
 	}
 

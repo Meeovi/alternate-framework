@@ -75,7 +75,7 @@
                                         @click="toggle" />
                                     <div class="d-flex fill-height align-center justify-center">
                                         <v-scale-transition>
-                                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
                                                 size="48"></v-icon>
                                         </v-scale-transition>
                                     </div>
@@ -94,7 +94,7 @@
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
                                         size="48"></v-icon>
                                 </v-scale-transition>
                             </div>
@@ -111,7 +111,7 @@
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
                                         size="48"></v-icon>
                                 </v-scale-transition>
                             </div>
@@ -128,7 +128,7 @@
                             <postCard :post="post" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
                                         size="48"></v-icon>
                                 </v-scale-transition>
                             </div>
@@ -145,7 +145,7 @@
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
                                         size="48"></v-icon>
                                 </v-scale-transition>
                             </div>
@@ -169,7 +169,7 @@
                             <spaceCard :space="space" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline"
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
                                         size="48"></v-icon>
                                 </v-scale-transition>
                             </div>
@@ -199,6 +199,7 @@
         ref,
         computed
     } from '#imports'
+    import { CommerceBackendRegistry } from 'alternate-sdk'
 
     const route = useRoute()
     const model = ref(null)
@@ -239,22 +240,31 @@
         return Array.isArray(result) ? result[0] : null
     })
 
+    // Cross-references this department's product sections with whichever
+    // commerce backend is active. departments/categories themselves always
+    // stay Directus-sourced (see IN_SCOPE_COLLECTIONS in
+    // app/plugins/directus.ts) — only the PRODUCTS shown on this page get
+    // swapped, via the adapter's own optional getProductsByCategory, keyed
+    // on this department's slug (falling back to its externalId —
+    // departments.relative_id — when populated).
+    const activeCommerceBackend = useRuntimeConfig().public.commerceBackend || 'directus'
+    const usingBackendCatalog = computed(() => activeCommerceBackend !== 'directus')
+
     const {
-        data: introProducts
-    } = await useAsyncData('introProducts', async () => {
-        const result = await $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'showcases.showcases_id.*',
-                'images.*'
-            ],
-            filter: {
-                slug: { _eq: departmentSlug.value }
-            },
-            limit: 2,
-        }))
-        return Array.isArray(result) ? result[0] : null
+        data: backendCategoryProducts
+    } = await useAsyncData('department-backend-products', async () => {
+        if (!usingBackendCatalog.value || !department.value) return null
+        const adapter = CommerceBackendRegistry.get(activeCommerceBackend)
+        if (!adapter?.isEnabled?.() || typeof adapter.getProductsByCategory !== 'function') return null
+        return adapter.getProductsByCategory({
+            slug: department.value.slug,
+            externalId: department.value.relative_id || undefined,
+        })
     })
+
+    if (backendCategoryProducts.value) {
+        department.value.products = backendCategoryProducts.value.map((product) => ({ products_id: product }))
+    }
 
     // These department-scoped queries filter the `departments` collection
     // itself (to match slug + the relevant products/showcases condition)
@@ -266,9 +276,16 @@
             .map((p) => p?.products_id)
             .filter(Boolean)
 
+    // "Best Sellers" and "latest" are Directus merchandising concepts
+    // (a showcase tag, a status flag) with no equivalent ranking/filter in
+    // most backends' product APIs — rather than fabricate a fake "best
+    // sellers" sort a backend doesn't actually support, both honestly
+    // degrade to the same set already fetched above for the main grid
+    // (backendCategoryProducts), sliced to match this section's own limit.
     const {
         data: best
     } = await useAsyncData('best', async () => {
+        if (usingBackendCatalog.value) return (backendCategoryProducts.value ?? []).slice(0, 10)
         const result = await $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
@@ -293,6 +310,7 @@
     const {
         data: latestProducts
     } = await useAsyncData('latestProducts', async () => {
+        if (usingBackendCatalog.value) return (backendCategoryProducts.value ?? []).slice(0, 10)
         const result = await $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',
@@ -314,32 +332,17 @@
         return extractProducts(result)
     })
 
-    const {
-        data: localProducts
-    } = await useAsyncData('localProducts', () => {
-        return $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'showcases.showcases_id.*',
-                'images.*'
-            ],
-            limit: 2,
-            filter: {
-                slug: { _eq: departmentSlug.value },
-                products: {
-                    products_id: {
-                        status: {
-                            _eq: "published"
-                        }
-                    }
-                }
-            }
-        }))
-    })
-
+    // "Event"-type products are a Directus product_types attribute filter —
+    // an axis unrelated to category/department membership, so there's no
+    // honest way to approximate it from getProductsByCategory's result
+    // (unlike best/latest above, showing category products here would be
+    // actively misleading, not just an approximation). Degrades to empty
+    // — the template already guards this section with `v-if="events?.length"`,
+    // so it simply doesn't render rather than showing wrong data.
     const {
         data: events
     } = await useAsyncData('events', async () => {
+        if (usingBackendCatalog.value) return []
         const result = await $directus.request($readItems('departments', {
             fields: ['*',
                 'products.products_id.*',

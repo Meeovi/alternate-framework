@@ -7,8 +7,9 @@ import { CommerceBackendRegistry } from 'alternate-sdk'
 // files that construct their own inline Directus client instead of going
 // through the Nuxt plugin (Nitro handlers don't share the app's plugin
 // context). GET-only — writes always go to real Directus, see the plugin
-// file for the full rationale.
-const IN_SCOPE_COLLECTIONS = new Set(['products', 'categories', 'departments', 'orders'])
+// file for the full rationale. departments/categories are deliberately
+// excluded — see app/plugins/directus.ts's comment on the same constant.
+const IN_SCOPE_COLLECTIONS = new Set(['products', 'orders'])
 
 export function getDirectusFacade() {
   const config = useRuntimeConfig()

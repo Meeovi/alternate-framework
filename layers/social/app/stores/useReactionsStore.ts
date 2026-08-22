@@ -1,12 +1,14 @@
-import { defineStore } from '#imports'
-import { ref } from 'vue'
+import { defineStore, computed, ref } from '#imports'
 
 type ReactionItem = { likeCount: number; isLiked: boolean; loading: boolean }
 type Items = Record<string | number, ReactionItem>
 
 export const useReactionsStore = defineStore('reactions', () => {
   const items = ref<Items>({})
-  const { user } = useAuth()
+  // useAuth() has no direct `.user` — the session (and the user nested
+  // inside it) comes from its own useSession() composable.
+  const session = useAuth().useSession()
+  const user = computed(() => (session.value as any)?.data?.user)
 
   async function fetchReactionsApi(
     reactionId: string | number,

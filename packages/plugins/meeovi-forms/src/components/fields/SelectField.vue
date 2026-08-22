@@ -18,7 +18,7 @@ import { computed } from 'vue'
 
 export interface SelectFieldProps {
   label: string
-  modelValue: string | number | null
+  modelValue: string | number | string[] | null
   /** Directus passes `meta.options` here, e.g. `{ choices: [{ text, value }] }`. */
   options?: unknown[] | { choices?: unknown[] }
   multiple?: boolean
@@ -26,15 +26,15 @@ export interface SelectFieldProps {
 }
 
 const props = defineProps<SelectFieldProps>()
-const emit = defineEmits<{ 'update:modelValue': [value: string | number | null] }>()
+const emit = defineEmits<{ 'update:modelValue': [value: string | number | string[] | null] }>()
 
 // Directus stores select choices in `meta.options.choices` (`{ text, value }`),
 // falling back to a plain options array or a JSON-schema `enum`.
 const selectOptions = computed(() => {
   const src = props.options || props.schema?.enum
-  if (Array.isArray(src)) return src as unknown[]
-  if (src && Array.isArray((src as any).choices)) return (src as any).choices as unknown[]
-  return [] as unknown[]
+  if (Array.isArray(src)) return src as any[]
+  if (src && Array.isArray((src as any).choices)) return (src as any).choices as any[]
+  return [] as any[]
 })
 
 const onChange = (event: Event) => {

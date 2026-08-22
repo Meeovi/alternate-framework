@@ -6,26 +6,26 @@
 
         <v-row>
             <v-col cols="4">
-                <v-card append-icon="mdi-open-in-new" class="mx-auto" href="/lists"
-                    max-width="344" prepend-icon="mdi-list" rel="noopener"
+                <v-card append-icon="fas fa-up-right-from-square" class="mx-auto" href="/lists"
+                    max-width="344" prepend-icon="fas fa-list" rel="noopener"
                     subtitle="Manage your Lists" target="_blank" title="Lists"></v-card>
             </v-col>
 
             <v-col cols="4">
-                <v-card append-icon="mdi-open-in-new" class="mx-auto" href="/product/downloads"
-                    max-width="344" prepend-icon="mdi-download" rel="noopener"
+                <v-card append-icon="fas fa-up-right-from-square" class="mx-auto" href="/product/downloads"
+                    max-width="344" prepend-icon="fas fa-download" rel="noopener"
                     subtitle="Manage your Downloads" target="_blank" title="Downloads"></v-card>
             </v-col>
 
             <v-col cols="4">
-                <v-card append-icon="mdi-open-in-new" class="mx-auto" href="/product/collections"
-                    max-width="344" prepend-icon="mdi-folder-multiple" rel="noopener"
+                <v-card append-icon="fas fa-up-right-from-square" class="mx-auto" href="/product/collections"
+                    max-width="344" prepend-icon="fas fa-folder" rel="noopener"
                     subtitle="Manage your Collections" target="_blank" title="Collections"></v-card>
             </v-col>
 
             <v-col cols="4">
-                <v-card append-icon="mdi-open-in-new" class="mx-auto" href="/media-library"
-                    max-width="344" prepend-icon="mdi-folder-camera" rel="noopener"
+                <v-card append-icon="fas fa-up-right-from-square" class="mx-auto" href="/media-library"
+                    max-width="344" prepend-icon="fas fa-camera" rel="noopener"
                     subtitle="Manage your Media" target="_blank" title="Media Library"></v-card>
             </v-col>            
         </v-row>
@@ -40,7 +40,7 @@
                     <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                         </v-scale-transition>
                     </div>
                 </v-slide-group-item>
@@ -57,7 +57,7 @@
                     <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                         </v-scale-transition>
                     </div>
                 </v-slide-group-item>
@@ -74,7 +74,7 @@
                     <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                         </v-scale-transition>
                     </div>
                 </v-slide-group-item>

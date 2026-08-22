@@ -16,7 +16,7 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn icon="mdi-open-in-new" @click="openPost" />
+      <v-btn icon="fas fa-up-right-from-square" @click="openPost" />
     </v-card-actions>
   </v-card>
 </template>

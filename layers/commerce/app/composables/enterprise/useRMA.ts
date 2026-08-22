@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfRMARequest, SfRMAItem } from '~/composables/system/models'
+import type { SfRMARequest, SfRMAItem } from '../system/models'
 
 export function useRMA() {
   const client = getCommerceClient() as CommerceClient

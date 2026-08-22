@@ -1,14 +1,14 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, SfProductReview } from '~/composables/system/models';
+import type { Maybe, SfProductReview } from '../../system/models';
 import type {
   UseProductReviews,
   UseProductReviewsState,
   FetchProductReviews,
 } from './types';
 import { getCommerceClient } from '../../../utils/client';
-import { useAsyncData, useState } from '#app';
+import { useAsyncData, useState } from '#imports';
 
 /**
  * @description Composable managing product reviews data

@@ -16,7 +16,7 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn icon="mdi-heart" variant="text" @click="toggleLike" :color="liked ? 'red' : 'grey'" />
+            <v-btn icon="fas fa-heart" variant="text" @click="toggleLike" :color="liked ? 'red' : 'grey'" />
             <span class="text-caption">{{ likesCount }}</span>
           </v-card-actions>
         </v-card>

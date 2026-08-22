@@ -47,7 +47,7 @@
                                           <div class="d-flex fill-height align-center justify-center">
                                               <v-scale-transition>
                                                   <v-icon v-if="isSelected" color="white" size="48"
-                                                      icon="mdi-close-circle-outline"></v-icon>
+                                                      icon="fas fa-circle-xmark"></v-icon>
                                               </v-scale-transition>
                                           </div>
                                       </v-card>

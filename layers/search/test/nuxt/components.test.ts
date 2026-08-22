@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest'
 describe('searchBar.vue', () => {
   test('renders search box with placeholder text', async () => {
     const { mount } = await import('@vue/test-utils')
-    const SearchBar = await import('../../app/components/search/searchBar.vue').then(m => m.default)
+    const SearchBar = await import('../../app/components/searchBar.vue').then(m => m.default)
 
     const wrapper = mount(SearchBar, {
       global: {
@@ -25,7 +25,7 @@ describe('searchBar.vue', () => {
 
   test('shows index selector when multiple indexes are configured', async () => {
     const { mount } = await import('@vue/test-utils')
-    const SearchBar = await import('../../app/components/search/searchBar.vue').then(m => m.default)
+    const SearchBar = await import('../../app/components/searchBar.vue').then(m => m.default)
 
     const wrapper = mount(SearchBar, {
       global: {

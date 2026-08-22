@@ -48,7 +48,7 @@ export function usePreferredCurrency() {
 		})
 	}
 
-	watch(currency, (next) => {
+	watch(currency, (next: string) => {
 		const normalized = normalizeCurrency(next)
 		if (currencyCookie.value !== normalized) {
 			currencyCookie.value = normalized

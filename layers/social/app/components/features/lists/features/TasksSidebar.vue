@@ -8,7 +8,7 @@
     <v-toolbar flat>
       <v-toolbar-title>Tasks</v-toolbar-title>
       <v-spacer />
-      <v-btn icon="mdi-plus" @click="openCreateList" />
+      <v-btn icon="fas fa-plus" @click="openCreateList" />
     </v-toolbar>
 
     <v-list nav dense>
@@ -16,19 +16,19 @@
       <v-list-subheader>Smart Lists</v-list-subheader>
 
       <v-list-item
-        prepend-icon="mdi-calendar-today"
+        prepend-icon="fas fa-calendar-day"
         title="Today"
         @click="selectSmart('today')"
       />
 
       <v-list-item
-        prepend-icon="mdi-calendar"
+        prepend-icon="fas fa-calendar"
         title="Upcoming"
         @click="selectSmart('upcoming')"
       />
 
       <v-list-item
-        prepend-icon="mdi-star"
+        prepend-icon="fas fa-star"
         title="Starred"
         @click="selectSmart('starred')"
       />
@@ -42,12 +42,12 @@
         v-for="list in lists"
         :key="list.id"
         :title="list.name"
-        :prepend-icon="list.icon || 'mdi-format-list-bulleted'"
+        :prepend-icon="list.icon || 'fas fa-list'"
         @click="selectList(list)"
       >
         <template #append>
           <v-btn
-            icon="mdi-dots-vertical"
+            icon="fas fa-ellipsis-vertical"
             variant="text"
             @click.stop="openListMenu(list)"
           />
@@ -67,7 +67,7 @@
           :items="listTypes"
           label="List Type"
         />
-        <v-text-field v-model="newList.icon" label="Icon (mdi-*)" />
+        <v-text-field v-model="newList.icon" label="Icon (fas fa-*)" />
         <v-color-picker v-model="newList.color" hide-canvas />
       </v-card-text>
       <v-card-actions>

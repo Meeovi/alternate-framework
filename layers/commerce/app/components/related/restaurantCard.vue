@@ -16,7 +16,7 @@
                         <v-card-subtitle>
                             <span class="me-1">Local Favorite</span>
 
-                            <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
+                            <v-icon color="error" icon="fas fa-fire" size="small"></v-icon>
                         </v-card-subtitle>
                     </v-card-item>
 

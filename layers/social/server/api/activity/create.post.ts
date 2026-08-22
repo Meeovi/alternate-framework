@@ -4,13 +4,20 @@
 // explicitly. Previously this referenced a bare `redis` identifier that
 // was never declared anywhere, throwing ReferenceError on every call.
 import { redis } from '#shared/server/utils/redis'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 export default defineEventHandler(async (event) => {
+  // Previously trusted `actor` straight from the request body with no auth
+  // check at all, letting any caller inject fabricated activity into any
+  // user's own feed and their followers' feeds by naming them as the actor.
+  const user = await requireAuth(event);
+  const actor = user.id!;
+
   const body = await readBody(event);
   const authHeader = getRequestHeader(event, 'authorization');
   const config = useRuntimeConfig();
 
-  const { actor, verb, object, target } = body;
+  const { verb, object, target } = body;
 
   // config.public.directus.url (nested, declared in layers/commerce's
   // nuxt.config.ts) — config.public.directusUrl (flat) was referenced here

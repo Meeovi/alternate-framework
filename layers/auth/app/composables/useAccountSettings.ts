@@ -88,20 +88,20 @@ export function useAccountSettings(options: UseAccountSettingsOptions = {}) {
     return true
   }
 
-  const visibleSettings = computed(() => settings.value.filter((setting) => isSettingAvailable(setting.key)))
+  const visibleSettings = computed(() => settings.value.filter((setting: AccountSettingDefinition) => isSettingAvailable(setting.key)))
 
   const visibleCategories = computed(() => {
-    const inUse = new Set(visibleSettings.value.map((setting) => setting.category))
-    return categories.value.filter((category) => inUse.has(category.id))
+    const inUse = new Set(visibleSettings.value.map((setting: AccountSettingDefinition) => setting.category))
+    return categories.value.filter((category: AccountSettingsCategoryDefinition) => inUse.has(category.id))
   })
 
   const activeCategoryLabel = computed(() => {
-    const current = visibleCategories.value.find((category) => category.id === activeCategory.value)
+    const current = visibleCategories.value.find((category: AccountSettingsCategoryDefinition) => category.id === activeCategory.value)
     return current?.label || 'Settings'
   })
 
   const visibleSettingsForActiveCategory = computed(() =>
-    visibleSettings.value.filter((setting) => setting.category === activeCategory.value),
+    visibleSettings.value.filter((setting: AccountSettingDefinition) => setting.category === activeCategory.value),
   )
 
   function getSettingValue(key: string, fallback = false): boolean {
@@ -173,7 +173,7 @@ export function useAccountSettings(options: UseAccountSettingsOptions = {}) {
   }
 
   function ensureActiveCategory() {
-    if (!visibleCategories.value.find((category) => category.id === activeCategory.value)) {
+    if (!visibleCategories.value.find((category: AccountSettingsCategoryDefinition) => category.id === activeCategory.value)) {
       activeCategory.value = visibleCategories.value[0]?.id || 'accounts'
     }
   }

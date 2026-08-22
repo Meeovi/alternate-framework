@@ -19,7 +19,9 @@ const monthsAbbr: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', '
 
 const daysAbbr: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const units: Record<string, number> = {
+type TimeUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
+
+const units: Record<TimeUnit, number> = {
 	year: 24 * 60 * 60 * 1000 * 365,
 	month: (24 * 60 * 60 * 1000 * 365) / 12,
 	week: 24 * 60 * 60 * 1000 * 7,
@@ -36,7 +38,7 @@ function getRelativeTime(d1: Date | string, d2: Date = new Date()): string {
 
 	const elapsed = d1.getTime() - d2.getTime();
 
-	for (const u in units) {
+	for (const u of Object.keys(units) as TimeUnit[]) {
 		if (Math.abs(elapsed) > units[u] || u === 'second') {
 			return rtf.format(Math.round(elapsed / units[u]), u as Intl.RelativeTimeFormatUnit);
 		}
@@ -79,8 +81,8 @@ function destructureDate(date: string): Record<string, number | string> {
 	const year = d.getFullYear();
 	const month = d.getMonth();
 	const day = d.getDate();
-	const dayName = days[d.getDay()];
-	const monthName = monthsAbbr[month];
+	const dayName = days[d.getDay()]!;
+	const monthName = monthsAbbr[month]!;
 	const hour = d.getHours();
 	const minute = d.getMinutes();
 	const second = d.getSeconds();
@@ -120,7 +122,7 @@ function toDateTime(secs: number): Date {
 function getMonth(dateString: string): string {
 	const d = new Date(dateString);
 	const monthIndex = d.getMonth();
-	return monthsAbbr[monthIndex];
+	return monthsAbbr[monthIndex]!;
 }
 
 function getDate(dateString: string): number {
@@ -131,7 +133,7 @@ function getDate(dateString: string): number {
 function getDay(dateString: string): string {
 	const d = new Date(dateString);
 	const dayIndex = d.getDay();
-	return days[dayIndex];
+	return days[dayIndex]!;
 }
 
 export {

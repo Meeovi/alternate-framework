@@ -29,8 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { useHead, useRuntimeConfig } from '#app'
-import { useAlert } from '../composables/useAlert'
+import { useHead, useRuntimeConfig } from '#imports'
 import { z } from 'zod'
 import { reactive, ref } from 'vue'
 import { authClient } from '../../lib/auth-client'
@@ -46,7 +45,6 @@ useHead({
   title: 'Forgot Password'
 })
 
-const alert = useAlert()
 const runtimeConfig = useRuntimeConfig()
 const appName = String(runtimeConfig.public?.appName || 'App')
 
@@ -66,7 +64,8 @@ const messageType = ref<'info' | 'success' | 'error' | 'warning' | undefined>(un
 
 const handleForgetPassword = async () => {
   if (!state.email) {
-    alert.error('Please enter your email address');
+    messageType.value = 'error'
+    message.value = 'Please enter your email address'
 		return;
 	}
   loading.value = true

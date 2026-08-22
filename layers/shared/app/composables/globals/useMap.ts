@@ -117,7 +117,7 @@ export function useLeafletMap() {
     return new Promise<void>((resolve) => {
       map.value!.locate({ setView: true, maxZoom: 16 })
 
-      map.value!.on('locationfound', (e) => {
+      map.value!.on('locationfound', (e: L.LocationEvent) => {
         L.marker(e.latlng).addTo(map.value!)
         emit('map:center:user', e.latlng)
         analytics.track('map:center:user', e.latlng)

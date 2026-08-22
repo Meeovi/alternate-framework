@@ -11,7 +11,7 @@
       v-model="files"
       label="Attach media"
       multiple
-      prepend-icon="mdi-image"
+      prepend-icon="fas fa-image"
       class="mt-3"
     />
 
@@ -43,10 +43,9 @@ function reset() {
 }
 
 async function submit() {
-  const res = await repost(props.postId, {
-    comment: text.value,
-    media: files?.value || []
-  })
+  // repost() only supports a plain boolean-toggle repost today — there's no
+  // quote-repost API (comment/media) anywhere in the social contract yet.
+  const res = await repost(props.postId)
   emit('posted', res)
   reset()
 }

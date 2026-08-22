@@ -1,4 +1,4 @@
-import type { SfProduct, SfCategory } from '~/composables/system/models'
+import type { SfProduct, SfCategory } from './models'
 
 interface CacheEntry<T> {
   value: T

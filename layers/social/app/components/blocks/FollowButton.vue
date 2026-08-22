@@ -52,7 +52,7 @@ const loading = ref(false)
 
 watch(
   () => props.initialFollowing,
-  (newVal) => {
+  (newVal: boolean | undefined) => {
     if (newVal !== undefined) following.value = newVal
   }
 )
@@ -65,8 +65,9 @@ onMounted(async () => {
   if (!session.value) return
 
   // 2. Check registry cache
-  if (socialStore.followRegistry?.[props.id] !== undefined) {
-    following.value = socialStore.followRegistry[props.id]
+  const followRegistry = socialStore.followRegistry as unknown as Record<string, boolean>
+  if (followRegistry?.[props.id] !== undefined) {
+    following.value = followRegistry[props.id]!
     return
   }
 
@@ -92,7 +93,8 @@ async function onClick() {
 
   try {
     await socialStore.toggleFollow(props.id, props.entityType)
-    following.value = socialStore.followRegistry?.[props.id] ?? !following.value
+    const followRegistry = socialStore.followRegistry as unknown as Record<string, boolean>
+    following.value = followRegistry?.[props.id] ?? !following.value
 
     emit('update:following', following.value)
     emit('change', following.value)

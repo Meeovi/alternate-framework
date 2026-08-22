@@ -6,10 +6,10 @@
 
         <v-card class="mx-auto" subtitle="Save this device's location when it's connected to the internet. See below to locate it." title="Find my M Device">
             <template v-slot:prepend>
-                <v-icon color="primary" icon="fas fa-locate"></v-icon>
+                <v-icon color="primary" icon="fas fa-location-crosshairs"></v-icon>
             </template>
             <template v-slot:append>
-                <v-switch label="Off" true-icon="mdi-check" false-icon="mdi-close"></v-switch>
+                <v-switch label="Off" true-icon="fas fa-check" false-icon="fas fa-xmark"></v-switch>
             </template>
         </v-card>
     </div>

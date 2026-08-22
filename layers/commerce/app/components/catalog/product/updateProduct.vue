@@ -10,7 +10,7 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12">
-                            <v-text-field v-model="searchSku" label="Search Product by SKU" append-icon="mdi-magnify"
+                            <v-text-field v-model="searchSku" label="Search Product by SKU" append-icon="fas fa-magnifying-glass"
                                 @click:append="fetchProduct(searchSku)"></v-text-field>
                         </v-col>
                         <v-col cols="12">

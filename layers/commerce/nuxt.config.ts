@@ -88,23 +88,18 @@ export default defineNuxtConfig({
         },
       },
       // Directus
+      // SECURITY: this whole object is serialized into the client bundle —
+      // never put real admin credentials here. email/password/enabled/
+      // enableGlobalAuthMiddleware/userFields/redirect were unused dead
+      // config (zero readers anywhere in the codebase) that leaked a real
+      // Directus admin email+password to every visitor; removed. `token`
+      // is still exposed client-side and is a known, separate issue (see
+      // app/plugins/directus.ts).
       directus: {
         url: process.env.DIRECTUS_URL,
         nuxtBaseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3011',
         auth: {
-          email: process.env.NUXTUS_DIRECTUS_ADMIN_EMAIL,
-          password: process.env.NUXTUS_DIRECTUS_ADMIN_PASSWORD,
           token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN,
-          enabled: true,
-          enableGlobalAuthMiddleware: false, // Enable auth middleware on every page
-          userFields: ['*'], // Select user fields
-          redirect: {
-            login: '/login', // Path to redirect when login is required
-            logout: '/', // Path to redirect after logout
-            home: '/', // Path to redirect after successful login
-            resetPassword: '/reset-password', // Path to redirect for password reset
-            callback: '/callback', // Path to redirect after login with provider
-          },
         }
       },
     },

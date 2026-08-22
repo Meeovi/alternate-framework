@@ -8,7 +8,7 @@
 // always present at runtime. useCalendar.ts and GanttBoard.vue both import
 // this by name; it never existed as a file, so both were unreachable dead
 // imports until now.
-import { useNuxtApp } from '#app'
+import { useNuxtApp } from '#imports'
 
 export function useDirectusRequest() {
   const { $directus, $readItem, $readItems, $createItem, $updateItem, $deleteItem } = useNuxtApp() as any

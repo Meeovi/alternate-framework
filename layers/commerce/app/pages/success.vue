@@ -9,15 +9,15 @@
           </svg>
         </div>
         <h1 class="text-4xl font-heading font-bold text-primary mb-4">Thank you for your purchase!</h1>
-        <p class="text-xl font-bold text-muted-foreground mb-8">Your order # is: {{ checkout.id }}</p>
+        <p class="text-xl font-bold text-muted-foreground mb-8">Your order # is: {{ checkout?.id }}</p>
         <p class="mb-8">We'll email you an order confirmation with details and tracking info.</p>
         <!-- Product Details -->
         <div class="bg-card border border-border rounded-lg p-6 mb-8">
           <h2 class="text-2xl font-heading font-semibold text-card-foreground mb-2">
-            {{ product.name }}
+            {{ product?.name }}
           </h2>
           <p class="text-muted-foreground mb-4">
-            {{ product.description }}
+            {{ product?.description }}
           </p>
         </div>
         <!-- Action Buttons -->
@@ -57,7 +57,7 @@ type CheckoutDetails = {
 // This needs to be fetched on the client
 const { data } = await useAsyncData<CheckoutDetails>(
   'checkout-details',
-  () => $fetch(`/api/payment/stripe/done?session_id=${sessionId}`),
+  () => $fetch<CheckoutDetails>(`/api/payment/stripe/done?session_id=${sessionId}`),
   {
     server: false,
   },

@@ -5,7 +5,7 @@
                 <div class="col-12 col-md-6">
                     <div class="image-container">
                         <div v-if="hasAsset(productDetails?.image)">
-                            <NuxtImg provider="cloudinary" :src="getAssetURL(productDetails?.image)"
+                            <NuxtImg provider="cloudinary" :src="getAssetURL(productDetails?.image) ?? undefined"
                                 :alt="productDetails?.name" class="w-full rounded-md" />
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                                         </div>
 
                                         <div class="flex flex-col items-stretch xs:items-center xs:inline-flex" v-else>
-                                            <v-btn prepend-icon="fas fa-download" :product="productDetails" text="Download" :href="getAssetURL(productDetails?.file)" download />
+                                            <v-btn prepend-icon="fas fa-download" :product="productDetails" text="Download" :href="getAssetURL(productDetails?.file) ?? undefined" download />
                                         </div>
                                     </v-list-item>
 
@@ -241,7 +241,7 @@
 
     watch(
         () => props.productDetails,
-        async (product) => {
+        async (product: any) => {
             productRssLink.value = product ? await getProductRssLink(product) : null;
         }, {
             immediate: true

@@ -3,7 +3,7 @@
   <v-container class="max-width-600 my-8">
     <v-card elevation="2" rounded="lg">
       <v-toolbar color="primary" class="text-white" flat>
-        <v-icon start class="ml-4">mdi-cellphone-link</v-icon>
+        <v-icon start class="ml-4">fas fa-mobile-screen-button</v-icon>
         <v-toolbar-title>Device Authorization</v-toolbar-title>
       </v-toolbar>
 
@@ -53,7 +53,7 @@
 
             <!-- Validation/Decision State -->
             <div v-else class="text-center py-4">
-              <v-icon size="64" color="warning" class="mb-3">mdi-security-alert-outline</v-icon>
+              <v-icon size="64" color="warning" class="mb-3">fas fa-triangle-exclamation</v-icon>
               <h3 class="text-h6 mb-2">Device Requesting Access</h3>
               <p class="text-body-2 text-medium-emphasis mb-6">
                 A device is requesting authorization to connect to your account. Please confirm the code matches.
@@ -128,7 +128,7 @@
                       {{ deviceCodeData.verificationUri }}
                     </a>
                   </div>
-                  <v-btn icon="mdi-content-copy" variant="text" size="small" @click="copyToClipboard" />
+                  <v-btn icon="fas fa-copy" variant="text" size="small" @click="copyToClipboard" />
                 </v-card-text>
               </v-card>
 

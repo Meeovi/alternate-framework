@@ -1,14 +1,22 @@
-import { defineNuxtPlugin, useRuntimeConfig } from '#app';
+import { defineNuxtPlugin, useRuntimeConfig } from '#imports';
 import { createDirectus, rest, readItem, readItems, createItem, deleteItem, updateItem, uploadFiles, readSingleton, readCollection, updateCollection, readFields, readFieldsByCollection, realtime, authentication, readMe, staticToken } from '@directus/sdk';
 import type { RestCommand } from '@directus/sdk';
 import { CommerceBackendRegistry } from 'alternate-sdk';
-import "dotenv"
 
 // Only these collections are backend-swappable — everything else (CMS
-// content: navigation, pages, page_blocks, brands, shops, ...) always goes
-// to real Directus regardless of which commerce backend is active, since
-// Directus remains the CMS layer no matter which commerce backend is used.
-const IN_SCOPE_COLLECTIONS = new Set(['products', 'categories', 'departments', 'orders']);
+// content: navigation, pages, page_blocks, brands, shops, departments,
+// categories, ...) always goes to real Directus regardless of which
+// commerce backend is active, since Directus remains the CMS layer no
+// matter which commerce backend is used. departments/categories are
+// deliberately excluded even though they're commerce-adjacent: they're
+// Directus-only CMS taxonomy (name/description/image/slug), and
+// "departments" specifically has no equivalent concept in any other
+// backend at all. Cross-referencing their PRODUCT contents with the active
+// backend is handled separately and explicitly via
+// CommerceBackendAdapter.getProductsByCategory(), called directly from
+// app/pages/departments/[...slug].vue and
+// app/pages/departments/category/[...id].vue — see those files.
+const IN_SCOPE_COLLECTIONS = new Set(['products', 'orders']);
 
 export default defineNuxtPlugin(() => {
     const config = useRuntimeConfig()

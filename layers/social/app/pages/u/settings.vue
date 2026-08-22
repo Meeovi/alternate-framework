@@ -137,7 +137,7 @@ const loading = ref(false)
 const theme = useTheme()
 const config = useRuntimeConfig()
 const authConfig = (config.public as any)?.auth ?? {}
-const token = useCookie<string | null>(authConfig?.cookieName || 'auth-token')
+const token = useCookie<string | null>(authConfig?.cookieName || 'auth-token') as any
 
 const saving = ref(false)
 const statusMessage = ref('')

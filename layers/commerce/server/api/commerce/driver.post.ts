@@ -1,5 +1,4 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import { useNuxtApp } from 'nuxt/app'
 /**
  * POST /api/commerce/driver
  *
@@ -26,9 +25,20 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'method (string) is required in the request body' })
   }
 
-  // Access the server-side commerce driver
-  const nuxtApp: any = useNuxtApp?.()
-  let client: AnyCommerceDriver | undefined = nuxtApp?.$sdk?.commerce
+  // Access the server-side commerce driver. useNuxtApp isn't a real,
+  // resolvable binding in a Nitro server route (no import wires it up, and
+  // Nitro doesn't auto-import it here) — referencing it unguarded threw an
+  // uncaught ReferenceError/module-resolution error on every request,
+  // turning what should be a clean 503 "not configured" response into a
+  // raw 500. Guard the whole lookup so any failure to resolve falls through
+  // to the same "not configured" path the code already handles below.
+  let client: AnyCommerceDriver | undefined
+  try {
+    const nuxtApp: any = typeof useNuxtApp === 'function' ? useNuxtApp() : undefined
+    client = nuxtApp?.$sdk?.commerce
+  } catch {
+    // useNuxtApp not available in this server context
+  }
 
   // Fallback to static SDK
   if (!client) {

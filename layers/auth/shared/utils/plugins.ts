@@ -23,7 +23,6 @@ import {
   emailOTP,
   admin as adminPlugin,
   anonymous,
-  siwe,
   phoneNumber,
   lastLoginMethod,
   mcp,
@@ -43,9 +42,6 @@ import {
   slack,
   patreon,
 } from 'better-auth/plugins'
-import { generateRandomString } from 'better-auth/crypto'
-import { verifyMessage, createPublicClient, http } from 'viem'
-import { mainnet } from 'viem/chains'
 import { ac, admin, user, myCustomRole } from './permissions'
 import { normalizeUsername } from './username'
 
@@ -97,30 +93,19 @@ export const plugins = [
     }, ctx) => {
       console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
     },
-    getCustomerCreateParams: async (user: User, ctx) => {
+    getCustomerCreateParams: async (user, ctx) => {
       // Previously read user.metadata?.referralSource — `metadata` was
       // never declared as an additionalField anywhere on the user model,
       // so this was always undefined regardless of who signed up. Attach
       // the one piece of real, available data instead.
       return {
         metadata: {
-          appUserId: user.id
+          appUserId: user.id ?? ''
         }
       };
     },
     subscription: {
       enabled: true,
-      // modelName was previously "subscriptions" — a pre-existing Directus
-      // content table (status/subscriptionNumber/startDate/endDate, no
-      // stripe_price_id or limits column) — this plugin could never have
-      // stored real subscription state there. Points at a dedicated table
-      // instead, same fix as organizations above.
-      modelName: "authSubscriptions",
-      fields: {
-        id: "id",
-        stripePriceId: "stripe_price_id",
-        limits: "limits"
-      },
       plans: async () => {
         // Plan catalog — also a dedicated table (auth_subscription_plans),
         // distinct from the per-user subscription records above. Starts
@@ -180,9 +165,22 @@ export const plugins = [
           SELECT * FROM auth_organization_members
           WHERE user_id = ${user.id} AND organization_id = ${referenceId}
           LIMIT 1
-        `, 'objects') as any[];
+        `) as any[];
         return member?.role === "owner" || member?.role === "admin";
       },
+    },
+    // modelName was previously "subscriptions" — a pre-existing Directus
+    // content table (status/subscriptionNumber/startDate/endDate, no
+    // stripe_price_id or limits column) — this plugin could never have
+    // stored real subscription state there. Points at a dedicated table
+    // instead, same fix as organizations above. stripePriceId/limits live
+    // on the separate authSubscriptionPlans catalog table (read directly
+    // via drizzle in `plans` below), not on the plugin's own subscription
+    // row schema, so they aren't valid keys for this fields remap.
+    schema: {
+      subscription: {
+        modelName: "authSubscriptions",
+      }
     },
   }),
   deviceAuthorization({
@@ -344,38 +342,6 @@ export const plugins = [
 
   anonymous({
     emailDomainName: 'example.com',
-  }),
-
-  // Sign-In-With-Ethereum — real signature verification via viem. No
-  // wallet is available in this environment to drive the full flow, but
-  // the nonce/verify endpoints are real.
-  siwe({
-    domain: process.env.NUXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, '') || 'localhost',
-    emailDomainName: process.env.NUXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, '') || 'localhost',
-    anonymous: false,
-    getNonce: async () => generateRandomString(32, 'a-z', 'A-Z', '0-9'),
-    verifyMessage: async ({ message, signature, address }) => {
-      try {
-        return await verifyMessage({
-          address: address as `0x${string}`,
-          message,
-          signature: signature as `0x${string}`,
-        })
-      } catch (error) {
-        console.error('SIWE verification failed:', error)
-        return false
-      }
-    },
-    ensLookup: async ({ walletAddress }) => {
-      try {
-        const client = createPublicClient({ chain: mainnet, transport: http() })
-        const ensName = await client.getEnsName({ address: walletAddress as `0x${string}` })
-        const ensAvatar = ensName ? await client.getEnsAvatar({ name: ensName }) : null
-        return { name: ensName || walletAddress, avatar: ensAvatar || '' }
-      } catch {
-        return { name: walletAddress, avatar: '' }
-      }
-    },
   }),
 
   // Phone OTP — falls back to a console log when Twilio isn't configured

@@ -28,6 +28,9 @@ vi.mock('../../server/providers/database', () => ({
 vi.mock('../../server/providers/memory', () => ({
   memoryProvider: { id: 'memory', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
 }))
+vi.mock('../../server/providers/directus', () => ({
+  directusProvider: { id: 'directus', isEnabled: vi.fn(), search: vi.fn() },
+}))
 
 import { openSearchProvider } from '../../server/providers/opensearch'
 import { postgresProvider } from '../../server/providers/postgres'

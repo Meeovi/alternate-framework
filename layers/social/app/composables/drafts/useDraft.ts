@@ -1,6 +1,6 @@
 import { useStorage, type RemovableRef } from '@vueuse/core'
 import type { mastodon } from 'masto'
-import type { DraftItem, DraftKey } from '#social/types'
+import type { DraftItem, DraftKey } from '../../../shared/types/index'
 
 const defaultDraftItems: DraftItem[] = []
 

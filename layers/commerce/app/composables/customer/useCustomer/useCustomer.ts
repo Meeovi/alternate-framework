@@ -1,11 +1,11 @@
 import { toRefs } from '@vueuse/shared';
 import { computed } from 'vue';
 import type { Ref } from 'vue';
-import type { Maybe, SfCustomer, SfCustomerAddress, SfCustomerGroup } from '~/composables/system/models';
+import type { Maybe, SfCustomer, SfCustomerAddress, SfCustomerGroup } from '../../system/models';
 import type { UseCustomerReturn, UseCustomerState, FetchCustomer } from './types';
 import { getCommerceClient } from '../../../utils/client';
 import type { CommerceClient } from '../../../utils/client';
-import { useAsyncData, useState } from '#app';
+import { useAsyncData, useState } from '#imports';
 
 export const useCustomer: UseCustomerReturn = () => {
   const state = useState<UseCustomerState>('useCustomer', () => ({

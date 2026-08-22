@@ -94,7 +94,7 @@ export function useMediaCenter() {
       await loadMedia()
     }
 
-    const matches = allMedia.value.filter((item) => includesToken(item, token))
+    const matches = allMedia.value.filter((item: MediaItem) => includesToken(item, token))
     searchResults.value = matches
     return matches
   }
@@ -116,7 +116,7 @@ export function useMediaCenter() {
       }
     }
 
-    const inFolder = allMedia.value.filter((item) => {
+    const inFolder = allMedia.value.filter((item: MediaItem) => {
       const itemFolder = item?.folder || item?.folder_id || item?.media_folder
       if (!itemFolder) return false
       if (typeof itemFolder === 'object') return String(itemFolder.id) === String(_folderId)
@@ -125,9 +125,9 @@ export function useMediaCenter() {
 
     return {
       all: inFolder,
-      images: inFolder.filter((item) => mediaType(item) === 'image'),
-      videos: inFolder.filter((item) => mediaType(item) === 'video'),
-      audio: inFolder.filter((item) => mediaType(item) === 'audio'),
+      images: inFolder.filter((item: MediaItem) => mediaType(item) === 'image'),
+      videos: inFolder.filter((item: MediaItem) => mediaType(item) === 'video'),
+      audio: inFolder.filter((item: MediaItem) => mediaType(item) === 'audio'),
     }
   }
 

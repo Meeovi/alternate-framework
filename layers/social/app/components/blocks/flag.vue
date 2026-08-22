@@ -7,7 +7,7 @@
     <v-dialog v-model="dialog" transition="dialog-bottom-transition" fullscreen :scroll-strategy="'reposition'">
       <v-card class="pa-4">
         <v-toolbar>
-          <v-btn :icon="'mdi-close'" variant="text" @click="dialog = false" />
+          <v-btn :icon="'fas fa-xmark'" variant="text" @click="dialog = false" />
 
           <v-toolbar-title>New Report</v-toolbar-title>
 

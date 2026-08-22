@@ -55,6 +55,6 @@ export default defineNuxtPlugin(nuxtApp => {
       },
     },
   })
-  nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
-  nuxtApp.vueApp.use(vuetify)
+  nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon as any);
+  (nuxtApp.vueApp as any).use(vuetify)
 })

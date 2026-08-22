@@ -1,6 +1,6 @@
 // The PCI Software Security Framework (SSF) is a modern, comprehensive standard designed to ensure the secure design, development, and maintenance of payment software. It provides a structured approach to identifying and mitigating security risks throughout the software development lifecycle, helping organizations protect sensitive payment data and maintain compliance with industry regulations.
 
-import { useRuntimeConfig } from '#app'
+import { useRuntimeConfig } from '#imports'
 
 type SecurityFlags = {
   turnstileEnabled: boolean

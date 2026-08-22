@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
-import type { SfAttribute, SfProduct } from '~/composables/system/models'
+import type { Ref } from '#imports'
+import type { SfAttribute, SfProduct } from '../composables/system/models'
 
 export interface SwatchAttribute {
   attributeCode: string

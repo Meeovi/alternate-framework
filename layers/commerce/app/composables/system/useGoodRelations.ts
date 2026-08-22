@@ -1,4 +1,4 @@
-import type { SfProduct, SfImage, SfMoney } from '~/composables/system/models'
+import type { SfProduct, SfImage, SfMoney } from './models'
 
 type GoodRelationsOfferInput = {
 	name: string

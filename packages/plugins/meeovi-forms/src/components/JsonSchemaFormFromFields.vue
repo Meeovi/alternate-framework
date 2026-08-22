@@ -4,7 +4,7 @@
       v-for="field in visibleFields"
       :key="String(field.field || field.name || '')"
       :field="field"
-      :model-value="model[String(field.field || '')]"
+      :model-value="form.model[String(field.field || '')]"
       @update:model-value="(value) => updateField(String(field.field || ''), value)"
     />
     <v-btn type="submit" :loading="submitting">{{ submitLabel }}</v-btn>

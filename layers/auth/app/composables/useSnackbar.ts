@@ -28,7 +28,7 @@ export const useSnackbar = () => {
       active.value.push(next)
 
       setTimeout(() => {
-        const idx = active.value.findIndex((s) => s.id === next.id)
+        const idx = active.value.findIndex((s: SnackbarMessage) => s.id === next.id)
         if (idx >= 0) active.value.splice(idx, 1)
       }, next.timeout ?? 3000)
     }
@@ -46,7 +46,7 @@ export const useSnackbar = () => {
   }
 
   function remove(id: number) {
-    active.value = active.value.filter((s) => s.id !== id)
+    active.value = active.value.filter((s: SnackbarMessage) => s.id !== id)
     processQueue()
   }
 

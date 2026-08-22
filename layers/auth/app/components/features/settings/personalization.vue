@@ -11,7 +11,7 @@
                 :subtitle="personalization.subtitle" :title="personalization.title">
                 <template v-slot:prepend>
                     <v-avatar color="grey-lighten-1">
-                        <v-icon color="white">mdi-personalization</v-icon>
+                        <v-icon color="white">fas fa-palette</v-icon>
                     </v-avatar>
                 </template>
 

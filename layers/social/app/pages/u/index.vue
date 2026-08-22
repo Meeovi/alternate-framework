@@ -103,7 +103,7 @@
                     variant="solo-filled"
                     hide-details
                     readonly
-                    @click="navigateTo('/connect/compose')"
+                    @click="goToCompose"
                   />
 
                   <div class="d-flex flex-wrap ga-2 mt-3">
@@ -400,15 +400,27 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 
-const { user, fetchSession, signOut: authSignOut } = useAuth() as any
+// useAuth() only exposes useSession()/signOut() etc, not a bare `user`/
+// `fetchSession` — matches the pattern used in middleware/auth.ts,
+// middleware/admin.ts and login.vue. `user` stays a plain, directly
+// mutable ref (rather than a computed alias of sessionData.value.user)
+// because code below merges customerFallback fields into it in place.
+const auth = useAuth() as any
+const { data: sessionData, refresh: fetchSession } = auth.useSession(useFetch)
+const user = ref<any>(null)
+watchEffect(() => {
+  user.value = (sessionData.value as any)?.user ?? null
+})
 const loading = ref(false)
 const theme = useTheme()
 const config = useRuntimeConfig()
 const authConfig = (config.public as any)?.auth ?? {}
-const token = useCookie<string | null>(authConfig?.cookieName || 'auth-token')
+const token = useCookie<string | null>(authConfig?.cookieName || 'auth-token') as any
 
 const tab = ref('timeline')
 const composerText = ref('')
+
+const goToCompose = () => navigateTo('/connect/compose')
 
 const profileStorageKey = computed(() => `meeovi:user-profile:${(user.value as any)?.id || 'guest'}`)
 const THEME_STORAGE_KEY = 'elite-theme'
@@ -575,7 +587,7 @@ const loadCommerceFeatures = async () => {
 }
 
 const loadSocialFeatures = async () => {
-  const { $directus, $readItem, $readItems } = useNuxtApp()
+  const { $directus, $readItem, $readItems } = useNuxtApp() as any
 
   const sdkReadItems = (collection: string, opts: any = {}) => $directus.request($readItems(collection, opts))
 
@@ -727,7 +739,8 @@ onMounted(async () => {
 })
 
 const signOut = async () => {
-  await authSignOut({ redirectTo: '/login' })
+  await auth.signOut()
+  await navigateTo('/login')
 }
 
 const toggleTheme = () => {

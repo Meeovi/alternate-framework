@@ -18,7 +18,7 @@
 
         <v-row class="text-center">
             <v-col cols="3" v-for="historyPost in historyPosts" :key="historyPost.id">
-                <postsCard :posts="historyPost" />
+                <postsCard :post="historyPost" />
             </v-col>
         </v-row>
     </div>

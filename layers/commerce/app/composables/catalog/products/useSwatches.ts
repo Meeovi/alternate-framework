@@ -1,7 +1,7 @@
 import { computed, ref, toRefs } from 'vue';
 import { getCommerceClient } from '../../../utils/client';
-import { useAsyncData, useState } from '#app';
-import type { SfProduct } from '~/composables/system/models';
+import { useAsyncData, useState } from '#imports';
+import type { SfProduct } from '../../system/models';
 import type {
   SwatchAttribute,
   UseSwatchesState,

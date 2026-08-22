@@ -1,5 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfProduct, SfOrder } from '~/composables/system/models'
+import type { SfProduct, SfOrder } from './models'
 
 function clientOrNull() {
 	try {

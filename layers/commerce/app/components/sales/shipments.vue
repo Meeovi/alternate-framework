@@ -43,7 +43,7 @@
     // scoping of its own.
     const {
         data: shippedOrders
-    } = await useAsyncData('shippedOrders', () => {
+    } = await useAsyncData<any[]>('shippedOrders', () => {
         return $fetch('/api/shipment/my-shipments').catch(() => [])
     })
 

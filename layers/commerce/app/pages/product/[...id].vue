@@ -40,7 +40,7 @@
 
                     <div class="d-flex fill-height align-center justify-center">
                       <v-scale-transition>
-                        <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                        <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                       </v-scale-transition>
                     </div>
                   </v-slide-group-item>
@@ -197,7 +197,7 @@
                 <productCard :product="crossSell?.products_id" :class="['ma-4', selectedClass]" @click="toggle" />
                 <div class="d-flex fill-height align-center justify-center">
                   <v-scale-transition>
-                    <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                   </v-scale-transition>
                 </div>
               </v-slide-group-item>
@@ -215,7 +215,7 @@
                     @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>
@@ -236,7 +236,7 @@
                   <shop :shop="shops?.shops_id" :class="['ma-4', selectedClass]" @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>
@@ -257,7 +257,7 @@
                   <short :short="shorts?.shorts_id" :class="['ma-4', selectedClass]" @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>
@@ -278,7 +278,7 @@
                   <spacesCard :space="spaces?.spaces_id" :class="['ma-4', selectedClass]" @click="toggle" />
                   <div class="d-flex fill-height align-center justify-center">
                     <v-scale-transition>
-                      <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                      <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                     </v-scale-transition>
                   </div>
                 </v-slide-group-item>

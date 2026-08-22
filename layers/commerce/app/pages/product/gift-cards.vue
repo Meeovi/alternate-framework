@@ -14,7 +14,7 @@
                     <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                         </v-scale-transition>
                     </div>
                 </v-slide-group-item>
@@ -31,7 +31,7 @@
                     <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                         </v-scale-transition>
                     </div>
                 </v-slide-group-item>
@@ -48,7 +48,7 @@
                     <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                         </v-scale-transition>
                     </div>
                 </v-slide-group-item>
@@ -65,7 +65,7 @@
                     <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="mdi-close-circle-outline" size="48"></v-icon>
+                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
                         </v-scale-transition>
                     </div>
                 </v-slide-group-item>

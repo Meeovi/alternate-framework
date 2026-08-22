@@ -43,7 +43,7 @@ export function useUserNotifications() {
   const directus = (nuxtApp.$directus as any) || createDirectusClient((config.public as any)?.directus?.url)
 
   const notifications = ref<UserNotification[]>([])
-  const unreadCount = computed(() => notifications.value.filter((n) => !n.read).length)
+  const unreadCount = computed(() => notifications.value.filter((n: UserNotification) => !n.read).length)
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -58,7 +58,7 @@ export function useUserNotifications() {
     try {
       const userId = String(user.value.id)
       const items = await directus.request(
-        readItems('notifications', {
+        (readItems as any)('notifications', {
           filter: { recipient: { _eq: userId } },
           sort: '-date_created',
           fields: ['id', 'content', 'is_read', 'type', 'date_created', 'date_updated', 'payload'],
@@ -75,11 +75,11 @@ export function useUserNotifications() {
   watch(() => user.value?.id, fetchNotifications, { immediate: true })
 
   const markAsRead = async (id: string) => {
-    const notification = notifications.value.find((n) => n.id === id)
+    const notification = notifications.value.find((n: UserNotification) => n.id === id)
     if (notification && directus) {
       notification.read = true
       try {
-        await directus.request(updateItem('notifications', id, { is_read: true }))
+        await directus.request((updateItem as any)('notifications', id, { is_read: true }))
       } catch {
         notification.read = false
       }
@@ -88,14 +88,14 @@ export function useUserNotifications() {
 
   const markAllAsRead = async () => {
     if (!directus || !user.value?.id) return
-    const unread = notifications.value.filter((n) => !n.read)
+    const unread = notifications.value.filter((n: UserNotification) => !n.read)
     for (const n of unread) {
       n.read = true
     }
     try {
       await Promise.all(
-        unread.map((n) =>
-          directus.request(updateItem('notifications', n.id, { is_read: true })),
+        unread.map((n: UserNotification) =>
+          directus.request((updateItem as any)('notifications', n.id, { is_read: true })),
         ),
       )
     } catch {
@@ -106,10 +106,10 @@ export function useUserNotifications() {
   }
 
   const dismiss = async (id: string) => {
-    notifications.value = notifications.value.filter((n) => n.id !== id)
+    notifications.value = notifications.value.filter((n: UserNotification) => n.id !== id)
     if (directus) {
       try {
-        await directus.request(deleteItem('notifications', id))
+        await directus.request((deleteItem as any)('notifications', id))
       } catch {
         // Could refetch here
       }

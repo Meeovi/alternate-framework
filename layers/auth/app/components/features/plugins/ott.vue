@@ -3,7 +3,7 @@
   <v-container class="max-width-600 my-8">
     <v-card elevation="2" rounded="lg">
       <v-toolbar color="teal" class="text-white" flat>
-        <v-icon start class="ml-4">mdi-ticket-percent-outline</v-icon>
+        <v-icon start class="ml-4">fas fa-ticket</v-icon>
         <v-toolbar-title>One-Time Token Setup (OTT)</v-toolbar-title>
       </v-toolbar>
 
@@ -32,7 +32,7 @@
               <v-btn
                 color="teal"
                 size="large"
-                prepend-icon="mdi-key-plus"
+                prepend-icon="fas fa-key"
                 :loading="isProcessing"
                 @click="generateToken"
               >
@@ -52,7 +52,7 @@
                   variant="outlined"
                   color="teal"
                   block
-                  prepend-icon="mdi-content-copy"
+                  prepend-icon="fas fa-copy"
                   @click="copyToken"
                 >
                   Copy Token
@@ -88,7 +88,7 @@
             </v-form>
 
             <div v-else class="text-center py-4">
-              <v-icon size="64" color="success" class="mb-3">mdi-check-decagram-outline</v-icon>
+              <v-icon size="64" color="success" class="mb-3">fas fa-circle-check</v-icon>
               <h3 class="text-h6 mb-2">Token Redeemed Successfully</h3>
               
               <v-sheet border rounded class="pa-4 text-left bg-grey-lighten-4 mb-6">

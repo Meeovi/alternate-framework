@@ -125,7 +125,16 @@ function buildTextSearchClause(
     }
   }
 
-  const columns = options.fields?.length ? options.fields : config.searchColumns
+  // /api/search.ts always sends a generic, OpenSearch-shaped field list
+  // (title/name/description/brand/category) as options.fields by default —
+  // config.searchColumns (this provider's own deployment-configured ground
+  // truth) takes priority, since the generic default previously overrode it
+  // unconditionally and would query columns that don't exist in a
+  // non-default schema. SQLite also has no OpenSearch-style "^N" boost
+  // syntax — stripped rather than passed through to quoteIdentifier, which
+  // would reject it outright.
+  const columns = (config.searchColumns?.length ? config.searchColumns : options.fields ?? [])
+    .map(field => field.replace(/\^\d+$/, ''))
   const likeClauses = columns.map((column) => `${quoteIdentifier(column)} LIKE ?`)
   return {
     scoreExpr: '1',
@@ -204,22 +213,33 @@ export const databaseProvider: SearchProvider = {
       addFilterClauses(facetBuilder, options)
       const facetWhere = facetBuilder.clauses.length ? `WHERE ${facetBuilder.clauses.join(' AND ')}` : ''
 
+      // /api/search.ts's default facet list (category/brand/type) is just as
+      // generic/OpenSearch-shaped as its default search fields — a
+      // deployment's table may not have those columns. A thrown error here
+      // previously aborted this whole loop (and search() itself), discarding
+      // the real hits already fetched above. try/catch per field skips only
+      // the faceted fields that don't exist, same as federate.ts already
+      // does one level up for whole providers.
       for (const field of options.facets) {
-        const column = quoteIdentifier(field)
-        const facetSql = `
-          SELECT ${column} AS value, COUNT(*) AS count
-          FROM ${table}
-          ${text.joinClause}
-          ${facetWhere}
-          GROUP BY ${column}
-          ORDER BY count DESC
-          LIMIT 20
-        `
-        const facetRows = db.prepare(facetSql).all(...facetBuilder.params) as Array<{ value: unknown, count: number }>
-        const buckets = facetRows
-          .filter((row) => row.value !== null && row.value !== undefined)
-          .map((row) => ({ value: String(row.value), count: Number(row.count) }))
-        if (buckets.length) facets[field] = buckets
+        try {
+          const column = quoteIdentifier(field)
+          const facetSql = `
+            SELECT ${column} AS value, COUNT(*) AS count
+            FROM ${table}
+            ${text.joinClause}
+            ${facetWhere}
+            GROUP BY ${column}
+            ORDER BY count DESC
+            LIMIT 20
+          `
+          const facetRows = db.prepare(facetSql).all(...facetBuilder.params) as Array<{ value: unknown, count: number }>
+          const buckets = facetRows
+            .filter((row) => row.value !== null && row.value !== undefined)
+            .map((row) => ({ value: String(row.value), count: Number(row.count) }))
+          if (buckets.length) facets[field] = buckets
+        } catch (error) {
+          console.error(`[databaseProvider] facet "${field}" failed:`, error)
+        }
       }
     }
 

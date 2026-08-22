@@ -42,7 +42,7 @@ const userLink = computed(() => {
           v-if="hasAsset(avatarUrl)"
           provider="ipx"
           class="friend-avatar"
-          :src="getAssetURL(avatarUrl)"
+          :src="getAssetURL(avatarUrl) ?? undefined"
           :alt="displayName"
         />
         <v-avatar

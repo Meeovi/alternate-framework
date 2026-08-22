@@ -3,7 +3,7 @@
   <v-container class="max-width-600 my-8">
     <v-card elevation="2" rounded="lg">
       <v-toolbar color="indigo" class="text-white" flat>
-        <v-icon start class="ml-4">mdi-account-multiple</v-icon>
+        <v-icon start class="ml-4">fas fa-users</v-icon>
         <v-toolbar-title>Active Sessions (Account Switching)</v-toolbar-title>
       </v-toolbar>
 
@@ -32,7 +32,7 @@
             <template #prepend>
               <v-avatar color="indigo-lighten-4" class="mr-3">
                 <v-img v-if="session.user?.image" :src="session.user.image" />
-                <v-icon v-else color="indigo">mdi-account</v-icon>
+                <v-icon v-else color="indigo">fas fa-user</v-icon>
               </v-avatar>
             </template>
 
@@ -71,7 +71,7 @@
                   Switch
                 </v-btn>
                 <v-btn
-                  icon="mdi-delete-outline"
+                  icon="fas fa-trash-can"
                   variant="text"
                   color="error"
                   size="small"
@@ -85,7 +85,7 @@
 
         <!-- Empty State -->
         <div v-else-if="!isProcessing" class="text-center py-8">
-          <v-icon size="48" class="text-disabled mb-2">mdi-account-off-outline</v-icon>
+          <v-icon size="48" class="text-disabled mb-2">fas fa-user-slash</v-icon>
           <div class="text-body-1 text-medium-emphasis">No active browser sessions found.</div>
         </div>
 

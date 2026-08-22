@@ -23,15 +23,4 @@
 
 <script setup>
     import addList from '../../features/lists/add-list.vue'
-
-    defineProps({
-        productId: {
-            type: String,
-            required: true
-        },
-        postId: {
-            type: String,
-            required: true
-        }
-    });
 </script>

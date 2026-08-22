@@ -89,19 +89,37 @@ const formattedPrice = computed(() => {
   }).format(price.value)
 })
 
+// Maps a normalized `type` value to this app's real route pattern — the
+// generic `/${type}/${slug}` guess used to produce dead links for every
+// result (e.g. products going to /products/slug instead of /product/slug,
+// which doesn't exist; spaces to /space/slug instead of /connect/space/slug).
+// Each entry decides slug-vs-id itself since routes aren't consistent
+// (product/departments/category use catch-all id segments; coupon takes a
+// single non-catch-all id).
+const ROUTE_BUILDERS: Record<string, (item: Record<string, unknown>) => string | null> = {
+  product: (item) => {
+    const ref = item.slug ?? item.sku ?? item.id ?? item.objectID
+    return ref ? `/product/${ref}` : null
+  },
+  space: (item) => (item.slug ? `/connect/space/${item.slug}` : null),
+  post: (item) => (item.slug ? `/connect/post/${item.slug}` : null),
+  hashtag: (item) => (item.slug ?? item.name ? `/connect/hashtag/${item.slug ?? item.name}` : null),
+  shop: (item) => (item.slug ? `/outlet/${item.slug}` : null),
+  brand: (item) => (item.slug ? `/brand/${item.slug}` : null),
+  category: (item) => (item.id ? `/departments/category/${item.id}` : null),
+  department: (item) => (item.id ? `/departments/category/${item.id}` : null),
+  coupon: (item) => (item.id ? `/coupon/${item.id}` : null),
+}
+
 const link = computed(() => {
   const externalUrl = firstValue(['url', 'link', 'permalink'])
   if (externalUrl && /^https?:\/\//i.test(String(externalUrl))) {
     return { href: String(externalUrl), external: true }
   }
 
-  const slug = firstValue(['slug', 'handle'])
-  const id = firstValue(['id', 'objectID', '_id'])
-  const segment = type.value || 'item'
-
-  if (slug) return { href: `/${segment}/${slug}`, external: false }
-  if (id) return { href: `/${segment}/${id}`, external: false }
-  return null
+  const builder = ROUTE_BUILDERS[type.value ?? 'product'] ?? ROUTE_BUILDERS.product!
+  const href = builder(props.item)
+  return href ? { href, external: false } : null
 })
 
 const linkBinding = computed(() => {
@@ -115,7 +133,11 @@ const linkBinding = computed(() => {
 const productModel = computed(() => {
   const item = props.item
   return {
-    id: item.id ?? item.objectID ?? item._id,
+    // objectID is a federate-internal "provider:id" string (e.g.
+    // "postgres:42"), never a real product identifier — CatalogProductCard
+    // builds its /product/{id} link straight from this field, so falling
+    // back to objectID produced a route to a product that doesn't exist.
+    id: item.slug ?? item.sku ?? item.id ?? item._id,
     name: title.value,
     image: item.image ?? item.thumbnail ?? item.photo ?? null,
     rating: Number(firstValue(['rating', 'average_rating', 'stars']) ?? 0) || 0,

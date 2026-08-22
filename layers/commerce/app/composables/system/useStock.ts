@@ -1,5 +1,5 @@
 import { getCommerceClient } from '../../utils/client'
-import type { SfInventorySource, SfInventoryReservation, SfProductStockItem, SfStockItem } from '~/composables/system/models'
+import type { SfInventorySource, SfInventoryReservation, SfProductStockItem, SfStockItem } from './models'
 
 function clientOrNull() {
 	try {

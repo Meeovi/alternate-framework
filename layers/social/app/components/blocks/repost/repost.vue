@@ -8,7 +8,7 @@
     :title="title"
   >
     <v-icon
-      :icon="reposted ? 'mdi-repeat' : 'mdi-repeat'"
+      :icon="reposted ? 'fas fa-repeat' : 'fas fa-repeat'"
       class="repost-icon"
     />
 
@@ -61,8 +61,14 @@ async function onClick() {
   loading.value = true
 
   try {
+    // toggleRepost only reports success/failure, not the resulting state —
+    // it flips whichever state we were already in, so a successful call
+    // flips reposted locally; a failed one leaves it unchanged rather than
+    // always forcing it to true.
     const res = await toggleRepost(props.postId)
-    reposted.value = !!(res?.reposted ?? res ?? !reposted.value)
+    if (res?.success) {
+      reposted.value = !reposted.value
+    }
 
     emit('update:reposted', reposted.value)
     emit('change', reposted.value)

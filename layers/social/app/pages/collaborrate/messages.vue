@@ -11,7 +11,7 @@
             hide-details
             @keyup.enter="startConversation"
           />
-          <v-btn class="ml-2" icon="mdi-send" size="small" @click="startConversation" :loading="startingConversation" />
+          <v-btn class="ml-2" icon="fas fa-paper-plane" size="small" @click="startConversation" :loading="startingConversation" />
         </div>
         <p v-if="startError" class="text-caption text-error px-2">{{ startError }}</p>
 
@@ -57,7 +57,7 @@
               hide-details
               @keyup.enter="send"
             />
-            <v-btn class="ml-2" icon="mdi-send" @click="send" />
+            <v-btn class="ml-2" icon="fas fa-paper-plane" @click="send" />
           </div>
         </template>
         <div v-else class="d-flex align-center justify-center flex-grow-1 text-medium-emphasis">

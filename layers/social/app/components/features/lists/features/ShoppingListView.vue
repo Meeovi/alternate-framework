@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useLists } from '../../../composables/lists/useLists'
+import { useLists } from '../../../../composables/lists/useLists'
 
 const items = ref<any[]>([])
 const newItem = ref('')

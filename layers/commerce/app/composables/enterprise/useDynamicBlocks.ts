@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfDynamicBlock } from '~/composables/system/models'
+import type { SfDynamicBlock } from '../system/models'
 
 export function useDynamicBlocks() {
   const client = getCommerceClient() as CommerceClient

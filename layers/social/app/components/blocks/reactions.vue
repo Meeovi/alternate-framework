@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { useEmojiPicker } from "~/composables/content/useEmojiPicker"
+import { useEmojiPicker } from "../../composables/content/useEmojiPicker"
 
 const { emojiIndex, emojisOutput, addEmoji } = useEmojiPicker()
 </script>

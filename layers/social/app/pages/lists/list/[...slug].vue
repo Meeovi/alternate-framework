@@ -92,11 +92,11 @@ import HabitTrackerVIew from '../../../components/features/lists/types/HabitTrac
 
   const getListIcon = (type) => {
     const icons = {
-      default: 'mdi-format-list-bulleted',
-      playlist: 'mdi-playlist-music',
-      wishlist: 'mdi-heart',
-      bookmarks: 'mdi-bookmark',
-      tasks: 'mdi-check-circle'
+      default: 'fas fa-list',
+      playlist: 'fas fa-music',
+      wishlist: 'fas fa-heart',
+      bookmarks: 'fas fa-bookmark',
+      tasks: 'fas fa-circle-check'
     }
     return icons[type] || icons.default
   }

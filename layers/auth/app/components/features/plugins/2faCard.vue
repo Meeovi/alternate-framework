@@ -18,7 +18,7 @@
             </p>
             <p class="text-sm text-muted">Save your backup codes:</p>
             <ul class="text-sm text-muted list-disc list-inside">
-                <li v-for="(c, i) in enableResult.backupCodes" :key="i">{{ c }}</li>
+                <li v-for="(c, i) in enableResult?.backupCodes" :key="i">{{ c }}</li>
             </ul>
             <v-btn block size="md" @click="dismissEnableSuccess">Done</v-btn>
         </template>
@@ -38,7 +38,7 @@
                     @keydown.enter="handleDisable2FA" />
             </v-formField>
             <UAlert v-if="disableError" color="error" variant="soft" :description="disableError" />
-            <v-btn block size="md" color="error" variant="outline" :loading="disableLoading"
+            <v-btn block size="md" color="error" variant="outlined" :loading="disableLoading"
                 @click="handleDisable2FA">
                 Disable 2FA</v-btn>
         </template>
@@ -46,7 +46,7 @@
 
     <!-- Footer: sign out clears sessionStorage then signs out -->
     <template v-if="showSignOut && shouldRender" #footer>
-        <v-btn color="neutral" variant="outline" block @click="handleSignOut">Sign Out</v-btn>
+        <v-btn color="neutral" variant="outlined" block @click="handleSignOut">Sign Out</v-btn>
     </template>
 </template>
 <script setup lang="ts">

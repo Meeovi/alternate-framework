@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-toolbar>
-            <v-toolbar-title>{{ dateBar?.name }}</v-toolbar-title>
+            <v-toolbar-title>{{ dateBarName }}</v-toolbar-title>
         </v-toolbar>
         <Willow>
             <div class="calendar-wrap pa-4">
@@ -137,7 +137,7 @@
 
         if (mode === 'single' && originalDate) {
             const masterId = (ev.masterEventId ?? id) as string | number
-            const master = events.value.find((e) => e.id === masterId)
+            const master = events.value.find((e: SvarEvent) => e.id === masterId)
             const exdates = new Set < string > (
                 (master?.rrule ? (await getMasterExdates(masterId)) : []),
             )
@@ -160,7 +160,7 @@
 
         if (mode === 'following' && originalDate) {
             const masterId = (ev.masterEventId ?? id) as string | number
-            const master = events.value.find((e) => e.id === masterId)
+            const master = events.value.find((e: SvarEvent) => e.id === masterId)
             const baseRule = master?.rrule ?? record.rrule ?? ''
             const until = new Date(new Date(originalDate).getTime() - 24 * 60 * 60 * 1000)
                 .toISOString()
@@ -295,7 +295,7 @@
         const text = await file.text()
         const imported = parseICal(text) as SvarEvent[]
         for (const ev of imported) {
-            if (ev.id == null || !events.value.some((e) => e.id === ev.id)) {
+            if (ev.id == null || !events.value.some((e: SvarEvent) => e.id === ev.id)) {
                 await createEvent(toRecord(ev))
             }
         }
@@ -332,8 +332,10 @@
         return resp?.data ?? resp ?? null
     })
 
+    const dateBarName = computed(() => dateBar.value?.name)
+
     useHead({
-        title: computed(() => dateBar.value?.name || 'Meeovi Dates')
+        title: () => dateBar.value?.name || 'Meeovi Dates'
     })
 </script>
 

@@ -164,15 +164,25 @@ export const auth = betterAuth({
       // stripe() plugin's createCustomerOnSignUp — was never actually
       // declared here, and the live users table has no matching column,
       // so Stripe customer creation on signup has likely never worked.
+      // input: false on all three ids below — these are trust anchors for
+      // billing-portal access and subscription-gated account deletion, and
+      // must only ever be written server-side (webhook/registry hooks), never
+      // accepted from a signup/update-user request body. Without input:
+      // false, better-auth's default field parsing writes whatever value a
+      // caller supplies, which previously let anyone set their own
+      // stripeCustomerId to a victim's id and get that victim's Stripe
+      // billing-portal link back.
       stripeCustomerId: {
         type: 'string',
         required: false,
-        defaultValue: null
+        defaultValue: null,
+        input: false
       },
       polarCustomerId: {
         type: 'string',
         required: false,
-        defaultValue: null
+        defaultValue: null,
+        input: false
       },
       // Generic, backend-agnostic anchor for a commerce backend's customer
       // record — populated by CommerceCustomerLinkRegistry hooks
@@ -181,7 +191,8 @@ export const auth = betterAuth({
       magentoCustomerId: {
         type: 'number',
         required: false,
-        defaultValue: null
+        defaultValue: null,
+        input: false
       },
       locale: { type: "string", required: false },
     },

@@ -106,7 +106,16 @@ function buildTextSearchClause(options: SearchProviderOptions, config: MysqlConf
     return { scoreExpr: '1', clause: null, params: [] }
   }
 
-  const columns = options.fields?.length ? options.fields : config.searchColumns
+  // /api/search.ts always sends a generic, OpenSearch-shaped field list
+  // (title/name/description/brand/category) as options.fields by default —
+  // config.searchColumns (this provider's own deployment-configured ground
+  // truth) takes priority, since the generic default previously overrode it
+  // unconditionally and would query columns that don't exist in a
+  // non-default schema. MySQL also has no OpenSearch-style "^N" boost
+  // syntax — stripped rather than passed through to quoteIdentifier, which
+  // would reject it outright.
+  const columns = (config.searchColumns?.length ? config.searchColumns : options.fields ?? [])
+    .map(field => field.replace(/\^\d+$/, ''))
   const columnList = columns.map(quoteIdentifier).join(', ')
 
   if (useFulltext) {
@@ -199,7 +208,15 @@ export const mysqlProvider: SearchProvider = {
       addFilterClauses(facetBuilder, options)
       const facetWhere = facetBuilder.clauses.length ? `WHERE ${facetBuilder.clauses.join(' AND ')}` : ''
 
-      await Promise.all(options.facets.map(async (field) => {
+      // /api/search.ts's default facet list (category/brand/type) is just as
+      // generic/OpenSearch-shaped as its default search fields — a
+      // deployment's table may not have those columns. Promise.all
+      // previously let one nonexistent-column query reject the whole batch,
+      // which rejected search() itself and discarded the real hits already
+      // fetched above. allSettled skips only the faceted fields that don't
+      // exist, same as federate.ts already does one level up for whole
+      // providers.
+      await Promise.allSettled(options.facets.map(async (field) => {
         const column = quoteIdentifier(field)
         const facetSql = `
           SELECT ${column} AS value, COUNT(*) AS count
@@ -214,7 +231,21 @@ export const mysqlProvider: SearchProvider = {
           .filter((row) => row.value !== null && row.value !== undefined)
           .map((row) => ({ value: String(row.value), count: Number(row.count) }))
         if (buckets.length) facets[field] = buckets
-      }))
+      })).then((results) => {
+        results.forEach((result, index) => {
+          if (result.status !== 'rejected') return
+          const field = options.facets![index]
+          // MySQL errno 1054 = unknown column: expected noise when
+          // /api/search.ts's generic facet defaults (category/brand/type)
+          // don't match this deployment's actual schema — already handled
+          // (the field is just skipped above), so warn instead of erroring.
+          if ((result.reason as { errno?: number })?.errno === 1054) {
+            console.warn(`[mysqlProvider] facet "${field}" skipped: column does not exist on "${config.table}"`)
+          } else {
+            console.error(`[mysqlProvider] facet "${field}" failed:`, result.reason)
+          }
+        })
+      })
     }
 
     return {

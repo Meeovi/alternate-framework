@@ -1,5 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import { fileURLToPath } from 'node:url'
 
 export default defineNuxtConfig({
   $meta: {
@@ -9,14 +8,6 @@ export default defineNuxtConfig({
 
   devtools: {
     enabled: true
-  },
-
-  // app/components (e.g. ResultCard.vue) use #shared utilities like
-  // getAssetURL — matches the same alias declared in layers/social's own
-  // nuxt.config.ts, since #shared isn't wired up automatically just by a
-  // consumer listing "shared" in its own extends array.
-  alias: {
-    '#shared': fileURLToPath(new URL('../shared', import.meta.url)),
   },
 
   runtimeConfig: {
@@ -57,11 +48,17 @@ export default defineNuxtConfig({
           enabled: Boolean(connectionString),
           connectionString,
           ssl: process.env.ALTERNATE_SEARCH_PG_SSL || (connectionString.includes('supabase') ? 'require' : ''),
-          // Certificate validation stays on by default even when ssl is
-          // required — Supabase's own Postgres uses a publicly-trusted CA,
-          // so Node's default trust store already validates it correctly.
-          // Only set this to disable validation for a genuinely
-          // self-signed/internal Postgres deployment.
+          // Certificate validation stays on by default. NOTE this comment
+          // previously (wrongly) assumed Supabase's direct Postgres
+          // connection uses a publicly-trusted CA — confirmed live via
+          // `openssl s_client` that it actually chains to Supabase's own
+          // private root ("Supabase Root 2021 CA"), which isn't in Node's
+          // default trust store, so full verification fails with
+          // "self-signed certificate in certificate chain" out of the box.
+          // Set ALTERNATE_SEARCH_PG_SSL_INSECURE=true to accept that
+          // (encrypted but unverified — the standard workaround for direct
+          // Supabase Postgres connections), or trust Supabase's actual root
+          // CA explicitly for full verification instead.
           sslRejectUnauthorized: process.env.ALTERNATE_SEARCH_PG_SSL_INSECURE !== 'true',
           table: process.env.ALTERNATE_SEARCH_PG_TABLE || 'products',
           idColumn: process.env.ALTERNATE_SEARCH_PG_ID_COLUMN || 'id',
@@ -154,6 +151,15 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['vue-instantsearch', 'instantsearch.js/es'],
+    // algoliasearch-helper is a transitive CJS dependency of instantsearch.js
+    // that vue-instantsearch pulls in internally (not imported directly by
+    // our own code). Without it here too, Nitro's dev SSR leaves it
+    // externalized to Node's native ESM loader instead of bundling it
+    // through Vite, and Node's strict interop can't find a default export
+    // on its CJS module.exports — same class of bug as the
+    // emoji-mart-vue-fast production fix (see layers/social/services/emoji),
+    // but this one hits every page in dev SSR since the instantsearch
+    // plugin is registered globally.
+    transpile: ['vue-instantsearch', 'instantsearch.js/es', 'algoliasearch-helper'],
   },
 })

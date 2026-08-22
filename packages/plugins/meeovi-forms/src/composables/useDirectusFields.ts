@@ -1,27 +1,7 @@
 import { ref } from 'vue'
+import type { DirectusField } from '../types.js'
 
-export type DirectusField = {
-  field?: string
-  type?: string
-  name?: string
-  schema?: {
-    data_type?: string
-    default_value?: unknown
-    is_nullable?: boolean
-    foreign_key_table?: string
-  }
-  meta?: {
-    interface?: string
-    note?: string
-    width?: string
-    hidden?: boolean
-    required?: boolean
-    readonly?: boolean
-    options?: Record<string, unknown>
-    validation?: Record<string, any>
-    validation_message?: string
-  }
-}
+export type { DirectusField }
 
 function normalizeFields(input: unknown): DirectusField[] {
   const list: unknown[] = Array.isArray(input)
@@ -32,7 +12,7 @@ function normalizeFields(input: unknown): DirectusField[] {
 }
 
 export function useDirectusFields() {
-  const { $directus, $readFieldsByCollection } = useNuxtApp()
+  const { $directus, $readFieldsByCollection } = useNuxtApp() as any
 
   const fields = ref<DirectusField[]>([])
   const loading = ref(false)

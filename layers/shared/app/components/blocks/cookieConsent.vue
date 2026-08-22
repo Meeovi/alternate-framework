@@ -33,7 +33,7 @@
             We use cookies to enhance your experience. By accepting, you consent to our use of analytics cookies.
           </p>
           <div class="flex gap-2">
-            <v-btn color="neutral" variant="outline" @click="decline">
+            <v-btn color="neutral" variant="outlined" @click="decline">
               Decline
             </v-btn>
             <v-btn @click="accept">

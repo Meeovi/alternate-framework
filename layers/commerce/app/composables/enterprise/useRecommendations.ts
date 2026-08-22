@@ -1,7 +1,7 @@
 import { createEnterpriseResource } from './useEnterpriseResource'
 import { getCommerceClient } from '../../utils/client'
 import type { CommerceClient } from '../../utils/client'
-import type { SfRecommendation } from '~/composables/system/models'
+import type { SfRecommendation } from '../system/models'
 
 export function useRecommendations() {
   const client = getCommerceClient() as CommerceClient

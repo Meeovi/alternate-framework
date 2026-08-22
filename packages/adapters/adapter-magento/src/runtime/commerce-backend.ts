@@ -1,4 +1,4 @@
-import type { CommerceBackendAdapter, DirectusRequestDescriptor } from 'alternate-sdk'
+import type { CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor } from 'alternate-sdk'
 import type { MagentoAdapter } from '@mframework/adapter-magento'
 // Self-referencing package import, not a relative path — nuxt-module-build
 // only compiles module.ts and runtime/** into dist/, so a relative
@@ -7,10 +7,14 @@ import type { MagentoAdapter } from '@mframework/adapter-magento'
 // package.json, which points at the TS source directly, same as ".").
 import { magentoNormalizers } from '@mframework/adapter-magento/normalizers'
 
-// Field lists are shaped to match exactly what each magentoNormalizers
-// entry actually reads (see normalizers/products.ts, category.ts) — nested
-// selections use the { field: [...subfields] } form MagentoAdapter's
-// parseFieldsToQuery expects.
+// Field list is shaped to match exactly what magentoNormalizers.products
+// (normalizers/products.ts) actually reads — nested selections use the
+// { field: [...subfields] } form MagentoAdapter's parseFieldsToQuery
+// expects. Categories are deliberately NOT normalized/exposed as a
+// collection here — "departments"/"categories" are Directus-only CMS
+// taxonomy; this adapter only ever resolves a category_uid internally
+// (resolveCategoryUid below) to scope a products query, see
+// getProductsByCategory on the returned adapter.
 const PRODUCT_FIELDS = [
   'id', 'uid', 'sku', 'name', 'status', 'stock_status',
   { price_range: [{ minimum_price: [{ final_price: ['value'] }] }] },
@@ -20,8 +24,6 @@ const PRODUCT_FIELDS = [
   { image: ['url'] },
   { media_gallery: ['url'] },
 ]
-
-const CATEGORY_FIELDS = ['uid', 'name', 'url_key', 'description', 'meta_title', 'image', 'position']
 
 // Real Magento's storefront schema exposes products/categories as
 // paginated, search-style root fields (`products(filter/search/pageSize)`,
@@ -50,33 +52,39 @@ async function fetchProducts(magento: MagentoAdapter, key?: string | number) {
   return (result?.items ?? []).map((item: any) => magentoNormalizers.products(item))
 }
 
-async function fetchCategories(magento: MagentoAdapter, key?: string | number) {
-  const filters = key ? { ids: { eq: String(key) } } : undefined
+// Resolves a Directus department/category into a Magento category_uid.
+// externalId (departments.relative_id / categories.uid, when populated) is
+// already assumed to be the Magento category_uid, so it skips the lookup
+// round trip entirely; otherwise falls back to a slug -> url_key lookup.
+async function resolveCategoryUid(magento: MagentoAdapter, ref: CategoryProductsRef): Promise<string | null> {
+  if (ref.externalId) return ref.externalId
 
   const result = await magento.store.queryField('categories', {
-    ...(filters ? { filters } : {}),
-    pageSize: 50,
-  }, { fields: [{ items: CATEGORY_FIELDS }, 'total_count'] })
+    filters: { url_key: { eq: ref.slug } },
+    pageSize: 1,
+  }, { fields: [{ items: ['uid'] }] })
 
-  return (result?.items ?? []).map((item: any) => magentoNormalizers.categories(item))
+  return result?.items?.[0]?.uid ?? null
+}
+
+async function fetchProductsByCategoryUid(magento: MagentoAdapter, categoryUid: string) {
+  const result = await magento.store.queryField('products', {
+    filter: { category_uid: { eq: categoryUid } },
+    pageSize: 50,
+  }, { fields: [{ items: PRODUCT_FIELDS }, 'total_count'] })
+
+  return (result?.items ?? []).map((item: any) => magentoNormalizers.products(item))
 }
 
 export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter): CommerceBackendAdapter {
   return {
     id: 'magento',
-    collections: ['products', 'categories', 'departments', 'orders'],
+    collections: ['products', 'orders'],
     isEnabled: () => true,
     async request({ collection, key }: DirectusRequestDescriptor) {
       switch (collection) {
         case 'products': {
           const items = await fetchProducts(magento, key)
-          return key ? (items[0] ?? null) : items
-        }
-        case 'categories':
-        case 'departments': {
-          // Directus's category-tree entity — maps onto the same Magento
-          // Category type as `categories`.
-          const items = await fetchCategories(magento, key)
           return key ? (items[0] ?? null) : items
         }
         case 'orders':
@@ -90,6 +98,13 @@ export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter): Co
         default:
           throw new Error(`magento commerce-backend adapter: unmapped collection "${collection}"`)
       }
+    },
+    async getProductsByCategory(ref: CategoryProductsRef) {
+      const categoryUid = await resolveCategoryUid(magento, ref)
+      // No matching Magento category (e.g. a Directus-only department with
+      // no Magento counterpart) — degrade to an empty list, never throw.
+      if (!categoryUid) return []
+      return fetchProductsByCategoryUid(magento, categoryUid)
     },
   }
 }

@@ -23,13 +23,7 @@
   "author": "M Framework",
   "license": "MIT",
   "devDependencies": {
-    "@graphql-codegen/cli": "^7.1.3",
-    "@graphql-codegen/typescript": "^6.0.2",
-    "@graphql-codegen/typescript-operations": "^6.0.5",
-    "@graphql-typed-document-node/core": "^3.2.0",
-    "drizzle-orm": "^1.0.0-rc.4",
-    "turbo": "^2.8.11",
-    "typescript": "^5.9.3"
+    "turbo": "^2.8.11"
   },
   "workspaces": [
     "packages/*",
@@ -37,20 +31,27 @@
     "packages/plugins/*",
     "layers/*",
     "themes/*",
-    "docs/*",
-    "apps/*"
+    "apps/ecosystem/*"
   ],
   "dependencies": {
-    "@apollo/client": "^4.2.6",
-    "@better-auth/core": "^1.6.23",
-    "@directus/sdk": "^23.0.0",
-    "@graphql-mesh/runtime": "^0.106.39",
-    "@polar-sh/sdk": "^0.47.0",
-    "flat": "^6.0.1",
-    "joi": "^17.13.4",
-    "zod-to-json-schema": "^3.25.2"
+    "@better-auth/core": "1.6.23",
+    "@better-auth/telemetry": "1.6.23",
+    "@better-auth/utils": "0.4.2",
+    "better-auth": "1.6.23",
+    "drizzle-orm": "1.0.0-rc.4",
+    "flat": "^6.0.1"
   },
   "overrides": {
-    "vue": "^3.5.29"
+    "vue": "3.5.41",
+    "@vue/reactivity": "3.5.41",
+    "@vue/runtime-core": "3.5.41",
+    "@vue/runtime-dom": "3.5.41",
+    "@vue/shared": "3.5.41",
+    "@vue/compiler-core": "3.5.41",
+    "@vue/compiler-dom": "3.5.41",
+    "@vue/compiler-sfc": "3.5.41",
+    "@vue/compiler-ssr": "3.5.41",
+    "@vue/server-renderer": "3.5.41",
+    "pinia": "4.0.3"
   }
 }

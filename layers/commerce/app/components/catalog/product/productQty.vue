@@ -8,12 +8,12 @@
       <div class="d-flex align-center mb-4">
         <div class="d-flex align-center">
           <v-btn square variant="secondary" :disabled="count <= min" @click="dec()" size="sm">
-            <v-icon>mdi-minus</v-icon>
+            <v-icon>fas fa-minus</v-icon>
           </v-btn>
           <v-text-field :id="inputId" type="number" :min="min" :max="max" class="mx-2 w-16 text-center" :value="count"
             @change="handleOnChange" :disabled="!isValidProduct" />
           <v-btn square variant="secondary" :disabled="count >= max" @click="inc()" size="sm">
-            <v-icon>mdi-plus</v-icon>
+            <v-icon>fas fa-plus</v-icon>
           </v-btn>
         </div>
       </div>

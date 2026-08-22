@@ -1,4 +1,4 @@
-import type { ComputedRef, Ref } from 'vue'
+import type { Ref } from '#imports'
 import type {
   SocialProfile,
   FriendRequest,
@@ -30,7 +30,7 @@ const defaultFriendBar: FriendBarConfig = {
 }
 
 export default function useFriendsPageData(): UseFriendsPageDataResult {
-  const { $directus, $readItems } = useNuxtApp()
+  const { $directus, $readItems } = useNuxtApp() as any
   const readItems = (collection: string, query?: any) => $directus.request($readItems(collection, query))
 
   const { data: friendBar, refresh: refreshBar } = useAsyncData<FriendBarConfig | null>('friends:bar', async () => {
@@ -228,5 +228,5 @@ export default function useFriendsPageData(): UseFriendsPageDataResult {
     suggestions,
     members,
     reloadData,
-  }
+  } as unknown as UseFriendsPageDataResult
 }

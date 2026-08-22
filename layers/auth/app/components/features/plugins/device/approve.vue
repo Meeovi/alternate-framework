@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import { useRoute, useRouter } from "#app"
+import { useRoute, useRouter } from "#imports"
 import { useDeviceAuth } from "../../../../composables/device/useDeviceAuth"
 
 const route = useRoute()

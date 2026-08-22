@@ -1,5 +1,5 @@
 // layers/commerce/app/composables/catalog/products/useRecentlyViewed.ts
-import { useState, useCookie } from '#app'
+import { useState, useCookie } from '#imports'
 
 const RECENTLY_VIEWED_KEY = 'recently_viewed_products'
 const MAX_ITEMS = 20

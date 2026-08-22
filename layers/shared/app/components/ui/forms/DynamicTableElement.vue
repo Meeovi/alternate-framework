@@ -92,7 +92,7 @@ const tableClass = computed(() => props.tableClass ?? '')
 // Derive headers from `columns` prop or infer from first item keys
 const headers = computed(() => {
   if (props.columns && props.columns.length) {
-    return props.columns.map((c) => ({ text: c.text ?? c.value, value: c.value }))
+    return props.columns.map((c: { text?: string; value: string }) => ({ text: c.text ?? c.value, value: c.value }))
   }
   const first = items.value && items.value.length ? items.value[0] : null
   if (first) {
@@ -124,32 +124,32 @@ const effectiveHeaders = computed(() => {
 })
 
 // Sync props -> local state
-watch(() => props.page, (v) => { if (v !== undefined) localPage.value = v })
-watch(() => props.itemsPerPage, (v) => { if (v !== undefined) localItemsPerPage.value = v })
-watch(() => props.sortBy, (v) => { if (v !== undefined) localSortBy.value = v })
-watch(() => props.sortDesc, (v) => { if (v !== undefined) localSortDesc.value = v })
+watch(() => props.page, (v: number | undefined) => { if (v !== undefined) localPage.value = v })
+watch(() => props.itemsPerPage, (v: number | undefined) => { if (v !== undefined) localItemsPerPage.value = v })
+watch(() => props.sortBy, (v: string | string[] | undefined) => { if (v !== undefined) localSortBy.value = v })
+watch(() => props.sortDesc, (v: boolean | undefined) => { if (v !== undefined) localSortDesc.value = v })
 
 // Emit pagination/sort changes for server-side handling
-watch(localPage, (v) => {
+watch(localPage, (v: number) => {
   emit('update:page', v)
   if (props.server) emit('page-change', v)
 })
-watch(localItemsPerPage, (v) => {
+watch(localItemsPerPage, (v: number) => {
   emit('update:itemsPerPage', v)
   if (props.server) emit('items-per-page-change', v)
 })
-watch(localSortBy, (v) => {
+watch(localSortBy, (v: any) => {
   emit('update:sortBy', v)
   if (props.server) emit('sort-change', { sortBy: v, sortDesc: localSortDesc.value })
 })
-watch(localSortDesc, (v) => {
+watch(localSortDesc, (v: any) => {
   emit('update:sortDesc', v)
   if (props.server) emit('sort-change', { sortBy: localSortBy.value, sortDesc: v })
 })
 
 // Selection
 const selected = ref<any[]>([])
-watch(selected, (v) => emit('update:selected', v))
+watch(selected, (v: any[]) => emit('update:selected', v))
 
 // Helper: format cell if needed (left as simple serialization)
 function isIsoDateString(val: string) {

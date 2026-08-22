@@ -13,7 +13,7 @@ export function useI18n() {
     t: wrapI18n(t),
     d: wrapI18n(d),
     n: wrapI18n(n),
-  } as ReturnType<typeof useOriginalI18n>
+  } as unknown as ReturnType<typeof useOriginalI18n>
 }
 
 export function wrapI18n<T extends (...args: any[]) => any>(t: T): T {

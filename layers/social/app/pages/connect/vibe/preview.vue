@@ -90,10 +90,10 @@
 
 <script setup lang="ts">
 const config = useRuntimeConfig()
-const { $directus, $readItem, $readItems } = useNuxtApp()
+const { $directus, $readItem, $readItems } = useNuxtApp() as any
 
 // Auth handling
-const runtimeUseAuth = globalThis.useAuth
+const runtimeUseAuth = (globalThis as any).useAuth
 const auth = runtimeUseAuth
     ? runtimeUseAuth()
     : { user: useState('social:user', () => null) }
@@ -118,7 +118,7 @@ onMounted(async () => {
     // Fetch videos
     const videoResp = await $directus.request($readItems('videos', {
         filter: { user_id: { _eq: user.value.id } },
-        sort: ['-created_at'],
+        sort: ['-date_created'],
         fields: ['*', 'tags.id', 'tags.name']
     }))
 
@@ -148,10 +148,10 @@ const filteredVideos = computed(() => {
 
 // Helpers
 function getVideoUrl(video: any) {
-    return `https://${config.public.minioEndpoint}/vibez-transcoded/${video.minio_key}`
+    return `https://${(config.public as any).minioEndpoint}/vibez-transcoded/${video.minio_key}`
 }
 
 function getThumbnail(video: any) {
-    return `https://${config.public.minioEndpoint}/thumbnails/${video.id}.jpg`
+    return `https://${(config.public as any).minioEndpoint}/thumbnails/${video.id}.jpg`
 }
 </script>

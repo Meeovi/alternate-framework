@@ -2,7 +2,7 @@
   <v-container class="max-width-800 my-8">
     <v-card elevation="2" rounded="lg">
       <v-toolbar color="primary" class="text-white" flat>
-        <v-icon start class="ml-4">mdi-accessibility</v-icon>
+        <v-icon start class="ml-4">fas fa-universal-access</v-icon>
         <v-toolbar-title>Accessibility & Security</v-toolbar-title>
       </v-toolbar>
 
@@ -17,15 +17,15 @@
 
         <v-tabs v-model="activeTab" bg-color="grey-lighten-4" color="primary" grow class="mb-6">
           <v-tab value="passkeys">
-            <v-icon start>mdi-key</v-icon>
+            <v-icon start>fas fa-key</v-icon>
             Passkeys
           </v-tab>
           <v-tab value="two-factor">
-            <v-icon start>mdi-shield-lock</v-icon>
+            <v-icon start>fas fa-shield-halved</v-icon>
             Two-Factor Auth
           </v-tab>
           <v-tab value="sessions">
-            <v-icon start>mdi-devices</v-icon>
+            <v-icon start>fas fa-display</v-icon>
             Active Sessions
           </v-tab>
         </v-tabs>
@@ -56,14 +56,14 @@
                   :disabled="!session"
                   @click="addPasskey"
                 >
-                  <v-icon start>mdi-plus</v-icon>
+                  <v-icon start>fas fa-plus</v-icon>
                   Add Passkey
                 </v-btn>
               </div>
 
               <!-- Passkeys List -->
               <div v-if="passkeys.length === 0 && !isPasskeyLoading" class="text-center py-8">
-                <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-key-outline</v-icon>
+                <v-icon size="48" color="grey-lighten-1" class="mb-2">fas fa-key</v-icon>
                 <p class="text-body-1 text-medium-emphasis">No passkeys registered</p>
                 <p class="text-body-2 text-medium-emphasis">Add a passkey to sign in without a password.</p>
               </div>
@@ -76,7 +76,7 @@
                 >
                   <template #prepend>
                     <v-avatar color="blue-lighten-4" class="mr-3">
-                      <v-icon color="blue">mdi-key</v-icon>
+                      <v-icon color="blue">fas fa-key</v-icon>
                     </v-avatar>
                   </template>
 
@@ -90,7 +90,7 @@
 
                   <template #append>
                     <v-btn
-                      icon="mdi-delete-outline"
+                      icon="fas fa-trash-can"
                       variant="text"
                       color="error"
                       size="small"
@@ -112,7 +112,7 @@
             </div>
 
             <div v-else-if="!session.user?.twoFactorEnabled" class="text-center py-6">
-              <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-shield-off-outline</v-icon>
+              <v-icon size="48" color="grey-lighten-1" class="mb-2">fas fa-shield</v-icon>
               <h3 class="text-h6 mb-2">Two-factor authentication is not enabled</h3>
               <p class="text-body-2 text-medium-emphasis mb-6">
                 Add an extra layer of security to your account by enabling 2FA.
@@ -170,7 +170,7 @@
               </div>
 
               <div v-else-if="twoFactorStep === 'backup'" class="max-w-md mx-auto">
-                <v-icon size="48" color="success" class="mb-2">mdi-check-circle</v-icon>
+                <v-icon size="48" color="success" class="mb-2">fas fa-circle-check</v-icon>
                 <h3 class="text-h6 mb-2 text-success">2FA Enabled Successfully</h3>
                 <p class="text-body-2 text-medium-emphasis mb-4">
                   Save these backup codes in a safe place. You can use them to access your account if you lose your device.
@@ -185,7 +185,7 @@
             </div>
 
             <div v-else class="text-center py-6">
-              <v-icon size="48" color="success" class="mb-2">mdi-shield-check</v-icon>
+              <v-icon size="48" color="success" class="mb-2">fas fa-shield-halved</v-icon>
               <h3 class="text-h6 mb-2 text-success">Two-factor authentication is enabled</h3>
               <p class="text-body-2 text-medium-emphasis mb-6">
                 Your account is protected with an extra layer of security.
@@ -228,7 +228,7 @@
             </div>
 
             <div v-else-if="sessions.length === 0" class="text-center py-8">
-              <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-account-off-outline</v-icon>
+              <v-icon size="48" color="grey-lighten-1" class="mb-2">fas fa-user-slash</v-icon>
               <p class="text-body-1 text-medium-emphasis">No active sessions found.</p>
             </div>
 
@@ -240,7 +240,7 @@
               >
                 <template #prepend>
                   <v-avatar color="grey-lighten-4" class="mr-3">
-                    <v-icon color="grey">mdi-devices</v-icon>
+                    <v-icon color="grey">fas fa-display</v-icon>
                   </v-avatar>
                 </template>
 
@@ -337,7 +337,7 @@ async function loadSession() {
   } = await useAuth().useSession(useFetch)
   session.value = (sessionData as any).value
   const cookie = useCookie('better-auth.session_token')
-  currentToken.value = cookie.value || ''
+  currentToken.value = (cookie as any).value || ''
 }
 
 // --- Passkeys ---

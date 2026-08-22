@@ -25,6 +25,7 @@ import { meilisearchProvider } from '../providers/meilisearch'
 import { typesenseProvider } from '../providers/typesense'
 import { databaseProvider } from '../providers/database'
 import { memoryProvider } from '../providers/memory'
+import { directusProvider } from '../providers/directus'
 import type { FacetBucket, NormalizedHit, ProviderStatus, SearchProvider, SearchProviderOptions } from '../providers/types'
 
 const MAX_FEDERATED_DEPTH = 500
@@ -39,6 +40,7 @@ const ALL_PROVIDERS: SearchProvider[] = [
   typesenseProvider,
   databaseProvider,
   memoryProvider,
+  directusProvider,
 ]
 
 export function getEnabledProviders(): SearchProvider[] {

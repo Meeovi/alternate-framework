@@ -220,7 +220,7 @@ const config = useRuntimeConfig()
 const resolvedFiltersComponent = computed(() => props.filtersComponent || FiltersDefault)
 
 const indexes = computed(() => {
-  const value = config.public.alternateSearchIndexes
+  const value = (config.public as any).alternateSearchIndexes
   return Array.isArray(value) && value.length > 0 ? value : ['products']
 })
 
@@ -261,7 +261,7 @@ const { searchClient, isLoading } = useSearchClient()
 // server-rendered snapshot. Starts false on both server and client so the
 // initial render trees match (no hydration mismatch).
 const hasLiveResults = ref(false)
-watch(isLoading, (loading) => {
+watch(isLoading, (loading: boolean) => {
   if (!loading) hasLiveResults.value = true
 })
 

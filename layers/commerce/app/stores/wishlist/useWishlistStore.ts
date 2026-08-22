@@ -43,7 +43,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
 
   function removeItem(productId: string | number) {
     const id = String(productId)
-    items.value = items.value.filter((existing) => existing !== id)
+    items.value = items.value.filter((existing: string) => existing !== id)
     persist(items.value)
   }
 
