@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-card variant="text">
             <v-toolbar :style="`background-color: ${birthdayBar?.color}; color: ${birthdayBar?.colortext} !important`">
                 <v-toolbar-title>
@@ -53,7 +53,7 @@
 
 <script setup>
     import { ref } from '#imports'
-    import MembersList from '#social/app/components/related/memberList.vue'
+    import MembersList from '#social/app/components/blocks/memberCard.vue'
 
     const { $directus, $readItem, $readItems } = useNuxtApp()
     const tab = ref(null)

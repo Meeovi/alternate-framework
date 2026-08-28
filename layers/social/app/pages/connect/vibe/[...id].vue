@@ -9,7 +9,7 @@
           </v-card-subtitle>
 
           <v-card-text>
-            <video controls :src="getAssetURL(short?.video)"
+            <videoPlayer :player="playerData"
               style="width: 100%; min-height: 100%;" />
 
             <p v-if="short?.description" class="mt-4">{{ short.description }}</p>
@@ -24,7 +24,7 @@
 
       <v-col>
         <v-card elevation="2" style="height: 100%;">
-          <comments v-if="short?.id" :commentId="`vibe-${short.id}`" />
+          <comments :commentId="short?.id" />
         </v-card>
       </v-col>
     </v-row>
@@ -44,9 +44,11 @@
     useRoute
   } from 'vue-router'
   import comments from '../../../components/blocks/comments.vue'
+  import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
   import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import {
     ref,
+    computed,
     onMounted
   } from '#imports'
 
@@ -57,16 +59,27 @@
   const liked = ref(false)
   const likesCount = ref(0)
 
+  const playerData = computed(() => ({
+    sources: [{ src: getAssetURL(short.value?.video) }],
+    poster: getAssetURL(short.value?.thumbnail),
+  }))
+
+  // [...id].vue is a catch-all route, so route.params.id is an array of
+  // path segments rather than a plain string.
+  const shortId = computed(() =>
+    Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  )
+
   async function fetchShort() {
-    short.value = await $directus.request($readItem('shorts', route.params.id, {
-      fields: ['id', 'name', 'description', 'creator', 'video', 'views'],
+    short.value = await $directus.request($readItem('shorts', shortId.value, {
+      fields: ['id', 'name', 'description', 'creator', 'video', 'thumbnail', 'views'],
     })).catch(() => null)
   }
 
   async function trackView() {
     await $fetch('/api/view-video', {
       method: 'POST',
-      body: { videoId: route.params.id },
+      body: { videoId: shortId.value },
     }).catch(() => {})
   }
 

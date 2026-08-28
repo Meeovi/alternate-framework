@@ -4,6 +4,7 @@
       class="follow-btn"
       :class="{ following: following }"
       @click="onClick"
+      variant="text"
       :loading="loading"
       :disabled="loading"
       :aria-pressed="following"
@@ -18,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useSocialStore } from '../../stores/social'
-import { authClient } from '#auth/lib/auth-client'
+import { useAuth } from '#auth/app/composables/useAuth'
 
 export type DirectusTargetType = 'users' | 'spaces' | 'outlets' | string
 
@@ -45,8 +46,17 @@ const emit = defineEmits(['update:following', 'change'])
 
 const socialStore = useSocialStore()
 
-// Local session ref
+// useSession() (called with no arguments) hands back a shared,
+// reference-counted nanostore atom whose fetch is scheduled via
+// setTimeout(fn, 0) inside onMount and cancelled on unsubscribe. On
+// pages that render many FollowButtons at once (e.g. connect/members),
+// unrelated hydration-mismatch remounts elsewhere on the page cycle
+// that shared subscription's refcount, cancelling the scheduled fetch
+// before it ever reaches the network — the button gets stuck showing
+// "Sign in to follow" even when logged in. A plain one-shot $fetch
+// sidesteps that shared lifecycle entirely.
 const session = ref<any>(null)
+
 const following = ref<boolean>(props.initialFollowing ?? false)
 const loading = ref(false)
 
@@ -58,27 +68,30 @@ watch(
 )
 
 onMounted(async () => {
-  // 1. Await the session call directly
-  const { data } = await authClient.useSession()
-  session.value = data
+  const res = await useAuth().$fetch('/get-session').catch(() => null)
+  session.value = res?.data ?? null
 
   if (!session.value) return
 
-  // 2. Check registry cache
+  // 1. Check registry cache (populated by an earlier toggleFollow() this session)
   const followRegistry = socialStore.followRegistry as unknown as Record<string, boolean>
   if (followRegistry?.[props.id] !== undefined) {
     following.value = followRegistry[props.id]!
     return
   }
 
-  // 3. Fallback check
+  // 2. socialStore.isFollowing() only ever reflects followRegistry, which
+  // starts empty on every page load — it never reads the database, so the
+  // button always reset to "Follow" on refresh regardless of actual state.
+  // Ask the server, which is the source of truth.
   if (props.initialFollowing === undefined) {
     loading.value = true
     try {
-      const targetState = socialStore.isFollowing?.(props.id)
-      following.value = typeof targetState === 'object' && 'value' in targetState 
-        ? targetState.value 
-        : Boolean(targetState)
+      const status = await $fetch('/api/social/follow-status', {
+        params: { targetType: props.entityType, targetId: props.id },
+      })
+      following.value = Boolean(status?.following)
+      followRegistry[props.id] = following.value
     } catch (_) {
       following.value = false
     } finally {
@@ -113,6 +126,7 @@ async function onClick() {
   text-transform: none;
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: white;
+  color: black;
 }
 .follow-btn.following {
   background: #f3f4f6 !important;

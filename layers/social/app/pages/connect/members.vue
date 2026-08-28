@@ -1,23 +1,23 @@
 <template>
-	<div>
+	<div class="contentPage">
         <v-toolbar :style="`background-color: ${memberBar?.color}; color: ${memberBar?.colortext} !important`">
             <v-toolbar-title>
                 <div class="listsToolbarTitle">
-                    {{ memberPage?.name }}
+                    {{ memberBar?.name }}
                     <v-tooltip interactive>
                         <template v-slot:activator="{ props: activatorProps }">
                             <v-icon-btn size="small" icon="fas fa-circle-info" v-bind="activatorProps"></v-icon-btn>
                         </template>
                         <div>
-                            <p class="listsToolbarTooltip" v-dompurify-html="memberPage?.content"></p>
+                            <p class="listsToolbarTooltip" v-dompurify-html="memberBar?.description"></p>
                         </div>
                     </v-tooltip>
                 </div>
             </v-toolbar-title>
-            </v-toolbar>
+        </v-toolbar>
 
-		<v-row>
-			<v-col cols="3" v-for="members in members" :key="members.id">
+		<v-row style="padding-top: 30px;">
+			<v-col cols="3" v-for="members in membersList" :key="members.id">
 				<membersCard :member="members" />
 			</v-col>
 		</v-row>
@@ -25,10 +25,10 @@
 </template>
 
 <script setup>
-    import membersCard from '#social/app/components/related/memberList.vue'
+    import membersCard from '#social/app/components/blocks/memberCard.vue'
 
     useHead({
-        title: 'Members Area',
+        title: 'Creatives Area',
     })
 
     const { $directus, $readItem, $readItems } = useNuxtApp()
@@ -38,10 +38,10 @@
     })
 
     const { data: memberBar } = await useAsyncData('memberBar', () => {
-        return $directus.request($readItem('navigation', '98', { fields: ['*', { '*': ['*'] }] }))
+        return $directus.request($readItem('navigation', '131', { fields: ['*', { '*': ['*'] }] }))
     })
 
-    const { data: members } = await useAsyncData('members', () => {
-        return $directus.request($readItems('members', { fields: ['*', 'avatar.*'], sort: '-created_on' }))
+    const { data: membersList } = await useAsyncData('members', () => {
+        return $directus.request($readItems('users', { fields: ['*', 'avatar.*'], sort: '-created_at' }))
     })
 </script>

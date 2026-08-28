@@ -5,7 +5,7 @@
     </template>
     <template v-else-if="loggedIn">
       <div class="center-text">
-        <FollowButton :entity-type="'space'" :entity-id="space?.id"
+        <FollowButton :entity-type="'space'" :id="space?.id"
           :initial-following="space?.members?.some(m => m.user?.id === user?.id)"
           follow-label="Join" unfollow-label="Leave" />
         <v-btn class="ml-2" variant="plain">Mute Notifications</v-btn>

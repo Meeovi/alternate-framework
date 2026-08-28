@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-toolbar :style="`background-color: ${memoryBar?.color}; color: ${memoryBar?.colortext} !important`">
             <v-toolbar-title>
                 <div class="listsToolbarTitle">

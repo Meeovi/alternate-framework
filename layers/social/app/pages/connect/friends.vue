@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-card variant="text">
             <v-toolbar :style="`background-color: ${friendBar?.color}; color: ${friendBar?.colortext} !important`">
                 <v-toolbar-title>
@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import useFriendsPageData from '../../composables/contacts/useFriendsPageData'
-import MemberCard from '../../components/related/memberList.vue'
+import MemberCard from '../../components/blocks/memberCard.vue'
 
 const { friendBar, friendsPage, followers, friendRequests, suggestions, members, reloadData } = useFriendsPageData()
 const tab = ref('followers')

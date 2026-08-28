@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-card variant="text">
             <v-toolbar :style="`background-color: ${spacesPage?.color}; color: ${spacesPage?.colortext} !important`">
                 <v-toolbar-title>{{ spacesPage?.name }}</v-toolbar-title>

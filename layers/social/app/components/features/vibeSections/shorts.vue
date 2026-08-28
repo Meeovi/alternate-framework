@@ -34,8 +34,8 @@
     />
 
     <template>
-      <h4 v-if="short?.name" class="mb-2">{{ short.name }}</h4>
-      <p v-if="short?.description">{{ short.description }}</p>
+      <h4 v-if="short?.name" class="mb-2">{{ short?.name }}</h4>
+      <p v-if="short?.description">{{ short?.description }}</p>
       
       <div v-if="hashtags.length" class="mt-2">
         <v-chip
@@ -73,7 +73,7 @@
     <v-expand-transition>
       <div v-show="showComments">
         <v-divider />
-        <comments v-if="short?.id" :commentId="`vibe-${short.id}`" />
+        <commentsCard v-if="short?.id" :commentId="short.id" />
       </div>
     </v-expand-transition>
   </v-card>
@@ -82,7 +82,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from '#imports'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
-import comments from '../../blocks/comments.vue'
+import commentsCard from '../../blocks/comments.vue'
 
 const { $sdk } = useNuxtApp()
 

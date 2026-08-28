@@ -334,7 +334,11 @@ export default defineNuxtConfig({
       isr: process.env.NODE_ENV === 'development' ? false : 60,
       headers: {
         'Content-Security-Policy': [
-          "media-src 'self' blob: https://stream.mux.com;", // Allows MSE segment blobs
+          // Videos are served either from Mux (streamed) or directly from
+          // Directus assets (layers/social's shorts.video) — media-src only
+          // allowed Mux, so every Directus-hosted video failed to load with
+          // "Media load rejected by URL safety check".
+          `media-src 'self' blob: https://stream.mux.com ${process.env.DIRECTUS_URL ? process.env.DIRECTUS_URL.replace(/^https?:/, 'https:') : ''};`, // Allows MSE segment blobs + Directus-hosted video files
           "worker-src 'self' blob:;", // Allows parsing engines running on workers
           `connect-src 'self' https://*.mux.com ${process.env.DIRECTUS_URL ? process.env.DIRECTUS_URL.replace(/^https?:/, 'https:') : ''};` // Allows Directus API + chunk/manifest data requests
         ].join(' ')
@@ -441,6 +445,20 @@ export default defineNuxtConfig({
     ],
     resolve: {
       dedupe: ['vue', 'vue-router']
+    },
+    vue: {
+      template: {
+        compilerOptions: {
+          // The top-level `vue.compilerOptions` Nuxt config below isn't
+          // forwarded to @vitejs/plugin-vue in this Nuxt version, so the
+          // video-player/media-* custom elements never resolved without
+          // this duplicate, Vite-level passthrough.
+          isCustomElement: (tag: string) =>
+            tag.startsWith('video-') ||
+            tag.startsWith('media-') ||
+            tag.endsWith('-video')
+        }
+      }
     },
   },
 

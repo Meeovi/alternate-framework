@@ -5,7 +5,7 @@
 			<v-card-subtitle>Enter your information to create an account</v-card-subtitle>
 
 			<v-card-text>
-				<v-form class="space-y-4">
+				<v-form class="space-y-4" @submit.prevent="signUp">
 					<div class="d-flex gap-4">
 						<v-text-field v-model="firstName" label="First Name" placeholder="Max" required
 							variant="outlined" class="grow" />
@@ -30,7 +30,7 @@
 							max-width="150" max-height="150" />
 					</div>
 
-					<v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" @click="signUp" size="large">
+					<v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" size="large">
 						{{ loading ? 'Creating account...' : 'Create Account' }}
 					</v-btn>
 				</v-form>

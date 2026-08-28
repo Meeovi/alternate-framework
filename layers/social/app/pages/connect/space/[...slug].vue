@@ -25,7 +25,7 @@
 
                 <v-tabs-window v-model="tab" class="spaceTabs">
                     <!--Posts Tab-->
-                    <v-tabs-window-item :value="spaceTabs?.menus[0]?.value?.name">
+                    <v-tabs-window-item :value="spaceTabs?.menus[0]?.value">
                         <div v-if="space?.posts && space.posts.length">
                             <div class="text-center" v-for="(discussions, idx) in space.posts"
                                 :key="discussions?.posts_id?.id || idx">
@@ -58,7 +58,7 @@
                         <v-row>
                             <v-col cols="3" v-if="space?.members?.length" v-for="members in space?.members"
                                 :key="members.id">
-                                <MembersTab :member="members?.directus_users_id" />
+                                <MembersTab :member="members?.users" />
                             </v-col>
 
                             <div class="center-text" v-else>
@@ -127,7 +127,7 @@
     } from '#imports'
     import AboutTab from '../../../components/blocks/groups/about.vue'
     import postsCard from '../../../components/features/feed/posts.vue'
-    import MembersTab from '../../../components/related/memberList.vue'
+    import MembersTab from '../../../components/blocks/memberCard.vue'
     import MediaTab from '../../../components/blocks/groups/media.vue'
     import productCard from '#commerce/app/components/catalog/product/productCard.vue'
     import listsCard from '../../../components/features/lists/lists.vue'

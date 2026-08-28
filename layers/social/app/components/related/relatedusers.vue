@@ -19,7 +19,7 @@
   <script setup>
   import { ref } from '#imports'
 
-  import userCard from '#social/app/components/related/memberList.vue'
+  import userCard from '#social/app/components/blocks/memberCard.vue'
 
   const { $directus, $readItem, $readItems } = useNuxtApp()
 
