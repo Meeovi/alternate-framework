@@ -10,7 +10,7 @@
 
           <div class="search-bar__input-wrap">
             <v-text-field :model-value="currentRefinement" type="search"
-              placeholder="Search items, categories, or brands..." variant="solo-inverted" hide-details clearable
+              :placeholder="placeholder" variant="solo-inverted" hide-details clearable
               :disabled="loading" class="search-bar__input"
               @update:model-value="(value: string) => refine(value ?? '')">
               <template #append-inner>
@@ -68,6 +68,12 @@
 
   const route = useRoute()
   const config = useRuntimeConfig()
+  defineProps ({
+    placeholder: {
+      type: String,
+      required: true,
+    }
+  })
 
   const {
     searchClient
