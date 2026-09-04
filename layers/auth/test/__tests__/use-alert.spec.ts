@@ -1,17 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// useAlert() resolves the target user's email via $directus before doing
-// any real notification work — returning no user short-circuits before the
-// betternotify/Directus-transport machinery is touched, so that's all this
-// needs to stub.
-const requestMock = vi.fn().mockResolvedValue([])
+// useAlert() is now a thin client for POST /api/notifications/auth — the
+// email resolution and Directus notification send happen server-side (the
+// static token is server-only). These tests just assert the composable
+// shape and that each method posts the right route/body to the endpoint.
+const fetchMock = vi.fn().mockResolvedValue({ success: true })
 
 beforeEach(() => {
-  requestMock.mockClear()
-  vi.stubGlobal('useNuxtApp', () => ({ $directus: { request: requestMock } }))
-  vi.stubGlobal('useRuntimeConfig', () => ({
-    public: { directus: { url: 'https://directus.example.com', auth: { token: 'token' } } },
-  }))
+  fetchMock.mockClear()
+  vi.stubGlobal('$fetch', fetchMock)
 })
 
 describe('useAlert', () => {
@@ -26,12 +23,20 @@ describe('useAlert', () => {
     expect(typeof composable.passwordChanged).toBe('function')
   })
 
-  it('resolves the user email via $directus before sending', async () => {
+  it('posts the login notification to /api/notifications/auth', async () => {
     const { useAlert } = await import('../../app/composables/useAlert')
     const composable = useAlert()
 
-    await composable.login({ userId: 'user-123' })
+    await composable.login({ userId: 'user-123', device: 'MacBook' })
 
-    expect(requestMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const [url, opts] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/notifications/auth')
+    expect(opts.method).toBe('POST')
+    expect(opts.body).toMatchObject({
+      userId: 'user-123',
+      route: 'login',
+      input: { userId: 'user-123', device: 'MacBook' },
+    })
   })
 })

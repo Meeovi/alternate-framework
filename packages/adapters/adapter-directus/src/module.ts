@@ -15,10 +15,20 @@ export default defineNuxtModule<ModuleOptions>({
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
-    // Push the module options into public runtime config so our plugin can read them
+    // Push non-secret options into public runtime config so our plugin can
+    // read them. `token` is a secret — keep it in private runtime config
+    // (the content adapter is server-only anyway, see the Nitro plugin
+    // below) and never spread it into `public.*`.
+    const { token: _token, ...publicOptions } = options
     nuxt.options.runtimeConfig.public.directusAdapter = {
       ...nuxt.options.runtimeConfig.public.directus,
-      ...options
+      ...publicOptions
+    }
+    if (options.token) {
+      ;(nuxt.options.runtimeConfig as any).directus = {
+        ...(nuxt.options.runtimeConfig as any).directus,
+        token: options.token
+      }
     }
 
     // NOT registered: runtime/plugin.ts (addPlugin) — confirmed live, by

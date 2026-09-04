@@ -19,7 +19,12 @@ export default defineNuxtConfig({
 
   css: [
     'notivue/notification.css', // Only needed if using built-in notifications
-    'notivue/animations.css' // Only needed if using built-in animations
+    'notivue/animations.css', // Only needed if using built-in animations
+    // Corrections for the vendored Mobirise stylesheet: a Vuetify
+    // colour-utility guard (both themes) + dark-mode section overrides
+    // so Mobirise-built commerce pages follow the light/dark toggle.
+    // See the file header for details.
+    fileURLToPath(new URL('./app/assets/styles/mobirise-overrides.css', import.meta.url)),
   ],
 
   // @ts-ignore - notivue module option
@@ -71,6 +76,13 @@ export default defineNuxtConfig({
     // all; they were just as unreachable as the two secrets above.
     paypalClientId: process.env.PAYPAL_CLIENT_ID,
     paypalMode: process.env.PAYPAL_MODE || 'sandbox',
+    // Server-only. The Directus static token — injected into outgoing
+    // Directus requests by the /api/cms proxy (layers/shared) so it is
+    // never serialized into the client payload. Was previously exposed at
+    // `public.directus.auth.token`.
+    directus: {
+      token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN,
+    },
     public: {
       payment: process.env.NUXT_PAYMENT || 'stripe',
       // Selects which CommerceBackendRegistry adapter (see alternate-sdk)
@@ -87,20 +99,13 @@ export default defineNuxtConfig({
           clientId: `${process.env.NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID}`, // NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID
         },
       },
-      // Directus
-      // SECURITY: this whole object is serialized into the client bundle —
-      // never put real admin credentials here. email/password/enabled/
-      // enableGlobalAuthMiddleware/userFields/redirect were unused dead
-      // config (zero readers anywhere in the codebase) that leaked a real
-      // Directus admin email+password to every visitor; removed. `token`
-      // is still exposed client-side and is a known, separate issue (see
-      // app/plugins/directus.ts).
+      // Directus — URL only. This object is serialized into the client
+      // payload, so it must never carry credentials. The static token now
+      // lives in the server-only `runtimeConfig.directus.token` above and
+      // the client reaches Directus through the same-origin /api/cms proxy.
       directus: {
         url: process.env.DIRECTUS_URL,
         nuxtBaseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3011',
-        auth: {
-          token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN,
-        }
       },
     },
   },

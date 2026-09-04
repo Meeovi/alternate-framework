@@ -10,8 +10,13 @@ import { createDirectusContentAdapter } from '../content-adapter'
 // (if any) would be invisible to them. This is the ONLY place the content
 // adapter gets registered for those routes.
 export default defineNitroPlugin(() => {
-  const options = ((useRuntimeConfig() as any).public)?.directus || {}
+  const runtimeConfig = useRuntimeConfig() as any
+  const options = runtimeConfig.public?.directus || {}
   if (!options.url) return
 
-  ContentAdapterRegistry.register('directus', createDirectusContentAdapter(options.url, options.auth?.token))
+  // The static token lives in the server-only `runtimeConfig.directus.token`
+  // (it used to sit at `public.directus.auth.token`). This is a Nitro-only
+  // plugin so reading the private key here is safe.
+  const token = runtimeConfig.directus?.token
+  ContentAdapterRegistry.register('directus', createDirectusContentAdapter(options.url, token))
 })

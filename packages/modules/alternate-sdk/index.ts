@@ -50,6 +50,10 @@ export function initGateway(nuxtApp: any) {
 		const registry = createGatewayRegistry()
 
 		const publicConfig = (nuxtApp.$config?.public || {}) as Record<string, any>
+		// Full runtime config — carries server-only keys. initGateway() is
+		// only ever called on the server (see layers/shared/app/plugins/sdk.ts),
+		// so the private Directus token is available and safe to read here.
+		const privateConfig = (nuxtApp.$config || {}) as Record<string, any>
 		const gatewayConfig: Record<string, any> = {}
 
 		const directus = publicConfig.directus
@@ -57,7 +61,8 @@ export function initGateway(nuxtApp: any) {
 			gatewayConfig.content = {
 				provider: 'directus',
 				url: directus.url,
-				token: directus.token || directus.staticToken || directus.auth?.token,
+				token: privateConfig.directus?.token
+					|| directus.token || directus.staticToken || directus.auth?.token,
 			}
 		}
 

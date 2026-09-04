@@ -34,7 +34,8 @@ export default defineEventHandler(async (event) => {
 
   const runtimeConfig = useRuntimeConfig()
   const directusUrl = (runtimeConfig.public as any).directus?.url as string | undefined
-  const directusToken = (runtimeConfig.public as any).directus?.auth?.token as string | undefined
+  // Server-only key — the token is no longer exposed under public.* .
+  const directusToken = (runtimeConfig as any).directus?.token as string | undefined
 
   if (!directusUrl || !directusToken) {
     throw createError({

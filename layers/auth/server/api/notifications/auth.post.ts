@@ -6,36 +6,27 @@ import { requireAuth } from '#auth/server/utils/sessions'
 import { z } from 'zod'
 
 /**
- * POST /api/notifications/commerce
+ * POST /api/notifications/auth
  *
- * Accepts a commerce-notification request from the frontend and delivers it
- * through the Directus transport (stored as a Directus notification item)
- * instead of sending an email. Mirrors layers/search's
- * /api/notifications/search route for the notificationService.commerce
- * catalog (cartItemAdded, orderConfirmed, orderShipped, paymentSucceeded,
- * paymentFailed, checkoutCompleted).
+ * Server-side delivery of auth-event notifications (login, password
+ * changed, …). Replaces the old client-side `useAlert()` composable, which
+ * built a Directus transport in the browser using the static token — the
+ * token is now server-only and never reaches the client.
+ *
+ * Mirrors layers/search's /api/notifications/search: authenticated, and a
+ * user may only trigger notifications addressed to their own account.
  *
  * Body: { userId: string, route: string, input: Record<string, unknown> }
  */
 const bodySchema = z.object({
   userId: z.string().min(1, 'userId is required'),
-  route: z.enum([
-    'cartItemAdded',
-    'orderConfirmed',
-    'orderShipped',
-    'paymentSucceeded',
-    'paymentFailed',
-    'checkoutCompleted',
-  ]),
+  route: z.enum(['login', 'passwordReset', 'twoFactorCode', 'passwordChanged']),
   input: z.record(z.string(), z.unknown()),
 })
 
 export default defineEventHandler(async (event) => {
-  // Only letting a user trigger notifications for themselves — same
-  // ownership check as the search notifications route.
   const currentUser = await requireAuth(event)
-  const body = bodySchema.parse(await readBody(event))
-  const { userId, route, input } = body
+  const { userId, route, input } = bodySchema.parse(await readBody(event))
 
   if (userId !== currentUser.id) {
     throw createError({ statusCode: 403, statusMessage: 'Cannot send notifications for another user' })
@@ -47,16 +38,10 @@ export default defineEventHandler(async (event) => {
   const directusToken = (runtimeConfig as any).directus?.token as string | undefined
 
   if (!directusUrl || !directusToken) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Directus configuration is not available',
-    })
+    throw createError({ statusCode: 500, statusMessage: 'Directus configuration is not available' })
   }
 
-  // Resolve the user's email by userId — server-side Directus lookup
-  const directus = createDirectus(directusUrl)
-    .with(rest())
-    .with(staticToken(directusToken))
+  const directus = createDirectus(directusUrl).with(rest()).with(staticToken(directusToken))
 
   const users = await directus.request(
     readItems('directus_users', {
@@ -65,39 +50,27 @@ export default defineEventHandler(async (event) => {
       limit: 1,
     }),
   )
-
   const userList = Array.isArray(users) ? users as Array<{ email: string }> : []
   const email = userList[0]?.email ?? ''
 
   if (!email) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: 'User not found or has no email address',
-    })
+    throw createError({ statusCode: 404, statusMessage: 'User not found or has no email address' })
   }
 
-  // Build a better-notify client with the Directus transport
   const transport = directusTransport({ url: directusUrl, token: directusToken })
-
   const client = createClient({
     catalog: notificationService,
     transportsByChannel: { email: transport },
   })
 
-  const commerceCatalog = (client as any).commerce as Record<string, { send: (args: any) => Promise<any> }>
-  const routeFn = commerceCatalog[route]
+  const authCatalog = (client as any).auth as Record<string, { send: (args: any) => Promise<any> }>
+  const routeFn = authCatalog[route]
 
   if (!routeFn || typeof routeFn.send !== 'function') {
-    throw createError({
-      statusCode: 400,
-      statusMessage: `Unknown commerce notification route: ${route}`,
-    })
+    throw createError({ statusCode: 400, statusMessage: `Unknown auth notification route: ${route}` })
   }
 
-  await routeFn.send({
-    to: email,
-    input,
-  })
+  await routeFn.send({ to: email, input })
 
   return { success: true }
 })

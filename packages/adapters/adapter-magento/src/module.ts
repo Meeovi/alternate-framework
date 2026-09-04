@@ -23,10 +23,26 @@ export default defineNuxtModule<ModuleOptions>({
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
-    // 1. Push module configurations into public runtime config so the runtime plugin can read them
+    // 1. Publish only non-secret fields to `public` runtime config (it is
+    //    serialized into the client payload). `token` is deliberately kept
+    //    out of `public` — the adapter never attaches it anyway (GQL_KEY is
+    //    not a valid Magento customer JWT and breaks every request), and a
+    //    real token must stay server-side. Strip any `token` an app config
+    //    may already have placed under `public.magento`.
+    const existingPublic = { ...(nuxt.options.runtimeConfig.public.magento as Record<string, unknown> | undefined) }
+    delete existingPublic.token
     nuxt.options.runtimeConfig.public.magento = {
-      ...nuxt.options.runtimeConfig.public.magento,
-      ...options
+      ...existingPublic,
+      endpoint: options.endpoint ?? existingPublic.endpoint ?? '',
+      storeCode: options.storeCode ?? existingPublic.storeCode,
+    }
+
+    // A token, if ever configured, lives in private runtime config only.
+    if (options.token) {
+      nuxt.options.runtimeConfig.magento = {
+        ...(nuxt.options.runtimeConfig.magento as Record<string, unknown> | undefined),
+        token: options.token,
+      }
     }
 
     // 2. Register the local runtime plugin that exposes the $magentoAdapter global context
