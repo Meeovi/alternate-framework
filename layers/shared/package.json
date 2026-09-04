@@ -60,7 +60,6 @@
     "leaflet.markercluster": "^1.5.3",
     "notivue": "^2.4.5",
     "nuxt": "^4.5.1",
-    "nuxt-newsletter": "^0.2.0",
     "nuxt-security": "^2.4.0",
     "nuxt-skill-hub": "^0.1.1",
     "nuxt-tiptap-editor": "^3.2.0",

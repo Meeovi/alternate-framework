@@ -9,7 +9,6 @@ import vuetify from 'vite-plugin-vuetify'
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
-const newsletterProvider = process.env.NEWSLETTER_PROVIDER || 'mailchimp'
 
 export default defineNuxtConfig({
   $meta: {
@@ -54,7 +53,6 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "nuxt-newsletter",
     '@vueuse/nuxt',
     'nuxt-security',
     '@nuxt/image',
@@ -73,16 +71,6 @@ export default defineNuxtConfig({
     resolve(__dirname, '../../packages/plugins/experience-builder/module.ts'),
     'nuxt-skill-hub'
   ],
-
-  // @ts-ignore - nuxt-newsletter module augments this key at runtime
-  newsletter: {
-    newsletterProvider: {
-      apiKey: process.env.NEWSLETTER_API_KEY || '',
-      serverPrefix: process.env.MAILCHIMP_SERVER_PREFIX, // Mailchimp only
-      audienceId: process.env.MAILCHIMP_AUDIENCE_ID, // Mailchimp only
-      component: true,
-    }
-  },
 
   // @ts-ignore - @nuxtjs/fonts module augments this key at runtime
   fonts: {
@@ -214,6 +202,16 @@ export default defineNuxtConfig({
 
   security: {
     enabled: process.env.NODE_ENV === 'production',
+    // nuxt-security's default `removeLoggers: true` sets `vite.esbuild.drop`,
+    // which Rolldown-powered Vite 8 ignores in favour of oxc — so console
+    // statements were shipping to production untouched. Passing an explicit
+    // options object makes it register the bundler-agnostic unplugin-remove
+    // Vite plugin instead, which strips these in production builds only.
+    removeLoggers: {
+      consoleType: ['log', 'debug', 'info'],
+      include: [/\.[jt]sx?$/, /\.vue\??/],
+      exclude: [/node_modules/, /\.git/],
+    },
     rateLimiter: process.env.NODE_ENV === 'production' ? {
       tokensPerInterval: 150,
       interval: 60 * 1000,
@@ -223,8 +221,13 @@ export default defineNuxtConfig({
     headers: {
       contentSecurityPolicy: false as
       const,
+      // HSTS. Only sent in production (security.enabled gates the whole block)
+      // and only honoured by browsers over HTTPS, so it is safe to always set.
+      // 1 year + subdomains is the standard baseline; `preload` is intentionally
+      // left off until the apex domain is submitted to the HSTS preload list.
       strictTransportSecurity: {
-        maxAge: 0,
+        maxAge: 31536000,
+        includeSubdomains: true,
       },
       crossOriginOpenerPolicy: false as
       const,
@@ -444,7 +447,14 @@ export default defineNuxtConfig({
       }),
     ],
     resolve: {
-      dedupe: ['vue', 'vue-router']
+      dedupe: ['vue', 'vue-router'],
+      alias: {
+        // @jsonforms/vue-vuetify@3.x (used by @mframework/meeovi-forms) imports
+        // VStepperVertical from Vuetify's `labs` entrypoint. In Vuetify 4 the
+        // component graduated to stable with the same public API, and the labs
+        // path no longer exists — remap it so the dependency resolves.
+        'vuetify/labs/VStepperVertical': 'vuetify/components/VStepperVertical'
+      }
     },
     vue: {
       template: {
