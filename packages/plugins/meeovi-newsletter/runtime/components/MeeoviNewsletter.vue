@@ -14,6 +14,21 @@
       </slot>
 
       <form class="meeovi-newsletter__form" @submit.prevent="onSubmit">
+        <!-- Honeypot: invisible to a real visitor, often filled by bots.
+             aria-hidden + tabindex="-1" keep it out of the way for
+             screen-reader and keyboard users; off-screen positioning
+             (rather than display:none) since some bots skip hidden fields
+             specifically to avoid honeypots. -->
+        <input
+          v-model="honeypot"
+          type="text"
+          name="company"
+          class="meeovi-newsletter__honeypot"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        >
+
         <v-text-field
           v-model="email"
           class="meeovi-newsletter__input"
@@ -46,6 +61,10 @@
           {{ buttonText }}
         </v-btn>
       </form>
+
+      <ClientOnly v-if="turnstileEnabled">
+        <NuxtTurnstile v-model="turnstileToken" class="meeovi-newsletter__turnstile" />
+      </ClientOnly>
 
       <p
         v-if="message"
@@ -101,13 +120,28 @@ const description = computed(() => props.description ?? ui.description)
 const buttonText = computed(() => props.buttonText ?? ui.buttonText ?? 'Subscribe')
 const placeholder = computed(() => props.placeholder ?? ui.placeholder ?? 'Your email address')
 
-const { email, status, message, pending, subscribe } = useNewsletter({ source: props.source })
+const {
+  email,
+  status,
+  message,
+  pending,
+  honeypot,
+  turnstileToken,
+  turnstileEnabled,
+  subscribe,
+} = useNewsletter({ source: props.source })
 
 watch(status, (value) => {
   if (value === 'success' && ui.successMessage) message.value = ui.successMessage
 })
 
 async function onSubmit(): Promise<void> {
+  if (turnstileEnabled && !turnstileToken.value) {
+    status.value = 'error'
+    message.value = 'Please complete the verification.'
+    return
+  }
+
   try {
     const res = await subscribe()
     if (res) emit('subscribed', res)
@@ -129,6 +163,15 @@ async function onSubmit(): Promise<void> {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+.meeovi-newsletter__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .meeovi-newsletter__message {

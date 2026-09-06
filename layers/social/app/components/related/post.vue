@@ -7,8 +7,12 @@
                         <v-toolbar-title>
                             <v-list>
                                 <v-list-item :title="post?.author?.name"
-                                    :subtitle="post?.date_created ? new Date(post?.date_created).toLocaleDateString() : 'Unknown date'"
-                                    :prepend-avatar="getAssetURL(post?.author?.avatar)"></v-list-item>
+                                    :prepend-avatar="getAssetURL(post?.author?.avatar)">
+                                    <template #subtitle>
+                                        <TimeAgo v-if="post?.date_created" :time="post.date_created" :label="null" size="small" />
+                                        <span v-else>Unknown date</span>
+                                    </template>
+                                </v-list-item>
                             </v-list>
                         </v-toolbar-title>
 
@@ -50,7 +54,10 @@
                                         v-bind="props" variant="text"></v-btn>
                                 </template>
                                 <v-list>
-                                    <reactions :contentId="post?.reactions?.reactions_id" :contentType="post?.type" />
+                                    <reactions
+                                        :contentId="post?.type === 'atproto_post' ? post.uri : post?.reactions?.reactions_id"
+                                        :contentType="post?.type"
+                                        :contentCid="post?.cid" />
                                 </v-list>
                             </v-menu>
                         </v-btn>
@@ -84,6 +91,7 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import share from '#social/app/components/blocks/share.vue';
     import repost from '#social/app/components/blocks/repost/repost.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
+    import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
     import {
         toRef,
         onMounted,

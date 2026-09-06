@@ -45,6 +45,6 @@
     })
 
     useHead({
-        title: 'My Lists - Meeovi Tasks'
+        title: 'My Lists'
     })
 </script>

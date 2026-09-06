@@ -39,6 +39,12 @@ export default defineNuxtModule<MeeoviNewsletterModuleOptions>({
       statusValue: 'subscribed',
     },
     ui: {},
+    turnstile: {
+      // Auto-enable when the app already has a Turnstile site key
+      // configured (e.g. via @nuxtjs/turnstile in layers/shared); stays
+      // off otherwise so the module works standalone without it.
+      enabled: Boolean(env.NUXT_PUBLIC_TURNSTILE_SITE_KEY),
+    },
   },
 
   setup(options, nuxt) {
@@ -77,6 +83,9 @@ export default defineNuxtModule<MeeoviNewsletterModuleOptions>({
         statusValue: 'subscribed',
         ...options.directus,
       },
+      turnstile: {
+        enabled: options.turnstile?.enabled ?? Boolean(env.NUXT_PUBLIC_TURNSTILE_SITE_KEY),
+      },
     }
 
     // Public config — provider name + UI defaults only.
@@ -85,6 +94,9 @@ export default defineNuxtModule<MeeoviNewsletterModuleOptions>({
       apiBase,
       provider: options.provider || 'directus',
       ui: { ...options.ui },
+      turnstile: {
+        enabled: options.turnstile?.enabled ?? Boolean(env.NUXT_PUBLIC_TURNSTILE_SITE_KEY),
+      },
     }
   },
 })

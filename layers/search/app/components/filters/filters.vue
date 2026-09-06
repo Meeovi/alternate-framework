@@ -61,4 +61,25 @@ const priceRanges = [
 <style scoped>
 .search-filters { width: 280px; padding: 12px; border-right: 1px solid #eee; }
 .search-filters.closed { display: none; }
+
+/* vue-instantsearch's default widgets render the label and hit-count as
+   adjacent sibling spans with no gap between them (e.g. "Accessories" +
+   "2" -> "Accessories2") — these were the only rule missing to visually
+   separate them. */
+:deep(.ais-RefinementList-labelText) {
+  margin-right: 6px;
+}
+
+:deep(.ais-RefinementList-count),
+:deep(.ais-RatingMenu-count) {
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: rgba(var(--v-theme-on-surface), 0.08);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+:deep(.ais-RatingMenu-label) {
+  margin-right: 6px;
+}
 </style>

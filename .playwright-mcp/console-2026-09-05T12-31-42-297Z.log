@@ -1,0 +1,14 @@
+[    5126ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchBYVFqu2nqqaz01PjvdLJhMQxHYPrHOyIp9NkmvLE2ns-1788611496-1.3.1.1-SAeCMO.LaSRixhZNR6l_cO1GagXzcRBGKJNWnpoHLtk/v9qov/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[    5312ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a36540bfd91839f7/bUNfRXK.FWYYPIcWmO__hUIUTTfvgVMCfNrl3EqZ0tM-1788611507-1.2.1.1-E7IsnJGS6wcwFsu3sOtsMnN1Iazp9d3Fn389zktLKpxTEJkG5tNj8LT1lop5oHWa:0
+[    5339ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)
+[   15560ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchoZ.bZQdG3hxdWgVMgkc7OS1ID0ZxE26whoVmnMYV9eI-1788611507-1.3.1.1-4HIM6FvkdakIyaEqCUaFjPw3jXuK0b6LT4bVYf3IiCc/v9qov/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   15739ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a36541014ff439f7/WQag0V4ox1WS5q0LXjoEYesaftOajRzGOEdaem9HiY8-1788611517-1.2.1.1-GPOVoh.uaSmS6Ge3iKRybjd7RDITRSebZupnBaFIZ_Qh8_OqzepEGZGlLb7w3.89:0
+[   15772ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)

@@ -18,6 +18,8 @@
           <v-card-actions>
             <v-btn icon="fas fa-heart" variant="text" @click="toggleLike" :color="liked ? 'red' : 'grey'" />
             <span class="text-caption">{{ likesCount }}</span>
+            <v-spacer />
+            <createListBtn v-if="short" :item="listItem" kind="vibe" />
           </v-card-actions>
         </v-card>
       </v-col>
@@ -44,6 +46,7 @@
     useRoute
   } from 'vue-router'
   import comments from '../../../components/blocks/comments.vue'
+  import createListBtn from '../../../components/blocks/partials/createListBtn.vue'
   import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
   import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import {
@@ -51,6 +54,17 @@
     computed,
     onMounted
   } from '#imports'
+
+  // Also embedded directly as a component (layers/social's livebar dialog
+  // passes the clicked short's id via this prop) rather than only ever
+  // being routed to as a page — route.params.id is empty in that context,
+  // so it must win over the route param when given.
+  const props = defineProps({
+    vibe: {
+      type: [String, Number],
+      default: null,
+    },
+  })
 
   const route = useRoute()
   const { $directus, $readItem } = useNuxtApp()
@@ -64,11 +78,20 @@
     poster: getAssetURL(short.value?.thumbnail),
   }))
 
+  // createListBtn's panel needs a resolved thumbnail URL, not the raw
+  // Directus asset reference short.thumbnail holds.
+  const listItem = computed(() => ({
+    id: short.value?.id,
+    name: short.value?.name,
+    image: getAssetURL(short.value?.thumbnail),
+  }))
+
   // [...id].vue is a catch-all route, so route.params.id is an array of
   // path segments rather than a plain string.
-  const shortId = computed(() =>
-    Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
-  )
+  const shortId = computed(() => {
+    if (props.vibe !== null && props.vibe !== undefined && props.vibe !== '') return String(props.vibe)
+    return Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  })
 
   async function fetchShort() {
     short.value = await $directus.request($readItem('shorts', shortId.value, {

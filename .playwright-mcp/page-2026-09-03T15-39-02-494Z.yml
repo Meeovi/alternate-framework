@@ -1,0 +1,176 @@
+- generic [ref=f36e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f36e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f36e9]: Open accessibility menu
+  - generic [ref=f36e15]:
+    - banner [ref=f36e144]:
+      - generic [ref=f36e146]:
+        - link [ref=f36e152] [cursor=pointer]:
+          - /url: https://search.meeovi.com
+          - paragraph [ref=f36e155]: Meeovi Search
+        - generic [ref=f36e158]:
+          - button [ref=f36e160] [cursor=pointer]
+          - button "Explore The Meeovi Company" [ref=f36e167] [cursor=pointer]
+          - button "Account" [ref=f36e174] [cursor=pointer]
+    - main [ref=f36e16]:
+      - generic [ref=f36e18]:
+        - tablist [ref=f36e23]:
+          - generic [ref=f36e25]:
+            - tab [selected] [ref=f36e26] [cursor=pointer]
+            - tab [ref=f36e33] [cursor=pointer]:
+              - img "Paris Snack Video" [ref=f36e38]
+        - generic [ref=f36e39]:
+          - status [ref=f36e179]: Meeovi Search - Meeovi Search
+          - generic [ref=f36e41]:
+            - generic [ref=f36e43]:
+              - generic [ref=f36e44]: Paris Snack Video
+              - generic [ref=f36e45]: "User • Views: 7"
+              - generic [ref=f36e46]:
+                - group "Media player" [ref=f36e181]:
+                  - generic [ref=f36e183]:
+                    - button "Play"
+                    - button "Mute"
+                    - time [ref=f36e184]: 0:00
+                    - button "Playback rate 1"
+                    - button "Enter picture-in-picture"
+                    - button "Enter fullscreen"
+                - paragraph [ref=f36e185]: snacking in paris
+              - generic [ref=f36e47]:
+                - button [ref=f36e48] [cursor=pointer]
+                - generic [ref=f36e53]: "0"
+                - generic [ref=f36e186]:
+                  - button "Add to list" [active] [ref=f36e187] [cursor=pointer]:
+                    - generic [ref=f36e192]: Add to List
+                  - navigation [ref=f36e193]:
+                    - generic [ref=f36e194]:
+                      - generic [ref=f36e195]:
+                        - generic [ref=f36e196]: Add to List
+                        - button [ref=f36e197] [cursor=pointer]
+                      - separator
+                      - generic [ref=f36e202]: Paris Snack Video
+                      - separator
+                      - generic [ref=f36e210]:
+                        - generic [ref=f36e211]:
+                          - generic: Create a new list
+                          - textbox "Create a new list" [ref=f36e212]:
+                            - /placeholder: e.g. Birthday ideas
+                        - button "Create a new list appended action" [ref=f36e214] [cursor=pointer]
+                      - separator
+                      - list [ref=f36e370]:
+                        - listitem [ref=f36e371] [cursor=pointer]:
+                          - generic [ref=f36e377]:
+                            - generic [ref=f36e378]: QA Test List
+                            - generic [ref=f36e379]: Basic List
+            - generic [ref=f36e56]:
+              - generic [ref=f36e57]:
+                - generic [ref=f36e58]: What do you think?
+                - list [ref=f36e59]:
+                  - listitem [ref=f36e60] [cursor=pointer]:
+                    - generic [ref=f36e61]: "0"
+                  - listitem [ref=f36e64] [cursor=pointer]:
+                    - generic [ref=f36e65]: "0"
+                  - listitem [ref=f36e68] [cursor=pointer]:
+                    - generic [ref=f36e69]: "0"
+                  - listitem [ref=f36e72] [cursor=pointer]:
+                    - generic [ref=f36e73]: "0"
+                  - listitem [ref=f36e76] [cursor=pointer]:
+                    - generic [ref=f36e77]: "0"
+                  - listitem [ref=f36e80] [cursor=pointer]:
+                    - generic [ref=f36e81]: "0"
+              - generic [ref=f36e85]:
+                - generic [ref=f36e86]:
+                  - generic [ref=f36e87]:
+                    - generic [ref=f36e88]: NickName
+                    - textbox "NickName" [ref=f36e89]
+                  - generic [ref=f36e90]:
+                    - generic [ref=f36e91]: E-Mail
+                    - textbox "E-Mail" [ref=f36e92]
+                  - generic [ref=f36e93]:
+                    - generic [ref=f36e94]: Website
+                    - textbox "Website" [ref=f36e95]
+                - textbox "Comment here..." [ref=f36e96]
+                - generic [ref=f36e97]:
+                  - generic [ref=f36e98]:
+                    - link "Markdown is supported" [ref=f36e99] [cursor=pointer]:
+                      - /url: https://guides.github.com/features/mastering-markdown/
+                    - generic "Upload Image" [ref=f36e102] [cursor=pointer]
+                    - button "Preview" [ref=f36e106] [cursor=pointer]
+                  - generic [ref=f36e110]:
+                    - generic [ref=f36e111]: 0 Words
+                    - button "Login" [ref=f36e112] [cursor=pointer]
+                    - button "Submit" [ref=f36e113] [cursor=pointer]
+              - generic [ref=f36e114]:
+                - generic [ref=f36e115]: Comments
+                - list [ref=f36e116]:
+                  - listitem [ref=f36e117] [cursor=pointer]: Latest
+                  - listitem [ref=f36e118] [cursor=pointer]: Oldest
+                  - listitem [ref=f36e119] [cursor=pointer]: Hottest
+              - button "Refresh" [ref=f36e225] [cursor=pointer]
+              - generic [ref=f36e227]:
+                - link "Subscribe to comments of this post" [ref=f36e228] [cursor=pointer]:
+                  - /url: https://mcomments.netlify.app/.netlify/functions/comment/api/comment/rss?path=%2F44
+                - link "Subscribe to comments of this site" [ref=f36e237] [cursor=pointer]:
+                  - /url: https://mcomments.netlify.app/.netlify/functions/comment/api/comment/rss
+      - generic [ref=f36e125]:
+        - link "About Meeovi" [ref=f36e127] [cursor=pointer]:
+          - /url: https://meeovi.com/about
+        - link "Terms and Conditions" [ref=f36e130] [cursor=pointer]:
+          - /url: https://meeovi.com/terms
+        - link "Privacy Policy" [ref=f36e133] [cursor=pointer]:
+          - /url: https://meeovi.com/privacy-policy
+        - link "Blog" [ref=f36e136] [cursor=pointer]:
+          - /url: https://meeovi.com/connect/space/meeovi-digest
+        - link "Help Center" [ref=f36e139] [cursor=pointer]:
+          - /url: https://meeovi.com/connect/space/meeovi-help
+        - paragraph [ref=f36e142]:
+          - text: "@ 2017 - 2026"
+          - link "Meeovi" [ref=f36e143] [cursor=pointer]:
+            - /url: /
+          - text: All Rights Reserved.
+  - generic [ref=f36e246]:
+    - button "Toggle Nuxt DevTools" [ref=f36e247] [cursor=pointer]
+    - generic "Page load time" [ref=f36e251]:
+      - generic [ref=f36e252]: "342"
+      - generic [ref=f36e253]: ms
+    - button "Toggle Component Inspector" [ref=f36e255] [cursor=pointer]
+  - iframe [ref=f36e262]:
+    - generic [ref=f39e6]:
+      - text: protected by
+      - strong [ref=f39e7]: reCAPTCHA
+  - navigation [ref=f36e263]:
+    - generic [ref=f36e264]:
+      - generic [ref=f36e265]:
+        - generic [ref=f36e266]: Account
+        - button [ref=f36e267] [cursor=pointer]
+      - generic [ref=f36e272]:
+        - list [ref=f36e277]:
+          - listitem [ref=f36e278]:
+            - generic [ref=f36e282]: Follow Tester's Account
+        - list [ref=f36e284]:
+          - generic [ref=f36e285]: My Account
+          - link "Profile" [ref=f36e287] [cursor=pointer]:
+            - /url: /account/user/id
+          - link "Social Feed" [ref=f36e294] [cursor=pointer]:
+            - /url: /connect/newsfeed
+          - link "Spaces" [ref=f36e301] [cursor=pointer]:
+            - /url: /connect/spaces
+          - link "Vibez" [ref=f36e308] [cursor=pointer]:
+            - /url: /connect/vibez
+          - link "My Network" [ref=f36e315] [cursor=pointer]:
+            - /url: /connect/friends
+          - separator
+          - generic [ref=f36e322]: My Commerce
+          - link "Account" [ref=f36e324] [cursor=pointer]:
+            - /url: /account/
+          - link "Lists" [ref=f36e331] [cursor=pointer]:
+            - /url: /lists
+          - link "Promotions" [ref=f36e338] [cursor=pointer]:
+            - /url: /promotions
+          - link "Shops" [ref=f36e345] [cursor=pointer]:
+            - /url: /shops/
+          - link "Brands" [ref=f36e352] [cursor=pointer]:
+            - /url: /brands
+          - separator
+          - link "Upload Center" [ref=f36e359] [cursor=pointer]:
+            - /url: /upload
+          - listitem [ref=f36e366]:
+            - button "Logout" [ref=f36e368] [cursor=pointer]

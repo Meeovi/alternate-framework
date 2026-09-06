@@ -5,7 +5,8 @@
   "main": "./nuxt.config.ts",
   "scripts": {
     "start": "mesh start",
-    "build": "mesh build",
+    "//build": "This layer is not yet integrated into any app. `mesh build` composes the supergraph by introspecting live Directus/Magento GraphQL endpoints, so it cannot run in CI without them. Renamed from `build` to `compose` so `turbo run build` skips this workspace. See .env.example.",
+    "compose": "mesh build",
     "generate": "graphql-codegen",
     "prestart": "npm run generate",
     "predev": "npm run generate",

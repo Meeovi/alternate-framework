@@ -1,0 +1,64 @@
+- generic [active] [ref=f87e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f87e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f87e9]: Open accessibility menu
+  - main [ref=f87e13]:
+    - generic [ref=f87e20]:
+      - generic [ref=f87e21]:
+        - generic [ref=f87e22]:
+          - heading "Welcome to Meeovi" [level=1] [ref=f87e27]
+          - paragraph [ref=f87e28]: The Decentralized Social Shopping Network.
+        - generic [ref=f87e29]:
+          - generic [ref=f87e30]: Fast & Secure Login
+          - generic [ref=f87e35]: Enterprise Grade Security
+          - generic [ref=f87e40]: Privacy First Social Marketplace
+      - generic [ref=f87e48]:
+        - generic [ref=f87e49]: Create Account
+        - generic [ref=f87e50]: Enter your information to create an account
+        - generic [ref=f87e51]:
+          - generic [ref=f87e52]:
+            - generic [ref=f87e53]:
+              - generic [ref=f87e54]:
+                - generic [ref=f87e57]:
+                  - generic: First Name
+                  - textbox "First Name" [ref=f87e58]:
+                    - /placeholder: Max
+                - alert [ref=f87e59]
+              - generic [ref=f87e61]:
+                - generic [ref=f87e64]:
+                  - generic: Last Name
+                  - textbox "Last Name" [ref=f87e65]:
+                    - /placeholder: Robinson
+                - alert [ref=f87e66]
+            - generic [ref=f87e68]:
+              - generic [ref=f87e71]:
+                - generic: Email
+                - textbox "Email" [ref=f87e72]:
+                  - /placeholder: m@example.com
+              - alert [ref=f87e73]
+            - generic [ref=f87e75]:
+              - generic [ref=f87e78]:
+                - generic: Password
+                - textbox "Password" [ref=f87e79]:
+                  - /placeholder: Enter a secure password
+              - alert [ref=f87e80]
+            - generic [ref=f87e82]:
+              - generic [ref=f87e85]:
+                - generic: Confirm Password
+                - textbox "Confirm Password" [ref=f87e86]:
+                  - /placeholder: Confirm your password
+              - alert [ref=f87e87]
+            - generic [ref=f87e89]:
+              - generic [ref=f87e90]: Profile Image (optional)
+              - generic [ref=f87e91]:
+                - button "Select an image prepended action" [ref=f87e93] [cursor=pointer]
+                - generic [ref=f87e98]:
+                  - generic: Select an image
+                  - button "Select an image" [ref=f87e99]
+                - alert [ref=f87e101]
+            - button "Create Account" [ref=f87e103] [cursor=pointer]
+          - separator [ref=f87e105]
+          - button [ref=f87e109] [cursor=pointer]
+          - generic [ref=f87e115]:
+            - text: Already have an account?
+            - link "Sign In" [ref=f87e116] [cursor=pointer]:
+              - /url: /login

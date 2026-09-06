@@ -1,8 +1,14 @@
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
-    <input :value="modelValue ?? ''" type="date" @input="onInput" />
-  </label>
+  <v-text-field
+    :model-value="modelValue ?? ''"
+    :label="label"
+    type="date"
+    variant="outlined"
+    density="comfortable"
+    hide-details="auto"
+    class="field"
+    @update:model-value="onInput"
+  />
 </template>
 
 <script setup lang="ts">
@@ -14,9 +20,5 @@ export interface DateFieldProps {
 
 defineProps<DateFieldProps>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
-const onInput = (event: Event) => emit('update:modelValue', (event.target as HTMLInputElement).value)
+const onInput = (value: string) => emit('update:modelValue', value)
 </script>
-
-<style scoped>
-.field { display: grid; gap: 0.35rem; }
-</style>

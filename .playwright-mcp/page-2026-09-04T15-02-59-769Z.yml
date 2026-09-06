@@ -1,0 +1,80 @@
+- generic [active] [ref=f79e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f79e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f79e9]: Open accessibility menu
+  - main [ref=f79e13]:
+    - generic [ref=f79e20]:
+      - generic [ref=f79e21]:
+        - generic [ref=f79e22]:
+          - heading "Welcome to Meeovi" [level=1] [ref=f79e27]
+          - paragraph [ref=f79e28]: The Decentralized Social Shopping Network.
+        - generic [ref=f79e29]:
+          - generic [ref=f79e30]: Fast & Secure Login
+          - generic [ref=f79e35]: Enterprise Grade Security
+          - generic [ref=f79e40]: Privacy First Social Marketplace
+      - generic [ref=f79e46]:
+        - status [ref=f79e95]: Register - Meeovi - Meeovi
+        - generic [ref=f79e97]:
+          - generic [ref=f79e98]: Create Account
+          - generic [ref=f79e99]: Enter your information to create an account
+          - generic [ref=f79e100]:
+            - generic [ref=f79e101]:
+              - generic [ref=f79e102]:
+                - generic [ref=f79e103]:
+                  - generic [ref=f79e106]:
+                    - generic: First Name
+                    - textbox "First Name" [ref=f79e107]:
+                      - /placeholder: Max
+                  - alert [ref=f79e108]
+                - generic [ref=f79e110]:
+                  - generic [ref=f79e113]:
+                    - generic: Last Name
+                    - textbox "Last Name" [ref=f79e114]:
+                      - /placeholder: Robinson
+                  - alert [ref=f79e115]
+              - generic [ref=f79e117]:
+                - generic [ref=f79e120]:
+                  - generic: Email
+                  - textbox "Email" [ref=f79e121]:
+                    - /placeholder: m@example.com
+                - alert [ref=f79e122]
+              - generic [ref=f79e124]:
+                - generic [ref=f79e127]:
+                  - generic: Password
+                  - textbox "Password" [ref=f79e128]:
+                    - /placeholder: Enter a secure password
+                - alert [ref=f79e129]
+              - generic [ref=f79e131]:
+                - generic [ref=f79e134]:
+                  - generic: Confirm Password
+                  - textbox "Confirm Password" [ref=f79e135]:
+                    - /placeholder: Confirm your password
+                - alert [ref=f79e136]
+              - generic [ref=f79e138]:
+                - generic [ref=f79e139]: Profile Image (optional)
+                - generic [ref=f79e140]:
+                  - button "Select an image prepended action" [ref=f79e142] [cursor=pointer]
+                  - generic [ref=f79e147]:
+                    - generic: Select an image
+                    - button "Select an image" [ref=f79e148]
+                  - alert [ref=f79e150]
+              - button "Create Account" [ref=f79e152] [cursor=pointer]
+            - separator [ref=f79e154]
+            - button [ref=f79e158] [cursor=pointer]
+            - generic [ref=f79e164]:
+              - text: Already have an account?
+              - link "Sign In" [ref=f79e165] [cursor=pointer]:
+                - /url: /login
+  - generic [ref=f79e166]:
+    - button "Toggle Nuxt DevTools" [ref=f79e167] [cursor=pointer]
+    - generic "Page load time" [ref=f79e171]:
+      - generic [ref=f79e172]: "521"
+      - generic [ref=f79e173]: ms
+    - button "Toggle Component Inspector" [ref=f79e175] [cursor=pointer]
+  - iframe [ref=f79e182]:
+    - generic [ref=f82e2]:
+      - generic [ref=f82e6]:
+        - text: Localhost is not in the list of
+        - link "supported domains" [ref=f82e7] [cursor=pointer]:
+          - /url: https://cloud.google.com/recaptcha/docs/troubleshoot-recaptcha-issues#localhost-error
+        - text: for this site key.
+      - generic [ref=f82e8]: reCAPTCHA

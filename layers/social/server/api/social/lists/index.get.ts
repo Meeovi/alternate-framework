@@ -20,7 +20,11 @@ export default defineEventHandler(async (event) => {
   const sort = query.sort ? (Array.isArray(query.sort) ? query.sort : [query.sort]) as string[] : undefined
   const typeFilter = query.type ? String(query.type) : undefined
 
-  const filter: Record<string, any> = { user: { _eq: user.id } }
+  // `lists.user` is an M2M alias (-> lists_directus_users, columns
+  // list_id/user_id) rather than a plain scalar field — filtering it with
+  // a bare `_eq` 500s ("Invalid numeric value"). Filter through the
+  // junction's own field instead.
+  const filter: Record<string, any> = { user: { user_id: { _eq: user.id } } }
   if (typeFilter) filter.type = { _eq: typeFilter }
 
   const result = await directus.request(

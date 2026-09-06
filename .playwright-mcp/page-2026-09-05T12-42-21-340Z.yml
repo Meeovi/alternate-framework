@@ -1,0 +1,34 @@
+- generic [active] [ref=f159e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f159e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f159e9]: Open accessibility menu
+  - main [ref=f159e16]:
+    - generic [ref=f159e18]:
+      - tablist [ref=f159e23]:
+        - generic [ref=f159e25]:
+          - tab [ref=f159e26] [cursor=pointer]
+          - tab [ref=f159e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=f159e38]
+      - generic [ref=f159e41]:
+        - heading [level=1] [ref=f159e42]:
+          - paragraph [ref=f159e43]: Meeovi
+          - paragraph [ref=f159e44]: Search
+        - generic [ref=f159e50]:
+          - text: Latest Products from the
+          - link "Meeovi Marketplace" [ref=f159e51] [cursor=pointer]:
+            - /url: https://www.meeovi.com
+    - generic [ref=f159e55]:
+      - link "About Meeovi" [ref=f159e57] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=f159e60] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=f159e63] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=f159e66] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=f159e69] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=f159e72]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=f159e73] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.

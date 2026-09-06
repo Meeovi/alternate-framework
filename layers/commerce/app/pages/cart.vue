@@ -2,11 +2,15 @@
 <template>
     <div class="cartPage">
       <h2>Shopping Cart</h2>
-      
-      <div v-if="cart.items.length === 0" class="empty-cart">
+
+      <div v-if="cart.loading" class="empty-cart">
+        Loading your cart…
+      </div>
+
+      <div v-else-if="cart.items.length === 0" class="empty-cart">
         Your cart is empty
       </div>
-      
+
       <div v-else>
         <div v-for="item in cart.items" :key="item.key" class="cart-item">
           <div class="item-details">
@@ -32,12 +36,16 @@
   </template>
 
   <script setup>
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { useCartStore } from '~/stores/cart'
 
   const cart = useCartStore()
   const checkingOut = ref(false)
   const checkoutError = ref('')
+
+  onMounted(() => {
+    cart.fetchCart()
+  })
 
   const goToCheckout = async () => {
     checkoutError.value = ''
@@ -51,12 +59,12 @@
     }
   }
   </script>
-  
+
   <style scoped>
   .cartPage {
     padding: 20px;
   }
-  
+
   .cart-item {
     display: flex;
     justify-content: space-between;
@@ -64,12 +72,12 @@
     padding: 15px;
     border-bottom: 1px solid #eee;
   }
-  
+
   .cart-total {
     margin-top: 20px;
     text-align: right;
   }
-  
+
   .empty-cart {
     text-align: center;
     padding: 50px;
@@ -80,4 +88,3 @@
     margin-top: 10px;
   }
   </style>
-  

@@ -41,7 +41,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useLists } from '../../../composables/lists/useLists'
+import { useLists } from '../../../../composables/lists/useLists'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },

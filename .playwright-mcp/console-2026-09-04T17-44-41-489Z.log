@@ -1,0 +1,107 @@
+[   22800ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxt/devtools/dist/runtime/plugins/devtools.client.js?v=ec17791e:51
+[   23319ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=ec17791e:44
+[   24024ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=false defaults= {VIcon: Object} > 
+  at <VBtn href="/" icon="fas fa-home" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24028ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/u/" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24032ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/checkout" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24036ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/menu-page/" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24040ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/notifications" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24063ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   26846ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=ec17791e:44
+[   26997ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   27089ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27091ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27092ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27095ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27101ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27102ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27104ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27952ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/tu7tb/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   28173ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35ece68180036ca/UXPpcE_RFbL6KxIOoJ0D61h0BxkDn7.2zJrAE1OM67g-1788543909-1.2.1.1-2Vi_qJhE1eeD9OeafzpxhZcBYBgOkIKuTydOntoihWPHksFvj1rBpgXugSlx08zX:0
+[   28257ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=ec17791e:31
+[   28258ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=ec17791e:31
+[   28261ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=ec17791e:41:17)
+[   70426ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=ec17791e:31
+[   70426ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=ec17791e:31
+[   70787ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchSIo2WD0WWgCuyk.3emc5GafXV2nAL6UkPu04e9hRuI0-1788543909-1.3.1.1-n3H2V7VcdQHYt_uTMDZB8BiGys7uz8MnorIBtRsM4eg/tu7tb/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   70965ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35ecf6ecfc436ff/zrK1yWLxFr8x2vkjkIGj8fGZdhU447_skYWi777snIM-1788543951-1.2.1.1-xF4qpeecZMAe3lXHYoEaK0zOP8psCTT6DeUrjbjBXJ1573sCp1QiXtonolhKrmAD:0
+[   76990ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=ec17791e:41:17)
+[  102244ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchuoWYM8JB8qyrjUc2pw5pmk8bLzDtpvTGNScfkYqYJlY-1788543951-1.3.1.1-FuMvkyOERQIQoxJmPbXYrbckxsgWlIHLfUa5SXP4TTE/tu7tb/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  102596ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35ed023c8c836ff/KylBzioa8gLZefv6YH3fiWDnvDH9ygJxaqNFp.6FfjM-1788543980-1.2.1.1-.6tuhdhuvF0_ap_caTdqHD0HcCHxkATDO6NKSRqWvJCPURymTZvzwAidEntquaKC:0
+[  110734ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=ec17791e:41:17)

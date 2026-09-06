@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import { searchPayPalTransactions } from '../../../utils/paypal'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 const searchSchema = Joi.object({
   startTime: Joi.string().required(),
@@ -8,6 +9,8 @@ const searchSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
+  await requireAuth(event)
+
   try {
     if (event.node.req.method !== 'GET') {
       throw createError({

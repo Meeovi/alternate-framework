@@ -1,0 +1,151 @@
+[    4032ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=80e01aea:44
+[    4130ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=80e01aea:44
+[    4641ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3002/_nuxt/@vite/client:528
+[    4842ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    4844ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    4846ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    4851ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    4853ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    4854ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    4862ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   14204ms] [WARNING] %cssr:warn%c [1m[31m[NUXT_E3006][39m[22m `useAsyncData` handler returned `undefined`, so the request may be duplicated on the client side.
+[2m├▶[22m [2mfix:[22m Return a value from the handler function (e.g. `return null` instead of returning nothing).
+[2m╰▶[22m [2msources:[22m node:internal/process/task_queues:103:5 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      
+  at /home/meebuzo/github/alternate-framework/node_modules/nostics/dist/index.mjs
+  at Object.handle [as NUXT_E3006] (/home/meebuzo/github/alternate-framework/node_modules/nostics/dist/index.mjs)
+ @ http://localhost:3002/_nuxt/@vite/client:528
+[   14205ms] [WARNING] %cssr:warn%c [nostics]: import.meta.hot.send() is not available. This must be running on Vite. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      
+  at /home/meebuzo/github/alternate-framework/node_modules/nostics/dist/reporters/dev.mjs
+  at Object.handle [as NUXT_E3006] (/home/meebuzo/github/alternate-framework/node_modules/nostics/dist/index.mjs)
+ @ http://localhost:3002/_nuxt/@vite/client:528
+[   14670ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=80e01aea:44
+[   14739ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=80e01aea:44
+[   15206ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3002/_nuxt/@vite/client:528
+[   15210ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15213ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15215ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15219ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: Symbol(v-cmt) 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15221ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15223ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15226ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15286ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15322ms] [WARNING] %c@nuxtjs/og-image:warn%c `defineOgImageComponent()` is deprecated. Use `defineOgImage()` instead. Run `npx nuxt-og-image migrate v6` to auto-migrate. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      @ http://localhost:3002/_nuxt/@vite/client:528
+[   15619ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   15679ms] [WARNING] [NUXT_E1003] Could not access `toJSON`. The only available runtime config keys on the client side are `public` and `app`.
+╰▶ fix: Move `toJSON` under `runtimeConfig.public` in `nuxt.config` to make it available on the client side. @ http://localhost:3002/_nuxt/@vite/client:528

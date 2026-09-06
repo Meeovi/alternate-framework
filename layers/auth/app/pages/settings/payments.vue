@@ -4,50 +4,69 @@
             <v-toolbar-title>Your Payments</v-toolbar-title>
         </v-toolbar>
 
-        <div v-for="payment in payments" :key="payment.id">
-            <v-card class="mx-auto" max-width="344">
-                <v-img height="200px" src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg" cover></v-img>
+        <div v-if="pending" class="pa-4 d-flex justify-center">
+            <v-progress-circular indeterminate />
+        </div>
 
-                <v-card-title>
-                    {{ payment.method }}
-                </v-card-title>
+        <v-alert v-else-if="error" type="error" variant="tonal" class="ma-4">
+            Couldn't load your saved payment methods. Please try again later.
+        </v-alert>
 
-                <v-card-subtitle>
-                    Card ending in {{ payment.last4 }}
-                </v-card-subtitle>
+        <v-alert v-else-if="!methods.length" type="info" variant="tonal" class="ma-4">
+            You don't have any saved payment methods yet. They'll appear here after
+            your first checkout.
+        </v-alert>
 
-                <v-card-actions>
-                    <p>{{ payment.name }}</p>
+        <div v-else class="pa-4 d-flex flex-wrap ga-4">
+            <v-card v-for="method in methods" :key="method.id" width="344">
+                <v-card-item>
+                    <template #prepend>
+                        <v-icon :icon="brandIcon(method.brand)" size="32" />
+                    </template>
+                    <v-card-title class="text-capitalize">
+                        {{ method.brand }} •••• {{ method.last4 }}
+                    </v-card-title>
+                    <v-card-subtitle>
+                        Expires {{ String(method.expMonth).padStart(2, '0') }}/{{ method.expYear }}
+                    </v-card-subtitle>
+                </v-card-item>
 
-                    <v-spacer></v-spacer>
-
-                    <v-btn :icon="show ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" @click="show = !show"></v-btn>
-                </v-card-actions>
-
-                <v-expand-transition>
-                    <div v-show="show">
-                        <v-divider></v-divider>
-
-                        <v-card-text>
-                            <DynamicForm collection="payments" />
-                        </v-card-text>
-                    </div>
-                </v-expand-transition>
+                <v-card-text v-if="method.name" class="pt-0 text-medium-emphasis">
+                    {{ method.name }}
+                </v-card-text>
             </v-card>
         </div>
     </div>
 </template>
 
-<script setup>
-    import {
-        ref
-    } from 'vue'
-    import { DynamicForm } from '@mframework/meeovi-forms'
+<script setup lang="ts">
+import { computed } from 'vue'
 
-    const show = ref(false)
-    // TODO: no payment-methods data source is wired up yet (Stripe customer
-    // payment methods? a Directus `payments` collection row per user?) —
-    // declared empty so the template doesn't reference an undefined
-    // property; the list renders empty until that's decided and implemented.
-    const payments = ref([])
+interface SavedPaymentMethod {
+    id: string
+    brand: string
+    last4: string
+    expMonth: number
+    expYear: number
+    name: string | null
+}
+
+const { data, pending, error } = await useFetch<{ methods: SavedPaymentMethod[] }>(
+    '/api/payment/methods',
+)
+
+const methods = computed(() => data.value?.methods ?? [])
+
+const brandIcons: Record<string, string> = {
+    visa: 'fab fa-cc-visa',
+    mastercard: 'fab fa-cc-mastercard',
+    amex: 'fab fa-cc-amex',
+    discover: 'fab fa-cc-discover',
+    jcb: 'fab fa-cc-jcb',
+    diners: 'fab fa-cc-diners-club',
+}
+
+function brandIcon(brand: string): string {
+    return brandIcons[brand?.toLowerCase()] ?? 'fas fa-credit-card'
+}
 </script>

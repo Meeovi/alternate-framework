@@ -10,7 +10,8 @@
 <script setup>
   import {
     ref,
-    computed
+    computed,
+    onMounted
   } from 'vue'
   import {
     useCartStore
@@ -29,6 +30,13 @@
 
   const cart = useCartStore()
   const loading = ref(false)
+
+  // A listing page can mount dozens of these at once — the store dedupes
+  // concurrent calls into a single request, so this doesn't fan out into
+  // one fetch per button.
+  onMounted(() => {
+    cart.fetchCart()
+  })
 
   const productId = computed(() => {
     if (typeof props.product === 'object' && props.product !== null) {
@@ -60,9 +68,10 @@
 
   const inCartItem = computed(() => {
     if (!productId.value) return null
-    return cart.items.find(
-      (item) => item.productId === productId.value || item.id === productId.value,
-    )
+    // item.id is now the cart line's own database id (see server/utils/
+    // cart.ts's serializeCart), not the product id — only productId
+    // identifies which product a line item is for.
+    return cart.items.find((item) => String(item.productId) === String(productId.value))
   })
 
   const inCartQty = computed(() => inCartItem.value?.quantity ?? 0)
@@ -79,19 +88,18 @@
 
     try {
       loading.value = true
-      if (inCartItem.value) {
-        cart.updateQuantity(inCartItem.value.key, inCartQty.value + qtyToAdd)
-      } else {
-        await cart.addItem({
-          productId: productId.value,
-          id: productId.value,
-          sku: productSku.value,
-          name: productName.value,
-          price: productPrice.value,
-          qty: qtyToAdd,
-          quantity: qtyToAdd,
-        })
-      }
+      // The cart API merges into an existing line item itself (same
+      // product, re-priced from the catalog) — no need to special-case an
+      // already-in-cart product here, just always add the requested qty.
+      await cart.addItem({
+        productId: productId.value,
+        id: productId.value,
+        sku: productSku.value,
+        name: productName.value,
+        price: productPrice.value,
+        qty: qtyToAdd,
+        quantity: qtyToAdd,
+      })
     } catch (error) {
       console.error('Failed to add item to cart:', error)
     } finally {

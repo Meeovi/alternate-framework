@@ -1,4 +1,5 @@
 import { capturePayPalOrder } from '../../../utils/paypal'
+import { requireAuth } from '#auth/server/utils/sessions'
 import Joi from 'joi'
 
 const captureSchema = Joi.object({
@@ -7,6 +8,8 @@ const captureSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
+  await requireAuth(event)
+
   try {
     const body = await readBody(event)
     const { error, value } = captureSchema.validate(body, {

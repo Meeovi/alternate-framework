@@ -1,0 +1,124 @@
+- generic [active] [ref=f1951e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f1951e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f1951e9]: Open accessibility menu
+  - generic [ref=f1951e15]:
+    - tablist [ref=f1951e17]:
+      - generic [ref=f1951e19]:
+        - tab "Your Meeovi" [ref=f1951e21] [cursor=pointer]
+        - tab "Your Friends" [ref=f1951e24] [cursor=pointer]
+        - tab "Today's Deals" [ref=f1951e27] [cursor=pointer]
+        - tab "Daily Digest" [ref=f1951e30] [cursor=pointer]
+        - tab "Events" [ref=f1951e33] [cursor=pointer]
+        - tab "News" [ref=f1951e36] [cursor=pointer]
+        - tab "Notes" [ref=f1951e39] [cursor=pointer]
+        - tab "Brands" [ref=f1951e42] [cursor=pointer]
+        - tab "Bundled Discounts" [ref=f1951e45] [cursor=pointer]
+        - tab "Gift Cards" [ref=f1951e48] [cursor=pointer]
+        - tab "Subscriptions" [ref=f1951e51] [cursor=pointer]
+        - tab "Recommendations" [ref=f1951e54] [cursor=pointer]
+        - tab "Downloads" [ref=f1951e57] [cursor=pointer]
+    - main [ref=f1951e59]:
+      - generic [ref=f1951e61]:
+        - tablist [ref=f1951e66]:
+          - generic [ref=f1951e68]:
+            - tab [ref=f1951e69] [cursor=pointer]
+            - tab [ref=f1951e76] [cursor=pointer]:
+              - img "Paris Snack Video" [ref=f1951e81]
+        - generic [ref=f1951e86]:
+          - generic [ref=f1951e88]: "Anonymous • Views: 0"
+          - generic [ref=f1951e89]: Video is not available
+          - generic [ref=f1951e92]:
+            - button [ref=f1951e93] [cursor=pointer]
+            - generic [ref=f1951e98]: "0"
+      - generic [ref=f1951e102]:
+        - button "Post to Social Feed" [ref=f1951e104] [cursor=pointer]
+        - generic [ref=f1951e115]:
+          - strong [ref=f1951e116]:
+            - heading "Yes! Send me exclusive offers, unique gift ideas, and personalised tips for shopping and selling on Meeovi." [level=5] [ref=f1951e117]
+          - generic [ref=f1951e118]:
+            - textbox [aria-hidden]
+            - generic [ref=f1951e122]:
+              - generic: Add Email to Subscribe
+              - textbox "Add Email to Subscribe" [ref=f1951e123]
+            - button "Subscribe" [ref=f1951e128] [cursor=pointer]
+        - link "Back to Top" [ref=f1951e130] [cursor=pointer]:
+          - /url: "#mainSection"
+        - generic [ref=f1951e138]:
+          - generic [ref=f1951e139]:
+            - heading [level=2] [ref=f1951e140]:
+              - strong [ref=f1951e141]: Meeovi
+            - heading [level=3] [ref=f1951e143]:
+              - link "About Us" [ref=f1951e144] [cursor=pointer]:
+                - /url: /about-us
+            - heading [level=3] [ref=f1951e146]:
+              - link "Buyers" [ref=f1951e147] [cursor=pointer]:
+                - /url: /buyers
+            - heading [level=3] [ref=f1951e149]:
+              - link "Diversity and Inclusion" [ref=f1951e150] [cursor=pointer]:
+                - /url: /diversity-and-inclusion
+            - heading [level=3] [ref=f1951e152]:
+              - link "Licenses" [ref=f1951e153] [cursor=pointer]:
+                - /url: /licenses
+            - heading [level=3] [ref=f1951e155]:
+              - link "Careers" [ref=f1951e156] [cursor=pointer]:
+                - /url: /careers
+            - heading [level=3] [ref=f1951e158]:
+              - link "Sellers" [ref=f1951e159] [cursor=pointer]:
+                - /url: /sellers
+            - heading [level=3] [ref=f1951e161]:
+              - link "Applications" [ref=f1951e162] [cursor=pointer]:
+                - /url: /applications
+          - generic [ref=f1951e163]:
+            - heading [level=2] [ref=f1951e164]:
+              - strong [ref=f1951e165]: Help
+            - heading [level=3] [ref=f1951e167]:
+              - link "Accessibility" [ref=f1951e168] [cursor=pointer]:
+                - /url: /accessibility
+            - heading [level=3] [ref=f1951e170]:
+              - link "Terms and Conditions" [ref=f1951e171] [cursor=pointer]:
+                - /url: /terms
+            - heading [level=3] [ref=f1951e173]:
+              - link "Privacy Policies" [ref=f1951e174] [cursor=pointer]:
+                - /url: /privacy-policies
+            - heading [level=3] [ref=f1951e176]:
+              - link "Return Policies" [ref=f1951e177] [cursor=pointer]:
+                - /url: /return-policies
+            - heading [level=3] [ref=f1951e179]:
+              - link "Payments" [ref=f1951e180] [cursor=pointer]:
+                - /url: /payments
+            - heading [level=3] [ref=f1951e182]:
+              - link "Allowed Products" [ref=f1951e183] [cursor=pointer]:
+                - /url: /allowed-products
+            - heading [level=3] [ref=f1951e185]:
+              - link "Imprint" [ref=f1951e186] [cursor=pointer]:
+                - /url: /imprint
+          - generic [ref=f1951e187]:
+            - heading [level=2] [ref=f1951e188]:
+              - strong [ref=f1951e189]: Meeovi Outlets
+            - heading [level=3] [ref=f1951e191]:
+              - link "Pixanomy" [ref=f1951e192] [cursor=pointer]:
+                - /url: /departments/pixanomy
+            - heading [level=3] [ref=f1951e194]:
+              - link "Shopncute" [ref=f1951e195] [cursor=pointer]:
+                - /url: /departments/shopncute
+            - heading [level=3] [ref=f1951e197]:
+              - link "Shopnbold" [ref=f1951e198] [cursor=pointer]:
+                - /url: /departments/shopnbold
+            - heading [level=3] [ref=f1951e200]:
+              - link "Elite Novels" [ref=f1951e201] [cursor=pointer]:
+                - /url: /departments/elite-novels
+            - heading [level=3] [ref=f1951e203]:
+              - link "Showyourweird" [ref=f1951e204] [cursor=pointer]:
+                - /url: /departments/showyourweird
+        - generic [ref=f1951e207]:
+          - link "Customer Service" [ref=f1951e209] [cursor=pointer]:
+            - /url: /customer-service
+          - link "Pickup Locations" [ref=f1951e212] [cursor=pointer]:
+            - /url: /pickup-locations
+          - link "Meeovi Global" [ref=f1951e215] [cursor=pointer]:
+            - /url: /meeovi-global
+          - paragraph [ref=f1951e218]:
+            - text: "@ 2017 - 2026"
+            - link "Meeovi" [ref=f1951e219] [cursor=pointer]:
+              - /url: /
+            - text: All Rights Reserved.

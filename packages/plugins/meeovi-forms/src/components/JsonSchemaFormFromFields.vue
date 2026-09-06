@@ -15,6 +15,7 @@
 import { computed, ref, watch } from 'vue'
 import { useJsonForm } from '@mframework/meeovi-forms'
 import DynamicFormElement from './DirectusFormElement.vue'
+import { filterDisplayFields } from '../utils/directusFields'
 
 const props = withDefaults(defineProps<{
   fields?: any[]
@@ -34,9 +35,10 @@ const emit = defineEmits<{
   error: [value: unknown]
 }>()
 
-const visibleFields = computed(() => {
-  return (props.fields || []).filter((field: any) => !field?.meta?.hidden)
-})
+// Only plain fields render here — relationship fields (m2o/o2m/m2m/m2a/
+// translations) are dropped along with hidden ones. See
+// utils/directusFields.ts.
+const visibleFields = computed(() => filterDisplayFields(props.fields))
 
 const formSchema = computed(() => {
   const properties: Record<string, unknown> = {}

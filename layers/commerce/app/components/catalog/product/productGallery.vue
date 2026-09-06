@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex w-full max-h-[600px] aspect-4/3">
+  <div class="product-gallery">
     <Gallery
       class="w-full"
       :items="galleryItems"
@@ -25,3 +25,13 @@
       }))
   })
 </script>
+
+<style scoped>
+.product-gallery {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-height: 600px;
+  aspect-ratio: 4 / 3;
+}
+</style>

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 /**
  * POST /api/social/publish
@@ -9,6 +10,10 @@ import { z } from 'zod'
  * Previously the frontend accessed `globalThis.__mastoClient` directly —
  * a server-injected global that is not available in the browser. This
  * endpoint keeps the client access on the server.
+ *
+ * Requires a signed-in session: the Mastodon client is a single shared
+ * service account, so an unauthenticated caller here could post arbitrary
+ * statuses to it.
  *
  * Request body:
  *   { payload: mastodon.v1.StatusesCreateParams }
@@ -22,6 +27,8 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  await requireAuth(event)
+
   const body = bodySchema.parse(await readBody(event))
   const payload = body.payload
 

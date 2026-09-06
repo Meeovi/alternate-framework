@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+    import { computed } from '#imports'
     import membersCard from '#social/app/components/blocks/memberCard.vue'
 
     useHead({
@@ -41,7 +42,20 @@
         return $directus.request($readItem('navigation', '131', { fields: ['*', { '*': ['*'] }] }))
     })
 
-    const { data: membersList } = await useAsyncData('members', () => {
+    const { data: directusMembersList } = await useAsyncData('members', () => {
         return $directus.request($readItems('users', { fields: ['*', 'avatar.*'], sort: '-created_at' }))
     })
+
+    // atproto "accounts you might like" — the atproto match for this
+    // page's members listing (see
+    // server/api/social/atproto/suggested-members.get.ts). Resolves to
+    // `{ items: [] }` (never throws) if the service-account atproto client
+    // isn't configured or the PDS is unreachable, so this is purely
+    // additive to the Directus-backed users above.
+    const { data: atprotoMembers } = await useAsyncData('members:atprotoSuggested', () => $fetch('/api/social/atproto/suggested-members'), { default: () => ({ items: [] }) })
+
+    const membersList = computed(() => [
+        ...(directusMembersList.value || []),
+        ...(atprotoMembers.value?.items || []),
+    ])
 </script>

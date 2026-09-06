@@ -1,6 +1,7 @@
 import { readItem } from '@directus/sdk'
 import { createPayPalOrder } from '../../../utils/paypal'
 import { getDirectusFacade } from '../../../utils/directusClient'
+import { requireAuth } from '#auth/server/utils/sessions'
 import Joi from 'joi'
 
 const createOrderSchema = Joi.object({
@@ -16,6 +17,8 @@ const createOrderSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
+  await requireAuth(event)
+
   try {
     const body = await readBody(event)
     const { error, value } = createOrderSchema.validate(body, {

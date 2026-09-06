@@ -75,8 +75,33 @@ export {
 	createAtprotoSocialProvider,
 } from './providers/social'
 export { loginAtproto, getAtprotoCredentialsFromEnv } from './auth/auth'
-export { createAtprotoClient } from './auth/session'
-export { createAtprotoGatewayClient } from './clients/atproto'
+export type { AtprotoCredentials } from './auth/auth'
+export { atprotoAuth } from './auth/plugin'
+export type { AtprotoAuthOptions, AtprotoProfileSummary } from './auth/plugin'
+export {
+	AtprotoClient,
+	createAtprotoGatewayClient,
+	useAtprotoClient,
+	setAtprotoClient,
+	getAtprotoServiceUrl,
+	DEFAULT_ATPROTO_SERVICE,
+} from './clients/atproto'
+export type {
+	AtprotoClientOptions,
+	AtprotoVisibility,
+	AtprotoPostRecord,
+	AtprotoActorRecord,
+	AtprotoListRecord,
+	AtprotoTrendingTopic,
+	AtprotoNotification,
+	AtprotoTimelineOptions,
+	AtprotoUserFeedOptions,
+	AtprotoCreatePostOptions,
+	AtprotoSearchPostsOptions,
+	AtprotoSearchActorsOptions,
+	AtprotoGatewayClient,
+	AtprotoGatewayClientOptions,
+} from './clients/atproto'
 export {
 	createMastodonRestClient,
 	createMastodonStreamingClient,

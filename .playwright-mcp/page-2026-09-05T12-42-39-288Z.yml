@@ -1,0 +1,454 @@
+- generic [active] [ref=f169e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f169e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f169e9]: Open accessibility menu
+  - main [ref=f169e16]:
+    - generic [ref=f169e18]:
+      - tablist [ref=f169e23]:
+        - generic [ref=f169e25]:
+          - tab [ref=f169e26] [cursor=pointer]
+          - tab [ref=f169e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=f169e38]
+      - generic [ref=f169e41]:
+        - generic [ref=f169e42]: Results for "elite"
+        - generic [ref=f169e48]:
+          - generic [ref=f169e50]:
+            - strong [ref=f169e51]: "10"
+            - text: results for “elite”
+          - main [ref=f169e53]:
+            - generic [ref=f169e54]:
+              - generic [ref=f169e57] [cursor=pointer]:
+                - generic [ref=f169e58]:
+                  - link [ref=f169e59]:
+                    - /url: /product/4
+                    - img "Elite Tab" [ref=f169e60]
+                  - button "Add to wishlist" [ref=f169e61]
+                - generic [ref=f169e66]:
+                  - link "Elite Tab" [ref=f169e67]:
+                    - /url: /product/4
+                  - generic [ref=f169e68]:
+                    - generic [ref=f169e69]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e71]:
+                        - generic [ref=f169e72]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e73]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e79]:
+                        - generic [ref=f169e80]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e81]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e87]:
+                        - generic [ref=f169e88]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e89]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e95]:
+                        - generic [ref=f169e96]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e97]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e103]:
+                        - generic [ref=f169e104]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e105]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e110]:
+                      - /url: /product/4
+                  - paragraph [ref=f169e113]: "By:"
+                  - generic [ref=f169e114]: "19.99"
+              - generic [ref=f169e117] [cursor=pointer]:
+                - generic [ref=f169e118]:
+                  - link [ref=f169e119]:
+                    - /url: /product/5
+                    - img "Elite One" [ref=f169e120]
+                  - button "Add to wishlist" [ref=f169e121]
+                - generic [ref=f169e126]:
+                  - link "Elite One" [ref=f169e127]:
+                    - /url: /product/5
+                  - generic [ref=f169e128]:
+                    - generic [ref=f169e129]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e131]:
+                        - generic [ref=f169e132]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e133]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e139]:
+                        - generic [ref=f169e140]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e141]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e147]:
+                        - generic [ref=f169e148]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e149]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e155]:
+                        - generic [ref=f169e156]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e157]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e163]:
+                        - generic [ref=f169e164]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e165]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e170]:
+                      - /url: /product/5
+                  - paragraph [ref=f169e173]: "By:"
+                  - generic [ref=f169e174]: "19.99"
+              - generic [ref=f169e177] [cursor=pointer]:
+                - generic [ref=f169e178]:
+                  - link [ref=f169e179]:
+                    - /url: /product/6
+                    - img "Elite One Pro" [ref=f169e180]
+                  - button "Add to wishlist" [ref=f169e181]
+                - generic [ref=f169e186]:
+                  - link "Elite One Pro" [ref=f169e187]:
+                    - /url: /product/6
+                  - generic [ref=f169e188]:
+                    - generic [ref=f169e189]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e191]:
+                        - generic [ref=f169e192]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e193]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e199]:
+                        - generic [ref=f169e200]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e201]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e207]:
+                        - generic [ref=f169e208]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e209]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e215]:
+                        - generic [ref=f169e216]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e217]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e223]:
+                        - generic [ref=f169e224]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e225]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e230]:
+                      - /url: /product/6
+                  - paragraph [ref=f169e233]: "By:"
+                  - generic [ref=f169e234]: "19.99"
+              - generic [ref=f169e237] [cursor=pointer]:
+                - generic [ref=f169e238]:
+                  - link [ref=f169e239]:
+                    - /url: /product/8
+                    - img "Elite Watch" [ref=f169e240]
+                  - button "Add to wishlist" [ref=f169e241]
+                - generic [ref=f169e246]:
+                  - link "Elite Watch" [ref=f169e247]:
+                    - /url: /product/8
+                  - generic [ref=f169e248]:
+                    - generic [ref=f169e249]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e251]:
+                        - generic [ref=f169e252]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e253]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e259]:
+                        - generic [ref=f169e260]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e261]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e267]:
+                        - generic [ref=f169e268]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e269]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e275]:
+                        - generic [ref=f169e276]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e277]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e283]:
+                        - generic [ref=f169e284]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e285]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e290]:
+                      - /url: /product/8
+                  - paragraph [ref=f169e293]: "By:"
+                  - generic [ref=f169e294]: "19.99"
+              - generic [ref=f169e297] [cursor=pointer]:
+                - generic [ref=f169e298]:
+                  - link [ref=f169e299]:
+                    - /url: /product/7
+                    - img "Elite Cast" [ref=f169e300]
+                  - button "Add to wishlist" [ref=f169e301]
+                - generic [ref=f169e306]:
+                  - link "Elite Cast" [ref=f169e307]:
+                    - /url: /product/7
+                  - generic [ref=f169e308]:
+                    - generic [ref=f169e309]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e311]:
+                        - generic [ref=f169e312]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e313]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e319]:
+                        - generic [ref=f169e320]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e321]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e327]:
+                        - generic [ref=f169e328]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e329]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e335]:
+                        - generic [ref=f169e336]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e337]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e343]:
+                        - generic [ref=f169e344]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e345]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e350]:
+                      - /url: /product/7
+                  - paragraph [ref=f169e353]: "By:"
+                  - generic [ref=f169e354]: "19.99"
+              - generic [ref=f169e357] [cursor=pointer]:
+                - generic [ref=f169e358]:
+                  - link [ref=f169e359]:
+                    - /url: /product/12
+                    - img "Elite Wifi" [ref=f169e360]
+                  - button "Add to wishlist" [ref=f169e361]
+                - generic [ref=f169e366]:
+                  - link "Elite Wifi" [ref=f169e367]:
+                    - /url: /product/12
+                  - generic [ref=f169e368]:
+                    - generic [ref=f169e369]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e371]:
+                        - generic [ref=f169e372]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e373]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e379]:
+                        - generic [ref=f169e380]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e381]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e387]:
+                        - generic [ref=f169e388]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e389]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e395]:
+                        - generic [ref=f169e396]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e397]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e403]:
+                        - generic [ref=f169e404]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e405]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e410]:
+                      - /url: /product/12
+                  - paragraph [ref=f169e413]: "By:"
+                  - generic [ref=f169e414]: "19.99"
+              - generic [ref=f169e417] [cursor=pointer]:
+                - generic [ref=f169e418]:
+                  - link [ref=f169e419]:
+                    - /url: /product/13
+                    - img "Elite View" [ref=f169e420]
+                  - button "Add to wishlist" [ref=f169e421]
+                - generic [ref=f169e426]:
+                  - link "Elite View" [ref=f169e427]:
+                    - /url: /product/13
+                  - generic [ref=f169e428]:
+                    - generic [ref=f169e429]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e431]:
+                        - generic [ref=f169e432]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e433]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e439]:
+                        - generic [ref=f169e440]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e441]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e447]:
+                        - generic [ref=f169e448]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e449]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e455]:
+                        - generic [ref=f169e456]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e457]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e463]:
+                        - generic [ref=f169e464]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e465]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e470]:
+                      - /url: /product/13
+                  - paragraph [ref=f169e473]: "By:"
+                  - generic [ref=f169e474]: "19.99"
+              - generic [ref=f169e477] [cursor=pointer]:
+                - generic [ref=f169e478]:
+                  - link [ref=f169e479]:
+                    - /url: /product/14
+                    - img "Elite Auto" [ref=f169e480]
+                  - button "Add to wishlist" [ref=f169e481]
+                - generic [ref=f169e486]:
+                  - link "Elite Auto" [ref=f169e487]:
+                    - /url: /product/14
+                  - generic [ref=f169e488]:
+                    - generic [ref=f169e489]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e491]:
+                        - generic [ref=f169e492]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e493]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e499]:
+                        - generic [ref=f169e500]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e501]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e507]:
+                        - generic [ref=f169e508]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e509]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e515]:
+                        - generic [ref=f169e516]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e517]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e523]:
+                        - generic [ref=f169e524]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e525]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e530]:
+                      - /url: /product/14
+                  - paragraph [ref=f169e533]: "By:"
+                  - generic [ref=f169e534]: "19.99"
+              - generic [ref=f169e537] [cursor=pointer]:
+                - generic [ref=f169e538]:
+                  - link [ref=f169e539]:
+                    - /url: /product/10
+                    - img "Meeovi Elite Plus" [ref=f169e540]
+                  - button "Add to wishlist" [ref=f169e541]
+                - generic [ref=f169e546]:
+                  - link "Meeovi Elite Plus" [ref=f169e547]:
+                    - /url: /product/10
+                  - generic [ref=f169e548]:
+                    - generic [ref=f169e549]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e551]:
+                        - generic [ref=f169e552]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e553]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e559]:
+                        - generic [ref=f169e560]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e561]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e567]:
+                        - generic [ref=f169e568]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e569]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e575]:
+                        - generic [ref=f169e576]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e577]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e583]:
+                        - generic [ref=f169e584]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e585]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e590]:
+                      - /url: /product/10
+                  - paragraph [ref=f169e593]: "By:"
+                  - generic [ref=f169e594]: "19.99"
+              - generic [ref=f169e597] [cursor=pointer]:
+                - generic [ref=f169e598]:
+                  - link [ref=f169e599]:
+                    - /url: /product/11
+                    - img "Elite TV" [ref=f169e600]
+                  - button "Add to wishlist" [ref=f169e601]
+                - generic [ref=f169e606]:
+                  - link "Elite TV" [ref=f169e607]:
+                    - /url: /product/11
+                  - generic [ref=f169e608]:
+                    - generic [ref=f169e609]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f169e611]:
+                        - generic [ref=f169e612]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f169e613]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f169e619]:
+                        - generic [ref=f169e620]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f169e621]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f169e627]:
+                        - generic [ref=f169e628]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f169e629]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f169e635]:
+                        - generic [ref=f169e636]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f169e637]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f169e643]:
+                        - generic [ref=f169e644]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f169e645]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f169e650]:
+                      - /url: /product/11
+                  - paragraph [ref=f169e653]: "By:"
+                  - generic [ref=f169e654]: "379.99"
+    - generic [ref=f169e657]:
+      - link "About Meeovi" [ref=f169e659] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=f169e662] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=f169e665] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=f169e668] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=f169e671] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=f169e674]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=f169e675] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.

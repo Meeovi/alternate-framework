@@ -2,7 +2,8 @@
 
 import { useFederation as useMastoFederation } from '@mframework/adapter-federation/runtime/composables/useFederation'
 import type { mastodon } from '@mframework/adapter-federation/clients/mastodon'
-import { useAtprotoClient } from '@mframework/adapter-federation/clients/atproto' // scaffolded ATProto client
+import { useAtprotoClient } from '@mframework/adapter-federation/clients/atproto'
+import type { AtprotoPostRecord as AtprotoClientPostRecord } from '@mframework/adapter-federation/clients/atproto'
 
 export type FederationProtocol = 'activitypub' | 'atproto'
 
@@ -102,29 +103,13 @@ const normalizeMastoStatus = (status: mastodon.v1.Status): FederatedPost => {
   }
 }
 
-// ATPROTO CLIENT + NORMALIZATION (SCAFFOLDED)
+// ATPROTO CLIENT + NORMALIZATION
+//
+// AtprotoPostRecord itself (uri/cid/text/author.../hashtags/reply/quote/...)
+// is defined once in @mframework/adapter-federation/clients/atproto — see
+// AtprotoClientPostRecord above — rather than duplicated here.
 
-export interface AtprotoPostRecord {
-  uri: string
-  cid: string
-  text: string
-  createdAt: string
-  authorHandle: string
-  authorDisplayName?: string
-  authorAvatar?: string
-  visibility: AtProtoVisibility
-  hashtags?: string[]
-  replyParentUri?: string | null
-  quoteUri?: string | null
-  poll?: {
-    options: string[]
-    expiresAt: string
-    multiple?: boolean
-    hideTotals?: boolean
-  } | null
-}
-
-const normalizeAtprotoPost = (record: AtprotoPostRecord): FederatedPost => {
+const normalizeAtprotoPost = (record: AtprotoClientPostRecord): FederatedPost => {
   return {
     id: record.uri,
     protocol: 'atproto',
@@ -175,11 +160,11 @@ export const useSocialFederation = () => {
       return statuses.map(normalizeMastoStatus)
     }
 
-    const records = await atproto.getTimeline({
+    const { posts } = await atproto.getTimeline({
       hashtag: opts?.hashtag,
       limit: opts?.limit
     })
-    return records.map(normalizeAtprotoPost)
+    return posts.map(normalizeAtprotoPost)
   }
 
   const getFederatedUserFeed = async (
@@ -195,11 +180,11 @@ export const useSocialFederation = () => {
       return statuses.map(normalizeMastoStatus)
     }
 
-    const records = await atproto.getUserFeed({
+    const { posts } = await atproto.getAuthorFeed({
       handle: userHandle,
       limit: opts?.limit
     })
-    return records.map(normalizeAtprotoPost)
+    return posts.map(normalizeAtprotoPost)
   }
 
   const createFederatedPost = async (
@@ -217,13 +202,20 @@ export const useSocialFederation = () => {
       return normalizeMastoStatus(res)
     }
 
+    // AtprotoClient.createPost auto-detects #hashtags/links/mentions
+    // straight out of `text` (RichText.detectFacets) rather than taking a
+    // separate hashtags array — append any not already inline, same as
+    // publishPostToFederation below does for its own local-post hashtags.
+    const missingHashtags = (payload.hashtags || []).filter(tag => !payload.content.includes(`#${tag}`))
+    const text = missingHashtags.length
+      ? `${payload.content}\n\n${missingHashtags.map(tag => `#${tag}`).join(' ')}`
+      : payload.content
+
     const record = await atproto.createPost({
-      text: payload.content,
+      text,
       visibility: payload.visibility,
-      hashtags: payload.hashtags,
       replyParentUri: payload.inReplyToUri || null,
-      quoteUri: payload.quotedUri || null,
-      poll: payload.poll || null
+      quoteUri: payload.quotedUri || null
     })
 
     return normalizeAtprotoPost(record)
@@ -253,8 +245,7 @@ export const useSocialFederation = () => {
 
     const record = await atproto.createPost({
       text: baseContent,
-      visibility: visibility as AtProtoVisibility,
-      hashtags: localPost.hashtags
+      visibility: visibility as AtProtoVisibility
     })
 
     return normalizeAtprotoPost(record)

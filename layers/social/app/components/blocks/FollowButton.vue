@@ -16,12 +16,12 @@
   <div v-else>
     <v-btn class="follow-btn" disabled variant="outlined">Sign in to follow</v-btn>
   </div>
+  <p v-if="errorMessage" class="follow-btn-error">{{ errorMessage }}</p>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useSocialStore } from '../../stores/social'
-import { useAuth } from '#auth/app/composables/useAuth'
 
 export type DirectusTargetType = 'users' | 'spaces' | 'outlets' | string
 
@@ -46,19 +46,37 @@ const emit = defineEmits(['update:following', 'change'])
 
 const socialStore = useSocialStore()
 
-// useSession() (called with no arguments) hands back a shared,
-// reference-counted nanostore atom whose fetch is scheduled via
-// setTimeout(fn, 0) inside onMount and cancelled on unsubscribe. On
-// pages that render many FollowButtons at once (e.g. connect/members),
-// unrelated hydration-mismatch remounts elsewhere on the page cycle
-// that shared subscription's refcount, cancelling the scheduled fetch
-// before it ever reaches the network — the button gets stuck showing
-// "Sign in to follow" even when logged in. A plain one-shot $fetch
-// sidesteps that shared lifecycle entirely.
+// Plain `window.fetch` rather than Nuxt's auto-imported `$fetch`, for the
+// per-card requests below (follow-status / follow) — a native `fetch()`
+// to these same-origin endpoints has none of $fetch's request
+// interception/dedup machinery to interact badly with the many
+// simultaneous, identical-looking calls a grid of these buttons produces.
+// The session check itself is *not* done here at all any more — see
+// `socialStore.fetchSession()` in stores/social.ts for why (real root
+// cause of the long-standing "Sign in to follow" bug on grid pages: one
+// get-session call per card, serialized server-side).
+async function getJson(url: string, init?: RequestInit): Promise<any> {
+  const res = await fetch(url, { ...init, headers: { ...(init?.headers as any), 'Content-Type': 'application/json' } })
+  const body = await res.json().catch(() => null)
+  if (!res.ok) {
+    const message = body?.statusMessage || body?.message || `Request to ${url} failed (${res.status})`
+    throw new Error(message)
+  }
+  return body
+}
+
 const session = ref<any>(null)
 
 const following = ref<boolean>(props.initialFollowing ?? false)
 const loading = ref(false)
+const errorMessage = ref<string | null>(null)
+
+// atprotoActorToSocialProfile() (see
+// server/utils/atproto-normalize.ts) prefixes atproto-sourced member ids
+// with "atproto:{did}" — routed through the atproto-specific follow
+// endpoints below instead of the Directus `follows` collection, which has
+// no notion of an atproto DID as a target_id.
+const atprotoDid = computed(() => props.id?.startsWith('atproto:') ? props.id.slice('atproto:'.length) : null)
 
 watch(
   () => props.initialFollowing,
@@ -68,8 +86,8 @@ watch(
 )
 
 onMounted(async () => {
-  const res = await useAuth().$fetch('/get-session').catch(() => null)
-  session.value = res?.data ?? null
+  await socialStore.fetchSession()
+  session.value = socialStore.session
 
   if (!session.value) return
 
@@ -87,9 +105,9 @@ onMounted(async () => {
   if (props.initialFollowing === undefined) {
     loading.value = true
     try {
-      const status = await $fetch('/api/social/follow-status', {
-        params: { targetType: props.entityType, targetId: props.id },
-      })
+      const status = atprotoDid.value
+        ? await getJson(`/api/social/atproto/follow-status?targetDid=${encodeURIComponent(atprotoDid.value)}`)
+        : await getJson(`/api/social/follow-status?targetType=${encodeURIComponent(props.entityType)}&targetId=${encodeURIComponent(props.id)}`)
       following.value = Boolean(status?.following)
       followRegistry[props.id] = following.value
     } catch (_) {
@@ -103,16 +121,33 @@ onMounted(async () => {
 async function onClick() {
   if (loading.value) return
   loading.value = true
+  errorMessage.value = null
 
   try {
-    await socialStore.toggleFollow(props.id, props.entityType)
     const followRegistry = socialStore.followRegistry as unknown as Record<string, boolean>
-    following.value = followRegistry?.[props.id] ?? !following.value
+
+    if (atprotoDid.value) {
+      const result = await getJson('/api/social/atproto/follow', {
+        method: 'POST',
+        body: JSON.stringify({ targetDid: atprotoDid.value }),
+      })
+      following.value = Boolean(result?.following)
+      // Same registry cache the Directus path populates below — without
+      // this, re-rendering this exact card (e.g. navigating away and
+      // back) skipped straight to the follow-status network request
+      // instead of the fast cache-hit path onMounted's step 1 already
+      // checks for.
+      followRegistry[props.id] = following.value
+    } else {
+      await socialStore.toggleFollow(props.id, props.entityType)
+      following.value = followRegistry?.[props.id] ?? !following.value
+    }
 
     emit('update:following', following.value)
     emit('change', following.value)
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to change association status:', error)
+    errorMessage.value = error?.message || 'Failed to update follow status'
   } finally {
     loading.value = false
   }
@@ -131,5 +166,10 @@ async function onClick() {
 .follow-btn.following {
   background: #f3f4f6 !important;
   color: #374151 !important;
+}
+.follow-btn-error {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  color: #b91c1c;
 }
 </style>

@@ -42,6 +42,7 @@ import {
   slack,
   patreon,
 } from 'better-auth/plugins'
+import { atprotoAuth } from '@mframework/adapter-federation/auth/plugin'
 import { ac, admin, user, myCustomRole } from './permissions'
 import { normalizeUsername } from './username'
 
@@ -312,6 +313,47 @@ export const plugins = [
   passkey(),
 
   apiKey(),
+
+  // AT Protocol (Bluesky) sign-in — POST /sign-in/atproto, backed by
+  // this deployment's hosted PDS by default. Finds-or-creates the local
+  // user by the atprotoDid/atprotoHandle columns (see the
+  // 20260901120000_add_atproto_identity migration and this file's
+  // additionalFields above) and issues a normal better-auth session, same
+  // as every other plugin here. See @mframework/adapter-federation's
+  // src/auth/plugin.ts for the endpoint itself, and layers/social for the
+  // read/post side of the same atproto integration
+  // (AtprotoClient, in the same package).
+  atprotoAuth({
+    service: process.env.ATPROTO_SERVICE || 'https://sky.meeovicms.com',
+    // Persists the resumable AT Protocol session (accessJwt/refreshJwt)
+    // into atproto_sessions on every sign-in — without this, the plugin
+    // only ever links the identity (atprotoDid/atprotoHandle on `users`)
+    // and the user could never post/like/follow as themselves later, only
+    // via the separate shared service-account client. One row per user
+    // (upserted), read back by layers/social/server/utils/atproto.ts.
+    onSessionEstablished: async ({ userId, session, service }) => {
+      await db.insert(schema.atprotoSessions)
+        .values({
+          userId,
+          did: session.did,
+          handle: session.handle,
+          service,
+          accessJwt: session.accessJwt,
+          refreshJwt: session.refreshJwt,
+        })
+        .onConflictDoUpdate({
+          target: schema.atprotoSessions.userId,
+          set: {
+            did: session.did,
+            handle: session.handle,
+            service,
+            accessJwt: session.accessJwt,
+            refreshJwt: session.refreshJwt,
+            updatedAt: new Date(),
+          },
+        })
+    },
+  }),
 
   // SCIM provisioning token generation, gated to admins/org-admins and
   // audited through this layer's real audit log.

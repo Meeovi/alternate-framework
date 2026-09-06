@@ -20,7 +20,7 @@
 <script setup>
     import { ref } from '#imports';
     import { DynamicForm } from '@mframework/meeovi-forms'
-    import updateShort from '../../composables/shorts/updateShort';
+    import updateShort from '../../../composables/vibez/updateShort';
 
     const { $readItem, $updateItem } = useNuxtApp()
 

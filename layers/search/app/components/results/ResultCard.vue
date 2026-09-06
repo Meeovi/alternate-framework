@@ -2,7 +2,7 @@
   <CatalogProductCard v-if="isProduct" :product="productModel" />
 
   <v-card v-else class="result-card" variant="outlined" v-bind="linkBinding">
-    <v-img v-if="image" :src="image" :alt="title" height="160" cover class="result-card__image" />
+    <v-img :src="imageSrc" :alt="title" height="160" cover class="result-card__image" @error="onImageError" />
 
     <v-card-item>
       <template v-if="typeLabel" #prepend>
@@ -26,6 +26,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { useImageFallback } from '#shared/app/composables/media/useImageFallback'
 
 const props = defineProps<{
   item: Record<string, unknown>
@@ -39,16 +40,24 @@ function firstValue(keys: string[]): unknown {
   return null
 }
 
-// Result documents come from an OpenSearch index that can be fed by many
-// backends (products, posts, listings, profiles, ...). A `type` field (once
-// producers populate it) tells us how to render a hit; anything untyped is
-// treated as a product, since that's the only content indexed today.
+// Result documents come from federated backends (products, posts, listings,
+// profiles, ...). A `type` field tells us how to render a hit — but only a
+// known set of values are *entity* types; product rows routinely carry a
+// `type` column holding a product sub-type ("shoes", "footwear", ...), which
+// must not knock them out of the product renderer. So: product is the
+// default, and only an explicitly recognised non-product entity type opts a
+// hit into the generic card.
 const type = computed(() => {
   const raw = firstValue(['type', 'entity_type', 'model', '_type'])
   return raw ? String(raw).trim().toLowerCase() : null
 })
 
-const isProduct = computed(() => !type.value || type.value === 'product' || type.value === 'products')
+const NON_PRODUCT_TYPES = new Set([
+  'space', 'post', 'hashtag', 'shop', 'brand', 'category', 'department',
+  'coupon', 'profile', 'user', 'article',
+])
+
+const isProduct = computed(() => !NON_PRODUCT_TYPES.has(type.value ?? ''))
 
 const typeLabel = computed(() => {
   if (!type.value) return null
@@ -73,6 +82,13 @@ function resolveImageUrl(raw: unknown): string | null {
 }
 
 const image = computed(() => resolveImageUrl(firstValue(['image', 'thumbnail', 'photo', 'picture', 'avatar'])))
+
+// Federated result images come from whichever backend produced the hit
+// (Directus asset, atproto avatar CDN, a raw external URL, or nothing at
+// all) — any of those can 404 or be missing outright, so this always
+// falls back to a generic placeholder rather than a broken-image icon or
+// no image at all.
+const { src: imageSrc, onError: onImageError } = useImageFallback(image)
 
 const price = computed(() => {
   const value = firstValue(['price', 'amount', 'final_price'])

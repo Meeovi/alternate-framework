@@ -1,0 +1,183 @@
+[      13ms] [ERROR] Connecting to 'https://pingback.giphy.com/v2/pingback?apikey=l0HlIwPWyBBUDAUgM' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=627d1c89:44
+[      13ms] [ERROR] Fetch API cannot load https://pingback.giphy.com/v2/pingback?apikey=l0HlIwPWyBBUDAUgM. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=627d1c89:44
+[    6039ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch4tpHYzzn3vdcQB7giZ3YCPOadeedgDBXrMfHLGvufd0-1788556399-1.3.1.1-0Nk66KjEPEJ0zmNCd.7oCjthkvCFT4dDRh0UyGmUdbU/oq0lx/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[    6209ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a35fff99bbfbc9d6/iWNA9qOojS9bEmYu_AsGffJiLg9mrSvISXBrTSvWzPs-1788556409-1.2.1.1-wyZmAW02D.AR26jdJIXOKoQzFWiaBIp3dK2zByBQvTkNRuM8QyHKgNCVTDAjKFcf:0
+[    6258ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=627d1c89:41:17)
+[   50311ms] [WARNING] %cssr:warn%c [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      
+  at <anonymous> (/home/meebuzo/github/alternate-framework/node_modules/@nuxt/nitro-server/dist/runtime/plugins/dev-server-logs.mjs)
+  at Object.log (/home/meebuzo/github/alternate-framework/node_modules/@nuxt/nitro-server/dist/runtime/plugins/dev-server-logs.mjs)
+  at checkDensities (/home/meebuzo/github/alternate-framework/node_modules/@nuxt/image/dist/runtime/utils/index.js)
+  at getSizes (/home/meebuzo/github/alternate-framework/node_modules/@nuxt/image/dist/runtime/image.js)
+  at $img.getSizes (/home/meebuzo/github/alternate-framework/node_modules/@nuxt/image/dist/runtime/image.js)
+ @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=272bb4ec:47
+[   51198ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=272bb4ec:44
+[   51287ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=272bb4ec:44
+[   55971ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@better-auth_sso_client.js?v=c14b0377:0
+[   55995ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@better-auth_stripe_client.js?v=be5c0fbb:0
+[   56087ms] Failed to fetch dynamically imported module: http://127.0.0.1:3002/_nuxt/layouts/default.vue
+[   56598ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=272bb4ec:44
+[   56713ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   56715ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   56717ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   56722ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   56728ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   56730ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   56758ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  101788ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  101933ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  104252ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  105447ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  105742ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  105743ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  105744ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  105746ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  105782ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  105783ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  105794ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  106177ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "commentId". Expected String with value "44", got Number with value 44. 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  106262ms] [ERROR] Access to fetch at 'https://comments.meeovicms.com/api/graphql?query=&id=26ec6fb6706a50ae3e592654f5dc4518&variables=%7B%22storyID%22%3A%22%2Fconnect%2Fvibe%2F44%22%2C%22storyURL%22%3A%22http%3A%2F%2F127.0.0.1%3A3002%2Fconnect%2Fvibe%2F44%22%7D' from origin 'http://127.0.0.1:3002' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://127.0.0.1:3002/connect/vibe/44:0
+[  106262ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://comments.meeovicms.com/api/graphql?query=&id=26ec6fb6706a50ae3e592654f5dc4518&variables=%7B%22storyID%22%3A%22%2Fconnect%2Fvibe%2F44%22%2C%22storyURL%22%3A%22http%3A%2F%2F127.0.0.1%3A3002%2Fconnect%2Fvibe%2F44%22%7D:0
+[  106264ms] [LOG] [RELAY-NETWORK] Failed to fetch (comments.meeovicms.com) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  106264ms] [LOG] [RELAY-NETWORK] will retry in 1600 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  106265ms] [ERROR] Access to fetch at 'https://comments.meeovicms.com/api/graphql?query=&id=f129149a4f6342cf294705510961dd72&variables=%7B%22storyID%22%3A%22%2Fconnect%2Fvibe%2F44%22%2C%22storyURL%22%3A%22http%3A%2F%2F127.0.0.1%3A3002%2Fconnect%2Fvibe%2F44%22%2C%22storyMode%22%3Anull%7D' from origin 'http://127.0.0.1:3002' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://127.0.0.1:3002/connect/vibe/44:0
+[  106265ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://comments.meeovicms.com/api/graphql?query=&id=f129149a4f6342cf294705510961dd72&variables=%7B%22storyID%22%3A%22%2Fconnect%2Fvibe%2F44%22%2C%22storyURL%22%3A%22http%3A%2F%2F127.0.0.1%3A3002%2Fconnect%2Fvibe%2F44%22%2C%22storyMode%22%3Anull%7D:0
+[  106266ms] [LOG] [RELAY-NETWORK] Failed to fetch (comments.meeovicms.com) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  106266ms] [LOG] [RELAY-NETWORK] will retry in 1600 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  106381ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  106978ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/uewlr/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[  107171ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a360020fcc375407/0BaslwDTWPiFWH4vlZzl013hSoH4TK7Ou8LjWlZxzDQ-1788556510-1.2.1.1-VPMZgdvtarGeg.OWYFmbsW5gHBzVhdZ5ws5ChMMGrULjc_IzSFy3gJVnOdUkJJ9F:0
+[  107246ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[  107255ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:3002/api/social/list-saved?kind=vibe&itemId=44:0
+[  107274ms] [ERROR] Failed to check list membership FetchError: [GET] "/api/social/list-saved?kind=vibe&itemId=44": 401 Unauthorized
+    at async $fetch2 (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/ofetch/dist/shared/ofetch.CWycOUEr.mjs?v=1275ab82:332:15)
+    at async getListsContainingItem (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/composables/lists/useLists.ts:134:18)
+    at async loadMembership (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/components/blocks/partials/createListBtn.vue:43:24) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  107866ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  107866ms] [LOG] [RELAY-NETWORK] will retry in 3200 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  107872ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  107873ms] [LOG] [RELAY-NETWORK] will retry in 3200 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111070ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111071ms] [LOG] [RELAY-NETWORK] will retry in 6400 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111072ms] [LOG] RRNLRetryMiddlewareError: (SyntaxError) "undefined" is not valid JSON
+    at n (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:217213)
+    at Object.beforeRetry (https://comments.meeovicms.com/assets/js/stream.1824448257c78ab63d0b61efda1f5885.js:2:194907)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:216834
+    at c (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556982)
+    at Generator._invoke (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556770)
+    at forEach.e.<computed> [as next] (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:557405)
+    at i (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208680)
+    at u (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208875)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208934
+    at new Promise (<anonymous>)
+    at new t (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:72437)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208819
+    at ne (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:215182)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:215740
+    at c (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556982)
+    at Generator._invoke (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556770)
+    at forEach.e.<computed> [as next] (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:557405)
+    at i (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208680)
+    at u (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208875)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208934
+    at new Promise (<anonymous>)
+    at new t (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:72437)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208819
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:215841
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:216326
+    at c (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556982)
+    at Generator._invoke (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556770)
+    at forEach.e.<computed> [as throw] (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:557405)
+    at i (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208680)
+    at s (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208911) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111074ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111075ms] [LOG] [RELAY-NETWORK] will retry in 1600 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111076ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111077ms] [LOG] [RELAY-NETWORK] will retry in 6400 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111078ms] [LOG] RRNLRetryMiddlewareError: (SyntaxError) "undefined" is not valid JSON
+    at n (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:217213)
+    at Object.beforeRetry (https://comments.meeovicms.com/assets/js/stream.1824448257c78ab63d0b61efda1f5885.js:2:194907)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:216834
+    at c (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556982)
+    at Generator._invoke (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556770)
+    at forEach.e.<computed> [as next] (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:557405)
+    at i (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208680)
+    at u (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208875)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208934
+    at new Promise (<anonymous>)
+    at new t (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:72437)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208819
+    at ne (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:215182)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:215740
+    at c (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556982)
+    at Generator._invoke (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556770)
+    at forEach.e.<computed> [as next] (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:557405)
+    at i (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208680)
+    at u (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208875)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208934
+    at new Promise (<anonymous>)
+    at new t (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:72437)
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208819
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:215841
+    at https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:216326
+    at c (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556982)
+    at Generator._invoke (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:556770)
+    at forEach.e.<computed> [as throw] (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:557405)
+    at i (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208680)
+    at s (https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:2:208911) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111079ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  111080ms] [LOG] [RELAY-NETWORK] will retry in 1600 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  112677ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  112678ms] [LOG] [RELAY-NETWORK] will retry in 3200 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  112681ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  112682ms] [LOG] [RELAY-NETWORK] will retry in 3200 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  115880ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  115881ms] [LOG] [RELAY-NETWORK] will retry in 6400 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  115903ms] [LOG] [RELAY-NETWORK] "undefined" is not valid JSON @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  115904ms] [LOG] [RELAY-NETWORK] will retry in 6400 milliseconds @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[  117467ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchwzzX4rlaya1T_7ItCpATGXZ9MuDnDaOft._N_IMxzRk-1788556510-1.3.1.1-qNa7dHemKTxOEBQWXAl_2Gmqn9KX9lgw0XCJBkeb__Y/uewlr/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  117661ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a360025238325407/pWOUMH5sQpGFKy6ZtLGlve7aTs1RtdMM_tMn5iOV7WA-1788556521-1.2.1.1-u5_Q8myhfVMjREYr6HvgoEuKLvA7MAtpFAOEBoDbP4JNTY23UVjVdXkMvjlLyJAX:0
+[  117691ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[  127963ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchkI0WU8X.iorEhdh2Cw2YwG3ohgEqW1VNEKkRMjoXezg-1788556521-1.3.1.1-h5AXrX1G7tzANRlSBeOWZSCV5CY8lRu4T0_H.ZrwElE/uewlr/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  128132ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a360029399205407/OVOWkk411ym_iLayW4z60KLR81oyQCwom2gtsOG6yH8-1788556531-1.2.1.1-dBcv912NeDEVmcHAi5ddCTFFXttzA5y7WEYbqAbIYdkrEA5vPfcX4agTYUDhPj8l:0
+[  128164ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)

@@ -1,0 +1,462 @@
+[    7508ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/display-2.png:0
+[   16211ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   16266ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   16630ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://localhost:3003/_nuxt/@vite/client:528
+[   16636ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab > 
+  at <VSlideGroup centerActive=true scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn center-active=""  ... > 
+  at <VCard height="75" variant="text" > 
+  at <MenusLivebarLive> 
+  at <VCol> 
+  at <VRow> 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   16638ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab > 
+  at <VSlideGroup centerActive=true scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn center-active=""  ... > 
+  at <VCard height="75" variant="text" > 
+  at <MenusLivebarLive> 
+  at <VCol> 
+  at <VRow> 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   16642ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab > 
+  at <VSlideGroup centerActive=true scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn center-active=""  ... > 
+  at <VCard height="75" variant="text" > 
+  at <MenusLivebarLive> 
+  at <VCol> 
+  at <VRow> 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   16644ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab > 
+  at <VSlideGroup centerActive=true scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn center-active=""  ... > 
+  at <VCard height="75" variant="text" > 
+  at <MenusLivebarLive> 
+  at <VCol> 
+  at <VRow> 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   16648ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" defaults= {VImg: Object, VIcon: Object} > 
+  at <VAvatar ref_for=true ref=fn<fn> onClick=fn<onClick>  ... > 
+  at <VOverlay ref=Ref< undefined > class="v-dialog" style= {}  ... > 
+  at <VDialog modelValue=false onUpdate:modelValue=fn transition="dialog-bottom-transition" > 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab > 
+  at <VSlideGroup centerActive=true scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn center-active=""  ... > 
+  at <VCard height="75" variant="text" > 
+  at <MenusLivebarLive> 
+  at <VCol> 
+  at <VRow> 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   17028ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="one" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   17663ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="one" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   18436ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="two" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   19124ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="two" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   19862ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="three" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   20585ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="three" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   21290ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="four" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   22018ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="four" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   22819ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="five" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   23468ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="five" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   24220ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="six" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   25027ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="six" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   25710ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="seven" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   26427ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab value="seven" > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs modelValue=null onUpdate:modelValue=fn align-tabs="center"  ... > 
+  at <VSheet > 
+  at <VCard elevation="0" > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/connect/space/meeovi-news" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/space/meeovi-news, hash: , query: Object, name: connect-space-slug___en, path: /connect/space/meeovi-news}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   27477ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   27578ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3003/_nuxt/@vite/client:528
+[   27616ms] [LOG] Meeovi Search @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   27653ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   27667ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/logo512alpha.png:0
+[   27719ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27720ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27723ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27726ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27729ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27730ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   27759ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   28297ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   28299ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   28300ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   28301ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   28865ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   29265ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   29280ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   29284ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   29608ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   29615ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   30007ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   30020ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   30190ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   30363ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   30540ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   30542ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   30604ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   30787ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   30790ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   30931ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   30971ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   30980ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   31032ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   31218ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   31221ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   31367ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   31394ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   31399ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   31462ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   31631ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   31661ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   31781ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0
+[   31789ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/user/to-json:0
+[   31851ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3003/api/auth/logged-in/to-json:0

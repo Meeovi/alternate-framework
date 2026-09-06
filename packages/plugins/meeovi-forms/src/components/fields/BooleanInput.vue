@@ -1,8 +1,13 @@
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
-    <input type="checkbox" :checked="Boolean(modelValue)" @change="onChange" />
-  </label>
+  <div class="boolean-field">
+    <v-checkbox
+      :model-value="Boolean(modelValue)"
+      :label="label"
+      density="comfortable"
+      hide-details="auto"
+      @update:model-value="onChange"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -15,11 +20,16 @@ export interface BooleanInputProps {
 defineProps<BooleanInputProps>()
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 
-const onChange = (event: Event) => {
-  emit('update:modelValue', (event.target as HTMLInputElement).checked)
-}
+const onChange = (value: boolean | null) => emit('update:modelValue', Boolean(value))
 </script>
 
 <style scoped>
-.field { display: grid; gap: 0.35rem; }
+/* v-checkbox has no outlined variant of its own — a plain border on the
+   wrapper keeps it visually consistent with the outlined text/select
+   fields around it. */
+.boolean-field {
+  border: 1px solid rgba(0, 0, 0, 0.38);
+  border-radius: 4px;
+  padding: 0 0.75rem;
+}
 </style>

@@ -1,24 +1,28 @@
 <template>
     <div class="useOnline" :class="computedClasses">
-        <UseOnline v-slot="{ isOnline }">
-            <span v-if="showIndicator" class="useOnline-indicator" :class="{ online: isOnline, offline: !isOnline }"></span>
-            
-            <span v-if="showLabel" class="useOnline-label">
-                {{ label }} {{ isOnline ? onlineText : offlineText }}
-            </span>
+        <span v-if="showIndicator" class="useOnline-indicator" :class="{ online: isOnline && atprotoOk, offline: !isOnline || !atprotoOk }"></span>
 
-            <span v-if="!showLabel" :class="{ online: isOnline, offline: !isOnline }">
-                {{ isOnline ? onlineText : offlineText }}
-            </span>
-        </UseOnline>
+        <span v-if="showLabel" class="useOnline-label">
+            {{ label }} {{ isOnline && atprotoOk ? onlineText : offlineText }}
+        </span>
+
+        <span v-if="!showLabel" :class="{ online: isOnline && atprotoOk, offline: !isOnline || !atprotoOk }">
+            {{ isOnline && atprotoOk ? onlineText : offlineText }}
+        </span>
     </div>
 </template>
 
 <script setup>
+// The renderless <UseOnline> component this used to render doesn't exist
+// in the installed @vueuse/core (v14) — that API moved to a separate
+// @vueuse/components package this project doesn't depend on, and this
+// component's own name (useOnline.vue) collided with the (nonexistent)
+// global <UseOnline> anyway. Using the plain composable directly here —
+// idiomatic for <script setup> and needs no extra dependency.
 import {
     useOnline
 } from '@vueuse/core'
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 
 const props = defineProps({
     label: {
@@ -45,12 +49,39 @@ const props = defineProps({
         type: String,
         default: 'medium',
         validator: (value) => ['small', 'medium', 'large'].includes(value)
+    },
+    // When set, this stops being plain browser-connectivity detection and
+    // also reflects whether the atproto/PDS service itself is reachable
+    // (GET /api/social/atproto/status) — "online" then means both the
+    // browser has a network connection AND the federation backend
+    // answered. Defaults to false: existing usages (there weren't any
+    // before this was wired up) keep the original browser-only behavior
+    // unless a caller opts in.
+    checkAtproto: {
+        type: Boolean,
+        default: false
     }
 })
+
+const isOnline = useOnline()
 
 const computedClasses = computed(() => ({
     [`size-${props.size}`]: true
 }))
+
+// Not checked at all (atprotoOk stays true) unless checkAtproto is set —
+// same reasoning as the prop's own default.
+const atprotoOk = ref(true)
+
+onMounted(async () => {
+    if (!props.checkAtproto) return
+    try {
+        const status = await $fetch('/api/social/atproto/status')
+        atprotoOk.value = Boolean(status?.reachable)
+    } catch {
+        atprotoOk.value = false
+    }
+})
 </script>
 
 <style scoped>

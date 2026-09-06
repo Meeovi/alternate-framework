@@ -24,7 +24,9 @@ export function usePolls() {
 
 	async function vote(pollId: string, optionId: string) {
 		if (client && typeof client.votePoll === 'function') return client.votePoll({ pollId, optionId })
-		return { success: false, reason: 'votePoll not implemented by provider' }
+		// Fail loudly rather than returning a success-shaped object the caller
+		// would treat as "vote recorded".
+		throw new Error('Poll voting is not supported by the configured commerce provider')
 	}
 
 	return {

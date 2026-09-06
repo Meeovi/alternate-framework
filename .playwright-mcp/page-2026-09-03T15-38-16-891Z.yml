@@ -1,0 +1,76 @@
+- generic [active] [ref=f36e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f36e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f36e9]: Open accessibility menu
+  - main [ref=f36e16]:
+    - generic [ref=f36e18]:
+      - tablist [ref=f36e23]:
+        - generic [ref=f36e25]:
+          - tab [ref=f36e26] [cursor=pointer]
+          - tab [ref=f36e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=f36e38]
+      - generic [ref=f36e41]:
+        - generic [ref=f36e43]:
+          - generic [ref=f36e45]: "Anonymous • Views: 0"
+          - generic [ref=f36e47]:
+            - button [ref=f36e48] [cursor=pointer]
+            - generic [ref=f36e53]: "0"
+        - generic [ref=f36e56]:
+          - generic [ref=f36e57]:
+            - generic [ref=f36e58]: What do you think?
+            - list [ref=f36e59]:
+              - listitem [ref=f36e60] [cursor=pointer]:
+                - generic [ref=f36e61]: "0"
+              - listitem [ref=f36e64] [cursor=pointer]:
+                - generic [ref=f36e65]: "0"
+              - listitem [ref=f36e68] [cursor=pointer]:
+                - generic [ref=f36e69]: "0"
+              - listitem [ref=f36e72] [cursor=pointer]:
+                - generic [ref=f36e73]: "0"
+              - listitem [ref=f36e76] [cursor=pointer]:
+                - generic [ref=f36e77]: "0"
+              - listitem [ref=f36e80] [cursor=pointer]:
+                - generic [ref=f36e81]: "0"
+          - generic [ref=f36e85]:
+            - generic [ref=f36e86]:
+              - generic [ref=f36e87]:
+                - generic [ref=f36e88]: NickName
+                - textbox "NickName" [ref=f36e89]
+              - generic [ref=f36e90]:
+                - generic [ref=f36e91]: E-Mail
+                - textbox "E-Mail" [ref=f36e92]
+              - generic [ref=f36e93]:
+                - generic [ref=f36e94]: Website
+                - textbox "Website" [ref=f36e95]
+            - textbox "Comment here..." [ref=f36e96]
+            - generic [ref=f36e97]:
+              - generic [ref=f36e98]:
+                - link "Markdown is supported" [ref=f36e99] [cursor=pointer]:
+                  - /url: https://guides.github.com/features/mastering-markdown/
+                - generic "Upload Image" [ref=f36e102] [cursor=pointer]
+                - button "Preview" [ref=f36e106] [cursor=pointer]
+              - generic [ref=f36e110]:
+                - generic [ref=f36e111]: 0 Words
+                - button "Login" [ref=f36e112] [cursor=pointer]
+                - button "Submit" [ref=f36e113] [cursor=pointer]
+          - generic [ref=f36e114]:
+            - generic [ref=f36e115]: Comments
+            - list [ref=f36e116]:
+              - listitem [ref=f36e117] [cursor=pointer]: Latest
+              - listitem [ref=f36e118] [cursor=pointer]: Oldest
+              - listitem [ref=f36e119] [cursor=pointer]: Hottest
+    - generic [ref=f36e125]:
+      - link "About Meeovi" [ref=f36e127] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=f36e130] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=f36e133] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=f36e136] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=f36e139] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=f36e142]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=f36e143] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.

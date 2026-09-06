@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card color="#b02564">
+        <v-card color="accent">
             <div class="d-flex flex-no-wrap justify-space-between">
                 <div>
                     <template #title class="text-h5">

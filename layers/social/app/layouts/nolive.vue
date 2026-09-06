@@ -9,10 +9,18 @@
       <v-main>
         <v-card>
           <v-layout>
-            <v-navigation-drawer v-model="drawer" temporary>
-              <sidebarnav />
-              <v-spacer />
-            </v-navigation-drawer>
+            <!-- ClientOnly: SSR/CSR class mismatch on this drawer (Vuetify's
+                 mobile-breakpoint detection only runs client-side) caused
+                 Vue to mount a second, un-hydrated copy instead of patching
+                 the first — two overlapping drawers, neither fully closed. -->
+            <ClientOnly>
+              <Teleport to="body">
+                <v-navigation-drawer v-model="drawer" temporary>
+                  <sidebarnav />
+                  <v-spacer />
+                </v-navigation-drawer>
+              </Teleport>
+            </ClientOnly>
 
             <v-main id="sidebarNav" />
             <main id="mainSection">

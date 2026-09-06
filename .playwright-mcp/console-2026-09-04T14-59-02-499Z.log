@@ -1,0 +1,689 @@
+[   30427ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   30581ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   31795ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   31795ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   32925ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   33802ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   33905ms] [ERROR] Hydration completed but contains mismatches. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   34197ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   34605ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   35074ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Commerce driver is not configured on the server) @ http://127.0.0.1:3002/api/commerce/driver:0
+[   36382ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/display-2.png:0
+[   36686ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   36833ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,h_200/https://cms.meeovicms.com/assets/497f6812-768f-42c2-a4ad-0026b1777eb7:0
+[   37850ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,h_200/https://cms.meeovicms.com/assets/497f6812-768f-42c2-a4ad-0026b1777eb7:0
+[   45545ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-list-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <CatalogProductDetails>
+at <VCol>
+at <VRow>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   45545ms] [WARNING] %cssr:warn%c [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got String with value "15". 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <BlocksCompareBtn>
+at <VListItem>
+at <VListItem>
+at <VListChildren>
+at <VList>
+at <VCard>
+at <CatalogProductDetails>
+at <VCol>
+at <VRow>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   45545ms] [WARNING] %cssr:warn%c [Vue warn]: Invalid prop: type check failed for prop "tag". Expected Object, got Undefined  
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <RelatedTag>
+at <VListItem>
+at <VListChildren>
+at <VList>
+at <VCard>
+at <CatalogProductDetails>
+at <VCol>
+at <VRow>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   45546ms] [WARNING] %cssr:warn%c [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got Undefined  
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <CatalogProductCard>
+at <VSlideGroupItem>
+at <VSlideGroup>
+at <VSheet>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   45546ms] [WARNING] %cssr:warn%c [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got Undefined  
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <CatalogProductCard>
+at <VSlideGroupItem>
+at <VSlideGroup>
+at <VSheet>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   46030ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   46174ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   46735ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   47127ms] [WARNING] [Vue warn]: Failed to resolve component: v-list-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   47551ms] [WARNING] [NUXT_E1003] Could not access `toJSON`. The only available runtime config keys on the client side are `public` and `app`.
+╰▶ fix: Move `toJSON` under `runtimeConfig.public` in `nuxt.config` to make it available on the client side. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   48816ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got String with value "15". 
+  at <BlocksCompareBtn product="15" > 
+  at <VListItem class="col-6" > 
+  at <VListItem class="col col-6" > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   49236ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VListItem key=1 > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   49327ms] [ERROR] Hydration completed but contains mismatches. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   49602ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "tag". Expected Object, got Undefined  
+  at <RelatedTag tag=undefined > 
+  at <VListItem key=1 > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   49948ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VListItem key=1 > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   50277ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got Undefined  
+  at <CatalogProductCard product=undefined class="ma-4" onClick=fn<toggle> > 
+  at <VSlideGroupItem key=0 > 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   50639ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got Undefined  
+  at <CatalogProductCard product=undefined class="ma-4" onClick=fn<toggle> > 
+  at <VSlideGroupItem key=0 > 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   51001ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node (text) 
+- expected on client: template 
+  at <VCard class="mx-auto" max-width="400" height="550" > 
+  at <RelatedSpace space= {id: 1, status: Public, sort: null, user_created: null, date_created: 2024-08-27T18:51:24.054Z} class="ma-4" onClick=fn<toggle> > 
+  at <VSlideGroupItem key=0 > 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   51329ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node (start of fragment) 
+- expected on client: button 
+  at <VBtn class="shareBtn" disabled=true onClick=fn<startShare>  ... > 
+  at <BlocksShare style= {position: relative, top: 0px} > 
+  at <VCard class="mx-auto" max-width="400" height="550" > 
+  at <RelatedSpace space= {id: 1, status: Public, sort: null, user_created: null, date_created: 2024-08-27T18:51:24.054Z} class="ma-4" onClick=fn<toggle> > 
+  at <VSlideGroupItem key=0 > 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   51638ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: a 
+  at <VBtn color="orange" text="Explore" href="/space/mental-health-awareness" > 
+  at <VCard class="mx-auto" max-width="400" height="550" > 
+  at <RelatedSpace space= {id: 1, status: Public, sort: null, user_created: null, date_created: 2024-08-27T18:51:24.054Z} class="ma-4" onClick=fn<toggle> > 
+  at <VSlideGroupItem key=0 > 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   51960ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VCard class="mx-auto" max-width="400" height="550" > 
+  at <RelatedSpace space= {id: 1, status: Public, sort: null, user_created: null, date_created: 2024-08-27T18:51:24.054Z} class="ma-4" onClick=fn<toggle> > 
+  at <VSlideGroupItem key=0 > 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   52803ms] [WARNING] [Vue warn]: Unhandled error during execution of app errorHandler 
+  at <VCard class="mx-auto" max-width="400" height="550" > 
+  at <RelatedSpace space= {id: 1, status: Public, sort: null, user_created: null, date_created: 2024-08-27T18:51:24.054Z} class="ma-4" onClick=fn<toggle> > 
+  at <VSlideGroupItem key=0 > 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   53237ms] [WARNING] [Vue warn]: Unhandled error during execution of component update 
+  at <VSlideGroup modelValue=null onUpdate:modelValue=fn class="pa-4"  ... > 
+  at <VSheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   53429ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53429ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53437ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53438ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53838ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53839ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53844ms] TypeError: el.hasAttribute is not a function
+    at isMismatchAllowed (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:2192:20)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1941:11)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5234:7)
+    at ReactiveEffect.run (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4790ac70:257:16)
+    at setupRenderEffect (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5364:3)
+    at mountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5171:4)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1792:5)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5234:7)
+    at ReactiveEffect.run (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4790ac70:257:16)
+    at setupRenderEffect (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5364:3)
+    at mountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5171:4)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1792:5)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5234:7)
+    at ReactiveEffect.run (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4790ac70:257:16)
+    at setupRenderEffect (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5364:3)
+    at mountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5171:4)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1792:5)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+[   53847ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53847ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   53849ms] Maximum recursive updates exceeded in component <VSlideGroup>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+[   53856ms] Maximum recursive updates exceeded in component <VSlideGroup>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+[   53856ms] Maximum recursive updates exceeded in component <VSlideGroup>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+[   53860ms] Maximum recursive updates exceeded in component <VSlideGroup>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+[   53860ms] Maximum recursive updates exceeded in component <VSlideGroup>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+[   53860ms] Maximum recursive updates exceeded in component <VSlideGroup>. This means you have a reactive effect that is mutating its own dependencies and thus recursively triggering itself. Possible sources include component template, render function, updated hook or watcher source function.
+[   53862ms] TypeError: Failed to execute 'replaceChild' on 'Node': parameter 1 is not of type 'Node'.
+    at replaceNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:2020:16)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1843:5)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5234:7)
+    at ReactiveEffect.run (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4790ac70:257:16)
+    at setupRenderEffect (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5364:3)
+    at mountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5171:4)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1792:5)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5234:7)
+    at ReactiveEffect.run (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4790ac70:257:16)
+    at setupRenderEffect (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5364:3)
+    at mountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5171:4)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1792:5)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5234:7)
+    at ReactiveEffect.run (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4790ac70:257:16)
+    at setupRenderEffect (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5364:3)
+    at mountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5171:4)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1792:5)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateFragment (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1962:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1773:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1935:12)
+    at hydrateElement (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1847:16)
+    at hydrateNode (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:1780:17)
+    at hydrateSubTree (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5226:7)
+    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5234:7)
+[   54136ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   54136ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   54142ms] TypeError: Cannot read properties of null (reading 'type')
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5716:54)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5649:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5649:5)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5651:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5649:5)
+    at unmountChildren (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5742:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5649:5)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+    at unmountComponent (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5728:4)
+    at unmount (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4790ac70:5637:4)
+[   54374ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   54496ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   54498ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   54499ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   54505ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   54513ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   54514ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   54522ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   56406ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   56407ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31

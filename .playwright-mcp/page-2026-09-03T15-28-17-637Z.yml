@@ -1,0 +1,130 @@
+- generic [ref=e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=e9]: Open accessibility menu
+  - main [ref=e16]:
+    - generic [ref=e18]:
+      - tablist [ref=e23]:
+        - generic [ref=e25]:
+          - tab [ref=e26] [cursor=pointer]
+          - tab [ref=e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=e38]
+      - generic [ref=e42]:
+        - list [ref=e53]:
+          - listitem [ref=e54]:
+            - heading [level=1] [ref=e56]:
+              - strong [ref=e57]: Clipboard
+          - listitem [ref=e58]:
+            - generic [ref=e60]:
+              - text: "By:"
+              - strong [ref=e61]: Unknown
+          - listitem [ref=e62]:
+            - generic [ref=e63]: $0.00
+          - listitem [ref=e66]:
+            - generic [ref=e68]:
+              - generic [ref=e69]:
+                - generic: Rating 0 of 5
+                - radio "Rating 0 of 5"
+                - generic [ref=e71]:
+                  - generic [ref=e72] [cursor=pointer]:
+                    - generic: Rating 1 of 5
+                    - button "Rating 1 of 5" [ref=e73]
+                  - radio "Rating 1 of 5 Rating 1 of 5"
+                - generic [ref=e79]:
+                  - generic [ref=e80] [cursor=pointer]:
+                    - generic: Rating 2 of 5
+                    - button "Rating 2 of 5" [ref=e81]
+                  - radio "Rating 2 of 5 Rating 2 of 5"
+                - generic [ref=e87]:
+                  - generic [ref=e88] [cursor=pointer]:
+                    - generic: Rating 3 of 5
+                    - button "Rating 3 of 5" [ref=e89]
+                  - radio "Rating 3 of 5 Rating 3 of 5"
+                - generic [ref=e95]:
+                  - generic [ref=e96] [cursor=pointer]:
+                    - generic: Rating 4 of 5
+                    - button "Rating 4 of 5" [ref=e97]
+                  - radio "Rating 4 of 5 Rating 4 of 5"
+                - generic [ref=e103]:
+                  - generic [ref=e104] [cursor=pointer]:
+                    - generic: Rating 5 of 5
+                    - button "Rating 5 of 5" [ref=e105]
+                  - radio "Rating 5 of 5 Rating 5 of 5"
+              - link "reviews" [ref=e110] [cursor=pointer]:
+                - /url: /product/28#commentsSection
+          - listitem [ref=e111]:
+            - listitem [ref=e114]:
+              - generic [ref=e117]:
+                - button "Decrease value" [disabled]
+                - generic [ref=e118]:
+                  - spinbutton [ref=e122]: "1"
+                  - alert [ref=e123]:
+                    - generic [ref=e124]: null in stock
+                - button "Increase value" [ref=e126] [cursor=pointer]
+          - listitem [ref=e131]:
+            - generic [ref=e133]:
+              - listitem [ref=e134]:
+                - button "Download" [ref=e137] [cursor=pointer]
+              - listitem [ref=e143]:
+                - button "Add to Compare" [ref=e147] [cursor=pointer]
+          - listitem [ref=e153]:
+            - generic [ref=e155]:
+              - listitem [ref=e156]:
+                - generic [ref=e159]:
+                  - button "Add to list" [active] [ref=e160] [cursor=pointer]:
+                    - generic [ref=e165]: Add to List
+                  - navigation [ref=e166]:
+                    - generic [ref=e167]:
+                      - generic [ref=e168]:
+                        - generic [ref=e169]: Add to List
+                        - button [ref=e170] [cursor=pointer]
+                      - separator
+                      - generic [ref=e177]:
+                        - generic [ref=e178]: Clipboard
+                        - generic [ref=e179]: $$0.00
+                      - separator
+                      - generic [ref=e184]:
+                        - generic [ref=e185]:
+                          - generic: Create a new list
+                          - textbox "Create a new list" [ref=e186]:
+                            - /placeholder: e.g. Birthday ideas
+                        - button "Create a new list appended action" [ref=e188] [cursor=pointer]
+                      - separator
+                      - alert [ref=e192]:
+                        - generic [ref=e197]: You don't have any lists yet — create one above.
+              - listitem [ref=e198]
+          - listitem [ref=e199]
+        - tablist [ref=e202]:
+          - generic [ref=e204]:
+            - tab "Description" [ref=e206] [cursor=pointer]
+            - tab "Reviews" [ref=e209] [cursor=pointer]
+            - tab "Product Details" [ref=e212] [cursor=pointer]
+        - generic [ref=e215]:
+          - heading "This product goes great together with..." [level=4] [ref=e217]
+          - generic [ref=e219]:
+            - heading "Related Products" [level=4] [ref=e220]
+            - paragraph [ref=e222]: No related products available.
+          - generic [ref=e223]:
+            - heading "Product featured in these Shops" [level=4] [ref=e224]
+            - paragraph [ref=e226]: Not featured in any shops.
+          - generic [ref=e227]:
+            - heading "Product featured in these Vibez" [level=4] [ref=e228]
+            - paragraph [ref=e230]: Not featured in any shorts.
+          - generic [ref=e231]:
+            - heading "Product featured in these Spaces" [level=4] [ref=e232]
+            - paragraph [ref=e234]: Not featured in any spaces.
+    - generic [ref=e237]:
+      - link "About Meeovi" [ref=e239] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=e242] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=e245] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=e248] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=e251] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=e254]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=e255] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.

@@ -13,9 +13,13 @@
 </template>
 
 <script setup>
+// Plain $fetch here fetched twice — once during SSR, again on client
+// hydration with no payload transfer between them — and could hydration-
+// mismatch if the session's status changed in between. useFetch shares the
+// SSR result with the client via the payload.
 const route = useRoute()
 const sessionId = route.query.session_id
 
-const { data: session } = await $fetch(`/api/payment/stripe/checkout-session/${sessionId}`)
-const status = session?.status
+const { data: response } = await useFetch(`/api/payment/stripe/checkout-session/${sessionId}`)
+const status = computed(() => response.value?.data?.status)
 </script>

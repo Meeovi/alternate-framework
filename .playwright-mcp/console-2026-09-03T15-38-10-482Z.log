@@ -1,0 +1,175 @@
+[    5149ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/display-2.png:0
+[   13267ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   13342ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   13636ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://localhost:3003/_nuxt/@vite/client:528
+[   13670ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2Fconnect%2Fvibe%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   13671ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2Fconnect%2Fvibe%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   13678ms] [ERROR] Connecting to 'http://unpkg.com/@waline/emojis@1.1.0/weibo/info.json' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   13678ms] [ERROR] Fetch API cannot load http://unpkg.com/@waline/emojis@1.1.0/weibo/info.json. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   13681ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2Fconnect%2Fvibe%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   13681ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2Fconnect%2Fvibe%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   14105ms] [WARNING] [Vue warn]: Unhandled error during execution of watcher callback 
+  at <ArticleReaction> 
+  at <WalineComment id="commentsSection" serverURL="https://mcomments.netlify.app/.netlify/functions/comment" path="/connect/vibe/44"  ... > 
+  at <BlocksComments commentId=undefined > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   14861ms] [ERROR] Failed to fetch (mcomments.netlify.app) @ http://localhost:3003/_nuxt/@vite/client:528
+[   15440ms] [WARNING] [Vue warn]: Unhandled error during execution of watcher callback 
+  at <CommentBox key=0 onLog=fn<N> onSubmit=fn<se> > 
+  at <WalineComment id="commentsSection" serverURL="https://mcomments.netlify.app/.netlify/functions/comment" path="/connect/vibe/44"  ... > 
+  at <BlocksComments commentId=undefined > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   16332ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   16333ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   16339ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   16340ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   16667ms] TypeError: Failed to fetch (mcomments.netlify.app)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:45:28
+    at r$1 (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:11:72)
+    at b (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2688:20)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2713:66
+    at callWithErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:192:17)
+    at callWithAsyncErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:199:15)
+    at baseWatchOptions.call (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:834:46)
+    at job (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4b1b562e:1778:13)
+    at watch (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4b1b562e:1812:4)
+    at doWatch (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:862:22)
+    at watch (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:802:9)
+    at watchImmediate (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vueuse/shared/dist/index.js?v=4b1b562e:1967:9)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2713:4
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:2755:38
+    at callWithErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:192:17)
+    at callWithAsyncErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:199:15)
+    at hook.__weh.hook.__weh (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:2737:16)
+    at flushPostFlushCbs (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:376:25)
+    at flushJobs (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:414:3)
+[   16667ms] TypeError: Failed to fetch
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:45:28
+    at tt (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2416:9)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2425:54
+    at Array.map (<anonymous>)
+    at rt (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2425:35)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:3038:21
+    at callWithErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:192:17)
+    at callWithAsyncErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:199:15)
+    at baseWatchOptions.call (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:834:46)
+    at job (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4b1b562e:1778:13)
+    at watch (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4b1b562e:1812:4)
+    at doWatch (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:862:22)
+    at watch (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:802:9)
+    at watchImmediate (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vueuse/shared/dist/index.js?v=4b1b562e:1967:9)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:3037:8
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:2755:38
+    at callWithErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:192:17)
+    at callWithAsyncErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:199:15)
+    at hook.__weh.hook.__weh (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:2737:16)
+    at flushPostFlushCbs (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:376:25)
+    at flushJobs (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:414:3)
+[   16382ms] [LOG] Meeovi Search @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   16633ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "commentId". Expected String with value "44", got Number with value 44. 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   17220ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   17447ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   17451ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   17451ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:44
+[   17476ms] [ERROR] Failed to fetch (mcomments.netlify.app) @ http://localhost:3003/_nuxt/@vite/client:528
+[   17725ms] [WARNING] [Vue warn]: Unhandled error during execution of watcher callback 
+  at <ArticleReaction> 
+  at <WalineComment id="commentsSection" serverURL="https://mcomments.netlify.app/.netlify/functions/comment" path="/44"  ... > 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   18488ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/logo512alpha.png:0
+[   18536ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   18536ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   18867ms] TypeError: Failed to fetch (mcomments.netlify.app)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=4b1b562e:45:28
+    at r$1 (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:11:72)
+    at b (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2688:20)
+    at http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=4b1b562e:2713:66
+    at callWithErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:192:17)
+    at callWithAsyncErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:199:15)
+    at baseWatchOptions.call (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:834:46)
+    at job (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=4b1b562e:1778:13)
+    at callWithErrorHandling (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:192:31)
+    at flushJobs (http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=4b1b562e:399:5)
+[   18704ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3003/_nuxt/@vite/client:528
+[   18870ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18871ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18875ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18877ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18886ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18889ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18909ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20207ms] [WARNING] [NUXT_E3003] `useAsyncData`/`useFetch` was called after the component had already mounted, so the data fetch cannot be awaited during setup.
+╰▶ fix: Use `$fetch()` for requests triggered after mount (e.g. in event handlers), or call `useAsyncData`/`useFetch` in the `setup()` function. @ http://localhost:3003/_nuxt/@vite/client:528
+[   22722ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   22722ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31

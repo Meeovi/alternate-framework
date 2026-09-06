@@ -64,7 +64,7 @@
     } from '#imports'
     import {
         componentMap
-    } from '~/types/componentMap'
+    } from '../../types/componentMap'
     import { DynamicForm } from '@mframework/meeovi-forms'
 
     // current selected tab value (matches menu.value)

@@ -282,8 +282,9 @@
 
   #powered-by-tv {
     display: flex;
-    background: #f8f9fd;
-    border: solid 1px #e0e3eb;
+    background: rgba(var(--v-theme-on-surface), 0.04);
+    border: solid 1px rgba(var(--v-theme-on-surface), 0.12);
+    color: rgb(var(--v-theme-on-surface));
     text-align: justify;
     flex-direction: column;
     gap: 8px;
@@ -294,7 +295,7 @@
 
   #powered-by-tv a,
   #powered-by-tv a:visited {
-    color: #2962ff;
+    color: rgb(var(--v-theme-primary));
   }
 
   @media (max-width: 800px) {

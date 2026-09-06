@@ -1,0 +1,121 @@
+/* mobirise-overrides.css
+ * ==================================================================
+ * Corrections for the vendored Mobirise stylesheet that every
+ * ecosystem app ships at `app/assets/mobirise/css/mbr-additional.css`
+ * (plus `assets/theme/css/style.css`). That CSS predates the Vuetify
+ * theme system and collides with it in two ways:
+ *
+ *   1. It redefines the Bootstrap colour utilities `.bg-primary` /
+ *      `.text-primary` / `.text-white` ... as global `!important`
+ *      rules. Vuetify uses the *same* class names for its own theme
+ *      utilities and applies them at runtime on `<v-btn color="…">`
+ *      etc. `vite-plugin-vuetify` tree-shakes the Vuetify utility CSS
+ *      it can't see statically, so on those components only Mobirise's
+ *      rule survives — it sets the fill but never the paired text
+ *      colour, and the label inherits a Mobirise colour that can come
+ *      out identical to the fill (an invisible button label).
+ *
+ *   2. It hard-codes `background-color:#ffffff` on every `.cid-*`
+ *      section shell and near-black text on the `.mbr-*` / `.card-*`
+ *      children, so Mobirise-built pages (outlets, order / shipment /
+ *      transaction / invoice, incentives, department landings) ignore
+ *      the light/dark toggle and render as a white slab in dark mode.
+ *
+ * `!important` here is deliberate — the targets are vendor rules that
+ * are themselves `!important` with per-section specificity we can't
+ * out-specify without enumerating every hashed `cid`.
+ * ================================================================== */
+
+
+/* ============================================================
+ * 1. Vuetify colour-utility guard  (both themes)
+ * ============================================================
+ * Re-assert a legible label for each semantic fill on Vuetify
+ * controls. The *fill* colour is left to whatever already wins, so
+ * the app's existing look is unchanged — only unreadable text is
+ * corrected. `.v-application .v-btn.bg-*` is specificity (0,3,0),
+ * comfortably above Mobirise's bare `.bg-*` / `.text-*` (0,1,0). */
+.v-application .v-btn.bg-primary,
+.v-application .v-btn.bg-secondary,
+.v-application .v-btn.bg-info,
+.v-application .v-btn.bg-success,
+.v-application .v-btn.bg-error,
+.v-application .v-chip.bg-primary,
+.v-application .v-chip.bg-secondary {
+  color: #ffffff !important;
+}
+
+.v-application .v-btn.bg-warning {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+/* The label span must not re-inherit a stray Mobirise colour either. */
+.v-application .v-btn[class*="bg-"] .v-btn__content {
+  color: inherit !important;
+}
+
+
+/* ============================================================
+ * 2. Dark-mode section overrides  (.v-theme--dark only)
+ * ============================================================
+ * Scoped to the class Vuetify puts on `.v-application` when the
+ * active theme is dark, so light mode is entirely untouched. */
+
+/* Section shells: reset only `background-color` so a decorative hero
+ * `background-image` is left intact. */
+.v-theme--dark [class*="cid-"] {
+  background-color: transparent !important;
+}
+
+/* Card / panel containers inside a section are structural — Mobirise
+ * fills them `#fff` (or, rarely, a brand colour). On a dark page they
+ * read better fully transparent, content sitting on the theme ground.
+ * Vendor naming is inconsistent, hence both `-wrapper` and `_wrapper`. */
+.v-theme--dark [class*="cid-"] .container-fluid,
+.v-theme--dark [class*="cid-"] .card,
+.v-theme--dark [class*="cid-"] .card-wrapper,
+.v-theme--dark [class*="cid-"] .card_wrapper,
+.v-theme--dark [class*="cid-"] .card-box,
+.v-theme--dark [class*="cid-"] .item-wrapper,
+.v-theme--dark [class*="cid-"] .panel-item,
+.v-theme--dark [class*="cid-"] .sidebar-background {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Light legibility washes over background images become dark washes
+ * (the per-section `opacity` on the overlay is left as-is). */
+.v-theme--dark [class*="cid-"] .mbr-overlay {
+  background: #000 !important;
+}
+
+/* Baked-in near-black headings / body copy → theme ink. Links,
+ * buttons and icon fonts are excluded so brand accents survive. */
+.v-theme--dark [class*="cid-"] .mbr-section-title,
+.v-theme--dark [class*="cid-"] .mbr-section-head,
+.v-theme--dark [class*="cid-"] .mbr-text,
+.v-theme--dark [class*="cid-"] .mbr-content-text,
+.v-theme--dark [class*="cid-"] .card-title,
+.v-theme--dark [class*="cid-"] h1,
+.v-theme--dark [class*="cid-"] h2,
+.v-theme--dark [class*="cid-"] h3,
+.v-theme--dark [class*="cid-"] h4,
+.v-theme--dark [class*="cid-"] h5,
+.v-theme--dark [class*="cid-"] h6,
+.v-theme--dark [class*="cid-"] p:not(.mbr-section-btn) {
+  color: rgb(var(--v-theme-on-surface)) !important;
+}
+
+/* Secondary / descriptive copy stays muted, just theme-muted. */
+.v-theme--dark [class*="cid-"] .mbr-desc,
+.v-theme--dark [class*="cid-"] .mbr-section-subtitle,
+.v-theme--dark [class*="cid-"] .card-text,
+.v-theme--dark [class*="cid-"] .text-muted {
+  color: rgba(var(--v-theme-on-surface), 0.68) !important;
+}
+
+/* Hairlines / dividers. */
+.v-theme--dark [class*="cid-"] hr {
+  border-color: rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+  background-color: rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+}

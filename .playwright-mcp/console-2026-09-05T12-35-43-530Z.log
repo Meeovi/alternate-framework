@@ -1,0 +1,423 @@
+[     173ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab key=0 > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[     735ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab key=0 > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    1261ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: Symbol(v-cmt) 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    1813ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    2319ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: div 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    2869ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    3440ms] [WARNING] [Vue warn]: Hydration class mismatch on JSHandle@node 
+  - rendered on server: class="v-tab__slider"
+  - expected on client: class="pagebarTabs"
+  Note: this mismatch is check-only. The DOM will not be rectified in production due to performance overhead.
+  You should fix the source of the mismatch. 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    4008ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: div 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    4635ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    5270ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    5879ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: Symbol(v-cmt) 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    6458ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    7074ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: Symbol(v-cmt) 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    7725ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    8379ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    8769ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node (start of fragment) 
+- expected on client: div 
+  at <MenusFooterNav> 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    9247ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VOverlay ref=Ref< undefined > id="v-menu-v-0-1-0-0-0" class="v-menu"  ... > 
+  at <VMenu > 
+  at <MenusPageAboutMenu > 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab key=0 > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    9937ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VOverlay ref=Ref< undefined > id="v-menu-v-0-1-0-0-0" class="v-menu"  ... > 
+  at <VMenu > 
+  at <MenusPageAboutMenu > 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn symbol= Symbol(vuetify:v-tabs) ref=Ref< undefined > class="v-tab"  ... > 
+  at <VTab key=0 > 
+  at <VSlideGroup centerActive=false scrollToActive=true contentClass=undefined  ... > 
+  at <VTabs show-arrows="" > 
+  at <VToolbarItems > 
+  at <VDefaultsProvider defaults= {VTabs: Object} > 
+  at <VToolbar class="pagebar" > 
+  at <MenusPagePagebar key=0 > 
+  at <[...slug] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/search" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /search?query=elite, hash: , query: Object, name: slug___en, path: /search}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Nolive ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="nolive" layoutProps= {ref: RefImpl} name="nolive" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="nolive" name="nolive"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   11652ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3002/_nuxt/@vite/client:528
+[   11722ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   11724ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   11726ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   11729ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   11738ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   11740ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   11743ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   12466ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/l2s6l/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   12719ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a36546d00ee339f7/A8Qkzei4CgyCg3IvMGeHW9JsO27WyOfqj7Uioshid6Q-1788611755-1.2.1.1-usXntrk3qn7tGnSAtXg0aQ.74BDavZ0YXd4YkxIzDvAdHCqdy_QqQhz9nzja0thw:0
+[   12810ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=80e01aea:41:17)
+[   13123ms] [LOG] Meeovi @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=80e01aea:44
+[   13152ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://localhost:3002/_nuxt/@vite/client:528

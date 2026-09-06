@@ -36,6 +36,41 @@ export const logAuditEvent = async (entry: {
   }
 }
 
+// Paths whose request body can carry a `rememberMe` flag (see
+// node_modules/better-auth/dist/api/routes/sign-in.mjs /
+// sign-up.mjs) — the only ones fixupRememberMeCookie needs to run on.
+const REMEMBER_ME_PATHS = new Set(['/sign-in/email', '/sign-up/email'])
+
+/**
+ * better-auth's own `setSessionCookie` only ever *sets* the signed
+ * `dont_remember` marker cookie when a sign-in opts out of "remember me"
+ * (session.mjs / cookies/index.mjs: `if (dontRememberMe) await
+ * ctx.setSignedCookie(...dontRememberToken...)`) — it never clears that
+ * cookie on a *later* sign-in where the box **is** checked. Every
+ * subsequent session refresh (GET /api/auth/get-session, on effectively
+ * every page load) reads that leftover cookie back and treats the
+ * session as "don't remember" regardless of what this sign-in actually
+ * asked for — silently rewriting the persistent session cookie into a
+ * browser-session-only one on the very next refresh, so a user who
+ * checked "Remember Me" still gets logged out as soon as they close the
+ * browser. (better-auth *does* clear this cookie on sign-out via
+ * deleteSessionCookie — but only there, so it survives any sign-in that
+ * doesn't immediately follow an explicit sign-out.)
+ *
+ * Run after every email sign-in/sign-up: whenever this request wasn't
+ * itself an explicit "don't remember me" (`rememberMe: false`) and it
+ * produced a session, clear any stale marker left over from an earlier
+ * one. Clearing a cookie that was never set is a harmless no-op.
+ */
+export const fixupRememberMeCookie = async (ctx: any) => {
+  if (!REMEMBER_ME_PATHS.has(ctx.path)) return
+  if (ctx.body?.rememberMe === false) return
+  if (!ctx.context?.newSession) return
+  const cookie = ctx.context?.authCookies?.dontRememberToken
+  if (!cookie?.name) return
+  ctx.setCookie(cookie.name, '', { ...cookie.attributes, maxAge: 0 })
+}
+
 export const createAuthAuditMiddleware = () => createAuthMiddleware(async (ctx) => {
   const ipAddress =
     ctx.getHeader('x-forwarded-for') || ctx.getHeader('remoteAddress') || undefined

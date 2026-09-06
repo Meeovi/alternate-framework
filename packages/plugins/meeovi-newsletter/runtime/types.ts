@@ -24,6 +24,14 @@ export interface NewsletterSubscribeInput {
   source?: string
   /** Arbitrary extra fields forwarded to providers that accept metadata. */
   metadata?: Record<string, unknown>
+  /**
+   * Honeypot field — must arrive empty. A real visitor never sees or fills
+   * it (it's visually hidden); a bot filling every field usually does. Not
+   * a validation error: the endpoint reports success without subscribing.
+   */
+  honeypot?: string
+  /** Cloudflare Turnstile response token, required when Turnstile is enabled. */
+  turnstileToken?: string
 }
 
 /** Normalised outcome every provider returns. */
@@ -51,6 +59,10 @@ export interface NewsletterProviderContext {
   doubleOptIn: boolean
   /** Provider-specific credentials block from `runtimeConfig.meeoviNewsletter`. */
   config: NewsletterRuntimeConfig
+  /** Caller's IP, when available — providers that record consent use this. */
+  requestIp?: string
+  /** ISO timestamp of the request — providers that record consent use this. */
+  consentAt: string
 }
 
 /** A pluggable newsletter backend. */
@@ -82,6 +94,10 @@ export interface DirectusProviderOptions {
   statusField?: string
   /** Value written to `statusField` on subscribe. */
   statusValue?: string
+  /** Field that records when consent was given. Set to `null` to skip. Default `consent_at`. */
+  consentAtField?: string | null
+  /** Field that records the subscriber's IP at signup. Set to `null` to skip. Default `consent_ip`. */
+  consentIpField?: string | null
 }
 
 /** Private (server-only) runtime config, published under `runtimeConfig.meeoviNewsletter`. */
@@ -90,6 +106,7 @@ export interface NewsletterRuntimeConfig {
   doubleOptIn: boolean
   mailchimp: MailchimpProviderOptions
   directus: DirectusProviderOptions
+  turnstile: { enabled: boolean }
 }
 
 /** Public runtime config, published under `runtimeConfig.public.meeoviNewsletter`. */
@@ -100,6 +117,8 @@ export interface NewsletterPublicRuntimeConfig {
   provider: NewsletterProviderName
   /** UI defaults for the shipped component. */
   ui: NewsletterUiOptions
+  /** Whether the component should render the Cloudflare Turnstile widget. */
+  turnstile: { enabled: boolean }
 }
 
 export interface NewsletterUiOptions {
@@ -123,4 +142,11 @@ export interface MeeoviNewsletterModuleOptions {
   directus?: DirectusProviderOptions
   /** Default copy for the `<MeeoviNewsletter>` component. */
   ui?: NewsletterUiOptions
+  /**
+   * Bot mitigation. Defaults to enabled when `NUXT_PUBLIC_TURNSTILE_SITE_KEY` is
+   * set (the app already has @nuxtjs/turnstile configured) and disabled
+   * otherwise, so the module works standalone without it. A honeypot field
+   * is always active regardless of this setting.
+   */
+  turnstile?: { enabled?: boolean }
 }

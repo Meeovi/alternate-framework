@@ -1,0 +1,125 @@
+[     162ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[     201ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[     931ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[    2858ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[    2979ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    2981ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    2983ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    2986ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    2989ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    2991ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3009ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3542ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/132md/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[    3717ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3229638258:1788530713:y45w-Vdb4KL5BoM5pUKmxidxDig_YOklI11bg4PS1zE/a35de3470d7339fa/FmxoJRQlLoPWLe0WbN4ucknK2Id7SZNdZSfmgApYb8Y-1788534278-1.2.1.1-YHNXpN5FNQhT3EThhF55Q819DX0fehxQADrbyv0mp6Vuzh80htWbcE1R.Cuh2iWm:0
+[    3748ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[    3749ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[    3752ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[    4634ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[    4697ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/8:0
+[    8025ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[    8026ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   10136ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/display-2.png:0
+[   10144ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   10177ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1076x585.png:0
+[   11530ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   11689ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/5:0
+[   11691ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/6:0
+[   11692ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/4:0
+[   11694ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   11947ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11948ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11948ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11951ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11964ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11964ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11967ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11968ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11992ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11993ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11994ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11995ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   12000ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   12000ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   12002ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   12003ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   20264ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxt/devtools/dist/runtime/plugins/devtools.client.js?v=4790ac70:51
+[   20894ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   21688ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   22601ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   22714ms] [ERROR] Hydration completed but contains mismatches. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   23005ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   23382ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   23805ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Commerce driver is not configured on the server) @ http://127.0.0.1:3002/api/commerce/driver:0
+[   25352ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   25455ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/8:0
+[   25997ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   26726ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   26728ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   26730ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   26733ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   26853ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   26854ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   26862ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   29078ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/qgffk/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   29274ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3229638258:1788530713:y45w-Vdb4KL5BoM5pUKmxidxDig_YOklI11bg4PS1zE/a35de3e67dbe39fa/j6osUglUrNIMD0J5.D694OWswYMFhmpDSHfUZTaCwmo-1788534303-1.2.1.1-tDGRxeLmpJRePbWpDhYH1bQVSe1LqcyYT8VlGjMOfL3yXViPJEHe.hdc51JeYK5v:0
+[   29332ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   29334ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   29341ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   29808ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   29809ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31

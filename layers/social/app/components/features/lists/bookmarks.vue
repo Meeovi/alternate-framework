@@ -50,6 +50,6 @@
     })
 
     useHead({
-        title: 'My Bookmarks Lists - Meeovi Tasks'
+        title: 'My Bookmark Lists'
     })
 </script>

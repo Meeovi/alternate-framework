@@ -66,7 +66,7 @@
       <v-btn :to="`/connect/vibe/${short?.id}`" variant="text" size="small">View Vibe</v-btn>
     </template>
 
-    <!-- Comments Section — Waline, the real comment system this app runs
+    <!-- Comments Section — Coral, the real comment system this app runs
          (see components/blocks/comments.vue), given a per-vibe thread via
          commentId rather than the custom mock comment list this used to
          render. -->

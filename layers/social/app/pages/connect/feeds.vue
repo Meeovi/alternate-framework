@@ -24,6 +24,9 @@
                         </v-tab>
                     </div>
                 </v-tabs>
+
+                <FederationStatus check-atproto label="Federation" size="small" :show-label="false" />
+                <LiveClock label="Live:" size="small" :show-controls="false" />
             </v-toolbar>
         </v-card>
 
@@ -82,6 +85,8 @@
         ref
     } from 'vue'
     import postCard from '../../components/related/post.vue'
+    import FederationStatus from '../../components/blocks/useOnline.vue'
+    import LiveClock from '../../components/blocks/useTimestamp.vue'
     import { authClient } from "#auth/lib/auth-client";
     import { useInfiniteScroll } from '@vueuse/core'
 
@@ -116,7 +121,14 @@
         return resp?.data ?? resp ?? null
     })
 
-    const posts = ref([])
+    // atproto following-feed for the current user — the atproto match for
+    // this page's "Activity" tab (see server/api/social/atproto/timeline.get.ts).
+    // Resolves to `{ items: [] }` (never throws) when signed out, not
+    // atproto-linked, or the PDS is unreachable, so this is purely
+    // additive to the existing Directus-backed posts below.
+    const { data: atprotoTimeline } = await useAsyncData('feeds:atprotoTimeline', () => $fetch('/api/social/atproto/timeline'), { default: () => ({ items: [] }) })
+
+    const posts = ref([...(atprotoTimeline.value?.items || [])])
     const postsPage = ref(1)
     const postsLimit = ref(10)
     const loadingPosts = ref(false)

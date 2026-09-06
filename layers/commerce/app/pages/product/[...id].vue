@@ -33,7 +33,7 @@
             <!--Product Videos-->
             <v-col cols="12" v-if="product?.product_videos?.length">
               <v-sheet class="mx-auto">
-                <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+                <v-slide-group v-model="videoModel" class="pa-4" selected-class="bg-success" show-arrows>
                   <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
                     v-for="(prodVideo, index) in product?.product_videos" :key="index">
                     <videoPlayer :player="prodVideo?.product_videos_id" @click="toggle" />
@@ -73,7 +73,7 @@
                 <!--Product Description-->
                 <v-window-item :value="productbar?.menus?.[0]?.value">
                   <v-card variant="text">
-                    <v-card-text style="font-size: 20px;" v-html="product?.content"></v-card-text>
+                    <v-card-text style="font-size: 20px;" v-dompurify-html="product?.content"></v-card-text>
                   </v-card>
                 </v-window-item>
 
@@ -191,7 +191,7 @@
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
             <h4>This product goes great together with...</h4>
             <!--Crossell Products-->
-            <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+            <v-slide-group v-model="crossSellModel" class="pa-4" selected-class="bg-success" show-arrows>
               <v-slide-group-item v-for="(crossSell, index) in product?.cross_sell_products" :key="index"
                 v-slot="{ isSelected, toggle, selectedClass }">
                 <productCard :product="crossSell?.products_id" :class="['ma-4', selectedClass]" @click="toggle" />
@@ -208,7 +208,7 @@
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
             <h4>Related Products</h4>
             <div v-if="product?.related_products?.length > 0">
-              <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+              <v-slide-group v-model="relatedModel" class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-for="(relatedProduct, index) in product?.related_products" :key="index"
                   v-slot="{ isSelected, toggle, selectedClass }">
                   <productCard :product="relatedProduct?.products_id" :class="['ma-4', selectedClass]"
@@ -230,7 +230,7 @@
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
             <h4>Product featured in these Shops</h4>
             <div v-if="product?.shops?.length > 0">
-              <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+              <v-slide-group v-model="shopsModel" class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-for="(shops, index) in product?.shops" :key="index"
                   v-slot="{ isSelected, toggle, selectedClass }">
                   <shop :shop="shops?.shops_id" :class="['ma-4', selectedClass]" @click="toggle" />
@@ -251,7 +251,7 @@
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
             <h4>Product featured in these Vibez</h4>
             <div v-if="product?.shorts?.length > 0">
-              <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+              <v-slide-group v-model="shortsModel" class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-for="(shorts, index) in product?.shorts" :key="index"
                   v-slot="{ isSelected, toggle, selectedClass }">
                   <short :short="shorts?.shorts_id" :class="['ma-4', selectedClass]" @click="toggle" />
@@ -272,7 +272,7 @@
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
             <h4>Product featured in these Spaces</h4>
             <div v-if="product?.spaces?.length > 0">
-              <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+              <v-slide-group v-model="spacesModel" class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-for="(spaces, index) in product?.spaces" :key="index"
                   v-slot="{ isSelected, toggle, selectedClass }">
                   <spacesCard :space="spaces?.spaces_id" :class="['ma-4', selectedClass]" @click="toggle" />
@@ -319,7 +319,20 @@
   import productCompare from '../../components/catalog/product/compare.vue'
 
   const tab = ref(null);
-  const model = ref(null);
+  // Each v-slide-group needs its own model — they used to all share one
+  // `model` ref, so selecting/toggling an item in any slider fed a change
+  // back into every other slider's modelValue at once. Vuetify's
+  // VSlideGroup reacts to modelValue changes by re-checking scroll offset
+  // and can write back an adjusted value, so N sliders watching the same
+  // ref bounced updates off each other — on a layout change (e.g. a
+  // window resize) this cascaded into "Maximum recursive updates
+  // exceeded in component <VSlideGroup>", a hydration crash, and a 500.
+  const videoModel = ref(null);
+  const crossSellModel = ref(null);
+  const relatedModel = ref(null);
+  const shopsModel = ref(null);
+  const shortsModel = ref(null);
+  const spacesModel = ref(null);
   const error = ref(null);
   const loading = ref(false)
 
@@ -364,6 +377,11 @@
       'shops.shops_id.*',
       'product_types.product_types_id.*',
       'product_videos.product_videos_id.*',
+      // Without these, cross_sell_products/related_products come back as
+      // junction rows with no nested product — every card in those two
+      // sliders rendered with product=undefined.
+      'cross_sell_products.products_id.*',
+      'related_products.products_id.*',
       'image.*',
     ]
 

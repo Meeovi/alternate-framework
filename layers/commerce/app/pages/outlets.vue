@@ -1,6 +1,6 @@
 <template>
   <div class="contentPage">
-    <v-card elevation="0">
+    <v-card elevation="0" color="transparent">
       <v-toolbar :title="outletsBar?.name"
         :style="`background-color: ${outletsBar?.color}; color: ${outletsBar?.colortext}`"></v-toolbar>
       <v-tabs v-model="tab" :bg-color="outletsBar?.color">
@@ -119,6 +119,6 @@
   )
 
   useHead({
-    title: 'Outlets on Meeovi',
+    title: 'Outlets',
   })
 </script>

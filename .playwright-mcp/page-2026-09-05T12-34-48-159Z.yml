@@ -1,0 +1,44 @@
+- generic [active] [ref=f92e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f92e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f92e9]: Open accessibility menu
+  - main [ref=f92e13]:
+    - generic [ref=f92e20]:
+      - generic [ref=f92e21]:
+        - generic [ref=f92e22]:
+          - heading "Welcome to Meeovi" [level=1] [ref=f92e27]
+          - paragraph [ref=f92e28]: The Decentralized Social Shopping Network.
+        - generic [ref=f92e29]:
+          - generic [ref=f92e30]: Fast & Secure Login
+          - generic [ref=f92e35]: Enterprise Grade Security
+          - generic [ref=f92e40]: Privacy First Social Marketplace
+      - generic [ref=f92e48]:
+        - heading "Sign In" [level=2] [ref=f92e50]
+        - generic [ref=f92e51]: Enter your email and password to continue
+        - generic [ref=f92e52]:
+          - generic [ref=f92e53]:
+            - generic [ref=f92e54]:
+              - generic [ref=f92e57]:
+                - generic: Email
+                - textbox "Email" [ref=f92e58]:
+                  - /placeholder: you@example.com
+              - alert [ref=f92e59]
+            - generic [ref=f92e61]:
+              - generic [ref=f92e64]:
+                - generic: Password
+                - textbox "Password" [ref=f92e65]:
+                  - /placeholder: Enter your password
+              - alert [ref=f92e66]
+            - generic [ref=f92e68]:
+              - generic [ref=f92e69]:
+                - generic [ref=f92e71]:
+                  - checkbox "Remember Me" [ref=f92e77] [cursor=pointer]
+                  - generic [ref=f92e78] [cursor=pointer]: Remember Me
+                - alert [ref=f92e79]
+              - link "Forgot password?" [ref=f92e81] [cursor=pointer]:
+                - /url: /forgot-password
+            - button "Sign In" [ref=f92e82] [cursor=pointer]
+          - button [ref=f92e87] [cursor=pointer]
+          - generic [ref=f92e93]:
+            - text: Don't have an account?
+            - link "Sign Up" [ref=f92e94] [cursor=pointer]:
+              - /url: /register

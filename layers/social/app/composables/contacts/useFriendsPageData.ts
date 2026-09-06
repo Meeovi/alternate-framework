@@ -1,3 +1,4 @@
+import { computed } from '#imports'
 import type { Ref } from '#imports'
 import type {
   SocialProfile,
@@ -69,7 +70,7 @@ export default function useFriendsPageData(): UseFriendsPageDataResult {
     }
   })
 
-  const { data: followers, refresh: refreshFollowers } = useAsyncData<SocialProfile[] | undefined>('friends:followers', async () => {
+  const { data: directusFollowers, refresh: refreshFollowers } = useAsyncData<SocialProfile[] | undefined>('friends:followers', async () => {
     try {
       const rows = await readItems('profiles', {
         fields: ['*', { followers_id: ['*'] }],
@@ -216,8 +217,25 @@ export default function useFriendsPageData(): UseFriendsPageDataResult {
     }
   })
 
+  // atproto followers of the current user (see
+  // server/api/social/atproto/followers.get.ts) — merged into `followers`
+  // below, additive to the Directus-backed list above. Always resolves to
+  // `{ items: [] }` rather than throwing (not signed in, no atproto
+  // account linked, PDS unreachable, ...), so this never affects the
+  // existing Directus-only behavior.
+  const { data: atprotoFollowers, refresh: refreshAtprotoFollowers } = useAsyncData<{ items: SocialProfile[] }>(
+    'friends:atprotoFollowers',
+    () => $fetch('/api/social/atproto/followers'),
+    { default: () => ({ items: [] }) },
+  )
+
+  const followers = computed<SocialProfile[]>(() => [
+    ...(directusFollowers.value || []),
+    ...(atprotoFollowers.value?.items || []),
+  ])
+
   const reloadData = async () => {
-    await Promise.all([refreshBar(), refreshPage(), refreshFollowers(), refreshRequests(), refreshSuggestions(), refreshMembers()])
+    await Promise.all([refreshBar(), refreshPage(), refreshFollowers(), refreshRequests(), refreshSuggestions(), refreshMembers(), refreshAtprotoFollowers()])
   }
 
   return {

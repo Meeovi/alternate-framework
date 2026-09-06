@@ -1,15 +1,15 @@
 <template>
-  <div class="flex items-center py-4 border-b border-gray-200">
+  <div class="cart-item flex items-center py-4">
     <div class="shrink-0 w-24 h-24">
       <productCard :product="productForCard" />
     </div>
     <div class="ml-4 flex-1">
-      <h3 class="text-lg font-medium text-gray-900">{{ item.productVariant?.name }}</h3>
-      <p class="mt-1 text-sm text-gray-500">SKU: {{ item.productVariant?.sku }}</p>
+      <h3 class="text-lg font-medium">{{ item.productVariant?.name }}</h3>
+      <p class="cart-item__muted mt-1 text-sm">SKU: {{ item.productVariant?.sku }}</p>
       <div class="mt-2 flex items-center">
-        <div class="flex items-center border border-gray-300 rounded">
+        <div class="cart-item__stepper flex items-center rounded">
           <v-btn
-            class="px-2 py-1 text-gray-600 hover:bg-gray-100"
+            class="px-2 py-1"
             @click="updateQuantity(item.id, item.quantity - 1)"
             :disabled="item.quantity <= 1"
           >
@@ -17,7 +17,7 @@
           </v-btn>
           <span class="px-4 py-1">{{ item.quantity }}</span>
           <v-btn
-            class="px-2 py-1 text-gray-600 hover:bg-gray-100"
+            class="px-2 py-1"
             @click="updateQuantity(item.id, item.quantity + 1)"
           >
             +
@@ -32,10 +32,10 @@
       </div>
     </div>
     <div class="ml-4 text-right">
-      <p class="text-lg font-medium text-gray-900">
+      <p class="text-lg font-medium">
         {{ formatPrice(item.unitPriceWithTax || productForCardPrice) }}
       </p>
-      <p v-if="item.listPriceWithTax && item.listPriceWithTax !== item.unitPriceWithTax" class="mt-1 text-sm text-gray-500 line-through">
+      <p v-if="item.listPriceWithTax && item.listPriceWithTax !== item.unitPriceWithTax" class="cart-item__muted mt-1 text-sm line-through">
         {{ formatPrice(item.listPriceWithTax) }}
       </p>
     </div>
@@ -106,3 +106,20 @@ function formatPrice(price: number) {
   }).format(normalized);
 }
 </script>
+
+<style scoped>
+/* Theme-aware so the row stays legible under the Vuetify light/dark toggle
+   (was hard-coded text-gray-900 / border-gray-200 Tailwind values). */
+.cart-item {
+  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  color: rgb(var(--v-theme-on-surface));
+}
+
+.cart-item__muted {
+  color: rgba(var(--v-theme-on-surface), 0.6);
+}
+
+.cart-item__stepper {
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+</style>

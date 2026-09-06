@@ -145,6 +145,21 @@
 
             <main class="results-layout__main" :class="{ 'is-loading': isLoading }">
               <ais-state-results>
+                <!-- AisStateResults renders a raw debug dump ("Use this
+                     component to have a different layout..." + <pre>
+                     results: [...keys] </pre>) into its DEFAULT slot when
+                     that slot is left unfilled — providing only #error
+                     doesn't count as filling it. That debug block has no
+                     width constraint, so it was spilling off the page on
+                     every normal (non-error) render.
+                     A *literally empty* #default doesn't suppress it
+                     either: Vue 3's renderSlot() treats a slot whose
+                     render function returns zero real vnodes as "not
+                     provided" and still falls through to the fallback
+                     content (ensureValidVNode rejects comment-only /
+                     empty results). It has to render one real, valid
+                     element — hence the hidden <span> below. -->
+                <template #default><span style="display:none"></span></template>
                 <template #error>
                   <v-alert type="error" variant="tonal" class="mb-4">
                     <strong>Sorry, something went wrong with your search.</strong>
@@ -153,28 +168,44 @@
                 </template>
               </ais-state-results>
 
-              <ais-hits v-if="viewMode === 'paged'" class="results-grid">
-                <template #item="{ item }">
-                  <ResultCard :item="item" />
-                </template>
-              </ais-hits>
+              <!-- ais-hits/ais-infinite-hits don't forward a `class` passed
+                   directly on them onto their rendered root (it's just
+                   dropped, not merged with their own "ais-Hits"/
+                   "ais-InfiniteHits" class) — the grid CSS below targeting
+                   .results-grid never matched anything, so every result
+                   list rendered as a plain block <ol>, one item per row,
+                   full page height. Wrapping in a real element instead. -->
+              <div class="results-grid">
+                <ais-hits v-if="viewMode === 'paged'">
+                  <template #item="{ item }">
+                    <ResultCard :item="item" />
+                  </template>
+                </ais-hits>
 
-              <ais-infinite-hits v-else class="results-grid">
-                <template #item="{ item }">
-                  <ResultCard :item="item" />
-                </template>
-                <template #loadMore="{ refineNext, isLastPage }">
-                  <div v-if="!isLastPage" class="results-layout__load-more">
-                    <v-btn variant="outlined" @click="refineNext">Show more results</v-btn>
-                  </div>
-                </template>
-              </ais-infinite-hits>
+                <ais-infinite-hits v-else>
+                  <template #item="{ item }">
+                    <ResultCard :item="item" />
+                  </template>
+                  <template #loadMore="{ refineNext, isLastPage }">
+                    <div v-if="!isLastPage" class="results-layout__load-more">
+                      <v-btn variant="outlined" @click="refineNext">Show more results</v-btn>
+                    </div>
+                  </template>
+                </ais-infinite-hits>
+              </div>
 
               <ais-state-results v-slot="{ results }">
                 <v-alert v-if="results && results.nbHits === 0" type="info" variant="tonal" class="mt-4">
                   <strong>No results found{{ searchQuery ? ` for "${searchQuery}"` : '' }}.</strong>
                   <div>Try a different search term, check your spelling, or clear some filters.</div>
                 </v-alert>
+                <!-- Same unfilled-slot fallback-dump issue as the other
+                     ais-state-results above: whenever there ARE results (the
+                     normal case) or results is still null during the
+                     initial load, the v-if above produces zero real vnodes,
+                     so this real-but-invisible element has to always be
+                     there instead. -->
+                <span v-else style="display:none"></span>
               </ais-state-results>
 
               <div v-if="viewMode === 'paged'" class="results-layout__pagination">

@@ -1,0 +1,67 @@
+- generic [ref=f46e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f46e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f46e9]: Open accessibility menu
+  - main [ref=f46e16]:
+    - generic [ref=f46e18]:
+      - tablist [ref=f46e23]:
+        - generic [ref=f46e25]:
+          - tab [ref=f46e26] [cursor=pointer]
+          - tab [ref=f46e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=f46e38]
+      - generic [ref=f46e41]:
+        - generic [ref=f46e45]:
+          - heading "Meeovi News" [level=3] [ref=f46e48]
+          - generic [ref=f46e49]:
+            - button "Public Space" [ref=f46e50] [cursor=pointer]
+            - 'button "Members: 0" [ref=f46e52] [cursor=pointer]'
+            - generic [ref=f46e55]:
+              - button "Add to list" [active] [ref=f46e56] [cursor=pointer]:
+                - generic [ref=f46e61]: Add to List
+              - navigation [ref=f46e62]:
+                - generic [ref=f46e63]:
+                  - generic [ref=f46e64]:
+                    - generic [ref=f46e65]: Add to List
+                    - button [ref=f46e66] [cursor=pointer]
+                  - separator
+                  - generic [ref=f46e71]: Meeovi News
+                  - separator
+                  - generic [ref=f46e79]:
+                    - generic [ref=f46e80]:
+                      - generic: Create a new list
+                      - textbox "Create a new list" [ref=f46e81]:
+                        - /placeholder: e.g. Birthday ideas
+                    - button "Create a new list appended action" [ref=f46e83] [cursor=pointer]
+                  - separator
+                  - alert [ref=f46e87]:
+                    - generic [ref=f46e92]: You don't have any lists yet — create one above.
+        - tablist [ref=f46e94]:
+          - generic [ref=f46e96]:
+            - tab "Discussion" [ref=f46e98] [cursor=pointer]
+            - tab "About" [ref=f46e101] [cursor=pointer]
+            - tab "Members" [ref=f46e104] [cursor=pointer]
+            - tab "Media" [ref=f46e107] [cursor=pointer]
+            - tab "Products" [ref=f46e110] [cursor=pointer]
+            - tab "Lists" [ref=f46e113] [cursor=pointer]
+            - tab "Settings" [ref=f46e116] [cursor=pointer]
+    - generic [ref=f46e120]:
+      - link "About Meeovi" [ref=f46e122] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=f46e125] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=f46e128] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=f46e131] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=f46e134] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=f46e137]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=f46e138] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.
+  - generic [ref=f46e139]:
+    - button "Toggle Nuxt DevTools" [ref=f46e140] [cursor=pointer]
+    - generic "App load time" [ref=f46e144]:
+      - generic [ref=f46e145]: "8.1"
+      - generic [ref=f46e146]: s
+    - button "Toggle Component Inspector" [ref=f46e148] [cursor=pointer]

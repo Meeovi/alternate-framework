@@ -1,0 +1,131 @@
+[    7666ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchznRH5JGkUZ1IdPYDG5jdrTTYf4ZiAqgAeoHHdScqX_E-1788533895-1.3.1.1-4JFrvmKtN8fzBJR2lZ6GZZe.fpYJoF5moyAoOv1CkVc/5kdt2/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[    7843ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3229638258:1788530713:y45w-Vdb4KL5BoM5pUKmxidxDig_YOklI11bg4PS1zE/a35dda2e0ad1abae/6FL5uA58BMro496RSvt4ClZ3_mcvcATyt03x1af.4MA-1788533905-1.2.1.1-dtCxmPUyk2eOm_tu0lyMJr13aBTVHkPbnhELeeGUVeAE7ItThRQNbnt.mN3yZXjw:0
+[    7891ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=3309d9cc:41:17)
+[    9523ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/display-2.png:0
+[    9527ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[    9581ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1076x585.png:0
+[   10954ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   11174ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/5:0
+[   11175ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/4:0
+[   11177ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/6:0
+[   11232ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11234ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11235ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11241ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11256ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11258ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11261ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11263ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11284ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11285ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11286ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11287ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11291ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11292ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11293ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   11294ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   20229ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=3309d9cc:44
+[   20446ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=3309d9cc:44
+[   21617ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=3309d9cc:31
+[   21617ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=3309d9cc:31
+[   23713ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24542ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24658ms] [ERROR] Hydration completed but contains mismatches. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24978ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   25428ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   25849ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Commerce driver is not configured on the server) @ http://127.0.0.1:3002/api/commerce/driver:0
+[   27884ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=3309d9cc:44
+[   27985ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/8:0
+[   28386ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   28605ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   28607ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   28609ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   28611ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   28706ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   28707ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   28718ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   30593ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/e7bgp/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   30756ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3229638258:1788530713:y45w-Vdb4KL5BoM5pUKmxidxDig_YOklI11bg4PS1zE/a35ddabd7be7abae/Crujk1qJX3dl._vxktrTTSkB2mV_y.nFdzWyQ.aSf04-1788533928-1.2.1.1-tSp9hTTYbg7W3uHNlNVo5M4gCBGLeFesXy5FhCRxYh.hLZrhgE77RQ9E7t7Ba65b:0
+[   30783ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=3309d9cc:31
+[   30783ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=3309d9cc:31
+[   30786ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=3309d9cc:41:17)
+[   32881ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/display-2.png:0
+[   32882ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   32908ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1076x585.png:0
+[   42157ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/4:0
+[   42158ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/5:0
+[   42159ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/https://cms.meeovicms.com/assets/6:0
+[   42160ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   42301ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto,w_300,h_300/https://cms.meeovicms.com/assets/mbr-1-1920x1170.jpg:0
+[   42527ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42528ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42528ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42530ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42547ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42548ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42550ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42551ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42566ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42567ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42567ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42568ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42572ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42572ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42573ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[   42573ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4

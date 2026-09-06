@@ -31,6 +31,7 @@
     "@better-auth/sso": "1.6.23",
     "@better-auth/stripe": "1.6.23",
     "@better-fetch/fetch": "^1.0.0",
+    "@mframework/adapter-federation": "file:../../packages/adapters/adapter-federation",
     "@mframework/adapter-prisma": "file:../../packages/adapters/adapter-prisma",
     "@node-rs/argon2": "^2.0.2",
     "@polar-sh/better-auth": "^1.8.4",

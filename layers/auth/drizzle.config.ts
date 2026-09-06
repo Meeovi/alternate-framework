@@ -24,6 +24,7 @@ export default defineConfig({
     "scim_provider", "jwks", "wallet_address",
     "oauth_application", "oauth_access_token", "oauth_consent",
     "auth_subscriptions", "auth_subscription_plans",
+    "atproto_sessions",
   ],
   // Same glob-vs-regex issue as tablesFilter above — "^public$" never
   // matched, which let changes to the `auth` schema's own native

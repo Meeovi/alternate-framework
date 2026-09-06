@@ -1,0 +1,22 @@
+[    7471ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchBPBPDVjEjyvhRWcpesQSRtN4_YUnM3fDcih2DNIa3Fo-1788545547-1.3.1.1-0p0_Jz4PYiqtWDYkxKyaCmFY4nq5.WTYAgZCvwXWztI/vjahq/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[    7643ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35ef6accb5daae6/dr6i60VoJBeEVau8yIacVI5QO153hmjSUS27sBJTqZo-1788545558-1.2.1.1-iFMYJ7kZWFRWcLy_ycl5ziLKzrfMLDHLnbpMBcgTxEzhcl84hFgcMbnRTFsVh_uW:0
+[    7684ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=ec17791e:41:17)
+[   17963ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchWOy6V4jvwyAF5PmouX.Wd_6Slu97q8hfS6MdNYm_a.g-1788545558-1.3.1.1-7c2W1Wiji9qOJKeOuforo4MfX0zna2Vrj27J9CFE7VE/vjahq/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   18141ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35ef6eeac6daae6/p_.RsSRenrThy7MuTqUPEs2BPaFXep1W2Zhj4Ii15tA-1788545569-1.2.1.1-zMMf4CDzwQHpaZX1O2OoECGXc6hWPXWzZkewQz4YRUMOButuU6qfTBNOZtgq0bCG:0
+[   18177ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=ec17791e:41:17)
+[   28431ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchgaGDH6l.7F6WgrFmPQXJz0.HrvdjNxJsHcPrTCUWhYo-1788545569-1.3.1.1-htAt9tckZeIlm10.TrFUJ_WK3HeUKLPl2TmWo9LRT_8/vjahq/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   28611ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35ef7304fadaae6/hoGABHlUzVoUF_3_UkCgWCEKjTuHrxphOCSx89Wcybo-1788545579-1.2.1.1-BpPY5UKk2IrcUDjQqb7fKdrBeqH0tOOzZZJltzd8vBjDs.ed85pgvNVqXywq9.Km:0
+[   28642ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=ec17791e:41:17)
+[   30655ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Dev server is unavailable) @ http://127.0.0.1:3002/:0

@@ -12,6 +12,8 @@
     },
     "./clients/mastodon": "./src/clients/mastodon.ts",
     "./clients/atproto": "./src/clients/atproto.ts",
+    "./auth/plugin": "./src/auth/plugin.ts",
+    "./auth/auth": "./src/auth/auth.ts",
     "./runtime/useFederation": "./src/runtime/useFederation.ts",
     "./runtime/composables/useFederation": "./src/runtime/composables/useFederation.ts",
     "./nuxt": "./src/module.ts"
@@ -45,17 +47,25 @@
   },
   "dependencies": {
     "@atproto/api": "^0.20.22",
-    "@atproto/lex": "^0.0.16",
-    "@atproto/lex-password-session": "^0.0.11",
     "@nuxt/kit": "^4.2.1",
     "masto": "^7.10.1",
-    "ofetch": "^1.4.1"
+    "ofetch": "^1.4.1",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.6.0"
+  },
+  "peerDependenciesMeta": {
+    "better-auth": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@atproto/common-web": "^0.4.16",
     "@atproto/syntax": "^0.4.3",
     "@atproto/tap": "^0.2.4",
     "@nuxt/devtools": "^3.1.1",
+    "better-auth": "1.6.23",
     "@nuxt/eslint-config": "^1.11.0",
     "@nuxt/module-builder": "^1.0.2",
     "@nuxt/schema": "^4.2.1",

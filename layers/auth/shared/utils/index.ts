@@ -1,5 +1,4 @@
 export * from './permissions'
 export * from './plugins'
 export * from './testUtils'
-export * from './infrastructure/audit-logs'
 export * from './infrastructure/email'

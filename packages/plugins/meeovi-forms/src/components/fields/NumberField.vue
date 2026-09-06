@@ -1,8 +1,14 @@
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
-    <input :value="modelValue ?? 0" type="number" @input="onInput" />
-  </label>
+  <v-text-field
+    :model-value="modelValue ?? 0"
+    :label="label"
+    type="number"
+    variant="outlined"
+    density="comfortable"
+    hide-details="auto"
+    class="field"
+    @update:model-value="onInput"
+  />
 </template>
 
 <script setup lang="ts">
@@ -15,9 +21,5 @@ export interface NumberFieldProps {
 defineProps<NumberFieldProps>()
 const emit = defineEmits<{ 'update:modelValue': [value: number] }>()
 
-const onInput = (event: Event) => emit('update:modelValue', Number((event.target as HTMLInputElement).value))
+const onInput = (value: string) => emit('update:modelValue', Number(value))
 </script>
-
-<style scoped>
-.field { display: grid; gap: 0.35rem; }
-</style>

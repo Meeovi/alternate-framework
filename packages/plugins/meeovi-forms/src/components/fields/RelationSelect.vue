@@ -1,12 +1,17 @@
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
-    <select :value="modelValue ?? ''" @change="onChange" :multiple="multiple">
-      <option v-for="option in safeOptions" :key="String(option.value ?? option)" :value="String(option.value ?? option)">
-        {{ option.label ?? option.value ?? option }}
-      </option>
-    </select>
-  </label>
+  <v-select
+    :model-value="modelValue ?? (multiple ? [] : null)"
+    :items="items"
+    item-title="title"
+    item-value="value"
+    :label="label"
+    :multiple="multiple"
+    variant="outlined"
+    density="comfortable"
+    hide-details="auto"
+    class="field"
+    @update:model-value="onChange"
+  />
 </template>
 
 <script setup lang="ts">
@@ -27,14 +32,12 @@ const props = withDefaults(defineProps<RelationSelectProps>(), {
 
 const emit = defineEmits<{ 'update:modelValue': [value: string | number | null] }>()
 
-const safeOptions = computed(() => props.options || [])
+const items = computed(() =>
+  (props.options || []).map((option: any) => ({
+    title: String(option?.label ?? option?.value ?? option),
+    value: option?.value ?? option,
+  }))
+)
 
-const onChange = (event: Event) => {
-  const target = event.target as HTMLSelectElement
-  emit('update:modelValue', target.value || null)
-}
+const onChange = (value: string | number | null) => emit('update:modelValue', value ?? null)
 </script>
-
-<style scoped>
-.field { display: grid; gap: 0.35rem; }
-</style>

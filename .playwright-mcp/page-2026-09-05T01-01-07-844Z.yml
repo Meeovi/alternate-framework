@@ -1,0 +1,134 @@
+- generic [active] [ref=f4788e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f4788e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f4788e9]: Open accessibility menu
+  - generic [ref=f4788e11]:
+    - generic [ref=f4788e15]:
+      - tablist [ref=f4788e17]:
+        - generic [ref=f4788e19]:
+          - tab "Your Meeovi" [ref=f4788e21] [cursor=pointer]
+          - tab "Your Friends" [ref=f4788e24] [cursor=pointer]
+          - tab "Today's Deals" [ref=f4788e27] [cursor=pointer]
+          - tab "Daily Digest" [ref=f4788e30] [cursor=pointer]
+          - tab "Events" [ref=f4788e33] [cursor=pointer]
+          - tab "News" [ref=f4788e36] [cursor=pointer]
+          - tab "Notes" [ref=f4788e39] [cursor=pointer]
+          - tab "Brands" [ref=f4788e42] [cursor=pointer]
+          - tab "Bundled Discounts" [ref=f4788e45] [cursor=pointer]
+          - tab "Gift Cards" [ref=f4788e48] [cursor=pointer]
+          - tab "Subscriptions" [ref=f4788e51] [cursor=pointer]
+          - tab "Recommendations" [ref=f4788e54] [cursor=pointer]
+          - tab "Downloads" [ref=f4788e57] [cursor=pointer]
+      - main [ref=f4788e59]:
+        - generic [ref=f4788e65]:
+          - generic [ref=f4788e66]: About Meeovi
+          - generic [ref=f4788e68]:
+            - tablist [ref=f4788e69]:
+              - generic [ref=f4788e70]:
+                - generic [ref=f4788e72]:
+                  - tab [ref=f4788e73] [cursor=pointer]
+                  - button "About Us" [ref=f4788e74] [cursor=pointer]
+                - generic [ref=f4788e76]:
+                  - tab [ref=f4788e77] [cursor=pointer]
+                  - button "Legal" [ref=f4788e78] [cursor=pointer]
+              - generic [ref=f4788e80]:
+                - tab [ref=f4788e81] [cursor=pointer]
+                - button "Press Centre" [ref=f4788e82] [cursor=pointer]
+            - generic [ref=f4788e84]:
+              - tab [ref=f4788e85] [cursor=pointer]
+              - button "Our Impact" [ref=f4788e86] [cursor=pointer]
+        - generic [ref=f4788e89]:
+          - generic [ref=f4788e93]: "Published:"
+          - generic [ref=f4788e95]:
+            - button "Web share is not supported in your browser" [disabled]
+    - generic [ref=f4788e96]:
+      - button "Post to Social Feed" [ref=f4788e98] [cursor=pointer]
+      - generic [ref=f4788e109]:
+        - strong [ref=f4788e110]:
+          - heading "Yes! Send me exclusive offers, unique gift ideas, and personalised tips for shopping and selling on Meeovi." [level=5] [ref=f4788e111]
+        - generic [ref=f4788e112]:
+          - textbox [aria-hidden]
+          - generic [ref=f4788e116]:
+            - generic: Add Email to Subscribe
+            - textbox "Add Email to Subscribe" [ref=f4788e117]
+          - button "Subscribe" [ref=f4788e122] [cursor=pointer]
+      - link "Back to Top" [ref=f4788e124] [cursor=pointer]:
+        - /url: "#mainSection"
+      - generic [ref=f4788e132]:
+        - generic [ref=f4788e133]:
+          - heading [level=2] [ref=f4788e134]:
+            - strong [ref=f4788e135]: Meeovi
+          - heading [level=3] [ref=f4788e137]:
+            - link "About Us" [ref=f4788e138] [cursor=pointer]:
+              - /url: /about-us
+          - heading [level=3] [ref=f4788e140]:
+            - link "Buyers" [ref=f4788e141] [cursor=pointer]:
+              - /url: /buyers
+          - heading [level=3] [ref=f4788e143]:
+            - link "Diversity and Inclusion" [ref=f4788e144] [cursor=pointer]:
+              - /url: /diversity-and-inclusion
+          - heading [level=3] [ref=f4788e146]:
+            - link "Licenses" [ref=f4788e147] [cursor=pointer]:
+              - /url: /licenses
+          - heading [level=3] [ref=f4788e149]:
+            - link "Careers" [ref=f4788e150] [cursor=pointer]:
+              - /url: /careers
+          - heading [level=3] [ref=f4788e152]:
+            - link "Sellers" [ref=f4788e153] [cursor=pointer]:
+              - /url: /sellers
+          - heading [level=3] [ref=f4788e155]:
+            - link "Applications" [ref=f4788e156] [cursor=pointer]:
+              - /url: /applications
+        - generic [ref=f4788e157]:
+          - heading [level=2] [ref=f4788e158]:
+            - strong [ref=f4788e159]: Help
+          - heading [level=3] [ref=f4788e161]:
+            - link "Accessibility" [ref=f4788e162] [cursor=pointer]:
+              - /url: /accessibility
+          - heading [level=3] [ref=f4788e164]:
+            - link "Terms and Conditions" [ref=f4788e165] [cursor=pointer]:
+              - /url: /terms
+          - heading [level=3] [ref=f4788e167]:
+            - link "Privacy Policies" [ref=f4788e168] [cursor=pointer]:
+              - /url: /privacy-policies
+          - heading [level=3] [ref=f4788e170]:
+            - link "Return Policies" [ref=f4788e171] [cursor=pointer]:
+              - /url: /return-policies
+          - heading [level=3] [ref=f4788e173]:
+            - link "Payments" [ref=f4788e174] [cursor=pointer]:
+              - /url: /payments
+          - heading [level=3] [ref=f4788e176]:
+            - link "Allowed Products" [ref=f4788e177] [cursor=pointer]:
+              - /url: /allowed-products
+          - heading [level=3] [ref=f4788e179]:
+            - link "Imprint" [ref=f4788e180] [cursor=pointer]:
+              - /url: /imprint
+        - generic [ref=f4788e181]:
+          - heading [level=2] [ref=f4788e182]:
+            - strong [ref=f4788e183]: Meeovi Outlets
+          - heading [level=3] [ref=f4788e185]:
+            - link "Pixanomy" [ref=f4788e186] [cursor=pointer]:
+              - /url: /departments/pixanomy
+          - heading [level=3] [ref=f4788e188]:
+            - link "Shopncute" [ref=f4788e189] [cursor=pointer]:
+              - /url: /departments/shopncute
+          - heading [level=3] [ref=f4788e191]:
+            - link "Shopnbold" [ref=f4788e192] [cursor=pointer]:
+              - /url: /departments/shopnbold
+          - heading [level=3] [ref=f4788e194]:
+            - link "Elite Novels" [ref=f4788e195] [cursor=pointer]:
+              - /url: /departments/elite-novels
+          - heading [level=3] [ref=f4788e197]:
+            - link "Showyourweird" [ref=f4788e198] [cursor=pointer]:
+              - /url: /departments/showyourweird
+      - generic [ref=f4788e201]:
+        - link "Customer Service" [ref=f4788e203] [cursor=pointer]:
+          - /url: /customer-service
+        - link "Pickup Locations" [ref=f4788e206] [cursor=pointer]:
+          - /url: /pickup-locations
+        - link "Meeovi Global" [ref=f4788e209] [cursor=pointer]:
+          - /url: /meeovi-global
+        - paragraph [ref=f4788e212]:
+          - text: "@ 2017 - 2026"
+          - link "Meeovi" [ref=f4788e213] [cursor=pointer]:
+            - /url: /
+          - text: All Rights Reserved.

@@ -1,25 +1,29 @@
 <template>
     <div class="useTimestamp" :class="computedClasses">
-        <UseTimestamp v-slot="{ timestamp, pause, resume }" :time="time" :offset="offset" :controls="showControls">
-            <span v-if="label" class="useTimestamp-label">{{ label }} </span>
-            <span class="useTimestamp-value">{{ timestamp }}</span>
-            
-            <div v-if="showControls" class="useTimestamp-controls">
-                <button v-if="showControls" @click="pause()" class="useTimestamp-btn">
-                    Pause
-                </button>
-                <button v-if="showControls" @click="resume()" class="useTimestamp-btn">
-                    Resume
-                </button>
-            </div>
-        </UseTimestamp>
+        <span v-if="label" class="useTimestamp-label">{{ label }} </span>
+        <span class="useTimestamp-value">{{ timestamp }}</span>
+
+        <div v-if="showControls" class="useTimestamp-controls">
+            <button v-if="showControls" @click="pause()" class="useTimestamp-btn">
+                Pause
+            </button>
+            <button v-if="showControls" @click="resume()" class="useTimestamp-btn">
+                Resume
+            </button>
+        </div>
     </div>
 </template>
 
 <script setup>
-import {
-    UseTimestamp
-} from '@vueuse/core'
+// The renderless <UseTimestamp> component this used to render doesn't
+// exist in the installed @vueuse/core (v14) — that API moved to a
+// separate @vueuse/components package this project doesn't depend on
+// (same issue confirmed live on useOnline.vue/useTimeAgo.vue the first
+// time each was actually rendered anywhere). Using the plain useTimestamp
+// composable directly instead (with controls: true, matching this
+// component's existing pause/resume buttons) — idiomatic for
+// <script setup> and needs no extra dependency.
+import { useTimestamp } from '@vueuse/core'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -45,6 +49,8 @@ const props = defineProps({
         validator: (value) => ['small', 'medium', 'large'].includes(value)
     }
 })
+
+const { timestamp, pause, resume } = useTimestamp({ offset: props.offset, controls: true })
 
 const computedClasses = computed(() => ({
     [`size-${props.size}`]: true

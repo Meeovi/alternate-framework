@@ -1,0 +1,212 @@
+[      63ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3002/_nuxt/@vite/client:528
+[     349ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[     738ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[    1186ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Commerce driver is not configured on the server) @ http://localhost:3002/api/commerce/driver:0
+[    2931ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3002/_nuxt/@vite/client:528
+[    3395ms] [LOG] Meeovi @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=e2a998e3:44
+[    3682ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3684ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3686ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3689ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3829ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3833ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    3843ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[    6877ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/kuyl7/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[    7078ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a36541fef8ed39f7/OeJ0G5dA6JHbXKypnimgSJtRnjhCAV8vz0KX5GHKyHc-1788611558-1.2.1.1-fyTYbYdMci1VhyGqms9u.fbQAyD_B.zova9fTWPrY27llQu1FZU1LYPXx0o1s13d:0
+[    7228ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)
+[   17480ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch.pJXm6y2S8suX0ct6g2JjEhDqFFDONlgzt5Gce72s8M-1788611558-1.3.1.1-dGzX44_Y4AODVzjbfn7aFFrMRQNj9dCCO_4zywiOo1c/kuyl7/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   17685ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a36542416a8839f7/7324Jwj9hsiwaLpNe6tRAQYkdzFwKcVv9h4mIb5Z7jE-1788611568-1.2.1.1-P54KWw8SuM2t7jjsUh3Polmir8p1HMZtoxEoKal4zg1VikogC6Oas25DtmXOnDHm:0
+[   17727ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)
+[   31169ms] [WARNING] %cssr:warn%c [Vue warn]: Invalid prop: type check failed for prop "tag". Expected Object, got Undefined  
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <RelatedTag>
+at <VListItem>
+at <VListChildren>
+at <VList>
+at <VCard>
+at <CatalogProductDetails>
+at <VCol>
+at <VRow>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   31845ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=e2a998e3:44
+[   31944ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=e2a998e3:44
+[   32475ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://localhost:3002/_nuxt/@vite/client:528
+[   33090ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains fewer child nodes than client vdom. 
+  at <VListItem key=1 > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   33459ms] [WARNING] [NUXT_E1003] Could not access `toJSON`. The only available runtime config keys on the client side are `public` and `app`.
+╰▶ fix: Move `toJSON` under `runtimeConfig.public` in `nuxt.config` to make it available on the client side. @ http://localhost:3002/_nuxt/@vite/client:528
+[   34080ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3002/_nuxt/@vite/client:528
+[   34704ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "tag". Expected Object, got Undefined  
+  at <RelatedTag tag=undefined > 
+  at <VListItem key=1 > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   35795ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <VListItem key=1 > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 15, sku: 19702512345949, name: Sample Product, tax_class: null, created_at: 2025-04-12T17:39:31} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/15" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/15, hash: , query: Object, name: product-id___en, path: /product/15}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@vite/client:528
+[   37615ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/social/list-saved?kind=product&itemId=15:0
+[   37663ms] [ERROR] Failed to check list membership FetchError: [GET] "/api/social/list-saved?kind=product&itemId=15": 401 Unauthorized
+    at async $fetch2 (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/ofetch/dist/shared/ofetch.CWycOUEr.mjs?v=e2a998e3:332:15)
+    at async getListsContainingItem (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/composables/lists/useLists.ts:134:18)
+    at async loadMembership (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/components/blocks/partials/createListBtn.vue:43:24) @ http://localhost:3002/_nuxt/@vite/client:528
+[   37839ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3002/_nuxt/@vite/client:528
+[   37997ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   37998ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   38000ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   38003ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   38009ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   38010ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   38027ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   38440ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/kxxoa/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   38663ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a36542c40e4339f7/Vt8OcGWOt0jW1AUPIKjLvYQkLh0D4WWZ9YV44uUnc1M-1788611589-1.2.1.1-YD._aoji9ob7rslYI4eCGgPNhts7aBJNHknd69n77NbsLtSKD7MeixXiuP7c1IGP:0
+[   38717ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)
+[   38870ms] [LOG] Meeovi @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=e2a998e3:44
+[   48952ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchhyU0YRq8bRqcRLPqzU_l3bVNMDyM8HpcyySlprkwvd4-1788611589-1.3.1.1-02MC.Jn_mpmf3Jl6hGj0WBk2uF0X.BPi6aM4l4XZcEE/kxxoa/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   49149ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a36543062fdc39f7/I0cLoGVLRwRHCkJhH_PlCw8UMhEHwiwP7sG3y5mW96M-1788611600-1.2.1.1-74dQ2wpO86GNo_mXM37eY7AAewkLm4P_hKhvfABh2CaIYdU90nCKjDFDV8wt_jtI:0
+[   49177ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)
+[   59450ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchOV2jzguTaDwMpUPLW_OYREO7KKsYlkYMeyts9bXFgqY-1788611600-1.3.1.1-joxYntvqZDr3eJk_I63cuT6IZNlhauU_zaXfBFF_S8Q/kxxoa/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   59620ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a3654347bdb039f7/wM_WyI.t5XFiIIpf6ngnD9R6RCrgfpRZ8hoUy05ACRQ-1788611610-1.2.1.1-goCHaOLPrIk.FW3JwVHK_QtHADAmh4hgqGLCpDWHM566Xm4ccwIklbDrvI_02lM3:0
+[   59658ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)
+[   69926ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchGQcdJzbFRLTTNUWo08gzMXiPCEdCIse_jN9mZt5MDmc-1788611610-1.3.1.1-ypGKfChHA4AXEbmXcVR..txE4Pc6zHSJ86X9sXCfiLA/kxxoa/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   70118ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4162919988:1788609911:pswacH2f47qrMm2yqmmNcJIR8fdI4BJV8GRfEI5aVWE/a365438939cb39f7/QuHNAxQdRrN7sRKKWZpDfpoLS4DmtRZOmHfr2MyPhj8-1788611621-1.2.1.1-q2INmoXljUGQmJgDF_VExhwQGepZCDIua1r0mkkLZWeQ4L5BXYLbhfsR.S7adNNx:0
+[   70158ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e2a998e3:41:17)

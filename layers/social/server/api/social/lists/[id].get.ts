@@ -9,9 +9,11 @@ export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const id = getRouterParam(event, 'id')
 
+  // `lists.user` is an M2M alias (-> lists_directus_users, columns
+  // list_id/user_id), not a plain scalar field — see lists/index.get.ts.
   const result = await directus.request(
     readItems('lists' as any, {
-      filter: { id: { _eq: id }, user: { _eq: user.id } },
+      filter: { id: { _eq: id }, user: { user_id: { _eq: user.id } } },
       limit: 1,
     }),
   )

@@ -12,7 +12,8 @@
     </v-snackbar>
 
     <!-- Flyout Menu -->
-    <v-navigation-drawer v-model="drawer" location="right" temporary class="cart-flyout">
+    <Teleport to="body">
+    <v-navigation-drawer v-model="drawer" location="right" temporary :width="400" class="cart-flyout">
       <v-card-title class="d-flex justify-space-between align-center">
         <span>Shopping Cart</span>
         <v-btn icon="fas fa-x" @click="drawer = false">
@@ -22,7 +23,10 @@
       <v-divider></v-divider>
 
       <div class="cart-items">
-        <template v-if="cartStore.items.length">
+        <template v-if="cartStore.loading">
+          <v-progress-circular indeterminate color="primary" class="ma-4"></v-progress-circular>
+        </template>
+        <template v-else-if="cartStore.items.length">
           <v-list>
             <v-list-item v-for="item in cartStore.items" :key="item.key" class="cart-item">
               <v-row align="center">
@@ -95,6 +99,7 @@
 
       <!-- Checkout handled via Stripe Checkout (server-created session) -->
     </v-navigation-drawer>
+    </Teleport>
 
     <!-- Confirmation Dialog -->
     <v-dialog v-model="showConfirmDialog" max-width="400">
@@ -114,7 +119,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCartStore } from '../../stores/cart'
 
 const cartNotification = ref(false)
@@ -124,6 +129,10 @@ const showConfirmDialog = ref(false)
 const loading = ref(false)
 
 const cartStore = useCartStore()
+
+onMounted(() => {
+  cartStore.fetchCart()
+})
 
 const totalQuantity = computed(() =>
   cartStore.items.reduce((total, item) => total + (item?.quantity || 0), 0)
@@ -174,12 +183,12 @@ const showNotification = (message) => {
     bottom: 0;
     width: 100%;
     padding: 16px;
-    background: white;
-    border-top: 1px solid #e0e0e0;
+    background: rgb(var(--v-theme-surface));
+    border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
   }
 
   .cart-item {
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
     padding: 16px 0;
   }
 </style>

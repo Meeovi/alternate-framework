@@ -1,0 +1,142 @@
+[      13ms] [ERROR] Connecting to 'https://pingback.giphy.com/v2/pingback?apikey=l0HlIwPWyBBUDAUgM' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=1275ab82:44
+[      14ms] [ERROR] Fetch API cannot load https://pingback.giphy.com/v2/pingback?apikey=l0HlIwPWyBBUDAUgM. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=1275ab82:44
+[   16289ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[   16381ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[   17076ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[   18691ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "commentId". Expected String with value "44", got Number with value 44. 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[   19701ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[   19867ms] [LOG] Meeovi @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[   19970ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/social/list-saved?kind=vibe&itemId=44:0
+[   19984ms] [ERROR] Failed to check list membership FetchError: [GET] "/api/social/list-saved?kind=vibe&itemId=44": 401 Unauthorized
+    at async $fetch2 (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/ofetch/dist/shared/ofetch.CWycOUEr.mjs?v=1275ab82:332:15)
+    at async getListsContainingItem (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/composables/lists/useLists.ts:134:18)
+    at async loadMembership (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/components/blocks/partials/createListBtn.vue:43:24) @ http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=1275ab82:44
+[   20177ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20179ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20180ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20186ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20233ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20234ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20283ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   20504ms] [WARNING] The resource https://challenges.cloudflare.com/turnstile/v0/api.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3002/connect/vibe/44:0
+[   20504ms] [WARNING] The resource https://js.stripe.com/basil/stripe.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3002/connect/vibe/44:0
+[   20505ms] [WARNING] The resource https://assets.lemonsqueezy.com/lemon.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3002/connect/vibe/44:0
+[   20505ms] [WARNING] The resource http://localhost:3002/_scripts/assets/feee309636b01acc.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3002/connect/vibe/44:0
+[   20505ms] [WARNING] The resource https://www.sandbox.paypal.com/web-sdk/v6/core was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3002/connect/vibe/44:0
+[   21542ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   21793ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a36149f0df0c880c/oe.DQNia8J1ASVPXFp_MtE3hMbAF9aDRnTmyXjETABw-1788569940-1.2.1.1-080GIR9uaGSGiSOi2cKE2JOmWEvtFlUlsqoJIvhP96ZrUQrkIrdSiYJj2x1ERztU:0
+[   21924ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[   23071ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   24200ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   25621ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   27462ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   29633ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   32154ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchJBZA.4XJUFYYtk.ob9OMYBXs0hChnyNhH43Ea5nDm6M-1788569940-1.3.1.1-dsDET1abb8zxvTst4zLtHDLDO3KzF3PQg2K.hGUZom0/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   32386ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614a348c69880c/FYL1mI_7HgwStTDxI8Q3HsjhUXLQtFEK9YFkmcCCgKM-1788569951-1.2.1.1-CWzccDdL1mNgRTbM1Frf3tq.Qi1VdGDtTnkhWu8KW2RULhWiVMSse7NmHUv.lcDt:0
+[   32444ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[   32801ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   37807ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   42741ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchqjQj7lBHX4S9S2806SN1_bzOoSKdkvJf14U4YmZJqE0-1788569951-1.3.1.1-uueckLkv.UajudJzUwSpDDVhEzVAbcdVjejoCVeAnGA/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   42912ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614a7679f8880c/9KTlM3r1rEF_Mk3C02SO_JkZMI4U4rSDf7UM_2T9iJM-1788569961-1.2.1.1-M6.4vQXUeHKIyJtpuMvIhMwNB6Yxey30loZZRHCjHzrWlMQ7gSNVBZBif.Rx6ZRT:0
+[   42939ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[   44613ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   53307ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchvypd0Qq5oEYzmgj69HzUMuARo8bAlajzkimMc3lGD5Q-1788569961-1.3.1.1-ExkJTvcW7bWlUI8nBaKaP5dqM3Qel8o6uf4MucFjmfk/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   53553ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614ab82edb880c/xX4S.CbYRSue9M1rlv0WSQn6PBjOj0aK9L9lYinPEtw-1788569972-1.2.1.1-TdNirBOLPDx0eEOwiQDClUCpn9wpPT.fzXDNdFuZ8zYZKR0CHQl4PU2sDTa6XSJd:0
+[   53610ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[   58198ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   63834ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchnhNT8jzu4D7jh9NTwG2kG2AvKjvTZvtVyqloX_mn._0-1788569972-1.3.1.1-.JcyrJ6.BaCBEHZIygg0BTdqVCIPBpuF6ec_Vk4i8C8/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   64038ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614afaacf7880c/ouE3HxhkMvabbE.4luTGLeeosu5427rHZE2Nt_E5qbc-1788569983-1.2.1.1-vPgMwRUn5Vev4Nne7v2d3ZRBN_RwdlO3ey5JT0fj3yHpgXD6FaW7wH.0qAjM.et6:0
+[   64081ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[   72498ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   74343ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchh.PV..w9nIxY.2tvhC2iKhYUZr05oOaG_Hr_Z2XoKCA-1788569983-1.3.1.1-XADWEkPJ4Y193i9A5mwef7Brc7zSWX_AMkuGi5Zr7tw/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   74529ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614b3c2f94880c/1lXS1_vnHbF.WNxh1qy9nevydP6EMEZTtfVK7YDk8.U-1788569993-1.2.1.1-1BXpI1y6YnBZ2jaSnBQpf9DU1sVIFX4KeG.lsFm8hnZROV1p2h76Zow3bjO1QG4G:0
+[   74583ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[   84969ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchMlJ1O9o09gDNUnbkiFUG5TfbmlEHBNG4Hx5U8FS5D3A-1788569993-1.3.1.1-ovpQgD2Wtp20sW9ClGwvukTi8sZFEjFuCROHzsxm6U4/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   85178ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614b7ddd51880c/aRfabZCteoccQsGU5IAUVupre._ehIFoxW9D7pMD2ss-1788570004-1.2.1.1-et7V2AIbypURYH15Ssfpo6K3wkM_YqC5KswLHYxbiaW7mZg0dLu.xnqSIkryms2S:0
+[   85249ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[   87660ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[   95465ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchpT0GvKFLCYulPOfnxq7YH9jF288jJTver2rgYTAueYQ-1788570004-1.3.1.1-J_LI4NfKEqs90Krl3WklQWZFzpxSAu__ZP568lqKMUc/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   95641ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614bc07cd3880c/d519svkdFGrwbuwgnHg_r0MAHkprfgrMH6wlWke1ujE-1788570014-1.2.1.1-HvxmFMk7W7EpvDNfJ9wT87f7e._HD5AkDkUDge9r8vYbx9cD3cF5jmEKgr7DM3X4:0
+[   95684ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[  103856ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[  105954ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchn7ieVLbN6AjfTMcuRaVfSm4I0C04nRd_ARU83uKBWmE-1788570014-1.3.1.1-IcU.JsesXN8B_c.YfrdRejYAg9YgM0kSqZEdiRgz4qk/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  106123ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614c01dce4880c/t8wVV7te5_ccwHu7_iGrfWBR.nb2Czqew.mfU4AqQeU-1788570025-1.2.1.1-lDjsBfqFTgccTCz4aNMuMomnNPzvZOBMF_M.oHf3d0obfXCwaV_jWzgZ3ABfxiGt:0
+[  106163ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[  116394ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchXlKaUudjTEsI.sp1TedS2QFoTZRznJI4e9hWXyN6AwA-1788570025-1.3.1.1-0WLduBkKiKnYY7IPevK4hGw8u5JUd.KvI2nNNl7XgnM/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  116578ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614c4349c1880c/P544BzG5sl3iVd3C0XgWLyTslFWSvR9jEsp2WMtCbYU-1788570035-1.2.1.1-5AB_U1L87iRPtaxKtxCxR_Vg9vYSOLUnUqDgtk.D55ipZsDG1uzv1hR0OytmKl_6:0
+[  116615ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[  121288ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1
+[  126842ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchwb.7t3_vSFNivWJCLGC7N6L.i6bMitjGm5mZQGsUYVA-1788570035-1.3.1.1-h5LUQF.WO6papovYkoOYwiPN6ZrofrEr7XLtuvDjXEI/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  127009ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614c849d32880c/5AyXUvSzKlcjrud06VSLNw3jGL9YjV6XEH1bMD_KHH8-1788570046-1.2.1.1-v5mp7iO82jh1AvHnjnr4bbyjEe0JHyUJuneQvp8F36K.8xD55q2A9QOBmg3zSK7S:0
+[  127031ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[  137296ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch424qQp.yxyYqc_kcJSdsLnAV5rZE0_p0j9KWfxxyRrk-1788570046-1.3.1.1-DmFFtIM1tT.rJup9QOvhQX8KLIOivDND4MEpp7IfcGI/tu1v1/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  137460ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/1839523361:1788566727:FYpDh2IZUgA2lUdSRkze45ZdcK1hvfB8nr4sWhB6axM/a3614cc5ad8b880c/Hrur2cz6dq1PIntdAYjQVx9AwirvzteKXmhbnA_yEik-1788570056-1.2.1.1-ygN86fRH.KoPNErDQ6ANgp_kJzRuW94Ep6ZuvDz6LiRTOCBDWbKOEqLk1eHFNtXk:0
+[  137496ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://localhost:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=1275ab82:41:17)
+[  140205ms] [ERROR] Connecting to 'ws://158.69.211.52:3002/api/graphql/live' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://comments.meeovicms.com/assets/js/vendors~account~admin~auth~install~stream.9f15442edf2cfa937cc338befed32b40.chunk.js:1

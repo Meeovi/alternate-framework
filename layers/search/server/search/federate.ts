@@ -26,6 +26,7 @@ import { typesenseProvider } from '../providers/typesense'
 import { databaseProvider } from '../providers/database'
 import { memoryProvider } from '../providers/memory'
 import { directusProvider } from '../providers/directus'
+import { atprotoProvider } from '../providers/atproto'
 import type { FacetBucket, NormalizedHit, ProviderStatus, SearchProvider, SearchProviderOptions } from '../providers/types'
 
 const MAX_FEDERATED_DEPTH = 500
@@ -41,6 +42,7 @@ const ALL_PROVIDERS: SearchProvider[] = [
   databaseProvider,
   memoryProvider,
   directusProvider,
+  atprotoProvider,
 ]
 
 export function getEnabledProviders(): SearchProvider[] {

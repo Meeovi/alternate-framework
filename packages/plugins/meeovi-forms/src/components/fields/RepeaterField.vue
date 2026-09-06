@@ -9,11 +9,13 @@
       </div>
       <div class="repeater-item-content">
         <slot :item="item" :index="index" :update="updateItem">
-          <input
-            :value="item"
-            type="text"
-            @input="updateItem(index, ($event.target as HTMLInputElement).value)"
+          <v-text-field
+            :model-value="item"
+            variant="outlined"
+            density="comfortable"
+            hide-details="auto"
             :disabled="disabled"
+            @update:model-value="(value) => updateItem(index, value)"
           />
         </slot>
       </div>
@@ -99,11 +101,5 @@ const updateItem = (index: number, value: string) => {
 .repeater-add:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-.repeater-item-content input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
 </style>

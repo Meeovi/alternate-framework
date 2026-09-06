@@ -1,8 +1,15 @@
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
-    <textarea :value="modelValue ?? ''" rows="6" @input="onInput" />
-  </label>
+  <v-textarea
+    :model-value="modelValue ?? ''"
+    :label="label"
+    rows="6"
+    auto-grow
+    variant="outlined"
+    density="comfortable"
+    hide-details="auto"
+    class="field"
+    @update:model-value="onInput"
+  />
 </template>
 
 <script setup lang="ts">
@@ -14,10 +21,5 @@ export interface RichTextFieldProps {
 
 defineProps<RichTextFieldProps>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
-const onInput = (event: Event) => emit('update:modelValue', (event.target as HTMLTextAreaElement).value)
+const onInput = (value: string) => emit('update:modelValue', value)
 </script>
-
-<style scoped>
-.field { display: grid; gap: 0.35rem; }
-textarea { resize: vertical; }
-</style>

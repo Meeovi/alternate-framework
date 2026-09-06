@@ -10,6 +10,10 @@
                     <v-btn class="text-white" variant="plain">{{ space?.status }} Space</v-btn>
 
                     <v-btn class="text-white" variant="plain">Members: {{ space?.members?.length }}</v-btn>
+
+                    <div class="d-flex align-center" v-if="space">
+                        <createListBtn :item="listItem" kind="space" />
+                    </div>
                 </v-toolbar-items>
             </v-toolbar>
 
@@ -131,11 +135,13 @@
     import MediaTab from '../../../components/blocks/groups/media.vue'
     import productCard from '#commerce/app/components/catalog/product/productCard.vue'
     import listsCard from '../../../components/features/lists/lists.vue'
+    import createListBtn from '../../../components/blocks/partials/createListBtn.vue'
     import SettingsTab from './SettingsTab.vue'
     import {
         useAuth
     } from '#auth/app/composables/useAuth'
     import SearchDialog from '../../../components/blocks/groups/SearchDialog.vue'
+    import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
     const route = useRoute();
     const router = useRouter();
@@ -174,6 +180,14 @@
             limit: 1
         })).then(response => response?.[0]) // Get first item from response
     })
+
+    // createListBtn's panel needs a resolved image URL, not the raw
+    // Directus asset reference space.image holds.
+    const listItem = computed(() => ({
+        id: space?.value?.id,
+        name: space?.value?.name,
+        image: getAssetURL(space?.value?.image)
+    }))
 
     const {
         data: spaceTabs

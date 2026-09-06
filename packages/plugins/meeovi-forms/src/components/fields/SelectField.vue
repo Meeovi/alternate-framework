@@ -1,16 +1,17 @@
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
-    <select :value="modelValue ?? ''" @change="onChange" :multiple="multiple">
-      <option
-        v-for="option in selectOptions"
-        :key="String(option.value ?? option)"
-        :value="String(option.value ?? option)"
-      >
-        {{ option.text ?? option.label ?? option }}
-      </option>
-    </select>
-  </label>
+  <v-select
+    :model-value="modelValue ?? (multiple ? [] : null)"
+    :items="items"
+    item-title="title"
+    item-value="value"
+    :label="label"
+    :multiple="multiple"
+    variant="outlined"
+    density="comfortable"
+    hide-details="auto"
+    class="field"
+    @update:model-value="onChange"
+  />
 </template>
 
 <script setup lang="ts">
@@ -37,16 +38,16 @@ const selectOptions = computed(() => {
   return [] as any[]
 })
 
-const onChange = (event: Event) => {
-  const target = event.target as HTMLSelectElement
-  if (target.multiple) {
-    emit('update:modelValue', Array.from(target.selectedOptions).map((o) => o.value))
-  } else {
-    emit('update:modelValue', target.value || null)
-  }
-}
-</script>
+// v-select reads `title`/`value` by default — normalize whatever shape the
+// source options came in (Directus `{text, value}`, plain strings, etc.)
+// into that.
+const items = computed(() =>
+  selectOptions.value.map((option: any) => ({
+    title: String(option?.text ?? option?.label ?? option),
+    value: option?.value ?? option,
+  }))
+)
 
-<style scoped>
-.field { display: grid; gap: 0.35rem; }
-</style>
+const onChange = (value: string | number | string[] | null) =>
+  emit('update:modelValue', value ?? (props.multiple ? [] : null))
+</script>

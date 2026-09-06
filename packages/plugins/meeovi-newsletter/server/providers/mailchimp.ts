@@ -79,9 +79,12 @@ export const mailchimpProvider: NewsletterProvider = {
         })
       }
 
+      // Anything else is an unexpected Mailchimp API error — log the detail
+      // server-side rather than forwarding API internals to the client.
+      console.error('[meeovi-newsletter] mailchimp provider error:', title ? `${title}: ${detail}` : detail)
       throw createError({
         statusCode: 502,
-        statusMessage: title ? `${title}: ${detail}` : detail,
+        statusMessage: 'Could not complete the subscription. Please try again.',
       })
     }
   },

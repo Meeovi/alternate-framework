@@ -1,16 +1,20 @@
 <template>
     <div class="useTimeAgo" :class="computedClasses">
-        <UseTimeAgo :time="time">
-            <template #default="{ timeAgo }">
-                <span v-if="label" class="useTimeAgo-label">{{ label }} </span>
-                <span class="useTimeAgo-value">{{ timeAgo }}</span>
-            </template>
-        </UseTimeAgo>
+        <span v-if="label" class="useTimeAgo-label">{{ label }} </span>
+        <span class="useTimeAgo-value">{{ timeAgo }}</span>
     </div>
 </template>
 
 <script setup>
-import { UseTimeAgo } from '@vueuse/core'
+// The renderless <UseTimeAgo> component this used to render doesn't exist
+// in the installed @vueuse/core (v14) — that API moved to a separate
+// @vueuse/components package this project doesn't depend on (confirmed
+// live: importing it threw "does not provide an export named
+// 'UseTimeAgo'" the first time this component was actually rendered
+// anywhere — see connect/related/post.vue). Using the plain useTimeAgo
+// composable directly instead — idiomatic for <script setup> and needs
+// no extra dependency.
+import { useTimeAgo } from '@vueuse/core'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -28,6 +32,8 @@ const props = defineProps({
         validator: (value) => ['small', 'medium', 'large'].includes(value)
     }
 })
+
+const timeAgo = useTimeAgo(computed(() => props.time))
 
 const computedClasses = computed(() => ({
     [`size-${props.size}`]: true

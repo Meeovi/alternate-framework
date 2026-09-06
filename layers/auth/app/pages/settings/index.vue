@@ -47,20 +47,16 @@
 </template>
 
 <script setup>
-    import {
-        ref,
-        defineAsyncComponent
-    } from '#imports'
-    import Home from '../../components/features/settings/home.vue'
-    import Social from '../../components/features/settings/social.vue'
-    import Personalization from '../../components/features/settings/personalization.vue'
-    import Devices from '../../components/features/settings/devices.vue'
-    import Gaming from '../../components/features/settings/gaming.vue'
-    import Languages from '../../components/features/settings/languages.vue'
-    import Privacy from '../../components/features/settings/privacy.vue'
-    import Subscriptions from '../../components/features/settings/subscriptions.vue'
-    import Accessibility from '../../components/features/settings/accessibility.vue'
-    import Shopping from '../../components/features/settings/shopping.vue'
+    import { ref } from '#imports'
+    import Home from './home.vue'
+    import Social from './social.vue'
+    import Personalization from './personalization.vue'
+    import Devices from './devices.vue'
+    import Gaming from './gaming.vue'
+    import Languages from './languages.vue'
+    import Privacy from './privacy.vue'
+    import Accessibility from './accessibility.vue'
+    import Shopping from './shopping.vue'
 
     const {
         $directus,

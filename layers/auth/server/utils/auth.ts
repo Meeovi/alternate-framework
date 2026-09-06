@@ -11,7 +11,8 @@ import {
   betterAuth
 } from 'better-auth'
 import {
-  APIError
+  APIError,
+  createAuthMiddleware
 } from 'better-auth/api'
 import {
   v7 as uuidv7
@@ -32,6 +33,7 @@ import { stripeClient } from "./stripe";
 import {
   logAuditEvent,
   createAuthAuditMiddleware,
+  fixupRememberMeCookie,
   auditDatabaseHooks
 } from './audits'
 
@@ -161,9 +163,9 @@ export const auth = betterAuth({
     },
     additionalFields: {
       // Referenced by deleteUser.beforeDelete above and needed by the
-      // stripe() plugin's createCustomerOnSignUp — was never actually
-      // declared here, and the live users table has no matching column,
-      // so Stripe customer creation on signup has likely never worked.
+      // stripe() plugin's createCustomerOnSignUp. The backing columns are
+      // added by migration 20260905120000_add_stripe_polar_customer_ids;
+      // apply migrations before relying on billing flows.
       // input: false on all three ids below — these are trust anchors for
       // billing-portal access and subscription-gated account deletion, and
       // must only ever be written server-side (webhook/registry hooks), never
@@ -190,6 +192,23 @@ export const auth = betterAuth({
       // remains the sole authentication system.
       magentoCustomerId: {
         type: 'number',
+        required: false,
+        defaultValue: null,
+        input: false
+      },
+      // Written only by the "atproto" plugin's /sign-in/atproto endpoint
+      // (@mframework/adapter-federation/auth/plugin, wired in
+      // ../../shared/utils/plugins.ts) — input: false for the same reason
+      // as the ids above: never accept these from a signup/update-user
+      // request body, only from that server-verified PDS login.
+      atprotoDid: {
+        type: 'string',
+        required: false,
+        defaultValue: null,
+        input: false
+      },
+      atprotoHandle: {
+        type: 'string',
         required: false,
         defaultValue: null,
         input: false
@@ -343,7 +362,13 @@ export const auth = betterAuth({
     skipTrailingSlashes: true
   },
   hooks: {
-    after: createAuthAuditMiddleware()
+    // betterAuth's `hooks.after` only ever takes a single handler — the
+    // audit log and the rememberMe cookie fixup (see audits.ts's
+    // fixupRememberMeCookie for why this is needed) both run inside it.
+    after: createAuthMiddleware(async (ctx) => {
+      await createAuthAuditMiddleware()(ctx)
+      await fixupRememberMeCookie(ctx)
+    })
   },
   databaseHooks: auditDatabaseHooks,
   logger: {

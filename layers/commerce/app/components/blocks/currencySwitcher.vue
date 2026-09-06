@@ -92,15 +92,16 @@
 
   .currency-select {
     padding: 5px 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
     border-radius: 4px;
-    background-color: white;
+    background-color: rgb(var(--v-theme-surface));
+    color: rgb(var(--v-theme-on-surface));
     cursor: pointer;
     font-size: 14px;
   }
 
   .currency-select:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: rgb(var(--v-theme-primary));
   }
 </style>

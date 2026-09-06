@@ -1,0 +1,190 @@
+- generic [ref=f26e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f26e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f26e9]: Open accessibility menu
+  - generic [ref=f26e15]:
+    - banner [ref=f26e256]:
+      - generic [ref=f26e258]:
+        - link [ref=f26e293] [cursor=pointer]:
+          - /url: https://search.meeovi.com
+          - paragraph [ref=f26e296]: Meeovi Search
+        - generic [ref=f26e262]:
+          - button [ref=f26e264] [cursor=pointer]
+          - button "Explore The Meeovi Company" [ref=f26e299] [cursor=pointer]
+          - button "Account" [ref=f26e306] [cursor=pointer]
+    - main [ref=f26e16]:
+      - generic [ref=f26e18]:
+        - tablist [ref=f26e23]:
+          - generic [ref=f26e25]:
+            - tab [selected] [ref=f26e26] [cursor=pointer]
+            - tab [ref=f26e33] [cursor=pointer]:
+              - img "Paris Snack Video" [ref=f26e38]
+        - generic [ref=f26e39]:
+          - status [ref=f26e269]: Clipboard - Meeovi Search
+          - generic [ref=f26e42]:
+            - list [ref=f26e53]:
+              - listitem [ref=f26e54]:
+                - heading [level=1] [ref=f26e56]:
+                  - strong [ref=f26e57]: Clipboard
+              - listitem [ref=f26e58]:
+                - generic [ref=f26e60]:
+                  - text: "By:"
+                  - strong [ref=f26e61]: Unknown
+              - listitem [ref=f26e62]:
+                - generic [ref=f26e63]: $0.00
+              - listitem [ref=f26e66]:
+                - generic [ref=f26e68]:
+                  - generic [ref=f26e69]:
+                    - generic: Rating 0 of 5
+                    - radio "Rating 0 of 5"
+                    - generic [ref=f26e71]:
+                      - generic [ref=f26e72] [cursor=pointer]:
+                        - generic: Rating 1 of 5
+                        - button "Rating 1 of 5" [ref=f26e73]
+                      - radio "Rating 1 of 5 Rating 1 of 5"
+                    - generic [ref=f26e79]:
+                      - generic [ref=f26e80] [cursor=pointer]:
+                        - generic: Rating 2 of 5
+                        - button "Rating 2 of 5" [ref=f26e81]
+                      - radio "Rating 2 of 5 Rating 2 of 5"
+                    - generic [ref=f26e87]:
+                      - generic [ref=f26e88] [cursor=pointer]:
+                        - generic: Rating 3 of 5
+                        - button "Rating 3 of 5" [ref=f26e89]
+                      - radio "Rating 3 of 5 Rating 3 of 5"
+                    - generic [ref=f26e95]:
+                      - generic [ref=f26e96] [cursor=pointer]:
+                        - generic: Rating 4 of 5
+                        - button "Rating 4 of 5" [ref=f26e97]
+                      - radio "Rating 4 of 5 Rating 4 of 5"
+                    - generic [ref=f26e103]:
+                      - generic [ref=f26e104] [cursor=pointer]:
+                        - generic: Rating 5 of 5
+                        - button "Rating 5 of 5" [ref=f26e105]
+                      - radio "Rating 5 of 5 Rating 5 of 5"
+                  - link "reviews" [ref=f26e110] [cursor=pointer]:
+                    - /url: /product/28#commentsSection
+              - listitem [ref=f26e111]:
+                - listitem [ref=f26e114]:
+                  - generic [ref=f26e117]:
+                    - button "Decrease value" [disabled]
+                    - generic [ref=f26e118]:
+                      - spinbutton [ref=f26e122]: "1"
+                      - alert [ref=f26e123]:
+                        - generic [ref=f26e124]: null in stock
+                    - button "Increase value" [ref=f26e126] [cursor=pointer]
+              - listitem [ref=f26e131]:
+                - generic [ref=f26e133]:
+                  - listitem [ref=f26e134]:
+                    - button "Download" [ref=f26e137] [cursor=pointer]
+                  - listitem [ref=f26e143]:
+                    - button "Add to Compare" [ref=f26e147] [cursor=pointer]
+              - listitem [ref=f26e153]:
+                - generic [ref=f26e155]:
+                  - listitem [ref=f26e156]:
+                    - generic [ref=f26e159]:
+                      - button "Add to list" [active] [ref=f26e160] [cursor=pointer]:
+                        - generic [ref=f26e165]: Add to List
+                      - navigation [ref=f26e166]:
+                        - generic [ref=f26e167]:
+                          - generic [ref=f26e168]:
+                            - generic [ref=f26e169]: Add to List
+                            - button [ref=f26e170] [cursor=pointer]
+                          - separator
+                          - generic [ref=f26e177]:
+                            - generic [ref=f26e178]: Clipboard
+                            - generic [ref=f26e179]: $$0.00
+                          - separator
+                          - generic [ref=f26e184]:
+                            - generic [ref=f26e185]:
+                              - generic: Create a new list
+                              - textbox "Create a new list" [ref=f26e186]:
+                                - /placeholder: e.g. Birthday ideas
+                            - button "Create a new list appended action" [ref=f26e188] [cursor=pointer]
+                          - separator
+                          - alert [ref=f26e311]:
+                            - generic [ref=f26e316]: You don't have any lists yet — create one above.
+                  - listitem [ref=f26e198]
+              - listitem [ref=f26e199]
+            - tablist [ref=f26e202]:
+              - generic [ref=f26e204]:
+                - tab "Description" [selected] [ref=f26e206] [cursor=pointer]
+                - tab "Reviews" [ref=f26e209] [cursor=pointer]
+                - tab "Product Details" [ref=f26e212] [cursor=pointer]
+            - generic [ref=f26e215]:
+              - heading "This product goes great together with..." [level=4] [ref=f26e217]
+              - generic [ref=f26e219]:
+                - heading "Related Products" [level=4] [ref=f26e220]
+                - paragraph [ref=f26e222]: No related products available.
+              - generic [ref=f26e223]:
+                - heading "Product featured in these Shops" [level=4] [ref=f26e224]
+                - paragraph [ref=f26e226]: Not featured in any shops.
+              - generic [ref=f26e227]:
+                - heading "Product featured in these Vibez" [level=4] [ref=f26e228]
+                - paragraph [ref=f26e230]: Not featured in any shorts.
+              - generic [ref=f26e231]:
+                - heading "Product featured in these Spaces" [level=4] [ref=f26e232]
+                - paragraph [ref=f26e234]: Not featured in any spaces.
+      - generic [ref=f26e237]:
+        - link "About Meeovi" [ref=f26e239] [cursor=pointer]:
+          - /url: https://meeovi.com/about
+        - link "Terms and Conditions" [ref=f26e242] [cursor=pointer]:
+          - /url: https://meeovi.com/terms
+        - link "Privacy Policy" [ref=f26e245] [cursor=pointer]:
+          - /url: https://meeovi.com/privacy-policy
+        - link "Blog" [ref=f26e248] [cursor=pointer]:
+          - /url: https://meeovi.com/connect/space/meeovi-digest
+        - link "Help Center" [ref=f26e251] [cursor=pointer]:
+          - /url: https://meeovi.com/connect/space/meeovi-help
+        - paragraph [ref=f26e254]:
+          - text: "@ 2017 - 2026"
+          - link "Meeovi" [ref=f26e255] [cursor=pointer]:
+            - /url: /
+          - text: All Rights Reserved.
+  - generic [ref=f26e275]:
+    - button "Toggle Nuxt DevTools" [ref=f26e276] [cursor=pointer]
+    - generic "Page load time" [ref=f26e280]:
+      - generic [ref=f26e281]: "1.9"
+      - generic [ref=f26e282]: s
+    - button "Toggle Component Inspector" [ref=f26e284] [cursor=pointer]
+  - iframe [ref=f26e320]:
+    - generic [ref=f29e6]:
+      - text: protected by
+      - strong [ref=f29e7]: reCAPTCHA
+  - navigation [ref=f26e321]:
+    - generic [ref=f26e322]:
+      - generic [ref=f26e323]:
+        - generic [ref=f26e324]: Account
+        - button [ref=f26e325] [cursor=pointer]
+      - generic [ref=f26e330]:
+        - list [ref=f26e335]:
+          - listitem [ref=f26e336]:
+            - generic [ref=f26e340]: Follow Tester's Account
+        - list [ref=f26e342]:
+          - generic [ref=f26e343]: My Account
+          - link "Profile" [ref=f26e345] [cursor=pointer]:
+            - /url: /account/user/id
+          - link "Social Feed" [ref=f26e352] [cursor=pointer]:
+            - /url: /connect/newsfeed
+          - link "Spaces" [ref=f26e359] [cursor=pointer]:
+            - /url: /connect/spaces
+          - link "Vibez" [ref=f26e366] [cursor=pointer]:
+            - /url: /connect/vibez
+          - link "My Network" [ref=f26e373] [cursor=pointer]:
+            - /url: /connect/friends
+          - separator
+          - generic [ref=f26e380]: My Commerce
+          - link "Account" [ref=f26e382] [cursor=pointer]:
+            - /url: /account/
+          - link "Lists" [ref=f26e389] [cursor=pointer]:
+            - /url: /lists
+          - link "Promotions" [ref=f26e396] [cursor=pointer]:
+            - /url: /promotions
+          - link "Shops" [ref=f26e403] [cursor=pointer]:
+            - /url: /shops/
+          - link "Brands" [ref=f26e410] [cursor=pointer]:
+            - /url: /brands
+          - separator
+          - link "Upload Center" [ref=f26e417] [cursor=pointer]:
+            - /url: /upload
+          - listitem [ref=f26e424]:
+            - button "Logout" [ref=f26e426] [cursor=pointer]

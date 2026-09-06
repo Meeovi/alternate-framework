@@ -25,15 +25,27 @@
 </template>
 
 <script setup>
-    import { ref } from '#imports'
+    import { ref, computed } from '#imports'
     import TagChip from '../../components/related/tag.vue'
 
     const { $directus, $readItem, $readItems } = useNuxtApp()
     const tab = ref(null)
 
-    const { data: hashtags } = await useAsyncData('hashtags', () => {
+    const { data: directusHashtags } = await useAsyncData('hashtags', () => {
         return $directus.request($readItems('tags', { fields: ['*', { '*': ['*'] }] }))
     })
+
+    // atproto's own trending topics — the atproto match for this page's
+    // hashtags listing (see server/api/social/atproto/trending-hashtags.get.ts).
+    // Resolves to `{ items: [] }` (never throws) if the service-account
+    // atproto client isn't configured or the PDS is unreachable, so this
+    // is purely additive to the Directus-backed tags above.
+    const { data: atprotoHashtags } = await useAsyncData('hashtags:atprotoTrending', () => $fetch('/api/social/atproto/trending-hashtags'), { default: () => ({ items: [] }) })
+
+    const hashtags = computed(() => [
+        ...(directusHashtags.value || []),
+        ...(atprotoHashtags.value?.items || []),
+    ])
 
     const { data: hashtagPage } = await useAsyncData('hashtagPage', () => {
         return $directus.request($readItem('pages', '86', { fields: ['*', { '*': ['*'] }] }))

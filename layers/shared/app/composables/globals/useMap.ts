@@ -52,6 +52,10 @@ const analytics = {
 const PERSIST_KEY = 'leaflet:eventlog:v1'
 
 const persistEvent = (event: string, payload: any) => {
+  // The `on('analytics:map', ...)` subscription below runs at module load,
+  // both server and client — guard explicitly rather than relying on the
+  // catch block to swallow the server-side ReferenceError.
+  if (!import.meta.client) return
   try {
     const log = JSON.parse(localStorage.getItem(PERSIST_KEY) || '[]')
     log.push({ event, payload, ts: Date.now() })
@@ -62,6 +66,7 @@ const persistEvent = (event: string, payload: any) => {
 }
 
 const replayEvents = () => {
+  if (!import.meta.client) return
   try {
     const log = JSON.parse(localStorage.getItem(PERSIST_KEY) || '[]')
     log.forEach(({ event, payload }: any) => {

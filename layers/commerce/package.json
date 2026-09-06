@@ -23,7 +23,7 @@
     "codegen": "npx graphql-codegen --config ./node_modules/@mframework/adapter-magento/codegen.ts"
   },
   "dependencies": {
-    "@better-auth/stripe": "^1.4.15",
+    "@better-auth/stripe": "1.6.23",
     "@directus/sdk": "^23.0.0",
     "@nuxt/types": "^2.18.1",
     "@polar-sh/better-auth": "^1.8.4",

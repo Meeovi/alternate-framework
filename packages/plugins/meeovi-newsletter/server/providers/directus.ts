@@ -27,6 +27,12 @@ export const directusProvider: NewsletterProvider = {
       emailField = 'email',
       statusField = 'status',
       statusValue = 'subscribed',
+      // Consent audit trail (for GDPR-style "when/where did this address
+      // opt in" record-keeping). The `newsletters` collection needs these
+      // columns — rename via these options if yours uses different ones,
+      // or set to `null` to skip recording consent entirely.
+      consentAtField = 'consent_at',
+      consentIpField = 'consent_ip',
     } = ctx.config.directus
 
     if (!url) {
@@ -44,6 +50,8 @@ export const directusProvider: NewsletterProvider = {
     if (statusField) body[statusField] = statusValue
     if (input.name) body.name = input.name
     if (input.source) body.source = input.source
+    if (consentAtField) body[consentAtField] = ctx.consentAt
+    if (consentIpField && ctx.requestIp) body[consentIpField] = ctx.requestIp
 
     try {
       const res = await $fetch<{ data?: { id?: string | number } }>(endpoint, {
@@ -67,7 +75,10 @@ export const directusProvider: NewsletterProvider = {
         return { status: 'already_subscribed', provider: 'directus' }
       }
 
-      throw createError({ statusCode: 502, statusMessage: message })
+      // Don't forward Directus's raw error (collection/field/schema
+      // details) to the client — log it server-side instead.
+      console.error('[meeovi-newsletter] directus provider error:', message)
+      throw createError({ statusCode: 502, statusMessage: 'Could not save your subscription. Please try again.' })
     }
   },
 }

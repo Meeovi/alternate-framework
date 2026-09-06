@@ -1,0 +1,157 @@
+[    9113ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/display-2.png:0
+[   18989ms] [WARNING] %cssr:warn%c [Vue warn]: Failed to resolve component: v-list-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <CatalogProductDetails>
+at <VCol>
+at <VRow>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   18991ms] [WARNING] %cssr:warn%c [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got String with value "28". 
+      background: #f39c12;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      at <BlocksCompareBtn>
+at <VListItem>
+at <VListItem>
+at <VListChildren>
+at <VList>
+at <VCard>
+at <CatalogProductDetails>
+at <VCol>
+at <VRow>
+at <VCol>
+at <VRow>
+at <[...id]>
+at <RouteProvider>
+at <RouterView>
+at <NuxtPage>
+at <VMain>
+at <VApp>
+at <VResponsive>
+at <Default>
+at <AsyncComponentWrapper>
+at <LayoutLoader>
+at <NuxtLayoutProvider>
+at <NuxtLayout>
+at <App>
+at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   19575ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   19663ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   19932ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://localhost:3003/_nuxt/@vite/client:528
+[   20278ms] [WARNING] [Vue warn]: Failed to resolve component: v-list-subtitle
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <CatalogProductDetails productDetails= {id: 28, sku: null, name: Clipboard, tax_class: null, created_at: 2025-12-19T11:20:42} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/28" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/28, hash: , query: Object, name: product-id___en, path: /product/28}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   20868ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "product". Expected Object, got String with value "28". 
+  at <BlocksCompareBtn product="28" > 
+  at <VListItem class="col-6" > 
+  at <VListItem class="col col-6" > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 28, sku: null, name: Clipboard, tax_class: null, created_at: 2025-12-19T11:20:42} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/28" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/28, hash: , query: Object, name: product-id___en, path: /product/28}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   21637ms] [WARNING] [Vue warn]: Hydration node mismatch:
+- rendered on server: JSHandle@node  
+- expected on client: Symbol(v-fgt) 
+  at <VNavigationDrawer modelValue=false onUpdate:modelValue=fn location="right"  ... > 
+  at <BlocksPartialsCreateListBtn item= {id: 28, name: Clipboard, image: undefined, price: $0.00} kind="product" > 
+  at <VListItem class="col col-6" > 
+  at <VListItem class="col col-6" > 
+  at <VListChildren items= [] returnObject=false > 
+  at <VList lines="one" > 
+  at <VCard class="right" elevation="0" > 
+  at <CatalogProductDetails productDetails= {id: 28, sku: null, name: Clipboard, tax_class: null, created_at: 2025-12-19T11:20:42} > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <VCol cols="12" > 
+  at <VRow > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/product/28" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /product/28, hash: , query: Object, name: product-id___en, path: /product/28}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://localhost:3003/_nuxt/@vite/client:528
+[   22356ms] [ERROR] Hydration completed but contains mismatches. @ http://localhost:3003/_nuxt/@vite/client:528
+[   23189ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3003/_nuxt/@vite/client:528
+[   23262ms] [LOG] Meeovi Search @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4b1b562e:44
+[   23321ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   23322ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   23324ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   23326ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   23328ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://res.cloudinary.com/nuxt-cloudinary/image/upload/f_auto,q_auto/images/logo512alpha.png:0
+[   23332ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   23333ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   23352ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   25322ms] [WARNING] [NUXT_E3003] `useAsyncData`/`useFetch` was called after the component had already mounted, so the data fetch cannot be awaited during setup.
+╰▶ fix: Use `$fetch()` for requests triggered after mount (e.g. in event handlers), or call `useAsyncData`/`useFetch` in the `setup()` function. @ http://localhost:3003/_nuxt/@vite/client:528
+[   27474ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[   27475ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[  167500ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[  167508ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[  167514ms] [ERROR] Connecting to 'https://bat.bing.com/actionp/0?ti=247021147&Ver=2&mid=ef25a9a8-c8a6-4a54-bbc5-fe83b8e5fe57&bo=2&sid=8c34f420a61311f1bbcc7b443c56172a&vid=b64f9680808011f1adaabb0071929c6c&vids=0&msclkid=N&evt=pageHide' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_scripts/assets/c7c9dcf09224020c.js:0
+[  167524ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31
+[  167526ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://localhost:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4b1b562e:31

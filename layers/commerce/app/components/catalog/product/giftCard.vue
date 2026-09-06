@@ -54,6 +54,6 @@
   })
 
   useHead({
-    title: 'Redeem an Meeovi Gift Card'
+    title: 'Redeem a Gift Card'
   })
 </script>

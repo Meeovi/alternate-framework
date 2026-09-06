@@ -1,5 +1,6 @@
 import { getSocialDriver } from '../../utils/social'
-import type { SocialDriverContract } from 'alternate-sdk/contracts'
+import { classifySocialDriverMethod } from '../../utils/driverAccess'
+import { getAuthSession } from '#auth/server/utils/sessions'
 
 /**
  * POST /api/social/driver
@@ -13,6 +14,10 @@ import type { SocialDriverContract } from 'alternate-sdk/contracts'
  * Request body:
  *   { method: string, args?: unknown[] }
  *
+ * Only methods listed in server/utils/driverAccess.ts are reachable; the
+ * request is rejected otherwise. Methods classified `authed` additionally
+ * require a signed-in session.
+ *
  * Response: whatever the social driver method returns.
  */
 export default defineEventHandler(async (event) => {
@@ -23,12 +28,33 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'method (string) is required in the request body' })
   }
 
+  if (!Array.isArray(args)) {
+    throw createError({ statusCode: 400, statusMessage: 'args must be an array' })
+  }
+
+  const access = classifySocialDriverMethod(method)
+  if (access === 'denied') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: `Social driver method "${method}" is not exposed through this endpoint`,
+    })
+  }
+
+  if (access === 'authed') {
+    const session = await getAuthSession(event)
+    if (!session?.user) {
+      throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
+    }
+    event.context.user = session.user
+  }
+
   const social = getSocialDriver()
 
   // Most operations live under a sub-driver (e.g. "posts.getPosts", not a
   // flat "getPosts") — see SocialDriverContract in alternate-sdk/contracts.
   // Only getUser/searchUsers/follow/unfollow/getFollowers/getFollowing are
-  // flat on the top-level contract.
+  // flat on the top-level contract. The manifest above only contains these
+  // known contract paths, so traversal here is over trusted, fixed keys.
   const segments = method.split('.')
   const key = segments.pop() as string
   let target: any = social

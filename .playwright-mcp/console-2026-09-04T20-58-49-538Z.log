@@ -1,0 +1,111 @@
+[   38879ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=6515b849:44
+[   39000ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=6515b849:44
+[   40856ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3003/_nuxt/@vite/client:528
+[   42019ms] [WARNING] [Vue warn]: inject() can only be used inside setup() or functional components. @ http://127.0.0.1:3003/_nuxt/@vite/client:528
+[   42347ms] [WARNING] [Vue warn]: Unhandled error during execution of mounted hook 
+  at <BlocksComments commentId=undefined > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3003/_nuxt/@vite/client:528
+[   42513ms] TypeError: Cannot read properties of undefined (reading 'path')
+    at ComputedRefImpl.fn (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/components/blocks/comments.vue:36:86)
+    at refreshComputed (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=6515b849:409:26)
+    at get value (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=6515b849:1603:3)
+    at http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/components/blocks/comments.vue:75:22
+[   42839ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "commentId". Expected String with value "44", got Number with value 44. 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3003/_nuxt/@vite/client:528
+[   43146ms] [LOG] Meeovi @ http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=6515b849:44
+[   43371ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3003/_nuxt/@vite/client:528
+[   43719ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   43722ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   43726ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   43731ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   43747ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   43749ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   43878ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   44054ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:3003/api/social/list-saved?kind=vibe&itemId=44:0
+[   44071ms] [ERROR] Failed to check list membership FetchError: [GET] "/api/social/list-saved?kind=vibe&itemId=44": 401 Unauthorized
+    at async $fetch2 (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/ofetch/dist/shared/ofetch.CWycOUEr.mjs?v=6515b849:332:15)
+    at async getListsContainingItem (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/composables/lists/useLists.ts:134:18)
+    at async loadMembership (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/components/blocks/partials/createListBtn.vue:43:24) @ http://127.0.0.1:3003/_nuxt/@vite/client:528
+[   45036ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/rszol/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   45216ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a35feb326b65a240/GYdXTMeLvhGZktTQCWxeja07JThakom8FFz_CEfAiuY-1788555574-1.2.1.1-6InZ3._6pIrw66GY6gl87jsVJdTP.WzJWya4W0HI4EOmt8CniMGQUijcUTrqQbsl:0
+[   45270ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=6515b849:41:17)
+[   55513ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch6lNny.55qewWbOVxRRWY9eUDRDfp9sBNhgFOSZlLg4Q-1788555574-1.3.1.1-SivG3L5Obe48iIRItQFrSt5rptkM6y.1iwCCpHQoJjY/rszol/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   55702ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a35feb7519cba240/9zgR3DhvZ.4aJSWvLvHqVriX7UWFuy_HEUyI5g9aEhs-1788555584-1.2.1.1-Jz1uf2EYjnWBtOF9hv_aMgVi6wb.FBdrOsq2JHRM42hxMHGGZFMfU3x20UcbvMmG:0
+[   55746ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=6515b849:41:17)
+[   66006ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchmNVAyCAlcGcVsRzRz.Ahc17rGgQs4FQdOzzN9aJSZtc-1788555584-1.3.1.1-NXNkIhhdYDNVzaonwTmY9KrFbhV1LOqyP4oe7Wy4HVQ/rszol/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   66168ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a35febb6ad4aa240/SihSvpKaXBuWMWcqKn5My4mc4IPggq9Q8QKj6HIA3nk-1788555595-1.2.1.1-AZcoMCGOcRuJzxQx9dMe9uJIV9PJbR3S2bNCJUPOkKIxNrcifCutigpCUpNG6y__:0
+[   66201ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=6515b849:41:17)
+[   76770ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchW6tdSbRRBEm7RNdFg6pEKZI2rXmOnVRoIoYg6hWjRMw-1788555595-1.3.1.1-q0u_5WLOBX59HZDt8Y3QDkWA5MdRB3119u6v51FV09g/rszol/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   76968ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/117694852:1788552323:QhL4hwDKglMzHVjksLd_iTu9mpeKKwLcsCJlfOLGEkA/a35febf81d1fa240/azFAtynBeFQqF1woX.LQ9vOB6X3biU8CjtjvZNTZiBs-1788555605-1.2.1.1-THDZulZuk_raz.xTx3_eb0Ype.F2oWwEcoFEfVPZb.gE2fK3uL9fBYMPL7poSPXC:0
+[   77033ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3003/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=6515b849:41:17)
+[   80443ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "commentId". Expected String with value "44", got Number with value 44. 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3003/_nuxt/@vite/client:528

@@ -1,0 +1,83 @@
+[   12124ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/search/app/pages/results.vue:0
+[   12127ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:3010/_nuxt/@vite/client:998
+[   12137ms] [WARNING] [Vue Router warn]: uncaught error during route navigation: @ http://localhost:3010/_nuxt/@vite/client:528
+[   12137ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/search/app/pages/results.vue @ http://localhost:3010/_nuxt/@vite/client:528
+[   12140ms] [WARNING] [NUXT_E1005] Error caught during app initialization.
+╰▶ fix: Check your plugins, `app:created`, and `app:beforeMount` hooks for unhandled errors. @ http://localhost:3010/_nuxt/@vite/client:528
+[   12141ms] [ERROR] [vite] SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:3010/_nuxt/@vite/client:388:15)
+    at HMRClient.send (http://localhost:3010/_nuxt/@vite/client:152:18)
+    at HMRContext.send (http://localhost:3010/_nuxt/@vite/client:114:18)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics_reporters_dev.js?v=37143f8f:11:86
+    at Object.handle [as NUXT_E1005] (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics.js?v=ecee4b89:134:38)
+    at Array.<anonymous> (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=79e7b587:108:19)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:33:48
+    at callHooks (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:33:30)
+    at serialTaskCaller (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:40:31)
+    at Hookable.callHookWith (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:164:18) @ http://localhost:3010/_nuxt/@vite/client:528
+[   12142ms] [WARNING] [Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/search/app/pages/results.vue @ http://localhost:3010/_nuxt/@vite/client:528
+[   12265ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/sentry.client.config.ts:0
+[   12277ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt-link-checker/dist/runtime/app/plugins/view/Main.vue:0
+[   12280ms] Failed to fetch dynamically imported module: http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt-link-checker/dist/runtime/app/plugins/view/client.js?v=79e7b587
+[   12283ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/@id/virtual:nuxt:.nuxt%2Fdevtools%2Fsettings.mjs:0
+[   12283ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/shared/i18n/locales/en.json?import:0
+[   12285ms] [WARNING] Failed to load messages for locale "en" Error: Failed loading locale (en): Failed to fetch dynamically imported module: http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/shared/i18n/locales/en.json?import
+    at getLocaleMessages (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxtjs/i18n/dist/runtime/shared/messages.js?v=79e7b587:85:11)
+    at async http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxtjs/i18n/dist/runtime/shared/messages.js?v=79e7b587:103:33
+    at async Promise.all (index 0)
+    at async getLocaleMessagesMergedCached (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxtjs/i18n/dist/runtime/shared/messages.js?v=79e7b587:101:20)
+    at async loadMessagesFromLoaders (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxtjs/i18n/dist/runtime/context.js?v=79e7b587:113:20)
+    at async Object.loadMessages (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxtjs/i18n/dist/runtime/context.js?v=79e7b587:205:13)
+    at async loadAndSetLocale (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxtjs/i18n/dist/runtime/utils.js?v=79e7b587:29:3)
+    at async setup (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxtjs/i18n/dist/runtime/plugins/route-locale-detect.js?v=79e7b587:19:9)
+    at async applyPlugin (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=79e7b587:124:23)
+    at async executePlugin (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=79e7b587:180:9) @ http://localhost:3010/_nuxt/@vite/client:528
+[   12299ms] [WARNING] [NUXT_E1005] Error caught during app initialization.
+╰▶ fix: Check your plugins, `app:created`, and `app:beforeMount` hooks for unhandled errors. @ http://localhost:3010/_nuxt/@vite/client:528
+[   12300ms] [ERROR] [vite] SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:3010/_nuxt/@vite/client:388:15)
+    at HMRClient.send (http://localhost:3010/_nuxt/@vite/client:152:18)
+    at HMRContext.send (http://localhost:3010/_nuxt/@vite/client:114:18)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics_reporters_dev.js?v=37143f8f:11:86
+    at Object.handle [as NUXT_E1005] (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics.js?v=ecee4b89:134:38)
+    at Array.<anonymous> (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=79e7b587:108:19)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:33:48
+    at callHooks (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:33:30)
+    at serialTaskCaller (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:40:31)
+    at Hookable.callHookWith (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:164:18) @ http://localhost:3010/_nuxt/@vite/client:528
+[   12306ms] Failed to fetch dynamically imported module: http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxt/devtools/dist/runtime/plugins/view/client.js?v=79e7b587
+[   12307ms] [WARNING] [NUXT_E1005] Error caught during app initialization.
+╰▶ fix: Check your plugins, `app:created`, and `app:beforeMount` hooks for unhandled errors. @ http://localhost:3010/_nuxt/@vite/client:528
+[   12308ms] [ERROR] [vite] SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:3010/_nuxt/@vite/client:388:15)
+    at HMRClient.send (http://localhost:3010/_nuxt/@vite/client:152:18)
+    at HMRContext.send (http://localhost:3010/_nuxt/@vite/client:114:18)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics_reporters_dev.js?v=37143f8f:11:86
+    at Object.handle [as NUXT_E1005] (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics.js?v=ecee4b89:134:38)
+    at Array.<anonymous> (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/nuxt.js?v=79e7b587:108:19)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:33:48
+    at callHooks (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:33:30)
+    at serialTaskCaller (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:40:31)
+    at Hookable.callHookWith (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/hookable/dist/index.mjs?v=79e7b587:164:18) @ http://localhost:3010/_nuxt/@vite/client:528
+[   12311ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=79e7b587:6066
+[   12446ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/components/error-500.vue:0
+[   12453ms] Failed to fetch dynamically imported module: http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/components/error-500.vue
+[   12564ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://localhost:3010/_nuxt/@vite/client:528
+[   12598ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   12599ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   12600ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   12602ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   12606ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   12607ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   12608ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com https://comments.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   13457ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/builds/meta/dev.json:0
+[   13461ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3010/_nuxt/builds/meta/dev.json:0
+[   13462ms] [WARNING] [NUXT_E5002] Could not fetch the app manifest.
+╰▶ fix: Check that your server is running and the manifest endpoint is reachable. This may be a transient network issue. @ http://localhost:3010/_nuxt/@vite/client:528
+[   13462ms] [ERROR] [vite] SendBeforeConnectError: send was called before connect
+    at Object.send (http://localhost:3010/_nuxt/@vite/client:388:15)
+    at HMRClient.send (http://localhost:3010/_nuxt/@vite/client:152:18)
+    at HMRContext.send (http://localhost:3010/_nuxt/@vite/client:114:18)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics_reporters_dev.js?v=37143f8f:11:86
+    at Object.handle [as NUXT_E5002] (http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/search-frontend/node_modules/.cache/vite/client/deps/nostics.js?v=ecee4b89:134:38)
+    at http://localhost:3010/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/composables/manifest.js?v=79e7b587:26:23 @ http://localhost:3010/_nuxt/@vite/client:528

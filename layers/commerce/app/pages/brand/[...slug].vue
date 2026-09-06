@@ -13,7 +13,7 @@
                   <strong>{{ brand.name }}</strong>
                 </h4>
                 <p class="mbr-text mbr-fonts-style mb-4 display-7">{{ brand.code }}</p>
-                <p class="mbr-text mbr-fonts-style mb-4 display-7" v-html="brand.description"></p>
+                <p class="mbr-text mbr-fonts-style mb-4 display-7" v-dompurify-html="brand.description"></p>
 
               </div>
             </div>

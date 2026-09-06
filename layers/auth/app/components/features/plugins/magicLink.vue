@@ -31,7 +31,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
     import { ref } from "vue";
     import {
         authClient
@@ -39,11 +39,11 @@
 
     const email = ref("");
     const name = ref("");
-    const status = ref < "idle" | "sending" | "sent" | "error" > ("idle");
+    const status = ref<"idle" | "sending" | "sent" | "error">("idle");
     const errorMessage = ref("");
 
     async function sendMagicLink() {
-        status?.value = "sending";
+        status.value = "sending";
 
         const {
             error

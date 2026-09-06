@@ -37,7 +37,15 @@
 
 				<v-divider class="my-4" />
 
-				<div class="text-center text-caption">
+				<v-expansion-panels variant="accordion">
+					<v-expansion-panel title="Create a Bluesky / AT Protocol account instead">
+						<v-expansion-panel-text>
+							<AtprotoAuth mode="sign-up" />
+						</v-expansion-panel-text>
+					</v-expansion-panel>
+				</v-expansion-panels>
+
+				<div class="text-center text-caption mt-4">
 					Already have an account?
 					<NuxtLink to="/login" class="text-decoration-none font-weight-bold">
 						Sign In
@@ -65,6 +73,7 @@ import {
 import {
 	useToast
 } from '../composables/useSnackbar';
+import AtprotoAuth from '../components/features/plugins/atproto.vue'
 
 	const auth = useAuth();
 
@@ -77,7 +86,6 @@ import {
 
 	const router = useRouter();
 	const toast = useToast();
-	const runtimeConfig = useRuntimeConfig();
 
 	const firstName = ref("");
 	const lastName = ref("");
@@ -133,7 +141,9 @@ import {
 		}
 	};
 
+	// titleTemplate '%s - <site name>' is applied app-wide by nuxt.config —
+	// only the page part belongs here or the site name doubles.
 	useHead({
-		title: `Register - ${String(runtimeConfig.public?.siteName || runtimeConfig.public?.appName || 'Meeovi')}`,
+		title: 'Register',
 	});
 </script>

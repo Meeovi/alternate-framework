@@ -118,6 +118,6 @@
     })
 
     useHead({
-        title: 'Meeovi Radio',
+        title: 'Radio',
     })
 </script>

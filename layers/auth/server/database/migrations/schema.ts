@@ -2008,7 +2008,15 @@ export const cart = pgTable.withRLS("cart", {
 	dateUpdated: timestamp("date_updated", { withTimezone: true }),
 	sessionId: uuid("session_id"),
 	totalPrice: real("total_price"),
-	user: uuid().references(() => directusUsers.id, { onDelete: "set null" } ),
+	// Was `directusUsers.id` (Directus's own built-in admin/CMS accounts,
+	// 7 rows) — but every real caller (better-auth sessions, the app's
+	// actual customer accounts) uses `users.id` instead, a completely
+	// separate table. That mismatch made every cart insert for a signed-in
+	// user fail its FK constraint outright (confirmed live: `01a05e67-...`
+	// exists in `users`, not `directus_users`). Fixed here and via a
+	// matching migration against the live constraint — no existing cart
+	// row referenced a user yet (0 populated), so nothing to backfill.
+	user: uuid().references(() => users.id, { onDelete: "set null" } ),
 	status: varchar({ length: 255 }),
 	subtotal: integer(),
 	taxAmount: integer("tax_amount"),
@@ -6326,8 +6334,9 @@ export const users = pgTable.withRLS("users", {
 	isAnonymous: boolean("is_anonymous").default(false).notNull(),
 	name: text().notNull(),
 	emailVerified: boolean("email_verified").default(false).notNull(),
-	// Missing on the live table despite the stripe() plugin and
-	// deleteUser.beforeDelete both depending on it — see auth.ts.
+	// Added to the live table by migration
+	// 20260905120000_add_stripe_polar_customer_ids. Written server-side only
+	// (input:false in auth.ts) by the stripe()/polar() better-auth plugins.
 	stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
 	polarCustomerId: varchar("polar_customer_id", { length: 255 }),
 	// bigint, not varchar — matches the live column (added directly via
@@ -6337,6 +6346,14 @@ export const users = pgTable.withRLS("users", {
 	// constraint and offers to drop it.
 	magentoCustomerId: bigint("magento_customer_id", { mode: 'number' }).unique(),
 	locale: varchar({ length: 10 }),
+	// AT Protocol (Bluesky) identity — populated by the "atproto" better-auth
+	// plugin (@mframework/adapter-federation/auth/plugin) on sign-in via a
+	// user's PDS handle + app password. did is the durable, never-changing
+	// identifier (used to look the user up on repeat logins); handle is
+	// refreshed on every sign-in since it can change on the user's own PDS.
+	// See migration 20260901120000_add_atproto_identity.
+	atprotoDid: varchar("atproto_did", { length: 255 }).unique(),
+	atprotoHandle: varchar("atproto_handle", { length: 255 }).unique(),
 	// --- better-auth plugin fields below ---
 	twoFactorEnabled: boolean("two_factor_enabled").default(false),
 	username: text().unique(),
@@ -6354,6 +6371,31 @@ export const users = pgTable.withRLS("users", {
 	authBanExpires: timestamp("auth_ban_expires", { withTimezone: true }),
 }, (table) => [
 	unique("users_phone_key").on(table.phone),check("users_email_change_confirm_status_check", sql`((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2))`),]);
+
+// One resumable AT Protocol session per local user, keyed on users.id —
+// separate from the users.atprotoDid/atprotoHandle identity columns above
+// since this table holds live bearer credentials (accessJwt/refreshJwt),
+// not identity metadata. Populated by the "atproto" better-auth plugin's
+// onSessionEstablished hook (see layers/auth/shared/utils/plugins.ts) on
+// every sign-in, and refreshed in place whenever
+// layers/social/server/utils/atproto.ts resumes a session whose access
+// token has expired (AtpAgent's persistSession callback fires on refresh,
+// same as on initial login). See migration
+// 20260901130000_add_atproto_sessions.
+export const atprotoSessions = pgTable.withRLS("atproto_sessions", {
+	id: uuid().defaultRandom().primaryKey(),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+	did: varchar({ length: 255 }).notNull(),
+	handle: varchar({ length: 255 }).notNull(),
+	service: varchar({ length: 255 }).notNull(),
+	accessJwt: text("access_jwt").notNull(),
+	refreshJwt: text("refresh_jwt").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`).notNull(),
+}, (table) => [
+	unique("atproto_sessions_user_id_unique").on(table.userId),
+	unique("atproto_sessions_did_unique").on(table.did),
+]);
 
 export const variants = pgTable.withRLS("variants", {
 	id: serial().primaryKey(),

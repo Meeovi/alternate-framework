@@ -24,12 +24,18 @@ export interface UseNewsletterOptions {
 export function useNewsletter(options: UseNewsletterOptions = {}) {
   const publicConfig = useRuntimeConfig().public.meeoviNewsletter as NewsletterPublicRuntimeConfig | undefined
   const apiBase = (options.apiBase ?? publicConfig?.apiBase ?? '/api/newsletter').replace(/\/+$/, '')
+  const turnstileEnabled = publicConfig?.turnstile?.enabled ?? false
 
   const email = ref('')
   const firstName = ref('')
   const lastName = ref('')
   const status = ref<NewsletterStatus>('idle')
   const message = ref('')
+  // Honeypot: a real visitor never sees or fills this field (the component
+  // keeps it visually hidden); a bot filling every field usually does.
+  const honeypot = ref('')
+  // Populated by <MeeoviNewsletter>'s Turnstile widget when enabled.
+  const turnstileToken = ref('')
 
   const pending = computed(() => status.value === 'loading')
   const succeeded = computed(() => status.value === 'success')
@@ -40,6 +46,8 @@ export function useNewsletter(options: UseNewsletterOptions = {}) {
     email.value = ''
     firstName.value = ''
     lastName.value = ''
+    honeypot.value = ''
+    turnstileToken.value = ''
   }
 
   async function subscribe(
@@ -57,6 +65,8 @@ export function useNewsletter(options: UseNewsletterOptions = {}) {
           firstName: firstName.value || undefined,
           lastName: lastName.value || undefined,
           source: options.source,
+          honeypot: honeypot.value || undefined,
+          turnstileToken: turnstileToken.value || undefined,
           ...extra,
         },
       })
@@ -91,6 +101,9 @@ export function useNewsletter(options: UseNewsletterOptions = {}) {
     message,
     pending,
     succeeded,
+    honeypot,
+    turnstileToken,
+    turnstileEnabled,
     subscribe,
     reset,
   }

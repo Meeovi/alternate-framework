@@ -1,0 +1,61 @@
+- generic [active] [ref=f82e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f82e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f82e9]: Open accessibility menu
+  - main [ref=f82e16]:
+    - generic [ref=f82e18]:
+      - tablist [ref=f82e23]:
+        - generic [ref=f82e25]:
+          - tab [ref=f82e26] [cursor=pointer]
+          - tab [ref=f82e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=f82e38]
+      - generic [ref=f82e41]:
+        - generic [ref=f82e45]:
+          - heading "Meeovi News" [level=3] [ref=f82e48]
+          - generic [ref=f82e49]:
+            - button "Public Space" [ref=f82e50] [cursor=pointer]
+            - 'button "Members: 0" [ref=f82e52] [cursor=pointer]'
+            - generic [ref=f82e55]:
+              - button "Add to list" [ref=f82e56] [cursor=pointer]:
+                - generic [ref=f82e61]: Add to List
+              - navigation [ref=f82e62]:
+                - generic [ref=f82e63]:
+                  - generic [ref=f82e64]:
+                    - generic [ref=f82e65]: Add to List
+                    - button [ref=f82e66] [cursor=pointer]
+                  - separator
+                  - generic [ref=f82e71]: Meeovi News
+                  - separator
+                  - generic [ref=f82e79]:
+                    - generic [ref=f82e80]:
+                      - generic: Create a new list
+                      - textbox "Create a new list" [ref=f82e81]:
+                        - /placeholder: e.g. Birthday ideas
+                    - button "Create a new list appended action" [ref=f82e83] [cursor=pointer]
+                  - separator
+                  - alert [ref=f82e87]:
+                    - generic [ref=f82e92]: You don't have any lists yet — create one above.
+        - tablist [ref=f82e94]:
+          - generic [ref=f82e96]:
+            - tab "Discussion" [ref=f82e98] [cursor=pointer]
+            - tab "About" [ref=f82e101] [cursor=pointer]
+            - tab "Members" [ref=f82e104] [cursor=pointer]
+            - tab "Media" [ref=f82e107] [cursor=pointer]
+            - tab "Products" [ref=f82e110] [cursor=pointer]
+            - tab "Lists" [ref=f82e113] [cursor=pointer]
+            - tab "Settings" [ref=f82e116] [cursor=pointer]
+    - generic [ref=f82e120]:
+      - link "About Meeovi" [ref=f82e122] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=f82e125] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=f82e128] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=f82e131] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=f82e134] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=f82e137]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=f82e138] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.

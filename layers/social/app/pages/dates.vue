@@ -335,7 +335,7 @@
     const dateBarName = computed(() => dateBar.value?.name)
 
     useHead({
-        title: () => dateBar.value?.name || 'Meeovi Dates'
+        title: () => dateBar.value?.name || 'Dates'
     })
 </script>
 

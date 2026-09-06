@@ -1,0 +1,430 @@
+- generic [ref=f117e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f117e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f117e9]: Open accessibility menu
+  - generic [ref=f117e13]:
+    - main [ref=f117e16]:
+      - generic [ref=f117e17]:
+        - navigation [ref=f117e18]:
+          - generic [ref=f117e20]:
+            - link "Sign In" [ref=f117e23] [cursor=pointer]:
+              - /url: /login
+            - list [ref=f117e25]:
+              - generic [ref=f117e26]:
+                - heading "Trending" [level=5] [ref=f117e27]
+                - list [ref=f117e28]:
+                  - link "Exclusives" [ref=f117e29] [cursor=pointer]:
+                    - /url: /departments/exclusives
+                - list [ref=f117e36]:
+                  - link "Deals" [ref=f117e37] [cursor=pointer]:
+                    - /url: /departments/Deals
+                - list [ref=f117e44]:
+                  - link "Showcases" [ref=f117e45] [cursor=pointer]:
+                    - /url: /product/showcases/
+                - list [ref=f117e52]:
+                  - link "Find Creators" [ref=f117e53] [cursor=pointer]:
+                    - /url: /connect/members
+              - separator [ref=f117e60]
+              - button [ref=f117e65] [cursor=pointer]
+              - separator [ref=f117e71]
+              - button [ref=f117e76] [cursor=pointer]
+              - separator [ref=f117e82]
+              - button [ref=f117e87] [cursor=pointer]
+              - separator [ref=f117e93]
+              - generic [ref=f117e94]:
+                - heading "Browse Meeovi" [level=5] [ref=f117e95]
+                - list [ref=f117e96]
+                - list [ref=f117e97]:
+                  - link "Lists" [ref=f117e98] [cursor=pointer]:
+                    - /url: /lists
+                - list [ref=f117e105]:
+                  - link "Collaborrate" [ref=f117e106] [cursor=pointer]:
+                    - /url: /messages
+                - list [ref=f117e113]:
+                  - link "Shops" [ref=f117e114] [cursor=pointer]:
+                    - /url: /outlets
+                - list [ref=f117e121]:
+                  - link "Media Center" [ref=f117e122] [cursor=pointer]:
+                    - /url: /media-center
+                - list [ref=f117e129]:
+                  - link "Showcases" [ref=f117e130] [cursor=pointer]:
+                    - /url: /showcases
+                - list [ref=f117e137]:
+                  - link "Appstore" [ref=f117e138] [cursor=pointer]:
+                    - /url: /departments/appstore
+                - list [ref=f117e145]:
+                  - link "Account" [ref=f117e146] [cursor=pointer]:
+                    - /url: /u/
+              - separator [ref=f117e153]
+              - generic [ref=f117e155]:
+                - link "Browse Meeovi" [ref=f117e157] [cursor=pointer]:
+                  - /url: /connect/space/meeovi-help
+                - link "Browse Meeovi" [ref=f117e164] [cursor=pointer]:
+                  - /url: /notifications
+                - button [ref=f117e171] [cursor=pointer]
+        - generic [ref=f117e177]:
+          - tablist [ref=f117e182]:
+            - generic [ref=f117e184]:
+              - tab [ref=f117e185] [cursor=pointer]
+              - tab [ref=f117e192] [cursor=pointer]:
+                - img "Paris Snack Video" [ref=f117e197]
+          - generic [ref=f117e201]:
+            - generic [ref=f117e208]:
+              - img "Sample Product" [ref=f117e212]
+              - list [ref=f117e215]:
+                - listitem [ref=f117e216]:
+                  - heading [level=1] [ref=f117e218]:
+                    - strong [ref=f117e219]: Sample Product
+                - listitem [ref=f117e220]:
+                  - generic [ref=f117e222]:
+                    - text: "By:"
+                    - strong [ref=f117e223]: Unknown
+                - listitem [ref=f117e224]:
+                  - generic [ref=f117e225]: $19.99
+                - listitem [ref=f117e228]:
+                  - generic [ref=f117e230]:
+                    - generic [ref=f117e231]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f117e233]:
+                        - generic [ref=f117e234] [cursor=pointer]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f117e235]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f117e241]:
+                        - generic [ref=f117e242] [cursor=pointer]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f117e243]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f117e249]:
+                        - generic [ref=f117e250] [cursor=pointer]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f117e251]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f117e257]:
+                        - generic [ref=f117e258] [cursor=pointer]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f117e259]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f117e265]:
+                        - generic [ref=f117e266] [cursor=pointer]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f117e267]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5 reviews" [ref=f117e272] [cursor=pointer]:
+                      - /url: /product/15#commentsSection
+                - listitem [ref=f117e273]:
+                  - listitem [ref=f117e276]:
+                    - generic [ref=f117e279]:
+                      - button "Decrease value" [disabled]
+                      - generic [ref=f117e280]:
+                        - spinbutton [ref=f117e284]: "1"
+                        - alert [ref=f117e285]:
+                          - generic [ref=f117e286]: 10000 in stock
+                      - button "Increase value" [ref=f117e288] [cursor=pointer]
+                - listitem [ref=f117e293]:
+                  - generic [ref=f117e295]:
+                    - listitem [ref=f117e296]:
+                      - button "Add to Cart" [active] [ref=f117e300] [cursor=pointer]
+                    - listitem [ref=f117e306]:
+                      - button "Add to Compare" [ref=f117e310] [cursor=pointer]
+                - listitem [ref=f117e316]:
+                  - generic [ref=f117e318]:
+                    - listitem [ref=f117e319]:
+                      - generic [ref=f117e322]:
+                        - button "Add to list" [ref=f117e323] [cursor=pointer]:
+                          - generic [ref=f117e328]: Add to List
+                        - navigation [ref=f117e329]:
+                          - generic [ref=f117e330]:
+                            - generic [ref=f117e331]:
+                              - generic [ref=f117e332]: Add to List
+                              - button [ref=f117e333] [cursor=pointer]
+                            - separator [ref=f117e338]
+                            - generic [ref=f117e341]:
+                              - generic [ref=f117e342]: Sample Product
+                              - generic [ref=f117e343]: $19.99
+                            - separator [ref=f117e344]
+                            - generic [ref=f117e349]:
+                              - generic [ref=f117e350]:
+                                - generic: Create a new list
+                                - textbox "Create a new list" [ref=f117e351]:
+                                  - /placeholder: e.g. Birthday ideas
+                              - button "Create a new list appended action" [ref=f117e353] [cursor=pointer]
+                            - separator [ref=f117e356]
+                            - alert [ref=f117e358]:
+                              - generic [ref=f117e363]: You don't have any lists yet — create one above.
+                    - listitem [ref=f117e364]
+                - listitem [ref=f117e365]:
+                  - generic [ref=f117e367]:
+                    - paragraph [ref=f117e368]:
+                      - strong [ref=f117e369]: "Tags:"
+                    - link "#" [ref=f117e372] [cursor=pointer]:
+                      - /url: /connect/hashtag/undefined
+                    - paragraph
+            - tablist [ref=f117e376]:
+              - generic [ref=f117e378]:
+                - tab "Description" [ref=f117e380] [cursor=pointer]
+                - tab "Reviews" [ref=f117e383] [cursor=pointer]
+                - tab "Product Details" [ref=f117e386] [cursor=pointer]
+            - generic [ref=f117e389]:
+              - generic [ref=f117e390]:
+                - heading "This product goes great together with..." [level=4] [ref=f117e391]
+                - generic [ref=f117e396] [cursor=pointer]:
+                  - generic [ref=f117e397]:
+                    - link [ref=f117e398]:
+                      - /url: /product/undefined
+                    - button "Add to wishlist" [ref=f117e400]
+                  - generic [ref=f117e405]:
+                    - link:
+                      - /url: /product/undefined
+                    - generic [ref=f117e406]:
+                      - generic [ref=f117e407]:
+                        - generic: Rating 0 of 5
+                        - radio "Rating 0 of 5" [checked]
+                        - generic [ref=f117e409]:
+                          - generic [ref=f117e410]:
+                            - generic: Rating 1 of 5
+                            - button "Rating 1 of 5" [ref=f117e411]
+                          - radio "Rating 1 of 5 Rating 1 of 5"
+                        - generic [ref=f117e417]:
+                          - generic [ref=f117e418]:
+                            - generic: Rating 2 of 5
+                            - button "Rating 2 of 5" [ref=f117e419]
+                          - radio "Rating 2 of 5 Rating 2 of 5"
+                        - generic [ref=f117e425]:
+                          - generic [ref=f117e426]:
+                            - generic: Rating 3 of 5
+                            - button "Rating 3 of 5" [ref=f117e427]
+                          - radio "Rating 3 of 5 Rating 3 of 5"
+                        - generic [ref=f117e433]:
+                          - generic [ref=f117e434]:
+                            - generic: Rating 4 of 5
+                            - button "Rating 4 of 5" [ref=f117e435]
+                          - radio "Rating 4 of 5 Rating 4 of 5"
+                        - generic [ref=f117e441]:
+                          - generic [ref=f117e442]:
+                            - generic: Rating 5 of 5
+                            - button "Rating 5 of 5" [ref=f117e443]
+                          - radio "Rating 5 of 5 Rating 5 of 5"
+                      - link [ref=f117e448]:
+                        - /url: /product/undefined
+                    - paragraph [ref=f117e449]: "By:"
+              - generic [ref=f117e451]:
+                - heading "Related Products" [level=4] [ref=f117e452]
+                - generic [ref=f117e458] [cursor=pointer]:
+                  - generic [ref=f117e459]:
+                    - link [ref=f117e460]:
+                      - /url: /product/undefined
+                    - button "Add to wishlist" [ref=f117e462]
+                  - generic [ref=f117e467]:
+                    - link:
+                      - /url: /product/undefined
+                    - generic [ref=f117e468]:
+                      - generic [ref=f117e469]:
+                        - generic: Rating 0 of 5
+                        - radio "Rating 0 of 5" [checked]
+                        - generic [ref=f117e471]:
+                          - generic [ref=f117e472]:
+                            - generic: Rating 1 of 5
+                            - button "Rating 1 of 5" [ref=f117e473]
+                          - radio "Rating 1 of 5 Rating 1 of 5"
+                        - generic [ref=f117e479]:
+                          - generic [ref=f117e480]:
+                            - generic: Rating 2 of 5
+                            - button "Rating 2 of 5" [ref=f117e481]
+                          - radio "Rating 2 of 5 Rating 2 of 5"
+                        - generic [ref=f117e487]:
+                          - generic [ref=f117e488]:
+                            - generic: Rating 3 of 5
+                            - button "Rating 3 of 5" [ref=f117e489]
+                          - radio "Rating 3 of 5 Rating 3 of 5"
+                        - generic [ref=f117e495]:
+                          - generic [ref=f117e496]:
+                            - generic: Rating 4 of 5
+                            - button "Rating 4 of 5" [ref=f117e497]
+                          - radio "Rating 4 of 5 Rating 4 of 5"
+                        - generic [ref=f117e503]:
+                          - generic [ref=f117e504]:
+                            - generic: Rating 5 of 5
+                            - button "Rating 5 of 5" [ref=f117e505]
+                          - radio "Rating 5 of 5 Rating 5 of 5"
+                      - link [ref=f117e510]:
+                        - /url: /product/undefined
+                    - paragraph [ref=f117e511]: "By:"
+              - generic [ref=f117e513]:
+                - heading "Product featured in these Shops" [level=4] [ref=f117e514]
+                - paragraph [ref=f117e516]: Not featured in any shops.
+              - generic [ref=f117e517]:
+                - heading "Product featured in these Vibez" [level=4] [ref=f117e518]
+                - paragraph [ref=f117e520]: Not featured in any shorts.
+              - generic [ref=f117e521]:
+                - heading "Product featured in these Spaces" [level=4] [ref=f117e522]
+                - generic [ref=f117e526]:
+                  - generic [ref=f117e528]:
+                    - img "Mental Health Awareness" [ref=f117e529]
+                    - generic [ref=f117e530]: "Created: 8/27/2024"
+                    - generic [ref=f117e531]: This is a place to discuss and engage with others on the topic of Mental Health Awareness.
+                  - generic [ref=f117e534]:
+                    - img "Meeovi Talks" [ref=f117e535]
+                    - generic [ref=f117e536]: "Created: 8/27/2024"
+                    - generic [ref=f117e537]: Talk about all things Meeovi in this collaborative space.
+                  - generic [ref=f117e540]:
+                    - img "The Rant" [ref=f117e541]
+                    - generic [ref=f117e542]: "Created: 8/27/2024"
+                    - generic [ref=f117e543]: Get it off your chest, speak it loud, speak it clearly, then move on. A great space for venting until its out.
+                  - generic [ref=f117e546]:
+                    - img "Audiobuffs" [ref=f117e547]
+                    - generic [ref=f117e548]: "Created: 11/27/2024"
+                    - generic [ref=f117e549]: A space for those that love different sounds.
+                  - generic [ref=f117e552]:
+                    - img "Music Lovers" [ref=f117e553]
+                    - generic [ref=f117e554]: "Created: 11/27/2024"
+                    - generic [ref=f117e555]: A space for those who love music.
+                  - generic [ref=f117e558]:
+                    - img "Rapper's Central" [ref=f117e559]
+                    - generic [ref=f117e560]: "Created: 11/27/2024"
+                    - generic [ref=f117e561]: A space for rappers to gather and interact with one another.
+                  - generic [ref=f117e564]:
+                    - img "Game Stream" [ref=f117e565]
+                    - generic [ref=f117e566]: "Created: 11/27/2024"
+                    - generic [ref=f117e567]: A space for those that love all types of games.
+                  - generic [ref=f117e570]:
+                    - img "Weird Wall" [ref=f117e571]
+                    - generic [ref=f117e572]: "Created: 11/27/2024"
+                    - generic [ref=f117e573]: For all things weird in the world.
+                  - generic [ref=f117e576]:
+                    - img "Video Variants" [ref=f117e577]
+                    - generic [ref=f117e578]: "Created: 11/27/2024"
+                    - generic [ref=f117e579]: A space about popular videos on Meeovi.com.
+                  - generic [ref=f117e582]:
+                    - img "Movie Reviews" [ref=f117e583]
+                    - generic [ref=f117e584]: "Created: 11/27/2024"
+                    - generic [ref=f117e585]: Reviews about movies across Meeovi.com
+                  - generic [ref=f117e588]:
+                    - img "Professional Space" [ref=f117e589]
+                    - generic [ref=f117e590]: "Created: 11/27/2024"
+                    - generic [ref=f117e591]: Professional to Professional inspired space where individuals can explore similar interests for people in their field of work.
+                  - generic [ref=f117e594]:
+                    - img "Designer's Corner" [ref=f117e595]
+                    - generic [ref=f117e596]: "Created: 11/27/2024"
+                    - generic [ref=f117e597]: A space for people to provide style guides, advice, and tips.
+                  - generic [ref=f117e600]:
+                    - img "Influencers Network" [ref=f117e601]
+                    - generic [ref=f117e602]: "Created: 11/27/2024"
+                    - generic [ref=f117e603]: A space for influencers to connect and find their audience.
+                  - generic [ref=f117e606]:
+                    - img "Meeovi Trains" [ref=f117e607]
+                    - generic [ref=f117e608]: "Created: 11/27/2024"
+                    - generic [ref=f117e609]: A space for those of us that loves trains, transit systems, locomotives, etc.
+                  - generic [ref=f117e612]:
+                    - img "Meeovi Ask" [ref=f117e613]
+                    - generic [ref=f117e614]: "Created: 11/27/2024"
+                    - generic [ref=f117e615]: A community for asking and responding to questions. Think of this space like Reddit, Quora, or even Stackoverflow. No question is dumb so ask away.
+                  - generic [ref=f117e618]:
+                    - img "Elite Novels Official Space" [ref=f117e619]
+                    - generic [ref=f117e620]: "Created: 11/27/2024"
+                    - generic [ref=f117e621]: Elite Novels Official Space. This is space is a place to discuss about the Elite Novels universe of over 7000 characters, places, items, and stories.
+      - generic [ref=f117e623]:
+        - button "Post to Social Feed" [ref=f117e625] [cursor=pointer]
+        - generic [ref=f117e636]:
+          - strong [ref=f117e637]:
+            - heading "Yes! Send me exclusive offers, unique gift ideas, and personalised tips for shopping and selling on Meeovi." [level=5] [ref=f117e638]
+          - generic [ref=f117e639]:
+            - textbox [aria-hidden]
+            - generic [ref=f117e643]:
+              - generic: Add Email to Subscribe
+              - textbox "Add Email to Subscribe" [ref=f117e644]
+            - button "Subscribe" [ref=f117e649] [cursor=pointer]
+        - link "Back to Top" [ref=f117e651] [cursor=pointer]:
+          - /url: "#mainSection"
+        - generic [ref=f117e659]:
+          - generic [ref=f117e660]:
+            - heading [level=2] [ref=f117e661]:
+              - strong [ref=f117e662]: Meeovi
+            - heading [level=3] [ref=f117e664]:
+              - link "About Us" [ref=f117e665] [cursor=pointer]:
+                - /url: /about-us
+            - heading [level=3] [ref=f117e667]:
+              - link "Buyers" [ref=f117e668] [cursor=pointer]:
+                - /url: /buyers
+            - heading [level=3] [ref=f117e670]:
+              - link "Diversity and Inclusion" [ref=f117e671] [cursor=pointer]:
+                - /url: /diversity-and-inclusion
+            - heading [level=3] [ref=f117e673]:
+              - link "Licenses" [ref=f117e674] [cursor=pointer]:
+                - /url: /licenses
+            - heading [level=3] [ref=f117e676]:
+              - link "Careers" [ref=f117e677] [cursor=pointer]:
+                - /url: /careers
+            - heading [level=3] [ref=f117e679]:
+              - link "Sellers" [ref=f117e680] [cursor=pointer]:
+                - /url: /sellers
+            - heading [level=3] [ref=f117e682]:
+              - link "Applications" [ref=f117e683] [cursor=pointer]:
+                - /url: /applications
+          - generic [ref=f117e684]:
+            - heading [level=2] [ref=f117e685]:
+              - strong [ref=f117e686]: Help
+            - heading [level=3] [ref=f117e688]:
+              - link "Accessibility" [ref=f117e689] [cursor=pointer]:
+                - /url: /accessibility
+            - heading [level=3] [ref=f117e691]:
+              - link "Terms and Conditions" [ref=f117e692] [cursor=pointer]:
+                - /url: /terms
+            - heading [level=3] [ref=f117e694]:
+              - link "Privacy Policies" [ref=f117e695] [cursor=pointer]:
+                - /url: /privacy-policies
+            - heading [level=3] [ref=f117e697]:
+              - link "Return Policies" [ref=f117e698] [cursor=pointer]:
+                - /url: /return-policies
+            - heading [level=3] [ref=f117e700]:
+              - link "Payments" [ref=f117e701] [cursor=pointer]:
+                - /url: /payments
+            - heading [level=3] [ref=f117e703]:
+              - link "Allowed Products" [ref=f117e704] [cursor=pointer]:
+                - /url: /allowed-products
+            - heading [level=3] [ref=f117e706]:
+              - link "Imprint" [ref=f117e707] [cursor=pointer]:
+                - /url: /imprint
+          - generic [ref=f117e708]:
+            - heading [level=2] [ref=f117e709]:
+              - strong [ref=f117e710]: Meeovi Outlets
+            - heading [level=3] [ref=f117e712]:
+              - link "Pixanomy" [ref=f117e713] [cursor=pointer]:
+                - /url: /departments/pixanomy
+            - heading [level=3] [ref=f117e715]:
+              - link "Shopncute" [ref=f117e716] [cursor=pointer]:
+                - /url: /departments/shopncute
+            - heading [level=3] [ref=f117e718]:
+              - link "Shopnbold" [ref=f117e719] [cursor=pointer]:
+                - /url: /departments/shopnbold
+            - heading [level=3] [ref=f117e721]:
+              - link "Elite Novels" [ref=f117e722] [cursor=pointer]:
+                - /url: /departments/elite-novels
+            - heading [level=3] [ref=f117e724]:
+              - link "Showyourweird" [ref=f117e725] [cursor=pointer]:
+                - /url: /departments/showyourweird
+        - generic [ref=f117e728]:
+          - link "Customer Service" [ref=f117e730] [cursor=pointer]:
+            - /url: /customer-service
+          - link "Pickup Locations" [ref=f117e733] [cursor=pointer]:
+            - /url: /pickup-locations
+          - link "Meeovi Global" [ref=f117e736] [cursor=pointer]:
+            - /url: /meeovi-global
+          - paragraph [ref=f117e739]:
+            - text: "@ 2017 - 2026"
+            - link "Meeovi" [ref=f117e740] [cursor=pointer]:
+              - /url: /
+            - text: All Rights Reserved.
+    - banner [ref=f117e742]:
+      - generic [ref=f117e743]:
+        - link "Home" [ref=f117e744] [cursor=pointer]:
+          - /url: /
+        - link "You" [ref=f117e750] [cursor=pointer]:
+          - /url: /u/
+        - button [ref=f117e758] [cursor=pointer]
+        - link "Basket" [ref=f117e763] [cursor=pointer]:
+          - /url: /checkout
+        - link "Browse" [ref=f117e769] [cursor=pointer]:
+          - /url: /menu-page/
+        - link "Notifications" [ref=f117e775] [cursor=pointer]:
+          - /url: /notifications

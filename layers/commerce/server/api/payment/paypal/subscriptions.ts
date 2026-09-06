@@ -5,6 +5,7 @@ import {
   reactivatePayPalSubscription,
   cancelPayPalSubscription,
 } from '../../../utils/paypal'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 const createSchema = Joi.object({
   planId: Joi.string().required(),
@@ -19,6 +20,8 @@ const manageSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
+  await requireAuth(event)
+
   try {
     const method = event.node.req.method
 

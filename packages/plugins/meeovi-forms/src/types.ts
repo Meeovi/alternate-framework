@@ -32,6 +32,9 @@ export interface DirectusField {
     options?: Record<string, unknown>
     validation?: Record<string, any>
     validation_message?: string
+    // Directus's own marker for relational columns (m2o/o2m/m2m/m2a/
+    // translations/files) — see utils/directusFields.ts's isRelationalField.
+    special?: string[]
   }
 }
 

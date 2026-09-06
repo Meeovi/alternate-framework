@@ -5,6 +5,7 @@ import {
   listPayPalPaymentTokens,
   deletePayPalPaymentToken,
 } from '../../../utils/paypal'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 // PayPal's real Payment Method Tokens API (v3) vaults a payment method in
 // two steps: create a setup token (POST), then — once the payer has
@@ -29,6 +30,8 @@ const deleteTokenSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
+  await requireAuth(event)
+
   try {
     const method = event.node.req.method
 

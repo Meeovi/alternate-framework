@@ -9,13 +9,13 @@
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
-    "ignoreDeprecations": "6.0",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "types": ["node", "vite/client"],
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
     "paths": {
       "@mframework/meeovi-forms/*": [
         "src/*"

@@ -1,10 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-const { getDefaultAdapter } = vi.hoisted(() => ({ getDefaultAdapter: vi.fn() }))
+const { getDefaultAdapter, requireAuth } = vi.hoisted(() => ({
+  getDefaultAdapter: vi.fn(),
+  requireAuth: vi.fn(),
+}))
 
 vi.mock('alternate-sdk', () => ({
   ContentAdapterRegistry: { getDefaultAdapter },
 }))
+
+// The write routes (media.post, media-folders.post) gate on an authenticated
+// session before touching the adapter.
+vi.mock('#auth/server/utils/sessions', () => ({ requireAuth }))
 
 // h3's real defineEventHandler/createError wrap Nitro-specific request
 // machinery this suite doesn't have — these routes only need the identity
@@ -59,6 +66,12 @@ describe('server/api/content/* routes', () => {
   })
 
   describe('media.post', () => {
+    it('rejects an unauthenticated request before touching the adapter', async () => {
+      requireAuth.mockRejectedValueOnce(Object.assign(new Error('Unauthorized'), { statusCode: 401 }))
+      await expect(mediaPost({} as any)).rejects.toMatchObject({ statusCode: 401 })
+      expect(getDefaultAdapter).not.toHaveBeenCalled()
+    })
+
     it('returns 501 when no content backend is registered', async () => {
       getDefaultAdapter.mockReturnValue(undefined)
       await expect(mediaPost({} as any)).rejects.toMatchObject({ statusCode: 501 })
@@ -93,6 +106,12 @@ describe('server/api/content/* routes', () => {
   })
 
   describe('media-folders.post', () => {
+    it('rejects an unauthenticated request before touching the adapter', async () => {
+      requireAuth.mockRejectedValueOnce(Object.assign(new Error('Unauthorized'), { statusCode: 401 }))
+      await expect(mediaFoldersPost({} as any)).rejects.toMatchObject({ statusCode: 401 })
+      expect(getDefaultAdapter).not.toHaveBeenCalled()
+    })
+
     it('returns 501 when no content backend is registered', async () => {
       getDefaultAdapter.mockReturnValue(undefined)
       await expect(mediaFoldersPost({} as any)).rejects.toMatchObject({ statusCode: 501 })

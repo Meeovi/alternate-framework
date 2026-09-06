@@ -72,6 +72,12 @@ export function registerListItemField(field: string) {
 }
 
 /**
+ * Kinds of item a list can save via SAVED ITEMS below (lists <-> products/
+ * spaces/vibez). Keep in sync with server/utils/listItemKinds.ts.
+ */
+export type SavedListItemKind = 'product' | 'space' | 'vibe'
+
+/**
  * Main composable
  */
 export function useLists() {
@@ -137,6 +143,35 @@ export function useLists() {
 
   const deleteList = async (id: string | number) => {
     return await $fetch<any>(`/api/social/lists/${id}`, { method: 'DELETE' }) || null
+  }
+
+  // -----------------------------
+  // SAVED ITEMS (lists <-> products/spaces/vibez, each via their own
+  // junction table — see server/api/social/list-saved/* and
+  // server/utils/listItemKinds.ts for the full kind registry). Distinct
+  // from LIST ITEMS below, which are todo-style entries (title/status/
+  // dueDate) and have no columns for any of these.
+  // -----------------------------
+
+  const getListsContainingItem = async (kind: SavedListItemKind, itemId: string | number) => {
+    const result = await $fetch<Array<string | number>>('/api/social/list-saved', {
+      query: { kind, itemId },
+    })
+    return Array.isArray(result) ? result : []
+  }
+
+  const addItemToList = async (kind: SavedListItemKind, listId: string | number, itemId: string | number) => {
+    return await $fetch<any>('/api/social/list-saved', {
+      method: 'POST',
+      body: { kind, listId, itemId },
+    }) || null
+  }
+
+  const removeItemFromList = async (kind: SavedListItemKind, listId: string | number, itemId: string | number) => {
+    return await $fetch<any>('/api/social/list-saved', {
+      method: 'DELETE',
+      body: { kind, listId, itemId },
+    }) || null
   }
 
   // -----------------------------
@@ -268,6 +303,11 @@ export function useLists() {
     createList,
     updateList,
     deleteList,
+
+    // saved items
+    getListsContainingItem,
+    addItemToList,
+    removeItemFromList,
 
     // items
     addItem,

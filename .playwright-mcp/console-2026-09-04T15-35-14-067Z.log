@@ -1,0 +1,579 @@
+[    6490ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchE4Xx7fzNs0OIyL2hht3vqalpiNnA3Hu7lnIeigsrmY0-1788536109-1.3.1.1-8Yq5YxGo86qk10recY3TITLCD5mKK7fIxUCpAIlQMIU/rhnbc/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[    6690ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e10400d27c4c7/GN9lqHNcB_tgMY4CvEILpWOIujcoIaU7NxZZDP9Xd5o-1788536120-1.2.1.1-hde7w_8WtQRG7TNZlb8zMTocZOrD5UsXHVWlQC7VgY8CddpS5TLIkGLpsV_SKb64:0
+[    6772ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   13697ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13698ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13698ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13701ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13716ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13717ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13719ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13720ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13733ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13734ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13735ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13736ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13738ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13742ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13743ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   13744ms] [WARNING] Invalid original font size for element: JSHandle@node @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   22703ms] [LOG] %cssr:success%c Vite server hmr 96 files 
+      background: #2ecc71;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      in 1.81ms 
+  at vite_node_entry_default (/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs)
+  at process.processTicksAndRejections (node:internal/process/task_queues)
+  at async Object.renderToString (/home/meebuzo/github/alternate-framework/node_modules/vue-bundle-renderer/dist/runtime.mjs)
+ @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=4790ac70:47
+[   23666ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   23754ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   24744ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=false defaults= {VIcon: Object} > 
+  at <VBtn href="/" icon="fas fa-home" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24749ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/u/" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24753ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/checkout" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24757ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/menu-page/" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24760ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/notifications" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   24780ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   25507ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   25640ms] [ERROR] Hydration completed but contains mismatches. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   25930ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   26403ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   26829ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Commerce driver is not configured on the server) @ http://127.0.0.1:3002/api/commerce/driver:0
+[   28910ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[   30879ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   31537ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   31539ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   31540ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   31542ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   31637ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   31638ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   31647ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   33789ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   33966ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e10ea29fbc4c7/L1pGvzpsP1Uz7hz_yIhXUPwyCbePiHn26jlk7cOnMwI-1788536147-1.2.1.1-tq2u6ECF3C7U3TW9ytP7DZXnrFSvP5l5SJ6bcIrud.sm4vDgc8VudhCp2HlxaiP0:0
+[   34009ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   34010ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   34023ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   35383ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   35383ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[   44383ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchGFyX8WX1GbVLcz50wSxZ8.i2.hzj.k8oRn6br8BUKR4-1788536147-1.3.1.1-8lplTO6A_wccBScgIbSs7kq.ecAv5j7oved7De.vkHk/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   44568ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e112c4919c4c7/i1Pp3C1jlYqB0LDl1b1eD7UGfwI7J05Tw4eTrCdbahQ-1788536158-1.2.1.1-R3Frs8pM323G9B19pHHgztuI7EOhSzpNsjQDgbaJlvurXBh8qoiXoUGw3ycrsSa6:0
+[   44604ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   54879ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch2NFMlKRkHhpfHYUh2nM8UF4wljwKOx0bBl4JH5ZM6Ug-1788536158-1.3.1.1-bISss4NoT9U6bxZx03OXggBzcYJBqMtX5PTCtZ69n6M/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   55062ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e116e68aec4c7/Vt2_3qXhQIGosY3Z2W.11SvuHNf.VYikwnqUh4EHr9Q-1788536168-1.2.1.1-fgj3Pj6IGPYpGvojtz3NmmZH6WYoh0HkmQSX8QWerlFa7.iEfVxD77MxFIOd_7oq:0
+[   55110ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   65348ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchizRj.3VWQZumxU.h1s5ESGObf8N3gr2Y_XDPda.Gjys-1788536168-1.3.1.1-CGd6YueQ0rRVNDR_Krz_6ZctIIH4sbLXkBQHXu_9UVA/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   65572ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e11aff862c4c7/04l6Jhc6DxKFN2R_i8qgMI8d2X3Bs.PU2KFpwRLCn.0-1788536179-1.2.1.1-6u7nw.VhDeJkHAQUr82HC5NAinzVkeLPczKexoh8Fu07FeWMPF218WUa6nO8gqWq:0
+[   65602ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   75860ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchX5VwLydUJu9SoPBXRhfl54b797TZyDjJW27erQTyrTU-1788536179-1.3.1.1-0Ykck2WeF0.92AIz53iVN7mEhqwzh09nu02dZfHlVrY/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   76051ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e11f198c1c4c7/_6AQNWeVtQpZRUGESBTFpIly9Zl.KZARZNoC.WwHFq0-1788536189-1.2.1.1-cX2UoBYZvs0zdMX.tJA.qFtcx6iHOuIpmbeNG8LJigh2dkwApNtwVFG2Ab4c03cs:0
+[   76082ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   86389ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchUihp8hazyaizZnMc2IbLCCUeKvLh4kiCCtca7bXzx.g-1788536189-1.3.1.1-T74ra.6dzR1Nwgc_cifScFp0Wl9c5mDPxx0FXYc4lDI/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   86571ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e12331cb7c4c7/BZ8vPtx5zvA_UVR.CK4fYETlb_3bhjSHrXLQfEB0RcI-1788536200-1.2.1.1-UbXKMqgjOS4PUC0lHzoKsLXMn8AkJcE21vEPdujK9c.gtSfeShoXaMI1XqStDq5N:0
+[   86609ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[   96862ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchx4sq1BfUeUjM_6RyAG0jjKq0VnMAvNMX_lC87BIecpI-1788536200-1.3.1.1-j.nOkkl1nlhEsxQVmW7UrtwHYHwOKqfllG.H4hT5oLU/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   97036ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e1274fe2ec4c7/GcqULC4fDO2IY.4OCTec6GXAbgM7tUnsXEJqVmv4dkM-1788536210-1.2.1.1-tsEVJCNaA4Vtv2QRTUNg07r1sHu5.XRjpCx0XT.MDxZmTWx7Zw_Pv.YNMgpWGOkI:0
+[   97082ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  107346ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch5xMH.xavCWzAAAO8I1glBKiLItxtGZZIcnnvt3q7Fgg-1788536210-1.3.1.1-cC9Js7yeM3h9.jJs14_3qWHxAlcXq55p5xPiyBENDK0/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  107512ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e12b65c55c4c7/07WsFupaHPW2IJYJS5s8vhjRz9Z760aYvuLy5EDYHaw-1788536221-1.2.1.1-5tIDgWKBlghKrsqlvbNrF3YtXNjYwyvbFqmn1ds7n4bkdDVDm9TdOKFvY468NZc1:0
+[  107551ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  117797ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchdxbvW88G4lpEKNUdKYpk88VGnbO8egsLpq0.SRaqpd8-1788536221-1.3.1.1-XWiCDP3dQphR52m7qA.z0iRWnQ3G0oaa2GZjnui8eRM/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  117992ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e12f7dd79c4c7/zSoATGciW7a7wcStHbgrr8ylN6mdzYOSHitfp0n7L6k-1788536231-1.2.1.1-T8idUs2kkcwAH15xWnHX5ZAaXv9HmIQQ9gyn2XdBrS.yxijjriVjfF.MDcoB0CRs:0
+[  118046ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  128342ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchl_50C7pFm210FPeRX1ICKEOhmI_5vO7nTL3NoTZEWTA-1788536231-1.3.1.1-kxZiZB88E7incHzTBLJvLecKRzr7kBCwbPdtcvKVd2I/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  128529ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e13396ccdc4c7/r8ssD1b1JAprnx1EighGIiz_4ga2PrqfkKbs7a3Sj60-1788536242-1.2.1.1-R8HfeOnvkYsWlPmV5eYTWrkGsYx80HYfVDpkYZLOXsVqXNYif5GEwV_gUimC_A0G:0
+[  128599ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  138937ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchGWP6dDw4OYicdByBx3yIHJs4O.VSCVJUo69jR.OU6lM-1788536242-1.3.1.1-FIKKgM0jXNs7JBwok3c1Yx8I3YM8TkC5iiC0ac_d_BY/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  139109ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e137b4827c4c7/XRhLaaDXxYpSw8GWVEMEJtL4.AUa2FJHiQTy8aG3V5I-1788536252-1.2.1.1-5RHAglrOGi19KCar4f8m8aLCNbxNWPVSFA3em2PHg_wQlzS3jNrQTTicggn5gOGK:0
+[  139144ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  149450ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchWU2F3UylTmVGsShrN0GGPcnWvPbNMEgtQxRK6Xh4cDI-1788536252-1.3.1.1-erh8HQuTrQ4KuNtoMzkbR3YLqKnW5E9qlx1ZfU3nIVE/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  149712ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e13bd3d6bc4c7/guWVKKYAiBwATvzqsZlR8Vkr7IClcgmI3_urzq2MkVg-1788536263-1.2.1.1-Wy9CJYm3mspmrP_EZOnUi3Eu.4.GJuSaeBNUYaKtxRAFPQ8_xF5ZyKlVO5.YtedG:0
+[  149745ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  160044ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchnp4PejMIcf42n2cpqwZrDdR5juJGyCi9YMBT_PLerHc-1788536263-1.3.1.1-l5OAqb_uisei80SsN8d18cVHv7.Erg.NwD7oPDOh1Dg/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  160233ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e13ff8ad6c4c7/LcRsj2mxdfu0zeiZwS.jMN1o6m2YtMiCpjv8VmqA.gI-1788536273-1.2.1.1-jJ1nRKLTyG7Ff9mcCZIrGQTYOSdBwchcWpG.TN_f0leSamwjMEEdnyWYaGa_C1FE:0
+[  160268ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  170538ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchbFxCTckDWwnsUOmVxot2isdQQ_HsEtzHaEHft.q1Wtk-1788536273-1.3.1.1-RkECloZ_eBExN.Rff82KBP98rrT1iPG4hWyKN8qGM7w/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  170708ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e14413ebac4c7/4zJfWBJOQx1uUo4Zn4GGRqnAZMzpaTtId2nTY7rG_iI-1788536284-1.2.1.1-_xi4aG_W7sTEhqOq5Q1z0LWRtU0qe08UT96sVWlCs16s8oOAsEUrYLJnKunEUvNo:0
+[  170736ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  180988ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchT48kQJsRiK2O7_.Xdb23jNIsJ.KaeZWjnhAxkZiFrTI-1788536284-1.3.1.1-qT2sOK.85EifIVGjQ4xYTjWmO0fijUkcf.ooxPNGDzM/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  181157ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e1482a96ac4c7/faQk_KwzHr15hmf1axo89cj2LTtwkXCtCchKVcaQcrk-1788536294-1.2.1.1-jFiNpRzgaGhgPQ6H365mEybhiV1OiErHeTQ7mNG05qVFO61D4ROt98a_dSqoLjmr:0
+[  181189ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  191426ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch_4j8nSt6YxNuJYQhHbvxc7vXcdRxSdIlLV2V4WaErds-1788536294-1.3.1.1-UYfseVf126CILNc0MRII3CzRM2xM_97dJ39D1ZqrUcQ/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  191625ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e14c3fdbcc4c7/98bjAF_AWUNxXQhS4ik_cvVisaN7Nae_1l7avLfWKdU-1788536305-1.2.1.1-RnB0o07nm5H0Z5sJJfvYVI6rPgdEibQbhsfbKQLCGPjd5.WjGhiNwmu0W2xEhue8:0
+[  191665ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  201928ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchn6GPcWDXfq_n.hYPD8r0c4wOZ_D9lGDr_CKvHhEwBVQ-1788536305-1.3.1.1-nqYkmiZUq6MxDWioHQvuRM.4I0qxFQ_bTpzwI4KAmjs/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  202111ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e15057859c4c7/xrEdZNygvG4e3P_lZB07xzawjcQ1ga3fj_QXxFqpA68-1788536315-1.2.1.1-mb2XgAnp_KZeSyauqxtAWv6Z5_kZUq7XQu5bPU9N8eUE3xlLZHWBMMNoJfbX_CKT:0
+[  202142ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  212383ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchTY2Ba8krYmyf0qHPxTi9nUGiZfjQvbMLxNTJXbycodk-1788536315-1.3.1.1-ROzD9lVQ2GZr9_pQ5N9haz9qYJOFmXwH9Z.5HJQxNEE/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  212555ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e1546ee08c4c7/WDd1hJb8oNXL4w4SQe9Q_fD_6rr.yglrclEvUlYy69E-1788536326-1.2.1.1-.sfL5cStPlx7HxBL2nowOKuwyTQuKzFPWzybR9McmySizmR5liQ0gEY2yJJ_GVsB:0
+[  212600ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  222842ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch0OXSut6sCF3Vti5RwnAVknB4IV2hB9_1OncBwK0hwIU-1788536326-1.3.1.1-j3h9bupOIw.ZNMZNvWH_dByWlqInFxv1M5mu.YyukVQ/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  223034ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e15884cdec4c7/hUQ8_DQu8Nfy7QBhx66qqYbE8dskRGCeYvmLfEfRD5A-1788536336-1.2.1.1-EwuVZ.IQI72bOsPZbl3Y6axWdg2ElXi1mYaE8Fuqv8DxlMimDy5OtZ.betHYOE0A:0
+[  223057ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  233318ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchvVWAQAwtdCiJdV9ueMkgptFgVzwINHV3zcUI8aVjSro-1788536336-1.3.1.1-3mXYY5vg5DT2NAkOVtes97yA3DYuKzh4BCf1iKLniA0/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  233488ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e15c9a81bc4c7/Xwh6ePpE7s3linL.S1jCH3EzpUAdeJKnevUrZst9c_I-1788536347-1.2.1.1-0s4acasCEFTl.SgckmqSbVFrWwdojA2yL4EAME0EF0RTFR_kJlQKtLbirAz8nyEa:0
+[  233515ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  243746ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchT15IDTCXzr27DUDRZuA2q.QERZX8yU1EVskEcYaJb6k-1788536347-1.3.1.1-1iG0hCmb4UAOWfUo2hJnoUl5CWtzK6WU5sk6tkRLnB0/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  243923ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e160b0e3bc4c7/Crw6Q8_cIaaRL5y8irvY1xp1VQ1bVBaO6AHr2DKmiZk-1788536357-1.2.1.1-mSo41K0ji9HlmkAyNuo0_hQN8pUKrTZA4Fgtn26CIgV3AI.0CBVBWfeZzCusAAWD:0
+[  243952ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  253973ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://challenges.cloudflare.com') does not match the recipient window's origin ('http://127.0.0.1:3002'). @ https://challenges.cloudflare.com/turnstile/v0/api.js:1
+[  254214ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchKyYMoTUuXTbplexHWEcbepoxM5RCUj1a7nIiyb.g5LY-1788536357-1.3.1.1-zlZE8zyjA44TxEMgdGZba0YL93GO3BMlJLGUUbNQfC8/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  254380ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e164c3918c4c7/dxLBt2gZqL0Yxbwi2SjEEBXw58jvtbdqz8NOWhzv3yQ-1788536368-1.2.1.1-ilzUbIYmYy0swqk5DlNkDl7ZTDOVDdJDUgZIMIH.2wFhCpjE1Xu9ofgl7GLlQvL1:0
+[  254414ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  264666ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch3xGgCo6XY5lQeb3B5HiHNoeyquMT07zWdo3gN4ChFvg-1788536368-1.3.1.1-_fTnhZ0bhHVBYCLxVyykQHZswPc5sNlAc2Xtx5I45k0/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  264832ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e168daff4c4c7/yCha3i050C9xVsMnB4NATkWzNv3jA3gic0n33.P.zko-1788536378-1.2.1.1-EDEIueiaPCYxGzrQ.lfk4Ae4EISeoIlmdiGnrO.kFq0Ym7Fu3fn8P8OZw..hQmS0:0
+[  264865ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  275109ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchFHZmkGXkr1xBCAbM.gfz4LvWAxb8opd7C8RNJBZ.cnU-1788536378-1.3.1.1-8tVSdHP5BdVxPhuKGAykttKkjqqXyimE8lyWQW71Yyo/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  275278ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e16cef9a8c4c7/FtC.3mARIHuAuN6Spfau4xDT.oxC2mv..lgC9FLJOCY-1788536388-1.2.1.1-fLiVgd7XFkO_TNp6b6IQS1OywM0TsS6IRekcVPPtuRJRAm918unrG.xcVBN1GZA9:0
+[  275309ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  283730ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchC9V2jET_8F3THsVlx8oIlX2UFAKaBlu0jYumgrNEH48-1788536388-1.3.1.1-61nPVCZ_7CZPpsClPHgoCWnoS9oA7sbVs6IPNpFVbCQ/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/api/normal?lang=auto:0
+[  283903ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e1704bd94c4c7/Cj6PTNbC.hNmseIE.AJvC05kJcUPoehPu1TW.6h_J20-1788536397-1.2.1.1-nAQjL_7ZDUP7F7tjOC_6OqXU4tyt88asdtTYwP265KDYinKRhUEncVTGiHmRAzeo:0
+[  283943ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  294271ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch.wMQybz72bBXhQNv4d8AAWQUE78_fAqvO3zx_Gsld64-1788536397-1.3.1.1-U5F2AtY4KzAnlDmRT8SZkFkPO40l5XX.9vk2xGTUKgM/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  294428ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e17465ad9c4c7/VsqdyRFLqhEdDa0Ua.6_jA5JDhDfm3gRtpa97z9uUCs-1788536408-1.2.1.1-usmfT7bwxsQIrLK11UepyUZqJTGqcdTy61guSe_pAeysZ8HR4nYzXWdkpD.JMBr9:0
+[  294450ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  304768ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchWgltHFpQMN.P_3gDmRAFEVNGBfgmFhfjVKboyUB.Lcc-1788536408-1.3.1.1-LykZFqo6r.CrF.1gAFpWmK69hNa7JDE21oui9cmIZCw/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  304959ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e1787fe95c4c7/thDIaV2MnLZ.LAx_YsE2ahGhOqI.2aFUN3JNZ8EW3q4-1788536418-1.2.1.1-HeuvtjIQN0DtwQVE3TFne6t3Ebg6tfUE4V0s9Hu.9cRDV_dV4P.jPPYkNwAIEOwT:0
+[  304998ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  315318ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchEWvrMxcpJcwKCUmtm_EHuG0XsLqwlEvwYsoUgn22YcE-1788536418-1.3.1.1-0U4EHfOWE.DjhVta8C2mKbdAwd5g6lp7nHR8eP1l7Lc/yq8d8/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[  315510ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e17c9c930c4c7/IMqAj6e.sGt_9mRVDIdn5usfCpqn40KxFyevuUzRD3I-1788536429-1.2.1.1-1rBY2Y6qIj9lwx9QyFTNFiad.Q_mS.7pgOglbmODENcD.VG_aJ0t2y_zzx4U8RVw:0
+[  315550ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  328585ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328586ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328586ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328590ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328607ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328608ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328612ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328614ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328631ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328632ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328632ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328633ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328636ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328637ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328638ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  328638ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  337067ms] [LOG] %cssr:success%c Vite server hmr 113 files 
+      background: #2ecc71;
+      border-radius: 0.5em;
+      color: white;
+      font-weight: bold;
+      padding: 2px 0.5em;
+      in 10.635ms 
+  at vite_node_entry_default (/home/meebuzo/github/alternate-framework/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs)
+  at process.processTicksAndRejections (node:internal/process/task_queues)
+  at async Object.renderToString (/home/meebuzo/github/alternate-framework/node_modules/vue-bundle-renderer/dist/runtime.mjs)
+ @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/consola/dist/browser.mjs?v=4790ac70:47
+[  338023ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[  338204ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[  338990ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=false defaults= {VIcon: Object} > 
+  at <VBtn href="/" icon="fas fa-home" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  338994ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/u/" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  338997ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/checkout" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  339003ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/menu-page/" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  339010ms] [WARNING] [Vue warn]: Slot "default" invoked outside of the render function: this will not track dependencies used in the slot. Invoke the slot function inside the render function instead. 
+  at <VDefaultsProvider key="content-defaults" disabled=true defaults= {VIcon: Object} > 
+  at <VBtn href="/notifications" > 
+  at <VBottomNavigation modelValue=undefined onUpdate:modelValue=fn bg-color="color"  ... > 
+  at <VLayout id="mobileNav" style= {height: 56px} > 
+  at <MenusMobileNav> 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  339031ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  340012ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  340177ms] [ERROR] Hydration completed but contains mismatches. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  340454ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  340907ms] [WARNING] [Vue warn]: Hydration children mismatch on JSHandle@node 
+Server rendered element contains more child nodes than client vdom. 
+  at <ContentHomepageAtaglance > 
+  at <Index onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< undefined > > 
+  at <RouteProvider key="/" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /, hash: , query: Object, name: index___en, path: /}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< undefined > > 
+  at <AsyncComponentWrapper ref=Ref< undefined > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  341419ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Commerce driver is not configured on the server) @ http://127.0.0.1:3002/api/commerce/driver:0
+[  343562ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=4790ac70:44
+[  345625ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[  346065ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  346066ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  346068ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  346071ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  346173ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  346174ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  346182ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[  349146ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/d3nnk/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[  349338ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/3295453783:1788534312:j_9G9JydBASExDR6kBPZEYVnBS7H-i7iQdB3Z6NpXPA/a35e189cb842c4c7/AfbVXUV5inrPzj2hc_wFZpPuBHQCe2YuuYV.pEjvx_E-1788536462-1.2.1.1-rEPS9.QaleXlnHv6Sj1KVeDfVPOOj2xhpj6hCRYurOZ.heWGe1TtZ04172AT3xF_:0
+[  349384ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[  349385ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[  349391ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=4790ac70:41:17)
+[  350843ms] [ERROR] Connecting to 'https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[  350843ms] [ERROR] Fetch API cannot load https://o996770.ingest.us.sentry.io/api/5955273/envelope/?sentry_version=7&sentry_key=df1b90fab7c44ce8aef097a63b468d61&sentry_client=sentry.javascript.nuxt%2F10.70.0. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/transports/fetch.js?v=4790ac70:31
+[  361865ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361866ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361866ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361869ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361886ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361886ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361889ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361890ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361910ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361912ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361912ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361914ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361918ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361920ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361922ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  361923ms] [WARNING] Invalid original font size for element: JSHandle@node @ https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da:4
+[  366229ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/89ddc9154e315e16.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366230ms] [WARNING] The resource https://analytics.tiktok.com/i18n/pixel/events.js?sdkid&lib=ttq was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366230ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/fe8cbeeffb0a8e5e.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366230ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/c7c9dcf09224020c.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366230ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/cec28134d00808c1.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366230ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/feee309636b01acc.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366230ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/8ddb6cd755e24e91.js?id=GTM-MQ4JC38D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366231ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/31161def553efafd.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  366231ms] [WARNING] The resource https://www.sandbox.paypal.com/web-sdk/v6/core was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  372731ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep) @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@fortawesome_free-brands-svg-icons.js?v=1e5644fa:0
+[  372736ms] Failed to fetch dynamically imported module: http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/nuxt/dist/app/entry.js?v=4790ac70
+[  386443ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/89ddc9154e315e16.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource https://analytics.tiktok.com/i18n/pixel/events.js?sdkid&lib=ttq was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/fe8cbeeffb0a8e5e.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/c7c9dcf09224020c.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/cec28134d00808c1.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/feee309636b01acc.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/8ddb6cd755e24e91.js?id=GTM-MQ4JC38D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/31161def553efafd.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0
+[  386443ms] [WARNING] The resource https://www.sandbox.paypal.com/web-sdk/v6/core was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/:0

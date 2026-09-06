@@ -20,8 +20,18 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'name is required' })
   }
 
-  // Force ownership from the session — never trust a client-supplied user.
+  // `lists.user` is an M2M alias (-> lists_directus_users, columns
+  // list_id/user_id), not a plain scalar field — a bare `user: user.id`
+  // silently writes nothing, leaving the list ownerless. Force ownership
+  // from the session via the real nested-write shape — never trust a
+  // client-supplied user.
   return directus.request(
-    createItem('lists' as any, { name, type, color, icon, user: user.id }),
+    createItem('lists' as any, {
+      name,
+      type,
+      color,
+      icon,
+      user: { create: [{ user_id: user.id }], update: [], delete: [] },
+    }),
   )
 })

@@ -1,0 +1,60 @@
+- generic [active] [ref=e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=e9]: Open accessibility menu
+  - navigation [ref=e10]:
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - generic [ref=e13]: Add to List
+        - button [ref=e14] [cursor=pointer]
+      - separator
+      - generic [ref=e19]: Meeovi News
+      - separator
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - generic: Create a new list
+          - textbox "Create a new list" [ref=e29]:
+            - /placeholder: e.g. Birthday ideas
+        - button "Create a new list appended action" [ref=e31] [cursor=pointer]
+      - separator
+      - alert [ref=e35]:
+        - generic [ref=e40]: You don't have any lists yet — create one above.
+  - main [ref=e47]:
+    - generic [ref=e49]:
+      - tablist [ref=e54]:
+        - generic [ref=e56]:
+          - tab [ref=e57] [cursor=pointer]
+          - tab [ref=e64] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=e69]
+      - generic [ref=e72]:
+        - generic [ref=e76]:
+          - heading "Meeovi News" [level=3] [ref=e79]
+          - generic [ref=e80]:
+            - button "Public Space" [ref=e81] [cursor=pointer]
+            - 'button "Members: 0" [ref=e83] [cursor=pointer]'
+            - button "Add to list" [ref=e87] [cursor=pointer]:
+              - generic [ref=e92]: Add to List
+        - tablist [ref=e94]:
+          - generic [ref=e96]:
+            - tab "Discussion" [ref=e98] [cursor=pointer]
+            - tab "About" [ref=e101] [cursor=pointer]
+            - tab "Members" [ref=e104] [cursor=pointer]
+            - tab "Media" [ref=e107] [cursor=pointer]
+            - tab "Products" [ref=e110] [cursor=pointer]
+            - tab "Lists" [ref=e113] [cursor=pointer]
+            - tab "Settings" [ref=e116] [cursor=pointer]
+    - generic [ref=e120]:
+      - link "About Meeovi" [ref=e122] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=e125] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=e128] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=e131] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=e134] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=e137]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=e138] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.

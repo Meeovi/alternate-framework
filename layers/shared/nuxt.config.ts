@@ -10,6 +10,68 @@ import vuetify from 'vite-plugin-vuetify'
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
 
+/**
+ * The site-wide Content-Security-Policy header (applied via routeRules).
+ *
+ * Only the directives listed here are enforced; anything not named is
+ * unrestricted. `connect-src` is the tight one — every host the browser is
+ * allowed to fetch/beacon/WebSocket to has to be enumerated, so a new
+ * integration that talks to its own API from the client (Sentry, Coral,
+ * analytics pixels, …) must be added here or it fails silently.
+ */
+function buildContentSecurityPolicy(): string {
+  const httpsOrigin = (url?: string) => (url ? url.replace(/^https?:/, 'https:') : '')
+  const wssOrigin = (url?: string) => (url ? url.replace(/^https?:\/\//, 'wss://').replace(/\/$/, '') : '')
+
+  const directusHttps = httpsOrigin(process.env.DIRECTUS_URL)
+  const coralHttps = httpsOrigin(process.env.CORAL_SERVER_URL)
+  const coralWss = wssOrigin(process.env.CORAL_SERVER_URL)
+
+  // Analytics / marketing tag endpoints. Google Tag Manager (configured
+  // with a real container id) can itself load any of these downstream, and
+  // the @nuxt/scripts registry entries below (Bing UET, and the pixel
+  // stubs) beacon to them directly — without these, every one was blocked
+  // with a console CSP violation on every page.
+  const analyticsHosts = [
+    'https://www.googletagmanager.com',
+    'https://*.google-analytics.com',
+    'https://*.analytics.google.com',
+    'https://www.google.com',
+    'https://googleads.g.doubleclick.net',
+    'https://td.doubleclick.net',
+    'https://bat.bing.com',
+    'https://analytics.tiktok.com',
+    'https://*.tiktok.com',
+    'https://*.reddit.com',
+    'https://tr.snapchat.com',
+    'https://analytics.twitter.com',
+    'https://static.ads-twitter.com',
+    'https://t.co',
+    'https://srv.carbonads.net',
+    'https://cdn.carbonads.com',
+  ]
+
+  const connectSrc = [
+    "'self'",
+    'https://*.mux.com',
+    // Covers every regional Sentry ingest host (o<org>.ingest.us.sentry.io,
+    // .ingest.de.sentry.io, …) — without it every error report is dropped.
+    'https://*.sentry.io',
+    directusHttps,
+    coralHttps,
+    coralWss,
+    ...analyticsHosts,
+  ].filter(Boolean).join(' ')
+
+  return [
+    // Videos come from Mux (streamed) or straight from Directus assets
+    // (layers/social's shorts.video); media-src previously only allowed Mux.
+    `media-src 'self' blob: https://stream.mux.com ${directusHttps};`,
+    "worker-src 'self' blob:;", // parsing engines that run on workers
+    `connect-src ${connectSrc};`,
+  ].join(' ')
+}
+
 export default defineNuxtConfig({
   $meta: {
     name: 'shared',
@@ -124,8 +186,18 @@ export default defineNuxtConfig({
   },
 
   image: {
-    cloudinary: {
-      baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME || 'nuxt-cloudinary'}/image/upload/`
+    providers: {
+      // Custom wrapper around the built-in cloudinary provider — falls
+      // back to serving the original image untransformed when
+      // CLOUDINARY_CLOUD_NAME isn't set, instead of 404ing against a
+      // placeholder account name. See providers/cloudinary-safe.ts.
+      cloudinary: {
+        name: 'cloudinary',
+        provider: resolve(__dirname, 'providers/cloudinary-safe.ts'),
+        options: {
+          baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/`,
+        },
+      },
     },
     domains: [
       process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com',
@@ -276,21 +348,15 @@ export default defineNuxtConfig({
       googleAdsense: {
         trigger: 'onNuxtReady'
       },
-      metaPixel: {
-        trigger: 'onNuxtReady'
-      },
-      redditPixel: {
-        trigger: 'onNuxtReady'
-      },
-      snapchatPixel: {
-        trigger: 'onNuxtReady'
-      },
-      tiktokPixel: {
-        trigger: 'onNuxtReady'
-      },
-      xPixel: {
-        trigger: 'onNuxtReady'
-      },
+      // Tracking pixels — registered only when their id env var is set, so
+      // an unconfigured pixel neither warns at build time nor ships an
+      // inert <script>. Google Tag Manager (below) can also fire these
+      // downstream from its own container config.
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_META_PIXEL_ID ? { metaPixel: { trigger: 'onNuxtReady' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_REDDIT_PIXEL_ID ? { redditPixel: { trigger: 'onNuxtReady' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_SNAPCHAT_PIXEL_ID ? { snapchatPixel: { trigger: 'onNuxtReady' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_TIKTOK_PIXEL_ID ? { tiktokPixel: { trigger: 'onNuxtReady' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_X_PIXEL_ID ? { xPixel: { trigger: 'onNuxtReady' } } : {}),
       bingUet: {
         trigger: 'onNuxtReady'
       },
@@ -336,17 +402,13 @@ export default defineNuxtConfig({
       robots: true,
       isr: process.env.NODE_ENV === 'development' ? false : 60,
       headers: {
-        'Content-Security-Policy': [
-          // Videos are served either from Mux (streamed) or directly from
-          // Directus assets (layers/social's shorts.video) — media-src only
-          // allowed Mux, so every Directus-hosted video failed to load with
-          // "Media load rejected by URL safety check".
-          `media-src 'self' blob: https://stream.mux.com ${process.env.DIRECTUS_URL ? process.env.DIRECTUS_URL.replace(/^https?:/, 'https:') : ''};`, // Allows MSE segment blobs + Directus-hosted video files
-          "worker-src 'self' blob:;", // Allows parsing engines running on workers
-          `connect-src 'self' https://*.mux.com ${process.env.DIRECTUS_URL ? process.env.DIRECTUS_URL.replace(/^https?:/, 'https:') : ''};` // Allows Directus API + chunk/manifest data requests
-        ].join(' ')
+        'Content-Security-Policy': buildContentSecurityPolicy(),
       }
     },
+    // nuxt-og-image's own routes must not be caught by the wildcard ISR
+    // rule above (it warns at build time that this breaks them).
+    '/__og-image__/**': { isr: false },
+    '/__nuxt_og_image__/**': { isr: false },
   },
 
   experimental: {

@@ -1,0 +1,459 @@
+- generic [active] [ref=f47e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f47e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f47e9]: Open accessibility menu
+  - generic [ref=f47e13]:
+    - main [ref=f47e16]:
+      - generic [ref=f47e18]:
+        - tablist [ref=f47e23]:
+          - generic [ref=f47e25]:
+            - tab [ref=f47e26] [cursor=pointer]
+            - tab [ref=f47e33] [cursor=pointer]:
+              - img "Paris Snack Video" [ref=f47e38]
+        - generic [ref=f47e42]:
+          - generic [ref=f47e49]:
+            - img "Sample Product" [ref=f47e53]
+            - list [ref=f47e56]:
+              - listitem [ref=f47e57]:
+                - heading [level=1] [ref=f47e59]:
+                  - strong [ref=f47e60]: Sample Product
+              - listitem [ref=f47e61]:
+                - generic [ref=f47e63]:
+                  - text: "By:"
+                  - strong [ref=f47e64]: Unknown
+              - listitem [ref=f47e65]:
+                - generic [ref=f47e66]: $19.99
+              - listitem [ref=f47e69]:
+                - generic [ref=f47e71]:
+                  - generic [ref=f47e72]:
+                    - generic: Rating 0 of 5
+                    - radio "Rating 0 of 5"
+                    - generic [ref=f47e74]:
+                      - generic [ref=f47e75] [cursor=pointer]:
+                        - generic: Rating 1 of 5
+                        - button "Rating 1 of 5" [ref=f47e76]
+                      - radio "Rating 1 of 5 Rating 1 of 5"
+                    - generic [ref=f47e82]:
+                      - generic [ref=f47e83] [cursor=pointer]:
+                        - generic: Rating 2 of 5
+                        - button "Rating 2 of 5" [ref=f47e84]
+                      - radio "Rating 2 of 5 Rating 2 of 5"
+                    - generic [ref=f47e90]:
+                      - generic [ref=f47e91] [cursor=pointer]:
+                        - generic: Rating 3 of 5
+                        - button "Rating 3 of 5" [ref=f47e92]
+                      - radio "Rating 3 of 5 Rating 3 of 5"
+                    - generic [ref=f47e98]:
+                      - generic [ref=f47e99] [cursor=pointer]:
+                        - generic: Rating 4 of 5
+                        - button "Rating 4 of 5" [ref=f47e100]
+                      - radio "Rating 4 of 5 Rating 4 of 5"
+                    - generic [ref=f47e106]:
+                      - generic [ref=f47e107] [cursor=pointer]:
+                        - generic: Rating 5 of 5
+                        - button "Rating 5 of 5" [ref=f47e108]
+                      - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                  - link "5 reviews" [ref=f47e113] [cursor=pointer]:
+                    - /url: /product/15#commentsSection
+              - listitem [ref=f47e114]:
+                - listitem [ref=f47e117]:
+                  - generic [ref=f47e120]:
+                    - button "Decrease value" [disabled]
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - spinbutton: "1"
+                      - alert:
+                        - generic [ref=f47e121]: 10000 in stock
+                    - button "Increase value" [ref=f47e123] [cursor=pointer]
+              - listitem [ref=f47e128]:
+                - generic [ref=f47e130]:
+                  - listitem [ref=f47e131]:
+                    - button "Add to Cart" [ref=f47e135] [cursor=pointer]
+                  - listitem [ref=f47e141]:
+                    - button "Add to Compare" [ref=f47e145] [cursor=pointer]
+              - listitem [ref=f47e151]:
+                - generic [ref=f47e153]:
+                  - listitem [ref=f47e154]:
+                    - generic [ref=f47e157]:
+                      - button "Add to list" [ref=f47e158] [cursor=pointer]:
+                        - generic [ref=f47e163]: Add to List
+                      - navigation [ref=f47e164]:
+                        - generic [ref=f47e165]:
+                          - generic [ref=f47e166]:
+                            - generic [ref=f47e167]: Add to List
+                            - button [ref=f47e168] [cursor=pointer]
+                          - separator [ref=f47e173]
+                          - generic [ref=f47e176]:
+                            - generic [ref=f47e177]: Sample Product
+                            - generic [ref=f47e178]: $19.99
+                          - separator [ref=f47e179]
+                          - generic [ref=f47e184]:
+                            - generic [ref=f47e185]:
+                              - generic: Create a new list
+                              - textbox "Create a new list" [ref=f47e186]:
+                                - /placeholder: e.g. Birthday ideas
+                            - button "Create a new list appended action" [ref=f47e188] [cursor=pointer]
+                          - separator [ref=f47e191]
+                          - alert [ref=f47e193]:
+                            - generic [ref=f47e198]: You don't have any lists yet — create one above.
+                  - listitem [ref=f47e199]
+              - listitem [ref=f47e200]:
+                - generic [ref=f47e202]:
+                  - paragraph [ref=f47e203]:
+                    - strong [ref=f47e204]: "Tags:"
+                  - link "#" [ref=f47e207] [cursor=pointer]:
+                    - /url: /connect/hashtag/undefined
+                  - paragraph
+          - tablist [ref=f47e211]:
+            - generic [ref=f47e213]:
+              - tab "Description" [ref=f47e215] [cursor=pointer]
+              - tab "Reviews" [ref=f47e218] [cursor=pointer]
+              - tab "Product Details" [ref=f47e221] [cursor=pointer]
+          - generic [ref=f47e224]:
+            - generic [ref=f47e225]:
+              - heading "This product goes great together with..." [level=4] [ref=f47e226]
+              - generic [ref=f47e231] [cursor=pointer]:
+                - generic [ref=f47e232]:
+                  - link [ref=f47e233]:
+                    - /url: /product/15
+                    - img "Sample Product" [ref=f47e234]
+                  - button "Add to wishlist" [ref=f47e235]
+                - generic [ref=f47e240]:
+                  - link "Sample Product" [ref=f47e241]:
+                    - /url: /product/15
+                  - generic [ref=f47e242]:
+                    - generic [ref=f47e243]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f47e245]:
+                        - generic [ref=f47e246]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f47e247]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f47e253]:
+                        - generic [ref=f47e254]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f47e255]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f47e261]:
+                        - generic [ref=f47e262]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f47e263]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f47e269]:
+                        - generic [ref=f47e270]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f47e271]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f47e277]:
+                        - generic [ref=f47e278]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f47e279]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f47e284]:
+                      - /url: /product/15
+                  - paragraph [ref=f47e287]: "By:"
+                  - generic [ref=f47e288]: "19.99"
+            - generic [ref=f47e289]:
+              - heading "Related Products" [level=4] [ref=f47e290]
+              - generic [ref=f47e296] [cursor=pointer]:
+                - generic [ref=f47e297]:
+                  - link [ref=f47e298]:
+                    - /url: /product/15
+                    - img "Sample Product" [ref=f47e299]
+                  - button "Add to wishlist" [ref=f47e300]
+                - generic [ref=f47e305]:
+                  - link "Sample Product" [ref=f47e306]:
+                    - /url: /product/15
+                  - generic [ref=f47e307]:
+                    - generic [ref=f47e308]:
+                      - generic: Rating 0 of 5
+                      - radio "Rating 0 of 5"
+                      - generic [ref=f47e310]:
+                        - generic [ref=f47e311]:
+                          - generic: Rating 1 of 5
+                          - button "Rating 1 of 5" [ref=f47e312]
+                        - radio "Rating 1 of 5 Rating 1 of 5"
+                      - generic [ref=f47e318]:
+                        - generic [ref=f47e319]:
+                          - generic: Rating 2 of 5
+                          - button "Rating 2 of 5" [ref=f47e320]
+                        - radio "Rating 2 of 5 Rating 2 of 5"
+                      - generic [ref=f47e326]:
+                        - generic [ref=f47e327]:
+                          - generic: Rating 3 of 5
+                          - button "Rating 3 of 5" [ref=f47e328]
+                        - radio "Rating 3 of 5 Rating 3 of 5"
+                      - generic [ref=f47e334]:
+                        - generic [ref=f47e335]:
+                          - generic: Rating 4 of 5
+                          - button "Rating 4 of 5" [ref=f47e336]
+                        - radio "Rating 4 of 5 Rating 4 of 5"
+                      - generic [ref=f47e342]:
+                        - generic [ref=f47e343]:
+                          - generic: Rating 5 of 5
+                          - button "Rating 5 of 5" [ref=f47e344]
+                        - radio "Rating 5 of 5 Rating 5 of 5" [checked]
+                    - link "5" [ref=f47e349]:
+                      - /url: /product/15
+                  - paragraph [ref=f47e352]: "By:"
+                  - generic [ref=f47e353]: "19.99"
+            - generic [ref=f47e354]:
+              - heading "Product featured in these Shops" [level=4] [ref=f47e355]
+              - paragraph [ref=f47e357]: Not featured in any shops.
+            - generic [ref=f47e358]:
+              - heading "Product featured in these Vibez" [level=4] [ref=f47e359]
+              - paragraph [ref=f47e361]: Not featured in any shorts.
+            - generic [ref=f47e362]:
+              - heading "Product featured in these Spaces" [level=4] [ref=f47e363]
+              - generic [ref=f47e367]:
+                - generic [ref=f47e369]:
+                  - img "Mental Health Awareness" [ref=f47e370]
+                  - generic [ref=f47e371]: Mental Health Awareness
+                  - generic [ref=f47e372]: "Created: 8/27/2024"
+                  - generic [ref=f47e373]: This is a place to discuss and engage with others on the topic of Mental Health Awareness.
+                  - generic [ref=f47e375]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e376] [cursor=pointer]:
+                      - /url: /space/mental-health-awareness
+                - generic [ref=f47e379]:
+                  - img "Meeovi Talks" [ref=f47e380]
+                  - generic [ref=f47e381]: Meeovi Talks
+                  - generic [ref=f47e382]: "Created: 8/27/2024"
+                  - generic [ref=f47e383]: Talk about all things Meeovi in this collaborative space.
+                  - generic [ref=f47e385]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e386] [cursor=pointer]:
+                      - /url: /space/meeovi-talks
+                - generic [ref=f47e389]:
+                  - img "The Rant" [ref=f47e390]
+                  - generic [ref=f47e391]: The Rant
+                  - generic [ref=f47e392]: "Created: 8/27/2024"
+                  - generic [ref=f47e393]: Get it off your chest, speak it loud, speak it clearly, then move on. A great space for venting until its out.
+                  - generic [ref=f47e395]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e396] [cursor=pointer]:
+                      - /url: /space/the-rant
+                - generic [ref=f47e399]:
+                  - img "Audiobuffs" [ref=f47e400]
+                  - generic [ref=f47e401]: Audiobuffs
+                  - generic [ref=f47e402]: "Created: 11/27/2024"
+                  - generic [ref=f47e403]: A space for those that love different sounds.
+                  - generic [ref=f47e405]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e406] [cursor=pointer]:
+                      - /url: /space/audiobuffs
+                - generic [ref=f47e409]:
+                  - img "Music Lovers" [ref=f47e410]
+                  - generic [ref=f47e411]: Music Lovers
+                  - generic [ref=f47e412]: "Created: 11/27/2024"
+                  - generic [ref=f47e413]: A space for those who love music.
+                  - generic [ref=f47e415]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e416] [cursor=pointer]:
+                      - /url: /space/music-lovers
+                - generic [ref=f47e419]:
+                  - img "Rapper's Central" [ref=f47e420]
+                  - generic [ref=f47e421]: Rapper's Central
+                  - generic [ref=f47e422]: "Created: 11/27/2024"
+                  - generic [ref=f47e423]: A space for rappers to gather and interact with one another.
+                  - generic [ref=f47e425]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e426] [cursor=pointer]:
+                      - /url: /space/rapper-s-central
+                - generic [ref=f47e429]:
+                  - img "Game Stream" [ref=f47e430]
+                  - generic [ref=f47e431]: Game Stream
+                  - generic [ref=f47e432]: "Created: 11/27/2024"
+                  - generic [ref=f47e433]: A space for those that love all types of games.
+                  - generic [ref=f47e435]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e436] [cursor=pointer]:
+                      - /url: /space/game-stream
+                - generic [ref=f47e439]:
+                  - img "Weird Wall" [ref=f47e440]
+                  - generic [ref=f47e441]: Weird Wall
+                  - generic [ref=f47e442]: "Created: 11/27/2024"
+                  - generic [ref=f47e443]: For all things weird in the world.
+                  - generic [ref=f47e445]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e446] [cursor=pointer]:
+                      - /url: /space/weird-wall
+                - generic [ref=f47e449]:
+                  - img "Video Variants" [ref=f47e450]
+                  - generic [ref=f47e451]: Video Variants
+                  - generic [ref=f47e452]: "Created: 11/27/2024"
+                  - generic [ref=f47e453]: A space about popular videos on Meeovi.com.
+                  - generic [ref=f47e455]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e456] [cursor=pointer]:
+                      - /url: /space/video-variants
+                - generic [ref=f47e459]:
+                  - img "Movie Reviews" [ref=f47e460]
+                  - generic [ref=f47e461]: Movie Reviews
+                  - generic [ref=f47e462]: "Created: 11/27/2024"
+                  - generic [ref=f47e463]: Reviews about movies across Meeovi.com
+                  - generic [ref=f47e465]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e466] [cursor=pointer]:
+                      - /url: /space/movie-reviews
+                - generic [ref=f47e469]:
+                  - img "Professional Space" [ref=f47e470]
+                  - generic [ref=f47e471]: Professional Space
+                  - generic [ref=f47e472]: "Created: 11/27/2024"
+                  - generic [ref=f47e473]: Professional to Professional inspired space where individuals can explore similar interests for people in their field of work.
+                  - generic [ref=f47e475]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e476] [cursor=pointer]:
+                      - /url: /space/professional-space
+                - generic [ref=f47e479]:
+                  - img "Designer's Corner" [ref=f47e480]
+                  - generic [ref=f47e481]: Designer's Corner
+                  - generic [ref=f47e482]: "Created: 11/27/2024"
+                  - generic [ref=f47e483]: A space for people to provide style guides, advice, and tips.
+                  - generic [ref=f47e485]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e486] [cursor=pointer]:
+                      - /url: /space/designer-s-corner
+                - generic [ref=f47e489]:
+                  - img "Influencers Network" [ref=f47e490]
+                  - generic [ref=f47e491]: Influencers Network
+                  - generic [ref=f47e492]: "Created: 11/27/2024"
+                  - generic [ref=f47e493]: A space for influencers to connect and find their audience.
+                  - generic [ref=f47e495]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e496] [cursor=pointer]:
+                      - /url: /space/influencers-network
+                - generic [ref=f47e499]:
+                  - img "Meeovi Trains" [ref=f47e500]
+                  - generic [ref=f47e501]: Meeovi Trains
+                  - generic [ref=f47e502]: "Created: 11/27/2024"
+                  - generic [ref=f47e503]: A space for those of us that loves trains, transit systems, locomotives, etc.
+                  - generic [ref=f47e505]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e506] [cursor=pointer]:
+                      - /url: /space/meeovi-trains
+                - generic [ref=f47e509]:
+                  - img "Meeovi Ask" [ref=f47e510]
+                  - generic [ref=f47e511]: Meeovi Ask
+                  - generic [ref=f47e512]: "Created: 11/27/2024"
+                  - generic [ref=f47e513]: A community for asking and responding to questions. Think of this space like Reddit, Quora, or even Stackoverflow. No question is dumb so ask away.
+                  - generic [ref=f47e515]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e516] [cursor=pointer]:
+                      - /url: /space/meeovi-ask
+                - generic [ref=f47e519]:
+                  - img "Elite Novels Official Space" [ref=f47e520]
+                  - generic [ref=f47e521]: Elite Novels Official Space
+                  - generic [ref=f47e522]: "Created: 11/27/2024"
+                  - generic [ref=f47e523]: Elite Novels Official Space. This is space is a place to discuss about the Elite Novels universe of over 7000 characters, places, items, and stories.
+                  - generic [ref=f47e525]:
+                    - button "Web share is not supported in your browser" [disabled]
+                    - link "Explore" [ref=f47e526] [cursor=pointer]:
+                      - /url: /space/elite-novels-official-space
+      - generic [ref=f47e528]:
+        - button "Post to Social Feed" [ref=f47e530] [cursor=pointer]
+        - generic [ref=f47e541]:
+          - strong [ref=f47e542]:
+            - heading "Yes! Send me exclusive offers, unique gift ideas, and personalised tips for shopping and selling on Meeovi." [level=5] [ref=f47e543]
+          - generic [ref=f47e544]:
+            - textbox [aria-hidden]
+            - generic [ref=f47e548]:
+              - generic: Add Email to Subscribe
+              - textbox "Add Email to Subscribe" [ref=f47e549]
+            - button "Subscribe" [ref=f47e554] [cursor=pointer]
+        - link "Back to Top" [ref=f47e556] [cursor=pointer]:
+          - /url: "#mainSection"
+        - generic [ref=f47e564]:
+          - generic [ref=f47e565]:
+            - heading [level=2] [ref=f47e566]:
+              - strong [ref=f47e567]: Meeovi
+            - heading [level=3] [ref=f47e569]:
+              - link "About Us" [ref=f47e570] [cursor=pointer]:
+                - /url: /about-us
+            - heading [level=3] [ref=f47e572]:
+              - link "Buyers" [ref=f47e573] [cursor=pointer]:
+                - /url: /buyers
+            - heading [level=3] [ref=f47e575]:
+              - link "Diversity and Inclusion" [ref=f47e576] [cursor=pointer]:
+                - /url: /diversity-and-inclusion
+            - heading [level=3] [ref=f47e578]:
+              - link "Licenses" [ref=f47e579] [cursor=pointer]:
+                - /url: /licenses
+            - heading [level=3] [ref=f47e581]:
+              - link "Careers" [ref=f47e582] [cursor=pointer]:
+                - /url: /careers
+            - heading [level=3] [ref=f47e584]:
+              - link "Sellers" [ref=f47e585] [cursor=pointer]:
+                - /url: /sellers
+            - heading [level=3] [ref=f47e587]:
+              - link "Applications" [ref=f47e588] [cursor=pointer]:
+                - /url: /applications
+          - generic [ref=f47e589]:
+            - heading [level=2] [ref=f47e590]:
+              - strong [ref=f47e591]: Help
+            - heading [level=3] [ref=f47e593]:
+              - link "Accessibility" [ref=f47e594] [cursor=pointer]:
+                - /url: /accessibility
+            - heading [level=3] [ref=f47e596]:
+              - link "Terms and Conditions" [ref=f47e597] [cursor=pointer]:
+                - /url: /terms
+            - heading [level=3] [ref=f47e599]:
+              - link "Privacy Policies" [ref=f47e600] [cursor=pointer]:
+                - /url: /privacy-policies
+            - heading [level=3] [ref=f47e602]:
+              - link "Return Policies" [ref=f47e603] [cursor=pointer]:
+                - /url: /return-policies
+            - heading [level=3] [ref=f47e605]:
+              - link "Payments" [ref=f47e606] [cursor=pointer]:
+                - /url: /payments
+            - heading [level=3] [ref=f47e608]:
+              - link "Allowed Products" [ref=f47e609] [cursor=pointer]:
+                - /url: /allowed-products
+            - heading [level=3] [ref=f47e611]:
+              - link "Imprint" [ref=f47e612] [cursor=pointer]:
+                - /url: /imprint
+          - generic [ref=f47e613]:
+            - heading [level=2] [ref=f47e614]:
+              - strong [ref=f47e615]: Meeovi Outlets
+            - heading [level=3] [ref=f47e617]:
+              - link "Pixanomy" [ref=f47e618] [cursor=pointer]:
+                - /url: /departments/pixanomy
+            - heading [level=3] [ref=f47e620]:
+              - link "Shopncute" [ref=f47e621] [cursor=pointer]:
+                - /url: /departments/shopncute
+            - heading [level=3] [ref=f47e623]:
+              - link "Shopnbold" [ref=f47e624] [cursor=pointer]:
+                - /url: /departments/shopnbold
+            - heading [level=3] [ref=f47e626]:
+              - link "Elite Novels" [ref=f47e627] [cursor=pointer]:
+                - /url: /departments/elite-novels
+            - heading [level=3] [ref=f47e629]:
+              - link "Showyourweird" [ref=f47e630] [cursor=pointer]:
+                - /url: /departments/showyourweird
+        - generic [ref=f47e633]:
+          - link "Customer Service" [ref=f47e635] [cursor=pointer]:
+            - /url: /customer-service
+          - link "Pickup Locations" [ref=f47e638] [cursor=pointer]:
+            - /url: /pickup-locations
+          - link "Meeovi Global" [ref=f47e641] [cursor=pointer]:
+            - /url: /meeovi-global
+          - paragraph [ref=f47e644]:
+            - text: "@ 2017 - 2026"
+            - link "Meeovi" [ref=f47e645] [cursor=pointer]:
+              - /url: /
+            - text: All Rights Reserved.
+    - banner [ref=f47e647]:
+      - generic [ref=f47e648]:
+        - link "Home" [ref=f47e649] [cursor=pointer]:
+          - /url: /
+        - link "You" [ref=f47e655] [cursor=pointer]:
+          - /url: /u/
+        - button [ref=f47e663] [cursor=pointer]
+        - link "Basket" [ref=f47e668] [cursor=pointer]:
+          - /url: /checkout
+        - link "Browse" [ref=f47e674] [cursor=pointer]:
+          - /url: /menu-page/
+        - link "Notifications" [ref=f47e680] [cursor=pointer]:
+          - /url: /notifications

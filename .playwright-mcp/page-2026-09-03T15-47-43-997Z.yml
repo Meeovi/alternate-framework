@@ -1,0 +1,41 @@
+- generic [active] [ref=f118e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f118e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f118e9]: Open accessibility menu
+  - main [ref=f118e16]:
+    - generic [ref=f118e18]:
+      - tablist [ref=f118e23]:
+        - generic [ref=f118e25]:
+          - tab [ref=f118e26] [cursor=pointer]
+          - tab [ref=f118e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=f118e38]
+      - generic [ref=f118e41]:
+        - generic [ref=f118e45]:
+          - heading "Meeovi News" [level=3] [ref=f118e48]
+          - generic [ref=f118e49]:
+            - button "Public Space" [ref=f118e50] [cursor=pointer]
+            - 'button "Members: 0" [ref=f118e52] [cursor=pointer]'
+        - tablist [ref=f118e55]:
+          - generic [ref=f118e57]:
+            - tab "Discussion" [ref=f118e59] [cursor=pointer]
+            - tab "About" [ref=f118e62] [cursor=pointer]
+            - tab "Members" [ref=f118e65] [cursor=pointer]
+            - tab "Media" [ref=f118e68] [cursor=pointer]
+            - tab "Products" [ref=f118e71] [cursor=pointer]
+            - tab "Lists" [ref=f118e74] [cursor=pointer]
+            - tab "Settings" [ref=f118e77] [cursor=pointer]
+    - generic [ref=f118e81]:
+      - link "About Meeovi" [ref=f118e83] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=f118e86] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=f118e89] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=f118e92] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=f118e95] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=f118e98]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=f118e99] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.

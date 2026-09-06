@@ -1,4 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3'
+import { classifyCommerceDriverMethod } from '../../utils/driverAccess'
+import { getAuthSession } from '#auth/server/utils/sessions'
 /**
  * POST /api/commerce/driver
  *
@@ -12,6 +14,10 @@ import { defineEventHandler, readBody, createError } from 'h3'
  * Request body:
  *   { method: string, args?: unknown[] }
  *
+ * Only methods listed in server/utils/driverAccess.ts are reachable; the
+ * request is rejected otherwise. Methods classified `authed` additionally
+ * require a signed-in session.
+ *
  * Response: whatever the commerce driver method returns.
  */
 
@@ -23,6 +29,26 @@ export default defineEventHandler(async (event) => {
 
   if (!method || typeof method !== 'string') {
     throw createError({ statusCode: 400, statusMessage: 'method (string) is required in the request body' })
+  }
+
+  if (!Array.isArray(args)) {
+    throw createError({ statusCode: 400, statusMessage: 'args must be an array' })
+  }
+
+  const access = classifyCommerceDriverMethod(method)
+  if (access === 'denied') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: `Commerce driver method "${method}" is not exposed through this endpoint`,
+    })
+  }
+
+  if (access === 'authed') {
+    const session = await getAuthSession(event)
+    if (!session?.user) {
+      throw createError({ statusCode: 401, statusMessage: 'Authentication required' })
+    }
+    event.context.user = session.user
   }
 
   // Access the server-side commerce driver. useNuxtApp isn't a real,

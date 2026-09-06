@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-    import { ref } from '#imports'
+    import { ref, computed } from '#imports'
     import postsCard from '#social/app/components/related/post.vue'
     
     const { $directus, $readItem, $readItems } = useNuxtApp()
@@ -41,10 +41,22 @@
         return $directus.request($readItem('navigation', '90', { fields: ['*', { '*': ['*'] }] }))
     })
 
-    const { data: historyPosts } = await useAsyncData('historyPosts', async () => {
+    const { data: directusHistoryPosts } = await useAsyncData('historyPosts', async () => {
         const resp = await $directus.request($readItems('posts', { fields: ['*', { '*': ['*'] }], filter: { date_created: { _lt: new Date().toISOString() } } }))
         return resp?.data || resp || []
     })
+
+    // The current user's own past atproto posts — the atproto match for
+    // "memories" (see server/api/social/atproto/own-posts.get.ts).
+    // Resolves to `{ items: [] }` (never throws) when signed out, not
+    // atproto-linked, or the PDS is unreachable, so this is purely
+    // additive to the Directus-backed history above.
+    const { data: atprotoHistoryPosts } = await useAsyncData('memories:atprotoOwnPosts', () => $fetch('/api/social/atproto/own-posts'), { default: () => ({ items: [] }) })
+
+    const historyPosts = computed(() => [
+        ...(directusHistoryPosts.value || []),
+        ...(atprotoHistoryPosts.value?.items || []),
+    ])
 
     useHead({
         title: 'Memories Center',

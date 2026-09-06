@@ -6,7 +6,7 @@
 
             <NuxtImg provider="cloudinary" class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
 
-            <template>{{ space?.name }}</template>
+            <v-card-title>{{ space?.name }}</v-card-title>
 
             <v-card-text class="pt-4">
                 Created: {{ new Date(space?.date_created).toLocaleDateString() }}
@@ -16,11 +16,11 @@
                 <div v-dompurify-html="space?.description"></div>
             </v-card-text>
 
-            <template>
+            <v-card-actions>
                 <share style="position: relative; top: 0px;" />
 
                 <v-btn color="orange" text="Explore" :href="`/space/${space?.slug}`"></v-btn>
-            </template>
+            </v-card-actions>
         </v-card>
     </div>
 </template>

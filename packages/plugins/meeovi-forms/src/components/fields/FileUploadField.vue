@@ -1,26 +1,33 @@
 <template>
-  <label class="field">
-    <span>{{ label }}</span>
-    <input type="file" @change="onChange" />
-  </label>
+  <v-file-input
+    :model-value="internalValue"
+    :label="label"
+    variant="outlined"
+    density="comfortable"
+    hide-details="auto"
+    class="field"
+    @update:model-value="onChange"
+  />
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 export interface FileUploadFieldProps {
   label: string
   modelValue?: File | null
   schema?: Record<string, any>
 }
 
-defineProps<FileUploadFieldProps>()
+const props = defineProps<FileUploadFieldProps>()
 const emit = defineEmits<{ 'update:modelValue': [value: File | null] }>()
 
-const onChange = (event: Event) => {
-  const files = (event.target as HTMLInputElement).files
-  emit('update:modelValue', files && files.length > 0 ? files[0]! : null)
+// v-file-input always models an array, even without `multiple` — this
+// field's own contract is a single File | null.
+const internalValue = computed(() => (props.modelValue ? [props.modelValue] : []))
+
+const onChange = (files: File[] | File | null) => {
+  const value = Array.isArray(files) ? (files[0] ?? null) : files
+  emit('update:modelValue', value)
 }
 </script>
-
-<style scoped>
-.field { display: grid; gap: 0.35rem; }
-</style>

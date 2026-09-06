@@ -54,7 +54,7 @@
       </v-row>
     </div>
 
-    <div v-else class="p-10 text-center text-xl text-neutral-700">
+    <div v-else class="p-10 text-center text-xl text-medium-emphasis">
       Category not found...
     </div>
   </div>

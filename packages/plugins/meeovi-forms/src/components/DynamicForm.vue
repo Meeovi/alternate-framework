@@ -26,6 +26,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useJsonForm, mapSchemaDefaults } from '@mframework/meeovi-forms'
 import DynamicFormElement from './DynamicFormElement.vue'
 import { useDirectusFields } from '../composables/useDirectusFields'
+import { filterDisplayFields } from '../utils/directusFields'
 import useSSF from '#shared/app/composables/security/ssf'
 
 const props = withDefaults(defineProps<{
@@ -65,9 +66,12 @@ const turnstileEnabled = computed(() => {
   return Boolean(flags.turnstileEnabled)
 })
 
+// Only plain fields render here — relationship fields (m2o/o2m/m2m/m2a/
+// translations) are dropped along with hidden ones. See
+// utils/directusFields.ts.
 const visibleFields = computed(() => {
   const source = props.fields.length ? props.fields : schemaFields.value
-  return (source || []).filter((field: any) => !field?.meta?.hidden)
+  return filterDisplayFields(source)
 })
 
 const formSchema = computed(() => {

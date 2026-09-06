@@ -14,6 +14,10 @@ Nitro endpoint that dispatches to a configurable backend **provider**.
 - `POST {apiBase}/subscribe` Nitro handler — credentials stay server-side
 - Pluggable providers: **mailchimp**, **directus**, **console** (dev / no-op)
 - Register your own provider (SendGrid, HubSpot, a CRM webhook, …) at runtime
+- Bot mitigation: an always-on honeypot field, plus an optional Cloudflare
+  Turnstile widget (auto-enabled when the app already has a Turnstile site
+  key configured)
+- Directus provider records a consent timestamp + IP alongside the subscription
 
 ## Install
 
@@ -54,6 +58,13 @@ export default defineNuxtConfig({
 | `directus.url` | `NEWSLETTER_DIRECTUS_URL` / `DIRECTUS_URL` | — |
 | `directus.token` | `NEWSLETTER_DIRECTUS_TOKEN` / `NUXTUS_DIRECTUS_STATIC_TOKEN` | — |
 | `directus.collection` | `NEWSLETTER_DIRECTUS_COLLECTION` | `newsletters` |
+| `directus.consentAtField` / `consentIpField` | — | `consent_at` / `consent_ip` (set `null` to skip) |
+| `turnstile.enabled` | auto: `NUXT_PUBLIC_TURNSTILE_SITE_KEY` set | `false` |
+
+Turnstile verification reuses whatever `@nuxtjs/turnstile` itself is configured
+with (`runtimeConfig.turnstile.secretKey` / `NUXT_TURNSTILE_SECRET_KEY`) — no
+separate credential to set up. The honeypot field needs no configuration and
+is always active.
 
 ## Component
 

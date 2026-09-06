@@ -1,0 +1,215 @@
+[     543ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/ydgi4/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[     709ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35efcd42a82dda9/G8DD0Jai6iuX6_FN.bMgp._ZXu7uIyyNxW3EOz09RFw-1788545810-1.2.1.1-S3ZJJwlG.coci1wLx5JC47dMXB578mcgi5Q9NBz6bZ_ZcrvdriKFjhSW7ey_.0pW:0
+[     757ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e8a7c998:41:17)
+[   13230ms] [LOG] ✨ %cNuxt DevTools %c Press Shift + Alt + D to open DevTools color: black; border-radius: 3px 0 0 3px; padding: 2px 2px 1px 10px; background: #00DC82 border-radius: 0 3px 3px 0; padding: 2px 10px 1px 2px; background: #00DC8220  @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@nuxt/devtools/dist/runtime/plugins/devtools.client.js?v=e8a7c998:51
+[   13610ms] [INFO] <Suspense> is an experimental feature and its API will likely change. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=e8a7c998:44
+[   14047ms] [WARNING] [nuxt] [image] Density values above `2` are not recommended. See https://observablehq.com/@eeeps/visual-acuity-and-device-pixel-ratio. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   14547ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2Fconnect%2Fvibe%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   14548ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2Fconnect%2Fvibe%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   14553ms] [ERROR] Connecting to 'http://unpkg.com/@waline/emojis@1.1.0/weibo/info.json' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   14554ms] [ERROR] Fetch API cannot load http://unpkg.com/@waline/emojis@1.1.0/weibo/info.json. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   14557ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2Fconnect%2Fvibe%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   14557ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2Fconnect%2Fvibe%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   15294ms] [WARNING] [Vue warn]: Unhandled error during execution of watcher callback 
+  at <ArticleReaction> 
+  at <WalineComment id="commentsSection" serverURL="https://mcomments.netlify.app/.netlify/functions/comment" path="/connect/vibe/44"  ... > 
+  at <BlocksComments commentId=undefined > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   15418ms] [ERROR] Failed to fetch (mcomments.netlify.app) @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   15712ms] [WARNING] [Vue warn]: Unhandled error during execution of watcher callback 
+  at <CommentBox key=0 onLog=fn<N> onSubmit=fn<se> > 
+  at <WalineComment id="commentsSection" serverURL="https://mcomments.netlify.app/.netlify/functions/comment" path="/connect/vibe/44"  ... > 
+  at <BlocksComments commentId=undefined > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   15948ms] TypeError: Failed to fetch (mcomments.netlify.app)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:45:28
+    at r$1 (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:11:72)
+    at b (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2688:20)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2713:66
+    at callWithErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:192:17)
+    at callWithAsyncErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:199:15)
+    at baseWatchOptions.call (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:834:46)
+    at job (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=e8a7c998:1778:13)
+    at watch (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=e8a7c998:1812:4)
+    at doWatch (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:862:22)
+    at watch (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:802:9)
+    at watchImmediate (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vueuse/shared/dist/index.js?v=e8a7c998:1967:9)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2713:4
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:2755:38
+    at callWithErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:192:17)
+    at callWithAsyncErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:199:15)
+    at hook.__weh.hook.__weh (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:2737:16)
+    at flushPostFlushCbs (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:376:25)
+    at flushJobs (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:414:3)
+[   15954ms] TypeError: Failed to fetch
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:45:28
+    at tt (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2416:9)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2425:54
+    at Array.map (<anonymous>)
+    at rt (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2425:35)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:3038:21
+    at callWithErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:192:17)
+    at callWithAsyncErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:199:15)
+    at baseWatchOptions.call (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:834:46)
+    at job (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=e8a7c998:1778:13)
+    at watch (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=e8a7c998:1812:4)
+    at doWatch (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:862:22)
+    at watch (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:802:9)
+    at watchImmediate (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vueuse/shared/dist/index.js?v=e8a7c998:1967:9)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:3037:8
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:2755:38
+    at callWithErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:192:17)
+    at callWithAsyncErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:199:15)
+    at hook.__weh.hook.__weh (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:2737:16)
+    at flushPostFlushCbs (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:376:25)
+    at flushJobs (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:414:3)
+[   16315ms] [WARNING] [Vue warn]: Invalid prop: type check failed for prop "commentId". Expected String with value "44", got Number with value 44. 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   16466ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   16467ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/comment?path=%2F44&pageSize=10&page=1&lang=en-US&sortBy=insertedAt_desc. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   16471ms] [ERROR] Connecting to 'https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   16471ms] [ERROR] Fetch API cannot load https://mcomments.netlify.app/.netlify/functions/comment/api/article?path=%2F44&type=reaction0%2Creaction1%2Creaction2%2Creaction3%2Creaction4%2Creaction5&lang=en-US. Refused to connect because it violates the document's Content Security Policy. @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:44
+[   16539ms] [ERROR] Failed to fetch (mcomments.netlify.app) @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   16771ms] [WARNING] [Vue warn]: Unhandled error during execution of watcher callback 
+  at <ArticleReaction> 
+  at <WalineComment id="commentsSection" serverURL="https://mcomments.netlify.app/.netlify/functions/comment" path="/44"  ... > 
+  at <BlocksComments commentId=44 > 
+  at <VCard elevation="2" style= {height: 100%} > 
+  at <VCol > 
+  at <VRow > 
+  at <VContainer class="py-10" > 
+  at <[...id] onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > 
+  at <RouteProvider key="/connect/vibe/44" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /connect/vibe/44, hash: , query: Object, name: connect-vibe-id___en, path: /connect/vibe/44}  ... > 
+  at <RouterView name=undefined route=undefined > 
+  at <NuxtPage > 
+  at <VMain> 
+  at <VApp theme="light" class="auto-text" > 
+  at <VResponsive class="border rounded" > 
+  at <Default ref=Ref< Proxy(Object) > > 
+  at <AsyncComponentWrapper ref=Ref< Proxy(Object) > > 
+  at <LayoutLoader key="default" layoutProps= {ref: RefImpl} name="default" > 
+  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key="default" name="default"  ... > 
+  at <NuxtLayout > 
+  at <App key=4 > 
+  at <NuxtRoot> @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   17018ms] TypeError: Failed to fetch (mcomments.netlify.app)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/fetch.js?v=e8a7c998:45:28
+    at r$1 (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:11:72)
+    at b (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2688:20)
+    at http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/apps/ecosystem/meeovi-frontend/node_modules/.cache/vite/client/deps/@waline_client_component.js?v=e8a7c998:2713:66
+    at callWithErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:192:17)
+    at callWithAsyncErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:199:15)
+    at baseWatchOptions.call (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:834:46)
+    at job (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=e8a7c998:1778:13)
+    at callWithErrorHandling (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:192:31)
+    at flushJobs (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=e8a7c998:399:5)
+[   17067ms] [LOG] Meeovi @ http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/core/build/esm/instrument/console.js?v=e8a7c998:44
+[   17240ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:3002/api/social/list-saved?kind=vibe&itemId=44:0
+[   17253ms] [ERROR] Failed to check list membership FetchError: [GET] "/api/social/list-saved?kind=vibe&itemId=44": 401 Unauthorized
+    at async $fetch2 (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/ofetch/dist/shared/ofetch.CWycOUEr.mjs?v=e8a7c998:332:15)
+    at async getListsContainingItem (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/composables/lists/useLists.ts:134:18)
+    at async loadMembership (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/layers/social/app/components/blocks/partials/createListBtn.vue:43:24) @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   17640ms] [WARNING] The resource https://challenges.cloudflare.com/turnstile/v0/api.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource https://analytics.tiktok.com/i18n/pixel/events.js?sdkid&lib=ttq was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/fe8cbeeffb0a8e5e.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/c7c9dcf09224020c.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/feee309636b01acc.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/8ddb6cd755e24e91.js?id=GTM-MQ4JC38D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/31161def553efafd.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource https://js.stripe.com/basil/stripe.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource https://www.google.com/recaptcha/api.js?render=6LefSp8pAAAAAPTNjynL-drL6LWYuwEJ7LzDh01O was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/cec28134d00808c1.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource http://127.0.0.1:3002/_scripts/assets/89ddc9154e315e16.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   17640ms] [WARNING] The resource https://www.sandbox.paypal.com/web-sdk/v6/core was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:3002/connect/vibe/44:0
+[   18046ms] [WARNING] [Meta Pixel] - Invalid PixelID: null. @ http://127.0.0.1:3002/_nuxt/@vite/client:528
+[   18241ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18242ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18243ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18245ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18250ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18251ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18285ms] [ERROR] Connecting to 'https://analytics.tiktok.com/api/v2/monitor' violates the following Content Security Policy directive: "connect-src 'self' https://*.mux.com https://*.sentry.io https://cms.meeovicms.com". The action has been blocked. @ https://analytics.tiktok.com/i18n/pixel/static/main.MTQyN2U3Zjc5MA.js:0
+[   18850ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/yexv3/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/new/normal?lang=auto:0
+[   19024ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35efd46c99edda9/cyG7KSzln9niVSzGHvuWgbrXaW9_CLxBV4cyUEE3bA0-1788545828-1.2.1.1-XwHysgPwQnFqFZttOMyFL4VG49RLRxE_IipuHA1aGUFALrY0Wk8TRPfqs3QwopHG:0
+[   19058ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e8a7c998:41:17)
+[   29288ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchRuTL180UtfzI4ko8sF.aM_ZJJmQabM56rLgG74yHft0-1788545828-1.3.1.1-18WaBuk9JBk70ohth9KTPnuh7XqDMntrQxtNTBUqnas/yexv3/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   29472ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35efd88285ddda9/oD5fkBIaUqNxClexXKudwXbGSQSBK3O76fPHruCFTUg-1788545839-1.2.1.1-vgXhS9gXLgfC3DzXbNY7bf17yC6rTRzY_JeKhuqMWgnW9kuYMmxtRW9awmdXFUQ0:0
+[   29507ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e8a7c998:41:17)
+[   39776ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchKHEdLQADcMfTTJeGuKITuQoAlQ0I5xk7OuAbztTKRTM-1788545839-1.3.1.1-lrZ4Jc9dOJrmSDxvae1AwoVGqZuiVL3_9EHTkmkuXSw/yexv3/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   39958ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35efdc98f38dda9/jhDww2S_Z_a5v9ElEANSkBG5vqelUHZivyxSVMIBIzc-1788545849-1.2.1.1-3Z2sae6m1QFd6oRptjEJ4SLbByK8oXsP4WQp9WQ9TOOSpG8fDTIII4FSEQybbpy7:0
+[   39995ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e8a7c998:41:17)
+[   50219ms] [WARNING] No available adapters. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rchkx907oZY3meangSyfPRygs3Gnwi95Pd4STiQljQ7qSk-1788545849-1.3.1.1-0i26Ql8JJ2.SvCd_3I_dwLkSUn3Id57ioygV28mtAok/yexv3/0x4AAAAAAASJjd3fbeyQJrfe/auto/fbE/failure_retry/normal?lang=auto:0
+[   50413ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/fo/4256966678:1788541515:WrsCcQxqbR5qMZP71L1kyjQnBCyiEsBDXMUp4XTMURA/a35efe0b1922dda9/cUCbahW5PvFg1fMWtAIfDoHNne4PnGNlqqftJYRiFik-1788545860-1.2.1.1-ltoYBlRXOPwGVvt8GLc.qPGRidKqUKeKxxxgiZ5_5Gd15C5rRwuZvPuWQE5Pk7Q5:0
+[   50442ms] TurnstileError: [Cloudflare Turnstile] Error: 110200.
+    at x (https://challenges.cloudflare.com/turnstile/v0/api.js:2:17328)
+    at P (https://challenges.cloudflare.com/turnstile/v0/api.js:2:60066)
+    at I (https://challenges.cloudflare.com/turnstile/v0/api.js:2:65893)
+    at sentryWrapped (http://127.0.0.1:3002/_nuxt/@fs/home/meebuzo/github/alternate-framework/node_modules/@sentry/browser/build/npm/esm/dev/helpers.js?v=e8a7c998:41:17)

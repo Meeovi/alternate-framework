@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar flat color="white">
+        <v-toolbar flat color="surface">
             <v-toolbar-title>Compare Products</v-toolbar-title>
             <v-btn v-if="comparedProducts?.length" variant="text" @click="compareStore.clearComparedProductSkus()">
                 Clear all

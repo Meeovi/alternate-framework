@@ -1,7 +1,14 @@
 import { joinURL } from 'ufo'
 import { defineEventHandler, proxyRequest } from 'h3'
+import { requireAuth } from '#auth/server/utils/sessions'
 
 export default defineEventHandler(async (event) => {
+	// This forwards arbitrary requests to the Directus instance through the app's
+	// own domain (with cookie-domain rewriting), which would otherwise let any
+	// anonymous caller use the site as an open reverse proxy to the whole
+	// Directus API surface. Gate it behind an authenticated app session.
+	await requireAuth(event)
+
 	const config = useRuntimeConfig()
 	const publicConfig = config.public as any
 

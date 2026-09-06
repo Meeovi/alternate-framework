@@ -35,13 +35,13 @@
                                     <v-list-item-title>{{ pricing?.formatted?.final || productDetails?.price }}</v-list-item-title>
 
                                     <!-- Product Discount -->
-                                    <v-list-subtitle v-if="pricing?.hasDiscount">
+                                    <v-list-item-subtitle v-if="pricing?.hasDiscount">
                                         <span>
                                             <s>{{ pricing?.formatted?.regular }}</s>
                                             <span class="pl-1">{{ pricing?.discountPercent }}% off via
                                                 {{ pricing?.source }}</span>
                                         </span>
-                                    </v-list-subtitle>
+                                    </v-list-item-subtitle>
                                 </div>
                             </v-list-item>
 
@@ -63,19 +63,19 @@
                                 <div class="row">
                                     <v-list-item class="col-12"
                                         v-if="productDetails?.product_types?.product_types_id?.name !== 'Digital'">
-                                        <div class="flex flex-col items-stretch xs:items-center xs:inline-flex">
-                                            <div class="flex border-neutral-300 rounded-md">
+                                        <div class="d-flex flex-column align-stretch align-sm-center">
+                                            <div class="d-flex qty-stepper">
                                                 <v-btn variant="flat" :disabled="count <= min" square size="x-small"
-                                                    class="rounded-r-none p-3" :aria-controls="inputId"
+                                                    class="qty-stepper__btn" :aria-controls="inputId"
                                                     aria-label="Decrease value" @click="dec()" icon="fas fa-minus">
                                                 </v-btn>
                                                 <v-text-field :id="inputId" v-model="count" type="number"
                                                     variant="underlined"
-                                                    class="grow appearance-none mx-2 w-8 text-center bg-transparent font-medium"
+                                                    class="qty-stepper__input mx-2 text-center"
                                                     :min="min" :max="max" @input="handleOnChange"
                                                     :hint="`${productDetails?.stock} in stock`" persistent-hint />
                                                 <v-btn variant="flat" :disabled="count >= max" square size="x-small"
-                                                    class="rounded-l-none p-3" :aria-controls="inputId"
+                                                    class="qty-stepper__btn" :aria-controls="inputId"
                                                     aria-label="Increase value" @click="inc()" icon="fas fa-plus">
                                                 </v-btn>
                                             </div>
@@ -88,7 +88,7 @@
                             <v-list-item class="col col-6" v-if="productDetails?.color || productDetails?.size">
                                 <div class="row">
                                     <v-list-item class="col-6">
-                                        <div class="flex flex-col items-stretch xs:items-center xs:inline-flex"
+                                        <div class="d-flex flex-column align-stretch align-sm-center"
                                             v-if="productDetails?.color">
                                             <colorOptions :color="productDetails?.id" />
                                         </div>
@@ -96,7 +96,7 @@
 
                                     <!-- Product Size Options -->
                                     <v-list-item class="col-6">
-                                        <div class="flex flex-col items-stretch xs:items-center xs:inline-flex"
+                                        <div class="d-flex flex-column align-stretch align-sm-center"
                                             v-if="productDetails?.size">
                                             <sizeOptions :size="productDetails?.id" />
                                         </div>
@@ -108,20 +108,20 @@
                             <v-list-item class="col col-6">
                                 <div class="row">
                                     <v-list-item class="col-6">
-                                        <div class="flex flex-col items-stretch xs:items-center xs:inline-flex"
+                                        <div class="d-flex flex-column align-stretch align-sm-center"
                                             v-if="productDetails?.price > '0.01'">
                                             <addToCartBtn :product="productDetails" :quantity="count" />
                                         </div>
 
-                                        <div class="flex flex-col items-stretch xs:items-center xs:inline-flex" v-else>
+                                        <div class="d-flex flex-column align-stretch align-sm-center" v-else>
                                             <v-btn prepend-icon="fas fa-download" :product="productDetails" text="Download" :href="getAssetURL(productDetails?.file) ?? undefined" download />
                                         </div>
                                     </v-list-item>
 
                                     <!-- Product Add to Compare -->
                                     <v-list-item class="col-6">
-                                        <div class="flex flex-col items-stretch xs:items-center xs:inline-flex">
-                                            <compareBtn :product="productDetails?.id" />
+                                        <div class="d-flex flex-column align-stretch align-sm-center">
+                                            <compareBtn :product="productDetails" />
                                         </div>
                                     </v-list-item>
                                 </div>
@@ -133,13 +133,13 @@
                                     <!-- Product Create List -->
                                     <v-list-item class="col col-6">
                                         <div>
-                                            <createListBtn :lists="productDetails?.id" />
+                                            <createListBtn :item="listProduct" kind="product" />
                                         </div>
                                     </v-list-item>
 
                                     <!-- Product RSS Feed -->
                                     <v-list-item class="col col-6">
-                                        <div class="flex flex-col items-stretch xs:items-center xs:inline-flex pt-3"
+                                        <div class="d-flex flex-column align-stretch align-sm-center pt-3"
                                             v-if="productRssLink">
                                             <NuxtLink :to="productRssLink" target="_blank" rel="noopener"
                                                 class="text-sm no-underline">
@@ -152,7 +152,7 @@
 
                             <!-- Product Tags -->
                             <v-list-item v-if="productDetails?.tags">
-                                <div class="col col-6 flex flex-col items-stretch xs:items-center xs:inline-flex"
+                                <div class="col col-6 d-flex flex-column align-stretch align-sm-center"
                                     v-for="tag in productDetails?.tags" :key="tag.id">
                                     <p class="desc mbr-fonts-style"><strong>Tags:</strong>
                                         <tagCard :tag="tag?.tag_id" />&nbsp;
@@ -239,6 +239,15 @@
     }));
     const productRssLink = ref < string | null > (null);
 
+    // createListBtn's panel needs a resolved image URL, not the raw Directus
+    // asset reference productDetails.image holds.
+    const listProduct = computed(() => ({
+        id: props.productDetails?.id,
+        name: props.productDetails?.name,
+        image: hasAsset(props.productDetails?.image) ? getAssetURL(props.productDetails?.image) : undefined,
+        price: pricing.value?.formatted?.final || props.productDetails?.price,
+    }));
+
     watch(
         () => props.productDetails,
         async (product: any) => {
@@ -255,4 +264,36 @@
             currency: 'USD',
         }).format(amount / 100);
     };
+
 </script>
+
+<style scoped>
+/* Quantity stepper — replaces Tailwind utility classes (Tailwind isn't
+   installed in this repo, so those classes were inert and the control
+   rendered as a bare unstyled row). */
+.qty-stepper {
+    border: 1px solid rgba(var(--v-theme-on-surface), 0.23);
+    border-radius: 4px;
+    overflow: hidden;
+    align-items: center;
+}
+
+.qty-stepper__btn {
+    border-radius: 0;
+}
+
+.qty-stepper__input {
+    width: 3.5rem;
+}
+
+.qty-stepper__input :deep(input) {
+    text-align: center;
+    -moz-appearance: textfield;
+}
+
+.qty-stepper__input :deep(input::-webkit-outer-spin-button),
+.qty-stepper__input :deep(input::-webkit-inner-spin-button) {
+    -webkit-appearance: none;
+    margin: 0;
+}
+</style>

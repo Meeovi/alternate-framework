@@ -1,0 +1,130 @@
+- generic [active] [ref=f17e1]:
+  - button "Accessibility widget — Press Alt+A to open/close" [ref=f17e3] [cursor=pointer]:
+    - generic [aria-hidden] [ref=f17e9]: Open accessibility menu
+  - main [ref=f17e16]:
+    - generic [ref=f17e18]:
+      - tablist [ref=f17e23]:
+        - generic [ref=f17e25]:
+          - tab [ref=f17e26] [cursor=pointer]
+          - tab [ref=f17e33] [cursor=pointer]:
+            - img "Paris Snack Video" [ref=f17e38]
+      - generic [ref=f17e42]:
+        - list [ref=f17e53]:
+          - listitem [ref=f17e54]:
+            - heading [level=1] [ref=f17e56]:
+              - strong [ref=f17e57]: Clipboard
+          - listitem [ref=f17e58]:
+            - generic [ref=f17e60]:
+              - text: "By:"
+              - strong [ref=f17e61]: Unknown
+          - listitem [ref=f17e62]:
+            - generic [ref=f17e63]: $0.00
+          - listitem [ref=f17e66]:
+            - generic [ref=f17e68]:
+              - generic [ref=f17e69]:
+                - generic: Rating 0 of 5
+                - radio "Rating 0 of 5"
+                - generic [ref=f17e71]:
+                  - generic [ref=f17e72] [cursor=pointer]:
+                    - generic: Rating 1 of 5
+                    - button "Rating 1 of 5" [ref=f17e73]
+                  - radio "Rating 1 of 5 Rating 1 of 5"
+                - generic [ref=f17e79]:
+                  - generic [ref=f17e80] [cursor=pointer]:
+                    - generic: Rating 2 of 5
+                    - button "Rating 2 of 5" [ref=f17e81]
+                  - radio "Rating 2 of 5 Rating 2 of 5"
+                - generic [ref=f17e87]:
+                  - generic [ref=f17e88] [cursor=pointer]:
+                    - generic: Rating 3 of 5
+                    - button "Rating 3 of 5" [ref=f17e89]
+                  - radio "Rating 3 of 5 Rating 3 of 5"
+                - generic [ref=f17e95]:
+                  - generic [ref=f17e96] [cursor=pointer]:
+                    - generic: Rating 4 of 5
+                    - button "Rating 4 of 5" [ref=f17e97]
+                  - radio "Rating 4 of 5 Rating 4 of 5"
+                - generic [ref=f17e103]:
+                  - generic [ref=f17e104] [cursor=pointer]:
+                    - generic: Rating 5 of 5
+                    - button "Rating 5 of 5" [ref=f17e105]
+                  - radio "Rating 5 of 5 Rating 5 of 5"
+              - link "reviews" [ref=f17e110] [cursor=pointer]:
+                - /url: /product/28#commentsSection
+          - listitem [ref=f17e111]:
+            - listitem [ref=f17e114]:
+              - generic [ref=f17e117]:
+                - button "Decrease value" [disabled]
+                - generic [ref=f17e118]:
+                  - spinbutton [ref=f17e122]: "1"
+                  - alert [ref=f17e123]:
+                    - generic [ref=f17e124]: null in stock
+                - button "Increase value" [ref=f17e126] [cursor=pointer]
+          - listitem [ref=f17e131]:
+            - generic [ref=f17e133]:
+              - listitem [ref=f17e134]:
+                - button "Download" [ref=f17e137] [cursor=pointer]
+              - listitem [ref=f17e143]:
+                - button "Add to Compare" [ref=f17e147] [cursor=pointer]
+          - listitem [ref=f17e153]:
+            - generic [ref=f17e155]:
+              - listitem [ref=f17e156]:
+                - generic [ref=f17e159]:
+                  - button "Add to list" [ref=f17e160] [cursor=pointer]:
+                    - generic [ref=f17e165]: Add to List
+                  - navigation [ref=f17e166]:
+                    - generic [ref=f17e167]:
+                      - generic [ref=f17e168]:
+                        - generic [ref=f17e169]: Add to List
+                        - button [ref=f17e170] [cursor=pointer]
+                      - separator
+                      - generic [ref=f17e177]:
+                        - generic [ref=f17e178]: Clipboard
+                        - generic [ref=f17e179]: $$0.00
+                      - separator
+                      - generic [ref=f17e184]:
+                        - generic [ref=f17e185]:
+                          - generic: Create a new list
+                          - textbox "Create a new list" [ref=f17e186]:
+                            - /placeholder: e.g. Birthday ideas
+                        - button "Create a new list appended action" [ref=f17e188] [cursor=pointer]
+                      - separator
+                      - alert [ref=f17e192]:
+                        - generic [ref=f17e197]: You don't have any lists yet — create one above.
+              - listitem [ref=f17e198]
+          - listitem [ref=f17e199]
+        - tablist [ref=f17e202]:
+          - generic [ref=f17e204]:
+            - tab "Description" [ref=f17e206] [cursor=pointer]
+            - tab "Reviews" [ref=f17e209] [cursor=pointer]
+            - tab "Product Details" [ref=f17e212] [cursor=pointer]
+        - generic [ref=f17e215]:
+          - heading "This product goes great together with..." [level=4] [ref=f17e217]
+          - generic [ref=f17e219]:
+            - heading "Related Products" [level=4] [ref=f17e220]
+            - paragraph [ref=f17e222]: No related products available.
+          - generic [ref=f17e223]:
+            - heading "Product featured in these Shops" [level=4] [ref=f17e224]
+            - paragraph [ref=f17e226]: Not featured in any shops.
+          - generic [ref=f17e227]:
+            - heading "Product featured in these Vibez" [level=4] [ref=f17e228]
+            - paragraph [ref=f17e230]: Not featured in any shorts.
+          - generic [ref=f17e231]:
+            - heading "Product featured in these Spaces" [level=4] [ref=f17e232]
+            - paragraph [ref=f17e234]: Not featured in any spaces.
+    - generic [ref=f17e237]:
+      - link "About Meeovi" [ref=f17e239] [cursor=pointer]:
+        - /url: https://meeovi.com/about
+      - link "Terms and Conditions" [ref=f17e242] [cursor=pointer]:
+        - /url: https://meeovi.com/terms
+      - link "Privacy Policy" [ref=f17e245] [cursor=pointer]:
+        - /url: https://meeovi.com/privacy-policy
+      - link "Blog" [ref=f17e248] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-digest
+      - link "Help Center" [ref=f17e251] [cursor=pointer]:
+        - /url: https://meeovi.com/connect/space/meeovi-help
+      - paragraph [ref=f17e254]:
+        - text: "@ 2017 - 2026"
+        - link "Meeovi" [ref=f17e255] [cursor=pointer]:
+          - /url: /
+        - text: All Rights Reserved.
