@@ -37,22 +37,35 @@ import subscribeGet from '../../server/api/content/subscribe.get'
 describe('server/api/content/* routes', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Default: an authenticated user. Tests that need the anonymous case
+    // override this with mockRejectedValueOnce.
+    requireAuth.mockResolvedValue({ id: 'u1' })
   })
 
   describe('media.get', () => {
+    it('rejects an unauthenticated request before touching the adapter', async () => {
+      requireAuth.mockRejectedValueOnce(Object.assign(new Error('Unauthorized'), { statusCode: 401 }))
+      await expect(mediaGet({} as any)).rejects.toMatchObject({ statusCode: 401 })
+      expect(getDefaultAdapter).not.toHaveBeenCalled()
+    })
+
     it('returns 501 when no content backend is registered', async () => {
       getDefaultAdapter.mockReturnValue(undefined)
       await expect(mediaGet({} as any)).rejects.toMatchObject({ statusCode: 501 })
     })
 
-    it('calls adapter.listMedia with sort parsed from the query string', async () => {
-      const listMedia = vi.fn().mockResolvedValue([{ id: '1' }])
+    it('calls adapter.listMedia with sort parsed from the query string and returns only the caller\'s own rows', async () => {
+      const listMedia = vi.fn().mockResolvedValue([
+        { id: '1', user: 'u1' },
+        { id: '2', user: 'u2' },
+        { id: '3' },
+      ])
       getDefaultAdapter.mockReturnValue({ listMedia })
 
       const result = await mediaGet({ __query: { sort: '-date_created,title' } } as any)
 
       expect(listMedia).toHaveBeenCalledWith({ sort: ['-date_created', 'title'] })
-      expect(result).toEqual([{ id: '1' }])
+      expect(result).toEqual([{ id: '1', user: 'u1' }])
     })
 
     it('passes sort: undefined when no sort query param is given', async () => {
@@ -90,18 +103,27 @@ describe('server/api/content/* routes', () => {
   })
 
   describe('media-folders.get', () => {
+    it('rejects an unauthenticated request before touching the adapter', async () => {
+      requireAuth.mockRejectedValueOnce(Object.assign(new Error('Unauthorized'), { statusCode: 401 }))
+      await expect(mediaFoldersGet({} as any)).rejects.toMatchObject({ statusCode: 401 })
+      expect(getDefaultAdapter).not.toHaveBeenCalled()
+    })
+
     it('returns 501 when no content backend is registered', async () => {
       getDefaultAdapter.mockReturnValue(undefined)
       await expect(mediaFoldersGet({} as any)).rejects.toMatchObject({ statusCode: 501 })
     })
 
-    it('returns adapter.listMediaFolders() as-is', async () => {
-      const listMediaFolders = vi.fn().mockResolvedValue([{ id: 'f1', name: 'Vacation' }])
+    it('returns only the caller\'s own folders', async () => {
+      const listMediaFolders = vi.fn().mockResolvedValue([
+        { id: 'f1', name: 'Vacation', user: 'u1' },
+        { id: 'f2', name: 'Someone else', user: 'u2' },
+      ])
       getDefaultAdapter.mockReturnValue({ listMediaFolders })
 
       const result = await mediaFoldersGet({} as any)
 
-      expect(result).toEqual([{ id: 'f1', name: 'Vacation' }])
+      expect(result).toEqual([{ id: 'f1', name: 'Vacation', user: 'u1' }])
     })
   })
 
@@ -155,6 +177,19 @@ describe('server/api/content/* routes', () => {
 
       expect(getCollectionSchema).toHaveBeenCalledWith('posts')
       expect(result).toEqual([{ field: 'title' }])
+    })
+
+    it('rejects an unauthenticated request', async () => {
+      requireAuth.mockRejectedValueOnce(Object.assign(new Error('Unauthorized'), { statusCode: 401 }))
+      await expect(schemaGet({ __params: { collection: 'posts' } } as any)).rejects.toMatchObject({ statusCode: 401 })
+    })
+
+    it('returns 403 for a system / sensitive collection', async () => {
+      const getCollectionSchema = vi.fn()
+      getDefaultAdapter.mockReturnValue({ getCollectionSchema })
+
+      await expect(schemaGet({ __params: { collection: 'directus_users' } } as any)).rejects.toMatchObject({ statusCode: 403 })
+      expect(getCollectionSchema).not.toHaveBeenCalled()
     })
   })
 

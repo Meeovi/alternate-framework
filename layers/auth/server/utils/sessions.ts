@@ -22,3 +22,24 @@ export const requireAuth = async (event: H3Event) => {
   event.context.user = session.user
   return session.user as User
 }
+
+/**
+ * Server-side admin gate. Route middleware (app/middleware/admin.ts) only
+ * guards page navigation — every administrative `/api/*` handler must call
+ * this itself so it can't be reached by hitting the endpoint directly.
+ *
+ *   export default defineEventHandler(async (event) => {
+ *     const admin = await requireAdmin(event)
+ *     // ...
+ *   })
+ */
+export const requireAdmin = async (event: H3Event) => {
+  const user = await requireAuth(event)
+  if ((user as { role?: string }).role !== 'admin') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Forbidden'
+    })
+  }
+  return user
+}

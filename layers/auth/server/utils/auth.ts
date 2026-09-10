@@ -141,7 +141,12 @@ export const auth = betterAuth({
     preserveSessionInDatabase: true,
     cookieCache: {
       enabled: true,
-      maxAge: 300,
+      // A revoked session stays valid on a device until its encrypted
+      // cookie cache expires (the cache isn't re-checked against the DB
+      // within this window). 60s keeps the DB-query suppression benefit
+      // for rapid interactions while capping the "log out everywhere" /
+      // post-compromise revocation lag at ~1 minute instead of 5.
+      maxAge: 60,
       strategy: "jwe",
     },
   },
@@ -219,7 +224,16 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    // LAUNCH TOGGLE: flip to `true` at launch to block sign-in until the
+    // email is confirmed (a sign-in on an unverified account then fails
+    // with 403 and better-auth auto-resends the verification link). Left
+    // off pre-launch so existing/unverified accounts can still sign in;
+    // the verify-email UX (register → /verify-email → /login) and the
+    // verification email on sign-up both stay active regardless.
     requireEmailVerification: false,
+    // Don't mint a session on sign-up: the user is routed to /verify-email,
+    // then signs in explicitly.
+    autoSignIn: false,
     password: {
       hash: hashPassword,
       verify: verifyPassword,
@@ -254,8 +268,11 @@ export const auth = betterAuth({
     }
   },
   emailVerification: {
-    sendOnSignUp: false,
-    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
+    // After the link is clicked the user lands on the sign-in page (the
+    // verification endpoint redirects to the sign-up call's callbackURL,
+    // e.g. /login?verified=1) rather than being auto-signed-in.
+    autoSignInAfterVerification: false,
     sendVerificationEmail: async ({
       user,
       url
@@ -327,6 +344,20 @@ export const auth = betterAuth({
       ipAddressHeaders: ["x-forwarded-for", "x-real-ip", "x-client-ip"],
       ipv6Subnet: 64,
       disableIpTracking: false,
+      // When set (comma-separated IPs / CIDRs of the deployment's own
+      // edge/reverse proxies), better-auth only trusts a forwarded client
+      // IP that arrived via one of these hops — a client can't then spoof
+      // x-forwarded-for to dodge the per-IP rate limits above. Leave unset
+      // only if the platform edge (Vercel, Cloudflare) already overwrites
+      // inbound x-forwarded-for.
+      ...(process.env.NUXT_TRUSTED_PROXIES
+        ? {
+            trustedProxies: process.env.NUXT_TRUSTED_PROXIES
+              .split(',')
+              .map((entry) => entry.trim())
+              .filter(Boolean),
+          }
+        : {}),
     },
     trustedProxyHeaders: true,
     useSecureCookies: isProduction,

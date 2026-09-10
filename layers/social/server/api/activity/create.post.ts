@@ -3,8 +3,18 @@
 // server/utils/redis.ts is not auto-imported here — it must be imported
 // explicitly. Previously this referenced a bare `redis` identifier that
 // was never declared anywhere, throwing ReferenceError on every call.
+import { z } from 'zod'
 import { redis } from '#shared/server/utils/redis'
 import { requireAuth } from '#auth/server/utils/sessions'
+
+// verb/object/target land in Directus `feeds` and in Redis group keys
+// (`${verb}:${target || object}:${date}`) — keep them to bounded scalars
+// so a caller can't stuff arbitrary structures or oversized values in.
+const bodySchema = z.object({
+  verb: z.string().min(1).max(64),
+  object: z.string().min(1).max(255),
+  target: z.string().min(1).max(255).optional(),
+})
 
 export default defineEventHandler(async (event) => {
   // Previously trusted `actor` straight from the request body with no auth
@@ -13,11 +23,14 @@ export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
   const actor = user.id!;
 
-  const body = await readBody(event);
+  const parsed = bodySchema.safeParse(await readBody(event));
+  if (!parsed.success) {
+    throw createError({ statusCode: 400, statusMessage: 'verb and object are required' });
+  }
+  const { verb, object, target } = parsed.data;
+
   const authHeader = getRequestHeader(event, 'authorization');
   const config = useRuntimeConfig();
-
-  const { verb, object, target } = body;
 
   // config.public.directus.url (nested, declared in layers/commerce's
   // nuxt.config.ts) — config.public.directusUrl (flat) was referenced here

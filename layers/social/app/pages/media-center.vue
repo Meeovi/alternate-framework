@@ -45,7 +45,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { useHead } from 'nuxt/app'
 import { Filemanager, Willow, Tooltip } from '@svar-ui/vue-filemanager'
 import '@svar-ui/vue-filemanager/all.css'
@@ -66,8 +66,12 @@ const {
     init,
     triggerUpload,
     onFilePicked,
-    clearUploadError,
+    clearUploadError
 } = useMediaCenter()
 
 useHead({ title: 'Media Center' })
+definePageMeta({
+  layout: 'pix',
+  middleware: 'auth'
+})
 </script>

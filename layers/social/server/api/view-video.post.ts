@@ -1,4 +1,9 @@
 import { createDirectus, rest, staticToken, readItem, updateItem } from '@directus/sdk'
+import { z } from 'zod'
+
+const bodySchema = z.object({
+  videoId: z.union([z.string().min(1).max(255), z.number()]).transform(String),
+})
 
 // Matches what vibez.vue and vibe/[...id].vue already post here. Simple
 // read-then-write increment — not atomic, but a view counter doesn't need
@@ -9,12 +14,11 @@ const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const videoId = body?.videoId
-
-  if (!videoId) {
+  const parsed = bodySchema.safeParse(await readBody(event))
+  if (!parsed.success) {
     throw createError({ statusCode: 400, statusMessage: 'videoId is required' })
   }
+  const { videoId } = parsed.data
 
   const short = await directus.request(readItem('shorts', videoId, { fields: ['id', 'views'] })).catch(() => null)
   if (!short) {

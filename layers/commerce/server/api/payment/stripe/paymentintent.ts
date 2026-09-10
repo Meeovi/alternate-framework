@@ -1,16 +1,22 @@
 import Stripe from 'stripe'
 import Joi from 'joi'
 import { stripe } from '../../../utils/stripe'
+import { requireAuth } from '#auth/server/utils/sessions'
 
+// `customerId` is intentionally NOT accepted from the request body — a
+// caller could otherwise create a PaymentIntent attached to any other
+// user's Stripe customer. The customer is derived from the signed-in
+// session instead.
 const paymentIntentSchema = {
   amount: Joi.number().positive().required(),
   currency: Joi.string().length(3).lowercase().default('usd'),
-  customerId: Joi.string().optional(),
   metadata: Joi.object().optional(),
 }
 
 export default defineEventHandler(async (event) => {
   try {
+    const user = await requireAuth(event) as any as { id: string; stripeCustomerId?: string | null }
+
     const body = await readBody(event)
     const { error, value } = Joi.object(paymentIntentSchema).validate(body, {
       abortEarly: false,
@@ -24,14 +30,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const { amount, currency, customerId, metadata } = value
+    const { amount, currency, metadata } = value
 
     const params: Stripe.PaymentIntentCreateParams = {
       amount: Math.round(amount * 100),
       currency,
       automatic_payment_methods: { enabled: true },
-      ...(customerId && { customer: customerId }),
-      ...(metadata && { metadata }),
+      ...(user.stripeCustomerId ? { customer: user.stripeCustomerId } : {}),
+      metadata: { ...(metadata ?? {}), app_user_id: user.id },
     }
 
     const paymentIntent = await stripe.paymentIntents.create(params)

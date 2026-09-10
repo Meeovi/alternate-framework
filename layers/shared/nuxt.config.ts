@@ -69,6 +69,21 @@ function buildContentSecurityPolicy(): string {
     `media-src 'self' blob: https://stream.mux.com ${directusHttps};`,
     "worker-src 'self' blob:;", // parsing engines that run on workers
     `connect-src ${connectSrc};`,
+    // Defence-in-depth directives that don't need a per-integration
+    // allowlist and carry near-zero breakage risk. A real `script-src` /
+    // `default-src` still needs a dedicated hardening pass (Vuetify + GTM
+    // + Nuxt inline hydration make a strict one non-trivial).
+    //  - object-src 'none': kills the <object>/<embed> plugin XSS vector.
+    //  - base-uri 'self': stops an injected <base> tag rewriting every
+    //    relative URL on the page to an attacker origin.
+    //  - frame-ancestors 'self': clickjacking (belt-and-braces alongside
+    //    nuxt-security's default X-Frame-Options: SAMEORIGIN).
+    //  - form-action: 'self' plus the payment redirect targets that
+    //    legitimately receive a form POST (PayPal classic checkout).
+    "object-src 'none';",
+    "base-uri 'self';",
+    "frame-ancestors 'self';",
+    "form-action 'self' https://www.paypal.com https://www.sandbox.paypal.com https://checkout.stripe.com;",
   ].join(' ')
 }
 
