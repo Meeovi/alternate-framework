@@ -424,6 +424,53 @@ export default defineNuxtConfig({
     // rule above (it warns at build time that this breaks them).
     '/__og-image__/**': { isr: false },
     '/__nuxt_og_image__/**': { isr: false },
+
+    // --- ISR exclusions -------------------------------------------------
+    // The wildcard `isr: 60` above caches the *rendered SSR response* and
+    // replays it to every visitor for 60s. That is only safe for pages
+    // whose HTML is identical for everyone. Any route that renders
+    // per-user content server-side (or is an API/SSE endpoint) MUST opt
+    // out, or one user's page (name, email, cart, orders, feed, DMs) gets
+    // served to the next visitor. `isr: false` also implies no CDN
+    // micro-caching of these.
+    '/api/**': { isr: false },
+    '/u/**': { isr: false },
+    '/account/**': { isr: false },
+    '/settings/**': { isr: false },
+    '/security/**': { isr: false },
+    '/profile/**': { isr: false },
+    '/notifications': { isr: false },
+    '/notifications/**': { isr: false },
+    '/media-center': { isr: false },
+    '/lists/**': { isr: false },
+    '/dates': { isr: false },
+    '/your-friends': { isr: false },
+    // Social surfaces are personalised (feed, spaces, DMs, calendar).
+    '/connect/**': { isr: false },
+    '/collaborrate/**': { isr: false },
+    '/pixanomy/**': { isr: false },
+    // Commerce: cart / checkout / account / post-purchase are per-user.
+    '/cart': { isr: false },
+    '/checkout': { isr: false },
+    '/checkout/**': { isr: false },
+    '/orders': { isr: false },
+    '/order/**': { isr: false },
+    '/invoice/**': { isr: false },
+    '/transaction/**': { isr: false },
+    '/transactions': { isr: false },
+    '/wishlist': { isr: false },
+    '/compare': { isr: false },
+    '/customer-portal': { isr: false },
+    '/return': { isr: false },
+    '/success': { isr: false },
+    '/tracking': { isr: false },
+    '/shipment/**': { isr: false },
+    // Search results vary by query string; caching the first query's HTML
+    // and replaying it for every later query is just wrong.
+    '/results': { isr: false },
+    '/search/**': { isr: false },
+    // Business/admin dashboards.
+    '/dashboard/**': { isr: false },
   },
 
   experimental: {

@@ -1,5 +1,6 @@
 import Redis from 'ioredis';
 import { requireAuth } from '#auth/server/utils/sessions';
+import { REDIS_URL } from '#shared/server/utils/redis';
 
 export default defineEventHandler(async (event) => {
   // requireAuth both gates the stream (an anonymous caller must not be able
@@ -11,7 +12,18 @@ export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
   const userId = user.id;
 
-  const redisSub = new Redis(process.env.NUXT_REDIS_URL || 'redis://localhost:6379');
+  // A dedicated connection: a subscriber can't also run normal commands,
+  // so this can't share the pooled `redis` client. Bounded reconnects +
+  // an 'error' listener so a Redis blip degrades this one stream instead
+  // of throwing an unhandled 'error' event that kills the process.
+  const redisSub = new Redis(REDIS_URL, {
+    maxRetriesPerRequest: 3,
+    connectTimeout: 10_000,
+    retryStrategy: (times: number) => Math.min(times * 200, 2000),
+  });
+  redisSub.on('error', (err: Error) => {
+    console.error('[feed/stream] redis subscriber error:', err?.message || err);
+  });
 
   const eventStream = createEventStream(event);
 

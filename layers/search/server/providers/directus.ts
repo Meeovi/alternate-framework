@@ -97,8 +97,25 @@ export const directusProvider: SearchProvider = {
             // Denying known not-visible statuses (case-insensitively,
             // hence the duplicated casing) is robust to that drift; an
             // exact `_eq: 'published'` silently returned zero results for
-            // every collection except shops.
-            filter: { status: { _nin: ['draft', 'Draft', 'private', 'Private', 'archived', 'Archived', 'hidden', 'Hidden'] } },
+            // every collection except shops. The soft-delete / trash
+            // statuses below must stay in this list so a removed row drops
+            // out of search on the very next query (there's no separate
+            // sync/index to purge — this queries Directus live).
+            filter: {
+              status: {
+                _nin: [
+                  'draft', 'Draft',
+                  'private', 'Private',
+                  'archived', 'Archived',
+                  'hidden', 'Hidden',
+                  'deleted', 'Deleted',
+                  'trashed', 'Trashed',
+                  'removed', 'Removed',
+                  'suspended', 'Suspended',
+                  'banned', 'Banned',
+                ],
+              },
+            },
             fields: ['id', 'slug', entry.titleField, entry.descriptionField, entry.imageField],
             limit: perCollectionLimit,
             offset,
