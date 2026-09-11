@@ -5,6 +5,19 @@ const config = useRuntimeConfig();
 export const REDIS_URL =
   config.redisUrl || process.env.NUXT_REDIS_URL || 'redis://localhost:6379';
 
+// Catches exactly the failure mode that bit this app in .env once already:
+// a mangled value (e.g. a stray `REDIS_URL=` fragment glued onto the front
+// of NUXT_REDIS_URL) connects fine at the TCP level but never sends AUTH,
+// so it fails silently in a reconnect loop with a cryptic
+// "NOAUTH HELLO must be called..." — instead of a clear, immediate signal
+// that the env var itself is malformed.
+if (!/^rediss?:\/\//.test(REDIS_URL)) {
+  console.error(
+    `[redis] NUXT_REDIS_URL / config.redisUrl does not look like a redis:// URL ` +
+    `(got: ${JSON.stringify(REDIS_URL)}). The client will fail to authenticate.`,
+  );
+}
+
 export const redis = new Redis(REDIS_URL, {
   // Reject a command after a few attempts rather than buffering it 20
   // deep (the ioredis default) while a remote Redis is unreachable —
