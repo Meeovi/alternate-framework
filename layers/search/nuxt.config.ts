@@ -17,7 +17,15 @@ export default defineNuxtConfig({
       auth: process.env.ALTERNATE_SEARCH_AUTH || 'admin:admin',
       protocol: process.env.ALTERNATE_SEARCH_PROTOCOL || 'https',
       caCertsPath: process.env.ALTERNATE_SEARCH_CA_CERTS_PATH || '',
-      appName: process.env.NUXT_APP_NAME || 'nuxt-app'
+      appName: process.env.NUXT_APP_NAME || 'nuxt-app',
+      // getOpenSearchIndexName() falls back to appName.toLowerCase() when
+      // this is unset, so existing deployments that never set this still
+      // work unchanged — but reusing the app's own display name as an
+      // index name was never really right (and left ALTERNATE_SEARCH_INDEX
+      // below dead: nothing read it). Set this to target a specific index
+      // (e.g. a real externally-managed one like Magento's own
+      // `magento2_product_<store>_v2`) independent of app branding.
+      indexName: process.env.ALTERNATE_SEARCH_INDEX || ''
     },
 
     // Federated search backends. Each provider is enabled purely by the
@@ -30,6 +38,18 @@ export default defineNuxtConfig({
         // OpenSearch is the primary backend; opt out explicitly if a
         // deployment only wants the SQL provider(s).
         enabled: process.env.ALTERNATE_SEARCH_OPENSEARCH_ENABLED !== 'false',
+        // /api/search.ts always sends a generic, made-up default field/facet
+        // list (title/name/description/brand/category) — fine for an index
+        // this app itself populated, wrong for an externally-managed index
+        // (e.g. Magento's own catalog-search index, whose field names are
+        // Magento's EAV attribute codes, not this shape) whose real schema
+        // is deployment-specific. Same override pattern as the postgres/
+        // mysql providers' *_COLUMNS: when set, these win over both the
+        // request's fields/facets and the generic default.
+        searchFields: (process.env.ALTERNATE_SEARCH_OPENSEARCH_FIELDS || '')
+          .split(',').map((field) => field.trim()).filter(Boolean),
+        facetFields: (process.env.ALTERNATE_SEARCH_OPENSEARCH_FACETS || '')
+          .split(',').map((field) => field.trim()).filter(Boolean),
       },
       // Postgres also covers Supabase: point ALTERNATE_SEARCH_PG_URL at the
       // project's Postgres connection string (Supabase project settings ->

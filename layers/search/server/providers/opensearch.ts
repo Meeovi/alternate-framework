@@ -54,7 +54,29 @@ export function useOpenSearchClient() {
 /** Resolves the dynamic index name based on runtime configurations. */
 export function getOpenSearchIndexName() {
   const config = useRuntimeConfig()
-  return (config.opensearch as { appName: string }).appName.toLowerCase()
+  const opensearch = config.opensearch as { appName: string, indexName?: string }
+  return opensearch.indexName?.trim() || opensearch.appName.toLowerCase()
+}
+
+function getOpenSearchProviderConfig() {
+  const config = useRuntimeConfig()
+  return (config.searchProviders as { opensearch?: { searchFields?: string[], facetFields?: string[] } } | undefined)?.opensearch
+}
+
+/**
+ * Applies the deployment's own ALTERNATE_SEARCH_OPENSEARCH_FIELDS/_FACETS
+ * override (if set) in place of /api/search.ts's generic defaults —
+ * mirrors how the postgres/mysql providers' own *_COLUMNS config takes
+ * priority over the same generic request options.
+ */
+function withProviderFieldOverrides(options: SearchProviderOptions): SearchProviderOptions {
+  const providerConfig = getOpenSearchProviderConfig()
+  if (!providerConfig?.searchFields?.length && !providerConfig?.facetFields?.length) return options
+  return {
+    ...options,
+    fields: providerConfig.searchFields?.length ? providerConfig.searchFields : options.fields,
+    facets: providerConfig.facetFields?.length ? providerConfig.facetFields : options.facets,
+  }
 }
 
 export async function createOpenSearchIndex(shards = 4, replicas = 3) {
@@ -245,6 +267,7 @@ function asSearchParams(params: { index: string, body: Record<string, unknown> }
 async function runSearch(options: SearchProviderOptions, sortOverride?: SearchProviderOptions['sort'] | undefined) {
   const client = useOpenSearchClient()
   const index = getOpenSearchIndexName()
+  options = withProviderFieldOverrides(options)
   const pageSize = Math.max(1, options.pageSize)
   const from = (Math.max(1, options.page) - 1) * pageSize
   const facets = options.facets?.length ? options.facets : ['category', 'brand', 'type']
@@ -312,8 +335,9 @@ export const openSearchProvider: SearchProvider = {
     return providers?.opensearch?.enabled !== false
   },
 
-  async search(options: SearchProviderOptions): Promise<ProviderSearchResult> {
+  async search(rawOptions: SearchProviderOptions): Promise<ProviderSearchResult> {
     const start = Date.now()
+    const options = withProviderFieldOverrides(rawOptions)
 
     let raw
     try {
@@ -363,9 +387,10 @@ export const openSearchProvider: SearchProvider = {
     }
   },
 
-  async searchFacetValues(field: string, facetQuery: string, options: SearchProviderOptions): Promise<FacetBucket[]> {
+  async searchFacetValues(field: string, facetQuery: string, rawOptions: SearchProviderOptions): Promise<FacetBucket[]> {
     const client = useOpenSearchClient()
     const index = getOpenSearchIndexName()
+    const options = withProviderFieldOverrides(rawOptions)
 
     const buildParams = () => asSearchParams({
       index,
