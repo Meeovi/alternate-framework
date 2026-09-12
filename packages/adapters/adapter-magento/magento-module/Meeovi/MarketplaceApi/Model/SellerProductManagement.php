@@ -10,41 +10,56 @@ use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\Eav\Model\Config as EavConfig;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Meeovi\MarketplaceApi\Api\Data\SellerProductResultInterface;
 use Meeovi\MarketplaceApi\Api\Data\SellerProductResultInterfaceFactory;
 use Meeovi\MarketplaceApi\Api\SellerProductManagementInterface;
 use Psr\Log\LoggerInterface;
-use Webkul\Marketplace\Helper\Data as MarketplaceHelper;
+use Webkul\Marketplace\Model\Product as MarketplaceProduct;
 use Webkul\Marketplace\Model\ProductFactory as MarketplaceProductFactory;
+use Webkul\Marketplace\Model\ResourceModel\Seller\CollectionFactory as SellerCollectionFactory;
 
 /**
- * =============================================================================
- * VERIFY BEFORE DEPLOYING — see this module's README.md.
+ * Read directly against the real, installed Webkul_Marketplace source at
+ * app/code/Webkul/Marketplace on 2026-09-12 (Webkul is closed-source and
+ * doesn't publish this — this repo doesn't ship a copy of it, so this file
+ * can't be re-diffed against it later; if the module gets upgraded, re-read
+ * the files this comment cites before trusting this again):
  *
- * Every reference to Webkul\Marketplace\* below (class names, table/column
- * names, the isSeller() helper) matches the schema/API that is *by far* the
- * most commonly documented one for Webkul's Magento 2 "Multi Vendor
- * Marketplace" extension (mageproduct_id/seller_id on a marketplace_product
- * linkage table, a Helper\Data::isSeller() gate) — but that extension is
- * closed-source/paid, its exact internals were NOT independently re-verified
- * against your specific installed version while writing this file, and
- * Webkul's own public docs don't publish table/class names. If your version
- * differs, `bin/magento setup:di:compile` (or first use) will fail with a
- * clear "class/method not found" error naming exactly which assumption
- * below is wrong — check vendor/webkul/module-marketplace/{Model,Helper}
- * against this file's Webkul\Marketplace\* imports and the
- * linkProductToSeller()/assertIsApprovedSeller() methods below, and adjust.
- * =============================================================================
+ *  - Model/Product.php + Api/Data/ProductInterface.php: confirms
+ *    setMageproductId/setSellerId/setStatus/setIsApproved/
+ *    setAdminPendingNotification/setCreatedAt on
+ *    Webkul\Marketplace\Model\ProductFactory, table `marketplace_product`
+ *    (Model/ResourceModel/Product.php's _init), PK `entity_id`.
+ *  - Helper/Data::isSeller() takes NO arguments — it reads
+ *    $httpContext->getValue('customer_id'), which Magento's HttpContext
+ *    plugin only populates on a normal storefront request dispatch, NOT
+ *    inside a webapi.xml REST service (that gets its identity from
+ *    UserContextInterface instead). Calling isSeller() from here would
+ *    silently check the wrong (empty) customer. assertIsApprovedSeller()
+ *    below instead re-implements Helper::getSellerCollectionObj()'s own
+ *    query directly (Model/ResourceModel/Seller/Collection filtered by
+ *    seller_id/store_id, Model/Seller.php's getIsSeller()) against the
+ *    $customerId this module actually received.
+ *  - Controller/Product/SaveProduct.php's saveMaketplaceProductTable()
+ *    (the method Webkul's own seller-panel "add product" flow calls) is
+ *    the source for the setIsApproved()/setAdminPendingNotification()
+ *    logic mirrored in linkProductToSeller() below, including the
+ *    marketplace/product_settings/product_approval config path
+ *    (etc/adminhtml/system.xml) gating auto-approval.
  */
 class SellerProductManagement implements SellerProductManagementInterface
 {
     private const SKU_PATTERN = '/^[A-Za-z0-9._-]{1,128}$/';
     private const MAX_PRICE = 1_000_000.0;
     private const MAX_QTY = 1_000_000.0;
+    private const XML_PATH_PRODUCT_APPROVAL = 'marketplace/product_settings/product_approval';
 
     // Constructor property promotion only (no `readonly`) — keeps this
     // compatible with PHP 8.0 (Magento 2.4.4/2.4.5), not just 8.1+.
@@ -54,7 +69,9 @@ class SellerProductManagement implements SellerProductManagementInterface
         private StockRegistryInterface $stockRegistry,
         private EavConfig $eavConfig,
         private StoreManagerInterface $storeManager,
-        private MarketplaceHelper $marketplaceHelper,
+        private ScopeConfigInterface $scopeConfig,
+        private DateTime $dateTime,
+        private SellerCollectionFactory $sellerCollectionFactory,
         private MarketplaceProductFactory $marketplaceProductFactory,
         private SellerProductResultInterfaceFactory $resultFactory,
         private LoggerInterface $logger
@@ -87,7 +104,8 @@ class SellerProductManagement implements SellerProductManagementInterface
             $weight,
             $attributeSetId,
             $websiteIds,
-            $categoryIds
+            $categoryIds,
+            $customerId
         );
 
         try {
@@ -105,8 +123,7 @@ class SellerProductManagement implements SellerProductManagementInterface
             $this->setStock((int) $product->getId(), $sku, $qty);
         } catch (\Exception $e) {
             // Non-fatal: the product exists and is linkable, it just starts
-            // out with whatever stock state Magento defaulted to. Surface it
-            // in logs rather than rolling back a real product over this.
+            // out with whatever stock state Magento defaulted to.
             $this->logger->warning('[Meeovi_MarketplaceApi] Failed to set initial stock', [
                 'sku' => $sku,
                 'error' => $e->getMessage(),
@@ -117,8 +134,9 @@ class SellerProductManagement implements SellerProductManagementInterface
             $marketplaceProductId = $this->linkProductToSeller((int) $product->getId(), $customerId);
         } catch (\Exception $e) {
             // Never leave an orphaned catalog product with no seller behind
-            // it — that's exactly the state Webkul's own seller-panel UI
-            // never produces, so this bridge shouldn't either.
+            // it — Webkul's own seller-panel flow never produces that state
+            // (catalog product + marketplace_product row are written
+            // together), so this bridge shouldn't either.
             $this->logger->error('[Meeovi_MarketplaceApi] Seller linkage failed, rolling back product', [
                 'sku' => $sku,
                 'productId' => $product->getId(),
@@ -141,24 +159,33 @@ class SellerProductManagement implements SellerProductManagementInterface
     }
 
     /**
-     * VERIFY: Helper\Data::isSeller() is the most commonly referenced gate
-     * for "is this customer an approved Webkul seller" — if your installed
-     * version names it differently, this is the one line to change.
+     * Re-implements Helper\Data::getSellerCollectionObj() + isSeller()'s own
+     * query (marketplace_userdata filtered by seller_id, current store else
+     * store_id=0, is_seller == 1) against the verified $customerId this
+     * module received — NOT the helper's isSeller() itself, which reads a
+     * request-scoped HttpContext value that a webapi.xml service never
+     * populates (see this file's header comment).
      */
     private function assertIsApprovedSeller(int $customerId): void
     {
-        $isSeller = false;
+        $storeId = (int) $this->storeManager->getStore()->getId();
 
-        try {
-            $isSeller = (bool) $this->marketplaceHelper->isSeller($customerId);
-        } catch (\Throwable $e) {
-            $this->logger->error('[Meeovi_MarketplaceApi] Webkul\Marketplace\Helper\Data::isSeller() call failed — see this module\'s README', [
-                'customerId' => $customerId,
-                'error' => $e->getMessage(),
-            ]);
-            throw new LocalizedException(
-                __('Seller verification is not available right now. Contact support.')
-            );
+        $collection = $this->sellerCollectionFactory->create();
+        $collection->addFieldToFilter('seller_id', $customerId);
+        $collection->addFieldToFilter('store_id', $storeId);
+
+        if (!$collection->getSize()) {
+            $collection = $this->sellerCollectionFactory->create();
+            $collection->addFieldToFilter('seller_id', $customerId);
+            $collection->addFieldToFilter('store_id', 0);
+        }
+
+        $isSeller = false;
+        foreach ($collection as $sellerRow) {
+            if ((int) $sellerRow->getIsSeller() === 1) {
+                $isSeller = true;
+                break;
+            }
         }
 
         if (!$isSeller) {
@@ -207,7 +234,8 @@ class SellerProductManagement implements SellerProductManagementInterface
         ?float $weight,
         ?int $attributeSetId,
         array $websiteIds,
-        array $categoryIds
+        array $categoryIds,
+        int $customerId
     ): ProductInterface {
         /** @var ProductInterface $product */
         $product = $this->productFactory->create();
@@ -220,6 +248,15 @@ class SellerProductManagement implements SellerProductManagementInterface
         $product->setStatus(ProductStatus::STATUS_ENABLED);
         $product->setVisibility(Visibility::VISIBILITY_BOTH);
         $product->setWebsiteIds($websiteIds !== [] ? $websiteIds : [(int) $this->storeManager->getWebsite()->getId()]);
+
+        // Confirmed live: Controller/Product/SaveProduct.php sets this
+        // directly on the core catalog product too (`$catalogProduct
+        // ->setStatus($status)->setSellerId($sellerId)->save()`), separate
+        // from the marketplace_product linkage row — Webkul apparently adds
+        // `seller_id` as its own product EAV attribute for fast filtering.
+        // Harmless no-op if that attribute isn't present on this install:
+        // Magento's magic setData() just won't have anything to persist.
+        $product->setData('seller_id', $customerId);
 
         if ($description !== '') {
             $product->setDescription($description);
@@ -253,21 +290,31 @@ class SellerProductManagement implements SellerProductManagementInterface
     }
 
     /**
-     * VERIFY: ProductFactory::create()->setMageproductId()->setSellerId()
-     * ->save() against a `marketplace_product` table is the most commonly
-     * referenced Webkul_Marketplace linkage pattern (see this file's header
-     * comment). Confirm the real column names in
-     * vendor/webkul/module-marketplace/etc/db_schema.xml (or
-     * Setup/InstallSchema.php on an older version) before relying on this
-     * in production, and adjust the setter calls below to match.
-     *
-     * @return int|null The linkage record's own id, if the model exposes one.
+     * Mirrors Controller/Product/SaveProduct.php::saveMaketplaceProductTable()
+     * for the "new product, not an edit" branch: a fresh marketplace_product
+     * row, admin-notified (setAdminPendingNotification(1)), auto-approved
+     * only if marketplace/product_settings/product_approval is OFF in this
+     * store's config (matches Webkul's own $helper->getIsProductApproval()
+     * gate) — otherwise left pending admin review, same as a seller
+     * submitting through Webkul's own seller panel would produce.
      */
     private function linkProductToSeller(int $productId, int $customerId): ?int
     {
+        $requiresApproval = (bool) $this->scopeConfig->getValue(
+            self::XML_PATH_PRODUCT_APPROVAL,
+            ScopeInterface::SCOPE_STORE
+        );
+        $isApproved = $requiresApproval ? 0 : 1;
+        $status = $requiresApproval ? MarketplaceProduct::STATUS_PENDING : MarketplaceProduct::STATUS_ENABLED;
+
+        /** @var MarketplaceProduct $marketplaceProduct */
         $marketplaceProduct = $this->marketplaceProductFactory->create();
         $marketplaceProduct->setMageproductId($productId);
         $marketplaceProduct->setSellerId($customerId);
+        $marketplaceProduct->setStatus($status);
+        $marketplaceProduct->setIsApproved($isApproved);
+        $marketplaceProduct->setAdminPendingNotification(1);
+        $marketplaceProduct->setCreatedAt($this->dateTime->gmtDate());
         $marketplaceProduct->save();
 
         $id = $marketplaceProduct->getId();

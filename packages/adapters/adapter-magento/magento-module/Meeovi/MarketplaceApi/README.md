@@ -7,42 +7,48 @@ in one call: it creates the core catalog product **and** Webkul's own
 seller-linkage record together, so you never get a catalog product that
 exists but isn't attributed to a seller (or vice versa).
 
-It does **not** modify `Webkul_Marketplace` — never patch a paid/closed-source
+It does **not** modify `Webkul_Marketplace` — never patch a third-party
 vendor module directly. It depends on it and calls its own classes.
 
-## ⚠️ Verify before deploying — read this first
+## Verified against the real installed module (2026-09-12)
 
-Webkul's Multi Vendor Marketplace extension for Magento 2 is **closed-source
-and paid** — while writing this module its exact installed internals
-(class names, method names, table/column names) could not be independently
-re-verified (its GitHub org has no public source for it, and Webkul's own
-docs site doesn't publish a database/class reference). Everything this
-module assumes about `Webkul\Marketplace\*` is the pattern most consistently
-documented across the wider Magento community for this specific extension —
-**not** something read out of your actual installed copy.
+Webkul's Multi Vendor Marketplace is closed-source/paid, so this was
+originally written against the pattern most commonly documented across the
+wider Magento community for this extension. It has since been **re-read and
+corrected against the actual installed copy** at
+`app/code/Webkul/Marketplace` — every `Webkul\Marketplace\*` class, method,
+and table this module touches was confirmed to exist with the signature used
+here:
 
-Two spots in `Model/SellerProductManagement.php` carry that risk, both
-clearly marked `// VERIFY:` in the code:
+- **`Model/Product.php`** + **`Api/Data/ProductInterface.php`** — confirms
+  `setMageproductId` / `setSellerId` / `setStatus` / `setIsApproved` /
+  `setAdminPendingNotification` / `setCreatedAt` on
+  `Webkul\Marketplace\Model\ProductFactory`, table `marketplace_product`
+  (`Model/ResourceModel/Product.php`'s `_init`), PK `entity_id`.
+- **`Controller/Product/SaveProduct.php::saveMaketplaceProductTable()`** —
+  this is the method Webkul's own seller-panel "add product" flow calls; the
+  `setIsApproved()` / `setAdminPendingNotification()` / `setStatus()` logic
+  in this module's `linkProductToSeller()` mirrors it for the "new product"
+  case, including the `marketplace/product_settings/product_approval` store
+  config path (`etc/adminhtml/system.xml`) that gates auto-approval.
+- **One thing worth knowing:** `Helper\Data::isSeller()` takes **no
+  arguments** — it reads `$httpContext->getValue('customer_id')`, which
+  Magento's `HttpContext` plugin only populates on a normal storefront
+  request dispatch, **not** inside a `webapi.xml` REST service (that gets
+  its identity from `UserContextInterface` instead). Calling `isSeller()`
+  from a webapi service would silently check the wrong (empty) customer —
+  so `assertIsApprovedSeller()` in `Model/SellerProductManagement.php`
+  instead re-implements `Helper::getSellerCollectionObj()`'s own query
+  directly (`Model/ResourceModel/Seller/Collection` filtered by
+  `seller_id`/`store_id`, `Model/Seller.php`'s `getIsSeller()`) against the
+  `$customerId` this module actually receives.
 
-1. **`assertIsApprovedSeller()`** calls `Webkul\Marketplace\Helper\Data::isSeller($customerId)` — the standard "is this customer an approved seller" gate.
-2. **`linkProductToSeller()`** calls `Webkul\Marketplace\Model\ProductFactory::create()->setMageproductId($id)->setSellerId($customerId)->save()` — the standard way to write the `marketplace_product` linkage row.
-
-**Before enabling this in any environment that matters, confirm both against
-your actual installed copy:**
-
-```bash
-# From your Magento root:
-find . -path '*/webkul/*marketplace*' -o -path '*/Webkul/Marketplace*' 2>/dev/null
-cat vendor/webkul/module-marketplace/Helper/Data.php   | grep -n "function is"
-cat vendor/webkul/module-marketplace/Model/Product.php | grep -n "function (get|set)"
-cat vendor/webkul/module-marketplace/etc/db_schema.xml  # or Setup/InstallSchema.php on an older version
-```
-
-If any class/method name differs, Magento will fail loudly and specifically
-at `bin/magento setup:di:compile` (missing class) or on first real request
-(missing method) — that's by design here (a loud, obvious failure beats a
-silent wrong write), and the error will name exactly which assumption to
-fix. Update the two methods above to match, nowhere else needs to change.
+**If Webkul's Marketplace module is ever upgraded**, re-diff
+`Model/SellerProductManagement.php`'s `Webkul\Marketplace\*` calls against
+the same files (`Model/Product.php`, `Model/ResourceModel/Product.php`,
+`Model/Seller.php`, `Controller/Product/SaveProduct.php`) before trusting
+this again — this repo doesn't vendor a copy of Webkul's source, so there's
+nothing here to diff against automatically.
 
 ## Deploy
 
@@ -58,9 +64,6 @@ bin/magento setup:di:compile
 bin/magento cache:flush
 ```
 
-`setup:di:compile` is the moment that surfaces a wrong Webkul class/method
-name — don't skip straight to a live request without running it first.
-
 ## What it does NOT handle yet
 
 - **Product images/gallery** — not wired. Add via
@@ -75,6 +78,12 @@ name — don't skip straight to a live request without running it first.
 - **Attribute-set-driven custom attributes** — only the fields in
   `createProduct()`'s signature are set; anything else on your attribute set
   is left at its default.
+- **Allowed-category / allowed-attribute-set restrictions** — Webkul's own
+  seller panel enforces `Helper::getAllowedCategoriesIds()` /
+  `getAllowedAttributesetIds()` (per-seller or global restrictions on what
+  they're allowed to list under); this module does not check those yet, so
+  a seller can currently create a product under any attribute set / any
+  category you pass in `categoryIds`.
 
 ## Calling it
 
@@ -101,6 +110,11 @@ against the token's own identity before this module's code ever runs (see
 the `resource ref="self"` comment in `etc/webapi.xml`), so a seller cannot
 create a product attributed to a different seller by changing that field.
 
+The caller must already have an **approved seller record**
+(`marketplace_userdata.is_seller = 1` for that customer) — becoming a seller
+in the first place (Webkul's own seller-registration flow / admin approval)
+is out of scope for this module.
+
 Response:
 
 ```json
@@ -110,3 +124,10 @@ Response:
   "marketplace_product_id": 45
 }
 ```
+
+If your store has `Marketplace > Configuration > Product Settings > Product
+Needs Approval` (`marketplace/product_settings/product_approval`) turned on,
+the created product's marketplace linkage starts `is_approved = 0` /
+`status = Pending` — exactly as if the seller had submitted it through
+Webkul's own seller panel — and an admin needs to approve it from
+Marketplace > Products before it's live for that seller.
