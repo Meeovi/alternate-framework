@@ -1,0 +1,23 @@
+{
+    "name": "meeovi/module-marketplace-api",
+    "description": "Bridge module: exposes a seller-scoped REST route to create a catalog product and its Webkul_Marketplace seller-linkage row in one call.",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0",
+        "magento/module-catalog": "*",
+        "magento/module-catalog-inventory": "*",
+        "magento/module-customer": "*",
+        "magento/module-webapi": "*",
+        "magento/module-store": "*",
+        "magento/module-eav": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Meeovi\\MarketplaceApi\\": ""
+        }
+    }
+}

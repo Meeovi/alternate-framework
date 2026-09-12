@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+  `resources: self` + a `$customerId` parameter on the service method is
+  Magento's own mechanism for a customer-token-scoped route (the same
+  pattern core routes like `PUT /V1/customers/me` use): the framework
+  itself overwrites/verifies that the caller's own token customer id is
+  what actually reaches the method, regardless of what a request body
+  claims — a signed-in seller cannot create a product "as" a different
+  seller by passing someone else's customerId. An admin token bypasses the
+  self-check entirely (Magento's default behavior for `self` resources),
+  which is intentional here (support/ops creating on a seller's behalf).
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/meeovi-marketplace/seller/products" method="POST">
+        <service class="Meeovi\MarketplaceApi\Api\SellerProductManagementInterface" method="createProduct"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+    </route>
+</routes>

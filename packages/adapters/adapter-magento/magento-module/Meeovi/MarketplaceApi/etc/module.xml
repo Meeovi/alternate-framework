@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+  Hard dependency on Webkul_Marketplace: this module's entire purpose is
+  bridging to it, so there is no meaningful "works without it" mode. If
+  Webkul_Marketplace isn't enabled, `bin/magento module:enable
+  Meeovi_MarketplaceApi` (and setup:upgrade) will fail loudly, which is the
+  correct failure mode — better than silently accepting requests that can
+  never actually link a product to a seller.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Meeovi_MarketplaceApi" setup_version="1.0.0">
+        <sequence>
+            <module name="Magento_Catalog"/>
+            <module name="Magento_CatalogInventory"/>
+            <module name="Magento_Customer"/>
+            <module name="Magento_Webapi"/>
+            <module name="Webkul_Marketplace"/>
+        </sequence>
+    </module>
+</config>
