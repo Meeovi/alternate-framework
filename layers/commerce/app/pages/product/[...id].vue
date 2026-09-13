@@ -307,6 +307,7 @@
   } from 'vue';
   import comments from '#social/app/components/blocks/comments.vue'
   import radioCard from '#social/app/components/related/radio.vue'
+  import { useCatalogFallback } from '../../composables/catalog/useCatalog'
   import productDetails from '../../components/catalog/product/productDetails.vue'
   import productSpecs from '../../components/catalog/product/productSpecs.vue'
   import productCard from '../../components/catalog/product/productCard.vue'
@@ -367,7 +368,7 @@
 
   const {
     data: product
-  } = await useAsyncData('product', () => {
+  } = await useAsyncData('product', async () => {
     const baseFields = ['*',
       'showcases.showcases_id.*',
       'comments.comments_id.*',
@@ -385,18 +386,41 @@
       'image.*',
     ]
 
-    return $directus.request($readItem('products', productId.value, {
-      fields: [...baseFields, 'currency.currency_id.*']
-    })).catch(() => {
-      // The Directus `currency` collection is currently returning a server
-      // error on any request that expands currency.currency_id.* — fall
-      // back to the raw foreign key so the product page still renders
-      // instead of failing outright. Remove this fallback once that
-      // collection is fixed on the Directus side.
-      return $directus.request($readItem('products', productId.value, {
-        fields: [...baseFields, 'currency.currency_id']
-      }))
-    })
+    try {
+      return await $directus.request($readItem('products', productId.value, {
+        fields: [...baseFields, 'currency.currency_id.*']
+      })).catch(() => {
+        // The Directus `currency` collection is currently returning a server
+        // error on any request that expands currency.currency_id.* — fall
+        // back to the raw foreign key so the product page still renders
+        // instead of failing outright. Remove this fallback once that
+        // collection is fixed on the Directus side.
+        return $directus.request($readItem('products', productId.value, {
+          fields: [...baseFields, 'currency.currency_id']
+        }))
+      })
+    } catch (directusError) {
+      // Directus doesn't have this id — either the record was removed, or
+      // this deployment's active catalog is a commerce backend (Magento,
+      // ...) rather than the Directus `products` collection. Route the
+      // lookup through the configured commerce client, whose adapters
+      // return a Directus-shaped product, so a search hit from any
+      // federated backend still resolves here. The lookup is by id/sku
+      // (never slug) — commerce backends don't all expose a slug.
+      try {
+        const key = String(productId.value)
+        const catalog = useCatalogFallback()
+        const viaBackend =
+          (await catalog.getProductById(key).catch(() => null)) ||
+          (typeof catalog.adapter?.getProductBySku === 'function'
+            ? await catalog.adapter.getProductBySku(key).catch(() => null)
+            : null)
+        if (viaBackend) return viaBackend
+      } catch {
+        // commerce backend not configured / product genuinely absent
+      }
+      throw directusError
+    }
   })
 
   // readItem fetches a single item by primary key and doesn't accept a

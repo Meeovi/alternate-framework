@@ -233,6 +233,69 @@ export async function getProductForEdit(sku: string) {
   }
 }
 
+// attribute_set_id/type_id/visibility only matter for the REST fallback
+// (Magento's own product-creation defaults) — updateProduct/deleteProduct
+// don't need them since the product already exists.
+const DEFAULT_ATTRIBUTE_SET_ID = 4 // "Default" attribute set in a stock Magento catalog
+const DEFAULT_VISIBILITY = 4 // Catalog, Search
+
+export async function createProduct(input: Record<string, any>) {
+  try {
+    const sanitizedInput = sanitizeProductInput(input)
+
+    if (!sanitizedInput.name) {
+      throw new CommerceAdminError('Product name is required.', 400)
+    }
+
+    const attributeSetId = sanitizeOptionalNumber(input.attribute_set_id, { min: 1, max: 999_999 }) ?? DEFAULT_ATTRIBUTE_SET_ID
+    const visibility = sanitizeOptionalNumber(input.visibility, { min: 1, max: 4 }) ?? DEFAULT_VISIBILITY
+
+    const { transport } = getTransport()
+
+    return await transport.withGraphqlFallback(
+      async () => {
+        const data = await executeGraphql<{ createSimpleProduct?: { product?: Record<string, any> } }>(
+          'mutation CreateProduct($sku: String!, $name: String!, $price: Float, $status: Int, $weight: Float, $description: String, $short_description: String, $tax_class_id: Int) { createSimpleProduct(input: { sku: $sku, name: $name, price: $price, status: $status, weight: $weight, description: { html: $description }, short_description: { html: $short_description }, tax_class_id: $tax_class_id }) { product { name sku price { regularPrice { amount { value } } } status weight description { html } short_description { html } tax_class_id } } }',
+          sanitizedInput,
+        )
+
+        return toPublicProduct(data?.createSimpleProduct?.product)
+      },
+      async () => {
+        // Standard Magento Admin REST product-create shape. Not every field
+        // update/delete rely on (status, custom_attributes) is optional
+        // here — status/visibility/type_id/attribute_set_id all need a
+        // real value or Magento rejects (or silently disables/hides) the
+        // new product.
+        const data = await executeRest<Record<string, any>>('/products', {
+          method: 'POST',
+          body: {
+            product: {
+              sku: sanitizedInput.sku,
+              name: sanitizedInput.name,
+              price: sanitizedInput.price ?? 0,
+              status: sanitizedInput.status ?? 1, // Enabled
+              visibility,
+              type_id: 'simple',
+              attribute_set_id: attributeSetId,
+              weight: sanitizedInput.weight,
+              custom_attributes: [
+                { attribute_code: 'description', value: sanitizedInput.description || '' },
+                { attribute_code: 'short_description', value: sanitizedInput.short_description || '' },
+                { attribute_code: 'tax_class_id', value: sanitizedInput.tax_class_id ?? 0 },
+              ],
+            },
+          },
+        })
+
+        return toPublicProduct(data)
+      },
+    )
+  } catch (error) {
+    throw toCommerceAdminError(error)
+  }
+}
+
 export async function updateProduct(input: Record<string, any>) {
   try {
     const sanitizedInput = sanitizeProductInput(input)

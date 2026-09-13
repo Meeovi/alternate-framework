@@ -91,8 +91,17 @@ export default defineNuxtConfig({
       // through to the real Directus client, unmodified.
       commerceBackend: process.env.NUXT_PUBLIC_COMMERCE_BACKEND || 'directus',
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
-      // Stripe publishable key (pk_live_... in prod, pk_test_... in dev)
-      stripePublishableKey: process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      // Stripe publishable key (pk_live_... in prod, pk_test_... in dev).
+      // Accept NUXT_STRIPE_PUBLISHABLE_KEY too: the server-side keys in the
+      // app .env all use the NUXT_STRIPE_* prefix (NUXT_STRIPE_SECRET_KEY,
+      // NUXT_STRIPE_WEBHOOK_SECRET), and the publishable key was set the
+      // same way — but this entry only read NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      // so config.public.stripePublishableKey came back undefined and
+      // checkout.vue's loadStripe(undefined) threw "Failed to load checkout"
+      // at the payment step.
+      stripePublishableKey:
+        process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+        process.env.NUXT_STRIPE_PUBLISHABLE_KEY,
       stripePricingTableId: process.env.NUXT_PUBLIC_STRIPE_PRICING_TABLE_ID,
       scripts: {
         paypal: {

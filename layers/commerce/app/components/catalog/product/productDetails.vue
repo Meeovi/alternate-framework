@@ -132,7 +132,12 @@
                                 <div class="row">
                                     <!-- Product Create List -->
                                     <v-list-item class="col col-6">
-                                        <div>
+                                        <div class="d-flex align-center ga-2">
+                                            <LikeButton
+                                                v-if="productDetails?.id"
+                                                target-type="product"
+                                                :target-id="productDetails.id"
+                                            />
                                             <createListBtn :item="listProduct" kind="product" />
                                         </div>
                                     </v-list-item>
@@ -192,6 +197,7 @@
     import addToCartBtn from '../../blocks/addToCartBtn.vue';
     import compareBtn from '../../blocks/compareBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
+    import LikeButton from '#social/app/components/blocks/LikeButton.vue';
     import {
         getAssetURL,
         hasAsset

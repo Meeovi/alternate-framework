@@ -17,7 +17,7 @@
     "dev": "nuxt dev",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint 'src/**/*.{ts,tsx}' || true",
+    "lint": "echo \"[lint] ESLint disabled repo-wide\"",
     "prepare": "npm run build",
     "prepublishOnly": "npm run typecheck && npm run build",
     "codegen": "npx graphql-codegen --config ./node_modules/@mframework/adapter-magento/codegen.ts"

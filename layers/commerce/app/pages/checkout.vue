@@ -94,7 +94,17 @@
   const config = useRuntimeConfig()
   const cartStore = useCartStore()
 
-  const cartEmpty = computed(() => cartStore.items.length === 0)
+  // The cart is server-persisted and the Pinia store only holds what a
+  // consumer has fetched this page load — every consumer is responsible
+  // for calling fetchCart() from its own onMounted (see the store's own
+  // header comment). On a hard navigation straight to /checkout nothing
+  // else has populated it, so without this the page renders "Your cart is
+  // empty" over a cart that actually has items.
+  onMounted(() => { cartStore.fetchCart() })
+
+  // Don't flash the empty-cart message while that first fetch is still in
+  // flight — the store starts with loading = true.
+  const cartEmpty = computed(() => !cartStore.loading && cartStore.items.length === 0)
 
   // Generated once per page load and reused across every checkout attempt
   // on this visit (including a retry after a network error or a double
