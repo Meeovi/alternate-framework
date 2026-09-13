@@ -77,4 +77,8 @@
     useHead({
         title: 'Settings Center',
     })
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

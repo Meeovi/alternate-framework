@@ -69,4 +69,8 @@ const brandIcons: Record<string, string> = {
 function brandIcon(brand: string): string {
     return brandIcons[brand?.toLowerCase()] ?? 'fas fa-credit-card'
 }
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

@@ -94,4 +94,8 @@
   useHead({
     title: () => accountPersonalization.value?.name || 'Page',
   })
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

@@ -214,6 +214,10 @@ const copyToClipboard = () => {
   const url = deviceCodeData.value.verificationUriComplete || deviceCodeData.value.verificationUri
   navigator.clipboard.writeText(url)
 }
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>
 
 <style scoped>

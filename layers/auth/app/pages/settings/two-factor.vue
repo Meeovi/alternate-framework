@@ -74,4 +74,8 @@ import {
         } as any);
         method.value = "otp";
     }
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

@@ -148,6 +148,10 @@
     useHead({
         title: dial.value.name
     })
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>
 
 <style>

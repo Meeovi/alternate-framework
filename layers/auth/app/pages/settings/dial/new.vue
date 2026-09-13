@@ -4,4 +4,8 @@
 
 <script setup>
 import { DynamicForm } from '@mframework/meeovi-forms'
+
+definePageMeta({
+  layout: 'settings'
+})
 </script>

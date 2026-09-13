@@ -25,4 +25,8 @@
     useHead({
         title: 'Find My M Device'
     })
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

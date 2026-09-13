@@ -275,4 +275,8 @@
     }
 
     onMounted(loadSubscriptions);
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

@@ -47,4 +47,8 @@
   useHead({
     title: () => accountShopping.value?.name || 'Page',
   })
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

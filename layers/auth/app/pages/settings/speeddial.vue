@@ -47,4 +47,8 @@ import { useHead } from 'nuxt/app';
             { name: 'description', content: 'Manage your speed dial settings' }
         ]
     })
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

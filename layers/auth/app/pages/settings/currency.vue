@@ -52,4 +52,8 @@
     onUnmounted(() => {
         window.removeEventListener('message', handleMessage)
     })
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

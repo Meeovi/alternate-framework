@@ -45,4 +45,8 @@
   useHead({
     title: () => accountSocial.value?.name || 'Page',
   })
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

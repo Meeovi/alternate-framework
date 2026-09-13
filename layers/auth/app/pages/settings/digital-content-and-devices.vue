@@ -131,4 +131,8 @@
             content: 'Manage your speed dial settings'
         }]
     })
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

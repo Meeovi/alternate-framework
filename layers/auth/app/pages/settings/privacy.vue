@@ -122,4 +122,8 @@
   useHead({
     title: () => accountPrivacy.value?.name || 'Page',
   })
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

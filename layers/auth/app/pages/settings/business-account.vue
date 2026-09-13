@@ -343,4 +343,8 @@
     }
 
     onMounted(loadOrganizations);
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>

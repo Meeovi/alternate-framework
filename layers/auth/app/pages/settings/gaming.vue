@@ -49,4 +49,8 @@
   useHead({
     title: () => accountGaming.value?.name || 'Page',
   })
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

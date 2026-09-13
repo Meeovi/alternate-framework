@@ -58,4 +58,8 @@
   useHead({
     title: () => langPage.value?.name || 'Page',
   })
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

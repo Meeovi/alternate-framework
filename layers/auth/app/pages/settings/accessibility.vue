@@ -539,4 +539,8 @@ onMounted(async () => {
   useHead({
     title: () => accountAccessibility.value?.name || 'Page',
   })
+
+  definePageMeta({
+    layout: 'settings'
+  })
 </script>

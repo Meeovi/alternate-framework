@@ -84,9 +84,11 @@
   })
 
   import {
+    computed,
     onMounted,
     ref,
     useHead,
+    useRoute,
     useRuntimeConfig
   } from '#imports';
   import {
@@ -97,8 +99,19 @@
   import AtprotoAuth from '../components/features/plugins/atproto.vue'
 
   const auth = useAuth();
+  const route = useRoute();
   const { providers: socialProviders, load: loadSocialProviders } = useSupportedSocialProviders();
   const lastMethod = authClient.getLastUsedLoginMethod();
+
+  // Where to send the user after a successful sign-in. The `auth` route
+  // middleware appends ?redirect=<intended path> when it bounces a guest
+  // here. Accept only same-origin absolute paths (not "//evil.com" or a
+  // full URL) so this can't be turned into an open redirect.
+  const redirectTarget = computed(() => {
+    const raw = route.query.redirect;
+    const path = typeof raw === 'string' ? raw : '';
+    return /^\/(?!\/)/.test(path) ? path : '/';
+  });
 
   const form = ref(null);
   const email = ref("");
@@ -122,6 +135,10 @@
 
   onMounted(() => {
     void loadSocialProviders();
+    if (route.query.verified) {
+      alertType.value = 'success';
+      alertMessage.value = 'Your email address is verified. Sign in to continue.';
+    }
   });
 
   async function signIn() {
@@ -144,13 +161,17 @@
         rememberMe: rememberMe.value,
       });
       if (error) {
+        const unverified = error.code === 'EMAIL_NOT_VERIFIED'
+          || error.status === 403
+          || /not verified|verify your email/i.test(error.message || '');
         alertType.value = "error";
-        alertMessage.value = error.message;
+        alertMessage.value = unverified
+          ? "Your email isn't verified yet. We've sent a new verification link — check your inbox, then sign in."
+          : error.message;
       } else {
-        await auth.fetchSession();
         alertType.value = "success";
         alertMessage.value = 'You have been signed in!';
-        await navigateTo('/');
+        await navigateTo(redirectTarget.value);
       }
     } catch (err) {
       alertType.value = "error";
@@ -166,7 +187,7 @@
     loading.value = true;
     alertMessage.value = '';
     try {
-      const res = await auth.signIn.social({ provider, callbackURL: '/' });
+      const res = await auth.signIn.social({ provider, callbackURL: redirectTarget.value });
       if (res?.error) {
         alertType.value = 'error';
         alertMessage.value = res.error.message || `Failed to sign in with ${provider}`;

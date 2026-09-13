@@ -222,4 +222,8 @@
     }
 
     onMounted(refresh);
+
+    definePageMeta({
+      layout: 'settings'
+    })
 </script>
