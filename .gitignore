@@ -59,3 +59,11 @@ localhost-key.pem
 
 # Packages
 packages/adapters/adapter-prisma/generated
+
+# Playwright MCP debug output (screenshots, console logs, page snapshots) —
+# scratch artifacts from browser-automation sessions, never source.
+.playwright-mcp/
+
+# Stray root-level log files accumulated by ad-hoc debugging.
+*.log
+error_log
