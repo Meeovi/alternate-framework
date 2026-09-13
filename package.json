@@ -42,6 +42,8 @@
     "flat": "^6.0.1"
   },
   "overrides": {
+    "three": "^0.185.0",
+    "@types/three": "^0.185.0",
     "vue": "3.5.41",
     "@vue/reactivity": "3.5.41",
     "@vue/runtime-core": "3.5.41",
