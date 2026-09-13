@@ -5,4 +5,8 @@
                 type="Meeovi\MarketplaceApi\Model\SellerProductManagement"/>
     <preference for="Meeovi\MarketplaceApi\Api\Data\SellerProductResultInterface"
                 type="Meeovi\MarketplaceApi\Model\Data\SellerProductResult"/>
+    <preference for="Meeovi\MarketplaceApi\Api\SellerAccountManagementInterface"
+                type="Meeovi\MarketplaceApi\Model\SellerAccountManagement"/>
+    <preference for="Meeovi\MarketplaceApi\Api\Data\SellerRegistrationResultInterface"
+                type="Meeovi\MarketplaceApi\Model\Data\SellerRegistrationResult"/>
 </config>

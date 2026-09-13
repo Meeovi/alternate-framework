@@ -135,6 +135,23 @@ export const auditDatabaseHooks = {
             status: "success",
             id: ''
         })
+        // Promote the "become a seller" signup checkbox into a real
+        // authRole membership. Comma-separated (better-auth's admin plugin
+        // natively supports "user,seller" — see has-permission.mjs's
+        // `.split(",")`), so this only ever adds to whatever role the user
+        // already has; it can never remove or downgrade one. Done here
+        // (server-side, after the row exists) rather than accepting `role`
+        // directly from the client, which would let anyone self-assign
+        // "admin" by editing the signup request body.
+        if (user.becomeSeller) {
+          const roles = String(user.authRole || 'user').split(',').map((r: string) => r.trim()).filter(Boolean)
+          if (!roles.includes('seller')) {
+            roles.push('seller')
+            await (db as any).update(schema.users)
+              .set({ authRole: roles.join(',') })
+              .where(eq(schema.users.id, user.id))
+          }
+        }
         // Give any registered commerce backend (e.g. adapter-magento) a
         // chance to create/link its own customer record for this user —
         // this layer never imports a specific adapter, it only ever calls
@@ -142,7 +159,12 @@ export const auditDatabaseHooks = {
         for (const linker of CommerceCustomerLinkRegistry.getAll()) {
           if (!linker.isEnabled()) continue
           try {
-            const result = await linker.onUserCreated({ id: user.id, email: user.email, name: user.name })
+            const result = await linker.onUserCreated({
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              isSeller: Boolean(user.becomeSeller),
+            })
             if (result?.externalCustomerId) {
               // magentoCustomerId's live column is bigint (mirrors Magento's
               // own numeric customer entity_id) — coerce when the id is

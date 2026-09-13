@@ -6369,6 +6369,15 @@ export const users = pgTable.withRLS("users", {
 	authBanned: boolean("auth_banned").default(false),
 	authBanReason: text("auth_ban_reason"),
 	authBanExpires: timestamp("auth_ban_expires", { withTimezone: true }),
+	// Set once, at signup, from the register form's "become a seller"
+	// checkbox (additionalFields.becomeSeller, input: true — safe to accept
+	// directly from the client because it only ever adds the literal
+	// "seller" role, never an arbitrary one). The user.create.after hook in
+	// audits.ts reads this and appends "seller" to authRole server-side;
+	// authRole (not this column) is the actual authority checked by
+	// requireSeller()/the seller.ts route middleware. Left true afterwards
+	// purely as signup history — see migration 20260913000000_add_become_seller.
+	becomeSeller: boolean("become_seller").default(false),
 }, (table) => [
 	unique("users_phone_key").on(table.phone),check("users_email_change_confirm_status_check", sql`((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2))`),]);
 

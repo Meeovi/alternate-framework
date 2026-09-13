@@ -41,6 +41,7 @@ export default defineNitroPlugin(() => {
         firstname: firstname || 'Customer',
         lastname: rest.join(' ') || firstname || 'Customer',
         email: user.email,
+        wantsToSell: Boolean(user.isSeller),
       })
       return created?.id ? { externalCustomerId: String(created.id) } : undefined
     },

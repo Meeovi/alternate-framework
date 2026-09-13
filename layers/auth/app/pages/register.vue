@@ -30,6 +30,10 @@
 							max-width="150" max-height="150" />
 					</div>
 
+					<v-checkbox v-model="becomeSeller" label="I want to sell on the marketplace"
+						messages="You'll get access to the seller dashboard once your account is created."
+						hide-details="auto" density="comfortable" />
+
 					<v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" size="large">
 						{{ loading ? 'Creating account...' : 'Create Account' }}
 					</v-btn>
@@ -94,6 +98,7 @@ import AtprotoAuth from '../components/features/plugins/atproto.vue'
 	const passwordConfirmation = ref("");
 	const imageFile = ref(null);
 	const imagePreview = ref(null);
+	const becomeSeller = ref(false);
 	const loading = ref(false);
 
 	async function convertImageToBase64(file) {
@@ -119,14 +124,23 @@ import AtprotoAuth from '../components/features/plugins/atproto.vue'
 			password: password.value,
 			name: `${firstName.value} ${lastName.value}`,
 			image: imageFile.value ? await convertImageToBase64(imageFile.value) : undefined,
+			// Read server-side by the user.create.after hook (audits.ts),
+			// which appends the "seller" role and best-effort registers a
+			// matching Webkul seller record via the Magento adapter — see
+			// additionalFields.becomeSeller in server/utils/auth.ts.
+			becomeSeller: becomeSeller.value,
+			// Where better-auth sends the user once the verification link is
+			// clicked. See emailVerification config in server/utils/auth.ts.
+			callbackURL: '/login?verified=1',
 		})
 		if (error) {
 			toast.add({ title: 'Error', description: error.message, color: 'error' });
-		} else {
-			toast.add({ title: 'Success', description: 'You have been signed up!', color: 'success' });
-			await navigateTo('/login')
+			loading.value = false
+			return
 		}
-		loading.value = false
+		// Account created but not yet usable — no session is issued until the
+		// email is confirmed. Send the user to the "check your inbox" page.
+		await navigateTo({ path: '/verify-email', query: { email: email.value } })
 	}
 
 	const handleImageChange = (files) => {

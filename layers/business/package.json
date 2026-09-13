@@ -1,0 +1,22 @@
+{
+  "name": "@mframework/layer-business",
+  "type": "module",
+  "version": "0.0.1",
+  "main": "./nuxt.config.ts",
+  "scripts": {
+    "dev": "nuxi dev .playground",
+    "dev:prepare": "nuxt prepare .playground",
+    "build": "nuxt build .playground",
+    "generate": "nuxt generate .playground",
+    "preview": "nuxt preview .playground",
+    "lint": "echo \"[lint] ESLint disabled repo-wide\""
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.17.0",
+    "@types/node": "^24.13.3",
+    "eslint": "^10.10.0",
+    "nuxt": "^4.5.2",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.42"
+  }
+}

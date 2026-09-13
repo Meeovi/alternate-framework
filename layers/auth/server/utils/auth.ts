@@ -218,6 +218,18 @@ export const auth = betterAuth({
         defaultValue: null,
         input: false
       },
+      // input: true (unlike the ids above) is safe here — this can only
+      // ever request the literal "seller" role, never an arbitrary one.
+      // The user.create.after hook (audits.ts) reads it once and appends
+      // "seller" to authRole server-side; authRole is what
+      // requireSeller()/the seller.ts route middleware actually check.
+      // This column stays true afterwards purely as signup history.
+      becomeSeller: {
+        type: 'boolean',
+        required: false,
+        defaultValue: false,
+        input: true
+      },
       locale: { type: "string", required: false },
     },
     modelName: "users"

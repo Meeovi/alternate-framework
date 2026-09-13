@@ -347,30 +347,65 @@ export class MagentoAdapter {
      * config doesn't expose it. The real numeric id IS embedded in the
      * customer token's JWT payload (`uid` claim) though, so a token is
      * generated right after creation purely to recover the id.
+     *
+     * `wantsToSell` additionally registers the new customer as a Webkul
+     * Multi Vendor Marketplace seller via Meeovi_MarketplaceApi's
+     * `POST /V1/meeovi-marketplace/seller/register` (self-scoped — needs
+     * that same customer token, so it's minted unconditionally here rather
+     * than only on the id-recovery fallback path). Best-effort: like the
+     * id-recovery above, a failure here still returns the created customer
+     * rather than failing the whole signup — the caller (commerce-link.ts)
+     * already treats this the same way it treats an unreachable backend.
      */
-    createCustomer: async (payload: { firstname: string; lastname: string; email: string }) => {
+    createCustomer: async (payload: { firstname: string; lastname: string; email: string; wantsToSell?: boolean }) => {
       const password = `${Math.random().toString(36).slice(2)}${Date.now().toString(36)}Aa1!`
       const data = await this.store.mutateEntity('createCustomerV2', {
         input: { firstname: payload.firstname, lastname: payload.lastname, email: payload.email, password },
       }, { fields: [{ customer: ['id', 'email', 'firstname', 'lastname'] }] })
       const customer = data?.customer
       if (!customer) return null
-      if (customer.id) return customer
 
-      try {
-        const tokenData = await this.store.mutateEntity('generateCustomerToken', {
-          email: payload.email,
-          password,
-        }, { fields: ['token'] })
-        const token = tokenData?.token
-        const payloadJson = token ? Buffer.from(token.split('.')[1], 'base64').toString('utf8') : null
-        const uid = payloadJson ? JSON.parse(payloadJson)?.uid : null
-        return uid ? { ...customer, id: uid } : customer
-      } catch {
-        // Id recovery failing shouldn't fail the whole signup — the caller
-        // just won't get a linkable id this time.
-        return customer
+      let uid: number | null = customer.id ? Number(customer.id) : null
+      let token: string | null = null
+
+      if (!uid || payload.wantsToSell) {
+        try {
+          const tokenData = await this.store.mutateEntity('generateCustomerToken', {
+            email: payload.email,
+            password,
+          }, { fields: ['token'] })
+          token = tokenData?.token ?? null
+          if (!uid && token) {
+            const payloadJson = Buffer.from(token.split('.')[1], 'base64').toString('utf8')
+            const recoveredUid = JSON.parse(payloadJson)?.uid
+            if (recoveredUid) uid = Number(recoveredUid)
+          }
+        } catch {
+          // Id recovery / token mint failing shouldn't fail the whole
+          // signup — the caller just won't get a linkable id (or seller
+          // registration) this time.
+        }
       }
+
+      if (payload.wantsToSell && uid && token) {
+        try {
+          const response = await fetch(this.restUrl('/meeovi-marketplace/seller/register'), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ customerId: uid }),
+          })
+          if (!response.ok) {
+            console.error('[adapter-magento] Seller registration rejected for new customer', uid, response.status, await response.text().catch(() => ''))
+          }
+        } catch (e) {
+          console.error('[adapter-magento] Seller registration failed for new customer', uid, e)
+        }
+      }
+
+      return uid ? { ...customer, id: uid } : customer
     },
 
     createCustomerAddress: async (payload: Record<string, any>) => {
@@ -1151,7 +1186,7 @@ export class MagentoAdapter {
     }, { fields: ['sku', 'source_code', 'quantity', 'status'] })
   }
 
-  constructor(endpoint: string, storeCode?: string, customerToken?: string) {
+  constructor(private endpoint: string, storeCode?: string, customerToken?: string) {
     this.client = new GraphQLClient(endpoint, {
       headers: {
         'Content-Type': 'application/json',
@@ -1159,6 +1194,16 @@ export class MagentoAdapter {
         ...(customerToken ? { Authorization: `Bearer ${customerToken}` } : {})
       },
     })
+  }
+
+  /**
+   * Derives the store's REST base ("https://host/graphql" ->
+   * "https://host/rest/V1") from the GraphQL endpoint this adapter was
+   * constructed with — used only by the Meeovi_MarketplaceApi bridge module
+   * calls below, which has no GraphQL surface of its own.
+   */
+  private restUrl(path: string): string {
+    return `${this.endpoint.replace(/\/graphql\/?$/, '')}/rest/V1${path}`
   }
 
   private async fetchRawMagentoData(id: string | number, fields: any[] = []): Promise<any> {
@@ -1204,12 +1249,12 @@ export class MagentoAdapter {
       // with a sentinel so they survive JSON.stringify as strings, then get
       // unquoted here — GraphQL enum arguments are bare identifiers, and
       // sending them as quoted strings is a schema validation error.
-      .replace(/" ENUM:([^"]*) "/g, '$1')
+      .replace(/"ENUM:([^"]*)"/g, '$1')
   }
 
   /** See serializeArguments — wraps a value so it's emitted as a bare
    *  GraphQL enum identifier instead of a quoted string. */
   private rawGraphQLEnum(value: string): { toJSON(): string } {
-    return { toJSON: () => ` ENUM:${value} ` }
+    return { toJSON: () => `ENUM:${value}` }
   }
 }

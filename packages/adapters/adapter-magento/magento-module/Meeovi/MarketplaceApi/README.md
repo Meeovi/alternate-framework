@@ -1,11 +1,17 @@
 # Meeovi_MarketplaceApi
 
-A small Magento 2 module that adds one authenticated REST route —
-`POST /V1/meeovi-marketplace/seller/products` — letting a signed-in customer
-who is an approved Webkul "Multi Vendor Marketplace" seller create a product
-in one call: it creates the core catalog product **and** Webkul's own
-seller-linkage record together, so you never get a catalog product that
-exists but isn't attributed to a seller (or vice versa).
+A small Magento 2 module that adds two authenticated, customer-token-scoped
+REST routes bridging to Webkul's "Multi Vendor Marketplace" extension:
+
+- `POST /V1/meeovi-marketplace/seller/register` — registers the calling
+  customer as a seller (creates/updates their `marketplace_userdata` row).
+  Called automatically by the app's own registration flow when a user checks
+  "become a seller" at signup (see adapter-magento's `createCustomer` and
+  `runtime/server/commerce-link.ts`), but idempotent and safe to call again.
+- `POST /V1/meeovi-marketplace/seller/products` — lets an approved seller
+  create a product in one call: creates the core catalog product **and**
+  Webkul's own seller-linkage record together, so you never get a catalog
+  product that exists but isn't attributed to a seller (or vice versa).
 
 It does **not** modify `Webkul_Marketplace` — never patch a third-party
 vendor module directly. It depends on it and calls its own classes.
@@ -111,9 +117,8 @@ the `resource ref="self"` comment in `etc/webapi.xml`), so a seller cannot
 create a product attributed to a different seller by changing that field.
 
 The caller must already have an **approved seller record**
-(`marketplace_userdata.is_seller = 1` for that customer) — becoming a seller
-in the first place (Webkul's own seller-registration flow / admin approval)
-is out of scope for this module.
+(`marketplace_userdata.is_seller = 1` for that customer) — use
+`POST /V1/meeovi-marketplace/seller/register` (below) to create one first.
 
 Response:
 
@@ -131,3 +136,39 @@ the created product's marketplace linkage starts `is_approved = 0` /
 `status = Pending` — exactly as if the seller had submitted it through
 Webkul's own seller panel — and an admin needs to approve it from
 Marketplace > Products before it's live for that seller.
+
+## Registering as a seller
+
+```
+POST /rest/V1/meeovi-marketplace/seller/register
+Authorization: Bearer <the customer's own token, from
+  POST /V1/integration/customer/token — NOT an admin token>
+Content-Type: application/json
+
+{
+  "customerId": 42,
+  "shopUrl": "my-shop"
+}
+```
+
+Same `self`-scoped rule as above: `customerId` is only relevant for an
+admin-token caller, and `shopUrl` is optional — a `seller-<customerId>` slug
+is generated when omitted. Idempotent: calling it again for an existing
+seller just re-applies the same fields (matches Webkul's own
+`BecomesellerPost` controller, which doesn't distinguish "new" from
+"already registered" either).
+
+Response:
+
+```json
+{
+  "seller_record_id": 9,
+  "is_approved": true,
+  "shop_url": "seller-42"
+}
+```
+
+`is_approved: false` means `marketplace/general_settings/seller_approval`
+is turned on for this store — the account is created but pending admin
+approval from Marketplace > Sellers, same as the storefront "become a
+seller" flow.

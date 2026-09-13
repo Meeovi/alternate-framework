@@ -43,7 +43,7 @@ import {
   patreon,
 } from 'better-auth/plugins'
 import { atprotoAuth } from '@mframework/adapter-federation/auth/plugin'
-import { ac, admin, user, myCustomRole } from './permissions'
+import { ac, admin, user, seller, myCustomRole } from './permissions'
 import { normalizeUsername } from './username'
 
 if (!process.env.NUXT_STRIPE_WEBHOOK_SECRET) {
@@ -472,7 +472,7 @@ export const plugins = [
 
   adminPlugin({
     ac,
-    roles: { admin, user, myCustomRole },
+    roles: { admin, user, seller, myCustomRole },
     // role/banned/banReason/banExpires/impersonatedBy are mapped to new,
     // distinctly-named columns rather than the pre-existing users.role /
     // users.bannedUntil — those are Supabase's own native auth fields
