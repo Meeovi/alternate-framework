@@ -3,10 +3,6 @@ import { defineNuxtConfig } from 'nuxt/config'
 const isProd = process.env.NODE_ENV === 'production'
 
 export default defineNuxtConfig({
-  $meta: {
-    name: 'social',
-    description: 'Social Layer provides functionalities for social interactions and networking.',
-  },
 
   modules: [
     '@vueuse/nuxt',
@@ -22,47 +18,69 @@ export default defineNuxtConfig({
     '@mframework/adapter-federation/nuxt',
     ...(isProd ? ['nuxt-module-feed'] : [])
   ],
+  $meta: {
+    description: 'Social Layer provides functionalities for social interactions and networking.',
+    name: 'social'
+  },
 
   runtimeConfig: {
     adminKey: '',
     cloudflare: {
       accountId: '',
       namespaceId: '',
-      apiToken: '',
+      apiToken: ''
     },
     // Shared secret used to sign the SSO JWT handed to Coral (server/api/
     // social/coral-token.get.ts) — never exposed to the client. Configured
     // in Coral's own admin panel under Configure > Auth > Single Sign On.
-    coralSsoSecret: '',
+    // Read from process.env explicitly: the .env key is CORAL_SSO_SECRET
+    // (no NUXT_ prefix), so Nuxt's automatic runtimeConfig env override
+    // (which only matches NUXT_CORAL_SSO_SECRET) never picks it up — same
+    // pattern as coralServerURL below.
+    coralSsoSecret: process.env.CORAL_SSO_SECRET || '',
     // Optional: Coral's admin issues this alongside the secret when SSO
     // key rotation is in use — sent as the JWT's `kid` header so Coral
     // knows which secret to verify against. Leave unset if Coral's admin
     // only shows a single Secret with no accompanying Key ID.
-    coralKeyId: '',
-      feed: {
-    sources: [
-      {
-        path: "/feed.xml", // The route to your feed.
-        type: "rss2", // Can be: rss2, atom1, json1
-        cacheTime: 60 * 15, // How long should the feed be cached
-      },
-    ]
-  },  
-  mframework: {
-    auth: '~/auth/socialAuth',
-    user: '~/auth/currentUser',
-  },
-  public: {
+    coralKeyId: process.env.CORAL_KEY_ID || '',
+    feed: {
+      sources: [
+        {
+          path: '/feed.xml', // The route to your feed.
+          type: 'rss2', // Can be: rss2, atom1, json1
+          cacheTime: 60 * 15 // How long should the feed be cached
+        }
+      ]
+    },
+    mframework: {
+      auth: '~/auth/socialAuth',
+      user: '~/auth/currentUser'
+    },
+    public: {
     // Coral (coralproject/talk) replaces Waline as the comments system —
     // Waline had no extension point for external auth, so comments now log
     // in via SSO against layers/auth's session (see coral-token.get.ts).
-    coralServerURL: process.env.CORAL_SERVER_URL || '',
+      coralServerURL: process.env.CORAL_SERVER_URL || '',
 
-    minioEndpoint: process.env.MINIO_ENDPOINT || 'localhost',
-    minioPort: process.env.MINIO_PORT || '9000',
-    minioUseSSL: process.env.MINIO_USE_SSL === 'true',
-  }
+      minioEndpoint: process.env.MINIO_ENDPOINT || 'localhost',
+      minioPort: process.env.MINIO_PORT || '9000',
+      minioUseSSL: process.env.MINIO_USE_SSL === 'true'
+    }
   },
 
-  compatibilityDate: '2026-02-16',
+  // Pixanomy's 3D preview (Pix3DScene.vue) pulls these three.js example
+  // loaders directly — three has no `exports` map so the subpaths resolve
+  // to real files, but pre-bundling them keeps the dev server from doing a
+  // mid-session re-optimize the first time a glTF model is opened.
+  vite: {
+    optimizeDeps: {
+      include: [
+        'three/examples/jsm/loaders/GLTFLoader.js',
+        'three/examples/jsm/controls/OrbitControls.js',
+        'three/examples/jsm/environments/RoomEnvironment.js'
+      ]
+    }
+  },
+
+  compatibilityDate: '2026-02-16'
 })

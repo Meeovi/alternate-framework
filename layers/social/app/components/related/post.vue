@@ -46,6 +46,9 @@
                     </v-card-text>
 
                     <v-card-actions>
+                        <!--Like-->
+                        <LikeButton v-if="post?.id" target-type="post" :target-id="post.id" size="small" />
+
                         <!--Reactions-->
                         <v-btn variant="text">
                             <v-menu>
@@ -91,6 +94,7 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import share from '#social/app/components/blocks/share.vue';
     import repost from '#social/app/components/blocks/repost/repost.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
+    import LikeButton from '#social/app/components/blocks/LikeButton.vue';
     import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
     import {
         toRef,

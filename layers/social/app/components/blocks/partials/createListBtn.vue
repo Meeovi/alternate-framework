@@ -15,90 +15,97 @@
       {{ confirmationMessage }}
     </v-snackbar>
 
-    <!-- Flyout Menu -->
-    <v-navigation-drawer v-model="drawer" location="right" temporary class="add-to-list-flyout">
-      <v-card-title class="d-flex justify-space-between align-center">
-        <span>Add to List</span>
-        <v-btn icon="fas fa-x" @click="drawer = false"></v-btn>
-      </v-card-title>
+    <!-- Add-to-list picker. A v-dialog (not a v-navigation-drawer) so it
+         joins Vuetify's overlay stack: this button is rendered inside the
+         vibez dialog, and a temporary drawer's z-index comes from the
+         layout (~1000), so it opened *behind* that dialog's 2400 overlay.
+         An overlay-stacked dialog always lands on top of whatever is open
+         under it. -->
+    <v-dialog v-model="drawer" max-width="480" scrollable>
+      <v-card class="add-to-list-card">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Add to List</span>
+          <v-btn icon="fas fa-x" variant="text" density="comfortable" @click="drawer = false"></v-btn>
+        </v-card-title>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <div v-if="item" class="product-preview d-flex align-center pa-4">
-        <v-img
-          :src="item.image || '/images/placeholder.png'"
-          width="56"
-          height="56"
-          cover
-          class="rounded mr-3 flex-none"
-        />
-        <div>
-          <div class="text-subtitle-2">{{ item.name }}</div>
-          <!-- item.price is already a fully-formatted string (e.g.
-               "$12.00") where it's supplied — don't prefix another $. -->
-          <div v-if="item.price" class="text-caption text-grey">{{ item.price }}</div>
-        </div>
-      </div>
-
-      <v-divider></v-divider>
-
-      <!-- Create a new list right from the panel -->
-      <div class="pa-4">
-        <v-form @submit.prevent="handleCreateList">
-          <v-text-field
-            v-model="newListName"
-            label="Create a new list"
-            placeholder="e.g. Birthday ideas"
-            density="compact"
-            hide-details="auto"
-            :disabled="creating"
-            :loading="creating"
-            append-inner-icon="fas fa-plus"
-            @click:append-inner="handleCreateList"
+        <div v-if="item" class="product-preview d-flex align-center pa-4">
+          <v-img
+            :src="item.image || '/images/placeholder.png'"
+            width="56"
+            height="56"
+            cover
+            class="rounded mr-3 flex-none"
           />
-        </v-form>
-      </div>
+          <div>
+            <div class="text-subtitle-2">{{ item.name }}</div>
+            <!-- item.price is already a fully-formatted string (e.g.
+                 "$12.00") where it's supplied — don't prefix another $. -->
+            <div v-if="item.price" class="text-caption text-grey">{{ item.price }}</div>
+          </div>
+        </div>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <!-- The user's current lists -->
-      <div class="lists-items">
-        <template v-if="loadingLists">
-          <v-progress-circular indeterminate color="primary" class="ma-4"></v-progress-circular>
-        </template>
-        <template v-else-if="lists.length">
-          <v-list lines="two">
-            <v-list-item
-              v-for="list in lists"
-              :key="list.id"
-              :title="list.name"
-              :subtitle="listTypeLabel(list.type)"
-              class="list-row"
-              :disabled="pendingListIds.has(list.id)"
-              @click="toggleList(list)"
-            >
-              <template #prepend>
-                <v-avatar :color="list.color || 'primary'" size="36">
-                  <v-icon :icon="list.icon || 'fas fa-list'" color="white" size="small"></v-icon>
-                </v-avatar>
-              </template>
-              <template #append>
-                <v-progress-circular v-if="pendingListIds.has(list.id)" indeterminate size="20"></v-progress-circular>
-                <v-icon v-else-if="isInList(list.id)" icon="fas fa-check" color="success"></v-icon>
-                <v-icon v-else icon="fas fa-plus"></v-icon>
-              </template>
-            </v-list-item>
-          </v-list>
-        </template>
-        <template v-else>
-          <v-alert type="info" class="mt-4 mx-4">
-            You don't have any lists yet — create one above.
-          </v-alert>
-        </template>
+        <!-- Create a new list right from the panel -->
+        <div class="pa-4">
+          <v-form @submit.prevent="handleCreateList">
+            <v-text-field
+              v-model="newListName"
+              label="Create a new list"
+              placeholder="e.g. Birthday ideas"
+              density="compact"
+              hide-details="auto"
+              :disabled="creating"
+              :loading="creating"
+              append-inner-icon="fas fa-plus"
+              @click:append-inner="handleCreateList"
+            />
+          </v-form>
+        </div>
 
-        <v-alert v-if="error" type="error" class="mt-4 mx-4">{{ error }}</v-alert>
-      </div>
-    </v-navigation-drawer>
+        <v-divider></v-divider>
+
+        <!-- The user's current lists -->
+        <v-card-text class="lists-items pa-0">
+          <template v-if="loadingLists">
+            <v-progress-circular indeterminate color="primary" class="ma-4"></v-progress-circular>
+          </template>
+          <template v-else-if="lists.length">
+            <v-list lines="two">
+              <v-list-item
+                v-for="list in lists"
+                :key="list.id"
+                :title="list.name"
+                :subtitle="listTypeLabel(list.type)"
+                class="list-row"
+                :disabled="pendingListIds.has(list.id)"
+                @click="toggleList(list)"
+              >
+                <template #prepend>
+                  <v-avatar :color="list.color || 'primary'" size="36">
+                    <v-icon :icon="list.icon || 'fas fa-list'" color="white" size="small"></v-icon>
+                  </v-avatar>
+                </template>
+                <template #append>
+                  <v-progress-circular v-if="pendingListIds.has(list.id)" indeterminate size="20"></v-progress-circular>
+                  <v-icon v-else-if="isInList(list.id)" icon="fas fa-check" color="success"></v-icon>
+                  <v-icon v-else icon="fas fa-plus"></v-icon>
+                </template>
+              </v-list-item>
+            </v-list>
+          </template>
+          <template v-else>
+            <v-alert type="info" class="mt-4 mx-4">
+              You don't have any lists yet — create one above.
+            </v-alert>
+          </template>
+
+          <v-alert v-if="error" type="error" class="mt-4 mx-4">{{ error }}</v-alert>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -248,8 +255,10 @@ const handleCreateList = async () => {
 </script>
 
 <style scoped>
-  .add-to-list-flyout {
-    width: 400px;
+  .add-to-list-card {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
   }
 
   .lists-items {

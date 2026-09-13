@@ -27,7 +27,8 @@
                             </h1>
 
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-6 d-flex align-center">
+                                    <LikeButton v-if="post?.id" target-type="post" :target-id="post.id" />
                                     <reactions class="postReactions" />
                                 </div>
 
@@ -159,6 +160,7 @@
     import tagCard from '#social/app/components/related/tag.vue';
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
+    import LikeButton from '#social/app/components/blocks/LikeButton.vue';
     import comments from '#social/app/components/blocks/comments.vue';
     import {
         onMounted,

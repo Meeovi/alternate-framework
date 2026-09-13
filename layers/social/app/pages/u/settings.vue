@@ -125,19 +125,23 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
 
-const runtimeUseAuth = (globalThis as any).useAuth as (() => any) | undefined
-const auth = runtimeUseAuth
-  ? runtimeUseAuth()
-  : {
-      user: useState<any>('social:user', () => null),
-      fetchSession: async () => null,
-    }
-const { user, fetchSession } = auth
-const loading = ref(false)
+const auth = useAuth() as any
+// SSR-safe session read: a relative-url request-aware fetch forwards the
+// session cookie on SSR, unlike useSession(useFetch) which drops it (see
+// layers/auth/app/middleware/auth.ts). The `auth` route middleware below
+// is the real access gate.
+const { data: sessionData, refresh: fetchSession } = await useAsyncData(
+  'u-settings-session',
+  () => useRequestFetch()('/api/auth/get-session'),
+  { default: () => null }
+)
+// Plain mutable ref: saveProfile() merges form fields into it in place.
+const user = ref<any>((sessionData.value as any)?.user ?? null)
+watchEffect(() => {
+  const next = (sessionData.value as any)?.user ?? null
+  if (next && (!user.value || (user.value as any).id !== next.id)) user.value = next
+})
 const theme = useTheme()
-const config = useRuntimeConfig()
-const authConfig = (config.public as any)?.auth ?? {}
-const token = useCookie<string | null>(authConfig?.cookieName || 'auth-token') as any
 
 const saving = ref(false)
 const statusMessage = ref('')
@@ -250,16 +254,8 @@ const fillFromUser = () => {
   form.themeMode = (stored.themeMode || 'system').toString()
 }
 
-watchEffect(async () => {
-  if (!token.value) {
-    await navigateTo('/login')
-    return
-  }
-
-  if (!user.value?.id && !loading.value) {
-    await fetchSession()
-  }
-
+watchEffect(() => {
+  // Access control lives in the `auth` route middleware.
   if (user.value?.id && !form.email) {
     fillFromUser()
   }
@@ -281,11 +277,6 @@ const toMagentoGender = (value: string) => {
 }
 
 const saveProfile = async () => {
-  if (!token.value) {
-    await navigateTo('/login')
-    return
-  }
-
   saving.value = true
   statusMessage.value = ''
 
@@ -388,6 +379,7 @@ const saveProfile = async () => {
 
 definePageMeta({
   layout: 'nolive',
+  middleware: 'auth',
 })
 </script>
 

@@ -2,6 +2,9 @@
   <div class="contentPage">
     <v-toolbar :color="list?.color || 'primary'" dark>
       <v-toolbar-title>{{ list?.name || 'List' }}</v-toolbar-title>
+      <template #append>
+        <LikeButton v-if="list?.id" target-type="list" :target-id="list.id" />
+      </template>
     </v-toolbar>
 
     <div v-if="error" class="error pa-4">Failed to load list.</div>
@@ -34,6 +37,7 @@
     useRoute
   } from 'vue-router'
   import Grid from '#shared/app/components/ui/DataGrid/components/Grid.vue'
+  import LikeButton from '../../../components/blocks/LikeButton.vue'
   import TaskBoard from '../../../components/features/lists/types/TaskBoard.vue'
   import KanbanProjectBoard from '../../../components/features/lists/types/Kanban.vue'
   import TaskList from '../../../components/features/lists/types/TaskList.vue'

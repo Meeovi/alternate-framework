@@ -16,8 +16,7 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn icon="fas fa-heart" variant="text" @click="toggleLike" :color="liked ? 'red' : 'grey'" />
-            <span class="text-caption">{{ likesCount }}</span>
+            <LikeButton v-if="short?.id" target-type="shorts" :target-id="short.id" />
             <v-spacer />
             <createListBtn v-if="short" :item="listItem" kind="vibe" />
           </v-card-actions>
@@ -26,7 +25,7 @@
 
       <v-col>
         <v-card elevation="2" style="height: 100%;">
-          <comments :commentId="short?.id" />
+          <comments v-if="short?.id" :comment-id="String(short.id)" :story-url="`/connect/vibe/${short.id}`" />
         </v-card>
       </v-col>
     </v-row>
@@ -47,6 +46,7 @@
   } from 'vue-router'
   import comments from '../../../components/blocks/comments.vue'
   import createListBtn from '../../../components/blocks/partials/createListBtn.vue'
+  import LikeButton from '../../../components/blocks/LikeButton.vue'
   import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
   import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import {
@@ -70,8 +70,6 @@
   const { $directus, $readItem } = useNuxtApp()
 
   const short = ref(null)
-  const liked = ref(false)
-  const likesCount = ref(0)
 
   const playerData = computed(() => ({
     sources: [{ src: getAssetURL(short.value?.video) }],
@@ -106,37 +104,8 @@
     }).catch(() => {})
   }
 
-  async function fetchReaction() {
-    if (!short.value?.id) return
-    const reaction = await $fetch('/api/social/reactions', {
-      params: { targetType: 'shorts', targetId: short.value.id },
-    }).catch(() => null)
-    if (reaction) {
-      liked.value = reaction.reacted
-      likesCount.value = reaction.count
-    }
-  }
-
-  async function toggleLike() {
-    if (!short.value?.id) return
-    const wasLiked = liked.value
-    liked.value = !wasLiked
-    likesCount.value += wasLiked ? -1 : 1
-    try {
-      await $fetch('/api/social/reactions', {
-        method: 'POST',
-        body: { targetType: 'shorts', targetId: short.value.id, emoji: '❤️' },
-      })
-    } catch (error) {
-      liked.value = wasLiked
-      likesCount.value += wasLiked ? 1 : -1
-      console.error('Failed to toggle like:', error)
-    }
-  }
-
   onMounted(async () => {
     await fetchShort()
     await trackView()
-    await fetchReaction()
   })
 </script>

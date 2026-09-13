@@ -53,9 +53,8 @@
     </template>
 
     <template>
-      <v-btn icon="fas fa-heart" variant="text" @click="toggleLike" :color="isLiked ? 'red' : 'grey'" />
-      <span class="text-caption">{{ likesCount }}</span>
-      
+      <LikeButton target-type="shorts" :target-id="short?.id" :initial-count="short?.likes_count || 0" />
+
       <v-btn icon="fas fa-comment" variant="text" @click="toggleComments" />
       <span class="text-caption">{{ short?.comments_count || 0 }}</span>
       
@@ -73,18 +72,17 @@
     <v-expand-transition>
       <div v-show="showComments">
         <v-divider />
-        <commentsCard v-if="short?.id" :commentId="short.id" />
+        <commentsCard v-if="short?.id" :comment-id="String(short.id)" :story-url="`/connect/vibe/${short.id}`" />
       </div>
     </v-expand-transition>
   </v-card>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from '#imports'
+import { ref, computed } from '#imports'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 import commentsCard from '../../blocks/comments.vue'
-
-const { $sdk } = useNuxtApp()
+import LikeButton from '../../blocks/LikeButton.vue'
 
 const { short } = defineProps({
   short: {
@@ -96,21 +94,7 @@ const { short } = defineProps({
 const emit = defineEmits(['hashtag-click', 'comment-click', 'share'])
 
 const videoRef = ref(null)
-const isLiked = ref(false)
-const likesCount = ref(short?.likes_count || 0)
 const showComments = ref(false)
-
-onMounted(async () => {
-  try {
-    const reaction = await $fetch('/api/social/reactions', {
-      params: { targetType: 'shorts', targetId: short?.id },
-    })
-    isLiked.value = reaction.reacted
-    likesCount.value = reaction.count
-  } catch (error) {
-    console.error('Failed to load reaction state:', error)
-  }
-})
 
 const hashtags = computed(() => {
   if (!short?.description) return []
@@ -136,23 +120,6 @@ const togglePlay = () => {
     } else {
       videoRef.value.pause()
     }
-  }
-}
-
-const toggleLike = async () => {
-  const wasLiked = isLiked.value
-  // Optimistic update — reverted below if the request fails.
-  isLiked.value = !wasLiked
-  likesCount.value += wasLiked ? -1 : 1
-  try {
-    await $fetch('/api/social/reactions', {
-      method: 'POST',
-      body: { targetType: 'shorts', targetId: short?.id, emoji: '❤️' },
-    })
-  } catch (error) {
-    isLiked.value = wasLiked
-    likesCount.value += wasLiked ? 1 : -1
-    console.error('Failed to toggle like:', error)
   }
 }
 
