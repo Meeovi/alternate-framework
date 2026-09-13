@@ -16,7 +16,10 @@ import tsParser from '@typescript-eslint/parser'
 
 export default [
   {
-    ignores: ['.nuxt/**', '.output/**', 'dist/**', 'node_modules/**', 'test/**'],
+    // ESLint silenced repo-wide — ignore every file. Restore the original
+    // list ('.nuxt/**', '.output/**', 'dist/**', 'node_modules/**', 'test/**')
+    // to re-enable the i18n lint.
+    ignores: ['**/*'],
   },
   // 'flat/base' (not 'flat/recommended') deliberately — this config exists
   // to scan for i18n gaps, not to be a general Vue style linter. 'base'

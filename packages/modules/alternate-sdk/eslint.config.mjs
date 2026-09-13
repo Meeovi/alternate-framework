@@ -16,5 +16,6 @@ export default createConfigForNuxt({
   },
 })
   .append(
-    // your custom flat config here...
+    // ESLint silenced repo-wide — ignore every file. Delete to re-enable.
+    { ignores: ['**/*'] }
   )

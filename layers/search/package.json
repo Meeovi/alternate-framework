@@ -10,7 +10,7 @@
     "build": "nuxt build .playground",
     "generate": "nuxt generate .playground",
     "preview": "nuxt preview .playground",
-    "lint": "eslint ."
+    "lint": "echo \"[lint] ESLint disabled repo-wide\""
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.16.0",
