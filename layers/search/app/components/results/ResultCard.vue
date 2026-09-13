@@ -114,7 +114,12 @@ const formattedPrice = computed(() => {
 // single non-catch-all id).
 const ROUTE_BUILDERS: Record<string, (item: Record<string, unknown>) => string | null> = {
   product: (item) => {
-    const ref = item.slug ?? item.sku ?? item.id ?? item.objectID
+    // Route by id (or sku as a fallback) — never slug. The product detail
+    // page resolves by the catalog's primary key; commerce backends like
+    // Magento don't necessarily expose a slug/url-key for every product,
+    // but always have an id and sku. objectID is the federate-internal
+    // "provider:id" string and never a real product key.
+    const ref = item.id ?? item._id ?? item.sku
     return ref ? `/product/${ref}` : null
   },
   space: (item) => (item.slug ? `/connect/space/${item.slug}` : null),
@@ -149,11 +154,12 @@ const linkBinding = computed(() => {
 const productModel = computed(() => {
   const item = props.item
   return {
-    // objectID is a federate-internal "provider:id" string (e.g.
-    // "postgres:42"), never a real product identifier — CatalogProductCard
-    // builds its /product/{id} link straight from this field, so falling
-    // back to objectID produced a route to a product that doesn't exist.
-    id: item.slug ?? item.sku ?? item.id ?? item._id,
+    // CatalogProductCard builds its /product/{id} link straight from this
+    // field. Use the catalog primary key (id), then sku — never slug: the
+    // product detail page looks a product up by id/sku, and non-Directus
+    // backends (Magento, ...) may not expose a slug at all. objectID is
+    // the federate-internal "provider:id" string, never a real key.
+    id: item.id ?? item._id ?? item.sku,
     name: title.value,
     image: item.image ?? item.thumbnail ?? item.photo ?? null,
     rating: Number(firstValue(['rating', 'average_rating', 'stars']) ?? 0) || 0,

@@ -1,0 +1,11 @@
+/******************** Search App CSS ******************/
+
+#searchArea h1 {
+  text-align: center;
+  display: inline-block;
+}
+
+.homeSearch {
+  position: relative;
+  margin: 0 auto;
+}

@@ -33,7 +33,7 @@
               <template #append-inner>
                 <div class="search-bar__actions">
                   <ais-voice-search v-slot="{ isListening, toggleListening, isBrowserSupported }" search-as-you-speak>
-                    <v-btn type="button" icon="fas fa-microphone" variant="text" size="small" :disabled="!isBrowserSupported"
+                    <v-btn type="button" class="voiceBtn" icon="fas fa-microphone" variant="text" size="small" :disabled="!isBrowserSupported"
                       :color="isListening ? 'primary' : undefined"
                       :title="isBrowserSupported ? 'Search by voice' : 'Voice search not supported on this browser'"
                       @click="toggleListening">
@@ -160,8 +160,18 @@
      beat the `!important` in those global copies until they're removed. */
   .searchForm,
   .search-bar {
-    width: 100% !important;
+    width: 70% !important;
     min-width: 0 !important;
+  }
+
+  /* Scoped styles don't reach the native <input> Vuetify renders, so the
+     placeholder rule has to be wrapped in :deep(). Without it the
+     placeholder kept its default (near-white) colour and was invisible
+     against the unfocused solo-inverted (white) field. opacity:1 defeats
+     the browser default that dims placeholder text. */
+  .search-bar__input :deep(input::placeholder) {
+    color: #6b7280 !important;
+    opacity: 1 !important;
   }
 
   .searchField,
@@ -170,7 +180,6 @@
     align-items: center;
     gap: 0.5rem;
     width: 100% !important;
-    min-width: 0 !important;
     margin: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
