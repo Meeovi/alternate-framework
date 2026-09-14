@@ -36,9 +36,10 @@
     $readItems
   } = useNuxtApp()
 
+  // lazy: true — see latestproducts.vue's comment on the same pattern.
   const {
     data: featured
-  } = await useAsyncData('featured', async () => {
+  } = useAsyncData('featured', async () => {
     try {
       return await $directus.request($readItems('products', {
         fields: ['*',
@@ -68,5 +69,5 @@
     } catch {
       return null
     }
-  })
+  }, { lazy: true })
 </script>

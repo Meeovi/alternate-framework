@@ -28,9 +28,11 @@
 
   const model = ref(null)
 
+  // lazy: true — see layers/commerce/.../product/headerslider.vue's
+  // comment on the same pattern.
   const {
     data: group
-  } = await useAsyncData('group', () => {
+  } = useAsyncData('group', () => {
     return $directus.request($readItems('spaces', {
       fields: ['*', {
         '*': ['*']
@@ -41,5 +43,5 @@
         },
       },
     }))
-  })
+  }, { lazy: true })
 </script>

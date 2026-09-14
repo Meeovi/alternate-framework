@@ -101,14 +101,16 @@ import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
   // matter which one was clicked.
   const selectedShortId = ref(null);
 
+  // lazy: true — see LowerBar.vue's comment on the same pattern; this
+  // component also renders in the default layout on nearly every page.
   const {
       data: short
-  } = await useAsyncData('short', async () => {
+  } = useAsyncData('short', async () => {
       const resp = await $directus.request($readItems('shorts', {
           fields: ['*', { '*': ['*'] }]
       }))
       return Array.isArray(resp) ? resp : []
-  })
+  }, { lazy: true })
 
   function openVibe(item) {
     selectedShortId.value = item?.id ?? null;

@@ -31,9 +31,10 @@
     $readItems,
   } = useNuxtApp()
 
+  // lazy: true — see headerslider.vue's comment on the same pattern.
   const {
     data: stationSlide,
-  } = await useAsyncData('stationSlide', async () => {
+  } = useAsyncData('stationSlide', async () => {
     try {
       const result = await $directus.request($readItems('radios', {
         fields: ['id', 'name'],
@@ -48,7 +49,7 @@
     } catch {
       return []
     }
-  })
+  }, { lazy: true })
 
   const stationItems = computed(() => Array.isArray(stationSlide.value) ? stationSlide.value : [])
 </script>

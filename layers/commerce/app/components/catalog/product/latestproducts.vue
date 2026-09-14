@@ -35,9 +35,10 @@
     $readItems
   } = useNuxtApp()
 
+  // lazy: true — see headerslider.vue's comment on the same pattern.
   const {
     data: latest
-  } = await useAsyncData('latest', async () => {
+  } = useAsyncData('latest', async () => {
     try {
       return await $directus.request($readItems('products', {
         fields: ['*',
@@ -57,5 +58,5 @@
     } catch {
       return null
     }
-  })
+  }, { lazy: true })
 </script>

@@ -36,9 +36,10 @@ import brandCard from '../../related/brandCard.vue'
     $readItems
   } = useNuxtApp()
 
+  // lazy: true — see headerslider.vue's comment on the same pattern.
   const {
     data: relatedbrands
-  } = await useAsyncData('relatedbrands', async () => {
+  } = useAsyncData('relatedbrands', async () => {
     try {
       return await $directus.request($readItems('brands', {
         fields: ['*',
@@ -54,5 +55,5 @@ import brandCard from '../../related/brandCard.vue'
     } catch {
       return null
     }
-  })
+  }, { lazy: true })
 </script>

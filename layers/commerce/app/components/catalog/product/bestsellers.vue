@@ -48,9 +48,10 @@ const {
 // Directus yet (salable_quantity is unset on every product), so this
 // sorts by rating as the best available proxy for "best sellers" until
 // real sales data exists.
+// lazy: true — see latestproducts.vue's comment on the same pattern.
 const {
   data: bestsellers
-} = await useAsyncData('bestsellers', async () => {
+} = useAsyncData('bestsellers', async () => {
   try {
     return await $directus.request($readItems('products', {
       fields: ['*',
@@ -68,5 +69,5 @@ const {
   } catch {
     return null
   }
-})
+}, { lazy: true })
 </script>
