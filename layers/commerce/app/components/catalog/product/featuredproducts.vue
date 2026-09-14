@@ -50,16 +50,8 @@
         ],
         limit: 10,
         filter: {
-          lists: {
-            lists_id: {
-              lists_type: {
-                lists_type_id: {
-                  name: {
-                    _eq: "Featured"
-                  }
-                }
-              }
-            }
+          is_featured: {
+            _eq: true
           },
           status: {
             _eq: "published"
