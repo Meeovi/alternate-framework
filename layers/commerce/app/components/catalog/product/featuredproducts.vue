@@ -51,8 +51,8 @@
         filter: {
           lists: {
             lists_id: {
-              lists_types: {
-                lists_types_id: {
+              lists_type: {
+                lists_type_id: {
                   name: {
                     _eq: "Featured"
                   }

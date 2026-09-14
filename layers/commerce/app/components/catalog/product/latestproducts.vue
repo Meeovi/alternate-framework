@@ -51,7 +51,7 @@
             _eq: 'published'
           }
         },
-        sort: '-products_id.date_created',
+        sort: '-created_at',
         limit: 10,
       }))
     } catch {

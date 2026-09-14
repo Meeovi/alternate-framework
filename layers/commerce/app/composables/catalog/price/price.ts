@@ -79,6 +79,17 @@ function normalizeMoney(value: unknown): number | null {
 	return toNumber(record.value ?? record.amount)
 }
 
+// Directus's `products.currency` is a relation field — always an array
+// (e.g. `[58]`, or `[]` when unset), never a currency-code string. Treating
+// it as truthy-means-usable (the old behaviour here) let an empty relation
+// array flow all the way into Intl.NumberFormat's `currency` option, which
+// stringifies `[]` to `""` and throws `RangeError: Invalid currency code`,
+// crashing the whole SSR render for any product with no currency set.
+// Only accept genuine, non-empty currency-code strings from any candidate.
+function asCurrencyCode(value: unknown): string | null {
+	return typeof value === 'string' && value.trim() ? value : null
+}
+
 function normalizeCurrency(product: ProductLike, fallback?: string | null): string | null {
 	const priceRange = product?.price_range || product?.priceRange || {}
 	const maximumPrice = priceRange?.maximum_price || priceRange?.maximumPrice || {}
@@ -87,15 +98,14 @@ function normalizeCurrency(product: ProductLike, fallback?: string | null): stri
 	const regularPrice = maximumPrice?.regular_price || maximumPrice?.regularPrice || minimumPrice?.regular_price || minimumPrice?.regularPrice
 
 	return (
-		fallback
-		||
-		product?.currency
-		|| product?.currency_code
-		|| finalPrice?.currency
-		|| finalPrice?.currency_code
-		|| regularPrice?.currency
-		|| regularPrice?.currency_code
-		|| null
+		asCurrencyCode(fallback)
+		?? asCurrencyCode(product?.currency)
+		?? asCurrencyCode(product?.currency_code)
+		?? asCurrencyCode(finalPrice?.currency)
+		?? asCurrencyCode(finalPrice?.currency_code)
+		?? asCurrencyCode(regularPrice?.currency)
+		?? asCurrencyCode(regularPrice?.currency_code)
+		?? null
 	)
 }
 

@@ -30,9 +30,43 @@
 <script setup>
 import { ref } from 'vue'
 import ProductCard from './productCard.vue'
-import { useProducts } from '../../../composables/catalog/products/useProducts'
 
 const model = ref(null)
-const { data: bestsellers, fetchProducts } = useProducts()
-await fetchProducts()
+const {
+  $directus,
+  $readItems
+} = useNuxtApp()
+
+// useProducts()/getCommerceClient() routes through initGateway()'s
+// "commerce" domain, which nothing ever wires up (see
+// packages/modules/alternate-sdk/index.ts) and CommerceDriverRegistry has
+// zero registered implementations anywhere in the repo — every call
+// silently resolved to null, so this section rendered nothing. Sibling
+// components (latestproducts.vue, featuredproducts.vue) query Directus
+// directly instead; do the same here rather than depend on a client that
+// can never return data. There's no real sales/order-volume signal in
+// Directus yet (salable_quantity is unset on every product), so this
+// sorts by rating as the best available proxy for "best sellers" until
+// real sales data exists.
+const {
+  data: bestsellers
+} = await useAsyncData('bestsellers', async () => {
+  try {
+    return await $directus.request($readItems('products', {
+      fields: ['*',
+        'brands.brands_id.*',
+        'image.*',
+      ],
+      filter: {
+        status: {
+          _eq: 'published'
+        }
+      },
+      sort: '-rating',
+      limit: 10,
+    }))
+  } catch {
+    return null
+  }
+})
 </script>

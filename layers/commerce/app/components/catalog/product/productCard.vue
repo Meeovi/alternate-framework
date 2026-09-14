@@ -80,10 +80,18 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
     if (pricing.value?.formatted?.final) return pricing.value.formatted.final
     const raw = Number(props.product?.price)
     if (!Number.isFinite(raw)) return props.product?.price ?? ''
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: pricing.value?.currency || 'USD',
-    }).format(raw)
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: pricing.value?.currency || 'USD',
+      }).format(raw)
+    } catch {
+      // Unlike getProductPrice()'s own formatAmount(), this manual
+      // fallback had no guard against Intl.NumberFormat throwing on a bad
+      // currency value — a single malformed product crashed the whole SSR
+      // render. Degrade to a plain number instead of taking the page down.
+      return raw.toFixed(2)
+    }
   })
 
   // provider="cloudinary" is misconfigured in most environments (falls back
