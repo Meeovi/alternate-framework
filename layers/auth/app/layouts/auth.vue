@@ -1,5 +1,6 @@
 <template>
   <v-app class="auth-app">
+    <NuxtLoadingIndicator />
     <v-main class="auth-layout">
       <!-- Animated gradient background -->
       <div class="auth-background">

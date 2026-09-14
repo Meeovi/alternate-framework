@@ -34,7 +34,7 @@
           </div>
 
           <v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" size="large" class="mb-4">
-            {{ loading ? 'Signing in...' : 'Sign In' }}
+            {{ redirecting ? 'Redirecting…' : (loading ? 'Signing in...' : 'Sign In') }}
           </v-btn>
         </v-form>
 
@@ -117,6 +117,12 @@
   const email = ref("");
   const password = ref("");
   const loading = ref(false);
+  // Separate from `loading`: sign-in itself is already done at this point,
+  // we're just waiting on navigateTo() to finish loading the destination
+  // page. Distinct label + the layout's <NuxtLoadingIndicator> together
+  // give the user feedback for that whole wait instead of the page just
+  // appearing to hang after the "Signing in..." spinner already stopped.
+  const redirecting = ref(false);
   const rememberMe = ref(false);
 
   // Alert local states
@@ -170,7 +176,8 @@
           : error.message;
       } else {
         alertType.value = "success";
-        alertMessage.value = 'You have been signed in!';
+        alertMessage.value = "You're signed in — redirecting you now…";
+        redirecting.value = true;
         await navigateTo(redirectTarget.value);
       }
     } catch (err) {
@@ -179,6 +186,7 @@
       console.error('Sign in error:', err);
     } finally {
       loading.value = false;
+      redirecting.value = false;
     }
   }
 
