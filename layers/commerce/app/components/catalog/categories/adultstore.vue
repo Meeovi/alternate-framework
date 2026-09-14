@@ -1,7 +1,7 @@
 <template>
     <div>
         <AgeVerification />
-        <div v-if="session.user.age >= 18">
+        <div v-if="session.data?.user?.age >= 18">
             <section data-bs-version="5.1" class="formulam5 header1 cid-uwd6B8oI8u mbr-parallax-background"
                 id="header1-a7">
 
@@ -117,9 +117,11 @@
         authClient
     } from "#auth/lib/auth-client";
 
-    const {
-        data: session
-    } = await authClient.useSession();
+    // authClient.useSession() returns the Vue ref itself, not a {data,...}
+    // object and not a promise — see BottomFooter.vue's comment on the
+    // same bug. (Separately: better-auth's user has no `age` field here —
+    // this age gate has never actually been able to pass either way.)
+    const session = authClient.useSession();
 
     const {
         data: adult

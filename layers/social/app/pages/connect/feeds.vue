@@ -90,7 +90,11 @@
     import { authClient } from "#auth/lib/auth-client";
     import { useInfiniteScroll } from '@vueuse/core'
 
-    const { data: session } = await authClient.useSession();
+    // authClient.useSession() returns the Vue ref itself (readonly(shallowRef)
+    // from better-auth's vue-store.mjs), not a {data,...} object and not a
+    // promise — the `await` was a no-op. session.value.data is the actual
+    // {user, session} payload.
+    const session = authClient.useSession();
 
     const {
         $directus,
@@ -142,7 +146,7 @@
             fields: ['*', 'posts.posts_id.*', 'products.products_id.*', 'users.*'],
             filter: {
                 creator: {
-                    _eq: session.user?.id
+                    _eq: session.value?.data?.user?.id
                 }
             }
         }))
@@ -160,7 +164,7 @@
                 }],
                 filter: {
                     author: {
-                        _eq: session.user?.id
+                        _eq: session.value?.data?.user?.id
                     }
                 },
                 limit: postsLimit.value,

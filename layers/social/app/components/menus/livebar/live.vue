@@ -3,11 +3,11 @@
 
         <v-card height="75" variant="text">
             <v-tabs v-model="tab" center-active height="75">
-                <v-tab v-if="session?.user">
+                <v-tab v-if="session.data?.user">
                     <div class="text-center">
                         <v-dialog v-model="createdialog" transition="dialog-bottom-transition">
                             <template v-slot:activator="{ props }">
-                                <v-avatar icon="fas fa-plus"
+                                <v-avatar icon="fas fa-video"
                                     style="background: rgb(var(--v-theme-info))!important; color: white;" size="60"
                                     v-bind="props"></v-avatar>
                             </template>
@@ -87,7 +87,9 @@ import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
 
   const { $sdk, $directus, $readItems } = useNuxtApp()
 
-  const { data: session } = authClient.useSession()
+  // authClient.useSession() returns the Vue ref itself, not a {data,...}
+  // object — see BottomFooter.vue's comment on the same bug.
+  const session = authClient.useSession()
 
   const tab = ref(null);
   const createdialog = ref(false);
