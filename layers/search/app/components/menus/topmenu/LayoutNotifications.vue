@@ -1,189 +1,63 @@
 <template>
-  <div>
-    <!-- Badge now correctly wraps or overlays the button -->
-    <!--
-      unreadCount/notifications below are plain top-level refs from
-      useUserNotifications(), correctly auto-unwrapped by Vue at runtime.
-      vue-tsc's template checker is a confirmed false positive here (it
-      infers them as still Ref-wrapped) — adding .value to "fix" the type
-      error breaks it at runtime instead (Ref<T> has no .value on what's
-      already the unwrapped value), which is exactly what caused a live
-      hydration-mismatch/TypeError crash on this component. Do not add
-      .value here; the @vue-ignore comments below suppress the tooling
-      false positive instead.
-    -->
-    <!-- @vue-ignore -->
-    <v-badge
-      v-if="unreadCount > 0"
-      :content="unreadCount"
-      color="error"
-      overlap
-      offset-x="10"
-      offset-y="10"
-    >
-      <v-btn
-        class="relative"
-        icon="fas fa-bell"
-        variant="text"
-        @click.stop="drawer = !drawer"
-        aria-label="Notifications"
-      >
-      </v-btn>
-    </v-badge>
-    <v-btn
-      v-else
-      class="relative"
-      icon="fas fa-bell"
-      variant="text"
-      @click.stop="drawer = !drawer"
-      aria-label="Notifications"
-    >
-    </v-btn>
-    
-    <!-- Flyout Menu -->
-    <Teleport to="body">
-    <v-navigation-drawer v-model="drawer" location="right" temporary :width="400" class="cart-flyout">
-      <v-card-title class="d-flex justify-space-between align-center">
-        <span>Notifications</span>
-        <v-btn icon="fas fa-x" @click="drawer = false"></v-btn>
-      </v-card-title>
-
-       <v-divider></v-divider>
-
-       <div class="notification-actions">
-         <!-- @vue-ignore -->
-         <v-btn
-           v-if="unreadCount > 0"
-           variant="text"
-           size="small"
-           @click="markAllAsRead"
-         >
-           Mark all as read
-         </v-btn>
-       </div>
-
-       <div class="cart-items">
-         <!-- @vue-ignore -->
-         <template v-if="notifications.length > 0">
-           <v-list lines="two" class="notification-list">
-             <!-- @vue-ignore -->
-             <v-list-item
-               v-for="notification in notifications.slice(0, 5)"
-               :key="notification.id"
-               :href="getNotificationLink(notification)"
-               :class="{ 'unread': !notification.read }"
-               @click="markAsRead(notification.id)"
-             >
-               <template v-slot:prepend>
-                 <v-icon
-                   :icon="getNotificationIcon(notification.category)"
-                   :color="getNotificationColor(notification.category)"
-                 ></v-icon>
-               </template>
-               <v-list-item-title v-dompurify-html="notification.title"></v-list-item-title>
-               <v-list-item-subtitle>
-                 {{ new Date(notification.createdAt).toLocaleDateString() }}
-               </v-list-item-subtitle>
-               <template v-slot:append>
-                 <v-btn
-                   icon="fas fa-x"
-                   size="small"
-                   variant="text"
-                   @click.stop="dismiss(notification.id)"
-                   aria-label="Dismiss notification"
-                 ></v-btn>
-               </template>
-             </v-list-item>
-
-             <v-divider></v-divider>
-
-             <v-list-item
-               title="All Notifications"
-               value="All Notifications"
-               append-icon="fas fa-bell"
-               href="/notifications"
-             >
-             </v-list-item>
-           </v-list>
-         </template>
-         <template v-else>
-           <v-alert type="info" class="mt-4 mx-4">
-             No new notifications
-           </v-alert>
-         </template>
-       </div>
-    </v-navigation-drawer>
-    </Teleport>
-  </div>
+  <div ref="containerEl" class="novu-inbox-container"></div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useUserNotifications } from '#shared/app/composables/notifications/useUserNotifications'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import type { NovuUI } from '@novu/js/ui'
+import { useNovuSession } from '#shared/app/composables/notifications/useNovuSession'
 
-const drawer = ref(false)
+// Replaces the old custom bell/drawer + `notifications` Directus collection
+// (useUserNotifications.ts) with Novu's self-contained Inbox widget — it
+// renders its own bell trigger and popover panel into this one element, so
+// there's no v-badge/v-navigation-drawer to maintain here anymore.
+const containerEl = ref<HTMLElement | null>(null)
+let novu: InstanceType<typeof NovuUI> | null = null
 
-const {
-  notifications,
-  unreadCount,
-  markAsRead,
-  markAllAsRead,
-  dismiss,
-  refresh,
-} = useUserNotifications()
+onMounted(async () => {
+  const session = await useNovuSession()
+  // Logged-out visitor (session.get.ts 401s via requireAuth), or the
+  // fetch/mount failed — leave the container empty rather than showing a
+  // bell that does nothing.
+  if (!session || !containerEl.value) return
 
-const getNotificationIcon = (category: string) => {
-  const icons: Record<string, string> = {
-    order: 'fas fa-shopping-cart',
-    account: 'fas fa-user',
-    social: 'fas fa-users',
-    system: 'fas fa-bell',
-    email: 'fas fa-envelope',
+  const config = useRuntimeConfig()
+
+  try {
+    // Dynamic, not a top-level `import ... from '@novu/js/ui'` — that
+    // module is Solid.js-based and throws "Client-only API called on the
+    // server side" the moment it's even IMPORTED during SSR (confirmed
+    // live 2026-09-16 — took the whole app down with a 500, since this
+    // component is in the header on every page). onMounted only ever runs
+    // client-side, so a dynamic import here is never requested by SSR at
+    // all — same fix pattern as adapter-magento's node:crypto import
+    // earlier this session.
+    const { NovuUI } = await import('@novu/js/ui')
+    novu = new NovuUI({
+      options: {
+        applicationIdentifier: session.applicationIdentifier,
+        subscriber: session.subscriberId,
+        subscriberHash: session.subscriberHash,
+        apiUrl: (config.public as { novuBackendUrl?: string }).novuBackendUrl,
+        socketUrl: (config.public as { novuSocketUrl?: string }).novuSocketUrl,
+      },
+    })
+    novu.mountComponent({ name: 'Inbox', props: {}, element: containerEl.value })
+  } catch (error) {
+    console.error('[notifications] failed to mount Novu inbox', error)
   }
-  return icons[category] || 'fas fa-bell'
-}
+})
 
-const getNotificationColor = (category: string) => {
-  const colors: Record<string, string> = {
-    order: 'primary',
-    account: 'info',
-    social: 'success',
-    system: 'warning',
-    email: 'secondary',
+onBeforeUnmount(() => {
+  if (novu && containerEl.value) {
+    novu.unmountComponent(containerEl.value)
   }
-  return colors[category] || 'grey'
-}
-
-const getNotificationLink = (notification: any) => {
-  if (notification.payload) {
-    return notification.payload.link || '/notifications'
-  }
-  return '/notifications'
-}
-
-onMounted(() => {
-  // Refresh notifications when drawer opens
-  watch(drawer, (val: boolean) => {
-    if (val) {
-      refresh()
-    }
-  })
 })
 </script>
 
 <style scoped>
-  .notification-bell {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .unread {
-    background-color: rgba(var(--v-theme-primary), 0.1);
-  }
-
-  .notification-actions {
-    padding: 8px 16px;
-    display: flex;
-    justify-content: flex-end;
-  }
+.novu-inbox-container {
+  display: flex;
+  align-items: center;
+}
 </style>

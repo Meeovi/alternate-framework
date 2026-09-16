@@ -160,8 +160,18 @@ export default async function useCreateLiveShort(dialogRef) {
         payload.video = uploadedFiles?.videoId || payload.video || null
       }
 
-      await createItem('shorts', payload)
+      const created = await createItem('shorts', payload)
       formSuccess.value = 'Vibe created successfully.'
+
+      // Fans out a "new vibe" notification to followers — best-effort, the
+      // short is already saved by this point. See
+      // layers/social/server/api/social/notify-followers.post.ts.
+      $fetch('/api/social/notify-followers', {
+        method: 'POST',
+        body: { contentType: 'short', itemId: created?.id },
+      }).catch((err) => {
+        console.error('[add-live] failed to notify followers', err)
+      })
 
       for (const key of Object.keys(form)) {
         form[key] = null

@@ -4,6 +4,24 @@ import type { Query } from './graphql/schema-types' // Generated via mesh-compos
 import { normalizeProductToPage } from './normalizers/normalizers'
 import type { RawMagentoInventory } from './normalizers/inventory'
 
+/**
+ * Magento's "Integration" admin credentials (Admin > System > Extensions >
+ * Integrations) are OAuth 1.0a — a consumer key/secret plus an access
+ * token/secret that don't expire, not a simple bearer token. Every
+ * `seller.*` admin-scoped call below signs its request with these per the
+ * OAuth 1.0a spec (HMAC-SHA1) rather than sending them as `Bearer ...`.
+ */
+export interface MagentoOAuth1Credentials {
+  consumerKey: string
+  consumerSecret: string
+  accessToken: string
+  accessTokenSecret: string
+}
+
+function rfc3986Encode(value: string): string {
+  return encodeURIComponent(value).replace(/[!*'()]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`)
+}
+
 export class MagentoAdapter {
   [x: string]: any;
   private client: GraphQLClient
@@ -246,45 +264,146 @@ export class MagentoAdapter {
   }
 
   public commerce = {
+    /**
+     * Confirmed live that `store.readEntity('Product', ...)` (this method's
+     * previous implementation) always throws: it guesses a singular root
+     * field (`Mage_Product`/`Product`/`product`), but the real storefront
+     * schema only exposes the plural, search-style `products(...)` field —
+     * same fix as `getProductReviews`/`getStoreConfig` above, via
+     * `store.queryField`. `search: ''` (rather than omitting it) matches
+     * `content.search`, the one product-reading path already proven live.
+     */
     getProducts: async (params?: Record<string, any>) => {
-      const filter = params?.filter || {}
-      const fields = params?.fields || ['sku', 'name', 'price', 'image']
-      const data = await this.store.readEntity('Product', filter, { fields })
-      return Array.isArray(data) ? data : (data?.items ?? [])
+      const fields = params?.fields || ['sku', 'name', { price_range: [{ minimum_price: [{ final_price: ['value', 'currency'] }] }] }]
+      const args: Record<string, any> = { search: '', pageSize: params?.pageSize || 20 }
+      if (params?.filter && Object.keys(params.filter).length) args.filter = params.filter
+      if (params?.currentPage) args.currentPage = params.currentPage
+
+      const result = await this.store.queryField('products', args, { fields: [{ items: fields }, 'total_count'] })
+      return result?.items ?? []
     },
 
+    /**
+     * Magento's public storefront schema has no `entity_id`/`id` filter on
+     * `products` — `sku` is the only reliable single-product lookup key.
+     * `id` here is treated as a sku (same lookup `getProductBySku` does);
+     * this is a behavior change from the old `readEntity('Product', {id})`
+     * call, which never actually returned real data to change from.
+     */
     getProductById: async (id: string) => {
-      const data = await this.store.readEntity('Product', { id }, { fields: ['sku', 'name', 'price'] })
-      return Array.isArray(data) ? data[0] : (data?.items?.[0] ?? null)
+      return await this.commerce.getProductBySku(id)
     },
 
     getProductBySku: async (sku: string) => {
-      const data = await this.store.readEntity('Product', { sku }, { fields: ['sku', 'name', 'price'] })
-      return Array.isArray(data) ? data[0] : (data?.items?.[0] ?? null)
+      const result = await this.store.queryField('products', { filter: { sku: { eq: sku } }, pageSize: 1 }, {
+        fields: [{ items: ['sku', 'name', { price_range: [{ minimum_price: [{ final_price: ['value', 'currency'] }] }] }] }],
+      })
+      return result?.items?.[0] ?? null
     },
 
     getProductBySlug: async (slug: string) => {
-      const data = await this.store.readEntity('Product', { url_key: { eq: slug } }, { fields: ['sku', 'name', 'price'] })
-      return Array.isArray(data) ? data[0] : (data?.items?.[0] ?? null)
+      const result = await this.store.queryField('products', { filter: { url_key: { eq: slug } }, pageSize: 1 }, {
+        fields: [{ items: ['sku', 'name', 'url_key', { price_range: [{ minimum_price: [{ final_price: ['value', 'currency'] }] }] }] }],
+      })
+      return result?.items?.[0] ?? null
     },
 
+    /**
+     * Reads a product's reviews straight off Magento's `products` root
+     * field (there is no standalone `productReviews` query) — same
+     * `reviews { items { ... } }` shape productsListQuery already
+     * requests, just scoped to one SKU and without the rest of the
+     * catalog fields.
+     */
+    getProductReviews: async (sku: string, pageSize = 20) => {
+      const data = await this.store.queryField('products', { filter: { sku: { eq: sku } }, pageSize }, {
+        fields: [{
+          items: [
+            'sku',
+            'review_count',
+            {
+              reviews: [
+                'average_rating',
+                { items: ['nickname', 'summary', 'text', 'created_at', 'average_rating'] },
+              ],
+            },
+          ],
+        }],
+      })
+      return data?.items?.[0]?.reviews?.items ?? []
+    },
+
+    /**
+     * Submits a product review via Magento's `createProductReview`
+     * mutation. Whether this requires a signed-in customer depends on the
+     * store's `allow_guests_to_write_product_reviews` config (see
+     * `getStoreConfig`) — this adapter doesn't enforce that itself, it
+     * just forwards whatever token the caller constructed it with.
+     */
+    createProductReview: async (input: {
+      sku: string
+      nickname: string
+      summary: string
+      text: string
+      ratings: Array<{ id: string; value_id: string }>
+    }) => {
+      return await this.store.mutateEntity('createProductReview', { input }, {
+        fields: [{ review: ['nickname', 'summary', 'text', { average_rating: [] }] }],
+      })
+    },
+
+    /**
+     * General store/shop info — name, currency, locale, media base URL.
+     * Read-only, unauthenticated; safe to call against a live storefront
+     * in tests.
+     */
+    getStoreConfig: async () => {
+      return await this.store.queryField('storeConfig', {}, {
+        fields: [
+          'store_code', 'store_name', 'base_currency_code', 'default_display_currency_code',
+          'locale', 'base_media_url', 'copyright', 'product_reviews_enabled',
+          'allow_guests_to_write_product_reviews',
+        ],
+      })
+    },
+
+    /**
+     * Same `readEntity` guessing bug as products, fixed the same way —
+     * real Magento exposes a plural `categories(filters: CategoryFilterInput, ...)`
+     * field, not a singular `Category`/`Mage_Category`. Field names also
+     * corrected: Magento's schema has `url_key` (a category has no
+     * `slug` attribute), which the old defaults were silently requesting
+     * as a non-existent field — never reached, since `readEntity` always
+     * threw before a query was even attempted, but worth fixing alongside
+     * so this doesn't throw for a different reason once queryField makes
+     * the request for real. `filters` is only included when non-empty —
+     * unlike `products`, an explicitly empty `filters: {}` argument isn't
+     * confirmed safe against every Magento version (omitting it is the
+     * documented way to get the root category tree).
+     */
     getCategories: async (params?: Record<string, any>) => {
-      const filter = params?.filter || {}
-      const fields = params?.fields || ['id', 'name', 'slug']
-      const data = await this.store.readEntity('Category', filter, { fields })
-      return Array.isArray(data) ? data : (data?.items ?? [])
+      const fields = params?.fields || ['id', 'name', 'url_key']
+      const args: Record<string, any> = { pageSize: params?.pageSize || 20 }
+      if (params?.filter && Object.keys(params.filter).length) args.filters = params.filter
+
+      const result = await this.store.queryField('categories', args, { fields: [{ items: fields }, 'total_count'] })
+      return result?.items ?? []
     },
 
     getCategory: async (id: string) => {
-      const data = await this.store.readEntity('Category', { id }, { fields: ['id', 'name', 'slug'] })
-      return Array.isArray(data) ? data[0] : (data?.items?.[0] ?? null)
+      const result = await this.store.queryField('categories', { filters: { ids: { eq: String(id) } }, pageSize: 1 }, {
+        fields: [{ items: ['id', 'name', 'url_key'] }],
+      })
+      return result?.items?.[0] ?? null
     },
 
     getCategoryTree: async (params?: Record<string, any>) => {
-      const filter = params?.filter || {}
-      const fields = params?.fields || ['id', 'name', 'slug', 'children']
-      const data = await this.store.readEntity('Category', filter, { fields })
-      return Array.isArray(data) ? data : (data?.items ?? [])
+      const fields = params?.fields || ['id', 'name', 'url_key', { children: ['id', 'name', 'url_key'] }]
+      const args: Record<string, any> = { pageSize: params?.pageSize || 20 }
+      if (params?.filter && Object.keys(params.filter).length) args.filters = params.filter
+
+      const result = await this.store.queryField('categories', args, { fields: [{ items: fields }] })
+      return result?.items ?? []
     },
 
     getCart: async () => null,
@@ -389,16 +508,9 @@ export class MagentoAdapter {
 
       if (payload.wantsToSell && uid && token) {
         try {
-          const response = await fetch(this.restUrl('/meeovi-marketplace/seller/register'), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ customerId: uid }),
-          })
-          if (!response.ok) {
-            console.error('[adapter-magento] Seller registration rejected for new customer', uid, response.status, await response.text().catch(() => ''))
+          const result = await this.seller.registerSeller(uid, token)
+          if (!result) {
+            console.error('[adapter-magento] Seller registration rejected for new customer', uid)
           }
         } catch (e) {
           console.error('[adapter-magento] Seller registration failed for new customer', uid, e)
@@ -619,14 +731,25 @@ export class MagentoAdapter {
       return await this.store.readEntity('CartPriceRule', {}, { fields: ['id', 'name'] })
     },
 
+    // `price` is not a scalar on ProductInterface (confirmed live, see
+    // content.search above) — only `price_range` (an object) exists, same
+    // fix as getProductBySku/getProducts.
     getCatalogPriceBySku: async (sku: string) => {
-      return await this.store.readEntity('Product', { sku }, { fields: ['sku', 'price'] })
+      const result = await this.store.queryField('products', { filter: { sku: { eq: sku } }, pageSize: 1 }, {
+        fields: [{ items: ['sku', { price_range: [{ minimum_price: [{ final_price: ['value', 'currency'] }] }] }] }],
+      })
+      return result?.items?.[0] ?? null
     },
 
     getCatalogPriceForProduct: async (productId: string) => {
-      return await this.store.readEntity('Product', { id: productId }, { fields: ['sku', 'price'] })
+      return await this.commerce.getCatalogPriceBySku(productId)
     },
 
+    // Unlike the sku/id lookups above, MAP (minimum advertised price) and
+    // MSRP aren't queryable fields on Magento's public storefront schema —
+    // they're admin/catalog-price-rule concepts with no confirmed GraphQL
+    // equivalent. Left unfixed rather than guessing a schema shape I can't
+    // verify; still broken the same way it was before.
     getMinimumAdvertisedPrice: async (payload: Record<string, any>) => {
       return await this.store.readEntity('Product', payload, { fields: ['sku', 'price'] })
     },
@@ -1061,6 +1184,151 @@ export class MagentoAdapter {
   }
 
   /**
+   * Webkul Multi Vendor Marketplace seller operations, bridged through the
+   * custom `Meeovi_MarketplaceApi` REST module (no GraphQL surface exists
+   * for these — see `restUrl`). Both calls are self-scoped: the customer
+   * token passed in must belong to the customer being registered/creating
+   * the product, the same way `commerce.createCustomer`'s inline seller
+   * registration always has.
+   */
+  public seller = {
+    /**
+     * Registers an existing Magento customer as a marketplace seller.
+     * Extracted out of `commerce.createCustomer` (which still calls this)
+     * so it's independently callable/testable — e.g. for an already-
+     * existing customer who decides to start selling later, not only at
+     * signup time.
+     */
+    registerSeller: async (customerId: number, customerToken: string, shopUrl?: string): Promise<{
+      sellerRecordId: number
+      isApproved: boolean
+      shopUrl: string
+    } | null> => {
+      const response = await fetch(this.restUrl('/meeovi-marketplace/seller/register'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${customerToken}`,
+        },
+        body: JSON.stringify(shopUrl ? { customerId, shopUrl } : { customerId }),
+      })
+      if (!response.ok) return null
+      return await response.json()
+    },
+
+    /**
+     * Creates a product under an already-registered seller's marketplace
+     * shop. No caller existed anywhere in this repo for
+     * `POST /meeovi-marketplace/seller/products` before this — the PHP
+     * endpoint (`SellerProductManagementInterface::createProduct`) was
+     * live but unreachable from any TypeScript code path.
+     */
+    createProduct: async (customerId: number, customerToken: string, input: {
+      sku: string
+      name: string
+      price: number
+      description?: string
+      shortDescription?: string
+      qty?: number
+      weight?: number
+      attributeSetId?: number
+      websiteIds?: number[]
+      categoryIds?: number[]
+    }): Promise<{
+      productId: number
+      sku: string
+      marketplaceProductId: number
+    } | null> => {
+      const response = await fetch(this.restUrl('/meeovi-marketplace/seller/products'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${customerToken}`,
+        },
+        body: JSON.stringify({ customerId, ...input }),
+      })
+      if (!response.ok) return null
+      return await response.json()
+    },
+
+    /**
+     * The 6 `SellerDashboardManagementInterface` routes — unlike
+     * registerSeller/createProduct above (customer-token-scoped), these
+     * are called with an ADMIN Integration so a trusted server backend can
+     * read any seller's dashboard data on their behalf without needing
+     * that seller's own Magento password (which this app never has — see
+     * `commerce.createCustomer`'s throwaway-password comment). Magento's
+     * `self` resource bypasses its own scoping check entirely for admin
+     * credentials (same behavior the existing module README documents),
+     * which is what makes this legitimate rather than a bypass.
+     *
+     * Every PHP method returns a JSON-*encoded string*, not a native
+     * array/object (see the PHP interface's own docblock for why) — so
+     * Magento's REST layer serializes that string as a JSON string
+     * literal, and each call here needs an extra `JSON.parse()` on top of
+     * the normal `response.json()` to reach the real value.
+     */
+    getShopProfile: async (customerId: number, credentials: MagentoOAuth1Credentials): Promise<Record<string, any> | null> => {
+      const url = `${this.restUrl('/meeovi-marketplace/seller/shop')}?customerId=${customerId}`
+      const response = await fetch(url, {
+        headers: { Authorization: await this.oauth1Header('GET', url, credentials) },
+      })
+      if (!response.ok) return null
+      return JSON.parse(await response.json())
+    },
+
+    updateShopProfile: async (customerId: number, credentials: MagentoOAuth1Credentials, updates: Record<string, any>): Promise<Record<string, any> | null> => {
+      const url = this.restUrl('/meeovi-marketplace/seller/shop')
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: await this.oauth1Header('PUT', url, credentials),
+        },
+        body: JSON.stringify({ customerId, ...updates }),
+      })
+      if (!response.ok) return null
+      return JSON.parse(await response.json())
+    },
+
+    getSellerProducts: async (customerId: number, credentials: MagentoOAuth1Credentials): Promise<any[]> => {
+      const url = `${this.restUrl('/meeovi-marketplace/seller/products/list')}?customerId=${customerId}`
+      const response = await fetch(url, {
+        headers: { Authorization: await this.oauth1Header('GET', url, credentials) },
+      })
+      if (!response.ok) return []
+      return JSON.parse(await response.json())
+    },
+
+    getSellerOrders: async (customerId: number, credentials: MagentoOAuth1Credentials): Promise<any[]> => {
+      const url = `${this.restUrl('/meeovi-marketplace/seller/orders')}?customerId=${customerId}`
+      const response = await fetch(url, {
+        headers: { Authorization: await this.oauth1Header('GET', url, credentials) },
+      })
+      if (!response.ok) return []
+      return JSON.parse(await response.json())
+    },
+
+    getSellerTransactions: async (customerId: number, credentials: MagentoOAuth1Credentials): Promise<any[]> => {
+      const url = `${this.restUrl('/meeovi-marketplace/seller/transactions')}?customerId=${customerId}`
+      const response = await fetch(url, {
+        headers: { Authorization: await this.oauth1Header('GET', url, credentials) },
+      })
+      if (!response.ok) return []
+      return JSON.parse(await response.json())
+    },
+
+    getLowStockProducts: async (customerId: number, credentials: MagentoOAuth1Credentials): Promise<any[]> => {
+      const url = `${this.restUrl('/meeovi-marketplace/seller/low-stock')}?customerId=${customerId}`
+      const response = await fetch(url, {
+        headers: { Authorization: await this.oauth1Header('GET', url, credentials) },
+      })
+      if (!response.ok) return []
+      return JSON.parse(await response.json())
+    },
+  }
+
+  /**
    * Inventory (MSI) contract — implements the layer's CommerceClient interface.
    * Magento exposes stock through the `products` query (`stock_status`,
    * `only_x_left_in_stock`); source-level operations use the MSI GraphQL
@@ -1204,6 +1472,62 @@ export class MagentoAdapter {
    */
   private restUrl(path: string): string {
     return `${this.endpoint.replace(/\/graphql\/?$/, '')}/rest/V1${path}`
+  }
+
+  /**
+   * Signs a request per OAuth 1.0a (HMAC-SHA1) using a Magento Integration's
+   * consumer key/secret + access token/secret. Only query-string params are
+   * folded into the signature base string alongside the oauth_* params —
+   * these calls always send JSON bodies (not form-encoded), which OAuth 1.0a
+   * excludes from signing.
+   */
+  private async oauth1Header(method: string, url: string, credentials: MagentoOAuth1Credentials): Promise<string> {
+    // Dynamic, not a top-level `import ... from 'node:crypto'` — this
+    // whole file also gets bundled for the CLIENT (via
+    // runtime/plugin.ts's `new MagentoAdapter(...)`, registered as a
+    // universal Nuxt plugin). A static top-level Node-builtin import
+    // breaks that client bundle outright (Vite substitutes a stub with
+    // none of the real named exports, throwing "does not provide an
+    // export named 'createHmac'" the moment ANY code in this module
+    // evaluates — which took out the whole client app, including Nuxt
+    // DevTools' own mount — confirmed live 2026-09-16). This method is
+    // only ever reached from the admin-only `seller.*` calls in
+    // layers/business/server (Nitro-only), so the dynamic import is never
+    // actually requested by the browser at all.
+    const { createHmac, randomBytes } = await import('node:crypto')
+    const { consumerKey, consumerSecret, accessToken, accessTokenSecret } = credentials
+    const urlObj = new URL(url)
+    const baseUrl = `${urlObj.origin}${urlObj.pathname}`
+
+    const queryParams: Record<string, string> = {}
+    urlObj.searchParams.forEach((value, key) => { queryParams[key] = value })
+
+    const oauthParams: Record<string, string> = {
+      oauth_consumer_key: consumerKey,
+      oauth_token: accessToken,
+      oauth_signature_method: 'HMAC-SHA1',
+      oauth_timestamp: String(Math.floor(Date.now() / 1000)),
+      oauth_nonce: randomBytes(16).toString('hex'),
+      oauth_version: '1.0',
+    }
+
+    const allParams = { ...queryParams, ...oauthParams }
+    const normalizedParams = Object.keys(allParams)
+      .sort()
+      .map((key) => `${rfc3986Encode(key)}=${rfc3986Encode(allParams[key])}`)
+      .join('&')
+
+    const baseString = [method.toUpperCase(), rfc3986Encode(baseUrl), rfc3986Encode(normalizedParams)].join('&')
+    const signingKey = `${rfc3986Encode(consumerSecret)}&${rfc3986Encode(accessTokenSecret)}`
+    const signature = createHmac('sha1', signingKey).update(baseString).digest('base64')
+
+    const headerParams = { ...oauthParams, oauth_signature: signature }
+    const headerString = Object.keys(headerParams)
+      .sort()
+      .map((key) => `${rfc3986Encode(key)}="${rfc3986Encode(headerParams[key])}"`)
+      .join(', ')
+
+    return `OAuth ${headerString}`
   }
 
   private async fetchRawMagentoData(id: string | number, fields: any[] = []): Promise<any> {

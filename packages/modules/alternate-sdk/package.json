@@ -87,6 +87,18 @@
       "types": "./dist/src/social/driver.d.ts",
       "import": "./dist/src/social/driver.js"
     },
+    "./business": {
+      "types": "./dist/src/business/index.d.ts",
+      "import": "./dist/src/business/index.js"
+    },
+    "./business/adapter": {
+      "types": "./dist/src/business/adapter.d.ts",
+      "import": "./dist/src/business/adapter.js"
+    },
+    "./business/driver": {
+      "types": "./dist/src/business/driver.d.ts",
+      "import": "./dist/src/business/driver.js"
+    },
     "./module": {
       "types": "./dist/src/module.d.ts",
       "import": "./dist/src/module.js"
@@ -202,6 +214,15 @@
       ],
       "social/driver": [
         "./dist/src/social/driver.d.ts"
+      ],
+      "business": [
+        "./dist/src/business/index.d.ts"
+      ],
+      "business/adapter": [
+        "./dist/src/business/adapter.d.ts"
+      ],
+      "business/driver": [
+        "./dist/src/business/driver.d.ts"
       ],
       "gateway": [
         "./dist/src/gateway/index.d.ts"

@@ -1,5 +1,6 @@
 import { createDirectus, rest, staticToken, readItems, createItem, deleteItem } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
+import { triggerNovuWorkflow } from '#shared/server/utils/novu'
 
 type FollowActor = { id: string; name?: string; email?: string }
 
@@ -61,28 +62,19 @@ export default defineEventHandler(async (event) => {
 })
 
 /**
- * Writes an in-app "started following you" notification for the followed
- * user. The `notifications` collection is what the notification bell reads
- * (useUserNotifications.ts) — `recipient` holds the better-auth user id
- * directly. Best-effort: a failure here must not fail the follow itself.
+ * Fires the "follow" Novu workflow for the followed user — Novu is the
+ * in-app notification bell's backend now (replaced the old `notifications`
+ * Directus collection). triggerNovuWorkflow is already best-effort
+ * (swallows/logs internally), so this stays a single call.
  */
 async function notifyNewFollower(recipientId: string, follower: FollowActor): Promise<void> {
   const followerName = follower.name || follower.email || 'Someone'
-  try {
-    await directus.request(
-      createItem('notifications', {
-        recipient: recipientId,
-        type: 'follow',
-        is_read: false,
-        content: `${followerName} started following you`,
-        payload: {
-          subject: 'New follower',
-          actorId: follower.id,
-          actorName: followerName,
-        },
-      }),
-    )
-  } catch (error) {
-    console.error('[social:follow] failed to write follower notification', error)
-  }
+  await triggerNovuWorkflow('follow', {
+    to: recipientId,
+    payload: {
+      subject: 'New follower',
+      actorId: follower.id,
+      actorName: followerName,
+    },
+  })
 }

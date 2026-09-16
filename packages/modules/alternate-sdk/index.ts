@@ -8,6 +8,7 @@ import * as contractsModule from './src/contracts/index.js'
 import * as notificationsModule from './src/notifications/index.js'
 import * as localizationModule from './src/localization/index.js'
 import * as socialModule from './src/social/index.js'
+import * as businessModule from './src/business/index.js'
 import { createGateway, createGatewayRegistry } from './src/gateway/index.js'
 import { setDefaultAuthAdapter } from './src/contracts/auth.js'
 import { setDefaultSearchAdapter } from './src/contracts/search.js'
@@ -43,6 +44,7 @@ export const sdk: Record<string, any> = {
 	media: {},
 	notify: notificationsModule,
 	social: {},
+	business: {},
 }
 
 export function initGateway(nuxtApp: any) {
@@ -95,6 +97,7 @@ export function initGateway(nuxtApp: any) {
 		if (gateway.localization) sdk.localization = gateway.localization
 		if (gateway.media) sdk.media = gateway.media
 		if (gateway.social) sdk.social = gateway.social
+		if (gateway.business) sdk.business = gateway.business
 	} catch {}
 }
 
@@ -124,6 +127,7 @@ export {
 	notificationsModule as notifications,
 	localizationModule as localization,
 	socialModule as social,
+	businessModule as business,
 }
 
 export { getServerAuth, useAuth } from './src/auth/server.js'
@@ -134,6 +138,7 @@ export { AuthAdapterRegistry, registerAuthAdapter, setDefaultAuthAdapter } from 
 export { SearchAdapterRegistry, registerSearchAdapter, setDefaultSearchAdapter } from './src/contracts/search.js'
 export { NotifyAdapterRegistry, registerNotifyAdapter, setDefaultNotifyAdapter } from './src/contracts/notification.js'
 export { SocialDriverRegistry, registerSocialDriver, setDefaultSocialDriver } from './src/contracts/social.js'
+export { BusinessDriverRegistry, registerBusinessDriver, setDefaultBusinessDriver } from './src/contracts/business.js'
 export { CommerceDriverRegistry, registerCommerceDriver, setDefaultCommerceDriver } from './src/contracts/commerce.js'
 export { CommerceBackendRegistry, registerCommerceBackendAdapter } from './src/contracts/commerce-backend.js'
 export type { CommerceBackendAdapter, DirectusRequestDescriptor } from './src/contracts/commerce-backend.js'

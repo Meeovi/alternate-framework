@@ -498,6 +498,9 @@ export default defineNuxtConfig({
       fcmServerKey: process.env.FCM_SERVER_KEY
     },
     novuSecretKey: process.env.NOVU_SECRET_KEY,
+    // Server-to-server calls (subscriber upsert, workflow trigger) stay on
+    // the box's own loopback rather than routing out through the public IP.
+    novuApiUrl: process.env.NOVU_API_URL || 'http://localhost:3090',
 
     public: {
       // Read by getAssetURL() (layers/shared/app/utils/get-asset-url.ts) to
@@ -506,8 +509,16 @@ export default defineNuxtConfig({
       // previous `import.meta.env.DIRECTUS_URL` read was always undefined,
       // producing broken "undefined/assets/<file>" image URLs site-wide.
       directusUrl: process.env.DIRECTUS_URL || '',
-      novuAppId: process.env.NUXT_PUBLIC_NOVU_APP_ID,
-      novuSubscriberId: process.env.NUXT_PUBLIC_NOVU_SUBSCRIBER_ID,
+      novuAppId: process.env.NOVU_APPLICATION_IDENTIFIER,
+      // No static novuSubscriberId here on purpose — a public env var can
+      // only ever hold ONE fixed value, but every logged-in user needs
+      // their OWN subscriber id (their own user id). That's resolved
+      // per-request instead, from #shared/server/api/novu/session.get.ts,
+      // alongside an HMAC subscriberHash (Novu's recommended production
+      // auth — without it, anyone who knows another user's id could read
+      // their notifications by passing it as `subscriber` client-side).
+      novuBackendUrl: process.env.NOVU_API_HOSTNAME || '',
+      novuSocketUrl: process.env.NOVU_WEBSOCKET_HOSTNAME || '',
       segmentWriteKey: process.env.NUXT_PUBLIC_SEGMENT_WRITE_KEY || '',
       googleAdsense: {
         id: process.env.GOOGLE_ADSENSE_ID,
@@ -561,7 +572,23 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      exclude: ['vuetify']
+      // `vuetify` itself stays excluded (unchanged) — bundling the bare
+      // package alongside vite-plugin-vuetify's autoImport risks two
+      // separate Vuetify instances (createVuetify() called once per
+      // instance means duplicate theme/locale/icon state). But autoImport
+      // doesn't import from `vuetify` at all — it rewrites `<v-btn>` etc.
+      // into imports from `vuetify/components`/`vuetify/directives`, and
+      // those subpaths were NOT excluded, so Vite discovered Vuetify's
+      // ~800 individual component/composable/CSS files one at a time,
+      // cold, on whichever route first used them — each newly-discovered
+      // file triggered a fresh "Re-optimizing dependencies" + full-reload
+      // cycle, which raced and cancelled the page's own in-flight
+      // requests (ERR_NETWORK_CHANGED on dozens of files at once).
+      // Pre-bundling these subpaths as a single unit up front removes the
+      // cold, incremental discovery entirely — confirmed live 2026-09-16
+      // reproducing on first visits to layers/business's dashboard pages.
+      exclude: ['vuetify'],
+      include: ['vuetify/components', 'vuetify/directives', 'vuetify/labs/components'],
     },
     logLevel: 'info',
     plugins: [

@@ -2,119 +2,70 @@
   <div class="contentPage">
     <v-toolbar>
       <v-toolbar-title>Notifications Center</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        v-if="unreadCount > 0"
-        variant="text"
-        color="primary"
-        @click="markAllAsRead"
-      >
-        Mark all as read
-      </v-btn>
     </v-toolbar>
 
-    <div style="padding: 20px;">
-      <div v-if="loading" class="text-center pa-8">
-        <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        <p class="mt-4 text-grey">Loading notifications...</p>
-      </div>
+    <div v-if="!loggedOut" ref="containerEl" class="novu-inbox-page"></div>
 
-      <v-alert
-        v-else-if="error"
-        type="error"
-        class="mb-4"
-      >
-        {{ error }}
-      </v-alert>
-
-      <v-list
-        v-else-if="notifications.length > 0"
-        lines="two"
-        class="notification-list"
-      >
-        <v-list-item
-          v-for="notification in notifications"
-          :key="notification.id"
-          :class="{ 'unread': !notification.read }"
-          @click="markAsRead(notification.id)"
-        >
-          <template v-slot:prepend>
-            <v-icon
-              :icon="getNotificationIcon(notification.category)"
-              :color="getNotificationColor(notification.category)"
-            ></v-icon>
-          </template>
-
-          <v-list-item-title v-dompurify-html="notification.title"></v-list-item-title>
-          <v-list-item-subtitle>
-            {{ notification.body }}
-          </v-list-item-subtitle>
-          <v-list-item-subtitle class="text-caption">
-            {{ new Date(notification.createdAt).toLocaleString() }}
-          </v-list-item-subtitle>
-
-          <template v-slot:append>
-            <v-btn
-              icon="fas fa-trash"
-              variant="text"
-              size="small"
-              color="error"
-              @click.stop="dismiss(notification.id)"
-            ></v-btn>
-          </template>
-        </v-list-item>
-      </v-list>
-
-      <v-alert
-        v-else
-        type="info"
-        class="mt-4"
-      >
-        You have no notifications.
-      </v-alert>
-    </div>
+    <v-alert v-else type="info" class="ma-5">
+      Sign in to see your notifications.
+    </v-alert>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useUserNotifications } from '#shared/app/composables/notifications/useUserNotifications'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import type { NovuUI } from '@novu/js/ui'
+import { useNovuSession } from '#shared/app/composables/notifications/useNovuSession'
 
-const {
-  notifications,
-  unreadCount,
-  loading,
-  error,
-  markAsRead,
-  markAllAsRead,
-  dismiss,
-} = useUserNotifications()
+// Full-page equivalent of the header bell (LayoutNotifications.vue) — same
+// Novu-backed inbox, mounted as the embedded `InboxContent` component
+// instead of the popover `Inbox`, since this page IS the panel rather than
+// a trigger for one.
+const containerEl = ref<HTMLElement | null>(null)
+const loggedOut = ref(false)
+let novu: InstanceType<typeof NovuUI> | null = null
 
-const getNotificationIcon = (category: string) => {
-  const icons: Record<string, string> = {
-    order: 'fas fa-shopping-cart',
-    account: 'fas fa-user',
-    social: 'fas fa-users',
-    system: 'fas fa-bell',
-    email: 'fas fa-envelope',
+onMounted(async () => {
+  const session = await useNovuSession()
+  if (!session) {
+    loggedOut.value = true
+    return
   }
-  return icons[category] || 'fas fa-bell'
-}
+  if (!containerEl.value) return
 
-const getNotificationColor = (category: string) => {
-  const colors: Record<string, string> = {
-    order: 'primary',
-    account: 'info',
-    social: 'success',
-    system: 'warning',
-    email: 'secondary',
+  const config = useRuntimeConfig()
+
+  try {
+    // Dynamic import — see LayoutNotifications.vue's comment on the same
+    // line: a static top-level import of this Solid.js-based module
+    // throws during SSR the moment it's evaluated, not just when called.
+    const { NovuUI } = await import('@novu/js/ui')
+    novu = new NovuUI({
+      options: {
+        applicationIdentifier: session.applicationIdentifier,
+        subscriber: session.subscriberId,
+        subscriberHash: session.subscriberHash,
+        apiUrl: (config.public as { novuBackendUrl?: string }).novuBackendUrl,
+        socketUrl: (config.public as { novuSocketUrl?: string }).novuSocketUrl,
+      },
+    })
+    novu.mountComponent({ name: 'InboxContent', props: {}, element: containerEl.value })
+  } catch (error) {
+    console.error('[notifications] failed to mount Novu inbox', error)
   }
-  return colors[category] || 'grey'
-}
+})
+
+onBeforeUnmount(() => {
+  if (novu && containerEl.value) {
+    novu.unmountComponent(containerEl.value)
+  }
+})
 </script>
 
 <style scoped>
-.unread {
-  background-color: rgba(var(--v-theme-primary), 0.05);
-  border-left: 4px solid rgb(var(--v-theme-primary));
+.novu-inbox-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px;
 }
 </style>

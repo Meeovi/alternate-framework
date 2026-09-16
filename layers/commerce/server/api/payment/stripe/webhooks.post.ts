@@ -3,6 +3,7 @@ import { createDirectus, rest, staticToken, createItem, readItems, updateItem } 
 import { centsToDollars } from '../../../utils/currency'
 import { stripe } from '../../../utils/stripe'
 import { createTransaction, getRate } from '../../../utils/shippo'
+import { triggerNovuWorkflow } from '#shared/server/utils/novu'
 
 // A privileged, static-token client — webhook fulfillment writes orders,
 // payments, and fulfillment tokens on behalf of the buyer, so it must not
@@ -40,6 +41,31 @@ function normalizeMetadata(
     }
   }
   return out
+}
+
+/**
+ * Fires the "purchase" Novu workflow for the buyer, mirroring
+ * `notifyNewFollower` in layers/social/server/api/social/follow.post.ts —
+ * Novu is the in-app notification bell's backend now (replaced the old
+ * `notifications` Directus collection). triggerNovuWorkflow is already
+ * best-effort, so a notification failure still can't fail order
+ * fulfillment for a payment that has already cleared.
+ */
+async function notifyPurchase(
+  recipientId: string,
+  order: { id?: string | number | null },
+  amountCents: number,
+  currency: string | null | undefined,
+): Promise<void> {
+  await triggerNovuWorkflow('purchase', {
+    to: recipientId,
+    payload: {
+      subject: 'Order confirmed',
+      orderId: order?.id ?? null,
+      amount: centsToDollars(amountCents),
+      currency: currency || null,
+    },
+  })
 }
 
 async function sendConfirmationEmail(params: {
@@ -515,6 +541,10 @@ export default defineEventHandler(async (event) => {
               download_expires_at: downloadExpiresAt,
             }),
           )
+
+          if (buyer_id) {
+            await notifyPurchase(buyer_id, createdOrder as { id?: string | number }, orderGrandTotal, checkoutSession.currency)
+          }
 
           if (digitalFileId && downloadToken && buyerEmail) {
             const orderId = (createdOrder as any)?.id

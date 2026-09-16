@@ -1,14 +1,30 @@
 <?xml version="1.0"?>
 <!--
-  `resources: self` + a `$customerId` parameter on the service method is
-  Magento's own mechanism for a customer-token-scoped route (the same
-  pattern core routes like `PUT /V1/customers/me` use): the framework
-  itself overwrites/verifies that the caller's own token customer id is
-  what actually reaches the method, regardless of what a request body
-  claims — a signed-in seller cannot create a product "as" a different
-  seller by passing someone else's customerId. An admin token bypasses the
-  self-check entirely (Magento's default behavior for `self` resources),
-  which is intentional here (support/ops creating on a seller's behalf).
+  `resource ref="self"` alone enforces NOTHING about which customerId
+  reaches the method — verified by reading Magento's actual dispatch code
+  (vendor/magento/framework/Webapi/Authorization.php,
+  Magento\Webapi\Controller\Rest\ParamsOverrider) and vendor/magento/
+  module-customer/etc/webapi.xml's own `/V1/customers/me*` routes: the
+  real, framework-native ownership enforcement is the `<data>` block below
+  (`%customer_id%`, resolved by Magento\Webapi\Controller\Rest\
+  ParamOverriderCustomerId), which force-overwrites the `customerId`
+  parameter with the caller's own token identity for customer-type
+  callers — a signed-in seller cannot register/create-as a different
+  seller by passing someone else's customerId. This previously wasn't
+  present (a real gap, fixed 2026-09-15) — `self` by itself only affects
+  the ACL fallback (see acl.xml's comment on the dashboard routes below),
+  nothing about parameter ownership.
+
+  ParamOverriderCustomerId returns null for a non-customer (admin/
+  Integration) caller, which — combined with force="true" — means these
+  two routes are now customer-token-only; an admin/Integration token would
+  get customerId force-set to null and fail. No code in this repo calls
+  either route with an admin token (MagentoAdapter.seller.registerSeller/
+  createProduct always send a customer token), so this doesn't remove any
+  real capability, only the previously-assumed-but-unused "admin acting on
+  a seller's behalf" path for these two specific routes — the 6
+  SellerDashboardManagementInterface routes below are the actual
+  admin-token surface.
 -->
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
@@ -17,11 +33,65 @@
         <resources>
             <resource ref="self"/>
         </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
     </route>
     <route url="/V1/meeovi-marketplace/seller/register" method="POST">
         <service class="Meeovi\MarketplaceApi\Api\SellerAccountManagementInterface" method="registerSeller"/>
         <resources>
             <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+
+    <!--
+      Below: SellerDashboardManagementInterface, backing the seller
+      dashboard's read-heavy grids. Unlike the two routes above, these are
+      ONLY ever called with an admin/Integration token (see
+      MagentoAdapter.seller's own comment) — never a customer token — so
+      they don't need `self`'s customer-token-ownership behavior. They use
+      a dedicated ACL resource (etc/acl.xml) instead of `self` so an
+      Integration can be scoped to exactly these routes rather than
+      needing "Resource Access: All" (see acl.xml's comment for why `self`
+      would otherwise force that).
+    -->
+    <route url="/V1/meeovi-marketplace/seller/shop" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\SellerDashboardManagementInterface" method="getShopProfile"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::seller_dashboard"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/seller/shop" method="PUT">
+        <service class="Meeovi\MarketplaceApi\Api\SellerDashboardManagementInterface" method="updateShopProfile"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::seller_dashboard"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/seller/products/list" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\SellerDashboardManagementInterface" method="getSellerProducts"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::seller_dashboard"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/seller/orders" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\SellerDashboardManagementInterface" method="getSellerOrders"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::seller_dashboard"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/seller/transactions" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\SellerDashboardManagementInterface" method="getSellerTransactions"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::seller_dashboard"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/seller/low-stock" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\SellerDashboardManagementInterface" method="getLowStockProducts"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::seller_dashboard"/>
         </resources>
     </route>
 </routes>

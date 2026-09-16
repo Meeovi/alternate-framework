@@ -14,6 +14,7 @@ export interface GatewayFactoryOptions {
   federation?: GatewayDomainOptions | null
   media?: GatewayDomainOptions | null
   social?: GatewayDomainOptions | null
+  business?: GatewayDomainOptions | null
 }
 
 export interface GatewayProviders {
@@ -26,6 +27,7 @@ export interface GatewayProviders {
   federation: AnyRecord | null
   media: AnyRecord | null
   social: AnyRecord | null
+  business: AnyRecord | null
 }
 
 export interface SdkGateway extends GatewayProviders {}

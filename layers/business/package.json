@@ -11,6 +11,12 @@
     "preview": "nuxt preview .playground",
     "lint": "echo \"[lint] ESLint disabled repo-wide\""
   },
+  "dependencies": {
+    "@svar-ui/vue-grid": "^2.7.0",
+    "adapter-magento": "file:../../packages/adapters/adapter-magento",
+    "alternate-sdk": "file:../../packages/modules/alternate-sdk",
+    "drizzle-orm": "1.0.0-rc.4"
+  },
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",
     "@types/node": "^24.13.3",

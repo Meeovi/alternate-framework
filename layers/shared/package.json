@@ -24,6 +24,7 @@
     "@mframework/adapter-federation": "file:../../packages/adapters/adapter-federation",
     "@mframework/alternate-sdk": "file:../../packages/modules/alternate-sdk",
     "@mframework/experience-builder": "file:../../packages/plugins/experience-builder",
+    "@novu/js": "^3.19.2",
     "@nuxt/fonts": "^0.14.0",
     "@nuxt/scripts": "^1.2.1",
     "@nuxtjs/cloudinary": "^4.0.0",

@@ -1,7 +1,7 @@
 # Meeovi_MarketplaceApi
 
-A small Magento 2 module that adds two authenticated, customer-token-scoped
-REST routes bridging to Webkul's "Multi Vendor Marketplace" extension:
+A small Magento 2 module that adds authenticated, customer-token-scoped REST
+routes bridging to Webkul's "Multi Vendor Marketplace" extension:
 
 - `POST /V1/meeovi-marketplace/seller/register` — registers the calling
   customer as a seller (creates/updates their `marketplace_userdata` row).
@@ -12,6 +12,12 @@ REST routes bridging to Webkul's "Multi Vendor Marketplace" extension:
   create a product in one call: creates the core catalog product **and**
   Webkul's own seller-linkage record together, so you never get a catalog
   product that exists but isn't attributed to a seller (or vice versa).
+- `GET /V1/meeovi-marketplace/seller/shop`, `PUT .../shop`,
+  `GET .../products/list`, `GET .../orders`, `GET .../transactions`,
+  `GET .../low-stock` — read-heavy `SellerDashboardManagementInterface`
+  routes backing `layers/business`'s seller dashboard (shop profile,
+  products, orders, commission transactions, low-stock report). See
+  "Seller dashboard endpoints" below.
 
 It does **not** modify `Webkul_Marketplace` — never patch a third-party
 vendor module directly. It depends on it and calls its own classes.
@@ -75,10 +81,12 @@ bin/magento cache:flush
 - **Product images/gallery** — not wired. Add via
   `\Magento\Catalog\Api\ProductAttributeMediaGalleryManagementInterface`
   once you know how images will actually arrive (upload endpoint, URL, …).
-- **Admin-initiated creation on a seller's behalf** — the route is
-  customer-token-scoped (`self`); an admin token bypasses the self-check
-  (Magento's own default), but there's no separate admin ACL/route yet if
-  you want ops tooling to hit this differently.
+- **Admin-initiated creation on a seller's behalf** — the route now
+  force-overrides `customerId` to the caller's own token identity
+  (`%customer_id%` in `etc/webapi.xml`), which only resolves for a
+  customer-type caller; an admin/Integration token gets `customerId`
+  forced to `null` and fails. There's no separate admin ACL/route yet if
+  you want ops tooling to create products on a seller's behalf.
 - **Configurable/bundle/grouped products** — `buildProduct()` only builds a
   `simple` product.
 - **Attribute-set-driven custom attributes** — only the fields in
@@ -110,11 +118,14 @@ Content-Type: application/json
 }
 ```
 
-`customerId` in the body only matters for an admin-token caller — for a
-customer token it's overwritten/verified by Magento's webapi framework
-against the token's own identity before this module's code ever runs (see
-the `resource ref="self"` comment in `etc/webapi.xml`), so a seller cannot
-create a product attributed to a different seller by changing that field.
+`customerId` in the body is ignored/overwritten — Magento's webapi
+framework force-replaces it with the caller's own token identity before
+this module's code ever runs (the `<data><parameter name="customerId"
+force="true">%customer_id%</parameter></data>` block in `etc/webapi.xml`,
+resolved by `Magento\Webapi\Controller\Rest\ParamOverriderCustomerId`), so
+a seller cannot create a product attributed to a different seller by
+changing that field. (`resource ref="self"` by itself does *not* do this —
+see `etc/webapi.xml`'s own comment for how that was verified.)
 
 The caller must already have an **approved seller record**
 (`marketplace_userdata.is_seller = 1` for that customer) — use
@@ -151,8 +162,9 @@ Content-Type: application/json
 }
 ```
 
-Same `self`-scoped rule as above: `customerId` is only relevant for an
-admin-token caller, and `shopUrl` is optional — a `seller-<customerId>` slug
+Same `%customer_id%` force-override as above: `customerId` in the body is
+ignored and replaced with the caller's own identity, and `shopUrl` is
+optional — a `seller-<customerId>` slug
 is generated when omitted. Idempotent: calling it again for an existing
 seller just re-applies the same fields (matches Webkul's own
 `BecomesellerPost` controller, which doesn't distinguish "new" from
@@ -172,3 +184,80 @@ Response:
 is turned on for this store — the account is created but pending admin
 approval from Marketplace > Sellers, same as the storefront "become a
 seller" flow.
+
+## Seller dashboard endpoints
+
+`SellerDashboardManagementInterface` / `Model/SellerDashboardManagement.php`
+— unlike the two routes above, every method here returns a **JSON-encoded
+string**, not a typed `Api\Data\*` object. Deliberate: these back 5 fairly
+wide, distinct row shapes for read-only reporting grids, and a full
+Magento extensible-data-interface (Interface + Model + di.xml preference)
+per shape is a lot of ceremony for that. `json_decode` the response body.
+
+Unlike the two routes above, these are admin/Integration-only — never
+called with a customer token — and use their own ACL resource
+(`Meeovi_MarketplaceApi::seller_dashboard`, `etc/acl.xml`) rather than
+`self`. `self` isn't a real ACL resource node, so an Integration calling a
+`self`-scoped route needs "Resource Access: All" (Magento's ACL fallback
+for any unregistered resource ID — see `Magento\Framework\Authorization\
+Policy\Acl::isAllowed()`); a dedicated resource lets the Integration be
+scoped to just these 6 routes. `customerId` is a plain query parameter
+(GET) or body field (PUT) — nothing overwrites it automatically, which is
+the intended, documented behavior here (an admin Integration explicitly
+reads a specific seller's data on their behalf).
+
+```
+GET /rest/V1/meeovi-marketplace/seller/shop
+Authorization: OAuth oauth_consumer_key="...", oauth_token="...", ... (OAuth 1.0a — see MagentoAdapter.seller.getShopProfile)
+```
+→ `{"shopName","shopUrl","bannerUrl","logoUrl","metaDescription","shippingPolicy","returnPolicy","socialLinks":{"facebook","twitter","instagram"},"isApproved"}`
+(maps to `Webkul\Marketplace\Model\Seller`'s `marketplace_userdata` row;
+404s if the caller has no seller record yet — register first).
+
+```
+PUT /rest/V1/meeovi-marketplace/seller/shop
+Content-Type: application/json
+
+{ "shopName": "...", "shippingPolicy": "...", ... }
+```
+Partial update — omit any field to leave it unchanged. Returns the same
+shape as the GET above.
+
+```
+GET /rest/V1/meeovi-marketplace/seller/products/list
+```
+→ JSON array of `{id, name, sku, category, price, stock, status, updated}`
+— every `marketplace_product` row for this seller, joined to the real
+catalog product (name/sku/price) and its stock qty. `category` is always
+`""` (not joined — add a category lookup if you need it). `status` is
+mapped from Webkul's `Product::STATUS_*` constants to `active`/`draft`/
+`archived`.
+
+```
+GET /rest/V1/meeovi-marketplace/seller/orders
+```
+→ JSON array of `{id, customer, items, total, paymentStatus,
+fulfillmentStatus, placed}` — one row per real Magento order, grouped from
+this seller's `marketplace_saleslist` line items. `total` is this
+seller's portion of the order only (sum of their own line items), not the
+order's full grand total — right for a multi-vendor order where other
+sellers also have items in it. `paymentStatus`/`fulfillmentStatus` are
+derived from the real `Magento\Sales\Api\Data\OrderInterface` (paid/
+refunded amounts, order status), not any Webkul-side status column.
+
+```
+GET /rest/V1/meeovi-marketplace/seller/transactions
+```
+→ JSON array of `{id, order, product, saleAmount, commissionRate,
+commissionAmount, netEarning, date}` — one row per `marketplace_saleslist`
+line item (not grouped). `commissionRate` divides Webkul's stored
+percentage number by 100 to get a 0–1 fraction — **not independently
+re-verified against live data**, see `SellerDashboardManagement.php`'s
+header comment.
+
+```
+GET /rest/V1/meeovi-marketplace/seller/low-stock
+```
+→ JSON array of `{id, name, sku, stock, threshold}` — this seller's
+products at or below their configured `LowStockQuantity` (falls back to a
+plain `10` if unset).

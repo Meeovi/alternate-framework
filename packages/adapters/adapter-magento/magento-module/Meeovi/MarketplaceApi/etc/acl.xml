@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+  Gives the 6 SellerDashboardManagementInterface routes their own ACL
+  resource instead of reusing `self`. `self` isn't a real node in the ACL
+  tree, so Magento's fallback (`Magento\Framework\Authorization\Policy\Acl`,
+  see vendor/magento/framework/Authorization/Policy/Acl.php) treats any
+  unregistered resource ID as requiring the role's root/"All" grant — an
+  Integration would need unrestricted store-wide API access just to reach
+  these 6 read routes. These routes are never called with a customer token
+  (see webapi.xml's own comment), so they never needed `self`'s
+  customer-token-ownership behavior in the first place; a dedicated
+  resource lets an Integration be scoped to exactly this, nothing else.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Meeovi_MarketplaceApi::seller_dashboard" title="Seller Dashboard API (Meeovi Marketplace)" sortOrder="10"/>
+            </resource>
+        </resources>
+    </acl>
+</config>

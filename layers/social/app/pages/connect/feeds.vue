@@ -26,7 +26,7 @@
                 </v-tabs>
 
                 <FederationStatus check-atproto label="Federation" size="small" :show-label="false" />
-                <LiveClock label="Live:" size="small" :show-controls="false" />
+                <!--<LiveClock label="Live:" size="small" :show-controls="false" />-->
             </v-toolbar>
         </v-card>
 
@@ -196,7 +196,7 @@
     })
 
     definePageMeta({
-        //middleware: ['authenticated']
+        middleware: ['auth']
     })
 </script>
 

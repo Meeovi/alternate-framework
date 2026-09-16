@@ -1,5 +1,6 @@
 export * from './adapter.js'
 export * from './auth.js'
+export * from './business.js'
 export * from './commerce.js'
 export * from './commerce-backend.js'
 export * from './commerce-customer-link.js'

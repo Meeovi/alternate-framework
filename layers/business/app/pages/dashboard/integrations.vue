@@ -9,19 +9,26 @@
       </v-toolbar-items>
     </v-toolbar>
 
-    <p>This is the integrations page.</p>
+    <div class="contentSection">
+      <SellerDataGrid :columns="columns" :data="rows" :pending="pending" :error="error" />
+    </div>
   </div>
 </template>
 
 <script setup>
+import SellerDataGrid from '~/components/SellerDataGrid.vue'
+import { useSellerIntegrations } from '~/composables/dashboard/useSellerIntegrations'
+
 definePageMeta({ middleware: 'seller' })
 useHead({
   title: 'Integrations',
   meta: [
     {
       name: 'description',
-      content: 'This is the integrations page.'
+      content: 'Manage the apps and services connected to your seller account.'
     }
   ]
 })
+
+const { columns, rows, pending, error } = useSellerIntegrations()
 </script>

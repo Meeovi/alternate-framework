@@ -12,10 +12,25 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    'adapter-magento/module',
     "@polar-sh/nuxt",
     '@storefront-ui/nuxt',
     'notivue/nuxt'
   ],
+
+  // Configures the adapter-magento module above (its `configKey`). This is
+  // what actually connects the commerce layer to a real Magento backend —
+  // previously only the consuming app (apps/ecosystem/meeovi-frontend)
+  // registered this module itself, so any other app extending this layer,
+  // or the layer's own standalone `nuxt dev` / `vitest` runs, had no
+  // Magento wiring at all. See CommerceBackendRegistry/getDirectusFacade
+  // (server/utils/directusClient.ts) for how `commerceBackend` below
+  // routes reads to whichever backend is registered.
+  // @ts-ignore - config key augmented at runtime by adapter-magento/module
+  magento: {
+    endpoint: process.env.MAGENTO_GRAPHQL_URL,
+    storeCode: process.env.MAGENTO_STORE_CODE,
+  },
 
   css: [
     'notivue/notification.css', // Only needed if using built-in notifications

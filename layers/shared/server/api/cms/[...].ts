@@ -23,8 +23,14 @@ import { requireAuth } from '#auth/server/utils/sessions'
  * caller from reading order / customer data through the proxy.
  */
 
+// `fields` is deliberately not in this blanket blocklist: unlike `schema`/
+// `relations` (full DB schema + relation graph, admin-only), a scoped
+// `GET /fields/<collection>` read is what dynamic forms (DynamicForm.vue /
+// useDirectusFields) use to build their inputs for a single collection, so
+// it's allowlisted per-collection below instead, the same way `/items/<collection>`
+// already is.
 const BLOCKED_PREFIX =
-  /^\/(users|roles|permissions|policies|access|flows|operations|dashboards|panels|presets|settings|extensions|schema|relations|fields|collections|server|utils|auth|activity|revisions|folders|webhooks|graphql)(\/|$|\?)/i
+  /^\/(users|roles|permissions|policies|access|flows|operations|dashboards|panels|presets|settings|extensions|schema|relations|collections|server|utils|auth|activity|revisions|folders|webhooks|graphql)(\/|$|\?)/i
 
 const PUBLIC_READ_COLLECTIONS = new Set<string>([
   'navigation', 'pages', 'page_blocks', 'blocks',
@@ -55,10 +61,16 @@ export default defineEventHandler(async (event) => {
   if (method !== 'GET' && method !== 'HEAD') {
     await requireAuth(event)
   } else {
-    const collection = pathOnly.match(/^\/items\/([^/]+)/)?.[1]
-    // Non-`/items/...` reads (e.g. `/assets/...`) and allowlisted
-    // collections are open; everything else needs a session.
-    if (collection && !PUBLIC_READ_COLLECTIONS.has(collection)) {
+    const itemsCollection = pathOnly.match(/^\/items\/([^/]+)/)?.[1]
+    const fieldsCollection = pathOnly.match(/^\/fields\/([^/]+)$/)?.[1]
+    // Non-`/items/...`/`/fields/...` reads (e.g. `/assets/...`) and
+    // allowlisted collections are open; the whole-schema `/fields` listing
+    // (no collection) and everything else needs a session.
+    if (
+      pathOnly === '/fields' ||
+      (itemsCollection && !PUBLIC_READ_COLLECTIONS.has(itemsCollection)) ||
+      (fieldsCollection && !PUBLIC_READ_COLLECTIONS.has(fieldsCollection))
+    ) {
       await requireAuth(event)
     }
   }

@@ -5,19 +5,26 @@
       <v-toolbar-title>Seller Reviews</v-toolbar-title>
     </v-toolbar>
 
-    <p>This is the seller reviews page.</p>
+    <div class="contentSection">
+      <SellerDataGrid :columns="columns" :data="rows" :pending="pending" :error="error" />
+    </div>
   </div>
 </template>
 
 <script setup>
+import SellerDataGrid from '~/components/SellerDataGrid.vue'
+import { useSellerReviews } from '~/composables/dashboard/useSellerReviews'
+
 definePageMeta({ middleware: 'seller' })
 useHead({
   title: 'Seller Reviews',
   meta: [
     {
       name: 'description',
-      content: 'This is the seller reviews page.'
+      content: 'Moderate and respond to reviews on your products.'
     }
   ]
 })
+
+const { columns, rows, pending, error } = useSellerReviews()
 </script>

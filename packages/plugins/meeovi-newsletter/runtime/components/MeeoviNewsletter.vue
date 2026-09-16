@@ -46,20 +46,17 @@
           required
         >
           <template #append-inner>
-            <v-icon size="small">fas fa-envelope</v-icon>
-          </template>
-        </v-text-field>
-
-        <v-btn
-          class="meeovi-newsletter__submit"
-          type="submit"
-          :loading="pending"
-          :disabled="pending"
-          color="primary"
-          size="large"
-        >
+          <v-btn
+            class="meeovi-newsletter__submit"
+            type="submit"
+            :loading="pending"
+            :disabled="pending"
+            color="primary"
+          >
           {{ buttonText }}
         </v-btn>
+          </template>
+        </v-text-field>
       </form>
 
       <ClientOnly v-if="turnstileEnabled">
@@ -196,6 +193,11 @@ async function onSubmit(): Promise<void> {
 .meeovi-newsletter--compact .meeovi-newsletter__inner {
   gap: 0.5rem;
 }
+
+.meeovi-newsletter {
+  background-color: transparent;
+}
+
 
 @media (min-width: 640px) {
   .meeovi-newsletter--inline .meeovi-newsletter__form,
