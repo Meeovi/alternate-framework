@@ -25,7 +25,7 @@
       "ts-node": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}'",
       "generate": "nuxt generate",
       "preview": "nuxt preview",
-      "postinstall": "is-ci || nuxt prepare"
+      "postinstall": "node -e \"process.env.CI || require('node:child_process').execSync('nuxt prepare', { stdio: 'inherit' })\""
    },
   "dependencies": {
     "@directus/sdk": "^23.0.0",
