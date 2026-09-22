@@ -29,6 +29,7 @@
    },
   "dependencies": {
     "@directus/sdk": "^23.0.0",
+    "@mframework/layer-shared": "file:../../../layers/shared",
     "@pinia/nuxt": "^1.0.2",
     "@sentry/nuxt": "^10",
     "@vite-pwa/assets-generator": "^1.0.2",
