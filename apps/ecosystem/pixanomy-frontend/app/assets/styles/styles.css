@@ -1,0 +1,214 @@
+/********************** Main CSS *************/
+html {
+    font-family: 'Inter', sans-serif !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.v-theme--dark .auto-text {
+  color: white;
+}
+
+.v-theme--light .auto-text {
+  color: black;
+}
+
+body {
+    margin: 0;
+    overflow-x: unset !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.v-selection-control__input input {
+    width: 40% !important;
+}
+
+#topnav {
+    width: 100% !important;
+}
+
+.logotext {
+    display: inline-block;
+    position: relative;
+    top: 1px;
+}
+
+#searchArea {
+    margin-top: 9% !important;
+    position: relative;
+    width: 100%;
+}
+
+#searchArea h1 {
+    text-align: center;
+    width: 100%;
+}
+
+.searchPreTitle {
+    color: red;
+    display: inline-block;
+}
+
+.searchAppendTitle {
+    display: inline-block;
+}
+
+.homeSearch {
+    left: 20%;
+    position: relative;
+    max-width: 1000px;
+    border-radius: 90px;
+}
+
+.searchDropdown {
+    position: relative;
+    z-index: 99999;
+}
+
+.myaccounttopmenu {
+    position: relative;
+}
+
+.ecoAvatar {
+    text-align: center;
+}
+
+.ecoAvatar .v-icon {
+    font-size: 80px;
+}
+
+.ecoTitle {
+    text-align: center;
+}
+
+.announcementBar {
+    position: relative;
+    top: 68px;
+}
+
+.announcementBar .v-alert {
+    width: 100%;
+}
+
+.searchbox {
+    width: 650px;
+    background-color: white !important;
+    border-radius: 5px !important;
+    display: inline-block !important;
+}
+
+.searchbutton {
+    background-color: orange !important;
+    color: black !important;
+}
+
+.lowernav {
+    top: 60px;
+    position: relative;
+    background-color: rgb(var(--v-theme-info)) !important;
+}
+
+.logobrand {
+    text-decoration: none;
+    position: relative;
+    top: 6px;
+}
+
+.rightTopNav {
+    padding-left: 40%;
+    position: relative;
+}
+
+/******************* Main Section CSS *********/
+
+#mainSection {
+    position: relative !important;
+    left: 0px;
+    max-width: 100% !important;
+}
+
+.homeSection,
+.contentPage,
+.contentPage404 {
+    padding-left: 0px !important;
+    padding-right: 0px;
+    top: 0px !important;
+    position: relative;
+    min-height: 100vh
+}
+
+.contentPage h2 {
+    width: 100% !important;
+    text-align: center;
+}
+
+.contentPage > .v-row {
+    padding: 10px;
+    background-color: transparent;
+}
+
+.cid-vvYiecuZo5 .content-wrapper, .cid-vvYiey8oxF .content-wrapper {
+    background: transparent !important;
+}
+
+.cid-vvYifS7tw3 .display-2, .cid-vvYifS7tw3 .display-7 {
+    color: black !important;
+}
+
+/***************** Footer ********************/
+.topfooter {
+    background-color: #232323;
+}
+
+.footertotopbtn {
+    width: 100% !important;
+    background-color: rgb(var(--v-theme-info)) !important;
+    color: white !important;
+}
+
+footer {
+    background-color: rgb(var(--v-theme-info)) !important;
+    color: white !important;
+}
+
+.footer3 h2 {
+    color: white !important;
+}
+
+footer a {
+    color: white !important;
+}
+
+footer a:hover {
+    color: white !important;
+}
+
+.copyrightFooter {
+    background-color: #222222;
+    color: white;
+}
+
+.copyrightText {
+    float: right;
+    right: 5px;
+    top: 20px;
+    position: relative;
+    font-size: 18px;
+}
+
+.footer7 {
+    padding-top: 5px;
+    background-color: transparent !important;
+    border-top: 1px solid green;
+}
+
+/**************** Custom CSS ***************/
+
+.contentPage section {
+    background-color: transparent !important;
+    color: rgb(var(--v-theme-on-surface)) !important;
+}
