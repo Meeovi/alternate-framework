@@ -1,0 +1,21 @@
+{
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "#auth": ["../../../layers/auth"],
+      "#auth/*": ["../../../layers/auth/*"],
+      "#social": ["../../../layers/social"],
+      "#social/*": ["../../../layers/social/*"],
+      "#commerce": ["../../../layers/commerce"],
+      "#commerce/*": ["../../../layers/commerce/*"],
+      "#shared": ["../../../layers/shared"],
+      "#shared/*": ["../../../layers/shared/*"]
+    },
+    "plugins": [{
+      "name": "@0no-co/graphqlsp",
+      "schema": "./schema.graphql"
+    }]
+  }
+}

@@ -1,0 +1,361 @@
+/******************** Search and results page styles *************/
+.search-bar__input[data-v-ca4df944] {
+  min-width: 100%;
+  width: 100%;
+}
+
+.searchForm {
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.searchField {
+    position: relative;
+    top: -2px;
+    min-width: 0;
+    width: 100% !important;
+    color: black;
+}
+
+.search-bar__actions {
+  display: flex;
+}
+
+  .search-bar__row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+  }
+
+  .search-bar__input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .search-bar__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+  }
+
+  .search-bar__index-col {
+    flex: 0 0 auto;
+    padding: 0;
+  }
+
+  .search-bar__index {
+    width: 140px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .search-bar__stats {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 720px;
+    margin: 0.25rem auto 0;
+    padding: 0;
+  }
+
+  .search-bar__stats-text {
+    font-size: 0.8rem;
+    color: rgba(var(--v-theme-on-surface), 0.7);
+  }
+
+  .search-bar .ais-SearchBox-loadingIndicator {
+    margin-left: 8px;
+  }
+
+  .search-bar .ais-SearchBox-loadingIndicator svg {
+    width: 16px;
+    height: 16px;
+  }
+
+.mainSearch {
+    width: 100%;
+    max-width: 650px;
+    min-height: 55px;
+    border-radius: 5px !important;
+    background-color: white;
+}
+
+.ais-SearchBox-input {
+    min-height: 0 !important;
+    border-radius: 5px !important;
+}
+
+/* Hides InstantSearch's own default/native icon SVGs (the built-in
+   search/clear/loading glyphs its unstyled widgets render) so only this
+   app's custom Vuetify+FontAwesome icons show. Was previously an
+   unqualified `svg` selector, which also caught the FontAwesome icons
+   rendered inside searchBar.vue's own ais-search-box/ais-voice-search
+   widgets (icon="fas fa-*", nested inside .ais-InstantSearch same as
+   InstantSearch's native icons) — invisible search/mic buttons with
+   correct DOM/SVG path data but display:none. */
+.ais-InstantSearch svg:not(.svg-inline--fa) {
+    display: none !important;
+}
+
+.mainSearch span {
+    height: 50px !important;
+}
+
+.results-summary {
+    text-align: center;
+}
+
+.resultsPage {
+  background: transparent;
+  min-height: 100%;
+  padding: 1rem;
+}
+
+.results-toolbar {
+  border: 1px solid #d8dde5;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  padding: 0.9rem;
+}
+
+.results-summary {
+  margin-bottom: 0.8rem;
+}
+
+.results-title {
+  color: #111827;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.results-count {
+  color: #4b5563;
+  font-size: 0.92rem;
+  margin: 0.25rem 0 0;
+}
+
+.toolbar-top {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.toolbar-sort {
+  min-width: 220px;
+}
+
+.toolbar-meta {
+  align-items: center;
+  border-top: 1px solid #edf1f6;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.results-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+
+.filters-sidebar {
+  border: 1px solid #d8dde5;
+  border-radius: 10px;
+  height: fit-content;
+  padding: 1rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.filters-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.filters-header h2 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.filter-group + .filter-group {
+  border-top: 1px solid #edf1f6;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+}
+
+.filter-group h3 {
+  color: #1f2937;
+  font-size: 0.9rem;
+  margin: 0 0 0.55rem;
+}
+
+.results-grid-wrap {
+  /* background: #ffffff; */
+  border: 1px solid #d8dde5;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.empty-state {
+  align-items: center;
+  /* background: #fbfcfe; */
+  border: 1px dashed #c6d3e3;
+  border-radius: 10px;
+  color: #1f2937;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  justify-content: center;
+  min-height: 280px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.empty-state h2 {
+  color: #0f172a;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+.product-card {
+  border: 1px solid #e3e8ef;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.product-card:hover {
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.12);
+  transform: translateY(-2px);
+}
+
+.product-media {
+  align-items: center;
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  height: 170px;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.product-media img {
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+
+.product-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.8rem;
+}
+
+.product-title {
+  color: #0f5ca8;
+  font-size: 0.98rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.product-description {
+  color: #4b5563;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.product-rating {
+  color: #b45309;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.product-price {
+  color: #111827;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: auto;
+}
+
+.results-pagination {
+  margin-top: 1.15rem;
+}
+
+.filter-toggle {
+  background: #0f6cbf;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  cursor: pointer;
+  display: none;
+  font-weight: 600;
+  padding: 0.55rem 0.85rem;
+}
+
+.mobile-filter-backdrop {
+  background: rgba(17, 24, 39, 0.4);
+  inset: 0;
+  position: fixed;
+  z-index: 19;
+}
+
+.results-grid .ais-Hits-list {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.results-grid .ais-Hits-item {
+  border: 0;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+}
+
+.voiceBtn {
+  color: #11389b !important
+}
+
+ .v-field__input::placeholder {
+    color: #6b7280 !important;
+    opacity: 1 !important;
+  }
+
+  input {
+    color: black !important;
+  }
+
+  .v-input__control i {
+    color: black;
+  }
+
+  #input-v-0-3-19-label {
+    color: #6b7280 !important;
+    opacity: 1 !important;
+  }

@@ -1,0 +1,72 @@
+{
+  "name": "meeovi-frontend",
+  "type": "module",
+  "version": "0.0.5",
+  "description": "Decentralized Social Shopping Networking, connecting people, products, and brands in a social commerce ecosystem.",
+  "author": "The Meeovi Company",
+  "homepage": "https://www.meeovi.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meeovi/meeovi-frontend"
+  },
+  "bugs": {
+    "url": "https://github.com/Meeovi/meeovi-frontend/issues"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "meeovi-commit": "git add . && git commit -m \"ready for update\"",
+    "meeovi-update": "git pull \"https://github.com/Meeovi/meeovi-frontend\"",
+    "dev": "nuxt dev --host 0.0.0.0 --port 3002",
+    "dev-sw": "SW=true nuxi dev",
+    "build": "nuxt build",
+    "build-sw": "SW=true nuxi build",
+    "smoke:auth": "bash ./scripts/auth-smoke.sh",
+    "test:auth:bash": "bash ./scripts/test-auth-multi-backend.sh",
+    "codegen": "graphql-codegen",
+    "test:auth:integration": "vitest run --project integration",
+    "directus": "dotenv -- npm run --prefix ../../../packages/adapters/adapter-directus mesh:build",
+    "magento": "dotenv -- npm run --prefix ../../../packages/adapters/adapter-magento mesh:build",
+    "test:auth": "npm run test:auth:bash && npm run test:auth:integration",
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "typecheck": "npx nuxi typecheck",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "node ../../../scripts/patch-browser-field-cjs-deps.cjs && nuxt prepare"
+  },
+  "dependencies": {
+    "@directus/sdk": "^23.0.0",
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "@pinia/nuxt": "^1.0.2",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@sentry/nuxt": "^10",
+    "@vite-pwa/assets-generator": "^1.0.2",
+    "adapter-directus": "file:../../../packages/adapters/adapter-directus",
+    "adapter-magento": "file:../../../packages/adapters/adapter-magento",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "1.0.0-rc.4",
+    "graphql": "^17.0.2",
+    "micromark": "^4.0.2",
+    "micromark-extension-gfm": "^3.0.0",
+    "pg": "^8.22.0",
+    "pinia": "^4.0.3",
+    "playwright-core": "^1.59.1",
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^7.2.0",
+    "@parcel/watcher": "^2.6.0",
+    "@types/node": "^25.9.5",
+    "@types/pg": "^8.20.0",
+    "dotenv-cli": "^11.0.0",
+    "drizzle-kit": "^1.0.0-rc.4",
+    "nuxt": "^4.5.1",
+    "nuxt-layers-utils": "^0.3.1",
+    "patch-package": "^8.0.1",
+    "prisma": "^7.8.0",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
