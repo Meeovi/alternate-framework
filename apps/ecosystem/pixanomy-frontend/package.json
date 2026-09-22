@@ -25,7 +25,7 @@
       "ts-node": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}'",
       "generate": "nuxt generate",
       "preview": "nuxt preview",
-      "postinstall": "nuxt prepare"
+      "postinstall": "is-ci || nuxt prepare"
    },
   "dependencies": {
     "@directus/sdk": "^23.0.0",
@@ -43,7 +43,7 @@
     "nuxt": "^4.5.2",
     "nuxt-layers-utils": "^0.3.1",
     "tsx": "^4.23.1",
-     "rolldown": "^1.2.9",
+    "rolldown": "^1.2.9",
     "typescript": "^7.0.2"
   }
 }
