@@ -48,6 +48,10 @@ service-account.json
 
 # build
 lib/
+# ...except layers/auth/lib, which is hand-written source (auth-client.ts),
+# not a compiled output directory.
+!layers/auth/lib/
+!layers/auth/lib/**
 
 .vscode
 *.code-workspace

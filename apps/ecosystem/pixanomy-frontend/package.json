@@ -19,7 +19,7 @@
       "pix-update": "git pull \"https://github.com/Meeovi/pixanomy-frontend\"",
       "dev": "nuxt dev --host 0.0.0.0",
       "dev-sw": "SW=true nuxi dev",
-      "build": "nuxt build",
+      "build": "nuxt prepare && nuxt build",
       "build-sw": "SW=true nuxi build",
       "smoke:auth": "bash ./scripts/auth-smoke.sh",
       "ts-node": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}'",
