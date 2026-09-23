@@ -7,7 +7,6 @@
         <ClientOnly>
           <Header :drawer="drawer" @toggle-drawer="drawer = !drawer" />
         </ClientOnly>
-        <OfflineAlert />
         <v-alert v-if="pwa?.offlineReady" type="success" density="compact" class="mb-2">
           App ready to work offline
         </v-alert>
@@ -42,7 +41,6 @@
   import sidebarnav from '../components/menus/sidebar/sidebarnav.vue'
   import copyright from '../components/blocks/copyright.vue'
   import mobileNav from '../components/menus/mobile/mobileNav.vue'
-  import OfflineAlert from '#shared/app/components/alerts/OfflineAlert.vue'
   import {
     useTheme
   } from 'vuetify'

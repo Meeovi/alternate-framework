@@ -7,7 +7,7 @@
           <v-list class="ml-4">
             <v-list-item v-for="pageItem in menuItem.pages" :key="pageItem?.pages_id?.id"
               :title="pageItem?.pages_id?.name" :value="pageItem?.pages_id?.name"
-              :href="toPath(pageItem?.pages_id?.slug)" />
+              :href="pageItem?.pages_id?.slug" />
           </v-list>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -16,19 +16,10 @@
 </template>
 
 <script setup>
-  import {
-    useRoutePath
-  } from '#shared/app/composables/routing/useRoutePath'
-
   const {
     $directus,
     $readItems,
   } = useNuxtApp()
-  const {
-    normalizeRoutePath
-  } = useRoutePath()
-
-  const toPath = (slug) => normalizeRoutePath(slug)
 
   const {
     data: topmenu

@@ -17,7 +17,7 @@
                 </v-toolbar>
                 <v-row style="padding: 10px;">
                     <v-col v-for="menu in activeMenus" :key="menu?.id">
-                        <NuxtLink :to="toPath(menu?.slug)">
+                        <NuxtLink :to="menu?.slug">
                             <v-card class="mx-auto ecoCard" max-width="300">
                                 <div class="ecoAvatar">
                                     <v-avatar :icon="`fas fa-${menu?.icon}`" size="180"></v-avatar>
@@ -33,14 +33,10 @@
 </template>
 
 <script setup>
-    import { useRoutePath } from '#shared/app/composables/routing/useRoutePath'
     import {
         ref,
         computed,
     } from 'vue'
-    const { normalizeRoutePath } = useRoutePath()
-
-    const toPath = (slug) => normalizeRoutePath(slug)
 
     const {
         $directus,

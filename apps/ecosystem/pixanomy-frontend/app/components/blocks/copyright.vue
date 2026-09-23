@@ -4,7 +4,7 @@
         <div class="container">
             <v-row class="align-left justify-content-center">
                 <v-col cols="3" v-for="child in copyright?.menus" :key="child.id">
-                    <NuxtLink :value="child?.name" :to="toPath(child?.url)"><v-icon :prepend-icon="child?.icon"></v-icon>{{ child?.name }}
+                    <NuxtLink :value="child?.name" :to="child?.url"><v-icon :prepend-icon="child?.icon"></v-icon>{{ child?.name }}
                     </NuxtLink>
                 </v-col>
                 <v-col cols="12">
@@ -20,12 +20,6 @@
 </template>
 
 <script setup>
-    import { useRoutePath } from '#shared/app/composables/routing/useRoutePath'
-
-    const { normalizeRoutePath } = useRoutePath()
-
-    const toPath = (slug) => normalizeRoutePath(slug)
-
     const { $directus, $readItem, $readItems } = useNuxtApp()
 
     const {
