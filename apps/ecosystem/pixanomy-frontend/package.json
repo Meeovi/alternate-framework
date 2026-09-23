@@ -29,6 +29,7 @@
    },
   "dependencies": {
     "@directus/sdk": "^23.0.0",
+    "@mframework/layer-auth": "file:../../../layers/auth",
     "@mframework/layer-shared": "file:../../../layers/shared",
     "@pinia/nuxt": "^1.0.2",
     "@sentry/nuxt": "^10",

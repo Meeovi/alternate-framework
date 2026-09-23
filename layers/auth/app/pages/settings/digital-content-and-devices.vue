@@ -37,7 +37,7 @@
             <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in digitalProducts"
                     :key="product.id">
-                    <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
+                    <OwnedProductCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
                             <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
@@ -54,7 +54,7 @@
             <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in devices"
                     :key="product.id">
-                    <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
+                    <OwnedProductCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
                             <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
@@ -71,7 +71,7 @@
             <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in apps"
                     :key="product.id">
-                    <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
+                    <OwnedProductCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                     <div class="d-flex fill-height align-center justify-center">
                         <v-scale-transition>
                             <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
@@ -87,7 +87,6 @@
     import {
         useHead
     } from 'nuxt/app';
-    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 
     const {
         $directus,
