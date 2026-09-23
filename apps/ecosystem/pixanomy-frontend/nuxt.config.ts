@@ -7,8 +7,8 @@ import {
 import { defineNuxtConfig } from 'nuxt/config'
 
 const layers = useLayers(__dirname, {
-  shared: '../../../layers/shared',
-  auth: '../../../layers/auth',
+  //shared: '../../../layers/shared',
+  //auth: '../../../layers/auth',
 })
 
 export default defineNuxtConfig({
