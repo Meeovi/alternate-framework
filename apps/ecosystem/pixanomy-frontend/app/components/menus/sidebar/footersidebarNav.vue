@@ -6,7 +6,7 @@
                     :href="item?.url" size="x-small">{{ item?.name }}</v-btn>
             </v-col>
             <v-col cols="3">
-                <v-btn @click="toggleDark()" variant="text">
+                <v-btn @click="toggleDark()" variant="text" class="darkModeIcon">
                     <v-icon>
                         {{ isDark ? 'fas fa-moon' : 'fas fa-sun' }}
                     </v-icon>

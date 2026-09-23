@@ -24,7 +24,7 @@
                         </v-col>
 
                         <v-col class="myaccounttopmenu">
-                            <v-btn title="Go to the Pixanomy App" text="Dashboard" href="https://app.pixanomy.com"></v-btn>
+                            <v-btn title="Go to the Pixanomy App" text="Get Started" href="https://app.pixanomy.com"></v-btn>
                         </v-col>
                     </div>
                 </v-col>
