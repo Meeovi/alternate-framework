@@ -1,5 +1,5 @@
 <template>
-    <div class="contentPage">
+    <div>
 <section data-bs-version="5.1" class="header19 cid-vvYicgPJ6g mbr-fullscreen mbr-parallax-background" id="header19-2p">
 
     
