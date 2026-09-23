@@ -73,8 +73,46 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
+    '@nuxt/image',
     '@sentry/nuxt/module',
   ],
+
+  image: {
+      providers: {
+        // Custom wrapper around the built-in cloudinary provider — falls
+        // back to serving the original image untransformed when
+        // CLOUDINARY_CLOUD_NAME isn't set, instead of 404ing against a
+        // placeholder account name. See providers/cloudinary-safe.ts.
+        cloudinary: {
+          name: 'cloudinary',
+          provider: resolve(__dirname, 'providers/cloudinary-safe.ts'),
+          options: {
+            baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/`,
+          },
+        },
+      },
+      domains: [
+        process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com',
+      ],
+      screens: {
+        xs: 320,
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+        xxl: 1536,
+      },
+      format: ['webp', 'avif'],
+      presets: {
+        default: {
+          modifiers: {
+            format: 'webp',
+            quality: 80,
+          },
+        },
+      },
+      densities: [1, 2, 3],
+    },
 
   runtimeConfig: {
     public: {
