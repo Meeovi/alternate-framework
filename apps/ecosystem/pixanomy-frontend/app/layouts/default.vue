@@ -7,6 +7,9 @@
         <ClientOnly>
           <Header :drawer="drawer" @toggle-drawer="drawer = !drawer" />
         </ClientOnly>
+        <v-alert v-if="pwa?.offlineReady" type="success" density="compact" class="mb-2">
+          App ready to work offline
+        </v-alert>
 
         <v-main>
           <div class="page-wrapper">
@@ -50,6 +53,7 @@
   }
 
   const STORAGE_KEY = 'elite-theme'
+  const pwa = usePWA()
 
   // Theme is now initialized via plugins (server + client)
   // This watcher just ensures persistence when user toggles theme

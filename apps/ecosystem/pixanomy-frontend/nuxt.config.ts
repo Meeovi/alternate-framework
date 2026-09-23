@@ -5,6 +5,7 @@ import {
   resolve
 } from 'path'
 import { defineNuxtConfig } from 'nuxt/config'
+import vuetify from 'vite-plugin-vuetify'
 
 const layers = useLayers(__dirname, {
   //shared: '../../../layers/shared',
@@ -74,8 +75,33 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@nuxt/image',
+    '@vite-pwa/nuxt',
     '@sentry/nuxt/module',
   ],
+
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: process.env.NUXT_PUBLIC_SITE_NAME || 'Pixanomy',
+      short_name: process.env.NUXT_PUBLIC_SITE_NAME || 'Pixanomy',
+      description: process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Centralize your digital assets. Store, share, and manage them all in one place.',
+      theme_color: process.env.NUXT_PUBLIC_APP_THEME_COLOR || '#ffffff',
+      background_color: '#ffffff',
+      icons: [
+        { src: '/icons/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+        { src: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/icons/icon-192x192.maskable.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+        { src: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+        { src: '/icons/icon-512x512.maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+    },
+    client: {
+      installPrompt: true,
+    },
+  },
 
   image: {
       providers: {
@@ -144,6 +170,7 @@ export default defineNuxtConfig({
   build: {
     transpile: [
       '@vue/email',
+      'vuetify',
     ]
   },
 
@@ -195,6 +222,20 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    optimizeDeps: {
+      // See layers/shared/nuxt.config.ts's comment on the equivalent
+      // option for why vuetify's subpaths are pre-bundled up front: without
+      // this, Vite discovers Vuetify's ~800 individual component/composable
+      // files one at a time on first use, each triggering a full reload.
+      exclude: ['vuetify'],
+      include: ['vuetify/components', 'vuetify/directives'],
+    },
+    plugins: [
+      // @ts-ignore
+      vuetify({
+        autoImport: true,
+      }),
+    ],
     resolve: {
       alias: {},
     },
