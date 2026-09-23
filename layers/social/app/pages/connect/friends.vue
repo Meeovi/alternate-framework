@@ -85,6 +85,10 @@ onMounted(async () => {
   await reloadData()
   loading.value = false
 })
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 
 useHead({
   title: friendsPage?.value?.name || 'Friends',

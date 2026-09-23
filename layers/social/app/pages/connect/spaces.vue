@@ -112,6 +112,10 @@
     }, {
         immediate: true
     })
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 
     useHead({
         title: 'Spaces',

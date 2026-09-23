@@ -5,10 +5,36 @@ import {
   defineNuxtConfig
 } from 'nuxt/config'
 import process from 'node:process'
+import { createRequire } from 'node:module'
 import vuetify from 'vite-plugin-vuetify'
 
 const sw = process.env.SW === 'true'
 const pwaDevEnabled = process.env.PWA_DEV === 'true'
+
+// @novu/js's package.json "exports" map doesn't list "./dist/index.css" as
+// a subpath (confirmed: `node -e "require.resolve('@novu/js/dist/index.css')"`
+// throws ERR_PACKAGE_PATH_NOT_EXPORTED), so a plain `import '@novu/js/dist/
+// index.css'` in application code would fail under Vite's resolver too —
+// without it, the notification bell widget mounts with correct structure
+// but zero styling (every `nt-*`/`nv-*` utility class and the bell icon's
+// SVG gradient resolve to nothing: a shrunk, black icon and an
+// un-positioned popover that pushes into the header's layout instead of
+// overlaying it — confirmed live 2026-09-16). Resolving the package's own
+// root export (".", which IS in the exports map) and deriving the CSS
+// path from there — rather than hardcoding an absolute filesystem path —
+// keeps this portable across machines/CI; the `resolve.alias` entry below
+// then lets application code use the normal-looking bare specifier, with
+// Vite substituting this real path before Node's exports enforcement ever
+// applies (alias resolution happens first).
+const novuCssPath = (() => {
+  try {
+    const require = createRequire(import.meta.url)
+    const novuEntry = require.resolve('@novu/js')
+    return novuEntry.replace(/dist[\\/].*$/, 'dist/index.css')
+  } catch {
+    return null
+  }
+})()
 
 /**
  * The site-wide Content-Security-Policy header (applied via routeRules).
@@ -26,6 +52,17 @@ function buildContentSecurityPolicy(): string {
   const directusHttps = httpsOrigin(process.env.DIRECTUS_URL)
   const coralHttps = httpsOrigin(process.env.CORAL_SERVER_URL)
   const coralWss = wssOrigin(process.env.CORAL_SERVER_URL)
+
+  // Self-hosted Novu (/home/meebuzo/github/novu) is plain http:// on a raw
+  // IP, not https:// like the others above — httpsOrigin() would rewrite
+  // the scheme to something nothing is actually listening on, so these are
+  // used as-is. NOVU_WEBSOCKET_HOSTNAME is given as http:// too (matches
+  // its own container's exposed port) but the client opens it as a
+  // WebSocket, and Novu's socket.io client also polls over plain http
+  // before upgrading — both schemes need to be allowed for that host.
+  const novuApi = process.env.NOVU_API_HOSTNAME || ''
+  const novuWs = process.env.NOVU_WEBSOCKET_HOSTNAME || ''
+  const novuWss = novuWs.replace(/^https?:\/\//, 'ws://')
 
   // Analytics / marketing tag endpoints. Google Tag Manager (configured
   // with a real container id) can itself load any of these downstream, and
@@ -60,6 +97,9 @@ function buildContentSecurityPolicy(): string {
     directusHttps,
     coralHttps,
     coralWss,
+    novuApi,
+    novuWs,
+    novuWss,
     ...analyticsHosts,
   ].filter(Boolean).join(' ')
 
@@ -112,6 +152,11 @@ export default defineNuxtConfig({
           src: 'https://cdn-cookieyes.com/widgets/accessibility.js?id=39a5baae-e2fd-4b95-8f39-ffeca39a37da',
           async: true,
           tagPosition: 'bodyClose'
+        },
+        {
+          src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3854548303717312',
+          async: true,
+          crossorigin: 'anonymous'
         }
       ]
     }
@@ -604,7 +649,10 @@ export default defineNuxtConfig({
         // VStepperVertical from Vuetify's `labs` entrypoint. In Vuetify 4 the
         // component graduated to stable with the same public API, and the labs
         // path no longer exists — remap it so the dependency resolves.
-        'vuetify/labs/VStepperVertical': 'vuetify/components/VStepperVertical'
+        'vuetify/labs/VStepperVertical': 'vuetify/components/VStepperVertical',
+        // See novuCssPath's own comment above (top of file) for why this
+        // alias exists at all rather than a plain bare import.
+        ...(novuCssPath ? { '@novu/js/dist/index.css': novuCssPath } : {}),
       }
     },
     vue: {

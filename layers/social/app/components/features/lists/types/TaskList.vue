@@ -130,20 +130,29 @@ const statusOptions = [
   { title: 'Done', value: 2 }
 ]
 
+// list_items' real columns are list_id/title/description/position (not
+// list/content/notes/sort) — Directus silently drops unknown fields on
+// create instead of erroring, so the old field names here were writing
+// orphaned rows with list_id left null, and the read filter matched
+// nothing because `list` doesn't exist as a column to filter on.
+function toTask(r: any) {
+  return {
+    id: r.id,
+    content: r.title ?? '',
+    notes: r.description ?? '',
+    status: r.status ?? 0,
+    sort: r.position ?? 0
+  }
+}
+
 async function loadItems() {
   const records = await $directus.request($readItems('list_items', {
-    fields: ['id', 'content', 'notes', 'status', 'sort'],
-    filter: { list: { _eq: listId } },
-    sort: ['sort']
+    fields: ['id', 'title', 'description', 'status', 'position'],
+    filter: { list_id: { _eq: listId } },
+    sort: ['position']
   })) || []
 
-  tasks.value = records.map((r: any) => ({
-    id: r.id,
-    content: r.content ?? '',
-    notes: r.notes ?? '',
-    status: r.status ?? 0,
-    sort: r.sort ?? 0
-  }))
+  tasks.value = records.map(toTask)
 }
 
 function openDialog(task: any = null) {
@@ -162,21 +171,27 @@ function openDialog(task: any = null) {
 
 async function saveTask() {
   if (editingTask.value) {
-    await $directus.request($updateItem('list_items', editingTask.value.id, {
-      content: form.value.content,
-      notes: form.value.notes,
+    const updated = await $directus.request($updateItem('list_items', editingTask.value.id, {
+      title: form.value.content,
+      description: form.value.notes,
       status: form.value.status
     }))
+    const task = toTask(updated)
+    const index = tasks.value.findIndex((t) => t.id === task.id)
+    if (index !== -1) tasks.value[index] = task
   } else {
-    await $directus.request($createItem('list_items', {
-      list: listId,
-      content: form.value.content,
-      notes: form.value.notes,
+    const created = await $directus.request($createItem('list_items', {
+      list_id: listId,
+      title: form.value.content,
+      description: form.value.notes,
       status: form.value.status
     }))
+    // Append locally instead of re-fetching the whole list — the new
+    // task appears immediately without a round trip back through
+    // loadItems().
+    tasks.value = [...tasks.value, toTask(created)]
   }
   dialog.value = false
-  await loadItems()
 }
 
 function confirmDelete(task: any) {
@@ -187,9 +202,9 @@ function confirmDelete(task: any) {
 async function deleteTask() {
   if (deletingTask.value) {
     await $directus.request($deleteItem('list_items', deletingTask.value.id))
+    tasks.value = tasks.value.filter((t) => t.id !== deletingTask.value.id)
     deleteDialog.value = false
     deletingTask.value = null
-    await loadItems()
   }
 }
 

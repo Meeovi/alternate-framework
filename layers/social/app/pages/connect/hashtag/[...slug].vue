@@ -123,6 +123,12 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
             limit: 1
         }))
         return resp?.data?.[0] || resp?.[0] || null
+    }, {
+        watch: [() => route.params.slug]
+    })
+    
+    definePageMeta({
+        middleware: 'auth'
     })
 
     useHead({

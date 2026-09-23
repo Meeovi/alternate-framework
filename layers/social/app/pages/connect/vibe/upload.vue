@@ -83,6 +83,11 @@ async function handleUpload() {
 
   loading.value = false
 }
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
+
 </script>
 
 <style scoped>

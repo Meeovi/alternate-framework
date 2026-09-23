@@ -20,4 +20,9 @@
 defineProps({ space: Object, user: Object, loggedIn: Boolean })
 import SpaceSettings from '#social/app/components/features/spaceSections/crud/update-space.vue'
 import FollowButton from '#social/app/components/blocks/FollowButton.vue'
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
+
 </script>

@@ -6,7 +6,7 @@
  */
 
 /** Identifier of a bundled backend provider, or a custom string for user-registered providers. */
-export type NewsletterProviderName = 'mailchimp' | 'directus' | 'console' | (string & {})
+export type NewsletterProviderName = 'mailchimp' | 'mautic' | 'directus' | 'console' | (string & {})
 
 /** Payload accepted by the `/api/newsletter/subscribe` endpoint and by every provider. */
 export interface NewsletterSubscribeInput {
@@ -81,6 +81,25 @@ export interface MailchimpProviderOptions {
   audienceId?: string
 }
 
+export interface MauticProviderOptions {
+  /** Base URL of the self-hosted Mautic instance, e.g. `https://marketing.example.com`. */
+  baseUrl?: string
+  /** Numeric id of the Mautic form to submit to (the `formId` its embed code hardcodes). */
+  formId?: string | number
+  /**
+   * Mautic's internal alias for the form — the `mauticform[formName]`
+   * hidden field its embed code sends. Optional; some Mautic setups don't
+   * require it for processing, but include it when you have it.
+   */
+  formAlias?: string
+  /** Mautic field alias the email goes to. Default `'email'`. */
+  emailField?: string
+  /** Mautic field alias for a first name, when collected. */
+  firstNameField?: string
+  /** Mautic field alias for a last name, when collected. */
+  lastNameField?: string
+}
+
 export interface DirectusProviderOptions {
   /** Directus base URL. Defaults to `DIRECTUS_URL`. */
   url?: string
@@ -105,6 +124,7 @@ export interface NewsletterRuntimeConfig {
   provider: NewsletterProviderName
   doubleOptIn: boolean
   mailchimp: MailchimpProviderOptions
+  mautic: MauticProviderOptions
   directus: DirectusProviderOptions
   turnstile: { enabled: boolean }
 }
@@ -138,6 +158,8 @@ export interface MeeoviNewsletterModuleOptions {
   doubleOptIn?: boolean
   /** Mailchimp credentials (used when `provider === 'mailchimp'`). */
   mailchimp?: MailchimpProviderOptions
+  /** Self-hosted Mautic form target (used when `provider === 'mautic'`). */
+  mautic?: MauticProviderOptions
   /** Directus target (used when `provider === 'directus'`). */
   directus?: DirectusProviderOptions
   /** Default copy for the `<MeeoviNewsletter>` component. */

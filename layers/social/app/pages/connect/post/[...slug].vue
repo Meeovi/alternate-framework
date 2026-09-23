@@ -164,7 +164,8 @@
     import comments from '#social/app/components/blocks/comments.vue';
     import {
         onMounted,
-        ref
+        ref,
+        watch
     } from '#imports'
     import {
         useReactionsStore
@@ -174,6 +175,7 @@
         $directus,
         $readItems
     } = useNuxtApp()
+    const route = useRoute()
 
     const {
         data: post
@@ -188,21 +190,25 @@
             limit: 1
         }))
         return resp?.[0] || null
+    }, {
+        watch: [() => route.params.slug]
     })
 
     const reactionsStore = useReactionsStore()
 
-    onMounted(async () => {
-        if (post?.value?.id) {
-            await reactionsStore.fetchReactions(post.value.id, post.value?.type)
-        }
-    })
+    watch(() => post.value?.id, (id) => {
+        if (id) reactionsStore.fetchReactions(id, post.value?.type)
+    }, { immediate: true })
 
     // Cusdis comment properties derived from this page's data
     const config = useRuntimeConfig ? useRuntimeConfig() : {}
     const pageUrl = ref('')
     onMounted(() => {
         if (process.client) pageUrl.value = window.location.href
+    })
+    
+    definePageMeta({
+        middleware: 'auth'
     })
 
     useHead({

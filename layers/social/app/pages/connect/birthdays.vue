@@ -83,6 +83,10 @@
         }))
         return Array.isArray(resp) ? resp : []
     })
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 
     useHead({
         title: 'Birthdays Center',

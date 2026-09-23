@@ -66,6 +66,8 @@ import { useRoute } from 'vue-router'
             limit: 1
         }))
         return resp?.data?.[0] || resp?.[0] || null
+    }, {
+        watch: [() => route.params.slug]
     })
 
     useHead({

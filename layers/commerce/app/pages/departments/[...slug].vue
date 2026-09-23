@@ -197,7 +197,8 @@
 
     import {
         ref,
-        computed
+        computed,
+        watch
     } from '#imports'
     import { CommerceBackendRegistry } from 'alternate-sdk'
 
@@ -238,6 +239,8 @@
             limit: 1
         }))
         return Array.isArray(result) ? result[0] : null
+    }, {
+        watch: [departmentSlug]
     })
 
     // Cross-references this department's product sections with whichever
@@ -260,11 +263,15 @@
             slug: department.value.slug,
             externalId: department.value.relative_id || undefined,
         })
+    }, {
+        watch: [department]
     })
 
-    if (backendCategoryProducts.value) {
-        department.value.products = backendCategoryProducts.value.map((product) => ({ products_id: product }))
-    }
+    watch(backendCategoryProducts, (products) => {
+        if (products && department.value) {
+            department.value.products = products.map((product) => ({ products_id: product }))
+        }
+    }, { immediate: true })
 
     // These department-scoped queries filter the `departments` collection
     // itself (to match slug + the relevant products/showcases condition)
@@ -305,6 +312,8 @@
             }
         }))
         return extractProducts(result)
+    }, {
+        watch: [departmentSlug, backendCategoryProducts]
     })
 
     const {
@@ -330,6 +339,8 @@
             }
         }))
         return extractProducts(result)
+    }, {
+        watch: [departmentSlug, backendCategoryProducts]
     })
 
     // "Event"-type products are a Directus product_types attribute filter —
@@ -366,6 +377,8 @@
             }
         }))
         return extractProducts(result)
+    }, {
+        watch: [departmentSlug]
     })
 
     const {

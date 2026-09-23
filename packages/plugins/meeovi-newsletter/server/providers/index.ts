@@ -1,5 +1,6 @@
 import type { NewsletterProvider, NewsletterProviderName } from '../../runtime/types'
 import { mailchimpProvider } from './mailchimp'
+import { mauticProvider } from './mautic'
 import { directusProvider } from './directus'
 import { consoleProvider } from './console'
 
@@ -11,6 +12,7 @@ import { consoleProvider } from './console'
  */
 export const newsletterProviders: Record<string, NewsletterProvider> = {
   [mailchimpProvider.name]: mailchimpProvider,
+  [mauticProvider.name]: mauticProvider,
   [directusProvider.name]: directusProvider,
   [consoleProvider.name]: consoleProvider,
 }
@@ -26,5 +28,5 @@ export function resolveNewsletterProvider(name: NewsletterProviderName | undefin
   return consoleProvider
 }
 
-export { mailchimpProvider, directusProvider, consoleProvider }
+export { mailchimpProvider, mauticProvider, directusProvider, consoleProvider }
 export type { NewsletterProvider } from '../../runtime/types'

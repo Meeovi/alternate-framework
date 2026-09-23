@@ -51,9 +51,9 @@
         <!-- Create a new list right from the panel -->
         <div class="pa-4">
           <v-form @submit.prevent="handleCreateList">
+            <label for="v-text-field">Create a New List</label>
             <v-text-field
               v-model="newListName"
-              label="Create a new list"
               placeholder="e.g. Birthday ideas"
               density="compact"
               hide-details="auto"

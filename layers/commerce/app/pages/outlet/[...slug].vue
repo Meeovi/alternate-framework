@@ -191,6 +191,8 @@
       limit: 1
     }))
     return Array.isArray(result) ? result[0] : null
+  }, {
+    watch: [() => route.params.slug]
   })
 
   const {
@@ -228,6 +230,8 @@
       limit: 1
     }))
     return Array.isArray(result) ? result[0]?.products : []
+  }, {
+    watch: [() => route.params.slug]
   })
 
   const {

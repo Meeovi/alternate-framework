@@ -30,11 +30,10 @@
 </template>
 
 <script setup>
-  definePageMeta({ middleware: 'seller' })
+  definePageMeta({ middleware: 'seller', key: (route) => route.fullPath })
 
   import {
-    ref,
-    watch
+    ref
   } from 'vue'
   import Pagebar from '../components/menus/page/pagebar.vue'
   import share from '#social/app/components/blocks/share.vue'
@@ -47,7 +46,7 @@
 
   const {
     data: integration
-  } = await useAsyncData('integration', async () => {
+  } = await useAsyncData(`integration-${route.params.slug}`, async () => {
     const result = await $directus.request($readItems('integrations', {
       filter: {
         slug: {
@@ -58,10 +57,6 @@
       limit: 1
     }))
     return Array.isArray(result) ? result[0] : null
-  })
-
-  watch(() => route.params.slug, async () => {
-    await refreshNuxtData('integration')
   })
 
   useHead({

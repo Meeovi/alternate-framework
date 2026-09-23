@@ -89,6 +89,8 @@
       limit: 1
     }))
     return Array.isArray(result) ? result[0] : null
+  }, {
+    watch: [() => route.params.slug]
   })
 
   definePageMeta({

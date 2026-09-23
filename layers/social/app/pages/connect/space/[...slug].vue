@@ -179,6 +179,8 @@
             ],
             limit: 1
         })).then(response => response?.[0]) // Get first item from response
+    }, {
+        watch: [() => route.params.slug]
     })
 
     // createListBtn's panel needs a resolved image URL, not the raw
@@ -214,6 +216,10 @@
             }
         })
     }
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 
     useHead({
         title: space?.value?.name || 'Space Page',

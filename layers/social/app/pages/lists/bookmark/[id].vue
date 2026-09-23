@@ -47,4 +47,9 @@ const { data: website } = await useAsyncData('website', async () => {
     const resp = await $directus.request($readItem('websites', route.params.id, opts))
     return resp || null
 })
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
+
 </script>

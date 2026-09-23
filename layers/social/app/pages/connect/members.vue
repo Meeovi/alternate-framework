@@ -58,4 +58,8 @@
         ...(directusMembersList.value || []),
         ...(atprotoMembers.value?.items || []),
     ])
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 </script>

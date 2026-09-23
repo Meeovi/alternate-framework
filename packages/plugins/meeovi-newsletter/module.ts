@@ -30,6 +30,12 @@ export default defineNuxtModule<MeeoviNewsletterModuleOptions>({
       serverPrefix: env.MAILCHIMP_SERVER_PREFIX,
       audienceId: env.MAILCHIMP_AUDIENCE_ID,
     },
+    mautic: {
+      baseUrl: env.NEWSLETTER_MAUTIC_URL || env.MAUTIC_BASE_URL,
+      formId: env.NEWSLETTER_MAUTIC_FORM_ID,
+      formAlias: env.NEWSLETTER_MAUTIC_FORM_NAME,
+      emailField: env.NEWSLETTER_MAUTIC_EMAIL_FIELD || 'email',
+    },
     directus: {
       url: env.NEWSLETTER_DIRECTUS_URL || env.DIRECTUS_URL,
       token: env.NEWSLETTER_DIRECTUS_TOKEN || env.NUXTUS_DIRECTUS_STATIC_TOKEN,
@@ -76,6 +82,7 @@ export default defineNuxtModule<MeeoviNewsletterModuleOptions>({
       provider: options.provider || 'directus',
       doubleOptIn: options.doubleOptIn !== false,
       mailchimp: { ...options.mailchimp },
+      mautic: { ...options.mautic },
       directus: {
         collection: 'newsletters',
         emailField: 'email',

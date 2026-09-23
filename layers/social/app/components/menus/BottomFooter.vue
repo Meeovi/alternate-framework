@@ -1,41 +1,41 @@
 <template>
-  <div
-    v-if="session.data?.user"
-    class="pa-4 text-center feedButton"
-  >
-    <v-dialog
-      v-model="dialog"
-      max-width="800"
-      transition="dialog-bottom-transition"
+  <ClientOnly>
+    <div
+      v-if="session.data?.user"
+      class="pa-4 text-center feedButton"
     >
-      <template #activator="{ props }">
-        <v-btn
-          icon="fas fa-pen-to-square"
-          class="postbtn"
-          title="Post to Social Feed"
-          v-bind="props"
-        />
-      </template>
+      <v-dialog
+        v-model="dialog"
+        max-width="800"
+        transition="dialog-bottom-transition"
+      >
+        <template #activator="{ props }">
+          <v-btn
+            icon="fas fa-pen-to-square"
+            class="postbtn"
+            title="Post to Social Feed"
+            v-bind="props"
+          />
+        </template>
 
-      <template #default="{ isActive }">
-        <v-card class="pa-4">
-          <ClientOnly>
+        <template #default="{ isActive }">
+          <v-card class="pa-4">
             <AddPost v-if="dialog" />
-          </ClientOnly>
 
-          <v-card-actions>
-            <v-spacer />
+            <v-card-actions>
+              <v-spacer />
 
-            <v-btn
-              text="Close"
-              variant="text"
-              @click="isActive.value = false"
-            />
-          </v-card-actions>
-        </v-card>
-      </template>
-    </v-dialog>
-  </div>
+              <v-btn
+                text="Close"
+                variant="text"
+                @click="isActive.value = false"
+              />
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
+    </div>
+  </ClientOnly>
 </template>
 
 <script setup>

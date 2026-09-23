@@ -108,4 +108,9 @@
     await fetchShort()
     await trackView()
   })
+      
+    definePageMeta({
+        middleware: 'auth'
+    })
+
 </script>

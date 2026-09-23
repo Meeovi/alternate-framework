@@ -54,6 +54,10 @@
     const { data: tagBar } = await useAsyncData('tagBar', () => {
         return $directus.request($readItem('navigation', '78', { fields: ['*', { '*': ['*'] }] }))
     })
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 
     useHead({
         title: 'Hashtags',

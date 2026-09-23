@@ -9,8 +9,8 @@ This is the stable entrypoint for Nuxt guidance in this repository.
 The full generated skill tree lives in the Nuxt build directory so the checked-in skill surface stays small.
 
 ## Generated content
-- Entry: [../../../apps/ecosystem/pixanomy-frontend/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-pixanomy-frontend/SKILL.md](../../../apps/ecosystem/pixanomy-frontend/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-pixanomy-frontend/SKILL.md)
-- Root: [../../../apps/ecosystem/pixanomy-frontend/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-pixanomy-frontend](../../../apps/ecosystem/pixanomy-frontend/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-pixanomy-frontend)
+- Entry: [../../../apps/ecosystem/pixanomy-frontend/.nuxt/skill-hub/nuxt-pixanomy-frontend/SKILL.md](../../../apps/ecosystem/pixanomy-frontend/.nuxt/skill-hub/nuxt-pixanomy-frontend/SKILL.md)
+- Root: [../../../apps/ecosystem/pixanomy-frontend/.nuxt/skill-hub/nuxt-pixanomy-frontend](../../../apps/ecosystem/pixanomy-frontend/.nuxt/skill-hub/nuxt-pixanomy-frontend)
 
 ## Required workflow
 1. Check whether the generated entry exists.

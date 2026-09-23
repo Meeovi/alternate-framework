@@ -16,6 +16,9 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import type { NovuUI } from '@novu/js/ui'
 import { useNovuSession } from '#shared/app/composables/notifications/useNovuSession'
+// See LayoutNotifications.vue's own comment on this same import — required
+// for the widget to render styled at all.
+import '@novu/js/dist/index.css'
 
 // Full-page equivalent of the header bell (LayoutNotifications.vue) — same
 // Novu-backed inbox, mounted as the embedded `InboxContent` component

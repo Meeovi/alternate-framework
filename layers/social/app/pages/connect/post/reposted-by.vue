@@ -36,4 +36,9 @@ const { getReposts } = usePosts()
 onMounted(async () => {
   users.value = await getReposts(postId)
 })
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
+
 </script>

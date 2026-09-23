@@ -83,6 +83,8 @@ import HabitTrackerVIew from '../../../components/features/lists/types/HabitTrac
       },
       limit: 1
     }))
+  }, {
+    watch: [slug]
   })
 
   const list = computed(() => listRaw.value?.[0] || null)
@@ -149,8 +151,8 @@ import HabitTrackerVIew from '../../../components/features/lists/types/HabitTrac
   useHead({
     title: computed(() => list.value?.name || 'List')
   })
-
-  definePageMeta({
-    //middleware: ['authenticated']
-  })
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 </script>

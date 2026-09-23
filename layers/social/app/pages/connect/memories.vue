@@ -57,6 +57,10 @@
         ...(directusHistoryPosts.value || []),
         ...(atprotoHistoryPosts.value?.items || []),
     ])
+    
+    definePageMeta({
+        middleware: 'auth'
+    })
 
     useHead({
         title: 'Memories Center',
