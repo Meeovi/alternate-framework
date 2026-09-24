@@ -167,11 +167,12 @@ export default defineNuxtConfig({
     '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/'),
   },
 
+  // Shared components are not auto-registered: every consumer imports them
+  // by path (#shared/app/components/...). The previous `path: 'app/components'`
+  // resolved against this layer's srcDir (already app/), i.e. the nonexistent
+  // app/app/components, so it never registered anything anyway.
   components: {
-    dirs: [{
-      path: 'app/components',
-      pathPrefix: false,
-    }]
+    dirs: []
   },
 
   modules: [
@@ -179,7 +180,6 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@nuxt/image',
     '@vueuse/motion/nuxt',
-    '@tresjs/nuxt',
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
     '@vite-pwa/nuxt',
@@ -486,14 +486,11 @@ export default defineNuxtConfig({
     '/profile/**': { isr: false },
     '/notifications': { isr: false },
     '/notifications/**': { isr: false },
-    '/media-center': { isr: false },
     '/lists/**': { isr: false },
     '/dates': { isr: false },
     '/your-friends': { isr: false },
     // Social surfaces are personalised (feed, spaces, DMs, calendar).
     '/connect/**': { isr: false },
-    '/collaborrate/**': { isr: false },
-    '/pixanomy/**': { isr: false },
     // Commerce: cart / checkout / account / post-purchase are per-user.
     '/cart': { isr: false },
     '/checkout': { isr: false },

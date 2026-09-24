@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
   import searchHeader from '../components/menus/searchHeader.vue'
-  import bottomFooter from '../components/menus/bottomFooter.vue'
+  import bottomFooter from '#social/app/components/menus/BottomFooter.vue'
   import live from '#social/app/components/menus/livebar/live.vue'
   import OfflineAlert from '#shared/app/components/alerts/OfflineAlert.vue'
   import {

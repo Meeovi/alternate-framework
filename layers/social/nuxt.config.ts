@@ -68,19 +68,5 @@ export default defineNuxtConfig({
     }
   },
 
-  // Pixanomy's 3D preview (Pix3DScene.vue) pulls these three.js example
-  // loaders directly — three has no `exports` map so the subpaths resolve
-  // to real files, but pre-bundling them keeps the dev server from doing a
-  // mid-session re-optimize the first time a glTF model is opened.
-  vite: {
-    optimizeDeps: {
-      include: [
-        'three/examples/jsm/loaders/GLTFLoader.js',
-        'three/examples/jsm/controls/OrbitControls.js',
-        'three/examples/jsm/environments/RoomEnvironment.js'
-      ]
-    }
-  },
-
   compatibilityDate: '2026-02-16'
 })

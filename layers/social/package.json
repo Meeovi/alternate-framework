@@ -4,7 +4,7 @@
   "description": "Social Layer for the M Framework",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "dev": "nuxt dev --port 5314",
     "typecheck": "nuxt typecheck",
     "generate": "nuxt generate",

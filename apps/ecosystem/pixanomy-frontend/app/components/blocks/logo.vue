@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-app-bar-title v-if="blocksSiteoverview?.media?.[0]?.file || blocksSiteoverview?.media?.[0]">
+        <div v-if="blocksSiteoverview?.media?.[0]?.file || blocksSiteoverview?.media?.[0]">
             <NuxtLink class="logobrand" :href="blocksSiteoverview?.slug">
                 <v-icon start color="orange">
                     <NuxtImg provider="cloudinary" :src="`${$directus.url}/assets/${blocksSiteoverview?.media?.[0]?.file || blocksSiteoverview?.media?.[0]}`"
@@ -8,16 +8,16 @@
                 </v-icon>
                 <p class="logotext">{{ blocksSiteoverview?.name }}<!--Pixanomy--></p>
             </NuxtLink>
-        </v-app-bar-title>
+        </div>
 
-        <v-app-bar-title v-else>
+        <div v-else>
             <NuxtLink class="logobrand" :to="blocksSiteoverview?.url">
                 <v-icon start color="orange">
                     <NuxtImg provider="cloudinary" src="/images/Firefly.png" :alt="blocksSiteoverview?.name" />
                 </v-icon>
                 <p class="logotext">{{ blocksSiteoverview?.name }}<!--Pixanomy--></p>
             </NuxtLink>
-        </v-app-bar-title>
+        </div>
     </div>
 </template>
 

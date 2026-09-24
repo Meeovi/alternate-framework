@@ -35,7 +35,7 @@
   import {
     ref
   } from 'vue'
-  import Pagebar from '../components/menus/page/pagebar.vue'
+  import Pagebar from '../../../components/menus/page/pagebar.vue'
   import share from '#social/app/components/blocks/share.vue'
 
   const route = useRoute()

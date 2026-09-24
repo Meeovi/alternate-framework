@@ -75,7 +75,9 @@ body {
 }
 
 .myaccounttopmenu {
-    position: relative;
+    position: fixed;
+    padding-right: 5px;
+    right: 5px;
 }
 
 .ecoAvatar {

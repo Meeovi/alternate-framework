@@ -1,49 +1,10 @@
 /**************** Main CSS ***************/
-@media only screen and (max-width: 1470px) {
-  .searchField {
-    display: block;
-    position: relative;
-    left: 15px !important;
-    right: 15px !important;
-  }
-}
-
-@media only screen and (min-width: 1471px) {
-  #mobileNav {
-    display: none;
-  }
-}
-
 @media only screen and (max-width: 1100px) {
-  #mobileNav {
-    display: block !important;
-    bottom: 0;
+.myaccounttopmenu {
     position: fixed;
-    width: 100%;
-  }
-
-  .logobrand {
-    display: none;
-  }
-
-  .searchField {
-    display: block;
-    position: fixed;
-    left: 15px !important;
-    right: 15px !important;
-  }
-
-  .searchField .sf-search-input {
-    border-radius: 135px !important;
-  }
-
-  .ecosystemMenuIcon,
-  .notificationsHeader,
-  .shoppingCart,
-  .myaccounttopmenu,
-  .mainMenu {
-    display: none;
-  }
+    margin-right: 1px;
+    padding-top: 5px;
+}
 
   #topnav {
     position: relative !important;
@@ -72,17 +33,53 @@
   }
 }
 
-@media only screen and (min-width: 1263px) {
-  #shared {
-    display: none;
+@media only screen and (max-width: 580px) {
+  #topnav {
+    height: 35px;
+  }
+  #topnav, .v-toolbar__content {
+    top: -14px;
+    position: relative;
+  }
+
+  .logobrand {
+    position: relative;
+    left: 120px;
+    margin-top: 5px;
+    display: flex;
+    width: 100%;
+  }
+
+  .logotext {
+    position: relative;
+    left: -5px;
+    padding-top: 5px;
   }
 }
 
-/**************** Meeovi Time CSS ***************/
+@media only screen and (max-width: 400px) {
+  .logobrand {
+    left: 40px;
+  }
 
-@media all and (max-width: 500px) {
-  .homeSection {
-    padding: 1px;
+  .myaccounttopmenu {
+    top: 0px;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  .logobrand {
+    left: 2px;
+    margin-top: -8px;
+    position: relative;
+  }
+
+  .myaccounttopmenu {
+    top: -4px;
+  }
+
+  p.logotext {
+    display: none;
   }
 }
 

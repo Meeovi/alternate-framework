@@ -6,18 +6,11 @@
                     <v-icon start icon="fas fa-camera"></v-icon> Menu
                 </v-btn>
             </template>
-            <v-row>
-                <v-col cols="2">
-                    <div class="d-flex align-center flex-column flex-sm-row fill-height leftTopNav">
-                        <logo />
-                    </div>
-                </v-col>
+            
+                <logo />
 
-                <v-col cols="8">
-                    
-                </v-col>
+                <v-spacer></v-spacer>
 
-                <v-col cols="2">
                     <div class="d-flex align-center flex-column flex-sm-row fill-height rightTopNav">
                         <v-col class="ecosystemMenuIcon">
                             <ecosystemmenu />
@@ -27,8 +20,6 @@
                             <v-btn title="Go to the Pixanomy App" text="Get Started" href="https://app.pixanomy.com"></v-btn>
                         </v-col>
                     </div>
-                </v-col>
-            </v-row>
         </v-app-bar>
     </div>
 </template>
