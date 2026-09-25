@@ -1,0 +1,1 @@
+{"mode":"apply","characters_options":4682,"options_characters_before":1080,"toInsert":3602,"maxIdBefore":1080,"inserted":3602,"maxIdAfter":4682,"rollback":"DELETE FROM options_characters WHERE id > 1080 AND id <= 4682"}

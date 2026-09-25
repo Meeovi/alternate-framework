@@ -2,7 +2,7 @@
   <v-card class="mx-auto" max-width="400">
     <video loading="lazy" id="my-video" class="video-js" controls preload="auto"
       style="width: 100% !important; height: 50% !important;" loop>
-      <source :src="getAssetURL(short?.video)" type="video/mp4">
+      <source :src="getAssetURL(short?.video_url || short?.video)" type="video/mp4">
       Your browser does not support the video tag.
     </video>
 

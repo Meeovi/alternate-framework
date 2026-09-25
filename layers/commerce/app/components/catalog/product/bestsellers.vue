@@ -39,7 +39,7 @@ const {
 
 // useProducts()/getCommerceClient() routes through initGateway()'s
 // "commerce" domain, which nothing ever wires up (see
-// packages/modules/alternate-sdk/index.ts) and CommerceDriverRegistry has
+// packages/plugins/Admin/alternate-sdk/index.ts) and CommerceDriverRegistry has
 // zero registered implementations anywhere in the repo — every call
 // silently resolved to null, so this section rendered nothing. Sibling
 // components (latestproducts.vue, featuredproducts.vue) query Directus

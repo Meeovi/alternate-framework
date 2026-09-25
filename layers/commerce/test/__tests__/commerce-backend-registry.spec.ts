@@ -7,7 +7,7 @@ import type { CommerceBackendAdapter } from 'alternate-sdk'
 // invisible to Nitro-only server routes that build their own Directus
 // client via getDirectusFacade() — those routes always silently fell
 // through to real Directus regardless of the configured backend. See
-// packages/adapters/adapter-magento/src/runtime/server/commerce-link.ts
+// packages/plugins/CMS-Content/adapter-magento/src/runtime/server/commerce-link.ts
 // for the fix (a real addServerPlugin-based registration).
 describe('CommerceBackendRegistry', () => {
   it('returns undefined for a backend that was never registered', () => {

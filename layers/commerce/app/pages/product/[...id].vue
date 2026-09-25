@@ -383,6 +383,9 @@
       // sliders rendered with product=undefined.
       'cross_sell_products.products_id.*',
       'related_products.products_id.*',
+      // products_tags junction — unexpanded it's bare row ids, which gave
+      // <RelatedTag> an undefined tag.
+      'tags.tags_id.*',
       'image.*',
     ]
 

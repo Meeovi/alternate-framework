@@ -1,11 +1,12 @@
-import { createDirectus, rest, staticToken, uploadFiles, createItem } from '@directus/sdk'
+import { createDirectus, rest, staticToken, createItem } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
+import { isAllowedAssetType, uploadToPixanomy } from '#shared/server/utils/pixanomy'
 
-// Matches exactly what vibe/upload.vue posts to. Backed by the `shorts`
-// Directus collection (real, native file storage) — not the separate
-// `videos` + MinIO path used by vibez.vue/vibe/[...id].vue previously;
-// MINIO_ACCESS_KEY/SECRET_KEY/BUCKET/REGION are all blank in .env, so that
-// path has no working storage backend regardless of any code fix.
+// Matches exactly what vibe/upload.vue posts to. The video file itself goes
+// to Pixanomy (app.pixanomy.com — the centralized asset store); only the
+// `shorts` record lives in Directus, with the public Pixanomy link in
+// `video_url`. Legacy rows still carry a Directus file id in `video`, so
+// readers use `short.video_url || short.video` (getAssetURL() handles both).
 const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
   .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
@@ -25,25 +26,31 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Please select a video file.' })
   }
 
+  const contentType = videoPart.type || 'video/mp4'
+  if (!contentType.startsWith('video/') || !isAllowedAssetType(contentType)) {
+    throw createError({ statusCode: 415, statusMessage: 'Unsupported video format.' })
+  }
+
   const name = namePart?.data?.toString('utf-8')?.trim() || 'Untitled'
 
-  const uploadForm = new FormData()
-  uploadForm.append(
-    'file',
-    new Blob([new Uint8Array(videoPart.data)], { type: videoPart.type || 'video/mp4' }),
-    videoPart.filename || 'video.mp4',
-  )
-
-  const uploadedFile = await directus.request(uploadFiles(uploadForm))
+  const asset = await uploadToPixanomy({
+    data: new Uint8Array(videoPart.data),
+    filename: videoPart.filename || 'video.mp4',
+    contentType,
+    ownerId: user.id,
+    category: 'vibez',
+  })
 
   const short = await directus.request(
     createItem('shorts', {
       name,
-      video: uploadedFile.id,
+      video_url: asset.url,
       creator: (user as any).username || user.name,
+      // The livebar shows the creator's avatar from this (users.image).
+      creator_id: user.id,
       status: 'published',
     }),
   )
 
-  return { id: (short as any).id }
+  return { id: (short as any).id, url: asset.url }
 })

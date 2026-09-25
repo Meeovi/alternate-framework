@@ -21,10 +21,10 @@ export default defineNuxtConfig({
     ...Object.fromEntries(
       Object.entries(layers.alias('#')).map(([key, value]) => [key, resolve(__dirname, value)])
     ),
-    '#experience-builder': resolve(__dirname, '../../../../packages/plugins/experience-builder/runtime'),
-    '#experience-builder/': resolve(__dirname, '../../../../packages/plugins/experience-builder/runtime') + '/',
-    '@mframework/meeovi-forms': resolve(__dirname, '../../../packages/plugins/meeovi-forms/src'),
-    '@mframework/meeovi-forms/': resolve(__dirname, '../../../packages/plugins/meeovi-forms/src/') + '/'
+    '#experience-builder': resolve(__dirname, '../../../packages/plugins/CMS-Content/experience-builder/runtime'),
+    '#experience-builder/': resolve(__dirname, '../../../packages/plugins/CMS-Content/experience-builder/runtime') + '/',
+    '@mframework/meeovi-forms': resolve(__dirname, '../../../packages/plugins/Marketing-SEO/meeovi-forms/src'),
+    '@mframework/meeovi-forms/': resolve(__dirname, '../../../packages/plugins/Marketing-SEO/meeovi-forms/src/') + '/'
   },
   routeRules: {
     '/auth/login': {
@@ -105,7 +105,17 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@sentry/nuxt/module',
     'adapter-magento/module',
-    resolve(__dirname, '../../../packages/plugins/meeovi-newsletter/module.ts')
+    resolve(__dirname, '../../../packages/plugins/Email-Notifications/meeovi-newsletter/module.ts'),
+    // List types rendered by layers/social's /lists/list/[slug] page —
+    // drop one to disable that view.
+    resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-tasklist/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-kanban/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-habit-tracker/module.ts'),
+    // Optional federated-search backends for layers/search — each is off
+    // until its env/config is set.
+    resolve(__dirname, '../../../packages/plugins/Search/search-algolia/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/Search/search-meilisearch/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/Search/search-typesense/module.ts')
   ],
 
   /*imports: {

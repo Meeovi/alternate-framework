@@ -72,8 +72,8 @@
   const short = ref(null)
 
   const playerData = computed(() => ({
-    sources: [{ src: getAssetURL(short.value?.video) }],
-    poster: getAssetURL(short.value?.thumbnail),
+    sources: [{ src: getAssetURL(short.value?.video_url || short.value?.video) }],
+    poster: getAssetURL(short.value?.thumbnail_url || short.value?.thumbnail),
   }))
 
   // createListBtn's panel needs a resolved thumbnail URL, not the raw
@@ -81,7 +81,7 @@
   const listItem = computed(() => ({
     id: short.value?.id,
     name: short.value?.name,
-    image: getAssetURL(short.value?.thumbnail),
+    image: getAssetURL(short.value?.thumbnail_url || short.value?.thumbnail),
   }))
 
   // [...id].vue is a catch-all route, so route.params.id is an array of
@@ -93,7 +93,7 @@
 
   async function fetchShort() {
     short.value = await $directus.request($readItem('shorts', shortId.value, {
-      fields: ['id', 'name', 'description', 'creator', 'video', 'thumbnail', 'views'],
+      fields: ['id', 'name', 'description', 'creator', 'video', 'video_url', 'thumbnail', 'thumbnail_url', 'views'],
     })).catch(() => null)
   }
 

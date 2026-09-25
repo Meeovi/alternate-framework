@@ -14,21 +14,16 @@
       <Grid :data="list.items || list" :autoConfig="true" />
     </div>
 
-    <div v-else-if="list?.list_type?.list_type_id?.name === 'Board'" class="pa-4">
-      <TaskBoard :listId="list.id" :items="list.items" />
+    <!-- Every other list type is rendered by a list-type plugin
+         (packages/plugins/CMS-Content/list-type-*) registered in the
+         app's nuxt.config.ts; each adds itself to appConfig.listTypes. -->
+    <div v-else-if="listTypeEntry" class="pa-4">
+      <component :is="listTypeEntry.component" :listId="list.id" :items="list.items" />
     </div>
 
-    <div v-else-if="list?.list_type?.list_type_id?.name === 'Kanban'" class="pa-4">
-      <KanbanProjectBoard :listId="list.id" :items="list.items" />
-    </div>  
-
-    <div v-else-if="list?.list_type?.list_type_id?.name === 'Habit Tracker'" class="pa-4">
-      <HabitTrackerVIew :listId="list.id" :items="list.items" />
-    </div> 
-
-    <div v-else class="pa-4">
-      <TaskList :listId="list.id" :items="list.items" />
-    </div> 
+    <v-alert v-else type="info" variant="tonal" class="ma-4">
+      No list-type plugin is installed for "{{ listTypeName || 'this list' }}".
+    </v-alert>
   </div>
 </template>
 
@@ -38,10 +33,6 @@
   } from 'vue-router'
   import Grid from '#shared/app/components/ui/DataGrid/components/Grid.vue'
   import LikeButton from '../../../components/blocks/LikeButton.vue'
-  import TaskBoard from '../../../components/features/lists/types/TaskBoard.vue'
-  import KanbanProjectBoard from '../../../components/features/lists/types/Kanban.vue'
-  import TaskList from '../../../components/features/lists/types/TaskList.vue'
-import HabitTrackerVIew from '../../../components/features/lists/types/HabitTrackerVIew.vue'
 
   const route = useRoute();
   const {
@@ -88,6 +79,13 @@ import HabitTrackerVIew from '../../../components/features/lists/types/HabitTrac
   })
 
   const list = computed(() => listRaw.value?.[0] || null)
+
+  const appConfig = useAppConfig()
+  const listTypeName = computed(() => list.value?.list_type?.list_type_id?.name)
+  const listTypeEntry = computed(() => {
+    const types = appConfig.listTypes || {}
+    return types[listTypeName.value] || Object.values(types).find(t => t?.fallback) || null
+  })
 
   const mediaItems = computed(() => {
     if (list.value?.type !== 'playlist') return []

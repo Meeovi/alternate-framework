@@ -6,7 +6,7 @@ This guide explains how to test authentication across multiple backends (Directu
 
 The authentication system supports multiple backend adapters through a unified interface:
 - **Better Auth Layer**: The core authentication middleware (`/layers/auth`)
-- **Alternate SDK**: Backend adapter integration (`/packages/modules/alternate-sdk`)
+- **Alternate SDK**: Backend adapter integration (`/packages/plugins/Admin/alternate-sdk`)
 - **Meeovi Frontend**: Test application with environment configuration
 
 ## Architecture
@@ -469,7 +469,7 @@ jobs:
 ## References
 
 - [Better Auth Documentation](https://better-auth.com)
-- [Alternate SDK Auth Module](../../packages/modules/alternate-sdk/src/auth)
+- [Alternate SDK Auth Module](../../packages/plugins/Admin/alternate-sdk/src/auth)
 - [Auth Layer](../../layers/auth)
 - [Directus API Documentation](https://docs.directus.io)
 - [Magento REST API](https://devdocs.magento.com/guides/v2.4/rest/bk-rest.html)

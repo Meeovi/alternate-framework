@@ -5,12 +5,16 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
-                        <div v-if="post?.file === 'Video' && post?.file === 'Audio'">
-                            <videoPlayer :src="getAssetURL(post?.file)" />
+                        <div v-if="post?.file_url || post?.file">
+                            <videoPlayer :src="getAssetURL(post?.file_url || post?.file)" />
                         </div>
 
-                        <div v-else-if="post?.file">
-                            <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image)"
+                        <div v-else-if="post?.audio_url || post?.audio">
+                            <audio controls class="w-100" :src="getAssetURL(post?.audio_url || post?.audio)"></audio>
+                        </div>
+
+                        <div v-else-if="post?.image_url || post?.image">
+                            <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image_url || post?.image)"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 

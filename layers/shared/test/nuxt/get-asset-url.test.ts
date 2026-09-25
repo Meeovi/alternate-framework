@@ -21,14 +21,29 @@ describe('getAssetURL', () => {
     expect(getAssetURL('abc-123')).toBe(`${config.public.directusUrl}/assets/abc-123`)
   })
 
-  it('prefers filename_download, then filename, then id, from an object', async () => {
+  it('prefers the file id over filename_download/filename, since Directus only serves /assets/<id>', async () => {
     const { getAssetURL } = await import('../../app/utils/get-asset-url')
     const config = useRuntimeConfig()
     expect(getAssetURL({ filename_download: 'a.png', filename: 'b.png', id: 'c' })).toBe(
+      `${config.public.directusUrl}/assets/c`,
+    )
+    expect(getAssetURL({ filename_download: 'a.png', filename: 'b.png' })).toBe(
       `${config.public.directusUrl}/assets/a.png`,
     )
-    expect(getAssetURL({ filename: 'b.png', id: 'c' })).toBe(`${config.public.directusUrl}/assets/b.png`)
-    expect(getAssetURL({ id: 'c' })).toBe(`${config.public.directusUrl}/assets/c`)
+    expect(getAssetURL({ filename: 'b.png' })).toBe(`${config.public.directusUrl}/assets/b.png`)
+  })
+
+  it('unwraps an M2M files junction row instead of using its integer id', async () => {
+    const { getAssetURL } = await import('../../app/utils/get-asset-url')
+    const config = useRuntimeConfig()
+    expect(getAssetURL({ id: 8, page_blocks_id: 5, directus_files_id: { id: 'f-uuid', filename_download: 'logo.png' } }))
+      .toBe(`${config.public.directusUrl}/assets/f-uuid`)
+    expect(getAssetURL({ id: 8, directus_files_id: 'f-uuid' })).toBe(`${config.public.directusUrl}/assets/f-uuid`)
+  })
+
+  it('passes through a full URL held in a filename field', async () => {
+    const { getAssetURL } = await import('../../app/utils/get-asset-url')
+    expect(getAssetURL({ id: 'x', filename: 'https://cdn.bsky.app/img/a.jpg' })).toBe('https://cdn.bsky.app/img/a.jpg')
   })
 
   it('returns null for an object with none of the expected fields', async () => {

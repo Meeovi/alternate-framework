@@ -5,6 +5,7 @@ import { createAuthMiddleware } from 'better-auth/api';
 import { stripeClient } from './stripe';
 import { CommerceCustomerLinkRegistry } from 'alternate-sdk';
 import { eq } from 'drizzle-orm';
+import { decodeDataUrl, isAllowedAssetType, isPixanomyConfigured, uploadToPixanomy } from '#shared/server/utils/pixanomy';
 
 export const logAuditEvent = async (entry: {
   userId?: string;
@@ -92,6 +93,35 @@ export const createAuthAuditMiddleware = () => createAuthMiddleware(async (ctx) 
   })
 })
 
+const isDataUrl = (value: unknown): value is string =>
+  typeof value === 'string' && value.startsWith('data:')
+
+/**
+ * Move a base64 avatar into Pixanomy — the centralized asset store — and
+ * return its public link. Never blocks the auth flow: on any failure the
+ * image is dropped (null) rather than stored inline.
+ */
+const dataUrlAvatarToPixanomy = async (value: string, ownerId: string): Promise<string | null> => {
+  const decoded = decodeDataUrl(value)
+  if (!decoded || !decoded.contentType.startsWith('image/') || !isAllowedAssetType(decoded.contentType) || !isPixanomyConfigured()) {
+    return null
+  }
+  try {
+    const ext = decoded.contentType.split('/')[1]!.replace('jpeg', 'jpg')
+    const asset = await uploadToPixanomy({
+      data: decoded.data,
+      filename: `avatar.${ext}`,
+      contentType: decoded.contentType,
+      ownerId,
+      category: 'avatars',
+    })
+    return asset.url
+  } catch (e) {
+    console.error('[pixanomy] avatar upload failed', e)
+    return null
+  }
+}
+
 export const auditDatabaseHooks = {
   session: {
     create: {
@@ -125,6 +155,12 @@ export const auditDatabaseHooks = {
   },
   user: {
     create: {
+      // register.vue sends the optional profile image as a base64 data URL
+      // (the user has no session yet, so it can't use /api/assets/upload).
+      before: async (user: any) => {
+        if (!isDataUrl(user.image)) return
+        return { data: { ...user, image: await dataUrlAvatarToPixanomy(user.image, user.id || 'signup') } }
+      },
       after: async (user: any, _context: any) => {
         await logAuditEvent({
             userId: user.id,
@@ -184,6 +220,14 @@ export const auditDatabaseHooks = {
       }
     },
     update: {
+      // Normally the client uploads first (AvatarUploader → /api/assets/upload)
+      // and sends the resulting URL; this only catches a raw data URL so one
+      // can never end up stored inline on the users row.
+      before: async (data: any, context: any) => {
+        if (!isDataUrl(data.image)) return
+        const ownerId = context?.context?.session?.user?.id || 'unknown'
+        return { data: { ...data, image: await dataUrlAvatarToPixanomy(data.image, ownerId) } }
+      },
       after: async (user: any, _context: any) => {
         await logAuditEvent({
             userId: user.id,

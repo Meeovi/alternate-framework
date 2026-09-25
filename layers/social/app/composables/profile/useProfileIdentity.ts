@@ -61,9 +61,11 @@ export function useProfileIdentity() {
   const userRole = computed(() => user.value?.role || 'Customer')
 
   const avatarUrl = computed(() => {
-    const img = user.value?.profilePicture
+    // users.image (better-auth) is the real, persisted avatar — a Pixanomy
+    // link set via AvatarUploader. The rest are legacy fallbacks.
+    const img = user.value?.image
+      || user.value?.profilePicture
       || user.value?.avatar
-      || user.value?.image
       || storedProfile.value?.avatarUrl
     if (img) return img
     const seed = encodeURIComponent(displayName.value || userEmail.value || 'User')

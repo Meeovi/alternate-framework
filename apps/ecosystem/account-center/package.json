@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@tiptap/starter-kit": "2.2.2",
-    "@mframework/adapter-directus": "file:../../../packages/adapters/adapter-directus",
+    "@mframework/adapter-directus": "file:../../../packages/plugins/CMS-Content/adapter-directus",
     "@tiptap/vue-3": "2.2.2",
     "@tsconfig/node20": "^20.1.2",
     "apexcharts": "3.45.2",

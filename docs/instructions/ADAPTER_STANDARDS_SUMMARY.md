@@ -57,7 +57,7 @@ const product = await readItem('products', 1)
 
 ### 1. Copy adapter-starter template
 ```bash
-cp -r packages/adapters/adapter-starter packages/adapters/adapter-myservice
+cp -r packages/plugins/Developer-Tools/adapter-starter packages/adapters/adapter-myservice
 cd packages/adapters/adapter-myservice
 ```
 

@@ -1,6 +1,9 @@
 <template>
   <div class="myaccounttopmenu">
-    <v-btn class="relative" icon="fas fa-user-circle" variant="text" @click.stop="drawer = !drawer" aria-label="Account"></v-btn>
+    <v-btn class="relative" icon variant="text" @click.stop="drawer = !drawer" aria-label="Account">
+      <v-avatar v-if="session?.user?.image" :image="session.user.image" size="32" />
+      <v-icon v-else icon="fas fa-user-circle" />
+    </v-btn>
     <Teleport to="body">
     <v-navigation-drawer v-model="drawer" location="right" temporary :width="400" class="cart-flyout">
       <v-card-title class="d-flex justify-space-between align-center">
@@ -12,7 +15,7 @@
         <v-toolbar class="accountMenuToolbar">
           <v-toolbar-title>
             <v-list lines="one">
-              <v-list-item :prepend-avatar="`${session.user?.avatar}`" color="info">
+              <v-list-item :prepend-avatar="session.user?.image || session.user?.avatar || undefined" color="info">
                 <v-list-item-title>
                   {{ session.user?.name || session.user?.email }}'s Account
                 </v-list-item-title>

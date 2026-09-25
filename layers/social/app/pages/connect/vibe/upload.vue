@@ -13,7 +13,7 @@
         <v-text-field type="file" accept="video/*" @change="handleFile" />
       </label>
 
-      <v-btn :disabled="loading">
+      <v-btn type="submit" :disabled="loading" :loading="loading">
         {{ loading ? 'Uploading...' : 'Upload Vibez' }}
       </v-btn>
 

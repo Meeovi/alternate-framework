@@ -1,5 +1,5 @@
 import { joinURL } from 'ufo'
-import { defineEventHandler, proxyRequest, createError } from 'h3'
+import { defineEventHandler, proxyRequest, createError, readBody } from 'h3'
 import { requireAuth } from '#auth/server/utils/sessions'
 
 /**
@@ -40,6 +40,14 @@ const PUBLIC_READ_COLLECTIONS = new Set<string>([
   'currencies', 'tags', 'websites', 'radios', 'videos', 'shorts',
 ])
 
+// Ownership columns the proxy fills from the app session. Clients can't be
+// trusted to say who created something (it would let anyone post "as"
+// another user and show their avatar), so on create the value is always
+// overwritten with the signed-in user's id, and on update it's stripped.
+const OWNER_FIELDS: Record<string, string> = {
+  shorts: 'creator_id',
+}
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const directusUrl = (config.public as { directus?: { url?: string } }).directus?.url
@@ -58,8 +66,21 @@ export default defineEventHandler(async (event) => {
 
   const method = (event.method || 'GET').toUpperCase()
 
+  let body: string | undefined
   if (method !== 'GET' && method !== 'HEAD') {
-    await requireAuth(event)
+    const user = await requireAuth(event)
+    const ownerField = OWNER_FIELDS[pathOnly.match(/^\/items\/([^/]+)/)?.[1] || '']
+    if (ownerField && (method === 'POST' || method === 'PATCH')) {
+      const payload = await readBody(event)
+      const stamp = (item: Record<string, unknown>) => {
+        if (!item || typeof item !== 'object') return item
+        const next = { ...item }
+        if (method === 'POST') next[ownerField] = user.id
+        else delete next[ownerField]
+        return next
+      }
+      body = JSON.stringify(Array.isArray(payload) ? payload.map(stamp) : stamp(payload))
+    }
   } else {
     const itemsCollection = pathOnly.match(/^\/items\/([^/]+)/)?.[1]
     const fieldsCollection = pathOnly.match(/^\/fields\/([^/]+)$/)?.[1]
@@ -78,6 +99,14 @@ export default defineEventHandler(async (event) => {
   return proxyRequest(event, joinURL(directusUrl, rest), {
     // The proxy is the only thing that speaks for this token — replace
     // whatever the client sent.
-    headers: { authorization: token ? `Bearer ${token}` : '' },
+    headers: {
+      authorization: token ? `Bearer ${token}` : '',
+      // h3 forwards the client's original content-length, which no longer
+      // matches once the body has been rewritten.
+      ...(body !== undefined ? { 'content-type': 'application/json', 'content-length': String(Buffer.byteLength(body)) } : {}),
+    },
+    // proxyRequest forwards the original request body unless fetchOptions
+    // supplies one (a top-level `body` is ignored).
+    ...(body !== undefined ? { fetchOptions: { body, duplex: undefined } } : {}),
   })
 })

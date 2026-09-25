@@ -102,7 +102,9 @@
     } = useAsyncData('blocks', async () => {
         try {
             const resp = await $directus.request($readItem('page_blocks', '2', {
-                fields: ['*', 'media.file.*', 'content.*'],
+                // page_blocks_files has no `file` field (it's directus_files_id),
+                // so 'media.file.*' left media as bare junction ids → /assets/4.
+                fields: ['*', 'media.*.*', 'content.*'],
             }))
             return resp?.data || resp || null
         } catch {

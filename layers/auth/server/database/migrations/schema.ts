@@ -1422,6 +1422,79 @@ export const jwks = pgTable("jwks", {
 	expiresAt: timestamp("expires_at", { withTimezone: true }),
 });
 
+// @better-auth/oauth-provider — Meeovi as OpenID Connect provider (SSO into
+// Pixanomy / Nextcloud). Mapped via oauthProvider({ schema }) in
+// shared/utils/plugins.ts. See migration 20260924210000_add_oauth_provider.
+export const oauthProviderClient = pgTable("oauth_provider_client", {
+	id: uuid().primaryKey(),
+	clientId: text("client_id").notNull().unique(),
+	clientSecret: text("client_secret"),
+	disabled: boolean().default(false),
+	skipConsent: boolean("skip_consent"),
+	enableEndSession: boolean("enable_end_session"),
+	subjectType: text("subject_type"),
+	scopes: text().array(),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+	name: text(),
+	uri: text(),
+	icon: text(),
+	contacts: text().array(),
+	tos: text(),
+	policy: text(),
+	softwareId: text("software_id"),
+	softwareVersion: text("software_version"),
+	softwareStatement: text("software_statement"),
+	redirectUris: text("redirect_uris").array().notNull(),
+	postLogoutRedirectUris: text("post_logout_redirect_uris").array(),
+	tokenEndpointAuthMethod: text("token_endpoint_auth_method"),
+	grantTypes: text("grant_types").array(),
+	responseTypes: text("response_types").array(),
+	public: boolean(),
+	type: text(),
+	requirePKCE: boolean("require_pkce"),
+	referenceId: text("reference_id"),
+	metadata: jsonb(),
+});
+
+export const oauthProviderRefreshToken = pgTable("oauth_provider_refresh_token", {
+	id: uuid().primaryKey(),
+	token: text().notNull().unique(),
+	clientId: text("client_id").notNull().references(() => oauthProviderClient.clientId, { onDelete: "cascade" }),
+	sessionId: uuid("session_id").references(() => publicSessions.id, { onDelete: "set null" }),
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+	referenceId: text("reference_id"),
+	expiresAt: timestamp("expires_at", { withTimezone: true }),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	revoked: timestamp({ withTimezone: true }),
+	authTime: timestamp("auth_time", { withTimezone: true }),
+	scopes: text().array().notNull(),
+});
+
+export const oauthProviderAccessToken = pgTable("oauth_provider_access_token", {
+	id: uuid().primaryKey(),
+	token: text().unique(),
+	clientId: text("client_id").notNull().references(() => oauthProviderClient.clientId, { onDelete: "cascade" }),
+	sessionId: uuid("session_id").references(() => publicSessions.id, { onDelete: "set null" }),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	referenceId: text("reference_id"),
+	refreshId: uuid("refresh_id").references(() => oauthProviderRefreshToken.id, { onDelete: "cascade" }),
+	expiresAt: timestamp("expires_at", { withTimezone: true }),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	scopes: text().array().notNull(),
+});
+
+export const oauthProviderConsent = pgTable("oauth_provider_consent", {
+	id: uuid().primaryKey(),
+	clientId: text("client_id").notNull().references(() => oauthProviderClient.clientId, { onDelete: "cascade" }),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+	referenceId: text("reference_id"),
+	scopes: text().array().notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+});
+
 export const walletAddress = pgTable("wallet_address", {
 	id: uuid().defaultRandom().primaryKey(),
 	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
@@ -6378,6 +6451,9 @@ export const users = pgTable.withRLS("users", {
 	// requireSeller()/the seller.ts route middleware. Left true afterwards
 	// purely as signup history — see migration 20260913000000_add_become_seller.
 	becomeSeller: boolean("become_seller").default(false),
+	// better-auth's core `image` field — the user's avatar, as a public
+	// Pixanomy link. See migration 20260924200000_add_user_image.
+	image: text(),
 }, (table) => [
 	unique("users_phone_key").on(table.phone),check("users_email_change_confirm_status_check", sql`((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2))`),]);
 

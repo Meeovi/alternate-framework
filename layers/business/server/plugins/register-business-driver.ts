@@ -4,7 +4,7 @@ import { MagentoBusinessAdapter } from '../utils/magentoBusinessAdapter'
 
 /**
  * Registers the business/seller driver once at Nitro startup, the same way
- * `packages/adapters/adapter-magento`'s Nuxt plugin self-registers into
+ * `packages/plugins/CMS-Content/adapter-magento`'s Nuxt plugin self-registers into
  * `CommerceBackendRegistry`. `getBusinessDriver()`
  * (server/utils/business.ts) reads `BusinessDriverRegistry.getDefaultDriver()`
  * — which is what `setDefaultBusinessDriver` (the contract-level registry

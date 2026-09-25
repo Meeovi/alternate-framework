@@ -20,25 +20,23 @@ import { openSearchProvider } from '../providers/opensearch'
 import { postgresProvider } from '../providers/postgres'
 import { mysqlProvider } from '../providers/mysql'
 import { magentoProvider } from '../providers/magento'
-import { algoliaProvider } from '../providers/algolia'
-import { meilisearchProvider } from '../providers/meilisearch'
-import { typesenseProvider } from '../providers/typesense'
 import { databaseProvider } from '../providers/database'
 import { memoryProvider } from '../providers/memory'
 import { directusProvider } from '../providers/directus'
 import { atprotoProvider } from '../providers/atproto'
+import { getRegisteredProviders } from './registry'
 import type { FacetBucket, NormalizedHit, ProviderStatus, SearchProvider, SearchProviderOptions } from '../providers/types'
 
 const MAX_FEDERATED_DEPTH = 500
 
-const ALL_PROVIDERS: SearchProvider[] = [
+// Built-in providers. Algolia, Meilisearch and Typesense now ship as
+// plugins (packages/plugins/Search/search-*) that add themselves via
+// ./registry.ts when registered in an app's nuxt.config.ts.
+const BUILT_IN_PROVIDERS: SearchProvider[] = [
   openSearchProvider,
   postgresProvider,
   mysqlProvider,
   magentoProvider,
-  algoliaProvider,
-  meilisearchProvider,
-  typesenseProvider,
   databaseProvider,
   memoryProvider,
   directusProvider,
@@ -46,7 +44,9 @@ const ALL_PROVIDERS: SearchProvider[] = [
 ]
 
 export function getEnabledProviders(): SearchProvider[] {
-  return ALL_PROVIDERS.filter((provider) => {
+  const builtInIds = new Set(BUILT_IN_PROVIDERS.map((provider) => provider.id))
+  const plugins = getRegisteredProviders().filter((provider) => !builtInIds.has(provider.id))
+  return [...BUILT_IN_PROVIDERS, ...plugins].filter((provider) => {
     try {
       return provider.isEnabled()
     } catch {

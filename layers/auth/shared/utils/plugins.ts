@@ -7,6 +7,7 @@ import { sendAuthEmail } from './infrastructure/email'
 import type { User } from '../../app/types'
 import { dash } from '@better-auth/infra'
 import { sso } from '@better-auth/sso'
+import { oauthProvider } from '@better-auth/oauth-provider'
 import { passkey } from '@better-auth/passkey'
 import { apiKey } from '@better-auth/api-key'
 import { scim } from '@better-auth/scim'
@@ -25,7 +26,6 @@ import {
   anonymous,
   phoneNumber,
   lastLoginMethod,
-  mcp,
   openAPI,
   oAuthProxy,
   oneTap,
@@ -401,11 +401,31 @@ export const plugins = [
 
   lastLoginMethod(),
 
-  // The real sign-in page is layers/auth/app/pages/login.vue (route
-  // /login) — '/sign-in' doesn't exist anywhere in this app, so an MCP
-  // client's auth redirect would have 404'd.
-  mcp({
+  // Meeovi as an OpenID Connect provider — "Log in with Meeovi" on
+  // Pixanomy (app.pixanomy.com, Nextcloud user_oidc) and any other
+  // first-party app. Replaces the old mcp() plugin (unused, and its
+  // oidcProvider schema collides with this one's model names); this plugin
+  // also serves MCP clients via dynamic registration if that's enabled.
+  // Discovery: <site>/api/auth/.well-known/openid-configuration.
+  // Clients are registered by an admin — see
+  // server/api/admin/oauth-clients.post.ts.
+  oauthProvider({
+    // The real sign-in page is layers/auth/app/pages/login.vue (route
+    // /login) — it forwards the signed OAuth query and follows the
+    // redirect back to the client once signed in.
     loginPage: '/login',
+    consentPage: '/oauth/consent',
+    scopes: ['openid', 'profile', 'email', 'offline_access'],
+    schema: {
+      oauthClient: { modelName: 'oauthProviderClient' },
+      oauthRefreshToken: { modelName: 'oauthProviderRefreshToken' },
+      oauthAccessToken: { modelName: 'oauthProviderAccessToken' },
+      oauthConsent: { modelName: 'oauthProviderConsent' },
+    },
+    // The discovery docs are served under /api/auth (the issuer path);
+    // there's no root-level /.well-known proxy, and clients here are
+    // configured with the full discovery URL anyway.
+    silenceWarnings: { oauthAuthServerConfig: true, openidConfig: true },
   }),
 
   openAPI(),

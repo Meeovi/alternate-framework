@@ -1,0 +1,187 @@
+{
+ "mode": "apply",
+ "kind": "categorize",
+ "created": {
+  "options_categories": [
+   103
+  ]
+ },
+ "updated": {
+  "options": [
+   {
+    "id": 263,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 262,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 264,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 275,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 286,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 285,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 284,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 283,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 282,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 281,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 280,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 279,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 278,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 277,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 276,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 274,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 273,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 272,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 271,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 270,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 269,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 268,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 267,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 266,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 265,
+    "fields": [
+     "type"
+    ]
+   },
+   {
+    "id": 256,
+    "fields": [
+     "description"
+    ]
+   },
+   {
+    "id": 14,
+    "fields": [
+     "location"
+    ]
+   }
+  ]
+ },
+ "deleted": {
+  "options_categories": [
+   66,
+   65,
+   5,
+   6,
+   4,
+   3,
+   2
+  ]
+ },
+ "warnings": []
+}

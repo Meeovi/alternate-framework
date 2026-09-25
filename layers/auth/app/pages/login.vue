@@ -91,14 +91,10 @@
     useRoute,
     useRuntimeConfig
   } from '#imports';
-  import {
-    useAuth
-  } from '../composables/useAuth';
   import { useSupportedSocialProviders } from '../composables/plugins/useSupportSocialProviders';
   import { authClient } from "../../lib/auth-client"
   import AtprotoAuth from '../components/features/plugins/atproto.vue'
 
-  const auth = useAuth();
   const route = useRoute();
   const { providers: socialProviders, load: loadSocialProviders } = useSupportedSocialProviders();
   const lastMethod = authClient.getLastUsedLoginMethod();
@@ -159,9 +155,14 @@
 
     loading.value = true;
     try {
+      // authClient (not the bare useAuth() client) carries the
+      // oauthProviderClient plugin, which attaches the signed OAuth query
+      // when this page was reached from an SSO authorize request (e.g.
+      // "Log in with Meeovi" on Pixanomy).
       const {
+        data,
         error
-      } = await auth.signIn.email({
+      } = await authClient.signIn.email({
         email: email.value,
         password: password.value,
         rememberMe: rememberMe.value,
@@ -178,6 +179,12 @@
         alertType.value = "success";
         alertMessage.value = "You're signed in — redirecting you now…";
         redirecting.value = true;
+        // SSO: the OAuth provider answers with the client's callback URL
+        // (an external site), so follow it with a full navigation.
+        if (data?.redirect && data?.url) {
+          window.location.href = data.url;
+          return;
+        }
         await navigateTo(redirectTarget.value);
       }
     } catch (err) {
@@ -195,7 +202,7 @@
     loading.value = true;
     alertMessage.value = '';
     try {
-      const res = await auth.signIn.social({ provider, callbackURL: redirectTarget.value });
+      const res = await authClient.signIn.social({ provider, callbackURL: redirectTarget.value });
       if (res?.error) {
         alertType.value = 'error';
         alertMessage.value = res.error.message || `Failed to sign in with ${provider}`;

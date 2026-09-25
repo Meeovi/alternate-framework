@@ -1,0 +1,82 @@
+{
+ "mode": "apply",
+ "tables": {
+  "items_characters": {
+   "toInsert": 3,
+   "maxIdBefore": 0,
+   "inserted": 3,
+   "maxIdAfter": 3,
+   "rollback": "DELETE FROM items_characters WHERE id > 0 AND id <= 3"
+  },
+  "characters_options": {
+   "toInsert": 3,
+   "maxIdBefore": 7457,
+   "inserted": 3,
+   "maxIdAfter": 7460,
+   "rollback": "DELETE FROM characters_options WHERE id > 7457 AND id <= 7460"
+  },
+  "options_characters": {
+   "toInsert": 3,
+   "maxIdBefore": 4682,
+   "inserted": 3,
+   "maxIdAfter": 4685,
+   "rollback": "DELETE FROM options_characters WHERE id > 4682 AND id <= 4685"
+  },
+  "categories_characters": {
+   "toInsert": 3014,
+   "maxIdBefore": 5967,
+   "inserted": 3014,
+   "maxIdAfter": 8981,
+   "rollback": "DELETE FROM categories_characters WHERE id > 5967 AND id <= 8981"
+  }
+ },
+ "itemLinks": [
+  [
+   37,
+   1324
+  ],
+  [
+   37,
+   1324
+  ],
+  [
+   38,
+   1875
+  ],
+  [
+   38,
+   1875
+  ],
+  [
+   39,
+   1614
+  ],
+  [
+   39,
+   1614
+  ]
+ ],
+ "categoryCharacterCounts": {
+  "Heroes": 1002,
+  "Aliens": 37,
+  "Angels": 125,
+  "Demons": 265,
+  "Gods and Goddesses": 353,
+  "Abilities": 772,
+  "Places": 96,
+  "Items": 3,
+  "Monsters": 1942,
+  "Aurelian Characters": 10,
+  "Primordial Ones": 1,
+  "Mythical Creatures": 33,
+  "Other Myths": 665,
+  "Teams": 133,
+  "Level": 961,
+  "Types": 1181,
+  "Monster Abilities": 1,
+  "Royal Circa": 23,
+  "Mythology": 1073,
+  "Humans": 81,
+  "Kids": 224
+ }
+}

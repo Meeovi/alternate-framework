@@ -1,49 +1,29 @@
-import useDirectusRequest from './useDirectusRequest'
+import { useAssetUpload } from '#shared/app/composables/media/useAssetUpload'
 
 interface UploadFileParams {
   imageFile?: File | null
   documentFile?: File | null
   videoFile?: File | null
   audioFile?: File | null
+  category?: string
 }
 
-export default async function uploadFile({ imageFile, documentFile, videoFile, audioFile }: UploadFileParams) {
-  const { uploadFiles: adapterUpload } = useDirectusRequest()
+// Uploads go to Pixanomy (see useAssetUpload), not Directus — so these are
+// public URLs to store on the record, not Directus file ids.
+export default async function uploadFile({ imageFile, documentFile, videoFile, audioFile, category = 'posts' }: UploadFileParams) {
+  const { upload } = useAssetUpload()
   const uploadedFiles = {
-    imageId: null,
-    documentId: null,
-    videoId: null,
-    audioId: null,
+    imageUrl: null as string | null,
+    documentUrl: null as string | null,
+    videoUrl: null as string | null,
+    audioUrl: null as string | null,
   }
 
   try {
-    if (imageFile) {
-      const formDataImage = new FormData()
-      formDataImage.append('file', imageFile)
-      const uploadedImage = await adapterUpload(formDataImage)
-      uploadedFiles.imageId = uploadedImage?.id
-    }
-
-    if (documentFile) {
-      const formDataDocument = new FormData()
-      formDataDocument.append('file', documentFile)
-      const uploadedDocument = await adapterUpload(formDataDocument)
-      uploadedFiles.documentId = uploadedDocument?.id
-    }
-
-    if (videoFile) {
-      const formDataVideo = new FormData()
-      formDataVideo.append('file', videoFile)
-      const uploadedVideo = await adapterUpload(formDataVideo)
-      uploadedFiles.videoId = uploadedVideo?.id
-    }
-
-    if (audioFile) {
-      const formDataAudio = new FormData()
-      formDataAudio.append('file', audioFile)
-      const uploadedAudio = await adapterUpload(formDataAudio)
-      uploadedFiles.audioId = uploadedAudio?.id
-    }
+    if (imageFile) uploadedFiles.imageUrl = (await upload(imageFile, { category })).url
+    if (documentFile) uploadedFiles.documentUrl = (await upload(documentFile, { category })).url
+    if (videoFile) uploadedFiles.videoUrl = (await upload(videoFile, { category })).url
+    if (audioFile) uploadedFiles.audioUrl = (await upload(audioFile, { category })).url
 
     return uploadedFiles
   } catch (error) {

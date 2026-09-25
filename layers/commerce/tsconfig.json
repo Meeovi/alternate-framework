@@ -138,7 +138,16 @@
         "../../apps/ecosystem/meeovi-frontend/app/types/schema"
       ],
       "@mframework/adapter-prisma": [
-        "../../packages/adapters/adapter-prisma/src/index.ts"
+        "../../packages/plugins/Storage/adapter-prisma/src/index.ts"
+      ],
+      "alternate-sdk": [
+        "../../packages/plugins/Admin/alternate-sdk/dist/index.d.ts"
+      ],
+      "alternate-sdk/contracts": [
+        "../../packages/plugins/Admin/alternate-sdk/dist/src/contracts/index.d.ts"
+      ],
+      "adapter-magento": [
+        "../../packages/plugins/CMS-Content/adapter-magento/dist/index.d.ts"
       ]
     }
   },

@@ -306,7 +306,7 @@ curl https://your-magento-store.com/oauth/authorize
 ### Code
 - [Auth Layer](/layers/auth)
 - [Auth Server Utils](/layers/auth/server/utils/auth.ts)
-- [SDK Auth Module](/packages/modules/alternate-sdk/src/auth)
+- [SDK Auth Module](/packages/plugins/Admin/alternate-sdk/src/auth)
 - [Backend Adapters](/packages/adapters)
 
 ### Environment

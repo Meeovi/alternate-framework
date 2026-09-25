@@ -9,8 +9,11 @@ import { authClient } from '#auth/lib/auth-client'
 export function useCurrentUser() {
   const user = ref<Record<string, any> | null>(null)
 
+  // useSession() returns the nanostores ref itself, so destructuring
+  // `data` off it was always undefined — every caller saw a logged-out
+  // user (e.g. vibe/upload.vue always said "You must be logged in").
   onMounted(async () => {
-    const { data } = await authClient.useSession()
+    const { data } = await authClient.getSession()
     user.value = data?.user ?? null
   })
 

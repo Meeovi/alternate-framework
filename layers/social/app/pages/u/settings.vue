@@ -63,18 +63,14 @@
               <v-card variant="tonal">
                 <v-card-title>Profile Appearance</v-card-title>
                 <v-card-text class="d-flex flex-column ga-3">
-                  <v-text-field v-model="form.avatarUrl" label="Avatar URL" prepend-inner-icon="fas fa-image" />
+                  <AvatarUploader
+                    :image="(user as any)?.image || null"
+                    :name="`${form.firstName} ${form.lastName}`.trim()"
+                    @update:image="onAvatarChange"
+                  />
                   <v-text-field v-model="form.coverUrl" label="Cover URL" prepend-inner-icon="fas fa-panorama" />
                   <v-row>
-                    <v-col cols="12" md="6">
-                      <v-sheet rounded="lg" color="grey-lighten-3" class="pa-2">
-                        <div class="text-caption mb-2">Avatar Preview</div>
-                        <v-avatar size="80">
-                          <v-img :src="avatarPreview" cover />
-                        </v-avatar>
-                      </v-sheet>
-                    </v-col>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12">
                       <v-sheet rounded="lg" color="grey-lighten-3" class="pa-2">
                         <div class="text-caption mb-2">Cover Preview</div>
                         <v-img :src="coverPreview" height="80" cover rounded="lg" />
@@ -124,6 +120,7 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
+import AvatarUploader from '#auth/app/components/features/profile/AvatarUploader.vue'
 
 const auth = useAuth() as any
 // SSR-safe session read: a relative-url request-aware fetch forwards the
@@ -188,15 +185,16 @@ const applyThemeMode = (mode: string) => {
 
 const profileStorageKey = computed(() => `meeovi:user-profile:${(user.value as any)?.id || 'guest'}`)
 
-const avatarPreview = computed(() => {
-  if (form.avatarUrl) return form.avatarUrl
-  const seed = encodeURIComponent(`${form.firstName} ${form.lastName}`.trim() || form.email || 'User')
-  return `https://api.dicebear.com/7.x/initials/svg?seed=${seed}`
-})
-
 const coverPreview = computed(() => {
   return form.coverUrl || 'https://images.unsplash.com/photo-1496345966270-d173adcbdd0f?auto=format&fit=crop&w=2000&q=80'
 })
+
+// AvatarUploader has already uploaded to Pixanomy and saved users.image —
+// just reflect it locally (preview + anything bound to `user`).
+const onAvatarChange = (url: string | null) => {
+  form.avatarUrl = url || ''
+  if (user.value) (user.value as any).image = url
+}
 
 const readStoredProfile = () => {
   if (!process.client) return null
@@ -219,7 +217,6 @@ const saveStoredProfile = () => {
     remoteShopping: form.remoteShopping,
     isSeller: form.isSeller,
     agreeToTerms: form.agreeToTerms,
-    avatarUrl: form.avatarUrl,
     coverUrl: form.coverUrl,
     themeMode: form.themeMode,
   }))
@@ -249,7 +246,7 @@ const fillFromUser = () => {
   form.remoteShopping = Boolean((user.value as any)?.remoteShopping ?? stored.remoteShopping)
   form.isSeller = Boolean((user.value as any)?.isSeller ?? stored.isSeller)
   form.agreeToTerms = Boolean((user.value as any)?.agreeToTerms ?? stored.agreeToTerms)
-  form.avatarUrl = ((user.value as any)?.profilePicture || (user.value as any)?.avatar || stored.avatarUrl || '').toString()
+  form.avatarUrl = ((user.value as any)?.image || (user.value as any)?.avatar || '').toString()
   form.coverUrl = ((user.value as any)?.coverImage || stored.coverUrl || '').toString()
   form.themeMode = (stored.themeMode || 'system').toString()
 }
@@ -352,8 +349,6 @@ const saveProfile = async () => {
     applyThemeMode(form.themeMode)
 
     if (user.value) {
-      ;(user.value as any).profilePicture = form.avatarUrl || null
-      ;(user.value as any).avatar = form.avatarUrl || null
       ;(user.value as any).coverImage = form.coverUrl || null
       ;(user.value as any).namePrefix = form.namePrefix || null
       ;(user.value as any).middleName = form.middleName || null

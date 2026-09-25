@@ -188,7 +188,7 @@
     const listItem = computed(() => ({
         id: space?.value?.id,
         name: space?.value?.name,
-        image: getAssetURL(space?.value?.image)
+        image: getAssetURL(space?.value?.image_url || space?.value?.image)
     }))
 
     const {

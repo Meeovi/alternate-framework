@@ -10,7 +10,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "preview": "cd apps/ecosystem/meeovi-frontend && npx nuxi preview",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package --patch-dir packages/plugins/Patches"
   },
   "bin": {
     "meeovi-create-adapter": "packages/core/bin/create-adapter.cjs"
@@ -30,11 +30,13 @@
     "vite": "^8.3.0"
   },
   "workspaces": [
-    "packages/*",
-    "packages/modules/*",
     "packages/plugins/*",
+    "packages/plugins/Admin/alternate-sdk",
+    "packages/plugins/CMS-Content/experience-builder",
+    "packages/plugins/CMS-Content/food-order-system",
+    "packages/plugins/Email-Notifications/meeovi-newsletter",
+    "packages/plugins/Marketing-SEO/meeovi-forms",
     "layers/*",
-    "themes/*",
     "apps/ecosystem/*"
   ],
   "dependencies": {

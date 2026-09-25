@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@mframework/adapter-prisma": ["../../packages/adapters/adapter-prisma/src/index.ts"]
+      "@mframework/adapter-prisma": ["../../packages/plugins/Storage/adapter-prisma/src/index.ts"]
     }
   },
   "types": ["vite/client", "node"]

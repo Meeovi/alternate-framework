@@ -25,5 +25,15 @@ export default defineProvider(() => {
       getImage: (src: string) => ({ url: src }),
     }
   }
-  return cloudinaryProvider()
+  // Absolute URLs from elsewhere (Pixanomy uploads, Directus assets,
+  // atproto avatars) aren't in this Cloudinary account — the stock provider
+  // would just prepend the upload baseURL and 404. Serve those as-is.
+  const stock = cloudinaryProvider() as any
+  return {
+    ...stock,
+    getImage: (src: string, options: any, ctx: any) =>
+      /^(https?:)?\/\//.test(src) && !src.includes('res.cloudinary.com')
+        ? { url: src }
+        : stock.getImage(src, options, ctx),
+  }
 })

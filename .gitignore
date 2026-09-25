@@ -62,7 +62,7 @@ localhost.pem
 localhost-key.pem
 
 # Packages
-packages/adapters/adapter-prisma/generated
+packages/plugins/Storage/adapter-prisma/generated
 
 # Playwright MCP debug output (screenshots, console logs, page snapshots) —
 # scratch artifacts from browser-automation sessions, never source.

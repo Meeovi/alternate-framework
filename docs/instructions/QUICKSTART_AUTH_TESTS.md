@@ -150,5 +150,5 @@ See: [docs/AUTH_TESTING.md](../docs/AUTH_TESTING.md)
 
 - 📖 [Full Auth Testing Guide](../docs/AUTH_TESTING.md)
 - 🔐 [Auth Layer Implementation](../../layers/auth)
-- 🔌 [SDK Auth Adapter](../../packages/modules/alternate-sdk/src/auth)
+- 🔌 [SDK Auth Adapter](../../packages/plugins/Admin/alternate-sdk/src/auth)
 - 🛠 [Backend Adapters](../../packages/adapters)

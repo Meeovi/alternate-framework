@@ -27,7 +27,7 @@
     <video 
       ref="videoRef"
       class="vibe-video"
-      :src="getAssetURL(short?.video)"
+      :src="getAssetURL(short?.video_url || short?.video)"
       controls
       preload="metadata"
       @click="togglePlay"

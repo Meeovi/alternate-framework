@@ -16,15 +16,18 @@
                     </v-card-title>
                 </v-toolbar>
                 <v-row style="padding: 10px;">
-                    <v-col v-for="menu in activeMenus" :key="menu?.id">
-                        <NuxtLink :to="toPath(menu?.slug)">
-                            <v-card class="mx-auto ecoCard" max-width="300">
-                                <div class="ecoAvatar">
-                                    <v-avatar :icon="`fas fa-${menu?.icon}`" size="180"></v-avatar>
-                                </div>
-                                <v-card-title class="ecoTitle">{{ menu?.name }}</v-card-title>
-                            </v-card>
-                        </NuxtLink>
+                    <v-col cols="3" v-for="menu in activeMenus" :key="menu?.id">
+                        <v-card
+    append-icon="fas fa-arrow-up-right-from-square"
+    class="mx-auto"
+    :href="toPath(menu?.slug)"
+    max-width="344"
+    :prepend-icon="`fas fa-${menu?.icon}`"
+    rel="noopener"
+    :subtitle="menu?.subtitle"
+    target="_blank"
+    :title="menu?.name"
+  ></v-card>
                     </v-col>
                 </v-row>
             </v-card>

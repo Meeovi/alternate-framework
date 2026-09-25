@@ -1,0 +1,50 @@
+{
+  "name": "@mframework/list-type-habit-tracker",
+  "version": "0.1.0",
+  "description": "Plug-and-play 'Habit Tracker' list type for M Framework lists: daily streak tracking over the Directus list_items collection.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./types": "./runtime/types.ts",
+    "./components/*": "./runtime/components/*"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'list-type-habit-tracker is consumed from source (module.ts); no build step' && exit 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "lists",
+    "list-type",
+    "directus",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.4.8"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0",
+    "vuetify": "^3.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.4.8",
+    "@types/node": "latest",
+    "nuxt": "^4.5.1",
+    "typescript": "~6.0.3",
+    "vue": "^3.5.41"
+  }
+}

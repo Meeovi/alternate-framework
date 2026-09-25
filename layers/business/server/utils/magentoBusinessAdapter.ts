@@ -15,7 +15,7 @@ import type {
 /**
  * Real Webkul Multi Vendor Marketplace data for the 5 domains that map
  * cleanly onto Webkul's own tables (see
- * packages/adapters/adapter-magento/magento-module/Meeovi/MarketplaceApi's
+ * packages/plugins/CMS-Content/adapter-magento/magento-module/Meeovi/MarketplaceApi's
  * `SellerDashboardManagementInterface` for the PHP side). Every other
  * `BusinessDriverContract` method delegates to `fallback` (normally
  * `DefaultBusinessAdapter`'s mock data) unchanged — reviews, shipments,

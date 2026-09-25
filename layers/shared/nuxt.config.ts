@@ -50,6 +50,9 @@ function buildContentSecurityPolicy(): string {
   const wssOrigin = (url?: string) => (url ? url.replace(/^https?:\/\//, 'wss://').replace(/\/$/, '') : '')
 
   const directusHttps = httpsOrigin(process.env.DIRECTUS_URL)
+  // Pixanomy (Nextcloud) — where every user upload now lives; see
+  // server/utils/pixanomy.ts. Public share links are played back directly.
+  const pixanomyHttps = httpsOrigin(process.env.NUXT_PIXANOMY_URL || 'https://app.pixanomy.com')
   const coralHttps = httpsOrigin(process.env.CORAL_SERVER_URL)
   const coralWss = wssOrigin(process.env.CORAL_SERVER_URL)
 
@@ -104,9 +107,9 @@ function buildContentSecurityPolicy(): string {
   ].filter(Boolean).join(' ')
 
   return [
-    // Videos come from Mux (streamed) or straight from Directus assets
-    // (layers/social's shorts.video); media-src previously only allowed Mux.
-    `media-src 'self' blob: https://stream.mux.com ${directusHttps};`,
+    // Videos come from Mux (streamed), Pixanomy public links (new uploads)
+    // or straight from Directus assets (legacy shorts.video rows).
+    `media-src 'self' blob: https://stream.mux.com ${pixanomyHttps} ${directusHttps};`,
     "worker-src 'self' blob:;", // parsing engines that run on workers
     `connect-src ${connectSrc};`,
     // Defence-in-depth directives that don't need a per-integration
@@ -163,8 +166,8 @@ export default defineNuxtConfig({
   },
 
   alias: {
-    '@mframework/meeovi-forms': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/index.ts'),
-    '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/meeovi-forms/src/'),
+    '@mframework/meeovi-forms': resolve(__dirname, '../../packages/plugins/Marketing-SEO/meeovi-forms/src/index.ts'),
+    '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/Marketing-SEO/meeovi-forms/src/'),
   },
 
   // Shared components are not auto-registered: every consumer imports them
@@ -189,8 +192,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/mcp-toolkit',
     '@storefront-ui/nuxt',
-    resolve(__dirname, '../../packages/plugins/meeovi-forms/module.ts'),
-    resolve(__dirname, '../../packages/plugins/experience-builder/module.ts'),
+    resolve(__dirname, '../../packages/plugins/Marketing-SEO/meeovi-forms/module.ts'),
+    resolve(__dirname, '../../packages/plugins/CMS-Content/experience-builder/module.ts'),
     'nuxt-skill-hub'
   ],
 
@@ -479,6 +482,16 @@ export default defineNuxtConfig({
     // served to the next visitor. `isr: false` also implies no CDN
     // micro-caching of these.
     '/api/**': { isr: false },
+    // nuxt-security's requestSizeLimiter caps multipart bodies at 8MB by
+    // default — far too small for video. Keep in step with
+    // runtimeConfig.pixanomy.maxUploadMb, which the handler enforces itself.
+    '/api/assets/upload': {
+      security: {
+        requestSizeLimiter: {
+          maxUploadFileRequestInBytes: Number(process.env.NUXT_PIXANOMY_MAX_UPLOAD_MB || 200) * 1024 * 1024,
+        },
+      },
+    },
     '/u/**': { isr: false },
     '/account/**': { isr: false },
     '/settings/**': { isr: false },
@@ -543,6 +556,16 @@ export default defineNuxtConfig({
     // Server-to-server calls (subscriber upsert, workflow trigger) stay on
     // the box's own loopback rather than routing out through the public IP.
     novuApiUrl: process.env.NOVU_API_URL || 'http://localhost:3090',
+    // Centralized user-upload store (Nextcloud) — server/utils/pixanomy.ts.
+    // Use a Nextcloud *app password* for a dedicated service account, never
+    // a real login password.
+    pixanomy: {
+      url: process.env.NUXT_PIXANOMY_URL || 'https://app.pixanomy.com',
+      username: process.env.NUXT_PIXANOMY_USERNAME || '',
+      appPassword: process.env.NUXT_PIXANOMY_APP_PASSWORD || '',
+      root: process.env.NUXT_PIXANOMY_ROOT || 'Meeovi',
+      maxUploadMb: Number(process.env.NUXT_PIXANOMY_MAX_UPLOAD_MB || 200),
+    },
 
     public: {
       // Read by getAssetURL() (layers/shared/app/utils/get-asset-url.ts) to

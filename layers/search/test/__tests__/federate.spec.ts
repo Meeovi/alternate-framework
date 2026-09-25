@@ -13,15 +13,6 @@ vi.mock('../../server/providers/mysql', () => ({
 vi.mock('../../server/providers/magento', () => ({
   magentoProvider: { id: 'magento', isEnabled: vi.fn(), search: vi.fn() },
 }))
-vi.mock('../../server/providers/algolia', () => ({
-  algoliaProvider: { id: 'algolia', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
-}))
-vi.mock('../../server/providers/meilisearch', () => ({
-  meilisearchProvider: { id: 'meilisearch', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
-}))
-vi.mock('../../server/providers/typesense', () => ({
-  typesenseProvider: { id: 'typesense', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
-}))
 vi.mock('../../server/providers/database', () => ({
   databaseProvider: { id: 'database', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
 }))
@@ -31,12 +22,16 @@ vi.mock('../../server/providers/memory', () => ({
 vi.mock('../../server/providers/directus', () => ({
   directusProvider: { id: 'directus', isEnabled: vi.fn(), search: vi.fn() },
 }))
+vi.mock('../../server/providers/atproto', () => ({
+  atprotoProvider: { id: 'atproto', isEnabled: vi.fn(), search: vi.fn() },
+}))
 
 import { openSearchProvider } from '../../server/providers/opensearch'
 import { postgresProvider } from '../../server/providers/postgres'
 import { mysqlProvider } from '../../server/providers/mysql'
 import { magentoProvider } from '../../server/providers/magento'
 import { federatedSearch, federatedSearchFacetValues, getEnabledProviders } from '../../server/search/federate'
+import { SEARCH_PROVIDER_REGISTRY_KEY } from '../../server/search/registry'
 
 const baseOptions: SearchProviderOptions = { query: 'shirt', page: 1, pageSize: 10 }
 
@@ -60,6 +55,24 @@ describe('federatedSearch', () => {
   it('getEnabledProviders only returns providers whose isEnabled() is true', () => {
     const enabled = getEnabledProviders().map((p) => p.id)
     expect(enabled).toEqual(['opensearch', 'postgres'])
+  })
+
+  it('includes plugin providers added to the registry, but never lets one shadow a built-in id', () => {
+    // Registered the way packages/plugins/Search/search-* do it — via the
+    // Symbol.for() key only, no import from this layer.
+    const registry = new Map([
+      ['algolia', { id: 'algolia', isEnabled: () => true, search: vi.fn() }],
+      ['opensearch', { id: 'opensearch', isEnabled: () => true, search: vi.fn() }],
+      ['typesense', { id: 'typesense', isEnabled: () => false, search: vi.fn() }],
+    ])
+    ;(globalThis as any)[SEARCH_PROVIDER_REGISTRY_KEY] = registry
+    try {
+      const enabled = getEnabledProviders()
+      expect(enabled.map((p) => p.id)).toEqual(['opensearch', 'postgres', 'algolia'])
+      expect(enabled[0]).toBe(openSearchProvider)
+    } finally {
+      delete (globalThis as any)[SEARCH_PROVIDER_REGISTRY_KEY]
+    }
   })
 
   it('a provider whose isEnabled() throws is treated as disabled, not a crash', () => {

@@ -20,16 +20,16 @@
 
                         <editMenu :post="post" />
                     </v-toolbar>
-                    <div class="align-end text-white" height="200" v-if="post?.file">
-                        <video :src="getAssetURL(post?.file)"></video>
+                    <div class="align-end text-white" height="200" v-if="post?.file_url || post?.file">
+                        <video :src="getAssetURL(post?.file_url || post?.file)"></video>
                     </div>
 
-                    <div class="align-end text-white" height="200" v-else-if="post?.audio">
-                        <audio :src="getAssetURL(post?.audio)"></audio>
+                    <div class="align-end text-white" height="200" v-else-if="post?.audio_url || post?.audio">
+                        <audio :src="getAssetURL(post?.audio_url || post?.audio)"></audio>
                     </div>
 
-                    <div class="align-end text-white" height="200" v-else-if="matchesExtension(post?.image, ['.gif'])">
-                        <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image)"
+                    <div class="align-end text-white" height="200" v-else-if="post?.image_url || post?.image">
+                        <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image_url || post?.image)"
                             :alt="post?.title || 'No Title'" />
                     </div>
                     <v-img v-else class="align-end text-white" height="200"

@@ -3,7 +3,7 @@
         <template v-slot:activator="{ props }">
             <v-btn icon size="medium" variant="text" v-bind="props">
                 <template v-if="session">
-                    <v-avatar :src="session.user.avatar" :name="session.user.username" :email="session.user.email" :size="32" />
+                    <v-avatar :image="session.user.image || session.user.avatar || undefined" :name="session.user.username" :email="session.user.email" :size="32" />
                 </template>
                 <v-icon v-else icon="fas fa-user-circle"></v-icon>
             </v-btn>
@@ -13,7 +13,7 @@
             <NuxtLink :to="`/u/${user?.id}`" class="text-decoration-none">
                 <v-list-item :title="session.user.username" :subtitle="session.user.email" class="mb-3">
                     <template #prepend>
-                        <v-avatar :src="session.user.avatar" :name="session.user.username" :email="session.user.email" :size="40" />
+                        <v-avatar :image="session.user.image || session.user.avatar || undefined" :name="session.user.username" :email="session.user.email" :size="40" />
                     </template>
                 </v-list-item>
             </NuxtLink>

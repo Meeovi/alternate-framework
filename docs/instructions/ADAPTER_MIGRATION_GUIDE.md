@@ -62,7 +62,7 @@ Implement `ContentAdapter` interface with TransportAdapter abstraction.
 **Step 1: Create src/transport.ts**
 
 ```typescript
-// packages/adapters/adapter-directus/src/transport.ts
+// packages/plugins/CMS-Content/adapter-directus/src/transport.ts
 
 import type { TransportAdapter, RequestOptions, APIResponse } from 'alternate-gateway'
 import { createDirectus, rest } from '@directus/sdk'
@@ -133,7 +133,7 @@ export const createDirectusTransport = (config: DirectusTransportConfig): Transp
 **Step 2: Create src/content.ts (new layer adapter)**
 
 ```typescript
-// packages/adapters/adapter-directus/src/content.ts
+// packages/plugins/CMS-Content/adapter-directus/src/content.ts
 
 import type { TransportAdapter } from 'alternate-gateway'
 
@@ -202,7 +202,7 @@ export const createDirectusContentAdapter = (transport: TransportAdapter): Conte
 **Step 3: Update src/index.ts**
 
 ```typescript
-// packages/adapters/adapter-directus/src/index.ts
+// packages/plugins/CMS-Content/adapter-directus/src/index.ts
 
 import { createDirectusTransport, type DirectusTransportConfig } from './transport'
 import { createDirectusContentAdapter } from './content'
@@ -639,7 +639,7 @@ Refactor to use composition functions (useContent, useCommerce, useAuth) instead
 
 ## Resources
 
-- [adapter-starter](../packages/adapters/adapter-starter/) — Template
+- [adapter-starter](../packages/plugins/Developer-Tools/adapter-starter/) — Template
 - [ADAPTER_PATTERN_AUDIT.md](../ADAPTER_PATTERN_AUDIT.md) — Current state analysis
 - [ADAPTER_DEVELOPMENT_GUIDE.md](../ADAPTER_DEVELOPMENT_GUIDE.md) — Creation guide
 

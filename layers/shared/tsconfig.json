@@ -38,22 +38,22 @@
         "./.nuxt/*"
      ],
      "alternate-sdk": [
-        "../../packages/modules/alternate-sdk/index.ts"
+        "../../packages/plugins/Admin/alternate-sdk/index.ts"
      ],
      "alternate-sdk/contracts": [
-        "../../packages/modules/alternate-sdk/contracts/index.ts"
+        "../../packages/plugins/Admin/alternate-sdk/src/contracts/index.ts"
      ],
      "alternate-sdk/notifications": [
-        "../../packages/modules/alternate-sdk/notifications/index.ts"
+        "../../packages/plugins/Admin/alternate-sdk/src/notifications/index.ts"
      ],
       "alternate-sdk/localization": [
-        "../../packages/modules/alternate-sdk/localization/index.ts"
+        "../../packages/plugins/Admin/alternate-sdk/src/localization/index.ts"
       ],
       "@mframework/meeovi-forms": [
-        "../../packages/plugins/meeovi-forms/src/index.ts"
+        "../../packages/plugins/Marketing-SEO/meeovi-forms/src/index.ts"
       ],
       "@mframework/meeovi-forms/*": [
-        "../../packages/plugins/meeovi-forms/src/*"
+        "../../packages/plugins/Marketing-SEO/meeovi-forms/src/*"
       ]
     }
  },

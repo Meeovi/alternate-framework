@@ -10,7 +10,7 @@ import { MagentoAdapter } from 'adapter-magento'
 // Read-only: there is no staging Magento instance, only the production
 // store, so only side-effect-free queries run here. Mocked write-path
 // coverage (seller registration, product/review create) lives in
-// packages/adapters/adapter-magento/test/seller.spec.ts and reviews.spec.ts
+// packages/plugins/CMS-Content/adapter-magento/test/seller.spec.ts and reviews.spec.ts
 // — that package owns MagentoAdapter, this layer only needs to prove it's
 // reachable from here. Set MAGENTO_SKIP_LIVE_TESTS=1 to skip.
 const ENDPOINT = process.env.MAGENTO_GRAPHQL_URL || 'https://meeovi.com/graphql'

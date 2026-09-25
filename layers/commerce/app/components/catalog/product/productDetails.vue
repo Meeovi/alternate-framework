@@ -59,109 +59,73 @@
                             </v-list-item>
 
                             <!-- Product Quantity -->
-                            <v-list-item class="col col-3">
-                                <div class="row">
-                                    <v-list-item class="col-12"
-                                        v-if="productDetails?.product_types?.product_types_id?.name !== 'Digital'">
-                                        <div class="d-flex flex-column align-stretch align-sm-center">
-                                            <div class="d-flex qty-stepper">
-                                                <v-btn variant="flat" :disabled="count <= min" square size="x-small"
-                                                    class="qty-stepper__btn" :aria-controls="inputId"
-                                                    aria-label="Decrease value" @click="dec()" icon="fas fa-minus">
-                                                </v-btn>
-                                                <v-text-field :id="inputId" v-model="count" type="number"
-                                                    variant="underlined"
-                                                    class="qty-stepper__input mx-2 text-center"
-                                                    :min="min" :max="max" @input="handleOnChange"
-                                                    :hint="`${productDetails?.stock} in stock`" persistent-hint />
-                                                <v-btn variant="flat" :disabled="count >= max" square size="x-small"
-                                                    class="qty-stepper__btn" :aria-controls="inputId"
-                                                    aria-label="Increase value" @click="inc()" icon="fas fa-plus">
-                                                </v-btn>
-                                            </div>
-                                        </div>
-                                    </v-list-item>
+                            <v-list-item v-if="productDetails?.product_types?.product_types_id?.name !== 'Digital'">
+                                <div class="product-actions">
+                                    <div class="qty-stepper">
+                                        <v-btn variant="flat" :disabled="count <= min" square size="x-small"
+                                            class="qty-stepper__btn" :aria-controls="inputId"
+                                            aria-label="Decrease value" @click="dec()" icon="fas fa-minus">
+                                        </v-btn>
+                                        <v-text-field :id="inputId" v-model="count" type="number"
+                                            variant="underlined"
+                                            class="qty-stepper__input mx-2 text-center"
+                                            :min="min" :max="max" @input="handleOnChange" hide-details />
+                                        <v-btn variant="flat" :disabled="count >= max" square size="x-small"
+                                            class="qty-stepper__btn" :aria-controls="inputId"
+                                            aria-label="Increase value" @click="inc()" icon="fas fa-plus">
+                                        </v-btn>
+                                    </div>
+                                    <!-- Beside the stepper rather than as the input's hint, which
+                                         wrapped onto two lines under the 3.5rem-wide field. -->
+                                    <span v-if="productDetails?.stock != null" class="text-caption text-medium-emphasis">
+                                        {{ productDetails.stock }} in stock
+                                    </span>
                                 </div>
                             </v-list-item>
 
-                            <!-- Product Color Options -->
-                            <v-list-item class="col col-6" v-if="productDetails?.color || productDetails?.size">
-                                <div class="row">
-                                    <v-list-item class="col-6">
-                                        <div class="d-flex flex-column align-stretch align-sm-center"
-                                            v-if="productDetails?.color">
-                                            <colorOptions :color="productDetails?.id" />
-                                        </div>
-                                    </v-list-item>
-
-                                    <!-- Product Size Options -->
-                                    <v-list-item class="col-6">
-                                        <div class="d-flex flex-column align-stretch align-sm-center"
-                                            v-if="productDetails?.size">
-                                            <sizeOptions :size="productDetails?.id" />
-                                        </div>
-                                    </v-list-item>
+                            <!-- Product Color / Size Options -->
+                            <v-list-item v-if="productDetails?.color || productDetails?.size">
+                                <div class="product-actions">
+                                    <colorOptions v-if="productDetails?.color" :color="productDetails?.id" />
+                                    <sizeOptions v-if="productDetails?.size" :size="productDetails?.id" />
                                 </div>
                             </v-list-item>
 
-                            <!-- Product Add to Cart -->
-                            <v-list-item class="col col-6">
-                                <div class="row">
-                                    <v-list-item class="col-6">
-                                        <div class="d-flex flex-column align-stretch align-sm-center"
-                                            v-if="productDetails?.price > '0.01'">
-                                            <addToCartBtn :product="productDetails" :quantity="count" />
-                                        </div>
-
-                                        <div class="d-flex flex-column align-stretch align-sm-center" v-else>
-                                            <v-btn prepend-icon="fas fa-download" :product="productDetails" text="Download" :href="getAssetURL(productDetails?.file) ?? undefined" download />
-                                        </div>
-                                    </v-list-item>
-
-                                    <!-- Product Add to Compare -->
-                                    <v-list-item class="col-6">
-                                        <div class="d-flex flex-column align-stretch align-sm-center">
-                                            <compareBtn :product="productDetails" />
-                                        </div>
-                                    </v-list-item>
+                            <!-- Product Add to Cart / Download + Compare. These were nested
+                                 col-6 grids inside a col-6 list item, so each button got a
+                                 quarter of the panel and was clipped; a wrapping flex row
+                                 lets them take their natural width. -->
+                            <v-list-item>
+                                <div class="product-actions">
+                                    <addToCartBtn v-if="productDetails?.price > '0.01'" :product="productDetails"
+                                        :quantity="count" />
+                                    <v-btn v-else prepend-icon="fas fa-download" :product="productDetails"
+                                        text="Download" :href="getAssetURL(productDetails?.file) ?? undefined" download />
+                                    <compareBtn :product="productDetails" />
                                 </div>
                             </v-list-item>
 
-                            <!-- Product Quantity -->
-                            <v-list-item class="col col-6">
-                                <div class="row">
-                                    <!-- Product Create List -->
-                                    <v-list-item class="col col-6">
-                                        <div class="d-flex align-center ga-2">
-                                            <LikeButton
-                                                v-if="productDetails?.id"
-                                                target-type="product"
-                                                :target-id="productDetails.id"
-                                            />
-                                            <createListBtn :item="listProduct" kind="product" />
-                                        </div>
-                                    </v-list-item>
-
-                                    <!-- Product RSS Feed -->
-                                    <v-list-item class="col col-6">
-                                        <div class="d-flex flex-column align-stretch align-sm-center pt-3"
-                                            v-if="productRssLink">
-                                            <NuxtLink :to="productRssLink" target="_blank" rel="noopener"
-                                                class="text-sm no-underline">
-                                                Follow product feed
-                                            </NuxtLink>
-                                        </div>
-                                    </v-list-item>
+                            <!-- Product Like / Create List / RSS Feed -->
+                            <v-list-item>
+                                <div class="product-actions">
+                                    <LikeButton
+                                        v-if="productDetails?.id"
+                                        target-type="product"
+                                        :target-id="productDetails.id"
+                                    />
+                                    <createListBtn :item="listProduct" kind="product" />
+                                    <NuxtLink v-if="productRssLink" :to="productRssLink" target="_blank"
+                                        rel="noopener" class="text-sm no-underline">
+                                        Follow product feed
+                                    </NuxtLink>
                                 </div>
                             </v-list-item>
 
                             <!-- Product Tags -->
-                            <v-list-item v-if="productDetails?.tags">
-                                <div class="col col-6 d-flex flex-column align-stretch align-sm-center"
-                                    v-for="tag in productDetails?.tags" :key="tag.id">
-                                    <p class="desc mbr-fonts-style"><strong>Tags:</strong>
-                                        <tagCard :tag="tag?.tag_id" />&nbsp;
-                                    </p>
+                            <v-list-item v-if="productTags.length">
+                                <div class="product-actions">
+                                    <strong>Tags:</strong>
+                                    <tagCard v-for="tag in productTags" :key="tag.id" :tag="tag" />
                                 </div>
                             </v-list-item>
                         </v-list>
@@ -245,6 +209,12 @@
     }));
     const productRssLink = ref < string | null > (null);
 
+    // products.tags is the products_tags junction ({ tags_id: {...} }); skip
+    // rows whose tag wasn't expanded or has been deleted.
+    const productTags = computed(() => (props.productDetails?.tags || [])
+        .map((row: any) => row?.tags_id)
+        .filter((tag: any) => tag && typeof tag === 'object' && (tag.name || tag.slug)));
+
     // createListBtn's panel needs a resolved image URL, not the raw Directus
     // asset reference productDetails.image holds.
     const listProduct = computed(() => ({
@@ -278,10 +248,18 @@
    installed in this repo, so those classes were inert and the control
    rendered as a bare unstyled row). */
 .qty-stepper {
+    display: inline-flex;
     border: 1px solid rgba(var(--v-theme-on-surface), 0.23);
     border-radius: 4px;
     overflow: hidden;
     align-items: center;
+}
+
+.product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
 }
 
 .qty-stepper__btn {

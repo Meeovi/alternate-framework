@@ -20,7 +20,7 @@
 
         <template #default="{ isActive }">
           <v-card class="pa-4">
-            <AddPost v-if="dialog" />
+            <AddPost v-if="dialog" @saved="onSaved" />
 
             <v-card-actions>
               <v-spacer />
@@ -34,6 +34,10 @@
           </v-card>
         </template>
       </v-dialog>
+
+      <v-snackbar v-model="savedNotice" timeout="3000" color="success">
+        Post saved.
+      </v-snackbar>
     </div>
   </ClientOnly>
 </template>
@@ -57,4 +61,10 @@ const AddPost = defineAsyncComponent(() => import('../features/feed/add-post.vue
 const session = authClient.useSession()
 
 const dialog = ref(false)
+const savedNotice = ref(false)
+
+function onSaved() {
+  dialog.value = false
+  savedNotice.value = true
+}
 </script>

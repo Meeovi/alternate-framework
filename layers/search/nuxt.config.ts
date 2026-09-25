@@ -95,35 +95,16 @@ export default defineNuxtConfig({
           .split(',').map((column) => column.trim()).filter(Boolean),
       },
       // Reuses the same env vars adapter-magento's Nuxt module already
-      // reads (see packages/adapters/adapter-magento) — no new config to
+      // reads (see packages/plugins/CMS-Content/adapter-magento) — no new config to
       // duplicate just to enable federated Magento search.
       magento: {
         enabled: Boolean(process.env.MAGENTO_GRAPHQL_URL),
         endpoint: process.env.MAGENTO_GRAPHQL_URL || '',
         token: process.env.GQL_KEY || '',
       },
-      algolia: {
-        enabled: Boolean(process.env.ALTERNATE_SEARCH_ALGOLIA_APP_ID && process.env.ALTERNATE_SEARCH_ALGOLIA_API_KEY),
-        appId: process.env.ALTERNATE_SEARCH_ALGOLIA_APP_ID || '',
-        apiKey: process.env.ALTERNATE_SEARCH_ALGOLIA_API_KEY || '',
-        indexName: process.env.ALTERNATE_SEARCH_ALGOLIA_INDEX || 'products',
-      },
-      meilisearch: {
-        enabled: Boolean(process.env.ALTERNATE_SEARCH_MEILISEARCH_HOST),
-        host: process.env.ALTERNATE_SEARCH_MEILISEARCH_HOST || '',
-        apiKey: process.env.ALTERNATE_SEARCH_MEILISEARCH_API_KEY || '',
-        indexUid: process.env.ALTERNATE_SEARCH_MEILISEARCH_INDEX || 'products',
-        idField: process.env.ALTERNATE_SEARCH_MEILISEARCH_ID_FIELD || 'id',
-      },
-      typesense: {
-        enabled: Boolean(process.env.ALTERNATE_SEARCH_TYPESENSE_HOST),
-        host: process.env.ALTERNATE_SEARCH_TYPESENSE_HOST || '',
-        port: parseInt(process.env.ALTERNATE_SEARCH_TYPESENSE_PORT || '443'),
-        protocol: process.env.ALTERNATE_SEARCH_TYPESENSE_PROTOCOL || 'https',
-        apiKey: process.env.ALTERNATE_SEARCH_TYPESENSE_API_KEY || '',
-        collectionName: process.env.ALTERNATE_SEARCH_TYPESENSE_COLLECTION || 'products',
-        idField: process.env.ALTERNATE_SEARCH_TYPESENSE_ID_FIELD || 'id',
-      },
+      // algolia / meilisearch / typesense moved to plugins
+      // (packages/plugins/Search/search-*) — each module sets its own
+      // searchProviders.<name> block and registers the provider itself.
       // A third, zero-infra SQL option alongside postgres/mysql above —
       // local dev or small deployments that don't want a database server
       // just for search. Uses SQLite's own FTS5 virtual tables when
@@ -165,11 +146,12 @@ export default defineNuxtConfig({
         identifier: process.env.ALTERNATE_SEARCH_ATPROTO_IDENTIFIER || process.env.ATPROTO_IDENTIFIER || '',
         password: process.env.ALTERNATE_SEARCH_ATPROTO_PASSWORD || process.env.ATPROTO_APP_PASSWORD || '',
       },
-      // To add a new backend: implement `SearchProvider` in
-      // server/providers/<name>.ts, add its config block here (enabled by
-      // presence of connection config, same as above), and register the
-      // provider in the ALL_PROVIDERS array in server/search/federate.ts.
-      // No other code needs to change — federate.ts, the /api/search
+      // To add a new backend, prefer a plugin (see
+      // packages/plugins/Search/search-algolia): a Nuxt module that sets
+      // runtimeConfig.searchProviders.<name> and registers a
+      // `SearchProvider` via server/search/registry.ts from a Nitro plugin.
+      // Built-ins live in server/providers/<name>.ts + BUILT_IN_PROVIDERS in
+      // server/search/federate.ts. No other code needs to change — federate.ts, the /api/search
       // route, and the InstantSearch UI all work against the shared
       // SearchProvider contract in server/providers/types.ts.
     },

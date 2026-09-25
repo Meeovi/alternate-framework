@@ -1,0 +1,49 @@
+{
+  "name": "@mframework/search-algolia",
+  "version": "0.1.0",
+  "description": "Algolia provider for the M Framework federated search layer (layers/search). Registers itself with the layer's provider registry; enabled by the presence of Algolia credentials.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./provider": "./runtime/server/algolia.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'search-algolia is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "search",
+    "federated-search",
+    "algolia",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.4.8",
+    "algoliasearch": "^5.56.0"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.4.8",
+    "@types/node": "latest",
+    "nuxt": "^4.5.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

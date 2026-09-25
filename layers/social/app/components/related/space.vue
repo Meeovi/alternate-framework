@@ -1,8 +1,8 @@
 <template>
     <div>
         <v-card class="mx-auto" max-width="400" height="550">
-            <NuxtImg provider="cloudinary" v-if="hasAsset(space?.image)" class="align-end text-white" height="200"
-                :src="getAssetURL(space?.image)" :alt="space?.name" />
+            <NuxtImg provider="cloudinary" v-if="hasAsset(space?.image_url || space?.image)" class="align-end text-white" height="200"
+                :src="getAssetURL(space?.image_url || space?.image)" :alt="space?.name" />
 
             <NuxtImg provider="cloudinary" class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
 

@@ -21,7 +21,7 @@
       "dev-sw": "SW=true nuxi dev",
       "build": "nuxt prepare && nuxt build",
       "build-sw": "SW=true nuxi build",
-      "smoke:auth": "bash ./scripts/auth-smoke.sh",
+      "smoke:auth": "bash ../../../packages/plugins/Scripts/auth-smoke.sh",
       "ts-node": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}'",
       "generate": "nuxt generate",
       "preview": "nuxt preview",
