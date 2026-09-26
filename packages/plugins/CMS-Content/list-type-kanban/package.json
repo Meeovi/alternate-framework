@@ -29,12 +29,12 @@
     "list-type",
     "directus",
     "mframework",
-    "meeovi",
-    "@svar-ui/vue-kanban": "^2.6.0"
+    "meeovi"
   ],
   "author": "Meeovi Labs",
   "dependencies": {
-    "@nuxt/kit": "^4.4.8"
+    "@nuxt/kit": "^4.4.8",
+    "@svar-ui/vue-kanban": "^2.6.0"
   },
   "peerDependencies": {
     "nuxt": "^4.0.0",

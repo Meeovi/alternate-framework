@@ -37,7 +37,7 @@ export function normalizeProductToPage(rawProduct: RawMagentoProduct): Partial<D
   const isBundle = 'dynamic_price' in rawProduct;
 
   return {
-    id: rawProduct.uid ?? rawProduct.id ?? '',
+    id: String(rawProduct.uid ?? rawProduct.id ?? ''),
     name: rawProduct.name ?? '',
     slug: rawProduct.url_key ?? '',
     content: rawProduct.description?.html ?? '',
@@ -54,7 +54,7 @@ export function normalizeMagentoProduct(rawProduct: RawMagentoProduct): Partial<
   const bundleProduct = isBundle ? (rawProduct as Mage_BundleProduct) : null;
 
   return {
-    id: rawProduct.uid ?? rawProduct.id ?? '',
+    id: String(rawProduct.uid ?? rawProduct.id ?? ''),
     sku: String(rawProduct.sku ?? ''),
     name: rawProduct.name ?? '',
     

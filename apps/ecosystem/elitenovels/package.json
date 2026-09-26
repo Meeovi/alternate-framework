@@ -23,7 +23,7 @@
       "generate": "nuxt generate",
       "preview": "nuxt preview",
       "analyze": "nuxi analyze",
-      "postinstall": "nuxt prepare"
+      "postinstall": "node -e \"process.env.CI || require('node:child_process').execSync('nuxt prepare', { stdio: 'inherit' })\""
    },
    "dependencies": {
       "@directus/sdk": "^26.0.0",
