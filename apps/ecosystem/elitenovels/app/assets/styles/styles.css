@@ -193,3 +193,15 @@ body {
     width: 100%;
     object-fit: cover;
 }
+
+/* Cards carry mx-auto so they centre in grid columns, but inside a slider
+   "auto" resolves to 0 and the cards butt up against each other. Vuetify's
+   spacing utilities are !important, so this has to be too. */
+.v-slide-group .elite-card {
+    margin-inline: 10px !important;
+}
+
+/* Character slides already get their gap from the card margin above. */
+.v-slide-group .characterCard {
+    padding-inline: 0;
+}
