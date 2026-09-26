@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-app-bar id="topnav">
+        <v-app-bar id="topnav" :density="smAndDown ? 'compact' : 'default'">
             <template v-slot:prepend>
                 <v-btn class="mainMenu" variant="flat" color="transparent" @click="$emit('toggleDrawer')">
                     <v-icon start icon="fas fa-camera"></v-icon> Menu
@@ -11,14 +11,14 @@
 
                 <v-spacer></v-spacer>
 
-                    <div class="d-flex align-center flex-column flex-sm-row fill-height rightTopNav">
-                        <v-col class="ecosystemMenuIcon">
-                            <ecosystemmenu />
-                        </v-col>
-
-                        <v-col class="myaccounttopmenu">
+                    <div class="d-flex align-center fill-height rightTopNav">
+                        <div class="myaccounttopmenu">
                             <v-btn title="Go to the Pixanomy App" text="Get Started" href="https://app.pixanomy.com"></v-btn>
-                        </v-col>
+                        </div>
+
+                        <div class="ecosystemMenuIcon">
+                            <ecosystemmenu />
+                        </div>
                     </div>
         </v-app-bar>
     </div>
@@ -31,9 +31,11 @@
         computed
     } from 'vue'
     import {
+        useDisplay,
         useTheme
     } from 'vuetify'
     import logo from '../blocks/logo.vue'
+    import ecosystemmenu from './topmenu/ecosystemmenu.vue'
 
     defineProps({
         drawer: {
@@ -47,6 +49,8 @@
     const drawer = ref(null);
     const placeholder = 'Search your media, assets, templates, and more'
     const theme = useTheme()
+    // Compact bar on phones; Vuetify keeps v-main's top offset in sync with the bar height
+    const { smAndDown } = useDisplay()
     const themeName = computed(() => theme.global.name.value)
     const isDark = computed(() => theme.global.current.value.dark)
     const setTheme = (name) => {

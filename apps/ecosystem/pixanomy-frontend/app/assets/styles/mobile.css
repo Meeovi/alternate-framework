@@ -1,16 +1,8 @@
 /**************** Main CSS ***************/
+/* The top bar is a Vuetify v-app-bar: leave its position/height to Vuetify
+   (Header.vue switches it to compact density on phones) so it stays fixed
+   and v-main's top offset matches it. */
 @media only screen and (max-width: 1100px) {
-.myaccounttopmenu {
-    position: fixed;
-    margin-right: 1px;
-    padding-top: 5px;
-}
-
-  #topnav {
-    position: relative !important;
-    background-color: transparent !important;
-  }
-
   #minSearch {
     display: block;
     position: relative;
@@ -22,63 +14,16 @@
     text-transform: none;
     transition: inherit;
     width: auto;
-}
+  }
 
   .lowerBar {
     display: none;
   }
-
-  main.v-main {
-    padding: 0px;
-  }
 }
 
-@media only screen and (max-width: 580px) {
-  #topnav {
-    height: 35px;
-  }
-  #topnav, .v-toolbar__content {
-    top: -14px;
-    position: relative;
-  }
-
-  .logobrand {
-    position: relative;
-    left: 120px;
-    margin-top: 5px;
-    display: flex;
-    width: 100%;
-  }
-
-  .logotext {
-    position: relative;
-    left: -5px;
-    padding-top: 5px;
-  }
-}
-
-@media only screen and (max-width: 400px) {
-  .logobrand {
-    left: 40px;
-  }
-
-  .myaccounttopmenu {
-    top: 0px;
-  }
-}
-
-@media only screen and (max-width: 300px) {
-  .logobrand {
-    left: 2px;
-    margin-top: -8px;
-    position: relative;
-  }
-
-  .myaccounttopmenu {
-    top: -4px;
-  }
-
-  p.logotext {
+@media only screen and (max-width: 375px) {
+  /* Not enough room for the wordmark next to Menu / Get Started / apps */
+  .logobrand .logotext {
     display: none;
   }
 }
