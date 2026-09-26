@@ -1,0 +1,27 @@
+/********************** Main Mobile CSS ************/
+/* This file is for mobile specific styles */
+@media only screen and (max-width: 600px) {
+    .menutext {
+        display: none;
+    }
+
+    .v-btn.ecoBtn {
+        display: none;
+    }
+
+    a.logobrand {
+        top: 5px;
+        position: relative;
+        float: left;
+        left: 0px !important;
+    }
+
+    #minSearch {
+        top: -5px;
+        position: relative;
+    }
+
+    .legalFooter.v-col {
+        min-width: 100%;
+    }
+}
