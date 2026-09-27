@@ -7,6 +7,11 @@ import {
 import { defineNuxtConfig } from 'nuxt/config'
 import vuetify from 'vite-plugin-vuetify'
 
+// Env values copied from a .env file can arrive wrapped in quotes
+// ('https://…') or padded with spaces — either makes `new URL()` throw
+// "Invalid URL" at runtime, so normalise them here.
+const envUrl = (value?: string) => value?.trim().replace(/^(['"])(.*)\1$/, '$2').trim() || undefined
+
 const layers = useLayers(__dirname, {
   //shared: '../../../layers/shared',
   //auth: '../../../layers/auth',
@@ -122,7 +127,7 @@ export default defineNuxtConfig({
         },
       },
       domains: [
-        process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com',
+        envUrl(process.env.NUXT_PUBLIC_SITE_URL) || 'https://example.com',
       ],
       screens: {
         xs: 320,
@@ -144,27 +149,15 @@ export default defineNuxtConfig({
       densities: [1, 2, 3],
     },
 
+  // Everything under runtimeConfig.public is embedded in every page sent to
+  // the browser — never put credentials here. The site reads Directus
+  // anonymously, so no admin email/password/token is needed at all.
   runtimeConfig: {
     public: {
       // Directus
       directus: {
-        url: process.env.DIRECTUS_URL,
-        nuxtBaseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3011',
-        auth: {
-          email: process.env.NUXTUS_DIRECTUS_ADMIN_EMAIL,
-          password: process.env.NUXTUS_DIRECTUS_ADMIN_PASSWORD,
-          token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN,
-          enabled: true,
-          enableGlobalAuthMiddleware: false, // Enable auth middleware on every page
-          userFields: ['*'], // Select user fields
-          redirect: {
-            login: '/auth/login', // Path to redirect when login is required
-            logout: '/', // Path to redirect after logout
-            home: '/', // Path to redirect after successful login
-            resetPassword: '/auth/reset-password', // Path to redirect for password reset
-            callback: '/auth/callback', // Path to redirect after login with provider
-          },
-        }
+        url: envUrl(process.env.DIRECTUS_URL),
+        nuxtBaseUrl: envUrl(process.env.NUXT_PUBLIC_SITE_URL) || 'http://localhost:3011',
       },
 
       disqus: {
@@ -173,11 +166,7 @@ export default defineNuxtConfig({
         devBaseUrl: 'http://localhost:3000' // used for URL in dev
       },
 
-      meeDirectusUrl: process.env.MEE_DIRECTUS_URL || 'http://localhost:8055',
-      meeNuxtBaseUrl: process.env.MEE_NUXTUS_DIRECTUS_STATIC_TOKEN || 'http://localhost:3011',
-      meeToken: process.env.MEE_NUXTUS_DIRECTUS_ADMIN_EMAIL || '',
-      meePassword: process.env.MEE_NUXTUS_DIRECTUS_ADMIN_PASSWORD || '',
-      enabled: process.env.MEE_NUXTUS_DIRECTUS_AUTH || 'development',
+      meeDirectusUrl: envUrl(process.env.MEE_DIRECTUS_URL) || 'http://localhost:8055',
     },
   },
 
