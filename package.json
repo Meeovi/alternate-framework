@@ -10,7 +10,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "preview": "cd apps/ecosystem/meeovi-frontend && npx nuxi preview",
-    "postinstall": "patch-package --patch-dir packages/plugins/Patches"
+    "postinstall": "node packages/plugins/Scripts/apply-patches.cjs"
   },
   "bin": {
     "meeovi-create-adapter": "packages/core/bin/create-adapter.cjs"
