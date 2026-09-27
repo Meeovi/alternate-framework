@@ -30,10 +30,8 @@
     "vite": "^8.3.0"
   },
   "workspaces": [
-    "packages/plugins/*",
     "packages/plugins/Admin/alternate-sdk",
     "packages/plugins/CMS-Content/experience-builder",
-    "packages/plugins/CMS-Content/food-order-system",
     "packages/plugins/Email-Notifications/meeovi-newsletter",
     "packages/plugins/Marketing-SEO/meeovi-forms",
     "layers/*",
