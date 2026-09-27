@@ -1,20 +1,50 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import {
+  useLayers
+} from 'nuxt-layers-utils'
+import {
+  resolve
+} from 'path'
+import { defineNuxtConfig } from 'nuxt/config'
+import vuetify from 'vite-plugin-vuetify'
+
+const layers = useLayers(__dirname, {
+  //shared: '../../../layers/shared',
+  //auth: '../../../layers/auth',
+})
+
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  extends: layers.extends(),
+  alias: {
+    ...Object.fromEntries(
+      Object.entries(layers.alias('#')).map(([key, value]) => [key, resolve(__dirname, value)])
+    ),
+  },
+
+  ssr: true,
+  typescript: {
+    typeCheck: false
+  },
 
   app: {
+    baseURL: '/',
     head: {
       viewport: 'minimum-scale=1, initial-scale=1, width=device-width',
       templateParams: {
-        separator: '·',
+        separator: '·'
       },
       htmlAttrs: {
-        lang: 'en',
+        lang: 'en'
       },
+      titleTemplate: `%s - ${process.env.NUXT_PUBLIC_SITE_NAME || 'Pixanomy'}`,
       meta: [{
-        name: 'description',
-        content: 'Over 7,000 characters and stories within the Eliteverse.'
-      }, ],
+          name: 'description',
+          content: `${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Pixanomy'}`
+        },
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1'
+        }
+      ],
       link: [{
           rel: 'icon',
           href: '/favicon.ico'
@@ -22,12 +52,13 @@ export default defineNuxtConfig({
         {
           rel: 'apple-touch-icon',
           href: '/icons/apple-touch-icon-180x180.png'
-        },
-      ],
-      script: [{
-        //src: 'https://static.elfsight.com/platform/platform.js'
-      }]
-    },
+        }
+      ]
+    }
+  },
+
+  appConfig: {
+    titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Pixanomy'}`
   },
 
   css: [
@@ -42,31 +73,76 @@ export default defineNuxtConfig({
     'assets/styles/styles.css',
   ],
 
+  // Vuetify is set up standalone (app/plugins/vuetify.ts + vite-plugin-vuetify
+  // below), like pixanomy-frontend — vuetify-nuxt-module would create a
+  // second Vuetify instance on top of it.
   modules: [
     '@nuxt/image',
     '@storefront-ui/nuxt',
-    'vuetify-nuxt-module',
     '@nuxtjs/leaflet',
+    '@vite-pwa/nuxt',
   ],
 
-  vuetify: {
-    vuetifyOptions: {
-      icons: {
-        defaultSet: 'fa-svg',
-        svg: {
-          fa: {
-            libraries: [
-              [ /* default export? */ false, /* export name */ 'fas', /* library */ '@fortawesome/free-solid-svg-icons']
-            ]
-          }
-        },
-        sets: [{
-          name: 'mdi',
-          cdn: 'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css'
-        }]
-      }
-    }
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: process.env.NUXT_PUBLIC_SITE_NAME || 'Pixanomy',
+      short_name: process.env.NUXT_PUBLIC_SITE_NAME || 'Pixanomy',
+      description: process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Centralize your digital assets. Store, share, and manage them all in one place.',
+      theme_color: process.env.NUXT_PUBLIC_APP_THEME_COLOR || '#ffffff',
+      background_color: '#ffffff',
+      icons: [
+        { src: '/icons/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+        { src: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+        { src: '/icons/icon-192x192.maskable.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+        { src: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+        { src: '/icons/icon-512x512.maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+    },
+    client: {
+      installPrompt: true,
+    },
   },
+
+  image: {
+      providers: {
+        // Custom wrapper around the built-in cloudinary provider — falls
+        // back to serving the original image untransformed when
+        // CLOUDINARY_CLOUD_NAME isn't set, instead of 404ing against a
+        // placeholder account name. See providers/cloudinary-safe.ts.
+        cloudinary: {
+          name: 'cloudinary',
+          provider: resolve(__dirname, 'providers/cloudinary-safe.ts'),
+          options: {
+            baseURL: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/`,
+          },
+        },
+      },
+      domains: [
+        process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com',
+      ],
+      screens: {
+        xs: 320,
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+        xxl: 1536,
+      },
+      format: ['webp', 'avif'],
+      presets: {
+        default: {
+          modifiers: {
+            format: 'webp',
+            quality: 80,
+          },
+        },
+      },
+      densities: [1, 2, 3],
+    },
 
   runtimeConfig: {
     public: {
@@ -105,16 +181,61 @@ export default defineNuxtConfig({
     },
   },
 
-  // Build configuration
-  build: {},
+  build: {
+    transpile: [
+      '@vue/email',
+      'vuetify',
+    ]
+  },
+
   nitro: {
-    preset: 'vercel',
+    esbuild: {
+      options: {
+        target: 'esnext'
+      }
+    },
     externals: {
-      inline: [
-        'vue',
-        'vuetify',
-        '@vueuse/core'
-      ] // ⬅ Bundle these inside the serverless function
-    }
+      external: ['playwright-core'],
+    },
+    prerender: {
+      failOnError: false,
+      ignore: ['/assets/images/*'],
+    },
+  },
+
+  vite: {
+    optimizeDeps: {
+      // See layers/shared/nuxt.config.ts's comment on the equivalent
+      // option for why vuetify's subpaths are pre-bundled up front: without
+      // this, Vite discovers Vuetify's ~800 individual component/composable
+      // files one at a time on first use, each triggering a full reload.
+      exclude: ['vuetify'],
+      include: ['vuetify/components', 'vuetify/directives'],
+    },
+    plugins: [
+      // @ts-ignore
+      vuetify({
+        autoImport: true,
+      }),
+    ],
+    resolve: {
+      alias: {},
+    },
+  },
+
+  compatibilityDate: '2026-02-15',
+
+  sentry: {
+    org: 'meeovi',
+    project: 'meeovi',
+    autoInjectServerSentry: 'top-level-import'
+  },
+
+  sourcemap: {
+    client: 'hidden'
+  },
+
+  ogImage: {
+    zeroRuntime: true
   }
 })
