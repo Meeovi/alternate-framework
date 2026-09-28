@@ -17,7 +17,7 @@
    "scripts": {
       "pix-commit": "git add . && git commit -m \"ready for update\"",
       "pix-update": "git pull \"https://github.com/Meeovi/pixanomy-frontend\"",
-      "dev": "nuxt dev --host 0.0.0.0",
+      "dev": "nuxt dev --host 0.0.0.0 --port 3003",
       "dev-sw": "SW=true nuxi dev",
       "build": "nuxt prepare && nuxt build",
       "build-sw": "SW=true nuxi build",

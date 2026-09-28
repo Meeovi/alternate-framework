@@ -122,6 +122,8 @@ body {
     align-items: center;
     white-space: nowrap;
     text-decoration: none;
+    top: 2px;
+    position: relative;
 }
 
 .logobrand .logotext {

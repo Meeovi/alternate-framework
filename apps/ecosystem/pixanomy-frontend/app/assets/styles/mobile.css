@@ -19,6 +19,11 @@
   .lowerBar {
     display: none;
   }
+
+  .logobrand {
+    top: 2px;
+    position: relative;
+  }
 }
 
 @media only screen and (max-width: 375px) {
