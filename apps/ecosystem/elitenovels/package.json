@@ -35,6 +35,7 @@
       "@fortawesome/free-solid-svg-icons": "^7.3.1",
       "@fortawesome/vue-fontawesome": "^3.3.3",
       "@mdi/font": "^7.4.47",
+      "@mframework/ui-shell": "file:../../../layers/ui-shell",
       "@nuxt/image": "^2.1.0",
       "@nuxtjs/leaflet": "^1.3.3",
       "@pinia/nuxt": "^1.0.2",
@@ -47,7 +48,7 @@
       "nuxt-layers-utils": "^0.3.1",
       "pinia": "^4.0.3",
       "vite-plugin-vuetify": "^2.1.3",
-      "vuetify": "^3.13.5",
+      "vuetify": "^4.0.7",
       "vuetify-nuxt-module": "^1.0.0-rc.6"
    },
    "devDependencies": {

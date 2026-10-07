@@ -43,12 +43,12 @@
 </template>
 
 <script setup>
-  import sidebartop from '../components/menus/sidebar/sidebartop.vue'
-  import trendingMenu from '../components/menus/sidebar/trendingMenu.vue'
+  import sidebartop from '#ui/app/components/menus/sidebar/sidebartop.vue'
+  import trendingMenu from '#ui/app/components/menus/sidebar/trendingMenu.vue'
   import departmentsmenu from '#commerce/app/components/menus/departmentsmenu.vue'
   import outlets from '#commerce/app/components/menus/outletsmenu.vue'
   import socialmenu from '#social/app/components/menus/socialmenu.vue'
-  import bottomsidebarmenu from '../components/menus/sidebar/bottomsidebarMenu.vue'
+  import bottomsidebarmenu from '#ui/app/components/menus/sidebar/bottomsidebarMenu.vue'
 
   // Drawer state is now controlled by the layout
   let theme = null

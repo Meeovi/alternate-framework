@@ -13,6 +13,7 @@ const layers = useLayers(__dirname, {
   commerce: '../../../layers/commerce',
   social: '../../../layers/social',
   business: '../../../layers/business',
+  ui: '../../../layers/ui-shell'
 })
 
 export default defineNuxtConfig({
@@ -84,6 +85,8 @@ export default defineNuxtConfig({
   },
 
   appConfig: {
+    // ui-shell's default/nolive/settings layouts; the other apps' layouts stay out of this build
+    uiShell: { layout: 'default', layouts: ['nolive', 'settings'] },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Meeovi'}`
   },
 
@@ -200,9 +203,10 @@ export default defineNuxtConfig({
     },
     rollupConfig: {
       external: ['nuxt/app', 'nuxt/config', 'nuxt'],
-      output: {
-        inlineDynamicImports: false
-      },
+      // Production only: in `nuxt dev` (Nuxt 4.6 / Nitro 2.13) this splits the
+      // dev worker so its entry chunk re-exports `{ default: default }` — a
+      // syntax error that 500s every request.
+      ...(process.env.NODE_ENV === 'production' ? { output: { inlineDynamicImports: false } } : {}),
       onwarn(warning: {
         code: string;importer: any;ids: any[];message: any
       }, handler: (arg0: any) => void) {

@@ -66,9 +66,9 @@
         useRoute
     } from 'vue-router'
     import characters from '~/components/related/character.vue'
-    import characterbar from '~/components/menus/characterbar.vue'
-    import mythologybar from '~/components/menus/mythologybar.vue'
-    import monsterbar from '~/components/menus/monsterbar.vue'
+    import characterbar from '#ui/app/components/menus/elitenovels/characterbar.vue'
+    import mythologybar from '#ui/app/components/menus/elitenovels/mythologybar.vue'
+    import monsterbar from '#ui/app/components/menus/elitenovels/monsterbar.vue'
     import facet from '~/components/related/facet.vue'
     import storyCard from '~/components/related/story.vue'
 

@@ -31,7 +31,7 @@
   import {
     useRoute
   } from 'vue-router'
-  import Grid from '#shared/app/components/ui/DataGrid/components/Grid.vue'
+  import Grid from '#ui/app/components/ui/DataGrid/components/Grid.vue'
   import LikeButton from '../../../components/blocks/LikeButton.vue'
 
   const route = useRoute();

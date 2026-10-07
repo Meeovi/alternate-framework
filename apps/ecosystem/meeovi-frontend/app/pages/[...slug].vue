@@ -24,7 +24,7 @@
   import {
     ref
   } from 'vue'
-  import Pagebar from '../components/menus/page/pagebar.vue'
+  import Pagebar from '#ui/app/components/menus/page/pagebar.vue'
 
   const route = useRoute()
   const {

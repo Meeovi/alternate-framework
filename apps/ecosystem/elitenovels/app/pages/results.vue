@@ -141,10 +141,6 @@
     return $directus.request($readItem('navigation', '27'))
   })
 
-  definePageMeta({
-    layout: 'nolive',
-  });
-
   useHead({
     title: 'Search Results'
   })

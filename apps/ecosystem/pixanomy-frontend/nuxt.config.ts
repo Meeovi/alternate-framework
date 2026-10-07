@@ -5,11 +5,11 @@ import {
   resolve
 } from 'path'
 import { defineNuxtConfig } from 'nuxt/config'
-import vuetify from 'vite-plugin-vuetify'
 
 const layers = useLayers(__dirname, {
   //shared: '../../../layers/shared',
   //auth: '../../../layers/auth',
+  ui: '../../../layers/ui-shell'
 })
 
 export default defineNuxtConfig({
@@ -58,6 +58,8 @@ export default defineNuxtConfig({
   },
 
   appConfig: {
+    // ui-shell renders layers/ui-shell/app/layouts/pixanomy.vue as this app's default layout
+    uiShell: { layout: 'pixanomy' },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Pixanomy'}`
   },
 
@@ -72,10 +74,10 @@ export default defineNuxtConfig({
     'assets/styles/styles.css'
   ],
 
+  // Vuetify (plugin + vite-plugin-vuetify), PWA and @nuxt/image come from
+  // the ui-shell layer.
   modules: [
     '@pinia/nuxt',
-    '@nuxt/image',
-    '@vite-pwa/nuxt',
     '@sentry/nuxt/module',
   ],
 
@@ -182,9 +184,10 @@ export default defineNuxtConfig({
     },
     rollupConfig: {
       external: ['nuxt/app', 'nuxt/config', 'nuxt'],
-      output: {
-        inlineDynamicImports: false
-      },
+      // Production only: in `nuxt dev` (Nuxt 4.6 / Nitro 2.13) this splits the
+      // dev worker so its entry chunk re-exports `{ default: default }` — a
+      // syntax error that 500s every request.
+      ...(process.env.NODE_ENV === 'production' ? { output: { inlineDynamicImports: false } } : {}),
       onwarn(warning: {
         code: string;importer: any;ids: any[];message: any
       }, handler: (arg0: any) => void) {
@@ -222,20 +225,6 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    optimizeDeps: {
-      // See layers/shared/nuxt.config.ts's comment on the equivalent
-      // option for why vuetify's subpaths are pre-bundled up front: without
-      // this, Vite discovers Vuetify's ~800 individual component/composable
-      // files one at a time on first use, each triggering a full reload.
-      exclude: ['vuetify'],
-      include: ['vuetify/components', 'vuetify/directives'],
-    },
-    plugins: [
-      // @ts-ignore
-      vuetify({
-        autoImport: true,
-      }),
-    ],
     resolve: {
       alias: {},
     },

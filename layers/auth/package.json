@@ -37,6 +37,7 @@
     "@polar-sh/better-auth": "^1.8.4",
     "@polar-sh/checkout": "^0.2.0",
     "@vercel/functions": "^3.7.5",
+    "@vueuse/integrations": "^14.4.0",
     "alternate-sdk": "file:../../packages/plugins/Admin/alternate-sdk",
     "better-auth": "1.6.23",
     "defu": "^6.1.4",

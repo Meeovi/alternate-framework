@@ -6,10 +6,6 @@ import {
 } from 'nuxt/config'
 import process from 'node:process'
 import { createRequire } from 'node:module'
-import vuetify from 'vite-plugin-vuetify'
-
-const sw = process.env.SW === 'true'
-const pwaDevEnabled = process.env.PWA_DEV === 'true'
 
 // @novu/js's package.json "exports" map doesn't list "./dist/index.css" as
 // a subpath (confirmed: `node -e "require.resolve('@novu/js/dist/index.css')"`
@@ -165,11 +161,6 @@ export default defineNuxtConfig({
     }
   },
 
-  alias: {
-    '@mframework/meeovi-forms': resolve(__dirname, '../../packages/plugins/Marketing-SEO/meeovi-forms/src/index.ts'),
-    '@mframework/meeovi-forms/': resolve(__dirname, '../../packages/plugins/Marketing-SEO/meeovi-forms/src/'),
-  },
-
   // Shared components are not auto-registered: every consumer imports them
   // by path (#shared/app/components/...). The previous `path: 'app/components'`
   // resolved against this layer's srcDir (already app/), i.e. the nonexistent
@@ -185,22 +176,14 @@ export default defineNuxtConfig({
     '@vueuse/motion/nuxt',
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
-    '@vite-pwa/nuxt',
     '@nuxtjs/turnstile',
     '@nuxtjs/leaflet',
     '@nuxt/scripts',
-    '@nuxt/fonts',
     '@nuxtjs/mcp-toolkit',
-    '@storefront-ui/nuxt',
     resolve(__dirname, '../../packages/plugins/Marketing-SEO/meeovi-forms/module.ts'),
     resolve(__dirname, '../../packages/plugins/CMS-Content/experience-builder/module.ts'),
     'nuxt-skill-hub'
   ],
-
-  // @ts-ignore - @nuxtjs/fonts module augments this key at runtime
-  fonts: {
-    priority: ['bunny', 'google'],
-  },
 
   // @ts-ignore - @nuxtjs/seo module augments this key at runtime
   seo: {
@@ -283,56 +266,6 @@ export default defineNuxtConfig({
       },
     },
     densities: [1, 2, 3],
-  },
-
-  pwa: {
-    strategies: sw ? 'injectManifest' : 'generateSW',
-    srcDir: sw ? 'service-worker' : undefined,
-    filename: sw ? 'sw.ts' : undefined,
-    registerType: 'autoUpdate',
-    manifest: {
-      name: process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template',
-      short_name: process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template',
-      theme_color: '#ffffff',
-      icons: [{
-          src: 'pwa-192x192.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-        {
-          src: 'pwa-512x512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'any maskable',
-        },
-      ],
-    },
-    workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-    },
-    injectManifest: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-    },
-    client: {
-      installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
-    },
-
-    devOptions: {
-      enabled: pwaDevEnabled,
-      suppressWarnings: true,
-      navigateFallback: '/',
-      navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
-    },
   },
 
   security: {
@@ -626,50 +559,13 @@ export default defineNuxtConfig({
     },
   },
 
-  build: {
-    transpile: [
-      'vuetify',
-      '@svar-ui/vue-grid',
-      '@svar-ui/vue-editor',
-      '@svar-ui/vue-core',
-    ],
-  },
-
   vite: {
-    optimizeDeps: {
-      // `vuetify` itself stays excluded (unchanged) — bundling the bare
-      // package alongside vite-plugin-vuetify's autoImport risks two
-      // separate Vuetify instances (createVuetify() called once per
-      // instance means duplicate theme/locale/icon state). But autoImport
-      // doesn't import from `vuetify` at all — it rewrites `<v-btn>` etc.
-      // into imports from `vuetify/components`/`vuetify/directives`, and
-      // those subpaths were NOT excluded, so Vite discovered Vuetify's
-      // ~800 individual component/composable/CSS files one at a time,
-      // cold, on whichever route first used them — each newly-discovered
-      // file triggered a fresh "Re-optimizing dependencies" + full-reload
-      // cycle, which raced and cancelled the page's own in-flight
-      // requests (ERR_NETWORK_CHANGED on dozens of files at once).
-      // Pre-bundling these subpaths as a single unit up front removes the
-      // cold, incremental discovery entirely — confirmed live 2026-09-16
-      // reproducing on first visits to layers/business's dashboard pages.
-      exclude: ['vuetify'],
-      include: ['vuetify/components', 'vuetify/directives', 'vuetify/labs/components'],
-    },
+    // Vuetify (vite-plugin-vuetify, optimizeDeps, transpile, the labs
+    // VStepperVertical alias) is configured by layers/ui-shell.
     logLevel: 'info',
-    plugins: [
-      // @ts-ignore
-      vuetify({
-        autoImport: true
-      }),
-    ],
     resolve: {
       dedupe: ['vue', 'vue-router'],
       alias: {
-        // @jsonforms/vue-vuetify@3.x (used by @mframework/meeovi-forms) imports
-        // VStepperVertical from Vuetify's `labs` entrypoint. In Vuetify 4 the
-        // component graduated to stable with the same public API, and the labs
-        // path no longer exists — remap it so the dependency resolves.
-        'vuetify/labs/VStepperVertical': 'vuetify/components/VStepperVertical',
         // See novuCssPath's own comment above (top of file) for why this
         // alias exists at all rather than a plain bare import.
         ...(novuCssPath ? { '@novu/js/dist/index.css': novuCssPath } : {}),

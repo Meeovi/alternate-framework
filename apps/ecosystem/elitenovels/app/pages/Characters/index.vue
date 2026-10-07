@@ -82,7 +82,7 @@
   import {
     ref
   } from 'vue'
-  //import characterbar from '~/components/menus/characterbar.vue'
+  //import characterbar from '#ui/app/components/menus/elitenovels/characterbar.vue'
   import relatedstories from '~/components/related/relatedstories.vue'
   import characterComponent from '~/components/related/character.vue'
   //const model = ref(null);

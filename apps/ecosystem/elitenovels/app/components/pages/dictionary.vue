@@ -12,7 +12,7 @@
 
 <script setup>
   import { ref } from 'vue'
-  //import characterbar from '~/components/menus/characterbar.vue'
+  //import characterbar from '#ui/app/components/menus/elitenovels/characterbar.vue'
   import Dictionary from '~/components/related/dictionary.vue'
   const model = ref(null);
 

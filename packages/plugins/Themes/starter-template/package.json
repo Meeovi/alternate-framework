@@ -1,0 +1,49 @@
+{
+   "name": "starter-template",
+   "type": "module",
+   "version": "0.0.5",
+   "description": "Official M Framework starter template.",
+   "author": "M Framework Labs (https://framework.meeovi.com)",
+   "homepage": "https://framework.meeovi.com",
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Meeovi/Meeovi-Starter-Template"
+   },
+   "bugs": {
+      "url": "https://github.com/Meeovi/Meeovi-Starter-Template/issues"
+   },
+   "license": "MIT",
+   "private": true,
+   "scripts": {
+      "starter-commit": "git add . && git commit -m \"ready for update\"",
+      "starter-update": "git pull \"https://github.com/Meeovi/Meeovi-Starter-Template\"",
+      "dev": "nuxt dev --host 0.0.0.0",
+      "dev-sw": "SW=true nuxi dev",
+      "build": "NODE_OPTIONS=--max-old-space-size=6144 nuxt build",
+      "build-sw": "SW=true nuxi build",
+      "smoke:auth": "bash ./scripts/auth-smoke.sh",
+      "ts-node": "ts-node -r tsconfig-paths/register --compiler-options '{\"module\":\"CommonJS\"}'",
+      "generate": "nuxt generate",
+      "preview": "nuxt preview",
+      "postinstall": "nuxt prepare"
+   },
+   "dependencies": {
+      "@directus/sdk": "^23.0.0",
+      "@mframework/ui-shell": "file:../../../../layers/ui-shell",
+      "@pinia/nuxt": "^1.0.2",
+      "@sentry/nuxt": "^10",
+      "@vite-pwa/assets-generator": "^1.0.2",
+      "dotenv": "^17.4.2",
+      "pinia": "^4.0.3",
+      "playwright-core": "^1.59.1"
+   },
+   "devDependencies": {
+      "@parcel/watcher": "^2.6.0",
+      "@types/node": "^25.9.5",
+      "dotenv-cli": "^11.0.0",
+      "nuxt": "^4.6.0",
+      "nuxt-layers-utils": "^0.3.1",
+      "tsx": "^4.23.1",
+      "typescript": "^7.0.2"
+   }
+}

@@ -5,7 +5,6 @@ import {
   resolve
 } from 'path'
 import { defineNuxtConfig } from 'nuxt/config'
-import vuetify from 'vite-plugin-vuetify'
 
 // Env values copied from a .env file can arrive wrapped in quotes
 // ('https://…') or padded with spaces — either makes `new URL()` throw
@@ -15,6 +14,7 @@ const envUrl = (value?: string) => value?.trim().replace(/^(['"])(.*)\1$/, '$2')
 const layers = useLayers(__dirname, {
   //shared: '../../../layers/shared',
   //auth: '../../../layers/auth',
+  ui: '../../../layers/ui-shell'
 })
 
 export default defineNuxtConfig({
@@ -63,6 +63,8 @@ export default defineNuxtConfig({
   },
 
   appConfig: {
+    // ui-shell renders layers/ui-shell/app/layouts/elitenovels.vue as this app's default layout
+    uiShell: { layout: 'elitenovels' },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Pixanomy'}`
   },
 
@@ -78,14 +80,11 @@ export default defineNuxtConfig({
     'assets/styles/styles.css',
   ],
 
-  // Vuetify is set up standalone (app/plugins/vuetify.ts + vite-plugin-vuetify
-  // below), like pixanomy-frontend — vuetify-nuxt-module would create a
-  // second Vuetify instance on top of it.
+  // Vuetify (plugin + vite-plugin-vuetify), PWA, @nuxt/image and
+  // @storefront-ui/nuxt come from the ui-shell layer — vuetify-nuxt-module
+  // would create a second Vuetify instance on top of it.
   modules: [
-    '@nuxt/image',
-    '@storefront-ui/nuxt',
     '@nuxtjs/leaflet',
-    '@vite-pwa/nuxt',
   ],
 
   pwa: {
@@ -193,20 +192,6 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    optimizeDeps: {
-      // See layers/shared/nuxt.config.ts's comment on the equivalent
-      // option for why vuetify's subpaths are pre-bundled up front: without
-      // this, Vite discovers Vuetify's ~800 individual component/composable
-      // files one at a time on first use, each triggering a full reload.
-      exclude: ['vuetify'],
-      include: ['vuetify/components', 'vuetify/directives'],
-    },
-    plugins: [
-      // @ts-ignore
-      vuetify({
-        autoImport: true,
-      }),
-    ],
     resolve: {
       alias: {},
     },

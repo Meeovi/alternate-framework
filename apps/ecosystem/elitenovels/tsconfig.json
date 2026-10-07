@@ -4,13 +4,6 @@
     "strict": true,
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
-    "skipLibCheck": true,
-    "types": [
-      "@types/node"
-    ],
-    "typeRoots": [
-      "./types",
-      "./node_modules/@types"
-    ]
+    "skipLibCheck": true
   }
 }

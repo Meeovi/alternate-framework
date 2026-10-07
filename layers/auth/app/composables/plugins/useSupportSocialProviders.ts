@@ -13,7 +13,7 @@ export function useSupportedSocialProviders() {
   async function load() {
     providers.value = [
       // This project's Vuetify default icon set is Font Awesome (see
-      // layers/shared/app/plugins/vuetify.ts), not MDI — 'mdi-google' /
+      // layers/ui-shell/app/plugins/vuetify.ts), not MDI — 'mdi-google' /
       // 'mdi-github' silently failed to resolve and both buttons rendered
       // with no icon at all.
       { id: 'google', label: 'Google', icon: 'fab fa-google', color: 'red' },
