@@ -24,7 +24,11 @@ import character from '~/components/related/character.vue'
 const model = ref(null)
 const { $directus, $readItems } = useNuxtApp()
 
-const { data: characters } = useLazyAsyncData('characters', () => {
-  return $directus.request($readItems('characters'))
+const { data: characters } = useLazyAsyncData('relatedCharacters', () => {
+  return $directus.request($readItems('characters', {
+    fields: ['id', 'name', 'slug', 'alias', 'type', 'image.filename_disk'],
+    filter: { image: { _nnull: true } },
+    limit: 30,
+  }))
 })
 </script>

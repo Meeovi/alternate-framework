@@ -2,8 +2,8 @@
   <div>
     <NuxtLink :to="`/characters/${character?.slug}`">
       <v-card class="elite-card ma-2 mx-auto" height="480" width="250" max-width="100%">
-        <div v-if="character?.image?.filename_disk">
-          <img class="align-end text-white" height="250" :src="`${$directus.url}assets/${character?.image?.filename_disk}`" :alt="character?.name"
+        <div v-if="imageSrc">
+          <img class="align-end text-white" height="250" :src="imageSrc" :alt="character?.name" loading="lazy"
             cover />
         </div>
 
@@ -23,13 +23,22 @@
 </template>
 
 <script setup>
+  import { computed, toRef } from 'vue'
+
   const props = defineProps({
     character: {
       type: Object,
       required: true,
     },
   });
-  const {
-    character
-  } = props;
+  const character = toRef(props, 'character')
+  const { $directus } = useNuxtApp()
+
+  // Parents fetch `image` either expanded (`image.*`) or as a bare file id (`*`);
+  // Directus serves /assets/<id> for both, so handle either shape.
+  const imageSrc = computed(() => {
+    const image = character.value?.image
+    const file = typeof image === 'string' ? image : image?.filename_disk || image?.id
+    return file ? `${$directus.url}assets/${file}` : null
+  })
 </script>
