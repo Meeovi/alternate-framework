@@ -8,7 +8,7 @@ vi.stubGlobal('useRuntimeConfig', () => runtimeConfig)
 vi.stubGlobal('createError', (opts: { statusCode: number, statusMessage: string }) =>
   Object.assign(new Error(opts.statusMessage), opts))
 
-const { uploadToPixanomy, sanitizeSegment, decodeDataUrl, isAllowedAssetType } = await import('../../server/utils/pixanomy')
+const { uploadToPixanomy, listPixanomyAssets, sanitizeSegment, decodeDataUrl, isAllowedAssetType } = await import('../../server/utils/pixanomy')
 
 describe('pixanomy upload', () => {
   const fetchMock = vi.fn()
@@ -85,5 +85,53 @@ describe('pixanomy helpers', () => {
     expect(isAllowedAssetType('video/mp4')).toBe(true)
     expect(isAllowedAssetType('image/svg+xml')).toBe(false)
     expect(isAllowedAssetType('text/html')).toBe(false)
+  })
+})
+
+describe('pixanomy listing', () => {
+  const fetchMock = vi.fn()
+
+  beforeEach(() => {
+    fetchMock.mockReset()
+    vi.stubGlobal('fetch', fetchMock)
+  })
+
+  const davResponse = (href: string, type: string, id: string) => `<d:response><d:href>${href}</d:href><d:propstat><d:prop>
+    <d:getcontenttype>${type}</d:getcontenttype><d:getlastmodified>Fri, 25 Sep 2026 10:00:00 GMT</d:getlastmodified>
+    <d:getcontentlength>2048</d:getcontentlength><oc:fileid>${id}</oc:fileid></d:prop></d:propstat></d:response>`
+
+  test('searches only inside the owner folder and reuses each file\'s public link', async () => {
+    fetchMock.mockImplementation(async (url: string, init: RequestInit = {}) => {
+      if (init.method === 'SEARCH') {
+        return new Response(`<?xml version="1.0"?><d:multistatus xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
+          ${davResponse('/remote.php/dav/files/svc/Meeovi/user-1/posts/2026-09/0f8fad5b-d9cb-469f-a165-70867728950e-beach.jpg', 'image/jpeg', '7')}
+          ${davResponse('/remote.php/dav/files/svc/Meeovi/user-1/vibez/2026-09/7c9e6679-7425-40de-944b-e07fc1f90ae7-clip.mp4', 'video/mp4', '8')}
+        </d:multistatus>`, { status: 207 })
+      }
+      const path = new URL(url).searchParams.get('path')
+      const token = path?.endsWith('.mp4') ? 'Vid' : 'Img'
+      return new Response(JSON.stringify({ ocs: { data: [{ share_type: 3, url: `https://app.pixanomy.test/s/${token}` }] } }), { status: 200 })
+    })
+
+    const assets = await listPixanomyAssets('user-1', { limit: 5 })
+
+    const search = fetchMock.mock.calls.find(([, init]) => init?.method === 'SEARCH')!
+    expect(search[1].body).toContain('<d:href>/files/svc/Meeovi/user-1</d:href>')
+    expect(search[1].body).toContain('<d:nresults>5</d:nresults>')
+    expect(assets).toEqual([
+      expect.objectContaining({ filename: 'beach.jpg', contentType: 'image/jpeg', fileId: '7', category: 'posts', size: 2048, url: 'https://app.pixanomy.test/s/Img/download' }),
+      expect.objectContaining({ filename: 'clip.mp4', contentType: 'video/mp4', category: 'vibez', url: 'https://app.pixanomy.test/s/Vid/download' }),
+    ])
+  })
+
+  test('owner id cannot escape its folder', async () => {
+    fetchMock.mockResolvedValue(new Response('<d:multistatus xmlns:d="DAV:"></d:multistatus>', { status: 207 }))
+    await listPixanomyAssets('../other-user')
+    expect(fetchMock.mock.calls[0]![1].body).toContain('<d:href>/files/svc/Meeovi/other-user</d:href>')
+  })
+
+  test('an owner with no uploads yet (404 scope) is an empty list', async () => {
+    fetchMock.mockResolvedValue(new Response(null, { status: 404 }))
+    await expect(listPixanomyAssets('new-user')).resolves.toEqual([])
   })
 })

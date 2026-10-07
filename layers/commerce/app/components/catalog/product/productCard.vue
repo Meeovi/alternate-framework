@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="product-card rounded-md hover:shadow-lg">
-      <div class="relative">
+      <div class="product-card__media">
         <NuxtLink :to="`/product/${product?.id}`" class="block">
           <!-- The placeholder is an external absolute URL that isn't in
                image.domains, so NuxtImg/IPX would blank it — render it as a
@@ -9,11 +9,11 @@
           <img v-if="isPlaceholder" :src="imageSrc" :alt="product?.name"
             class="block object-cover w-full h-auto rounded-md aspect-square" width="300" height="300" >
           <NuxtImg v-else provider="cloudinary" :src="imageSrc" :alt="product?.name"
-            @error="onImageError" class="block object-cover h-auto rounded-md aspect-square" width="300"
+            @error="onImageError" class="block object-cover w-full h-auto rounded-md aspect-square" width="300"
             height="300" />
         </NuxtLink>
         <v-btn variant="flat" size="sm" square color="surface"
-          class="product-card__wishlist absolute bottom-0 right-0 mr-2 mb-2 rounded-full!"
+          class="product-card__wishlist"
           :aria-label="inWishlist ? 'Remove from wishlist' : 'Add to wishlist'"
           @click="wishlistStore.toggleItem(product?.id)">
           <v-icon icon="fas fa-heart" size="sm" :color="inWishlist ? 'red' : undefined"></v-icon>
@@ -119,7 +119,22 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   background-color: rgb(var(--v-theme-surface));
 }
 
+/* Image is the positioning context so the heart sits on the image's
+   top-right corner rather than the whole card's. */
+.product-card__media {
+  position: relative;
+}
+
+.product-card__media img {
+  width: 100%;
+}
+
 .product-card__wishlist {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  border-radius: 9999px;
   border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 

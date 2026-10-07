@@ -22,6 +22,7 @@
     "@cline/sdk": "^0.0.46",
     "@geoman-io/leaflet-geoman-free": "^2.20.0",
     "@mframework/adapter-federation": "file:../../packages/plugins/Social/adapter-federation",
+    "@mframework/meeovi-forms": "file:../../packages/plugins/Marketing-SEO/meeovi-forms",
     "@mframework/alternate-sdk": "file:../../packages/plugins/Admin/alternate-sdk",
     "@mframework/experience-builder": "file:../../packages/plugins/CMS-Content/experience-builder",
     "@novu/js": "^3.19.2",

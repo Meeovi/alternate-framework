@@ -102,6 +102,30 @@
                     </v-slide-group>
                 </v-sheet>
 
+                <!-- Elite Novels Stories Cards -->
+                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.name === 'Elite Novels'">
+                    <v-toolbar title="Stories from Elite Novels" color="transparent">
+
+                        <v-toolbar-items>
+                            <v-btn class="ma-2" variant="text" href="https://elitenovels.com/stories">
+                                Read More Stories
+                            </v-btn>
+                        </v-toolbar-items>
+                    </v-toolbar>
+                    <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
+                            v-for="story in stories" :key="story.id">
+                            <storyCard :story="story" :class="['ma-4', selectedClass]" @click="toggle" />
+                            <div class="d-flex fill-height align-center justify-center">
+                                <v-scale-transition>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
+                                        size="48"></v-icon>
+                                </v-scale-transition>
+                            </div>
+                        </v-slide-group-item>
+                    </v-slide-group>
+                </v-sheet>
+
                 <!-- Best Selling Products Section (commerce) -->
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar title="Best Sellers" color="transparent"></v-toolbar>
@@ -176,6 +200,30 @@
                         </v-slide-group-item>
                     </v-slide-group>
                 </v-sheet>
+
+                <!-- Elite Novels Characters Cards -->
+                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.name === 'Elite Novels'">
+                    <v-toolbar title="Characters from Elite Novels" color="transparent">
+
+                        <v-toolbar-items>
+                            <v-btn class="ma-2" variant="text" href="https://elitenovels.com/characters">
+                                View More Characters
+                            </v-btn>
+                        </v-toolbar-items>
+                    </v-toolbar>
+                    <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
+                            v-for="character in characters" :key="character.id">
+                            <novelsCard :character="character" :class="['ma-4', selectedClass]" @click="toggle" />
+                            <div class="d-flex fill-height align-center justify-center">
+                                <v-scale-transition>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
+                                        size="48"></v-icon>
+                                </v-scale-transition>
+                            </div>
+                        </v-slide-group-item>
+                    </v-slide-group>
+                </v-sheet>
             </v-card>
         </div>
     </div>
@@ -192,6 +240,8 @@
     import pantry from '#commerce/app/components/catalog/categories/pantry/pantry.vue'
     import finance from '#commerce/app/components/catalog/categories/finance.vue'
     import spaceCard from '#social/app/components/related/space.vue'
+    import novelsCard from '#commerce/app/components/related/novelsCard.vue'
+    import storyCard from '#commerce/app/components/related/storyCard.vue'
     import postCard from '#social/app/components/related/post.vue'
     import shortsCard from '#social/app/components/related/short.vue' 
 
@@ -386,6 +436,18 @@
     } = await useAsyncData('callouts', () => {
         return $directus.request($readItem('callouts', '2'))
     })
+
+      const {
+        data: characters
+      } = useLazyAsyncData('characters', () => {
+        return $directus.request($readItems('characters'))
+      })
+
+      const {
+        data: stories
+      } = useLazyAsyncData('stories', () => {
+        return $directus.request($readItems('stories'))
+      })
 
     useHead({
         title: computed(() => department?.value?.name || 'Department Page')

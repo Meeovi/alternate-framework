@@ -184,6 +184,110 @@ export async function uploadToPixanomy(input: PixanomyUploadInput): Promise<Pixa
   }
 }
 
+export interface PixanomyListedAsset {
+  fileId: string | null
+  filename: string
+  contentType: string
+  size: number
+  modified: string | null
+  /** Public direct-download URL (the upload's existing public link). */
+  url: string
+  shareUrl: string
+  /** Upload category folder, e.g. "posts", "vibez", "avatars". */
+  category: string | null
+}
+
+function xmlDecode(value: string) {
+  return value
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'").replace(/&amp;/g, '&')
+}
+
+function xmlTag(block: string, tag: string) {
+  const m = new RegExp(`<${tag}[^>]*>([^<]*)</${tag}>`).exec(block)
+  return m ? xmlDecode(m[1]!) : null
+}
+
+async function findPublicLink(cfg: PixanomyConfig, path: string) {
+  const qs = new URLSearchParams({ path, reshares: 'false', format: 'json' })
+  const res = await fetch(`${cfg.url}/ocs/v2.php/apps/files_sharing/api/v1/shares?${qs}`, {
+    headers: { Authorization: authHeader(cfg), 'OCS-APIRequest': 'true', Accept: 'application/json' },
+  })
+  const json: any = await res.json().catch(() => null)
+  const link = (json?.ocs?.data || []).find((share: any) => Number(share?.share_type) === 3 && share?.url)
+  return link ? String(link.url).replace(/\/+$/, '') : null
+}
+
+/**
+ * The owner's own uploads (images/videos by default), newest first — read
+ * with a WebDAV SEARCH scoped to `<root>/<ownerId>`, so it can only ever
+ * return files that uploadToPixanomy() wrote for that owner. Each file's
+ * existing public link is reused (created if it's somehow missing), since
+ * that's what the rest of Meeovi renders.
+ */
+export async function listPixanomyAssets(
+  ownerId: string,
+  { limit = 12, types = ['image/', 'video/'] }: { limit?: number, types?: string[] } = {},
+): Promise<PixanomyListedAsset[]> {
+  const cfg = getPixanomyConfig()
+  const owner = sanitizeSegment(ownerId, 'anonymous')
+  const scope = ['files', cfg.username, ...cfg.root.split('/').filter(Boolean), owner]
+    .map((s) => encodeURIComponent(s)).join('/')
+
+  const typeFilter = types
+    .map((t) => `<d:like><d:prop><d:getcontenttype/></d:prop><d:literal>${t.replace(/[<&]/g, '')}%</d:literal></d:like>`)
+    .join('')
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<d:searchrequest xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
+  <d:basicsearch>
+    <d:select><d:prop><d:getcontenttype/><d:getlastmodified/><d:getcontentlength/><oc:fileid/></d:prop></d:select>
+    <d:from><d:scope><d:href>/${scope}</d:href><d:depth>infinity</d:depth></d:scope></d:from>
+    <d:where>${types.length > 1 ? `<d:or>${typeFilter}</d:or>` : typeFilter}</d:where>
+    <d:orderby><d:order><d:prop><d:getlastmodified/></d:prop><d:descending/></d:order></d:orderby>
+    <d:limit><d:nresults>${Math.max(1, Math.min(50, Math.floor(limit)))}</d:nresults></d:limit>
+  </d:basicsearch>
+</d:searchrequest>`
+
+  const res = await fetch(`${cfg.url}/remote.php/dav/`, {
+    method: 'SEARCH',
+    headers: { Authorization: authHeader(cfg), 'Content-Type': 'text/xml; charset=utf-8' },
+    body,
+  })
+  // No folder yet = the owner has never uploaded anything.
+  if (res.status === 404) return []
+  if (!res.ok) {
+    throw createError({ statusCode: 502, statusMessage: `Asset storage search failed (${res.status})` })
+  }
+
+  const xml = await res.text()
+  const davPrefix = `/remote.php/dav/files/${encodeURIComponent(cfg.username)}`
+  const files = [...xml.matchAll(/<d:response>([\s\S]*?)<\/d:response>/g)]
+    .map(([, block]) => {
+      const href = xmlTag(block!, 'd:href') || ''
+      const contentType = xmlTag(block!, 'd:getcontenttype') || ''
+      if (!contentType || href.endsWith('/')) return null
+      // "/remote.php/dav/files/<svc>/Meeovi/<owner>/<category>/<yyyy-mm>/<uuid>-<name>"
+      const path = decodeURIComponent(href.slice(href.indexOf(davPrefix) + davPrefix.length))
+      const segments = path.split('/').filter(Boolean)
+      const stored = segments.at(-1) || ''
+      return {
+        path,
+        fileId: xmlTag(block!, 'oc:fileid'),
+        filename: stored.replace(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/, ''),
+        contentType,
+        size: Number(xmlTag(block!, 'd:getcontentlength') || 0),
+        modified: xmlTag(block!, 'd:getlastmodified'),
+        category: segments.length >= 4 ? segments.at(-3)! : null,
+      }
+    })
+    .filter((f): f is NonNullable<typeof f> => Boolean(f))
+
+  return Promise.all(files.map(async ({ path, ...file }) => {
+    const shareUrl = (await findPublicLink(cfg, path)) || (await createPublicLink(cfg, path))
+    return { ...file, shareUrl, url: `${shareUrl}/download` }
+  }))
+}
+
 /** Decode a `data:<mime>;base64,<…>` URL — e.g. a signup avatar. */
 export function decodeDataUrl(value: string): { data: Uint8Array, contentType: string } | null {
   const match = /^data:([\w.+-]+\/[\w.+-]+);base64,(.+)$/s.exec(value)
