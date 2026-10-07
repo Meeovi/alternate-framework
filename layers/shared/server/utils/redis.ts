@@ -19,6 +19,11 @@ if (!/^rediss?:\/\//.test(REDIS_URL)) {
 }
 
 export const redis = new Redis(REDIS_URL, {
+  // Connect on the first command, not at import: `nuxt build` prerenders
+  // routes that load this module, and an eager client kept the finished
+  // build process alive retrying an unreachable Redis (Vercel would hang
+  // until timeout). server/plugins/redis-close.ts closes it on shutdown.
+  lazyConnect: true,
   // Reject a command after a few attempts rather than buffering it 20
   // deep (the ioredis default) while a remote Redis is unreachable —
   // otherwise every request that touches Redis hangs during an outage.

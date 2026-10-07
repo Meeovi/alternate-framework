@@ -8,7 +8,7 @@
                 </div>
 
                 <div v-else>
-                    <img class="align-end text-white" height="300" src="assets/images/coming_soon.png" cover />
+                    <img class="align-end text-white" height="300" src="../../assets/images/coming_soon.png" cover />
                 </div>
 
                 <v-card-subtitle class="pt-4">

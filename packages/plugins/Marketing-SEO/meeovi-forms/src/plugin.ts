@@ -8,20 +8,7 @@ export interface MeeoviFormsApi {
   getRenderers: () => UiFormsRendererRegistry
 }
 
-export const faIconAliases = {
-  jsonForm: 'fas fa-list-ul',
-  jsonForms: 'fas fa-list-ul',
-  form: 'fas fa-align-left',
-  formGroup: 'fas fa-layer-group',
-  formField: 'fas fa-font',
-  submit: 'fas fa-paper-plane',
-  reset: 'fas fa-undo',
-  upload: 'fas fa-cloud-upload-alt',
-  richText: 'fas fa-align-left',
-  calendar: 'far fa-calendar-alt',
-  select: 'fas fa-chevron-down',
-  file: 'fas fa-file',
-}
+export { faIconAliases } from './icons.js'
 
 export async function createMeeoviFormsPlugin(nuxtApp: any, options: MeeoviFormsPluginOptions = {}): Promise<MeeoviFormsApi> {
   const renderers = options.rendererRegistry || await createDefaultRendererRegistry()

@@ -8,7 +8,7 @@
         </div>
 
         <div v-else>
-          <img class="align-end text-white" height="300" src="~/assets/images/coming_soon.png" cover />
+          <img class="align-end text-white" height="300" src="../../assets/images/coming_soon.png" cover />
         </div>
         <v-card-title class="pt-4">{{ character?.name }}</v-card-title>
         <v-card-subtitle v-if="character?.type === 'Individual'">{{ character?.alias }}</v-card-subtitle>
