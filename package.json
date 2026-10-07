@@ -43,7 +43,8 @@
     "@better-auth/utils": "0.4.2",
     "better-auth": "1.6.23",
     "drizzle-orm": "1.0.0-rc.4",
-    "flat": "^6.0.1"
+    "flat": "^6.0.1",
+    "nuxt": "^4.6.0"
   },
   "overrides": {
     "three": "^0.185.0",
