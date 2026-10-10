@@ -124,8 +124,37 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
     }
   }
 
+  /**
+   * Order/product figures from the seller's real Webkul data; reviews,
+   * spaces and shipments have no Magento source here, so they keep the
+   * fallback's figures like the rest of those domains do.
+   */
   async getStats(params?: SellerListParams) {
-    return this.fallback.getStats(params)
+    const base = await this.fallback.getStats(params)
+    const customerId = await this.resolveMagentoCustomerId(params?.sellerId)
+    if (!customerId) return base
+
+    const [orders, products] = await Promise.all([
+      this.magento.seller.getSellerOrders(customerId, this.credentials) as Promise<SellerOrder[]>,
+      this.magento.seller.getSellerProducts(customerId, this.credentials) as Promise<SellerProduct[]>,
+    ])
+
+    const recentOrders = [...(orders ?? [])].sort((a, b) => String(b.placed).localeCompare(String(a.placed)))
+
+    return {
+      ...base,
+      orders: {
+        total: orders?.length ?? 0,
+        unfulfilled: (orders ?? []).filter((order) => order.fulfillmentStatus === 'unfulfilled').length,
+        totalRevenue: (orders ?? []).reduce((sum, order) => sum + (Number(order.total) || 0), 0),
+      },
+      products: {
+        total: products?.length ?? 0,
+        active: (products ?? []).filter((product) => product.status === 'active').length,
+        outOfStock: (products ?? []).filter((product) => Number(product.stock) <= 0).length,
+      },
+      recentOrders: recentOrders.slice(0, 5),
+    }
   }
 
   /**
