@@ -1,3 +1,4 @@
+import { computed } from 'vue'
 import { useTheme } from 'vuetify'
 
 // State and theme for the `workspace` layout (the Berry admin chrome used by
@@ -7,6 +8,9 @@ import { useTheme } from 'vuetify'
 export const WORKSPACE_THEME = 'workspace'
 
 export function useWorkspaceCustomizer() {
+  // Open by default; VerticalSidebar renders SSR as desktop and only applies
+  // its `lg` mobile breakpoint after mount, so on small screens Vuetify flips
+  // the drawer to temporary and closes it.
   const sidebarDrawer = useState('workspace:sidebar-drawer', () => true)
   const customizerDrawer = useState('workspace:customizer-drawer', () => false)
   const miniSidebar = useState('workspace:mini-sidebar', () => false)
@@ -78,4 +82,28 @@ export interface WorkspaceMenu {
   disabled?: boolean
   type?: 'external'
   subCaption?: string
+}
+
+// The bits of the better-auth session user the workspace header shows.
+export interface WorkspaceUser {
+  id?: string
+  name?: string
+  username?: string
+  email?: string
+  image?: string
+}
+
+/**
+ * Signed-in user for the workspace header, via a relative request-aware fetch
+ * (forwards the cookie on SSR) — the same approach as layers/auth's route
+ * middleware. Call it from the layout, not from a component inside <v-app>:
+ * a pending useAsyncData defers that component's SSR render past its
+ * siblings, so Vuetify layout items inside it (app bar, drawer) register too
+ * late and <v-main> is rendered without their offsets.
+ */
+export function useWorkspaceSession() {
+  const { data } = useAsyncData('workspace:session', () =>
+    useRequestFetch()<{ user?: WorkspaceUser } | null>('/api/auth/get-session').catch(() => null)
+  )
+  return computed(() => data.value?.user ?? null)
 }

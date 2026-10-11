@@ -1,10 +1,44 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import { fileURLToPath } from 'node:url'
+
+// This layer's app/ dir (no __dirname: this config loads as an ES module)
+const layerApp = fileURLToPath(new URL('./app', import.meta.url))
+
 export default defineNuxtConfig({
   $meta: {
     name: 'search',
     description: 'Federated search layer for the M Framework',
   },
+
+  modules: [
+    // Headless mode: an app that has its own search UI sets
+    //   appConfig: { search: { ui: false } }
+    // and keeps only /api/search + the providers. This drops the layer's
+    // pages, layouts and (InstantSearch) plugins: the pages/layout import
+    // #social / #commerce components, so apps that don't extend those
+    // layers can't build them.
+    (_options: unknown, nuxt: any) => {
+      if (nuxt.options.appConfig?.search?.ui !== false) return
+      nuxt.hook('pages:extend', (pages: Array<{ file?: string }>) => {
+        for (let i = pages.length - 1; i >= 0; i--) {
+          if (pages[i]!.file?.startsWith(`${layerApp}/pages/`)) pages.splice(i, 1)
+        }
+      })
+      nuxt.hook('app:resolve', (app: { layouts: Record<string, { file: string }>, plugins: Array<{ src: string }> }) => {
+        for (const [name, layout] of Object.entries(app.layouts)) {
+          if (layout.file.startsWith(`${layerApp}/layouts/`)) delete app.layouts[name]
+        }
+        // The vue-instantsearch plugin only serves the dropped UI — and its
+        // algoliasearch-helper dependency breaks production SSR ("Object
+        // prototype may only be an Object or null" from its CJS
+        // require('events') interop) on every page.
+        for (let i = app.plugins.length - 1; i >= 0; i--) {
+          if (app.plugins[i]!.src.startsWith(`${layerApp}/plugins/`)) app.plugins.splice(i, 1)
+        }
+      })
+    },
+  ],
 
   devtools: {
     enabled: true
@@ -145,6 +179,20 @@ export default defineNuxtConfig({
         // second set just for search.
         identifier: process.env.ALTERNATE_SEARCH_ATPROTO_IDENTIFIER || process.env.ATPROTO_IDENTIFIER || '',
         password: process.env.ALTERNATE_SEARCH_ATPROTO_PASSWORD || process.env.ATPROTO_APP_PASSWORD || '',
+      },
+      // Directus CMS content, queried live (server/providers/directus.ts).
+      // Off unless an app turns it on, because each app's Directus has its
+      // own collections — list them in the app's nuxt.config:
+      //   runtimeConfig: { searchProviders: { directus: { enabled: true,
+      //     collections: [{ collection: 'characters', type: 'character',
+      //       titleField: 'name', descriptionField: 'description',
+      //       imageField: 'image', path: '/characters/{slug}' }] } } }
+      // Without `collections` it searches Meeovi's spaces/posts/shops. Uses
+      // the server-only Directus token when there is one, else Directus's
+      // public role.
+      directus: {
+        enabled: process.env.ALTERNATE_SEARCH_DIRECTUS_ENABLED === 'true',
+        collections: [],
       },
       // To add a new backend, prefer a plugin (see
       // packages/plugins/Search/search-algolia): a Nuxt module that sets

@@ -12,8 +12,9 @@ import { defineNuxtConfig } from 'nuxt/config'
 const envUrl = (value?: string) => value?.trim().replace(/^(['"])(.*)\1$/, '$2').trim() || undefined
 
 const layers = useLayers(__dirname, {
-  //shared: '../../../layers/shared',
-  //auth: '../../../layers/auth',
+  shared: '../../../layers/shared',
+  auth: '../../../layers/auth',
+  search: '../../../layers/search',
   ui: '../../../layers/ui-shell'
 })
 
@@ -65,6 +66,9 @@ export default defineNuxtConfig({
   appConfig: {
     // ui-shell renders layers/ui-shell/app/layouts/elitenovels.vue as this app's default layout
     uiShell: { layout: 'elitenovels' },
+    // Use layers/search headless: its /api/search + providers, with this
+    // app's own search box (components/search/search.vue) and /results page.
+    search: { ui: false },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Pixanomy'}`
   },
 
@@ -152,6 +156,30 @@ export default defineNuxtConfig({
   // the browser — never put credentials here. The site reads Directus
   // anonymously, so no admin email/password/token is needed at all.
   runtimeConfig: {
+    // Site search (layers/search /api/search) queries the novels Directus
+    // live, so new characters/pages are searchable as soon as they're
+    // published — no crawler or index to wait for. Every other backend is
+    // off: they index Meeovi's catalogue, not Elite Novels content.
+    searchProviders: {
+      directus: {
+        enabled: true,
+        collections: [
+          { collection: 'characters', type: 'character', titleField: 'name', descriptionField: 'description', imageField: 'image', path: '/characters/{slug}' },
+          { collection: 'options', type: 'facet', titleField: 'name', descriptionField: 'description', imageField: 'image', path: '/facet/{slug}' },
+          { collection: 'stories', type: 'story', titleField: 'name', descriptionField: 'description', imageField: 'image', path: '/story/{slug}' },
+          { collection: 'categories', type: 'category', titleField: 'name', descriptionField: 'description', imageField: 'image', statusField: null, path: '/characters/category/{slug}' },
+          { collection: 'pages', type: 'page', titleField: 'name', descriptionField: 'content', imageField: 'image', path: '/{slug}' },
+        ],
+      },
+      opensearch: { enabled: false },
+      postgres: { enabled: false },
+      mysql: { enabled: false },
+      magento: { enabled: false },
+      database: { enabled: false },
+      memory: { enabled: false },
+      atproto: { enabled: false },
+    },
+
     public: {
       // Directus
       directus: {

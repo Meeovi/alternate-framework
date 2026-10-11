@@ -110,6 +110,38 @@ on every request.
 | `ALTERNATE_SEARCH_MYSQL_ID_COLUMN`   | `id`                |
 | `ALTERNATE_SEARCH_MYSQL_COLUMNS`     | `title,description` |
 
+### Directus
+
+`server/providers/directus.ts` queries Directus live with its built-in `search`
+parameter, so newly published content is searchable immediately (no sync or
+index). It is **off unless the app enables it**, because every app's Directus
+has different collections. List them in the app's `nuxt.config.ts`:
+
+```ts
+runtimeConfig: {
+  searchProviders: {
+    directus: {
+      enabled: true,
+      collections: [
+        // path: the in-app link for a hit ({slug} / {id} filled from the row)
+        { collection: 'characters', type: 'character', titleField: 'name',
+          descriptionField: 'description', imageField: 'image', path: '/characters/{slug}' },
+        // statusField: null for collections without a `status` field
+        { collection: 'categories', type: 'category', titleField: 'name', statusField: null,
+          path: '/characters/category/{slug}' },
+      ],
+    },
+  },
+},
+```
+
+Without `collections` it searches Meeovi's `spaces` / `posts` / `shops`. Rows
+whose status is draft/archived/hidden/deleted/... (any casing) are excluded.
+Hits are ranked by title match (exact > prefix > contains > text-only). The URL
+comes from `runtimeConfig.public.directus.url`; the token from the server-only
+`runtimeConfig.directus.token` when set, otherwise Directus's public role is
+used. `ALTERNATE_SEARCH_DIRECTUS_ENABLED=true` also enables it.
+
 ## Adding a new backend
 
 The provider contract is intentionally small, so wiring in another backend
@@ -146,6 +178,18 @@ shared contract, so none of them need to change.
 - **`app/composables/useInstantSearchWidgets.ts`**, **`app/pages/results.vue`**,
   **`app/components/{searchBar,filters/filters,SearchWrapper}.vue`** — the
   InstantSearch UI itself.
+
+### Headless mode
+
+An app with its own search UI can use just `/api/search` and the providers:
+
+```ts
+appConfig: { search: { ui: false } }
+```
+
+This drops the layer's `/search` + `/results` pages and its `search` layout from
+the app's build. Those import `#social` / `#commerce` components, so apps that
+don't extend those layers (e.g. elitenovels) need this to build.
 
 ## Troubleshooting
 

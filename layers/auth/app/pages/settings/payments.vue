@@ -71,6 +71,6 @@ function brandIcon(brand: string): string {
 }
 
   definePageMeta({
-    layout: 'settings'
+    layout: 'workspace'
   })
 </script>

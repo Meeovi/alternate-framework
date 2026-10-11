@@ -345,6 +345,6 @@
     onMounted(loadOrganizations);
 
     definePageMeta({
-      layout: 'settings'
+      layout: 'workspace'
     })
 </script>

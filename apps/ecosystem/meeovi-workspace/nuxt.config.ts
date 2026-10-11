@@ -76,13 +76,35 @@ export default defineNuxtConfig({
   appConfig: {
     // ui-shell renders layers/ui-shell/app/layouts/workspace.vue (the Berry
     // admin chrome) as this app's default layout
-    uiShell: { layout: 'workspace' },
+    uiShell: {
+      layout: 'workspace',
+      // Directus `navigation` record ids for the sidebar, one section each,
+      // in order (see layers/ui-shell/app/composables/useWorkspaceSidebar.ts)
+      workspaceSidebar: [139, 140, 141, 142, 143, 144, 145, 14],
+    },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Meeovi Workspace'}`
   },
 
+  css: [
+    'assets/styles/social.css',
+    'assets/styles/mobile.css',
+    'assets/styles/styles.css',
+    'assets/styles/search.css',
+    'assets/styles/auth.css',
+  ],
+
   modules: [
     '@pinia/nuxt',
+    resolve(__dirname, '../../../packages/plugins/Marketing-SEO/meeovi-tables/module.ts'), // TEMP-TABLES
   ],
+
+  // TEMP-TABLES (test config)
+  meeoviTables: {
+    collections: {
+      products: { label: 'Products', access: 'public', fields: ['id', 'sku', 'name', 'price', 'stock', 'status', 'date_created'] },
+      spaces: { label: 'Spaces' },
+    },
+  },
 
   pinia: {
     storesDirs: ['/app/stores/**'],

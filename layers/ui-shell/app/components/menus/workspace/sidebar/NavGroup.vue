@@ -5,5 +5,5 @@ defineProps<{ item: WorkspaceMenu }>()
 </script>
 
 <template>
-  <v-list-subheader color="darkText" class="smallCap">{{ item.header }}</v-list-subheader>
+  <v-list-subheader color="darkText" class="smallCap hide-menu">{{ item.header }}</v-list-subheader>
 </template>

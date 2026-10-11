@@ -180,9 +180,9 @@ body {
 
 /********************* Search CSS ****************/
 
+/* The search dialog (components/search/search.vue) sizes itself; the old
+   90vw x 90vh rule was for the Google Programmable Search widget. */
 .searchCard {
-    width: 90vw !important;
-    height: 90vh !important;
     position: relative;
 }
 /******************* Cards *********/

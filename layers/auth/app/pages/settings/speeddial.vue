@@ -49,6 +49,6 @@ import { useHead } from 'nuxt/app';
     })
 
     definePageMeta({
-      layout: 'settings'
+      layout: 'workspace'
     })
 </script>

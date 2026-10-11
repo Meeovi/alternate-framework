@@ -138,6 +138,11 @@ const link = computed(() => {
     return { href: String(externalUrl), external: true }
   }
 
+  // An explicit in-app path from the provider (e.g. the Directus provider's
+  // per-collection `path` template) wins over the type-based builders.
+  const path = props.item.path
+  if (typeof path === 'string' && path.startsWith('/')) return { href: path, external: false }
+
   const builder = ROUTE_BUILDERS[type.value ?? 'product'] ?? ROUTE_BUILDERS.product!
   const href = builder(props.item)
   return href ? { href, external: false } : null

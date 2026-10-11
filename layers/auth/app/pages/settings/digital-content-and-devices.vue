@@ -133,6 +133,6 @@
     })
 
     definePageMeta({
-      layout: 'settings'
+      layout: 'workspace'
     })
 </script>

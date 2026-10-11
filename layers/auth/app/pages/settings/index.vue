@@ -78,7 +78,7 @@
         title: 'Settings Center',
     })
 
-    definePageMeta({
-      layout: 'settings'
-    })
+definePageMeta({
+  layout: 'workspace'
+})
 </script>

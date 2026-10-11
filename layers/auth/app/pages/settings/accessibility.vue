@@ -541,6 +541,6 @@ onMounted(async () => {
   })
 
   definePageMeta({
-    layout: 'settings'
+    layout: 'workspace'
   })
 </script>

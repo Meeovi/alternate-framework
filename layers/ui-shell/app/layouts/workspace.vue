@@ -8,8 +8,8 @@
         :class="['workspace-shell', fontTheme, miniSidebar ? 'mini-sidebar' : '', inputBg ? 'inputWithbg' : '']"
       >
         <Customizer />
-        <VerticalSidebar />
-        <VerticalHeader />
+        <VerticalSidebar :sidebar-menu="sidebarMenu" />
+        <VerticalHeader :user="user" />
 
         <v-main>
           <v-container fluid class="page-wrapper">
@@ -45,6 +45,13 @@
   import FooterPanel from '../components/menus/workspace/FooterPanel.vue'
 
   const themeName = useWorkspaceTheme()
+
+  // Data for the chrome is fetched here, above <v-app>, so the whole layout
+  // renders once it's ready. Fetching inside VerticalSidebar/VerticalHeader
+  // deferred their SSR render past <v-main>, which then missed the drawer /
+  // app bar offsets (hydration mismatch + content jump).
+  const sidebarMenu = useWorkspaceSidebar()
+  const user = useWorkspaceSession()
   const { customizerDrawer, miniSidebar, fontTheme, inputBg } = useWorkspaceCustomizer()
 
   // Berry's createVuetify() defaults, scoped to this layout.

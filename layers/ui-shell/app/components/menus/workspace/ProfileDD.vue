@@ -1,10 +1,11 @@
 <script setup lang="ts">
-// Session via a relative, request-aware fetch (forwards the cookie on SSR) —
-// the same approach as layers/auth's route middleware.
-const { data: session } = await useAsyncData('workspace:session', () =>
-  useRequestFetch()<{ user?: { id?: string, name?: string, username?: string, email?: string, image?: string } } | null>('/api/auth/get-session').catch(() => null)
-)
-const user = computed(() => session.value?.user)
+import type { WorkspaceUser } from '../../../composables/useWorkspaceShell'
+
+// No data fetching here: this renders inside the v-menu, which mounts it only
+// when opened — an async setup there left the menu blank (0px tall) until the
+// session request finished, on every open. VerticalHeader fetches the session.
+const props = defineProps<{ user?: WorkspaceUser | null }>()
+const user = computed(() => props.user)
 
 const greeting = computed(() => {
   const h = new Date().getHours()
@@ -13,6 +14,7 @@ const greeting = computed(() => {
 
 async function logout() {
   await useAuth().signOut()
+  clearNuxtData('workspace:session')
   await navigateTo('/login')
 }
 </script>

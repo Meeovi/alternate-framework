@@ -71,7 +71,7 @@
             
         </div>
         <div class="row mt-4">
-            <div class="item features-image col-12 col-md-6 col-lg-4">
+            <div class="item features-image col-12 col-md-6 col-lg-4" v-for="career in careersGrid" :key="career?.id">
                 <div class="item-wrapper">
                     <div class="item-img">
                         <img :src="career?.image" :alt="career?.title">
@@ -83,7 +83,7 @@
                         </h6>
                         <p class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="career?.description"></p>
                     </div>
-                    <div class="mbr-section-btn item-footer mt-2"><NuxtLink :to="`/listing/${career.id}`" class="btn btn-primary item-btn display-7" target="_blank">View Details
+                    <div class="mbr-section-btn item-footer mt-2"><NuxtLink :to="`/listing/${career?.id}`" class="btn btn-primary item-btn display-7" target="_blank">View Details
                             &gt;</NuxtLink></div>
                 </div>
             </div>

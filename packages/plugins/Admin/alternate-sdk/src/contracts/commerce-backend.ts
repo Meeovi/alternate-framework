@@ -54,7 +54,14 @@ export function getCommerceBackendAdapter(name?: string): CommerceBackendAdapter
   return name ? registry.get(name) : undefined
 }
 
+/** Every registered adapter, in registration order (e.g. to discover which
+ *  installed adapter-* packages can serve a collection). */
+export function listCommerceBackendAdapters(): CommerceBackendAdapter[] {
+  return [...registry.values()]
+}
+
 export const CommerceBackendRegistry = {
   register: registerCommerceBackendAdapter,
   get: getCommerceBackendAdapter,
+  list: listCommerceBackendAdapters,
 }

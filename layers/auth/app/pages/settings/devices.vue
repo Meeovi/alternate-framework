@@ -216,7 +216,7 @@ const copyToClipboard = () => {
 }
 
   definePageMeta({
-    layout: 'settings'
+    layout: 'workspace'
   })
 </script>
 

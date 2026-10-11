@@ -467,6 +467,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     redisUrl: process.env.NUXT_REDIS_URL || 'redis://localhost:6379',
+    googleAdClientId: process.env.NUXT_GOOGLE_ADSENSE_CLIENT_ID || '',
+    googleAdSlotId: process.env.NUXT_GOOGLE_ADSENSE_SLOT_ID || '',
     mframework: {
       auth: '~/auth/authImplementation',
       user: '~/auth/currentUser'

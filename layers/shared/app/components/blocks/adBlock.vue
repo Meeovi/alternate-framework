@@ -1,18 +1,23 @@
 <template>
   <div class="ad-container">
-    <ins
+    <div
       class="adsbygoogle"
       style="display:block"
-      data-ad-client="ca-pub-3854548303717312"
-      data-ad-slot="1973416747"
+      :data-ad-client="adClient"
+      :data-ad-slot="adSlot"
       data-ad-format="auto"
       data-full-width-responsive="true"
-    ></ins>
+    ></div>
   </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
+
+const config = useRuntimeConfig()
+
+const adClient = `${config.googleAdClientId}`
+const adSlot = `${config.googleAdSlotId}`
 
 onMounted(() => {
   try {
@@ -22,3 +27,12 @@ onMounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.ad-container {
+  margin: 20px 0;
+  text-align: center;
+  width: 100%;
+  background-color: transparent;
+}
+</style>

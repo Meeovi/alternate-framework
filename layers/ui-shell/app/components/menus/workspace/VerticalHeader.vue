@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import ProfileDD from './ProfileDD.vue'
+import type { WorkspaceUser } from '../../../composables/useWorkspaceShell'
 import Searchbar from './SearchBarPanel.vue'
 
 const { sidebarDrawer, miniSidebar } = useWorkspaceCustomizer()
 const showSearch = ref(false)
+
+// Fetched by the layout (useWorkspaceSession) — see the note there.
+defineProps<{ user?: WorkspaceUser | null }>()
 </script>
 
 <template>
@@ -63,13 +67,14 @@ const showSearch = ref(false)
       <template #activator="{ props }">
         <v-btn class="profileBtn text-primary" color="lightprimary" variant="flat" rounded="pill" v-bind="props">
           <v-avatar size="30" class="mr-2 py-2">
-            <img src="../../../assets/workspace/user-round.svg" alt="Profile" width="30">
+            <img v-if="user?.image" :src="user.image" :alt="user.name || 'Profile'" width="30">
+            <img v-else src="../../../assets/workspace/user-round.svg" alt="Profile" width="30">
           </v-avatar>
           <v-icon icon="fas fa-gear" size="18" />
         </v-btn>
       </template>
       <v-sheet rounded="md" width="330" elevation="12">
-        <ProfileDD />
+        <ProfileDD :user="user" />
       </v-sheet>
     </v-menu>
   </v-app-bar>
