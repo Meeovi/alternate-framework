@@ -1,6 +1,8 @@
 import type { IColumnConfig } from '@svar-ui/vue-grid'
 import type { MeeoviTableField } from '../types'
 
+const IDENTIFIER = /(^id$|_id$|^sku$|_sku$|code|ean|upc|isbn|gtin|barcode|zip|postal|phone)/i
+
 function plain(value: unknown) {
   return String(value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
 }
@@ -20,7 +22,9 @@ function display(value: unknown, field: MeeoviTableField): string {
   switch (field.type) {
     case 'number': {
       const n = Number(value)
-      return Number.isFinite(n) ? n.toLocaleString() : String(value)
+      if (!Number.isFinite(n)) return String(value)
+      // Identifiers (SKUs, ids, codes, barcodes) stay as-is — no separators.
+      return IDENTIFIER.test(field.field) ? String(value).replace(/\.0+$/, '') : n.toLocaleString()
     }
     case 'boolean': return value ? 'Yes' : 'No'
     case 'date': return formatDate(value, false)

@@ -10,6 +10,9 @@ export interface MeeoviTableCollectionOptions {
   label?: string
   /** 'authenticated' (default) requires a signed-in session. */
   access?: MeeoviTableAccess
+  /** Also require one of these roles (better-auth `user.role`, comma-separated,
+   *  e.g. ['admin', 'seller']). Implies access 'authenticated'. */
+  roles?: string[]
   /** Only these fields are ever returned (recommended for anything sensitive). */
   fields?: string[]
   /** Force a source id ('directus', 'magento', ...); default 'auto'. */

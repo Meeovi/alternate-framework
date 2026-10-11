@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { Grid, HeaderMenu, Willow } from '@svar-ui/vue-grid'
-import { Pager, Select, Text } from '@svar-ui/vue-core'
+import { computed, nextTick, provide, ref, watch } from 'vue'
+import { Grid, HeaderMenu } from '@svar-ui/vue-grid'
+import { Locale, Pager, Select, Text } from '@svar-ui/vue-core'
 import type { IColumnConfig } from '@svar-ui/vue-grid'
 import '@svar-ui/vue-grid/all.css'
 import '@svar-ui/vue-core/all.css'
@@ -28,6 +28,8 @@ const props = withDefaults(defineProps<{
   hide?: string[]
   /** Show the title / search / source bar. */
   toolbar?: boolean
+  /** SVAR locale words (e.g. from @svar-ui/core-locales); default English. */
+  words?: Record<string, any>
 }>(), {
   height: '560px',
   toolbar: true,
@@ -51,6 +53,14 @@ const sortMarks = computed(() => {
   const desc = sort.value.startsWith('-')
   return { [desc ? sort.value.slice(1) : sort.value]: { order: desc ? 'desc' : 'asc' } }
 })
+// The grid resets its sort marks whenever it receives new data — i.e. after
+// every server-side sort — so re-apply them once the new rows are in. This
+// only sets display state; the rows already arrive sorted.
+watch([rows, sortMarks], async () => {
+  await nextTick()
+  api.value?.getStores?.()?.data?.setState?.({ sortMarks: sortMarks.value })
+}, { flush: 'post' })
+
 const sourceOptions = computed(() => sources.value.map((s) => ({ id: s.id, label: s.label })))
 
 // Search box → server search, debounced.
@@ -70,6 +80,8 @@ function init(grid: any) {
     sort.value = order === 'desc' ? `-${ev.key}` : ev.key
     return false
   })
+  // Through the API: the :onselectrow prop callback doesn't fire here.
+  grid.on('select-row', onSelectRow)
 }
 
 function onSelectRow(ev: { id: string | number }) {
@@ -77,22 +89,62 @@ function onSelectRow(ev: { id: string | number }) {
   if (row) emit('select', row)
 }
 
-function onPage(ev: { value: number }) {
-  page.value = ev.value
+// Explicit handlers: the refs are destructured from useMeeoviTable(), and
+// template assignments / v-model to such bindings don't reach `.value`.
+function onSource(ev: { value: string | number }) {
+  source.value = String(ev.value)
 }
+
+// Pager: its `value` model is the page, its `pageSize` model the rows per
+// page (its onchange reports either as `value`, so it isn't used).
+function onPage(value: number) {
+  page.value = Number(value) || 1
+}
+
+function onPageSize(value: number) {
+  const size = Math.trunc(Number(value))
+  if (size > 0) pageSize.value = size
+}
+
+// Willow theme without SVAR's <Willow> component: that component always
+// renders a <Teleport to="head"> (for its fonts, even with fonts off), and
+// Nuxt's SSR doesn't render head teleports in place — a hydration mismatch
+// on every page. What the theme does is just this context + the
+// `wx-theme wx-willow-theme` wrapper class (template), which SVAR's CSS
+// variables hang off. The fonts it would inject come from useHead below,
+// rendered identically on server and client; wx-icons supplies the
+// search / pager / sort-mark icons.
+provide('wx-theme', 'willow')
+
+useHead({
+  link: [
+    { rel: 'preconnect', href: 'https://cdn.svar.dev', crossorigin: '' },
+    { rel: 'stylesheet', href: 'https://cdn.svar.dev/fonts/wxi/wx-icons.css', key: 'svar-wx-icons' },
+  ],
+  style: [{
+    key: 'svar-open-sans',
+    textContent: [400, 500, 600, 700].map((w) => {
+      const file = w === 400 ? 'regular' : w
+      return `@font-face{font-family:'Open Sans';font-style:normal;font-weight:${w};src:local(''),url('https://cdn.svar.dev/fonts/open-sans/${file}.woff2') format('woff2'),url('https://cdn.svar.dev/fonts/open-sans/${file}.woff') format('woff')}`
+    }).join(''),
+  }],
+})
 
 defineExpose({ refresh: table.refresh, api })
 </script>
 
 <template>
-  <Willow>
+  <!-- Locale provides the `wx-i18n` context the core controls (Pager, Select,
+       Text) need outside the Grid; it renders no DOM of its own. -->
+  <Locale :words="words">
+  <div class="wx-theme wx-willow-theme">
     <div class="meeovi-table" :style="{ height }">
       <div v-if="toolbar" class="meeovi-table__bar">
         <strong class="meeovi-table__title">{{ label }}</strong>
         <span class="meeovi-table__count">{{ total.toLocaleString() }} rows</span>
         <div class="meeovi-table__spacer" />
         <div v-if="sourceOptions.length > 1" class="meeovi-table__source">
-          <Select :options="sourceOptions" :value="activeSource" :onchange="(ev: any) => (source = String(ev.value))" />
+          <Select :options="sourceOptions" :value="activeSource" :onchange="onSource" />
         </div>
         <div class="meeovi-table__search">
           <Text v-model:value="searchInput" placeholder="Search…" icon="wxi-search" css="wx-icon-left" clear />
@@ -109,19 +161,18 @@ defineExpose({ refresh: table.refresh, api })
             ref="api"
             :data="rows"
             :columns="columns"
-            :sort-marks="sortMarks"
             :init="init"
-            :onselectrow="onSelectRow"
             :overlay="!pending && !rows.length ? 'No rows' : undefined"
           />
         </HeaderMenu>
       </div>
 
       <div class="meeovi-table__pager">
-        <Pager :total="total" :value="page" v-model:page-size="pageSize" :onchange="onPage" />
+        <Pager :total="total" :value="page" :page-size="pageSize" @update:value="onPage" @update:page-size="onPageSize" />
       </div>
     </div>
-  </Willow>
+  </div>
+  </Locale>
 </template>
 
 <style>

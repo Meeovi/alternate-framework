@@ -95,14 +95,33 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
-    resolve(__dirname, '../../../packages/plugins/Marketing-SEO/meeovi-tables/module.ts'), // TEMP-TABLES
+    '@mframework/meeovi-tables',
   ],
 
-  // TEMP-TABLES (test config)
+  // @mframework/meeovi-tables — <MeeoviTable collection="…" /> and
+  // GET /api/tables/:collection. Only these collections are readable; rows
+  // come from an installed adapter (adapter-magento: products, orders) or
+  // Directus, columns from Directus. Grouped like the workspace sidebar.
   meeoviTables: {
     collections: {
-      products: { label: 'Products', access: 'public', fields: ['id', 'sku', 'name', 'price', 'stock', 'status', 'date_created'] },
-      spaces: { label: 'Spaces' },
+      // Sales — admin only
+      orders: { label: 'Orders', roles: ['admin'], sort: '-id' },
+      invoices: { label: 'Invoices', roles: ['admin'], sort: '-id' },
+      transactions: { label: 'Transactions', roles: ['admin'], sort: '-id' },
+      // Catalog — admins and sellers
+      products: { label: 'Products', roles: ['admin', 'seller'], sort: 'name' },
+      brands: { label: 'Brands', roles: ['admin', 'seller'], sort: 'name' },
+      departments: { label: 'Departments', roles: ['admin', 'seller'], sort: 'name' },
+      categories: { label: 'Categories', roles: ['admin', 'seller'], sort: 'name' },
+      attributes: { label: 'Attributes', roles: ['admin', 'seller'] },
+      // Content — admin only
+      pages: { label: 'Pages', roles: ['admin'] },
+      posts: { label: 'Posts', roles: ['admin'] },
+      spaces: { label: 'Spaces', roles: ['admin'] },
+      lists: { label: 'Lists', roles: ['admin'] },
+      tags: { label: 'Tags', roles: ['admin'] },
+      // Marketing — admin only
+      newsletters: { label: 'Newsletters', roles: ['admin'] },
     },
   },
 

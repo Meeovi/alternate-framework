@@ -44,7 +44,7 @@ export default defineEventHandler(async (event): Promise<MeeoviTableResponse> =>
     throw createError({ statusCode: 503, statusMessage: `No data source can serve "${collection}" — install an adapter or configure Directus` })
   }
   const requested = (typeof q.source === 'string' && q.source) || options.source || 'auto'
-  const source = requested === 'auto' ? available[0]! : available.find((s) => s.id === requested)
+  let source = requested === 'auto' ? available[0]! : available.find((s) => s.id === requested)
   if (!source) {
     throw createError({ statusCode: 400, statusMessage: `Source "${requested}" can't serve "${collection}" (available: ${available.map((s) => s.id).join(', ')})` })
   }
@@ -71,11 +71,23 @@ export default defineEventHandler(async (event): Promise<MeeoviTableResponse> =>
   const sortKey = rawSort.replace(/^-/, '')
   const sort = sortKey && (!fields || fields.includes(sortKey)) && NAME.test(sortKey) ? rawSort : undefined
 
+  // In 'auto' mode a failing source falls through to the next one (ending
+  // at Directus); an explicitly requested source reports its own error.
+  const candidates = requested === 'auto' ? available : [source]
   let result
-  try {
-    result = await source.list({ collection, page, pageSize, sort, search, fields })
-  } catch (error: any) {
-    throw createError({ statusCode: 502, statusMessage: `${source.label} couldn't load "${collection}": ${error?.statusMessage || error?.message || 'request failed'}` })
+  let lastError: any
+  for (const candidate of candidates) {
+    try {
+      result = await candidate.list({ collection, page, pageSize, sort, search, fields })
+      source = candidate
+      break
+    } catch (error: any) {
+      lastError = error
+      console.warn(`[meeovi-tables] ${candidate.id} couldn't load "${collection}":`, error?.message || error)
+    }
+  }
+  if (!result) {
+    throw createError({ statusCode: 502, statusMessage: `${source.label} couldn't load "${collection}": ${lastError?.statusMessage || lastError?.message || 'request failed'}` })
   }
 
   const rows = result.rows.map((row) => {

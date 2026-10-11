@@ -14,6 +14,7 @@
     "lint": "echo \"[lint] ESLint disabled repo-wide\""
   },
   "dependencies": {
+    "@mframework/meeovi-tables": "file:../../../packages/plugins/Marketing-SEO/meeovi-tables",
     "@mframework/ui-shell": "file:../../../layers/ui-shell",
     "@pinia/nuxt": "^1.0.2",
     "apexcharts": "3.45.2",
