@@ -25,20 +25,20 @@ const props = withDefaults(defineProps<{
   showCount?: boolean
 }>(), { readonly: false, summary: false, size: 'small', showCount: true })
 
-const { summary, signedIn, saving, rate, clear } = useRating(() => props.type, () => props.id)
+const { summary: stats, signedIn, saving, rate, clear } = useRating(() => props.type, () => props.id)
 const config = useRuntimeConfig().public.meeoviRatings as MeeoviRatingsPublicConfig | undefined
 
-const average = computed(() => summary.value?.average ?? 0)
-const count = computed(() => summary.value?.count ?? 0)
-const mine = computed(() => summary.value?.mine ?? null)
-const interactive = computed(() => !props.readonly && !props.summary && Boolean(summary.value?.canRate))
+const average = computed(() => stats.value?.average ?? 0)
+const count = computed(() => stats.value?.count ?? 0)
+const mine = computed(() => stats.value?.mine ?? null)
+const interactive = computed(() => !props.readonly && !props.summary && Boolean(stats.value?.canRate))
 
 // Interactive: your rating (or empty). Otherwise: the average, in halves.
 const value = computed(() => (interactive.value ? (mine.value ?? 0) : average.value))
 
 const hint = computed(() => {
   if (props.readonly) return ''
-  if (summary.value?.own) return "You can't rate your own content"
+  if (stats.value?.own) return "You can't rate your own content"
   if (!signedIn.value) return 'Sign in to rate'
   return mine.value ? `Your rating: ${mine.value} — click it again to remove` : 'Rate this'
 })
@@ -78,7 +78,7 @@ async function onUpdate(v: number | string) {
       @update:model-value="onUpdate"
     />
     <span v-if="showCount" class="meeovi-rating__count">{{ label }}</span>
-    <a v-if="!readonly && !signedIn && summary" :href="config?.loginPath || '/login'" class="meeovi-rating__signin">Sign in to rate</a>
+    <a v-if="!readonly && !signedIn && stats" :href="config?.loginPath || '/login'" class="meeovi-rating__signin">Sign in to rate</a>
   </span>
 </template>
 

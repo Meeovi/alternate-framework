@@ -12,7 +12,7 @@
                             <v-col cols="12">
                                 <v-card color="#952175">
                                     <div class="d-flex flex-no-wrap justify-space-between">
-                                        <div>
+                                        <div class="flex-grow-1" style="min-width: 0">
                                             <v-card-title class="text-headline-small">
                                                 {{ station?.file?.title }}
                                             </v-card-title>
@@ -23,11 +23,11 @@
                                                 <MeeoviRating v-if="station?.id" type="station" :id="station.id" />
                                             </div>
 
-                                            <v-card-actions>
+                                            <div class="pa-4">
                                                 <!-- Radio: live audio for "Live" stations, else the uploaded file (audio or video by its type) -->
                                                 <MeeoviPlayer :src="getAssetURL(station?.file)" :type="station?.file?.type"
                                                     :live="station?.type === 'Live'" :title="station?.name" />
-                                            </v-card-actions>
+                                            </div>
                                         </div>
 
                                         <v-avatar class="ma-3" rounded="0" size="125">
