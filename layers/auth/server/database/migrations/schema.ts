@@ -6420,7 +6420,7 @@ export const users = pgTable.withRLS("users", {
 	magentoCustomerId: bigint("magento_customer_id", { mode: 'number' }).unique(),
 	locale: varchar({ length: 10 }),
 	// AT Protocol (Bluesky) identity — populated by the "atproto" better-auth
-	// plugin (@mframework/adapter-federation/auth/plugin) on sign-in via a
+	// plugin (@mframework/meeovi-atproto/auth/plugin) on sign-in via a
 	// user's PDS handle + app password. did is the durable, never-changing
 	// identifier (used to look the user up on repeat logins); handle is
 	// refreshed on every sign-in since it can change on the user's own PDS.

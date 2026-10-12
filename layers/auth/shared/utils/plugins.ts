@@ -42,7 +42,7 @@ import {
   slack,
   patreon,
 } from 'better-auth/plugins'
-import { atprotoAuth } from '@mframework/adapter-federation/auth/plugin'
+import { atprotoAuth } from '@mframework/meeovi-atproto/auth/plugin'
 import { ac, admin, user, seller, myCustomRole } from './permissions'
 import { normalizeUsername } from './username'
 
@@ -319,7 +319,7 @@ export const plugins = [
   // user by the atprotoDid/atprotoHandle columns (see the
   // 20260901120000_add_atproto_identity migration and this file's
   // additionalFields above) and issues a normal better-auth session, same
-  // as every other plugin here. See @mframework/adapter-federation's
+  // as every other plugin here. See @mframework/meeovi-atproto's
   // src/auth/plugin.ts for the endpoint itself, and layers/social for the
   // read/post side of the same atproto integration
   // (AtprotoClient, in the same package).

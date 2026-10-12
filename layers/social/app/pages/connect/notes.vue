@@ -1,0 +1,208 @@
+<template>
+    <div class="contentPage">
+        <v-card variant="text">
+            <v-toolbar :style="`background-color: ${feedBar?.color}; color: ${feedBar?.colortext} !important`">
+                <v-toolbar-title>
+                    <div class="listsToolbarTitle">
+                        {{ feedsPage?.name }}
+                        <v-tooltip interactive>
+                            <template v-slot:activator="{ props: activatorProps }">
+                                <v-icon-btn size="small" icon="fas fa-circle-info" v-bind="activatorProps"></v-icon-btn>
+                            </template>
+                            <div>
+                                <p class="listsToolbarTooltip" v-dompurify-html="feedsPage?.content"></p>
+                            </div>
+                        </v-tooltip>
+                    </div>
+                </v-toolbar-title>
+
+                <v-tabs v-model="tab" align-tabs="center">
+                    <div v-for="(menu, index) in feedBar?.menus" :key="index">
+                        <v-tab :value="menu?.value">
+                            <v-btn variant="text"
+                                :style="`color: ${feedBar?.colortext} !important`">{{ menu?.name }}</v-btn>
+                        </v-tab>
+                    </div>
+                </v-tabs>
+
+                <FederationStatus check-atproto label="Federation" size="small" :show-label="false" />
+                <!--<LiveClock label="Live:" size="small" :show-controls="false" />-->
+            </v-toolbar>
+        </v-card>
+
+        <v-tabs-window v-model="tab">
+            <v-tabs-window-item :value="feedBar?.menus?.[0]?.value">
+                <div ref="postsScrollContainer" class="feed-scroll-container">
+                    <v-row class="media-container-row">
+                        <template v-if="posts?.length">
+                            <v-col class="wrap col-md-4 feedPost" v-for="post in posts" :key="post.id">
+                                <postCard :post="post" />
+                            </v-col>
+                        </template>
+                        <div class="center-text" v-else-if="!loadingPosts">No Activity yet</div>
+                    </v-row>
+                    <div v-if="loadingPosts" class="text-center py-4">
+                        <v-progress-circular indeterminate color="primary" size="24"></v-progress-circular>
+                    </div>
+                </div>
+            </v-tabs-window-item>
+            <v-tabs-window-item :value="feedBar?.menus?.[1]?.value">
+                <v-row class="media-container-row">
+                    <template v-if="posts?.length">
+                        <v-col class="wrap col-sm-12 col-md-4 feedPost" v-for="post in posts" :key="post.id">
+                            <postCard :post="post" />
+                        </v-col>
+                    </template>
+                    <div class="center-text" v-else>Not following anyone yet</div>
+                </v-row>
+            </v-tabs-window-item>
+            <v-tabs-window-item :value="feedBar?.menus?.[2]?.value">
+                <v-row class="media-container-row">
+                    <v-col class="wrap col-sm-12 col-md-4 feedPost" v-if="circles?.length"
+                        v-for="circlesPost in circles" :key="circlesPost.id">
+                        <postCard :post="circlesPost?.posts_id" />
+                    </v-col>
+
+                    <div class="center-text" v-else>No Circles yet</div>
+                </v-row>
+            </v-tabs-window-item>
+            <v-tabs-window-item :value="feedBar?.menus?.[3]?.value">
+                <v-row class="media-container-row">
+                    <template v-if="posts?.length">
+                        <v-col class="wrap col-sm-12 col-md-4 feedPost" v-for="post in posts" :key="post.id">
+                            <postCard :post="post" />
+                        </v-col>
+                    </template>
+                    <div class="center-text" v-else>No Activity yet</div>
+                </v-row>
+            </v-tabs-window-item>
+        </v-tabs-window>
+    </div>
+</template>
+
+<script setup>
+    import {
+        ref
+    } from 'vue'
+    import postCard from '../../components/related/post.vue'
+    import FederationStatus from '../../components/blocks/useOnline.vue'
+    import LiveClock from '../../components/blocks/useTimestamp.vue'
+    import { authClient } from "#auth/lib/auth-client";
+    import { useInfiniteScroll } from '@vueuse/core'
+
+    // authClient.useSession() returns the Vue ref itself (readonly(shallowRef)
+    // from better-auth's vue-store.mjs), not a {data,...} object and not a
+    // promise — the `await` was a no-op. session.value.data is the actual
+    // {user, session} payload.
+    const session = authClient.useSession();
+
+    const {
+        $directus,
+        $readItem,
+        $readItems
+    } = useNuxtApp()
+    const tab = ref(null);
+
+    const {
+        data: feedBar
+    } = await useAsyncData('feedBar', async () => {
+        const resp = await $directus.request($readItem('navigation', '32', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
+        return resp?.data ?? resp ?? null
+    })
+
+    const {
+        data: feedsPage
+    } = await useAsyncData('feedsPage', async () => {
+        const resp = await $directus.request($readItem('pages', '34', {
+            fields: ['*', {
+                '*': ['*']
+            }]
+        }))
+        return resp?.data ?? resp ?? null
+    })
+
+    // atproto following-feed for the current user — the atproto match for
+    // this page's "Activity" tab (see server/api/social/atproto/timeline.get.ts).
+    // Resolves to `{ items: [] }` (never throws) when signed out, not
+    // atproto-linked, or the PDS is unreachable, so this is purely
+    // additive to the existing Directus-backed posts below.
+    const { data: atprotoTimeline } = await useAsyncData('feeds:atprotoTimeline', () => $fetch('/api/social/atproto/timeline'), { default: () => ({ items: [] }) })
+
+    const posts = ref([...(atprotoTimeline.value?.items || [])])
+    const postsPage = ref(1)
+    const postsLimit = ref(10)
+    const loadingPosts = ref(false)
+    const hasMorePosts = ref(true)
+    const postsScrollContainer = ref(null)
+
+    const {
+        data: circles
+    } = await useAsyncData('circles', async () => {
+        const resp = await $directus.request($readItems('circles', {
+            fields: ['*', 'posts.posts_id.*', 'products.products_id.*', 'users.*'],
+            filter: {
+                creator: {
+                    _eq: session.value?.data?.user?.id
+                }
+            }
+        }))
+        return resp?.data ?? resp ?? []
+    })
+
+    const loadPosts = async (page) => {
+        if (loadingPosts.value || !hasMorePosts.value) return
+
+        loadingPosts.value = true
+        try {
+            const resp = await $directus.request($readItems('posts', {
+                fields: ['*', {
+                    '*': ['*']
+                }],
+                filter: {
+                    author: {
+                        _eq: session.value?.data?.user?.id
+                    }
+                },
+                limit: postsLimit.value,
+                page: page
+            }))
+
+            const newPosts = resp?.data ?? resp ?? []
+            if (newPosts.length === 0) {
+                hasMorePosts.value = false
+            } else {
+                posts.value.push(...newPosts)
+                postsPage.value = page + 1
+            }
+        } finally {
+            loadingPosts.value = false
+        }
+    }
+
+    const loadMorePosts = () => {
+        loadPosts(postsPage.value)
+    }
+
+    useInfiniteScroll(postsScrollContainer, loadMorePosts, {
+        distance: 200,
+    })
+
+    useHead({
+        title: computed(() => feedsPage.value?.name || 'Feeds')
+    })
+
+    definePageMeta({
+        middleware: ['auth']
+    })
+</script>
+
+<style scoped>
+.feed-scroll-container {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+</style>

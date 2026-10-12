@@ -5,10 +5,10 @@
 // onSessionEstablished hook — see layers/auth/shared/utils/plugins.ts) so
 // server routes can post/like/follow/etc. against the PDS *as that user*,
 // distinct from the shared service-account client
-// (@mframework/adapter-federation's useAtprotoClient(), bootstrapped by its
+// (@mframework/meeovi-atproto's useAtprotoClient(), bootstrapped by its
 // Nuxt module for read-only paths that don't act as anyone in particular).
 import { eq } from 'drizzle-orm'
-import { AtprotoClient } from '@mframework/adapter-federation/clients/atproto'
+import { AtprotoClient } from '@mframework/meeovi-atproto/client'
 import { db } from '#auth/server/utils/drizzle'
 import { atprotoSessions } from '#auth/server/database/migrations/schema'
 

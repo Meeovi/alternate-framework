@@ -276,3 +276,76 @@ export async function recentMessages(
   }
   return messages.sort((a, b) => String(b.date).localeCompare(String(a.date)))
 }
+
+// ---------------------------------------------------------------------------
+// Private messages (Rocket.Chat direct messages between Meeovi members)
+
+export type DirectConversation = {
+  /** Rocket.Chat room id, used in /direct/<rid>. */
+  rid: string
+  /** The other member's Rocket.Chat username (meeovi-<id>). */
+  username: string
+  name: string
+  avatar: string
+  unread: number
+  lastMessage: { text: string, at: string | null, mine: boolean } | null
+  updatedAt: string | null
+}
+
+/** REST call to Rocket.Chat as the member (their own login token). */
+async function rcAs<T = any>(event: H3Event, rcUser: RcUser, token: string, path: string, options: Record<string, any> = {}): Promise<T> {
+  const { url } = discussionsConfig(event)
+  return $fetch<T>(`${url}/api/v1/${path}`, {
+    timeout: 15000,
+    ...options,
+    headers: { 'X-User-Id': rcUser._id, 'X-Auth-Token': token, ...options.headers },
+  })
+}
+
+/** The member's direct-message conversations, most recent first. */
+export async function listDirectConversations(event: H3Event, user: DiscussionUser): Promise<DirectConversation[]> {
+  const { url } = discussionsConfig(event)
+  const me = await ensureRcUser(event, user)
+  const token = await loginToken(event, me)
+  const [subs, ims] = await Promise.all([
+    rcAs<{ update: any[] }>(event, me, token, 'subscriptions.get'),
+    rcAs<{ ims: any[] }>(event, me, token, 'im.list', { query: { count: 100, sort: JSON.stringify({ _updatedAt: -1 }) } }),
+  ])
+  const rooms = new Map((ims.ims ?? []).map((r: any) => [r._id, r]))
+  return (subs.update ?? [])
+    .filter((s: any) => s.t === 'd' && s.open !== false && s.name !== me.username)
+    .map((s: any): DirectConversation => {
+      const room: any = rooms.get(s.rid)
+      const last = room?.lastMessage
+      return {
+        rid: s.rid,
+        username: s.name,
+        name: s.fname || s.name,
+        avatar: `${url}/avatar/${encodeURIComponent(s.name)}`,
+        unread: Number(s.unread) || 0,
+        lastMessage: last ? {
+          // End-to-end encrypted messages can't be read server-side.
+          text: last.t === 'e2e' ? 'Encrypted message' : String(last.msg || (last.attachments?.length ? 'Attachment' : '')),
+          at: last.ts ?? null,
+          mine: last.u?.username === me.username,
+        } : null,
+        updatedAt: room?.lm ?? room?._updatedAt ?? s._updatedAt ?? null,
+      }
+    })
+    .sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)))
+}
+
+/** Open (or reuse) the direct-message room between two members. */
+export async function openDirectConversation(event: H3Event, user: DiscussionUser, other: DiscussionUser): Promise<{ rid: string }> {
+  if (other.id === user.id) throw createError({ statusCode: 400, statusMessage: "You can't message yourself" })
+  const [me, them] = await Promise.all([ensureRcUser(event, user), ensureRcUser(event, other)])
+  const token = await loginToken(event, me)
+  const res = await rcAs<{ room: { rid?: string, _id?: string } }>(event, me, token, 'im.create', { method: 'POST', body: { username: them.username } })
+  const rid = res.room?.rid || res.room?._id
+  if (!rid) throw createError({ statusCode: 502, statusMessage: 'Could not start the conversation' })
+  return { rid }
+}
+
+export function directEmbedPath(rid: string): string {
+  return `/direct/${encodeURIComponent(rid)}?layout=embedded`
+}

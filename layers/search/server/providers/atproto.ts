@@ -5,11 +5,11 @@
 // shape as directus.ts/magento.ts — a live query against an external
 // system at request time, not a synced index. All the actual XRPC work
 // (app.bsky.feed.searchPosts / app.bsky.actor.searchActors) lives in
-// adapter-federation's AtprotoClient — this file only calls into it and
+// meeovi-atproto's AtprotoClient — this file only calls into it and
 // reshapes the result, same division of responsibility magento.ts uses for
 // adapter-magento's MagentoAdapter.
 import { useRuntimeConfig } from '#imports'
-import { AtprotoClient, type AtprotoPostRecord, type AtprotoActorRecord } from '@mframework/adapter-federation/clients/atproto'
+import { AtprotoClient, type AtprotoPostRecord, type AtprotoActorRecord } from '@mframework/meeovi-atproto/client'
 import type { NormalizedHit, ProviderSearchResult, SearchProvider, SearchProviderOptions } from './types'
 
 type AtprotoConfig = {

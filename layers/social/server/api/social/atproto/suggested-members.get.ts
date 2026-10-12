@@ -6,7 +6,7 @@
 // Directus `users` rows. Public (members.vue isn't gated behind sign-in),
 // uses the shared service-account client. `{ items: [] }` (never an
 // error) if that client isn't configured/reachable.
-import { useAtprotoClient } from '@mframework/adapter-federation/clients/atproto'
+import { useAtprotoClient } from '@mframework/meeovi-atproto/client'
 import { atprotoActorToSocialProfile } from '../../../utils/atproto-normalize'
 
 export default defineEventHandler(async () => {

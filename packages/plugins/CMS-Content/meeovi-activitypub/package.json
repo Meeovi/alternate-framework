@@ -1,0 +1,59 @@
+{
+  "name": "@mframework/meeovi-activitypub",
+  "version": "0.1.0",
+  "description": "ActivityPub (Mastodon & the Mastodon-API Fediverse) for M Framework on masto.js: client factories, status/publish/timeline tools, WebFinger/ActivityStreams helpers, and the 'activitypub' federation network for the social layer.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./client": "./runtime/client.ts",
+    "./federation": "./runtime/network.ts",
+    "./tools/*": "./runtime/tools/*",
+    "./protocol/*": "./runtime/protocol/*",
+    "./activitystreams-client": "./runtime/activitystreams-client.ts",
+    "./providers": "./runtime/providers.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "test",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'meeovi-activitypub is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "activitypub",
+    "mastodon",
+    "fediverse",
+    "masto",
+    "federation",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.4.8",
+    "masto": "^7.10.1",
+    "ofetch": "^1.4.1"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.4.8",
+    "@types/node": "latest",
+    "nuxt": "^4.6.0",
+    "typescript": "~6.0.3",
+    "vitest": "^4.0.0"
+  }
+}

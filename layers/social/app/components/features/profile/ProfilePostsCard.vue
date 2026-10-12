@@ -1,7 +1,7 @@
 <template>
   <ProfileSectionCard :title="title" :status="status" :available="available" :mt="mt">
     <div v-if="showActions" class="d-flex ga-2 mb-3">
-      <v-btn variant="outlined" prepend-icon="fas fa-table-list" to="/connect/feeds">Timeline</v-btn>
+      <v-btn variant="outlined" prepend-icon="fas fa-table-list" to="/connect/notes">Timeline</v-btn>
       <v-btn variant="outlined" prepend-icon="fas fa-rss" to="/connect">Explore</v-btn>
     </div>
 
@@ -33,5 +33,5 @@ defineProps({
   mt: { type: Boolean, default: false },
 })
 
-const postLink = (post) => (post?.slug ? `/connect/post/${post.slug}` : '/connect')
+const postLink = (post) => (post?.slug ? `/connect/note/${post.slug}` : '/connect')
 </script>

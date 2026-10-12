@@ -21,7 +21,7 @@
     "@betternotify/webpush": "^1.0.0-beta.6",
     "@cline/sdk": "^0.0.46",
     "@geoman-io/leaflet-geoman-free": "^2.20.0",
-    "@mframework/adapter-federation": "file:../../packages/plugins/Social/adapter-federation",
+    "@mframework/meeovi-atproto": "file:../../packages/plugins/CMS-Content/meeovi-atproto",
     "@mframework/alternate-sdk": "file:../../packages/plugins/Admin/alternate-sdk",
     "@novu/js": "^3.19.2",
     "@nuxt/scripts": "^1.2.1",

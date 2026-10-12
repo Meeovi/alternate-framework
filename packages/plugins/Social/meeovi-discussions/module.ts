@@ -22,6 +22,7 @@ export default defineNuxtModule<MeeoviDiscussionsModuleOptions>({
     roomPrefix: 'discussion',
     sessionEndpoint: '/api/auth/get-session',
     loginPath: '/login',
+    membersEndpoint: '/api/social/members',
     admin: {
       userId: env.ROCKETCHAT_ADMIN_USER_ID,
       token: env.ROCKETCHAT_ADMIN_TOKEN,
@@ -37,6 +38,10 @@ export default defineNuxtModule<MeeoviDiscussionsModuleOptions>({
     // <MeeoviDiscussion type="product" :id="product.id" />
     addComponentsDir({ path: resolver.resolve('runtime/components'), pathPrefix: false })
 
+    // Private messages (registered before the :type/:id routes).
+    addServerHandler({ route: `${apiBase}/messages`, method: 'get', handler: resolver.resolve('server/api/messages.get') })
+    addServerHandler({ route: `${apiBase}/messages`, method: 'post', handler: resolver.resolve('server/api/messages.post') })
+    addServerHandler({ route: `${apiBase}/messages/session`, method: 'post', handler: resolver.resolve('server/api/messages-session.post') })
     addServerHandler({ route: `${apiBase}/:type/:id`, method: 'get', handler: resolver.resolve('server/api/info.get') })
     addServerHandler({ route: `${apiBase}/:type/:id/session`, method: 'post', handler: resolver.resolve('server/api/session.post') })
 
@@ -47,6 +52,7 @@ export default defineNuxtModule<MeeoviDiscussionsModuleOptions>({
       types: (options.types || []).map((t) => t.toLowerCase()),
       roomPrefix: options.roomPrefix || 'discussion',
       sessionEndpoint: options.sessionEndpoint || '/api/auth/get-session',
+      membersEndpoint: options.membersEndpoint || '/api/social/members',
       admin: { ...options.admin },
     }
     nuxt.options.runtimeConfig.public.meeoviDiscussions = {
@@ -54,6 +60,7 @@ export default defineNuxtModule<MeeoviDiscussionsModuleOptions>({
       apiBase,
       url,
       loginPath: options.loginPath || '/login',
+      membersEndpoint: options.membersEndpoint || '/api/social/members',
     }
   },
 })

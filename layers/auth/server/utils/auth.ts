@@ -202,7 +202,7 @@ export const auth = betterAuth({
         input: false
       },
       // Written only by the "atproto" plugin's /sign-in/atproto endpoint
-      // (@mframework/adapter-federation/auth/plugin, wired in
+      // (@mframework/meeovi-atproto/auth/plugin, wired in
       // ../../shared/utils/plugins.ts) — input: false for the same reason
       // as the ids above: never accept these from a signup/update-user
       // request body, only from that server-verified PDS login.

@@ -163,7 +163,7 @@ export default defineNuxtConfig({
           .split(',').map((field) => field.trim()).filter(Boolean),
       },
       // AT Protocol (Bluesky) — federates posts + profiles from this
-      // deployment's hosted PDS via adapter-federation's AtprotoClient
+      // deployment's hosted PDS via meeovi-atproto's AtprotoClient
       // (app.bsky.feed.searchPosts / app.bsky.actor.searchActors). Unlike
       // every provider above, this is on by default (opt out explicitly)
       // since this deployment always has a hosted PDS to search — same

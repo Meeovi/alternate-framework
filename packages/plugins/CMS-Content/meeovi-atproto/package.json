@@ -1,0 +1,61 @@
+{
+  "name": "@mframework/meeovi-atproto",
+  "version": "0.1.0",
+  "description": "AT Protocol (Bluesky) for M Framework: AtprotoClient over @atproto/api, Bluesky sign-in for better-auth, and the 'atproto' federation network for the social layer.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./client": "./runtime/client.ts",
+    "./federation": "./runtime/network.ts",
+    "./auth/plugin": "./auth/plugin.ts",
+    "./auth": "./auth/auth.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "auth",
+    "test",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'meeovi-atproto is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "atproto",
+    "bluesky",
+    "federation",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@atproto/api": "^0.20.22",
+    "@nuxt/kit": "^4.4.8",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.6.0",
+    "nuxt": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "better-auth": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.4.8",
+    "@types/node": "latest",
+    "nuxt": "^4.6.0",
+    "typescript": "~6.0.3",
+    "vitest": "^4.0.0"
+  }
+}

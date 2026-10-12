@@ -4,11 +4,11 @@
 // to raw browser online/offline detection (see useOnline.vue's new
 // `checkAtproto` prop). `configured` reflects whether the shared
 // service-account client ever logged in successfully (see
-// @mframework/adapter-federation's runtime/server/atproto.ts);
+// @mframework/meeovi-atproto's runtime/server/bootstrap.ts);
 // `reachable` is a live check against the PDS itself
 // (com.atproto.server.describeServer, unauthenticated, works regardless
 // of whether a service account is configured).
-import { useAtprotoClient, AtprotoClient, getAtprotoServiceUrl } from '@mframework/adapter-federation/clients/atproto'
+import { useAtprotoClient, AtprotoClient, getAtprotoServiceUrl } from '@mframework/meeovi-atproto/client'
 
 export default defineEventHandler(async () => {
   let configured = true

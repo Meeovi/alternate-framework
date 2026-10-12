@@ -20,15 +20,15 @@
 
                         <editMenu :post="post" />
                     </v-toolbar>
-                    <div class="align-end text-white" height="200" v-if="post?.file_url || post?.file">
+                    <div class="align-end text-white" min-height="200" v-if="post?.file_url || post?.file">
                         <MeeoviPlayer :src="getAssetURL(post?.file_url || post?.file)" :title="post?.title" />
                     </div>
 
-                    <div class="align-end text-white" height="200" v-else-if="post?.audio_url || post?.audio">
+                    <div class="align-end text-white" min-height="200" v-else-if="post?.audio_url || post?.audio">
                         <MeeoviPlayer kind="audio" :src="getAssetURL(post?.audio_url || post?.audio)" :title="post?.title" />
                     </div>
 
-                    <div class="align-end text-white" height="200" v-else-if="post?.image_url || post?.image">
+                    <div class="align-end text-white" min-height="200" v-else-if="post?.image_url || post?.image">
                         <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image_url || post?.image)"
                             :alt="post?.title || 'No Title'" />
                     </div>
@@ -49,26 +49,10 @@
                         <!--Rating (rate on the post page)-->
                         <MeeoviRating v-if="post?.id" type="post" :id="post.id" summary />
 
-                        <!--Reactions-->
-                        <v-btn variant="text">
-                            <v-menu>
-                                <template v-slot:activator="{ props }">
-                                    <v-btn prepend-icon="fas fa-thumbs-up" title="React to this Post" text="React"
-                                        v-bind="props" variant="text"></v-btn>
-                                </template>
-                                <v-list>
-                                    <reactions
-                                        :contentId="post?.type === 'atproto_post' ? post.uri : post?.reactions?.reactions_id"
-                                        :contentType="post?.type"
-                                        :contentCid="post?.cid" />
-                                </v-list>
-                            </v-menu>
-                        </v-btn>
-
                         <!--Comments-->
                         <v-btn variant="text" class="mbr-section-btn">
                             <v-btn prepend-icon="fas fa-comment" title="Comment on this post" text="Comment"
-                                variant="text" :href="`/connect/post/${post?.slug}`"></v-btn>
+                                variant="text" :href="`/connect/note/${post?.slug}`"></v-btn>
                         </v-btn>
 
                         <!--<v-btn variant="text" class="mbr-section-btn">
@@ -92,8 +76,7 @@
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import editMenu from '#social/app/components/blocks/postEditMenu.vue';
     import share from '#social/app/components/blocks/share.vue';
-    import repost from '#social/app/components/blocks/repost/repost.vue';
-    import reactions from '#social/app/components/blocks/reactions.vue';
+    //import repost from '#social/app/components/blocks/repost/repost.vue';
     import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
     import {
         toRef
@@ -113,3 +96,10 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
         .toLowerCase()
     const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 </script>
+
+<style scoped>
+    .align-end {
+        min-height: 200px;
+        max-height: 200px;
+    }
+</style>

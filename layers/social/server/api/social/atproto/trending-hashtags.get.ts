@@ -6,9 +6,9 @@
 // {slug, name} shape tag.vue already renders for Directus `tags` rows.
 // Public (no requireAuth — hashtags.vue isn't gated behind sign-in either),
 // uses the shared service-account client bootstrapped by
-// @mframework/adapter-federation's Nuxt module. `{ items: [] }` (never an
+// @mframework/meeovi-atproto's Nuxt module. `{ items: [] }` (never an
 // error) if that client isn't configured/reachable.
-import { useAtprotoClient } from '@mframework/adapter-federation/clients/atproto'
+import { useAtprotoClient } from '@mframework/meeovi-atproto/client'
 import { atprotoTopicToTagChip } from '../../../utils/atproto-normalize'
 
 export default defineEventHandler(async () => {

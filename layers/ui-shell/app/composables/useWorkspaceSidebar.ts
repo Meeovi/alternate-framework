@@ -80,7 +80,7 @@ export const WORKSPACE_FALLBACK_MENU: WorkspaceMenu[] = [
   { title: 'Shop Details', icon: 'fas fa-store', to: '/dashboard/shop' },
   { divider: true },
   { header: 'Social' },
-  { title: 'Activity Feed', icon: 'fas fa-rss', to: '/connect/feeds' },
+  { title: 'Activity Feed', icon: 'fas fa-rss', to: '/connect/notes' },
   { title: 'Spaces', icon: 'fas fa-users-rectangle', to: '/dashboard/spaces' },
   { title: 'Lists', icon: 'fas fa-list-check', to: '/lists' },
   { divider: true },

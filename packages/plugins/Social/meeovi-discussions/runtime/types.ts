@@ -14,6 +14,10 @@ export interface MeeoviDiscussionsModuleOptions {
   sessionEndpoint?: string
   /** Login page for the signed-out prompt. Default '/login'. */
   loginPath?: string
+  /** Private messages: the app's member endpoint. `GET {membersEndpoint}?q=`
+   *  searches members ([{ id, name, username?, image? }]) and
+   *  `GET {membersEndpoint}/:id` returns one. Default '/api/social/members'. */
+  membersEndpoint?: string
   /** Rocket.Chat admin credentials (Personal Access Token). Server-only. */
   admin?: {
     userId?: string
@@ -43,8 +47,35 @@ export interface DiscussionSession {
   embedUrl: string
 }
 
+/** A Meeovi member, as the members endpoint returns them. */
+export interface MessagesMember {
+  id: string
+  name: string
+  username?: string | null
+  image?: string | null
+}
+
+/** GET {apiBase}/messages — the signed-in member's private conversations. */
+export interface MessagesConversation {
+  rid: string
+  username: string
+  name: string
+  avatar: string
+  unread: number
+  lastMessage: { text: string, at: string | null, mine: boolean } | null
+  updatedAt: string | null
+}
+
+/** POST {apiBase}/messages/session — signs the messages embed in. */
+export interface MessagesSession {
+  token: string
+  /** Rocket.Chat workspace origin + path prefix for /direct/<rid>. */
+  url: string
+}
+
 export interface MeeoviDiscussionsPublicConfig {
   apiBase: string
   url: string
   loginPath: string
+  membersEndpoint: string
 }

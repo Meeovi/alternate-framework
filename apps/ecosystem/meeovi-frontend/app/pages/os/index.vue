@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="contentPage">
     <section data-bs-version="5.1" class="header6 cid-vv7JvCP45n mbr-fullscreen mbr-parallax-background" id="header6-bg" data-sortbtn="btn-primary">
 
     

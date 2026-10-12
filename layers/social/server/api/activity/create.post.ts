@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
   // always undefined and every Directus request below always 404'd.
   // 1. Write the raw activity to Directus
   const directusActivity = await $fetch<{ data: { id: string; date_created: string } }>(
-    `${(config.public as any).directus?.url}/items/feeds`,
+    `${(config.public as any).directus?.url}/items/notes`,
     {
       method: 'POST',
       headers: {

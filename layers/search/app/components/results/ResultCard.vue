@@ -123,7 +123,7 @@ const ROUTE_BUILDERS: Record<string, (item: Record<string, unknown>) => string |
     return ref ? `/product/${ref}` : null
   },
   space: (item) => (item.slug ? `/connect/space/${item.slug}` : null),
-  post: (item) => (item.slug ? `/connect/post/${item.slug}` : null),
+  post: (item) => (item.slug ? `/connect/note/${item.slug}` : null),
   hashtag: (item) => (item.slug ?? item.name ? `/connect/hashtag/${item.slug ?? item.name}` : null),
   shop: (item) => (item.slug ? `/outlet/${item.slug}` : null),
   brand: (item) => (item.slug ? `/brand/${item.slug}` : null),

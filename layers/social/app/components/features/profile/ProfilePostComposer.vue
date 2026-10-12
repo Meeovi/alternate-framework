@@ -35,7 +35,7 @@
         Post
       </v-btn>
       <v-btn variant="tonal" prepend-icon="fas fa-users" to="/connect/spaces">Create/Manage Space</v-btn>
-      <v-btn variant="tonal" prepend-icon="fas fa-table-list" to="/connect/feeds">Open Timeline</v-btn>
+      <v-btn variant="tonal" prepend-icon="fas fa-table-list" to="/connect/notes">Open Timeline</v-btn>
       <span class="text-caption text-medium-emphasis ml-auto">Enter to post &middot; Shift+Enter for a new line</span>
     </div>
   </ProfileSectionCard>

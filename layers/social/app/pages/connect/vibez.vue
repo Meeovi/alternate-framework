@@ -177,12 +177,9 @@ function formatDuration(seconds) {
     return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 
+// Once per person per day; a creator's own views don't count.
 async function trackView(videoId) {
-    await fetch('/api/view-video', {
-        method: 'POST',
-        body: JSON.stringify({ videoId }),
-        headers: { 'Content-Type': 'application/json' }
-    })
+    await $fetch(`/api/social/views/shorts/${videoId}`, { method: 'POST' }).catch(() => null)
 }
 
 async function toggleLike(video) {

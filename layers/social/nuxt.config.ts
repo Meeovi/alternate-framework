@@ -1,21 +1,43 @@
+import { realpathSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { defineNuxtConfig } from 'nuxt/config'
+import type { NuxtPage } from '@nuxt/schema'
 
 const isProd = process.env.NODE_ENV === 'production'
 
+// Every page this layer provides needs a signed-in user: mark them here and
+// app/middleware/require-login.global.ts enforces it, so a new social page
+// is covered without remembering `middleware: 'auth'`. Pages an app overrides
+// with its own file aren't marked.
+const pagesDir = fileURLToPath(new URL('./app/pages/', import.meta.url))
+const pagesDirs = new Set([pagesDir, (() => { try { return realpathSync(pagesDir) + '/' } catch { return pagesDir } })()])
+function markSocialPages(pages: NuxtPage[]) {
+  for (const page of pages) {
+    if (page.file && [...pagesDirs].some((dir) => page.file!.startsWith(dir))) {
+      page.meta = { ...page.meta, requiresLogin: true }
+    }
+    if (page.children?.length) markSocialPages(page.children)
+  }
+}
+
 export default defineNuxtConfig({
+
+  hooks: {
+    'pages:extend': markSocialPages,
+  },
 
   modules: [
     '@vueuse/nuxt',
     '@nuxt/image',
-    // Registers the Nitro server plugin that bootstraps
-    // globalThis.__atprotoClient (see AGENTS.md-style notes in
-    // @mframework/adapter-federation's runtime/server/atproto.ts) — without
-    // this module in `modules`, useAtprotoClient() (used by
-    // app/types/service/socialFederation.ts and
-    // app/composables/drafts/usePublish.ts) always throws "not
-    // initialized", regardless of ATPROTO_IDENTIFIER/ATPROTO_APP_PASSWORD
-    // being set.
-    '@mframework/adapter-federation/nuxt',
+    // Federation networks. The federation core is built into this layer
+    // (server/utils/federation.ts, /api/social/federation/*); each network
+    // is its own plugin that registers itself there.
+    //  - meeovi-atproto also signs in the AT Protocol service account
+    //    (globalThis.__atprotoClient) — without it useAtprotoClient() throws
+    //    "not initialized" whatever ATPROTO_IDENTIFIER/ATPROTO_APP_PASSWORD
+    //    are set to.
+    '@mframework/meeovi-atproto',
+    '@mframework/meeovi-activitypub',
     ...(isProd ? ['nuxt-module-feed'] : [])
   ],
   $meta: {

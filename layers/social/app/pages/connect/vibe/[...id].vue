@@ -93,11 +93,11 @@
     })).catch(() => null)
   }
 
+  // Once per person per day; a creator's own views don't count.
   async function trackView() {
-    await $fetch('/api/view-video', {
-      method: 'POST',
-      body: { videoId: shortId.value },
-    }).catch(() => {})
+    if (!short.value?.id) return
+    const res = await $fetch(`/api/social/views/shorts/${short.value.id}`, { method: 'POST' }).catch(() => null)
+    if (res && short.value) short.value = { ...short.value, views: res.views }
   }
 
   onMounted(async () => {

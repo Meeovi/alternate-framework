@@ -9,7 +9,7 @@
 // page's own script only needs to concat one more array — the template
 // components (memberCard/post/tag) don't need to know an item came from
 // atproto at all.
-import type { AtprotoActorRecord, AtprotoPostRecord, AtprotoTrendingTopic } from '@mframework/adapter-federation/clients/atproto'
+import type { AtprotoActorRecord, AtprotoPostRecord, AtprotoTrendingTopic } from '@mframework/meeovi-atproto/client'
 
 /** MemberCard.vue-compatible shape (see layers/social's SocialProfile type).
  *  `id` is prefixed `atproto:{did}` — FollowButton.vue strips that prefix
@@ -51,7 +51,7 @@ export function atprotoPostToPostCard(post: AtprotoPostRecord) {
     description: post.text,
     content: post.text,
     date_created: post.createdAt,
-    // No local /connect/post/{slug} route exists for an atproto record —
+    // No local /connect/note/{slug} route exists for an atproto record —
     // point the comment link at the real post on Bluesky instead of a
     // slug that would 404.
     slug: null,
