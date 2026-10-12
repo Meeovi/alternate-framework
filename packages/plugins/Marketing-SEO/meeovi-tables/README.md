@@ -38,6 +38,22 @@ meeoviTables: {
       fields: ['id', 'sku', 'name', 'price', 'stock', 'status'], // recommended
       sort: 'name',                         // default sort ('-field' = desc)
       // source: 'directus',                // force a source; default 'auto'
+      editRoles: ['admin'],                 // may add / edit / delete rows (default: nobody)
+      // fallback: false,                   // adapters only — never Directus
+      // unavailableNotice: '…',            // shown when no source serves it
+                                            // (default "No products yet."; reason logged)
+    },
+    // Per-user table: signed-in users see / add / edit / delete only their
+    // own rows; admins (ownerBypassRoles) see all. Needs a filtering source
+    // (Directus) — adapters that can't filter are never used for it.
+    my_posts: {
+      collection: 'posts',                  // source collection, if not the table name
+      owner: 'creator_id',                  // better-auth user id, stamped on create, never editable
+      // ownerName: 'creator',              // display name, stamped on create
+      // ownerBypassRoles: ['admin'],
+      filter: { date_created: { _lt: '$NOW' } }, // fixed Directus filter
+      readonlyFields: ['views'],
+      defaults: { gallery: [] },            // set on every new row
     },
   },
 },
@@ -71,6 +87,12 @@ Directus URL / token default to `DIRECTUS_URL` / `NUXTUS_DIRECTUS_STATIC_TOKEN`
 | `toolbar` | title / count / source / search bar (default `true`) |
 | `words` | SVAR locale words (default English) |
 | `height` | default `560px` |
+| `compact` | small widget: no search / actions / pager (dashboards) |
+| `link` | with `compact`, a "View all" link to the full page |
+
+Emits `select`, `saved`, `deleted`. Users with an `editRoles` role get
+Add / Edit / Delete buttons when the active source can write; the form is
+generated from the schema (SVAR Editor) and sends only changed fields.
 
 `useMeeoviTable(collection, { source, pageSize, sort })` gives the same data
 (`rows`, `schema`, `total`, `page`, `pageSize`, `sort`, `search`, `source`, …)
@@ -80,7 +102,13 @@ for a custom UI.
 
 - `GET /api/tables` — tables this visitor may open, with the sources for each.
 - `GET /api/tables/:collection?page=&pageSize=&sort=&search=&source=` — rows,
-  `total`, the column `schema`, the source used and every available source.
+  `total`, the column `schema`, the source used and every available source,
+  `canEdit`, `primaryKey` and a `notice` when nothing can serve the table.
+- `POST /api/tables/:collection`, `PATCH|DELETE /api/tables/:collection/:id`
+  (`?source=`) — writes, for `editRoles` (or the row's owner on `owner`
+  tables; other users' rows answer 404). Bodies are filtered to the
+  schema's editable fields; required fields are checked on create; read-only
+  sources answer 405.
 
 Access: non-public collections ask the app's session endpoint
 (`/api/auth/get-session`, better-auth; configurable as `sessionEndpoint`) with
@@ -105,6 +133,8 @@ export default defineNitroPlugin(() => {
     },
     // optional — otherwise the Directus schema (or the rows) is used
     async schema(collection) { return null },
+    // optional writes: create(collection, data), update(collection, id, data),
+    // remove(collection, id)
   })
 })
 ```
@@ -115,7 +145,10 @@ in-memory search / sort / paging.
 
 ## Notes
 
-- Read-only for now (adapters' commerce backends are GET-only).
+- The commerce adapters are GET-only, so adapter rows are read-only; Directus
+  rows are writable.
+- SVAR's side panel is `absolute` with z-index 1001, under Vuetify's app bar
+  (1004); `MeeoviTableForm` pins its own panel `fixed` above it.
 - SVAR's `<Willow>` theme component isn't used: it always renders a
   `<Teleport to="head">`, which breaks hydration under Nuxt SSR. The component
   provides the theme context + `wx-willow-theme` class itself and loads the

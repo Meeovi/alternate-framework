@@ -49,11 +49,10 @@
                             <!-- Product Rating -->
                             <v-list-item>
                                 <v-list-item-title>
-                                    <v-rating size="x-small" active-color="warning"
-                                        :model-value="productDetails?.rating" :max="5" />
-                                    <NuxtLink style="position: relative; top: -5px;"
-                                        :to="`/product/${productDetails?.id}#commentsSection`"
-                                        class="pl-1 no-underline">{{ productDetails?.rating }} reviews
+                                    <!-- People's 1–5 star ratings (@mframework/meeovi-ratings) -->
+                                    <MeeoviRating type="product" :id="productDetails?.id" />
+                                    <NuxtLink :to="`/product/${productDetails?.id}#commentsSection`"
+                                        class="pl-1 no-underline">Discussion
                                     </NuxtLink>
                                 </v-list-item-title>
                             </v-list-item>
@@ -105,14 +104,9 @@
                                 </div>
                             </v-list-item>
 
-                            <!-- Product Like / Create List / RSS Feed -->
+                            <!-- Create List / RSS Feed -->
                             <v-list-item>
                                 <div class="product-actions">
-                                    <LikeButton
-                                        v-if="productDetails?.id"
-                                        target-type="product"
-                                        :target-id="productDetails.id"
-                                    />
                                     <createListBtn :item="listProduct" kind="product" />
                                     <NuxtLink v-if="productRssLink" :to="productRssLink" target="_blank"
                                         rel="noopener" class="text-sm no-underline">
@@ -161,7 +155,6 @@
     import addToCartBtn from '../../blocks/addToCartBtn.vue';
     import compareBtn from '../../blocks/compareBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
-    import LikeButton from '#social/app/components/blocks/LikeButton.vue';
     import {
         getAssetURL,
         hasAsset

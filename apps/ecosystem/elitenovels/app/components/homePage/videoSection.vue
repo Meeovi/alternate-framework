@@ -6,7 +6,7 @@
           <v-slide-group v-model="model" class="py-4 px-sm-4" selected-class="bg-success">
             <v-slide-group-item v-for="videos in videos" :key="videos">
               <template #default="{ toggle, selectedClass }">
-                <video :video="videos" />
+                <videoComponent :video="videos" />
               </template>
             </v-slide-group-item>
           </v-slide-group>
@@ -17,6 +17,7 @@
 
 <script setup>
   import { ref } from 'vue'
+  import videoComponent from '~/components/related/video.vue'
 
 const model = ref(null)
 const {

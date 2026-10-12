@@ -37,6 +37,25 @@ export async function sourcesFor(collection: string): Promise<MeeoviTableSource[
   return result
 }
 
+/** The source collection behind a table (its `collection` option, else the
+ *  table name). */
+export function sourceCollection(table: string, options: { collection?: string }): string {
+  return options.collection || table
+}
+
+/** Sources for a configured table: `fallback: false` leaves Directus out, so
+ *  only custom sources / installed adapters can serve it; `owner` / `filter`
+ *  tables only use sources that apply filters. */
+export async function availableSources(
+  table: string,
+  options: { fallback?: boolean, collection?: string, owner?: string, filter?: Record<string, unknown> },
+): Promise<MeeoviTableSource[]> {
+  let sources = await sourcesFor(sourceCollection(table, options))
+  if (options.fallback === false) sources = sources.filter((s) => s.id !== 'directus')
+  if (options.owner || options.filter) sources = sources.filter((s) => s.filters)
+  return sources
+}
+
 export { directusSource } from './directus'
 export { queryRows } from './adapters'
 export type { MeeoviTableSource } from '../../runtime/types'

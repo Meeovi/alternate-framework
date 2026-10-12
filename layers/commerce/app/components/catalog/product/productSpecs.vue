@@ -53,7 +53,7 @@
       </tr>
       <tr>
         <th>Average Rating</th>
-        <td><ratings :rating="product?.rating" /></td>
+        <td><MeeoviRating type="product" :id="product?.id" readonly size="x-small" /></td>
       </tr>
       <tr>
         <th># of Reviews</th>
@@ -135,7 +135,6 @@
 import { computed, ref, watch } from 'vue'
 import { usePrice } from '../../../composables/catalog/price/price'
 import { useAppGateway } from '#shared/app/composables/useAppGateway'
-import ratings from '../../blocks/ratings.vue'
 
 const props = defineProps({
   product: {

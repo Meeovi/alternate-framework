@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, nextTick, provide, ref, watch } from 'vue'
 import { Grid, HeaderMenu } from '@svar-ui/vue-grid'
-import { Locale, Pager, Select, Text } from '@svar-ui/vue-core'
+import { Button, Locale, Pager, Select, Text } from '@svar-ui/vue-core'
 import type { IColumnConfig } from '@svar-ui/vue-grid'
 import '@svar-ui/vue-grid/all.css'
 import '@svar-ui/vue-core/all.css'
 import { useMeeoviTable } from '../composables/useMeeoviTable'
 import { schemaToColumns } from '../utils/columns'
+import MeeoviTableForm from './MeeoviTableForm.vue'
 
 /**
  * Dynamic table for any allowlisted collection: rows come from the installed
@@ -30,6 +31,11 @@ const props = withDefaults(defineProps<{
   toolbar?: boolean
   /** SVAR locale words (e.g. from @svar-ui/core-locales); default English. */
   words?: Record<string, any>
+  /** Dashboard size: title, count and `link` only — no search, source,
+   *  edit actions or pager. */
+  compact?: boolean
+  /** "View all" link shown in compact mode. */
+  link?: string
 }>(), {
   height: '560px',
   toolbar: true,
@@ -37,14 +43,18 @@ const props = withDefaults(defineProps<{
   hide: () => [],
 })
 
-const emit = defineEmits<{ (e: 'select', row: Record<string, unknown>): void }>()
+const emit = defineEmits<{
+  (e: 'select', row: Record<string, unknown>): void
+  (e: 'saved', ev: { row: Record<string, unknown> | null, data: Record<string, unknown> }): void
+  (e: 'deleted', row: Record<string, unknown>): void
+}>()
 
 const table = useMeeoviTable(() => props.collection, {
   source: () => props.source,
   pageSize: props.pageSize,
   sort: props.sort,
 })
-const { rows, schema, total, sources, activeSource, label, pending, error, page, pageSize, sort, search, source } = table
+const { rows, schema, total, sources, activeSource, label, pending, error, page, pageSize, sort, search, source, canEdit, primaryKey, notice, apiBase } = table
 
 const api = ref()
 const columns = computed(() => schemaToColumns(schema.value, props.columns, props.hide))
@@ -82,11 +92,100 @@ function init(grid: any) {
   })
   // Through the API: the :onselectrow prop callback doesn't fire here.
   grid.on('select-row', onSelectRow)
+  // Double-click opens our form (validated, saved through the API) rather
+  // than SVAR's inline cell editor.
+  grid.intercept('open-editor', (ev: { id: string | number }) => {
+    const row = findRow(ev.id)
+    if (canEdit.value && row) openEdit(row)
+    return false
+  })
 }
 
+function findRow(id: string | number) {
+  return rows.value.find((r) => String(r[primaryKey.value] ?? r.id) === String(id))
+}
+
+const selectedRow = ref<Record<string, unknown> | null>(null)
+watch(rows, () => { selectedRow.value = null })
+
 function onSelectRow(ev: { id: string | number }) {
-  const row = rows.value.find((r) => String(r.id) === String(ev.id))
+  const row = findRow(ev.id)
+  selectedRow.value = row ?? null
   if (row) emit('select', row)
+}
+
+// ---- create / edit / delete (canEdit: editRoles + a writable source) ----
+const formOpen = ref(false)
+const formRow = ref<Record<string, unknown> | null>(null)
+const saving = ref(false)
+const formError = ref<string | null>(null)
+const actionError = ref<string | null>(null)
+
+// People see plain messages; only validation errors (400 / 422 — e.g. a
+// missing required field) pass the server's wording through.
+function errorText(e: any, fallback: string) {
+  const status = e?.statusCode ?? e?.status ?? e?.response?.status
+  if (status === 401) return 'Please sign in again.'
+  if (status === 403) return "You don't have permission to do that."
+  if (status === 400 || status === 422) return e?.data?.statusMessage || e?.statusMessage || fallback
+  return fallback
+}
+
+function rowUrl(row?: Record<string, unknown> | null) {
+  const base = `${apiBase}/${encodeURIComponent(props.collection)}`
+  return row ? `${base}/${encodeURIComponent(String(row[primaryKey.value]))}` : base
+}
+
+function openAdd() {
+  formRow.value = null
+  formError.value = null
+  formOpen.value = true
+}
+
+function openEdit(row: Record<string, unknown>) {
+  formRow.value = row
+  formError.value = null
+  formOpen.value = true
+}
+
+function closeForm() {
+  formOpen.value = false
+}
+
+async function save(data: Record<string, unknown>) {
+  if (!formRow.value && !Object.keys(data).length) return
+  if (formRow.value && !Object.keys(data).length) { closeForm(); return }
+  saving.value = true
+  formError.value = null
+  try {
+    await $fetch(rowUrl(formRow.value), {
+      method: formRow.value ? 'PATCH' : 'POST',
+      query: { source: activeSource.value || undefined },
+      body: data,
+    })
+    closeForm()
+    emit('saved', { row: formRow.value, data })
+    await table.refresh()
+  } catch (e: any) {
+    formError.value = errorText(e, "Couldn't save. Please try again.")
+  } finally {
+    saving.value = false
+  }
+}
+
+async function removeSelected() {
+  const row = selectedRow.value
+  if (!row) return
+  const name = String(row.name ?? row.title ?? row[primaryKey.value])
+  if (typeof window !== 'undefined' && !window.confirm(`Delete "${name}"? This can't be undone.`)) return
+  actionError.value = null
+  try {
+    await $fetch(rowUrl(row), { method: 'DELETE', query: { source: activeSource.value || undefined } })
+    emit('deleted', row)
+    await table.refresh()
+  } catch (e: any) {
+    actionError.value = errorText(e, "Couldn't delete. Please try again.")
+  }
 }
 
 // Explicit handlers: the refs are destructured from useMeeoviTable(), and
@@ -130,6 +229,16 @@ useHead({
   }],
 })
 
+const loadErrorText = computed(() => {
+  const status = (error.value as any)?.statusCode
+  if (status === 401) return `Please sign in to see ${label.value.toLowerCase()}.`
+  if (status === 403) return `You don't have access to ${label.value.toLowerCase()}.`
+  return `${label.value} couldn't be loaded right now. Please try again later.`
+})
+const emptyText = computed(() => search.value.trim()
+  ? `No ${label.value.toLowerCase()} match "${search.value.trim()}".`
+  : `No ${label.value.toLowerCase()} yet.`)
+
 defineExpose({ refresh: table.refresh, api })
 </script>
 
@@ -141,19 +250,31 @@ defineExpose({ refresh: table.refresh, api })
     <div class="meeovi-table" :style="{ height }">
       <div v-if="toolbar" class="meeovi-table__bar">
         <strong class="meeovi-table__title">{{ label }}</strong>
-        <span class="meeovi-table__count">{{ total.toLocaleString() }} rows</span>
+        <span v-if="!notice" class="meeovi-table__count">{{ total.toLocaleString() }} {{ total === 1 ? 'item' : 'items' }}</span>
         <div class="meeovi-table__spacer" />
+        <NuxtLink v-if="compact && link" :to="link" class="meeovi-table__link">View all</NuxtLink>
+        <template v-if="!compact">
         <div v-if="sourceOptions.length > 1" class="meeovi-table__source">
           <Select :options="sourceOptions" :value="activeSource" :onchange="onSource" />
         </div>
         <div class="meeovi-table__search">
           <Text v-model:value="searchInput" placeholder="Search…" icon="wxi-search" css="wx-icon-left" clear />
         </div>
+        <div v-if="canEdit" class="meeovi-table__actions">
+          <Button type="primary" icon="wxi-plus" :onclick="openAdd">Add</Button>
+          <Button icon="wxi-edit" :disabled="!selectedRow" :onclick="() => selectedRow && openEdit(selectedRow)">Edit</Button>
+          <Button type="danger" icon="wxi-delete" :disabled="!selectedRow" :onclick="removeSelected">Delete</Button>
+        </div>
+        </template>
       </div>
 
+      <div v-if="actionError" class="meeovi-table__message meeovi-table__message--error">{{ actionError }}</div>
+
       <div v-if="error" class="meeovi-table__message meeovi-table__message--error">
-        {{ (error as any)?.data?.statusMessage || (error as any)?.statusMessage || 'This table could not be loaded.' }}
+        {{ loadErrorText }}
       </div>
+
+      <div v-else-if="notice" class="meeovi-table__message meeovi-table__message--notice">{{ notice }}</div>
 
       <div v-else class="meeovi-table__grid" :class="{ 'meeovi-table__grid--loading': pending }">
         <HeaderMenu :api="api">
@@ -162,15 +283,26 @@ defineExpose({ refresh: table.refresh, api })
             :data="rows"
             :columns="columns"
             :init="init"
-            :overlay="!pending && !rows.length ? 'No rows' : undefined"
+            :overlay="!pending && !rows.length ? emptyText : undefined"
           />
         </HeaderMenu>
       </div>
 
-      <div class="meeovi-table__pager">
+      <div v-if="!notice && !compact" class="meeovi-table__pager">
         <Pager :total="total" :value="page" :page-size="pageSize" @update:value="onPage" @update:page-size="onPageSize" />
       </div>
     </div>
+
+    <MeeoviTableForm
+      v-if="formOpen"
+      :schema="schema"
+      :row="formRow"
+      :title="formRow ? `Edit ${label}` : `Add to ${label}`"
+      :saving="saving"
+      :error="formError"
+      @save="save"
+      @close="closeForm"
+    />
   </div>
   </Locale>
 </template>
@@ -229,6 +361,22 @@ defineExpose({ refresh: table.refresh, api })
 .meeovi-table__message--error {
   background: #fdecea;
   color: #8a1c13;
+}
+
+.meeovi-table__link {
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: rgb(var(--v-theme-primary, 30, 136, 229));
+}
+
+.meeovi-table__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.meeovi-table__message--notice {
+  background: #eef2f6;
+  color: #37474f;
 }
 
 .meeovi-table__pager {

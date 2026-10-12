@@ -6,11 +6,11 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
                         <div v-if="post?.file_url || post?.file">
-                            <videoPlayer :src="getAssetURL(post?.file_url || post?.file)" />
+                            <MeeoviPlayer :src="getAssetURL(post?.file_url || post?.file)" :poster="getAssetURL(post?.image_url || post?.image)" :title="post?.title" />
                         </div>
 
                         <div v-else-if="post?.audio_url || post?.audio">
-                            <audio controls class="w-100" :src="getAssetURL(post?.audio_url || post?.audio)"></audio>
+                            <MeeoviPlayer kind="audio" :src="getAssetURL(post?.audio_url || post?.audio)" :title="post?.title" />
                         </div>
 
                         <div v-else-if="post?.image_url || post?.image">
@@ -32,7 +32,7 @@
 
                             <div class="row">
                                 <div class="col-6 d-flex align-center">
-                                    <LikeButton v-if="post?.id" target-type="post" :target-id="post.id" />
+                                    <MeeoviRating v-if="post?.id" type="post" :id="post.id" />
                                     <reactions class="postReactions" />
                                 </div>
 
@@ -154,7 +154,7 @@
         <div class="col-sm-6 col-lg-12 feedPost">
             <v-divider></v-divider>
 
-            <comments id="postComments" :commentId="post?.id" />
+            <div id="postComments"><MeeoviDiscussion v-if="post?.id" type="post" :id="post.id" :title="post?.title" /></div>
         </div>
     </div>
 </template>
@@ -164,16 +164,10 @@
     import tagCard from '#social/app/components/related/tag.vue';
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
-    import LikeButton from '#social/app/components/blocks/LikeButton.vue';
-    import comments from '#social/app/components/blocks/comments.vue';
     import {
         onMounted,
-        ref,
-        watch
+        ref
     } from '#imports'
-    import {
-        useReactionsStore
-    } from '../../../stores/useReactionsStore'
 
     const {
         $directus,
@@ -197,12 +191,6 @@
     }, {
         watch: [() => route.params.slug]
     })
-
-    const reactionsStore = useReactionsStore()
-
-    watch(() => post.value?.id, (id) => {
-        if (id) reactionsStore.fetchReactions(id, post.value?.type)
-    }, { immediate: true })
 
     // Cusdis comment properties derived from this page's data
     const config = useRuntimeConfig ? useRuntimeConfig() : {}

@@ -19,6 +19,36 @@ export interface MeeoviTableCollectionOptions {
   source?: string
   /** Default sort, e.g. 'name' or '-date_created'. */
   sort?: string
+  /** Roles that may create / edit / delete rows (better-auth roles, e.g.
+   *  ['admin']). Omitted = read-only. Writes go to the source the rows came
+   *  from; sources without write support (e.g. commerce adapters) answer 405. */
+  editRoles?: string[]
+  /** false = only registered sources / installed adapter-* may serve this
+   *  table — no Directus fallback (for commerce data that must come from the
+   *  commerce backend). The table shows a notice until an adapter provides it. */
+  fallback?: boolean
+  /** Message shown while no source can serve this table (with `fallback: false`). */
+  unavailableNotice?: string
+  /** Source collection to read / write, when it differs from the table name
+   *  (e.g. table `memories` over Directus `posts`). */
+  collection?: string
+  /** Per-user tables: the field holding the creator's user id (better-auth
+   *  id). Signed-in users then see and create / edit / delete only their own
+   *  rows — the server stamps it on create and never lets it be edited —
+   *  without needing `editRoles`. */
+  owner?: string
+  /** Field stamped with the creator's display name on create (read-only),
+   *  e.g. 'creator'. */
+  ownerName?: string
+  /** Roles that see and manage every row of an `owner` table. Default ['admin']. */
+  ownerBypassRoles?: string[]
+  /** Fixed Directus filter applied to every read, e.g.
+   *  `{ date_created: { _lt: '$NOW' } }`. */
+  filter?: Record<string, unknown>
+  /** Fields shown but never editable here (e.g. view counters). */
+  readonlyFields?: string[]
+  /** Values set on every new row (e.g. NOT NULL fields the form doesn't show). */
+  defaults?: Record<string, unknown>
 }
 
 export interface MeeoviTablesModuleOptions {
@@ -51,6 +81,10 @@ export interface MeeoviTableField {
   /** Directus "half" width fields get a narrower default column. */
   narrow?: boolean
   sortable?: boolean
+  /** Not editable (primary keys, system timestamps, Directus read-only). */
+  readonly?: boolean
+  required?: boolean
+  primary?: boolean
 }
 
 export interface MeeoviTableQuery {
@@ -62,6 +96,8 @@ export interface MeeoviTableQuery {
   search?: string
   /** Restrict returned fields (already intersected with the allowlist). */
   fields?: string[]
+  /** Directus-style filter object. Only passed to sources with `filters: true`. */
+  filter?: Record<string, unknown>
 }
 
 export interface MeeoviTableResult {
@@ -79,9 +115,17 @@ export interface MeeoviTableSource {
   label: string
   /** Can this source serve the collection right now? */
   handles(collection: string): boolean | Promise<boolean>
+  /** Applies `query.filter` (Directus filter syntax). Tables with an `owner`
+   *  or `filter` are only served by such sources, so rows are never leaked
+   *  by a source that would ignore the filter. */
+  filters?: boolean
   list(query: MeeoviTableQuery): Promise<MeeoviTableResult>
   /** Column schema for the collection, when the source knows it. */
   schema?(collection: string): Promise<MeeoviTableField[] | null>
+  /** Write support — omit for read-only sources. */
+  create?(collection: string, data: Record<string, unknown>): Promise<Record<string, unknown>>
+  update?(collection: string, id: string | number, data: Record<string, unknown>): Promise<Record<string, unknown>>
+  remove?(collection: string, id: string | number): Promise<void>
 }
 
 /** GET {apiBase}/:collection response. */
@@ -101,6 +145,13 @@ export interface MeeoviTableResponse {
   pageSize: number
   sort: string | null
   search: string | null
+  /** The signed-in user may create / edit / delete here (editRoles + a
+   *  source with write support). */
+  canEdit: boolean
+  /** Primary key field ('id' by default). */
+  primaryKey: string
+  /** Shown instead of rows when no source can serve the table yet. */
+  notice?: string
 }
 
 /** GET {apiBase} response. */

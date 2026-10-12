@@ -16,9 +16,14 @@ type DirectusField = {
     width?: string | null
     sort?: number | null
     options?: { choices?: Array<{ text?: string, value: string | number }> } | null
+    readonly?: boolean
+    required?: boolean
   } | null
-  schema?: { is_primary_key?: boolean } | null
+  schema?: { is_primary_key?: boolean, has_auto_increment?: boolean, is_nullable?: boolean } | null
 }
+
+/** Directus fills these itself — never editable from a table. */
+const SYSTEM_SPECIALS = ['date-created', 'date-updated', 'user-created', 'user-updated']
 
 const SCHEMA_TTL_MS = 5 * 60 * 1000
 const schemaCache = new Map<string, { at: number, fields: DirectusField[] | null }>()
@@ -82,6 +87,10 @@ export function toTableFields(fields: DirectusField[]): MeeoviTableField[] {
         hidden: Boolean(f.meta?.hidden),
         narrow: f.meta?.width === 'half',
         sortable: true,
+        primary: Boolean(f.schema?.is_primary_key),
+        readonly: Boolean(f.schema?.is_primary_key || f.meta?.readonly
+          || (f.meta?.special ?? []).some((sp) => SYSTEM_SPECIALS.includes(sp))),
+        required: Boolean(f.meta?.required),
       }
     })
 }
@@ -121,6 +130,7 @@ export async function secretFields(collection: string): Promise<Set<string>> {
 export const directusSource: MeeoviTableSource = {
   id: 'directus',
   label: 'Directus',
+  filters: true,
 
   handles() {
     return Boolean(config().url)
@@ -136,6 +146,7 @@ export const directusSource: MeeoviTableSource = {
     if (query.fields?.length) params.fields = query.fields.join(',')
     if (query.sort) params.sort = query.sort
     if (query.search) params.search = query.search
+    if (query.filter) params.filter = JSON.stringify(query.filter)
 
     const res = await $fetch<{ data: Record<string, unknown>[], meta?: { filter_count?: number } }>(
       `${url}/items/${encodeURIComponent(query.collection)}`,
@@ -146,4 +157,27 @@ export const directusSource: MeeoviTableSource = {
   },
 
   schema: directusSchema,
+
+  async create(collection, data) {
+    const { url, token } = config()
+    const res = await $fetch<{ data: Record<string, unknown> }>(`${url}/items/${encodeURIComponent(collection)}`, {
+      method: 'POST', headers: headers(token), body: data,
+    })
+    return res.data
+  },
+
+  async update(collection, id, data) {
+    const { url, token } = config()
+    const res = await $fetch<{ data: Record<string, unknown> }>(`${url}/items/${encodeURIComponent(collection)}/${encodeURIComponent(String(id))}`, {
+      method: 'PATCH', headers: headers(token), body: data,
+    })
+    return res.data
+  },
+
+  async remove(collection, id) {
+    const { url, token } = config()
+    await $fetch(`${url}/items/${encodeURIComponent(collection)}/${encodeURIComponent(String(id))}`, {
+      method: 'DELETE', headers: headers(token),
+    })
+  },
 }

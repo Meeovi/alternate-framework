@@ -1,0 +1,52 @@
+{
+  "name": "@mframework/meeovi-integrations",
+  "version": "0.1.0",
+  "description": "Per-user integrations for M Framework: users install integrations from the catalog (Directus `integrations`), and each installed plugin is switched on for that user only.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./types": "./runtime/types.ts",
+    "./components/*": "./runtime/components/*",
+    "./composables/*": "./runtime/composables/*",
+    "./server": "./server/utils/installs.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "server",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'meeovi-integrations is consumed from source (module.ts); no build step' && exit 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "integrations",
+    "plugins",
+    "directus",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.4.8"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.4.8",
+    "@types/node": "latest",
+    "nuxt": "^4.6.0",
+    "typescript": "~6.0.3",
+    "vue": "^3.5.41"
+  }
+}

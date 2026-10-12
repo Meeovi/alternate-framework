@@ -24,11 +24,7 @@
         <NuxtLink :to="`/product/${product?.id}`" class="no-underline"> {{ product?.name }}
         </NuxtLink>
         <div class="flex items-center pt-1">
-          <v-rating size="xs" active-color="warning" :model-value="product?.rating" :max="5" />
-
-          <NuxtLink :to="`/product/${product?.id}`" class="pl-1 no-underline">
-            <v-chip size="xs">{{ product?.rating }}</v-chip>
-          </NuxtLink>
+          <MeeoviRating type="product" :id="product?.id" summary />
         </div>
         <p class="product-card__muted block py-2 font-normal leading-5 typography-text-sm">
           By: {{ product?.shops?.[0]?.shops_id?.name }}

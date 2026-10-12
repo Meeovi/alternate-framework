@@ -68,11 +68,7 @@
         </v-tabs-window-item>
 
         <v-tabs-window-item :value="2">
-          <div v-if="shop?.comments?.length" v-for="(comments, index) in shop?.comments" :key="index">
-            <commentsCard :commentId="comments?.comments_id" />
-          </div>
-
-          <div class="text-center">{{ shop?.name }} has no comments available</div>
+          <MeeoviDiscussion v-if="shop?.id" type="outlet" :id="shop.id" :title="shop?.name" />
         </v-tabs-window-item>
 
         <v-tabs-window-item :value="3">
@@ -153,7 +149,6 @@
   } from '#imports'
   import showcasesCard from '#commerce/app/components/catalog/product/relatedproducts.vue'
   import productCard from '../../components/catalog/product/productCard.vue'
-  import commentsCard from '#social/app/components/blocks/comments.vue'
   import spacesCard from '#social/app/components/related/space.vue'
   import shortsCard from '#social/app/components/related/short.vue'
   import followBtn from '#social/app/components/blocks/FollowButton.vue'

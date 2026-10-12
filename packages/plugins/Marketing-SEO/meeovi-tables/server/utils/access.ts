@@ -32,7 +32,7 @@ export function collectionOptions(event: H3Event, collection: string): MeeoviTab
   return options
 }
 
-type SessionUser = { id?: string, role?: string | null }
+type SessionUser = { id?: string, role?: string | null, name?: string | null, username?: string | null }
 
 /** The signed-in user, from the app's session endpoint (better-auth by
  *  default), forwarding the request's cookie. */
@@ -58,10 +58,51 @@ export function canRead(options: MeeoviTableCollectionOptions, user: SessionUser
   return Boolean(user)
 }
 
-export async function assertAccess(event: H3Event, options: MeeoviTableCollectionOptions): Promise<void> {
-  const isPublic = !options.roles?.length && (options.access ?? 'authenticated') === 'public'
-  if (isPublic) return
+/** Checks read access; returns the signed-in user (null for public tables). */
+export async function assertAccess(event: H3Event, options: MeeoviTableCollectionOptions): Promise<SessionUser | null> {
+  const isPublic = !options.roles?.length && !options.owner && (options.access ?? 'authenticated') === 'public'
+  if (isPublic) return null
   const user = await sessionUser(event)
   if (!user) throw createError({ statusCode: 401, statusMessage: 'Sign in to view this table' })
   if (!canRead(options, user)) throw createError({ statusCode: 403, statusMessage: "You don't have access to this table" })
+  return user
+}
+
+/** May this user create / edit / delete in the collection? On `owner`
+ *  tables every signed-in reader may — limited to their own rows. */
+export function canEditRows(options: MeeoviTableCollectionOptions, user: SessionUser | null): boolean {
+  if (!user) return false
+  if (options.owner && user.id) return true
+  if (!options.editRoles?.length) return false
+  return userRoles(user).some((r) => options.editRoles!.includes(r))
+}
+
+export async function assertEdit(event: H3Event, options: MeeoviTableCollectionOptions): Promise<SessionUser> {
+  if (!options.editRoles?.length && !options.owner) throw createError({ statusCode: 405, statusMessage: 'This table is read-only' })
+  const user = await sessionUser(event)
+  if (!user) throw createError({ statusCode: 401, statusMessage: 'Sign in to edit this table' })
+  if (!canRead(options, user) || !canEditRows(options, user)) {
+    throw createError({ statusCode: 403, statusMessage: "You don't have permission to edit this table" })
+  }
+  return user
+}
+
+/** The user id rows must belong to, or null when this user sees every row
+ *  (no `owner` on the table, or a bypass role such as admin). */
+export function ownerScope(options: MeeoviTableCollectionOptions, user: SessionUser | null): string | null {
+  if (!options.owner) return null
+  const bypass = options.ownerBypassRoles ?? ['admin']
+  if (user && userRoles(user).some((r) => bypass.includes(r))) return null
+  // A signed-in user without an id can't own anything — match nothing.
+  return user?.id ? String(user.id) : '\u0000'
+}
+
+/** The table's fixed `filter` combined with its owner scope, if any. */
+export function readFilter(options: MeeoviTableCollectionOptions, user: SessionUser | null): Record<string, unknown> | undefined {
+  const parts: Record<string, unknown>[] = []
+  if (options.filter) parts.push(options.filter)
+  const owner = ownerScope(options, user)
+  if (owner !== null) parts.push({ [options.owner!]: { _eq: owner } })
+  if (!parts.length) return undefined
+  return parts.length === 1 ? parts[0] : { _and: parts }
 }

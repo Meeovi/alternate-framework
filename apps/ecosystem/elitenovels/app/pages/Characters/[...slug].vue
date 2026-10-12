@@ -138,7 +138,7 @@
         </v-col>
 
         <v-col cols="12">
-          <comments />
+          <MeeoviDiscussion v-if="character?.id" type="character" :id="character.id" :title="character?.name" />
         </v-col>
       </v-row>
     </div>
@@ -159,7 +159,6 @@
   import {
     useHead
   } from '#imports'
-  import comments from '~/components/partials/comments.vue'
   import relatedcharacters from '~/components/related/relatedcharacters.vue'
 
   const route = useRoute()

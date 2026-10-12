@@ -21,11 +21,11 @@
                         <editMenu :post="post" />
                     </v-toolbar>
                     <div class="align-end text-white" height="200" v-if="post?.file_url || post?.file">
-                        <video :src="getAssetURL(post?.file_url || post?.file)"></video>
+                        <MeeoviPlayer :src="getAssetURL(post?.file_url || post?.file)" :title="post?.title" />
                     </div>
 
                     <div class="align-end text-white" height="200" v-else-if="post?.audio_url || post?.audio">
-                        <audio :src="getAssetURL(post?.audio_url || post?.audio)"></audio>
+                        <MeeoviPlayer kind="audio" :src="getAssetURL(post?.audio_url || post?.audio)" :title="post?.title" />
                     </div>
 
                     <div class="align-end text-white" height="200" v-else-if="post?.image_url || post?.image">
@@ -46,8 +46,8 @@
                     </v-card-text>
 
                     <v-card-actions>
-                        <!--Like-->
-                        <LikeButton v-if="post?.id" target-type="post" :target-id="post.id" size="small" />
+                        <!--Rating (rate on the post page)-->
+                        <MeeoviRating v-if="post?.id" type="post" :id="post.id" summary />
 
                         <!--Reactions-->
                         <v-btn variant="text">
@@ -94,16 +94,10 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import share from '#social/app/components/blocks/share.vue';
     import repost from '#social/app/components/blocks/repost/repost.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
-    import LikeButton from '#social/app/components/blocks/LikeButton.vue';
     import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
     import {
-        toRef,
-        onMounted,
-        computed
+        toRef
     } from '#imports'
-    import {
-        useReactionsStore
-    } from '../../stores/useReactionsStore'
 
     const { $sdk } = useNuxtApp()
 
@@ -114,24 +108,6 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
         },
     });
     const post = toRef(props, 'post');
-
-    const reactionsStore = useReactionsStore()
-    const reactionState = computed(() => {
-        const rid = post.value?.reactions?.reactions_id
-        if (!rid) return {
-            likeCount: 0,
-            isLiked: false,
-            loading: false
-        }
-        return reactionsStore.getItem(rid, post.value?.type)
-    })
-
-    onMounted(async () => {
-        const rid = post.value?.reactions?.reactions_id
-        if (rid) {
-            await reactionsStore.fetchReactions(rid, post.value?.type)
-        }
-    })
 
     const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetURL(file) || '')
         .toLowerCase()

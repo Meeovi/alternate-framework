@@ -17,6 +17,10 @@
         <v-tabs-window-item value="timeline">
           <v-row>
             <v-col cols="12" md="4">
+              <!-- Trust score: average rating of everything this creator made -->
+              <v-card v-if="userId" class="mb-4 pa-4" elevation="0" border>
+                <MeeoviCreatorRating :user-id="String(userId)" />
+              </v-card>
               <ProfileIntroCard :email="userEmail" :member-id="userId" :role="userRole" />
               <ProfileManageCard :is-seller="isSeller" />
             </v-col>

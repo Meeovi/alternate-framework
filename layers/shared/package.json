@@ -38,7 +38,6 @@
     "@sentry/nuxt": "^10",
     "@unhead/vue": "^2.1.17",
     "@uploadthing/vue": "7.3.3",
-    "@videojs/html": "^10.0.0-beta.24",
     "@vue-email/compiler": "^0.8.14",
     "@vue-email/components": "^0.0.21",
     "@vueuse/core": "^14.0.0",

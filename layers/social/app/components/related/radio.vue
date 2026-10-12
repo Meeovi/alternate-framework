@@ -11,8 +11,12 @@
                         {{ radio?.description }}
                     </v-card-text>
 
+                    <div class="px-4 pb-2">
+                        <MeeoviRating v-if="radio?.id" type="station" :id="radio.id" summary />
+                    </div>
+
                     <v-btn class="ms-2" size="small" text="LISTEN" variant="outlined"
-                        :href="`/product/${radio?.id}`" />
+                        :to="`/connect/station/${radio?.slug || radio?.id}`" />
                 </div>
 
                 <v-avatar class="ma-3" rounded="0" size="125">

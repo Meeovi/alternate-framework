@@ -94,8 +94,17 @@ export default defineNuxtConfig({
   ],
 
   modules: [
+    // Live discussions (Rocket.Chat, collaborrate.com) — <MeeoviDiscussion>
+    '@mframework/meeovi-discussions',
+    // Video / audio / radio player on Video.js 10 — <MeeoviPlayer>
+    '@mframework/meeovi-player',
+    // 1–5 star ratings on everything (replaces likes) — <MeeoviRating>
+    '@mframework/meeovi-ratings',
     '@pinia/nuxt',
     '@mframework/meeovi-tables',
+    // Per-user integrations: catalog + Install/Uninstall at
+    // /dashboard/integrations; installs in Directus `integration_installs`.
+    '@mframework/meeovi-integrations',
   ],
 
   // @mframework/meeovi-tables — <MeeoviTable collection="…" /> and
@@ -103,26 +112,80 @@ export default defineNuxtConfig({
   // come from an installed adapter (adapter-magento: products, orders) or
   // Directus, columns from Directus. Grouped like the workspace sidebar.
   meeoviTables: {
-    collections: {
-      // Sales — admin only
-      orders: { label: 'Orders', roles: ['admin'], sort: '-id' },
-      invoices: { label: 'Invoices', roles: ['admin'], sort: '-id' },
-      transactions: { label: 'Transactions', roles: ['admin'], sort: '-id' },
-      // Catalog — admins and sellers
-      products: { label: 'Products', roles: ['admin', 'seller'], sort: 'name' },
-      brands: { label: 'Brands', roles: ['admin', 'seller'], sort: 'name' },
-      departments: { label: 'Departments', roles: ['admin', 'seller'], sort: 'name' },
-      categories: { label: 'Categories', roles: ['admin', 'seller'], sort: 'name' },
-      attributes: { label: 'Attributes', roles: ['admin', 'seller'] },
-      // Content — admin only
-      pages: { label: 'Pages', roles: ['admin'] },
-      posts: { label: 'Posts', roles: ['admin'] },
-      spaces: { label: 'Spaces', roles: ['admin'] },
-      lists: { label: 'Lists', roles: ['admin'] },
-      tags: { label: 'Tags', roles: ['admin'] },
-      // Marketing — admin only
-      newsletters: { label: 'Newsletters', roles: ['admin'] },
-    },
+    collections: (() => {
+      // Admins read and create/edit/delete everything (all rows); sellers
+      // may read the catalog. `fallback: false` = commerce data that only an
+      // installed commerce adapter (adapter-magento, …) may provide — the
+      // table shows a notice until one does.
+      const admin = { roles: ['admin'], editRoles: ['admin'] }
+      const catalog = { roles: ['admin', 'seller'], editRoles: ['admin'] }
+      const adapterOnly = { ...admin, fallback: false }
+      return {
+        // Sales — /sales/*
+        orders: { label: 'Orders', ...admin, sort: '-id' },
+        invoices: { label: 'Invoices', ...admin, sort: '-id' },
+        transactions: { label: 'Transactions', ...admin, sort: '-id' },
+        payments: { label: 'Payments', ...admin, sort: '-id' },
+        shipments: { label: 'Shipments', ...adapterOnly },
+        creditmemos: { label: 'Credit Memos', ...adapterOnly },
+        billingagreements: { label: 'Billing Agreements', ...adapterOnly },
+        // Catalog — /catalog/*
+        products: { label: 'Products', ...catalog, sort: 'name' },
+        giftcards: { label: 'Gift Cards', ...adapterOnly },
+        brands: { label: 'Brands', ...catalog, sort: 'name' },
+        departments: { label: 'Departments', ...catalog, sort: 'name' },
+        categories: { label: 'Categories', ...catalog, sort: 'name' },
+        attributes: { label: 'Attributes', ...catalog },
+        // Content — /content/*
+        pages: { label: 'Pages', ...admin },
+        posts: { label: 'Posts', ...admin },
+        spaces: { label: 'Spaces', ...admin },
+        lists: { label: 'Lists', ...admin },
+        tags: { label: 'Tags', ...admin },
+        // Users manage their own (`owner` = better-auth user id, stamped by
+        // the server; admins see everyone's). The frontends stay in
+        // layers/social (/connect/vibez, /connect/radio, /connect/memories).
+        vibez: {
+          label: 'Vibez', collection: 'shorts', owner: 'creator_id', ownerName: 'creator', sort: '-date_created',
+          fields: ['id', 'name', 'description', 'type', 'status', 'video_url', 'thumbnail_url', 'duration',
+            'dateTime', 'age_requirement', 'region', 'creator', 'views', 'date_created'],
+          readonlyFields: ['views'],
+        },
+        radio_stations: {
+          label: 'Radio Stations', collection: 'radios', owner: 'creator_id', ownerName: 'creator', sort: 'name',
+          fields: ['id', 'name', 'slug', 'status', 'type', 'format', 'satellite', 'internet', 'description', 'creator', 'date_created'],
+        },
+        // Memories = the user's past posts (Bluesky ones are listed, read-only,
+        // on the page itself).
+        memories: {
+          label: 'Memories', collection: 'posts', owner: 'creator_id', sort: '-date_created',
+          filter: { date_created: { _lt: '$NOW' } },
+          fields: ['id', 'title', 'content', 'summary', 'status', 'content_type', 'visibility_scope',
+            'target_audience', 'date_published', 'views', 'date_created'],
+          readonlyFields: ['views'],
+          // NOT NULL on posts, not shown in the form
+          defaults: { gallery: [] },
+        },
+        // Customers — /customers/*
+        customers: { label: 'Customers', ...adapterOnly },
+        online_customers: { label: 'Now Online', ...adapterOnly, unavailableNotice: 'No customers online right now.' },
+        customer_groups: { label: 'Customer Groups', ...adapterOnly },
+        // Marketing — /marketing/*
+        newsletters: { label: 'Newsletters', ...admin },
+        promotions: { label: 'Promotions', ...adapterOnly },
+        // Seller reviews = messages in product / outlet live discussions
+        // (Rocket.Chat; server/plugins/discussion-reviews.ts); read-only.
+        reviews: { label: 'Reviews', roles: ['admin'], fallback: false, sort: '-date' },
+        // Reports — /reports/*
+        // Directus `report` collection (user feedback / reports)
+        report: { label: 'Feedback', ...admin, sort: '-date_created' },
+        // Stores — /stores/*
+        product_attributes: { label: 'Product Attributes', ...catalog },
+        warehouses: { label: 'Warehouses', ...adapterOnly },
+        sources: { label: 'Inventory Sources', ...adapterOnly },
+        terms: { label: 'Terms and Conditions', ...adapterOnly },
+      }
+    })(),
   },
 
   pinia: {

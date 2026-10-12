@@ -3,7 +3,7 @@
     <v-toolbar :color="list?.color || 'primary'" dark>
       <v-toolbar-title>{{ list?.name || 'List' }}</v-toolbar-title>
       <template #append>
-        <LikeButton v-if="list?.id" target-type="list" :target-id="list.id" />
+        <MeeoviRating v-if="list?.id" type="list" :id="list.id" />
       </template>
     </v-toolbar>
 
@@ -18,6 +18,14 @@
          (packages/plugins/CMS-Content/list-type-*) registered in the
          app's nuxt.config.ts; each adds itself to appConfig.listTypes. -->
     <div v-else-if="listTypeEntry" class="pa-4">
+      <!-- A list type the viewer hasn't installed (Meeovi Workspace →
+           Integrations) shows in the default view instead. -->
+      <v-alert v-if="lockedListType" type="info" variant="tonal" class="mb-4"
+        :text="`Install the ${lockedListType.label} integration to see this list as a ${lockedListType.label}.`">
+        <template #append>
+          <v-btn v-if="integrationsCatalog" :href="integrationsCatalog" variant="text" text="Get it" />
+        </template>
+      </v-alert>
       <component :is="listTypeEntry.component" :listId="list.id" :items="list.items" />
     </div>
 
@@ -32,7 +40,6 @@
     useRoute
   } from 'vue-router'
   import Grid from '#ui/app/components/ui/DataGrid/components/Grid.vue'
-  import LikeButton from '../../../components/blocks/LikeButton.vue'
 
   const route = useRoute();
   const {
@@ -82,9 +89,30 @@
 
   const appConfig = useAppConfig()
   const listTypeName = computed(() => list.value?.list_type?.list_type_id?.name)
+  const fallbackListType = computed(() => Object.values(appConfig.listTypes || {}).find(t => t?.fallback) || null)
+
+  // Per-user integrations (@mframework/meeovi-integrations, when the app
+  // registers it): a list-type plugin only renders for viewers who
+  // installed it. Fallback types (the default view) are always on.
+  const runtimeConfig = useRuntimeConfig()
+  const integrationsApi = runtimeConfig.public.meeoviIntegrations?.apiBase
+  const integrationsCatalog = runtimeConfig.public.meeoviIntegrations?.catalogUrl || null
+  const requestFetch = useRequestFetch()
+  const { data: installedIntegrations } = await useAsyncData('meeovi-integrations:installed',
+    () => integrationsApi
+      ? requestFetch(`${integrationsApi}/installed`).catch(() => ({ plugins: [], integrations: [] }))
+      : Promise.resolve(null))
+
+  const lockedListType = computed(() => {
+    const entry = (appConfig.listTypes || {})[listTypeName.value]
+    if (!entry || entry.fallback || !integrationsApi) return null
+    return installedIntegrations.value?.plugins?.includes(entry.plugin) ? null : entry
+  })
+
   const listTypeEntry = computed(() => {
-    const types = appConfig.listTypes || {}
-    return types[listTypeName.value] || Object.values(types).find(t => t?.fallback) || null
+    const entry = (appConfig.listTypes || {})[listTypeName.value]
+    if (entry && !lockedListType.value) return entry
+    return fallbackListType.value
   })
 
   const mediaItems = computed(() => {

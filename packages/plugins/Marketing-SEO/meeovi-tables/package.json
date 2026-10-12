@@ -40,6 +40,7 @@
   "dependencies": {
     "@nuxt/kit": "^4.4.8",
     "@svar-ui/vue-core": "^2.6.0",
+    "@svar-ui/vue-editor": "^2.6.0",
     "@svar-ui/vue-grid": "^2.7.0",
     "alternate-sdk": "file:../../Admin/alternate-sdk"
   },

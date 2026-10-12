@@ -38,19 +38,16 @@ const novuCssPath = (() => {
  * Only the directives listed here are enforced; anything not named is
  * unrestricted. `connect-src` is the tight one — every host the browser is
  * allowed to fetch/beacon/WebSocket to has to be enumerated, so a new
- * integration that talks to its own API from the client (Sentry, Coral,
+ * integration that talks to its own API from the client (Sentry,
  * analytics pixels, …) must be added here or it fails silently.
  */
 function buildContentSecurityPolicy(): string {
   const httpsOrigin = (url?: string) => (url ? url.replace(/^https?:/, 'https:') : '')
-  const wssOrigin = (url?: string) => (url ? url.replace(/^https?:\/\//, 'wss://').replace(/\/$/, '') : '')
 
   const directusHttps = httpsOrigin(process.env.DIRECTUS_URL)
   // Pixanomy (Nextcloud) — where every user upload now lives; see
   // server/utils/pixanomy.ts. Public share links are played back directly.
   const pixanomyHttps = httpsOrigin(process.env.NUXT_PIXANOMY_URL || 'https://app.pixanomy.com')
-  const coralHttps = httpsOrigin(process.env.CORAL_SERVER_URL)
-  const coralWss = wssOrigin(process.env.CORAL_SERVER_URL)
 
   // Self-hosted Novu (/home/meebuzo/github/novu) is plain http:// on a raw
   // IP, not https:// like the others above — httpsOrigin() would rewrite
@@ -94,8 +91,6 @@ function buildContentSecurityPolicy(): string {
     // .ingest.de.sentry.io, …) — without it every error report is dropped.
     'https://*.sentry.io',
     directusHttps,
-    coralHttps,
-    coralWss,
     novuApi,
     novuWs,
     novuWss,
@@ -573,20 +568,6 @@ export default defineNuxtConfig({
         ...(novuCssPath ? { '@novu/js/dist/index.css': novuCssPath } : {}),
       }
     },
-    vue: {
-      template: {
-        compilerOptions: {
-          // The top-level `vue.compilerOptions` Nuxt config below isn't
-          // forwarded to @vitejs/plugin-vue in this Nuxt version, so the
-          // video-player/media-* custom elements never resolved without
-          // this duplicate, Vite-level passthrough.
-          isCustomElement: (tag: string) =>
-            tag.startsWith('video-') ||
-            tag.startsWith('media-') ||
-            tag.endsWith('-video')
-        }
-      }
-    },
   },
 
   nitro: {
@@ -615,13 +596,4 @@ export default defineNuxtConfig({
     },
   },
 
-  vue: {
-    compilerOptions: {
-      // Instruct Vue to treat all tags starting with 'video-' or 'media-' as custom elements
-      isCustomElement: (tag: string) =>
-        tag.startsWith('video-') ||
-        tag.startsWith('media-') ||
-        tag.endsWith('-video')
-    }
-  },
 })

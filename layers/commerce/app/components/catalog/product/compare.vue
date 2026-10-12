@@ -25,7 +25,7 @@
       <tr>
         <th class="text-left">Rating</th>
         <td v-for="product in products" :key="`rating-${product?.id}`">
-          <ratings :rating="product?.rating" />
+          <MeeoviRating type="product" :id="product?.id" readonly size="x-small" />
         </td>
       </tr>
 
@@ -79,7 +79,6 @@
 </template>
 
 <script setup>
-  import ratings from '../../blocks/ratings.vue'
   import colorOptions from './colorOptions.vue'
   import sizeOptions from './sizeOptions.vue'
   import addToCartBtn from '../../blocks/addToCartBtn.vue'

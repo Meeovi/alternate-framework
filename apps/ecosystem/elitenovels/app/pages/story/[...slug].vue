@@ -44,14 +44,13 @@
 
     <relatedstories />
     <v-divider></v-divider>
-    <comments />
+    <MeeoviDiscussion v-if="story?.id" type="story" :id="story.id" :title="story?.title || story?.name" />
   </div>
   </div>
 </template>
 
 <script setup>
   import PageLoader from '~/components/partials/PageLoader.vue'
-  import comments from '~/components/partials/comments.vue'
   import characters from '~/components/related/character.vue'
   import relatedstories from '~/components/related/relatedstories.vue'
   import { computed } from 'vue'

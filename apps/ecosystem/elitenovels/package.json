@@ -26,6 +26,8 @@
       "postinstall": "node -e \"process.env.CI || require('node:child_process').execSync('nuxt prepare', { stdio: 'inherit' })\""
    },
    "dependencies": {
+     "@mframework/meeovi-player": "file:../../../packages/plugins/Media/meeovi-player",
+     "@mframework/meeovi-discussions": "file:../../../packages/plugins/Social/meeovi-discussions",
       "@directus/sdk": "^26.0.0",
       "@directus/types": "^17.0.0",
       "@fortawesome/fontawesome-free": "^7.3.1",

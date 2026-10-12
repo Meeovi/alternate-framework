@@ -17,6 +17,7 @@ const layers = useLayers(__dirname, {
 })
 
 export default defineNuxtConfig({
+
   extends: layers.extends(),
   alias: {
     ...Object.fromEntries(
@@ -105,10 +106,19 @@ export default defineNuxtConfig({
   ],
 
   modules: [
+    // Live discussions (Rocket.Chat, collaborrate.com) — <MeeoviDiscussion>
+    '@mframework/meeovi-discussions',
+    // Video / audio / radio player on Video.js 10 — <MeeoviPlayer>
+    '@mframework/meeovi-player',
+    // 1–5 star ratings on everything (replaces likes) — <MeeoviRating>
+    '@mframework/meeovi-ratings',
     '@pinia/nuxt',
     '@sentry/nuxt/module',
     'adapter-magento/module',
     resolve(__dirname, '../../../packages/plugins/Email-Notifications/meeovi-newsletter/module.ts'),
+    // Per-user integrations (installed from Meeovi Workspace): list types
+    // below only render for users who installed them.
+    '@mframework/meeovi-integrations',
     // List types rendered by layers/social's /lists/list/[slug] page —
     // drop one to disable that view.
     resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-tasklist/module.ts'),

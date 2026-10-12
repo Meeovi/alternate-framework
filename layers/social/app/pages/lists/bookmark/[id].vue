@@ -26,14 +26,13 @@
 
         <v-divider></v-divider>
         <v-col cols="12">
-            <comments />
+            <MeeoviDiscussion v-if="website?.id" type="bookmark" :id="website.id" :title="website?.name" />
         </v-col>
     </v-row>
 </template>
 
 <script setup>
 import updatebookmark from '#social/app/components/features/lists/update-bookmark.vue'
-import comments from '#social/app/components/blocks/comments.vue'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
 const {

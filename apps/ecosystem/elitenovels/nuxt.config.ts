@@ -88,6 +88,10 @@ export default defineNuxtConfig({
   // @storefront-ui/nuxt come from the ui-shell layer — vuetify-nuxt-module
   // would create a second Vuetify instance on top of it.
   modules: [
+    // Live discussions (Rocket.Chat, collaborrate.com) — <MeeoviDiscussion>
+    '@mframework/meeovi-discussions',
+    // Video / audio / radio player on Video.js 10 — <MeeoviPlayer>
+    '@mframework/meeovi-player',
     '@nuxtjs/leaflet',
   ],
 
@@ -185,12 +189,6 @@ export default defineNuxtConfig({
       directus: {
         url: envUrl(process.env.DIRECTUS_URL),
         nuxtBaseUrl: envUrl(process.env.NUXT_PUBLIC_SITE_URL) || 'http://localhost:3011',
-      },
-
-      disqus: {
-        shortname: process.env.NUXT_PUBLIC_DISQUS_SHORTNAME || 'meeovi',
-        devShortname: 'meeovi-dev', // fallback (can be fake if you just want placeholder)
-        devBaseUrl: 'http://localhost:3000' // used for URL in dev
       },
 
       meeDirectusUrl: envUrl(process.env.MEE_DIRECTUS_URL) || 'http://localhost:8055',

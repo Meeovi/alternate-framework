@@ -9,14 +9,13 @@
           </v-card-subtitle>
 
           <v-card-text>
-            <videoPlayer :player="playerData"
-              style="width: 100%; min-height: 100%;" />
+            <MeeoviPlayer :src="playerData.src" :poster="playerData.poster" :title="short?.name" />
 
             <p v-if="short?.description" class="mt-4">{{ short.description }}</p>
           </v-card-text>
 
           <v-card-actions>
-            <LikeButton v-if="short?.id" target-type="shorts" :target-id="short.id" />
+            <MeeoviRating v-if="short?.id" type="shorts" :id="short.id" />
             <v-spacer />
             <createListBtn v-if="short" :item="listItem" kind="vibe" />
           </v-card-actions>
@@ -25,7 +24,7 @@
 
       <v-col>
         <v-card elevation="2" style="height: 100%;">
-          <comments v-if="short?.id" :comment-id="String(short.id)" :story-url="`/connect/vibe/${short.id}`" />
+          <MeeoviDiscussion v-if="short?.id" type="vibe" :id="short.id" :title="short?.name" />
         </v-card>
       </v-col>
     </v-row>
@@ -44,10 +43,7 @@
   import {
     useRoute
   } from 'vue-router'
-  import comments from '../../../components/blocks/comments.vue'
   import createListBtn from '../../../components/blocks/partials/createListBtn.vue'
-  import LikeButton from '../../../components/blocks/LikeButton.vue'
-  import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
   import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import {
     ref,
@@ -72,7 +68,7 @@
   const short = ref(null)
 
   const playerData = computed(() => ({
-    sources: [{ src: getAssetURL(short.value?.video_url || short.value?.video) }],
+    src: getAssetURL(short.value?.video_url || short.value?.video),
     poster: getAssetURL(short.value?.thumbnail_url || short.value?.thumbnail),
   }))
 

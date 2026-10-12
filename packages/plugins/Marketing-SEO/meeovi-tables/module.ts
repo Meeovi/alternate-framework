@@ -46,7 +46,7 @@ export default defineNuxtModule<MeeoviTablesModuleOptions>({
     addImportsDir(resolver.resolve('runtime/composables'))
 
     // SVAR ships ESM that Nuxt's server build should bundle, not externalize.
-    nuxt.options.build.transpile.push('@svar-ui/vue-grid', '@svar-ui/vue-core')
+    nuxt.options.build.transpile.push('@svar-ui/vue-grid', '@svar-ui/vue-core', '@svar-ui/vue-editor')
 
     addServerHandler({
       route: apiBase,
@@ -57,6 +57,21 @@ export default defineNuxtModule<MeeoviTablesModuleOptions>({
       route: `${apiBase}/:collection`,
       method: 'get',
       handler: resolver.resolve('server/api/collection.get'),
+    })
+    addServerHandler({
+      route: `${apiBase}/:collection`,
+      method: 'post',
+      handler: resolver.resolve('server/api/collection.post'),
+    })
+    addServerHandler({
+      route: `${apiBase}/:collection/:id`,
+      method: 'patch',
+      handler: resolver.resolve('server/api/item.patch'),
+    })
+    addServerHandler({
+      route: `${apiBase}/:collection/:id`,
+      method: 'delete',
+      handler: resolver.resolve('server/api/item.delete'),
     })
 
     // Private config — the Directus token and the collection allowlist

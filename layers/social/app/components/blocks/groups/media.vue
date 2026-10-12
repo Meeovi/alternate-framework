@@ -5,7 +5,7 @@
         </div>
 
         <div v-if="visual?.media">
-            <videoPlayer :player="visual?.media" />
+            <MeeoviPlayer :src="getAssetURL(visual?.media)" :type="visual?.media?.type" />
         </div>
 
         <div v-else>
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-    import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
+    import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
     defineProps({
         image: {

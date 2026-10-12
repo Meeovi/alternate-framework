@@ -24,16 +24,14 @@
       </v-menu>
     </template>
 
-    <video 
-      ref="videoRef"
+    <MeeoviPlayer
       class="vibe-video"
       :src="getAssetURL(short?.video_url || short?.video)"
-      controls
-      preload="metadata"
-      @click="togglePlay"
+      :poster="getAssetURL(short?.thumbnail_url || short?.thumbnail)"
+      :title="short?.name"
     />
 
-    <template>
+    <v-card-text>
       <h4 v-if="short?.name" class="mb-2">{{ short?.name }}</h4>
       <p v-if="short?.description">{{ short?.description }}</p>
       
@@ -50,29 +48,27 @@
           #{{ tag }}
         </v-chip>
       </div>
-    </template>
+    </v-card-text>
 
-    <template>
-      <LikeButton target-type="shorts" :target-id="short?.id" :initial-count="short?.likes_count || 0" />
+    <v-card-actions>
+      <MeeoviRating type="shorts" :id="short?.id" summary />
 
       <v-btn icon="fas fa-comment" variant="text" @click="toggleComments" />
       <span class="text-caption">{{ short?.comments_count || 0 }}</span>
       
-      <v-btn icon="fas share-nodes" variant="text" @click="shareVibe" />
+      <v-btn icon="fas fa-share-nodes" variant="text" @click="shareVibe" />
       <span class="text-caption">{{ short?.shares_count || 0 }}</span>
       
       <v-spacer />
       <v-btn :to="`/connect/vibe/${short?.id}`" variant="text" size="small">View Vibe</v-btn>
-    </template>
+    </v-card-actions>
 
-    <!-- Comments Section — Coral, the real comment system this app runs
-         (see components/blocks/comments.vue), given a per-vibe thread via
-         commentId rather than the custom mock comment list this used to
-         render. -->
+    <!-- The vibe's live discussion (@mframework/meeovi-discussions). Mounted
+         only once opened, so a feed doesn't load one chat per card. -->
     <v-expand-transition>
-      <div v-show="showComments">
+      <div v-if="showComments">
         <v-divider />
-        <commentsCard v-if="short?.id" :comment-id="String(short.id)" :story-url="`/connect/vibe/${short.id}`" />
+        <MeeoviDiscussion v-if="short?.id" type="vibe" :id="short.id" :title="short?.name" height="420px" />
       </div>
     </v-expand-transition>
   </v-card>
@@ -81,8 +77,6 @@
 <script setup>
 import { ref, computed } from '#imports'
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
-import commentsCard from '../../blocks/comments.vue'
-import LikeButton from '../../blocks/LikeButton.vue'
 
 const { short } = defineProps({
   short: {
@@ -93,7 +87,6 @@ const { short } = defineProps({
 
 const emit = defineEmits(['hashtag-click', 'comment-click', 'share'])
 
-const videoRef = ref(null)
 const showComments = ref(false)
 
 const hashtags = computed(() => {
@@ -111,16 +104,6 @@ const formatDate = (dateString) => {
     hour: '2-digit',
     minute: '2-digit'
   })
-}
-
-const togglePlay = () => {
-  if (videoRef.value) {
-    if (videoRef.value.paused) {
-      videoRef.value.play()
-    } else {
-      videoRef.value.pause()
-    }
-  }
 }
 
 const toggleComments = () => {

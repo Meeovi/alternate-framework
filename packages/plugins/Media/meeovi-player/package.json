@@ -1,0 +1,54 @@
+{
+  "name": "@mframework/meeovi-player",
+  "version": "0.1.0",
+  "description": "One media player for M Framework \u2014 video, audio, live video and radio \u2014 on Video.js 10 (@videojs/html).",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./types": "./runtime/types.ts",
+    "./components/*": "./runtime/components/*"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "server",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'meeovi-player is consumed from source (module.ts); no build step' && exit 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "video",
+    "audio",
+    "radio",
+    "player",
+    "videojs",
+    "video.js",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.4.8",
+    "@videojs/html": "10.0.1"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.4.8",
+    "@types/node": "latest",
+    "nuxt": "^4.6.0",
+    "typescript": "~6.0.3",
+    "vue": "^3.5.41"
+  }
+}

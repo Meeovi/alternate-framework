@@ -11,7 +11,9 @@
               <!--If the Product is a digital product-->
               <div
                 v-if="productTypeNames.includes('Audio') || productTypeNames.includes('Video') || productTypeNames.includes('Course')">
-                <videoPlayer :player="product" />
+                <MeeoviPlayer :src="getAssetURL(product?.file)" :type="product?.file?.type"
+                  :kind="productTypeNames.includes('Audio') ? 'audio' : undefined"
+                  :poster="getAssetURL(product?.image)" :title="product?.name" />
               </div>
 
               <!--If the Product is a Gift Card-->
@@ -36,7 +38,9 @@
                 <v-slide-group v-model="videoModel" class="pa-4" selected-class="bg-success" show-arrows>
                   <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
                     v-for="(prodVideo, index) in product?.product_videos" :key="index">
-                    <videoPlayer :player="prodVideo?.product_videos_id" @click="toggle" />
+                    <MeeoviPlayer
+                      :src="getAssetURL(prodVideo?.product_videos_id?.video || prodVideo?.product_videos_id?.file || prodVideo?.product_videos_id)"
+                      :title="prodVideo?.product_videos_id?.name" @click="toggle" />
 
                     <div class="d-flex fill-height align-center justify-center">
                       <v-scale-transition>
@@ -84,9 +88,7 @@
                     <productReviews :review="review" />
                   </div>
                 </div>-->
-                  <comments :productName="product?.name"
-                    :productImage="`${$directus.url}/assets/${product?.image?.filename_disk}`"
-                    :productSku="product?.id" />
+                  <MeeoviDiscussion v-if="product?.id" type="product" :id="product.id" :title="product?.name" />
                 </v-window-item>
 
                 <!--Product Specifications-->
@@ -305,7 +307,6 @@
     ref,
     computed
   } from 'vue';
-  import comments from '#social/app/components/blocks/comments.vue'
   import radioCard from '#social/app/components/related/radio.vue'
   import { useCatalogFallback } from '../../composables/catalog/useCatalog'
   import productDetails from '../../components/catalog/product/productDetails.vue'
@@ -315,7 +316,7 @@
   import subscriptionCard from '../../components/catalog/product/subscriptionCard.vue'
   import short from '#social/app/components/related/short.vue'
   import spacesCard from '#social/app/components/related/space.vue'
-  import videoPlayer from '#shared/app/components/blocks/videoPlayer.vue'
+  import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import shop from '../../components/catalog/shops/stores.vue'
   import productCompare from '../../components/catalog/product/compare.vue'
 

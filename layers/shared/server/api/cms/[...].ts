@@ -46,6 +46,8 @@ const PUBLIC_READ_COLLECTIONS = new Set<string>([
 // overwritten with the signed-in user's id, and on update it's stripped.
 const OWNER_FIELDS: Record<string, string> = {
   shorts: 'creator_id',
+  radios: 'creator_id',
+  posts: 'creator_id',
 }
 
 export default defineEventHandler(async (event) => {

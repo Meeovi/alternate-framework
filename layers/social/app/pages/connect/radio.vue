@@ -87,24 +87,24 @@
     const {
         data: myStations
     } = await useAsyncData('myStations', () => {
-        // `session` was referenced here but never declared anywhere in this
-        // file — this threw on every load. radios also has no per-user
-        // ownership field of its own (only Directus's auto-managed
-        // user_created/user_updated), so "my stations" is approximated by
-        // who Directus recorded as the creator — accurate only if stations
-        // are ever created under each user's own Directus identity rather
-        // than a single shared service token.
-        if (!currentUser.value?.id) return []
+        // radios.creator_id is the better-auth id, stamped by the CMS proxy
+        // on create. The session is only known client-side (useCurrentUser
+        // loads it on mount), so this runs once it arrives.
+        if (!currentUser.value?.id) return Promise.resolve([])
         return $directus.request($readItems('radios', {
             fields: ['*', {
                 '*': ['*']
             }],
             filter: {
-                user_created: {
+                creator_id: {
                     _eq: currentUser.value.id
                 }
             }
         }))
+    }, {
+        server: false,
+        default: () => [],
+        watch: [() => currentUser.value?.id]
     })
 
     const {

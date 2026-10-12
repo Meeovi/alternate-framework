@@ -133,7 +133,7 @@
         </v-col>
 
         <v-col cols="12">
-          <comments />
+          <MeeoviDiscussion v-if="facet?.id" type="facet" :id="facet.id" :title="facet?.name || facet?.title" />
         </v-col>
       </v-row>
     </div>
@@ -153,7 +153,6 @@
   import {
     useHead
   } from '#imports'
-  import comments from '~/components/partials/comments.vue'
   import item from '~/components/related/facet.vue'
   import RelatedAbilities from '~/components/related/relatedabilities.vue'
   import RelatedTypes from '~/components/related/relatedtypes.vue'
