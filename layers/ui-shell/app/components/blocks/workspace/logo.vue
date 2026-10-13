@@ -1,6 +1,6 @@
 <template>
   <div class="logo">
-    <NuxtLink to="/" class="workspace-logo">
+    <NuxtLink to="/workspace" class="workspace-logo">
       <img src="../../../assets/workspace/meeovi-logo.png" alt="Meeovi" width="36" height="36">
       <span class="workspace-logo__text">
         <span class="workspace-logo__name">Meeovi</span>

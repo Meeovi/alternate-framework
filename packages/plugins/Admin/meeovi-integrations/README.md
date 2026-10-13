@@ -34,8 +34,8 @@ modules: ['@mframework/meeovi-integrations'],
 meeoviIntegrations: {
   // all optional
   // apiBase: '/api/integrations',
-  // catalogPath: '/dashboard/integrations',  // where the `integration` middleware redirects
-  // catalogUrl: 'https://workspace.example.com/dashboard/integrations', // catalog in another app
+  // catalogPath: '/workspace/dashboard/integrations',// where the `integration` middleware redirects
+  // catalogUrl: 'https://app.example.com/workspace/dashboard/integrations', // catalog in another app
 },
 ```
 

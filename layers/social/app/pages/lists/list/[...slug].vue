@@ -96,7 +96,10 @@
   // installed it. Fallback types (the default view) are always on.
   const runtimeConfig = useRuntimeConfig()
   const integrationsApi = runtimeConfig.public.meeoviIntegrations?.apiBase
-  const integrationsCatalog = runtimeConfig.public.meeoviIntegrations?.catalogUrl || null
+  // The catalog lives in this app's /workspace (catalogPath) unless a full
+  // URL to another app is configured.
+  const integrationsCatalog = runtimeConfig.public.meeoviIntegrations?.catalogUrl
+    || runtimeConfig.public.meeoviIntegrations?.catalogPath || null
   const requestFetch = useRequestFetch()
   const { data: installedIntegrations } = await useAsyncData('meeovi-integrations:installed',
     () => integrationsApi

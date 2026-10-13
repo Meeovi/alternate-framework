@@ -24,6 +24,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
       message: 'You are not authorized to access this page',
       color: 'error'
     })
-    return navigateTo('/app/user')
+    return navigateTo('/workspace')
   }
 })

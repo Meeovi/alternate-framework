@@ -414,7 +414,7 @@ export const plugins = [
     // /login) — it forwards the signed OAuth query and follows the
     // redirect back to the client once signed in.
     loginPage: '/login',
-    consentPage: '/oauth/consent',
+    consentPage: '/workspace/oauth/consent',
     scopes: ['openid', 'profile', 'email', 'offline_access'],
     schema: {
       oauthClient: { modelName: 'oauthProviderClient' },

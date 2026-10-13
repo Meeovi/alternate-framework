@@ -502,7 +502,7 @@ const auth = notificationService.catalog({
     .template({
       render: async ({ input }) => ({
         text: `A new login was detected for your account (${input.email}).${input.ipAddress ? ` IP: ${input.ipAddress}` : ''}${input.device ? ` Device: ${input.device}` : ''}${input.location ? ` Location: ${input.location}` : ''}. If this was you, no action needed. If not, please secure your account.`,
-        html: `<p>A new login was detected for your account (<strong>${input.email}</strong>).</p>${input.ipAddress ? `<p>IP: ${input.ipAddress}</p>` : ''}${input.device ? `<p>Device: ${input.device}</p>` : ''}${input.location ? `<p>Location: ${input.location}</p>` : ''}<p>If this was you, no action needed. If not, please <a href="/account/security">secure your account</a>.</p>`,
+        html: `<p>A new login was detected for your account (<strong>${input.email}</strong>).</p>${input.ipAddress ? `<p>IP: ${input.ipAddress}</p>` : ''}${input.device ? `<p>Device: ${input.device}</p>` : ''}${input.location ? `<p>Location: ${input.location}</p>` : ''}<p>If this was you, no action needed. If not, please <a href="/workspace/security">secure your account</a>.</p>`,
       }),
     }),
   passwordReset: notificationService

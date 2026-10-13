@@ -86,8 +86,15 @@ export default defineNuxtConfig({
   },
 
   appConfig: {
-    // ui-shell's default/nolive/settings layouts; the other apps' layouts stay out of this build
-    uiShell: { layout: 'default', layouts: ['nolive', 'settings'] },
+    // ui-shell's default/nolive/settings layouts, plus `workspace` for the
+    // business layer's /workspace pages; the other apps' layouts stay out of this build
+    uiShell: {
+      layout: 'default',
+      layouts: ['nolive', 'settings', 'workspace'],
+      // Directus `navigation` record ids for the /workspace sidebar, one
+      // section each (see layers/ui-shell/app/composables/useWorkspaceSidebar.ts)
+      workspaceSidebar: [139, 140, 141, 142, 143, 144, 145, 14],
+    },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Meeovi'}`
   },
 
@@ -119,6 +126,8 @@ export default defineNuxtConfig({
     // Per-user integrations (installed from Meeovi Workspace): list types
     // below only render for users who installed them.
     '@mframework/meeovi-integrations',
+    // Admin tables (SVAR DataGrid over the adapters) on /workspace pages — <MeeoviTable>
+    '@mframework/meeovi-tables',
     // List types rendered by layers/social's /lists/list/[slug] page —
     // drop one to disable that view.
     resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-tasklist/module.ts'),

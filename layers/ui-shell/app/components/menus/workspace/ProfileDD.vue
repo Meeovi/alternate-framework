@@ -33,7 +33,7 @@ async function logout() {
 
     <v-list class="mt-3 workspace-profile">
       <template v-if="user">
-        <v-list-item color="secondary" rounded="md" to="/settings">
+        <v-list-item color="secondary" rounded="md" to="/workspace/settings">
           <template #prepend>
             <v-icon icon="fas fa-gear" size="18" class="mr-2" />
           </template>

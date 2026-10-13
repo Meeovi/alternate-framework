@@ -16,6 +16,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   await refresh()
   if (!isInstalled(plugin)) {
     const config = useRuntimeConfig().public.meeoviIntegrations as MeeoviIntegrationsPublicConfig | undefined
-    return navigateTo({ path: config?.catalogPath || '/dashboard/integrations', query: { plugin } })
+    return navigateTo({ path: config?.catalogPath || '/workspace/dashboard/integrations', query: { plugin } })
   }
 })

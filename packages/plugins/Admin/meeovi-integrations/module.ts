@@ -27,7 +27,7 @@ export default defineNuxtModule<MeeoviIntegrationsModuleOptions>({
     sessionEndpoint: '/api/auth/get-session',
     catalogCollection: 'integrations',
     installsCollection: 'integration_installs',
-    catalogPath: '/dashboard/integrations',
+    catalogPath: '/workspace/dashboard/integrations',
     directus: {
       url: env.MEEOVI_INTEGRATIONS_DIRECTUS_URL || env.DIRECTUS_URL,
       token: env.MEEOVI_INTEGRATIONS_DIRECTUS_TOKEN || env.NUXTUS_DIRECTUS_STATIC_TOKEN,
@@ -64,7 +64,7 @@ export default defineNuxtModule<MeeoviIntegrationsModuleOptions>({
     nuxt.options.runtimeConfig.public.meeoviIntegrations = {
       ...(nuxt.options.runtimeConfig.public.meeoviIntegrations as Record<string, unknown> || {}),
       apiBase,
-      catalogPath: options.catalogPath || '/dashboard/integrations',
+      catalogPath: options.catalogPath || '/workspace/dashboard/integrations',
       catalogUrl: options.catalogUrl || '',
     }
   },

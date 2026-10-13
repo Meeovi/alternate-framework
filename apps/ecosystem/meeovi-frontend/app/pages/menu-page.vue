@@ -25,7 +25,7 @@
         </v-col>
         <v-col cols="3">
           <v-btn variant="text" stacked title="Notifications" prepend-icon="fas fa-bell" size="x-small"
-            href="/account/user/notifications">Notify Center</v-btn>
+            href="/notifications">Notify Center</v-btn>
         </v-col>
         <v-col cols="3">
           <v-btn @click="toggleDark()" variant="text">

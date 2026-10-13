@@ -421,9 +421,6 @@ export default defineNuxtConfig({
       },
     },
     '/u/**': { isr: false },
-    '/account/**': { isr: false },
-    '/settings/**': { isr: false },
-    '/security/**': { isr: false },
     '/profile/**': { isr: false },
     '/notifications': { isr: false },
     '/notifications/**': { isr: false },
@@ -452,8 +449,9 @@ export default defineNuxtConfig({
     // and replaying it for every later query is just wrong.
     '/results': { isr: false },
     '/search/**': { isr: false },
-    // Business/admin dashboards.
-    '/dashboard/**': { isr: false },
+    // Business/admin workspace (dashboard, settings, account, security).
+    '/workspace': { isr: false },
+    '/workspace/**': { isr: false },
   },
 
   experimental: {

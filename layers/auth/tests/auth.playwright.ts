@@ -20,7 +20,7 @@ test("dashboard shows user name", async ({ context, page }) => {
     await context.addCookies(cookies)
 
     // Navigate to protected page
-    await page.goto("/dashboard")
+    await page.goto("/workspace")
 
     // Assert user name is visible
     await expect(page.getByText("E2E User")).toBeVisible()

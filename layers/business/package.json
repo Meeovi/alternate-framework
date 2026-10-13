@@ -12,10 +12,14 @@
     "lint": "echo \"[lint] ESLint disabled repo-wide\""
   },
   "dependencies": {
+    "@mframework/meeovi-discussions": "file:../../packages/plugins/Social/meeovi-discussions",
+    "@mframework/meeovi-tables": "file:../../packages/plugins/Marketing-SEO/meeovi-tables",
     "@svar-ui/vue-grid": "^2.7.0",
     "adapter-magento": "file:../../packages/plugins/CMS-Content/adapter-magento",
     "alternate-sdk": "file:../../packages/plugins/Admin/alternate-sdk",
-    "drizzle-orm": "1.0.0-rc.4"
+    "apexcharts": "3.45.2",
+    "drizzle-orm": "1.0.0-rc.4",
+    "vue3-apexcharts": "1.5.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",

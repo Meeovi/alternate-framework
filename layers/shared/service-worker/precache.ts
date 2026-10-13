@@ -42,7 +42,7 @@ async function getCacheResponse(
   const pathname = new URL(url).pathname
   // since we have "nitro.prerender.crawlLinks = true" we need to include here
   // any page not being prerendered
-  if (pathname.startsWith('/settings')) {
+  if (pathname.startsWith('/workspace')) {
     return undefined
   }
   for (const page of pages) {

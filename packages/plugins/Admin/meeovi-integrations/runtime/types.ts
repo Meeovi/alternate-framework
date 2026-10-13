@@ -10,7 +10,7 @@ export interface MeeoviIntegrationsModuleOptions {
   /** Directus collection holding per-user installs. Default 'integration_installs'. */
   installsCollection?: string
   /** Where a page guarded by the `integration` middleware sends users who
-   *  haven't installed its integration. Default '/dashboard/integrations'. */
+   *  haven't installed its integration. Default '/workspace/dashboard/integrations'. */
   catalogPath?: string
   /** Full URL of the integrations catalog, for apps that link to it in
    *  another app (e.g. the storefront → Meeovi Workspace). Also settable

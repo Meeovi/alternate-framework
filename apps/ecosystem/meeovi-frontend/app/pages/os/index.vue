@@ -81,7 +81,7 @@
                                 <h5 class="card-title mbr-fonts-style display-5"><strong>Security &amp; Safety</strong></h5>
                                 <p class="mbr-text mbr-fonts-style mb-5 display-4">Built on Linux allows Meeovi OS a great advantage with security. Our enhanced safety protocols means downloading and browsing the web is that much safer.</p>
                                 <div class="mbr-section-btn">
-                                    <NuxtLink to="/settings/security" class="btn btn-warning display-4">Learn more</NuxtLink>
+                                    <NuxtLink to="/workspace/security" class="btn btn-warning display-4">Learn more</NuxtLink>
                                 </div>
                             </div>
                         </div>

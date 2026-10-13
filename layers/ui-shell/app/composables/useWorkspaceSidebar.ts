@@ -43,49 +43,91 @@ interface DirectusNavigation {
 
 export const WORKSPACE_FALLBACK_MENU: WorkspaceMenu[] = [
   { header: 'Dashboard' },
-  { title: 'Home', icon: 'fas fa-gauge', to: '/' },
-  { title: 'Insights', icon: 'fas fa-chart-line', to: '/dashboard/insights' },
+  { title: 'Home', icon: 'fas fa-gauge', to: '/workspace' },
+  {
+    title: 'Reports',
+    icon: 'fas fa-chart-line',
+    children: [
+      { title: 'Reports', to: '/workspace/reports/reports' },
+      { title: 'Feedback', to: '/workspace/reports/manage-feedback' },
+      { title: 'News', to: '/workspace/reports/manage-news' }
+    ]
+  },
   { divider: true },
   { header: 'Manage your Shop' },
   {
     title: 'Sales',
     icon: 'fas fa-cash-register',
     children: [
-      { title: 'Orders', to: '/dashboard/orders' },
-      { title: 'Shipments', to: '/dashboard/shipments' },
-      { title: 'Transactions', to: '/dashboard/transactions' },
-      { title: 'Invoices', to: '/dashboard/invoices' },
-      { title: 'Payouts', to: '/dashboard/payouts' }
+      { title: 'Orders', to: '/workspace/sales/orders' },
+      { title: 'Shipments', to: '/workspace/sales/shipments' },
+      { title: 'Tracking', to: '/workspace/sales/tracking' },
+      { title: 'Transactions', to: '/workspace/sales/transactions' },
+      { title: 'Invoices', to: '/workspace/sales/invoices' },
+      { title: 'Credit Memos', to: '/workspace/sales/credit-memos' },
+      { title: 'Payments', to: '/workspace/sales/payments' },
+      { title: 'Billing Agreements', to: '/workspace/sales/billing-agreements' }
     ]
   },
   {
     title: 'Catalog',
     icon: 'fas fa-boxes-stacked',
     children: [
-      { title: 'Products', to: '/dashboard/products' },
-      { title: 'Featured Products', to: '/dashboard/featured-products' },
-      { title: 'Attributes', to: '/dashboard/attributes' },
-      { title: 'Low Stock', to: '/dashboard/low-stock' }
+      { title: 'Products', to: '/workspace/catalog/products' },
+      { title: 'Gift Cards', to: '/workspace/catalog/gift-cards' }
+    ]
+  },
+  {
+    title: 'Customers',
+    icon: 'fas fa-user-group',
+    children: [
+      { title: 'All Customers', to: '/workspace/customers/all-customers' },
+      { title: 'Customer Groups', to: '/workspace/customers/customer-groups' },
+      { title: 'Online Now', to: '/workspace/customers/online-customers' }
     ]
   },
   {
     title: 'Marketing',
     icon: 'fas fa-bullhorn',
     children: [
-      { title: 'Coupons', to: '/dashboard/coupons' },
-      { title: 'Announcements', to: '/dashboard/announcements' }
+      { title: 'Promotions', to: '/workspace/marketing/promotions' },
+      { title: 'Newsletters', to: '/workspace/marketing/newsletters' },
+      { title: 'Reviews', to: '/workspace/marketing/reviews' }
     ]
   },
-  { title: 'Reviews', icon: 'fas fa-star', to: '/dashboard/reviews' },
-  { title: 'Shop Details', icon: 'fas fa-store', to: '/dashboard/shop' },
+  {
+    title: 'Store',
+    icon: 'fas fa-store',
+    children: [
+      { title: 'Shop Details', to: '/workspace/system/shop' },
+      { title: 'Product Attributes', to: '/workspace/stores/product-attributes' },
+      { title: 'Sources', to: '/workspace/stores/sources' },
+      { title: 'Warehouses', to: '/workspace/stores/warehouses' },
+      { title: 'Terms & Conditions', to: '/workspace/stores/manage-terms-and-conditions' }
+    ]
+  },
   { divider: true },
-  { header: 'Social' },
+  { header: 'Content' },
+  {
+    title: 'Content',
+    icon: 'fas fa-photo-film',
+    children: [
+      { title: 'Posts', to: '/workspace/content/manage-posts' },
+      { title: 'Spaces', to: '/workspace/content/manage-spaces' },
+      { title: 'Lists', to: '/workspace/content/manage-lists' },
+      { title: 'Memories', to: '/workspace/content/manage-memories' },
+      { title: 'Radio Stations', to: '/workspace/content/manage-radio-stations' },
+      { title: 'Vibez', to: '/workspace/content/manage-vibez' },
+      { title: 'Tags', to: '/workspace/content/manage-tags' },
+      { title: 'Media', to: '/workspace/content/manage-media' }
+    ]
+  },
   { title: 'Activity Feed', icon: 'fas fa-rss', to: '/connect/notes' },
-  { title: 'Spaces', icon: 'fas fa-users-rectangle', to: '/dashboard/spaces' },
-  { title: 'Lists', icon: 'fas fa-list-check', to: '/lists' },
   { divider: true },
-  { title: 'Integrations', icon: 'fas fa-plug', to: '/dashboard/integrations' },
-  { title: 'Settings', icon: 'fas fa-gear', to: '/settings' }
+  { title: 'Integrations', icon: 'fas fa-plug', to: '/workspace/dashboard/integrations' },
+  { title: 'Account', icon: 'fas fa-user', to: '/workspace/account' },
+  { title: 'Security', icon: 'fas fa-shield-halved', to: '/workspace/security' },
+  { title: 'Settings', icon: 'fas fa-gear', to: '/workspace/settings' }
 ]
 
 function toItem(entry: DirectusNavEntry): WorkspaceMenu {
