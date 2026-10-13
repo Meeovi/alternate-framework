@@ -13,11 +13,10 @@ export function useWorkspaceCustomizer() {
   // the drawer to temporary and closes it.
   const sidebarDrawer = useState('workspace:sidebar-drawer', () => true)
   const customizerDrawer = useState('workspace:customizer-drawer', () => false)
-  const miniSidebar = useState('workspace:mini-sidebar', () => false)
   const fontTheme = useState('workspace:font-theme', () => 'Roboto')
   const inputBg = useState('workspace:input-bg', () => false)
 
-  return { sidebarDrawer, customizerDrawer, miniSidebar, fontTheme, inputBg }
+  return { sidebarDrawer, customizerDrawer, fontTheme, inputBg }
 }
 
 // ui-shell's vuetify plugin only defines `light`/`dark`; add Berry's palette

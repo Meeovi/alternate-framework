@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div>
+  <div class="contentPage">
     <v-toolbar color="white">
       <v-toolbar-title>Shop Profile</v-toolbar-title>
 

@@ -1,8 +1,13 @@
 <template>
-  <div>
+  <div class="contentPage">
+    <v-toolbar color="primary">
+      <v-toolbar-title>Manage Memories</v-toolbar-title>
+    </v-toolbar>
     <!-- The signed-in user's past posts (Directus `posts`; admins see all) —
          see meeoviTables.memories in nuxt.config.ts. -->
-    <MeeoviTable collection="memories" height="calc(100vh - 420px)" :hide="['summary', 'target_audience', 'date_published']" />
+    <div style="padding: 10px">
+      <MeeoviTable collection="memories" height="calc(100vh - 420px)" :hide="['summary', 'target_audience', 'date_published']" />
+    </div>
 
     <!-- Their own Bluesky posts — view-only, managed on Bluesky. -->
     <v-card v-if="blueskyPosts.length" elevation="0" class="mt-4">

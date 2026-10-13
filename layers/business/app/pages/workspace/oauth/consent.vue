@@ -1,23 +1,28 @@
 <template>
-  <v-container class="py-10" max-width="520">
-    <v-card>
-      <v-card-title class="text-wrap">
-        {{ clientName }} wants to use your Meeovi account
-      </v-card-title>
-      <v-card-text>
-        <p class="mb-3">It will be able to:</p>
-        <v-list density="compact">
-          <v-list-item v-for="scope in scopes" :key="scope" :title="scopeLabel(scope)" prepend-icon="fas fa-check" />
-        </v-list>
-        <v-alert v-if="error" type="error" variant="tonal" class="mt-4">{{ error }}</v-alert>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn variant="text" :disabled="busy" @click="respond(false)">Deny</v-btn>
-        <v-btn color="primary" variant="flat" :loading="busy" @click="respond(true)">Allow</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-container>
+  <div class="contentPage">
+    <v-toolbar color="primary">
+      <v-toolbar-title>Authorize app</v-toolbar-title>
+    </v-toolbar>
+    <v-container class="py-10" max-width="520">
+      <v-card>
+        <v-card-title class="text-wrap">
+          {{ clientName }} wants to use your Meeovi account
+        </v-card-title>
+        <v-card-text>
+          <p class="mb-3">It will be able to:</p>
+          <v-list density="compact">
+            <v-list-item v-for="scope in scopes" :key="scope" :title="scopeLabel(scope)" prepend-icon="fas fa-check" />
+          </v-list>
+          <v-alert v-if="error" type="error" variant="tonal" class="mt-4">{{ error }}</v-alert>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" :disabled="busy" @click="respond(false)">Deny</v-btn>
+          <v-btn color="primary" variant="flat" :loading="busy" @click="respond(true)">Allow</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script setup lang="ts">

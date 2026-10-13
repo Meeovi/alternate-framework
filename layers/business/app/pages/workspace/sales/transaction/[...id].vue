@@ -1,5 +1,8 @@
 <template>
-    <div>
+    <div class="contentPage">
+        <v-toolbar color="primary">
+          <v-toolbar-title>View Transaction</v-toolbar-title>
+        </v-toolbar>
         <!--<profilebar />-->
         <section data-bs-version="5.1" class="features07 scalem5 cid-uhB4hw1yxB mbr-fullscreen" id="features07-9l">
             <div class="container">

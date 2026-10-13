@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-toolbar>
             <v-toolbar-title>Security</v-toolbar-title>
         </v-toolbar>

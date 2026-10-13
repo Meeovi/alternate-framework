@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="contentPage">
     <homeSettings />
   </div>
 </template>

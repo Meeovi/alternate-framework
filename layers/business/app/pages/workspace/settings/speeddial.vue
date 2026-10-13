@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-toolbar flat color="white">
             <v-toolbar-title>Speed Dial</v-toolbar-title>
             <v-spacer></v-spacer>

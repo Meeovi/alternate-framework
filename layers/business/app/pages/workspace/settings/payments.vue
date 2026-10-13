@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-toolbar flat>
             <v-toolbar-title>Your Payments</v-toolbar-title>
         </v-toolbar>

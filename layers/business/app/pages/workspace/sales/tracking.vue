@@ -1,5 +1,8 @@
 <template>
     <div class="contentPage">
+        <v-toolbar color="primary">
+          <v-toolbar-title>Track your Order</v-toolbar-title>
+        </v-toolbar>
         <section data-bs-version="5.1" class="clients1 cid-uHg1k6KLf8" id="clients1-ap" style="height: 100% !important;">
             <div class="container">
                 <div class="row justify-content-center">

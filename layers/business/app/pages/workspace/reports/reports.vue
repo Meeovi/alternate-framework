@@ -85,7 +85,7 @@ const tables = [
 </script>
 
 <template>
-  <div>
+  <div class="contentPage">
     <v-toolbar color="primary" class="mb-4">
       <v-toolbar-title>Reports</v-toolbar-title>
     </v-toolbar>
@@ -116,7 +116,9 @@ const tables = [
 
       <v-col v-for="table in tables" :key="table.collection" cols="12" md="4">
         <v-card elevation="0" class="pa-3">
-          <MeeoviTable :collection="table.collection" :link="table.link" compact :page-size="5" height="300px" />
+          <div style="padding: 10px">
+            <MeeoviTable :collection="table.collection" :link="table.link" compact :page-size="5" height="300px" />
+          </div>
         </v-card>
       </v-col>
     </v-row>

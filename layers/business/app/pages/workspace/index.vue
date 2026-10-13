@@ -12,41 +12,52 @@ const { stats, pending, error, notSeller, refresh, years, months, ordersSince, m
 </script>
 
 <template>
-  <v-alert v-if="notSeller" type="info" variant="tonal" class="mb-6" title="Seller account required">
-    The workspace dashboard shows your shop's sales. Register as a seller to start selling on Meeovi.
-  </v-alert>
+  <div class="contentPage">
+    <v-toolbar color="primary">
+      <v-toolbar-title>Dashboard</v-toolbar-title>
+    </v-toolbar>
+    <v-alert v-if="notSeller" type="info" variant="tonal" class="mb-6" title="Seller account required">
+      The workspace dashboard shows your shop's sales. Register as a seller to start selling on Meeovi.
+    </v-alert>
 
-  <v-alert v-else-if="error" type="error" variant="tonal" class="mb-6" title="Couldn't load your dashboard">
-    {{ error.statusMessage || error.message }}
-    <template #append>
-      <v-btn variant="text" @click="refresh()">Retry</v-btn>
-    </template>
-  </v-alert>
+    <v-alert v-else-if="error" type="error" variant="tonal" class="mb-6" title="Couldn't load your dashboard">
+      {{ error.statusMessage || error.message }}
+      <template #append>
+        <v-btn variant="text" @click="refresh()">Retry</v-btn>
+      </template>
+    </v-alert>
 
-  <div v-else-if="pending && !stats" class="d-flex justify-center py-16">
-    <v-progress-circular indeterminate color="secondary" />
+    <div v-else-if="pending && !stats" class="d-flex justify-center py-16">
+      <v-progress-circular indeterminate color="secondary" />
+    </div>
+
+    <v-row v-else>
+      <v-col cols="12" md="4">
+        <TotalRevenue :revenue="stats?.orders.totalRevenue" />
+      </v-col>
+      <v-col cols="12" md="4">
+        <TotalOrders :month="ordersSince(30).length" :year="ordersSince(365).length" :trend="monthlyOrderCounts(8)" />
+      </v-col>
+      <v-col cols="12" md="4">
+        <ShopSummary
+          :active-products="stats?.products.active"
+          :total-products="stats?.products.total"
+          :unfulfilled="stats?.orders.unfulfilled"
+        />
+      </v-col>
+
+      <v-col cols="12" lg="8">
+        <RevenueChart :years="years" :months="months" :revenue-by-month="revenueByMonth" />
+      </v-col>
+      <v-col cols="12" lg="4">
+        <RecentOrders :orders="stats?.recentOrders ?? []" :out-of-stock="stats?.products.outOfStock" />
+      </v-col>
+    </v-row>
   </div>
-
-  <v-row v-else>
-    <v-col cols="12" md="4">
-      <TotalRevenue :revenue="stats?.orders.totalRevenue" />
-    </v-col>
-    <v-col cols="12" md="4">
-      <TotalOrders :month="ordersSince(30).length" :year="ordersSince(365).length" :trend="monthlyOrderCounts(8)" />
-    </v-col>
-    <v-col cols="12" md="4">
-      <ShopSummary
-        :active-products="stats?.products.active"
-        :total-products="stats?.products.total"
-        :unfulfilled="stats?.orders.unfulfilled"
-      />
-    </v-col>
-
-    <v-col cols="12" lg="8">
-      <RevenueChart :years="years" :months="months" :revenue-by-month="revenueByMonth" />
-    </v-col>
-    <v-col cols="12" lg="4">
-      <RecentOrders :orders="stats?.recentOrders ?? []" :out-of-stock="stats?.products.outOfStock" />
-    </v-col>
-  </v-row>
 </template>
+
+<style scoped>
+.contentPage {
+  padding: 16px !important;
+}
+</style>

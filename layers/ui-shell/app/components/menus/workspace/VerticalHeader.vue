@@ -3,7 +3,7 @@ import ProfileDD from './ProfileDD.vue'
 import type { WorkspaceUser } from '../../../composables/useWorkspaceShell'
 import Searchbar from './SearchBarPanel.vue'
 
-const { sidebarDrawer, miniSidebar } = useWorkspaceCustomizer()
+const { sidebarDrawer } = useWorkspaceCustomizer()
 const showSearch = ref(false)
 
 // Fetched by the layout (useWorkspaceSession) — see the note there.
@@ -12,24 +12,15 @@ defineProps<{ user?: WorkspaceUser | null }>()
 
 <template>
   <v-app-bar elevation="0" height="80">
+    <!-- opens / closes the sidebar on every screen size -->
     <v-btn
-      class="hidden-md-and-down text-secondary"
+      class="text-secondary ms-3"
       color="lightsecondary"
       icon
       rounded="sm"
       variant="flat"
       size="small"
-      @click.stop="miniSidebar = !miniSidebar"
-    >
-      <v-icon icon="fas fa-bars" size="18" />
-    </v-btn>
-    <v-btn
-      class="hidden-lg-and-up text-secondary ms-3"
-      color="lightsecondary"
-      icon
-      rounded="sm"
-      variant="flat"
-      size="small"
+      :aria-label="sidebarDrawer ? 'Close menu' : 'Open menu'"
       @click.stop="sidebarDrawer = !sidebarDrawer"
     >
       <v-icon icon="fas fa-bars" size="18" />

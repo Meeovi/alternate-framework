@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="contentPage">
     <v-toolbar color="primary" class="mb-4">
       <v-toolbar-title>Integrations</v-toolbar-title>
     </v-toolbar>

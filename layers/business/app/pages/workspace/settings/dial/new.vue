@@ -1,5 +1,10 @@
 <template>
-  <DynamicForm collection="speeddials" />
+  <div class="contentPage">
+    <v-toolbar color="primary">
+      <v-toolbar-title>New Speed Dial</v-toolbar-title>
+    </v-toolbar>
+    <DynamicForm collection="speeddials" />
+  </div>
 </template>
 
 <script setup>

@@ -1,5 +1,8 @@
 <template>
-    <div>
+    <div class="contentPage">
+        <v-toolbar color="primary">
+          <v-toolbar-title>Incentive</v-toolbar-title>
+        </v-toolbar>
         <section data-bs-version="5.1" class="firmm4_features1 features1 cid-uhBuptnWmV" id="features1-9v"
             data-sortbtn="btn-primary">
             <div class="container-fluid">

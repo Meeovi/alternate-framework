@@ -235,9 +235,26 @@ const loadErrorText = computed(() => {
   if (status === 403) return `You don't have access to ${label.value.toLowerCase()}.`
   return `${label.value} couldn't be loaded right now. Please try again later.`
 })
-const emptyText = computed(() => search.value.trim()
-  ? `No ${label.value.toLowerCase()} match "${search.value.trim()}".`
-  : `No ${label.value.toLowerCase()} yet.`)
+const emptyText = computed(() => {
+  const name = label.value.toLowerCase()
+  if (search.value.trim()) return `No ${name} match "${search.value.trim()}".`
+  return canEdit.value
+    ? `There are no ${name} yet. Use Add to create the first one.`
+    : `There are no ${name} yet. They'll show up here once there are some.`
+})
+// The table always shows; anything that leaves it without rows (nothing
+// there yet, a source that isn't available, a failed load) is explained
+// inside it rather than replacing it.
+const overlayText = computed(() => {
+  if (error.value) return loadErrorText.value
+  if (notice.value) return notice.value
+  if (pending.value || rows.value.length) return undefined
+  return emptyText.value
+})
+// No schema (e.g. the source isn't available) still draws the table.
+const gridColumns = computed(() => columns.value.length
+  ? columns.value
+  : [{ id: '__empty', header: label.value, flexgrow: 1, sort: false }])
 
 defineExpose({ refresh: table.refresh, api })
 </script>
@@ -250,7 +267,7 @@ defineExpose({ refresh: table.refresh, api })
     <div class="meeovi-table" :style="{ height }">
       <div v-if="toolbar" class="meeovi-table__bar">
         <strong class="meeovi-table__title">{{ label }}</strong>
-        <span v-if="!notice" class="meeovi-table__count">{{ total.toLocaleString() }} {{ total === 1 ? 'item' : 'items' }}</span>
+        <span class="meeovi-table__count">{{ total.toLocaleString() }} {{ total === 1 ? 'item' : 'items' }}</span>
         <div class="meeovi-table__spacer" />
         <NuxtLink v-if="compact && link" :to="link" class="meeovi-table__link">View all</NuxtLink>
         <template v-if="!compact">
@@ -270,25 +287,19 @@ defineExpose({ refresh: table.refresh, api })
 
       <div v-if="actionError" class="meeovi-table__message meeovi-table__message--error">{{ actionError }}</div>
 
-      <div v-if="error" class="meeovi-table__message meeovi-table__message--error">
-        {{ loadErrorText }}
-      </div>
-
-      <div v-else-if="notice" class="meeovi-table__message meeovi-table__message--notice">{{ notice }}</div>
-
-      <div v-else class="meeovi-table__grid" :class="{ 'meeovi-table__grid--loading': pending }">
+      <div class="meeovi-table__grid" :class="{ 'meeovi-table__grid--loading': pending }">
         <HeaderMenu :api="api">
           <Grid
             ref="api"
             :data="rows"
-            :columns="columns"
+            :columns="gridColumns"
             :init="init"
-            :overlay="!pending && !rows.length ? emptyText : undefined"
+            :overlay="overlayText"
           />
         </HeaderMenu>
       </div>
 
-      <div v-if="!notice && !compact" class="meeovi-table__pager">
+      <div v-if="!compact" class="meeovi-table__pager">
         <Pager :total="total" :value="page" :page-size="pageSize" @update:value="onPage" @update:page-size="onPageSize" />
       </div>
     </div>
@@ -372,11 +383,6 @@ defineExpose({ refresh: table.refresh, api })
 .meeovi-table__actions {
   display: flex;
   gap: 8px;
-}
-
-.meeovi-table__message--notice {
-  background: #eef2f6;
-  color: #37474f;
 }
 
 .meeovi-table__pager {

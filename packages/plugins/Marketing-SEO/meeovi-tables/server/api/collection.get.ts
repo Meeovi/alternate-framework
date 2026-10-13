@@ -46,7 +46,7 @@ export default defineEventHandler(async (event): Promise<MeeoviTableResponse> =>
   // Shown to people instead of an empty grid; the technical reason is logged.
   const emptyNotice = (reason: string) => {
     console.info(`[meeovi-tables] "${collection}": ${reason}`)
-    return options.unavailableNotice || `No ${label.toLowerCase()} yet.`
+    return options.unavailableNotice || `There are no ${label.toLowerCase()} yet. They'll show up here once there are some.`
   }
   const available = await availableSources(collection, options)
   if (!available.length) {

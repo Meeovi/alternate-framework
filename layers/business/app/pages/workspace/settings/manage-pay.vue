@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-3xl mx-auto p-6">
+    <div class="contentPage max-w-3xl mx-auto p-6">
         <v-toolbar flat class="mb-4">
             <v-toolbar-title>Manage your Pay</v-toolbar-title>
             <v-spacer />

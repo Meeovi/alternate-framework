@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="contentPage">
         <v-toolbar extended>
             <v-toolbar-title>{{ dial.value?.name }}'s member details</v-toolbar-title>
 

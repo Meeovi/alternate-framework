@@ -1,5 +1,8 @@
 <template>
-    <div class="max-w-md mx-auto p-6">
+    <div class="contentPage max-w-md mx-auto p-6">
+        <v-toolbar color="primary">
+          <v-toolbar-title>Two-Factor Verification</v-toolbar-title>
+        </v-toolbar>
         <h1 class="text-2xl font-bold mb-6">Two-Factor Verification</h1>
 
         <div class="flex gap-2 mb-4">
