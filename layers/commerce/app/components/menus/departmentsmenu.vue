@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-expansion-panels variant="accordion">
-      <v-expansion-panel title="Departments" expand-icon="fas fa-plus" collapse-icon="fas fa-minus" elevation="0">
+      <v-expansion-panel title="Shop by Department" expand-icon="fas fa-plus" collapse-icon="fas fa-minus" elevation="0">
         <v-expansion-panel-text>
           <v-list class="ml-4">
             <v-list-item v-for="child in departmentsMenu" :key="child.id"  :title="child.name" :value="child.name" :href="`/departments/${child.slug}`">
