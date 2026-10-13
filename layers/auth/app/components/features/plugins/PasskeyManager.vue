@@ -47,7 +47,7 @@
     } from "../../../../lib/auth-client";
     import {
             getAuthenticatorName
-    } from "@better-auth/passkey";
+    } from "../../../../lib/passkey-names";
     import type { BetterAuthPasskey } from '../../../types'
 
     const passkeys = ref<BetterAuthPasskey[]>([]);

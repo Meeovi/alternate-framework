@@ -286,7 +286,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useFetch, useHead, useCookie } from 'nuxt/app'
 import { authClient } from '../../../../../auth/lib/auth-client'
-import { getAuthenticatorName } from '@better-auth/passkey'
+import { getAuthenticatorName } from '../../../../../auth/lib/passkey-names'
 // See twoFactor.vue for why this imports the specific submodule rather
 // than the '@vueuse/integrations' barrel.
 import { useQRCode } from '@vueuse/integrations/useQRCode'

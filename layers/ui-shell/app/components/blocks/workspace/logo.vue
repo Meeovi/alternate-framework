@@ -18,8 +18,12 @@
   text-decoration: none;
   white-space: nowrap;
 }
+/* Fixed size: apps with a global `img { width: 100% }` (meeovi-frontend)
+   would otherwise blow the mark up to the image's full width. */
 .workspace-logo img {
   flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
 }
 .workspace-logo__text {
   display: flex;
