@@ -33,6 +33,11 @@ const info = ref<DiscussionInfo | null>(null)
 const session = ref<DiscussionSession | null>(null)
 const frame = ref<HTMLIFrameElement | null>(null)
 
+// Rocket.Chat can't load earlier messages inside an iframe on an insecure
+// (http) page — the embed isn't a secure context there. New messages still
+// work; say so instead of showing an empty history.
+const insecure = ref(false)
+
 const count = computed(() => info.value?.messages ?? 0)
 const countLabel = computed(() => (count.value === 1 ? '1 message' : `${count.value.toLocaleString()} messages`))
 const loginUrl = computed(() => `${config?.loginPath || '/login'}?redirect=${encodeURIComponent(route.fullPath)}`)
@@ -60,6 +65,7 @@ function onMessage(event: MessageEvent) {
 }
 
 onMounted(async () => {
+  insecure.value = !window.isSecureContext
   window.addEventListener('message', onMessage)
   try {
     info.value = await $fetch<DiscussionInfo>(path.value)
@@ -102,8 +108,12 @@ onBeforeUnmount(() => window.removeEventListener('message', onMessage))
       <span>Joining the discussion…</span>
     </div>
 
-    <iframe v-else-if="state === 'open' && session" ref="frame" :src="session.embedUrl" :style="{ height }"
-      class="meeovi-discussion__frame" title="Live discussion" allow="clipboard-write; fullscreen" @load="sendLogin" />
+    <template v-else-if="state === 'open' && session">
+      <v-alert v-if="insecure" type="info" variant="tonal" density="compact" class="mb-2"
+        text="Earlier messages can't load on this http page. Open the site over https to see the full discussion." />
+      <iframe ref="frame" :src="session.embedUrl" :style="{ height }"
+        class="meeovi-discussion__frame" title="Live discussion" allow="clipboard-write; fullscreen" @load="sendLogin" />
+    </template>
 
     <v-alert v-else type="info" variant="tonal" density="compact" text="The live discussion isn't available right now." />
   </section>

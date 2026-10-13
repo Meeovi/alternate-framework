@@ -1,6 +1,7 @@
 import { createDirectus, rest, staticToken, readItems, createItem, deleteItem } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
 import { triggerNovuWorkflow } from '#shared/server/utils/novu'
+import { revokeSpaceMedia } from '../../utils/spaceMedia'
 
 type FollowActor = { id: string; name?: string; email?: string }
 
@@ -43,6 +44,8 @@ export default defineEventHandler(async (event) => {
 
   if (Array.isArray(existing) && existing.length > 0) {
     await directus.request(deleteItem('follows', existing[0]!.id))
+    // Leaving an Audio/Video space also takes them out of its media room.
+    if (targetType === 'space') await revokeSpaceMedia(event, targetId)
     return { following: false, message: 'Successfully unfollowed' }
   }
 

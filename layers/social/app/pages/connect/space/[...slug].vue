@@ -28,9 +28,11 @@
                 <SearchDialog v-model="searchDialog" :space="space" @search="handleSearch" />
 
                 <v-tabs-window v-model="tab" class="spaceTabs">
-                    <!--Posts Tab-->
+                    <!--Discussions Tab: Audio/Video spaces get an audio-only / video-only
+                        discussion (members only, Rocket.Chat); other spaces list posts.-->
                     <v-tabs-window-item :value="spaceTabs?.menus[0]?.value">
-                        <div v-if="space?.posts && space.posts.length">
+                        <SpaceMediaDiscussion v-if="isMediaSpace && space?.id" :space-id="space.id" />
+                        <div v-else-if="space?.posts && space.posts.length">
                             <div class="text-center" v-for="(discussions, idx) in space.posts"
                                 :key="discussions?.posts_id?.id || idx">
                                 <postsCard :post="discussions?.posts_id" />
@@ -141,6 +143,7 @@
         useAuth
     } from '#auth/app/composables/useAuth'
     import SearchDialog from '../../../components/blocks/groups/SearchDialog.vue'
+    import SpaceMediaDiscussion from '../../../components/features/spaceSections/SpaceMediaDiscussion.vue'
     import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
     const route = useRoute();
@@ -175,13 +178,18 @@
                 'members.*',
                 'products.products_id.*',
                 'lists.lists_id.*',
-                'media.*'
+                'media.*',
+                'space_type.space_types_id.name'
             ],
             limit: 1
         })).then(response => response?.[0]) // Get first item from response
     }, {
         watch: [() => route.params.slug]
     })
+
+    // Audio and Video spaces have a media-only discussion instead of posts.
+    const isMediaSpace = computed(() => (space.value?.space_type ?? [])
+        .some((t) => ['audio', 'video'].includes(String(t?.space_types_id?.name || '').toLowerCase())))
 
     // createListBtn's panel needs a resolved image URL, not the raw
     // Directus asset reference space.image holds.

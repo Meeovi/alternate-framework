@@ -33,6 +33,11 @@ const active = computed(() => conversations.value.find((c) => c.rid === activeRi
 const frame = ref<HTMLIFrameElement | null>(null)
 const frameSrc = ref('')
 const frameLoaded = ref(false)
+
+// Rocket.Chat can't load earlier messages inside an iframe on an insecure
+// (http) page — the embed isn't a secure context there. New messages still
+// work; say so instead of showing an empty history.
+const insecure = ref(false)
 const pathFor = (rid: string) => `/direct/${encodeURIComponent(rid)}?layout=embedded`
 
 function sendLogin() {
@@ -134,6 +139,7 @@ function timeLabel(at: string | null) {
 }
 
 onMounted(async () => {
+  insecure.value = !window.isSecureContext
   window.addEventListener('message', onMessage)
   try {
     session.value = await $fetch<MessagesSession>(`${apiBase}/messages/session`, { method: 'POST' })
@@ -242,6 +248,8 @@ onBeforeUnmount(() => {
             @click="activeRid = null" />
           <span class="text-subtitle-1">{{ active?.name }}</span>
         </div>
+        <v-alert v-if="activeRid && insecure" type="info" variant="tonal" density="compact" rounded="0"
+          text="Earlier messages can't load on this http page. Open the site over https to see the full conversation." />
         <iframe v-show="activeRid" v-if="frameSrc" ref="frame" :src="frameSrc" class="meeovi-messages__frame"
           title="Private conversation" allow="clipboard-write; fullscreen; microphone; camera" @load="onFrameLoad" />
         <div v-if="!activeRid" class="meeovi-messages__center text-medium-emphasis">

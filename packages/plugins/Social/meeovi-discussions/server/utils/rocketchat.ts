@@ -349,3 +349,90 @@ export async function openDirectConversation(event: H3Event, user: DiscussionUse
 export function directEmbedPath(rid: string): string {
   return `/direct/${encodeURIComponent(rid)}?layout=embedded`
 }
+
+// ---------------------------------------------------------------------------
+// Private groups + acting as a member (e.g. members-only space rooms)
+
+type Group = { _id: string, name: string, topic?: string }
+const groupCache = new Map<string, { at: number, group: Group | null }>()
+
+/** A private group by name (null when it doesn't exist yet). */
+export async function findGroup(event: H3Event | undefined, name: string, fresh = false): Promise<Group | null> {
+  const hit = groupCache.get(name)
+  if (!fresh && hit && Date.now() - hit.at < ROOM_TTL_MS) return hit.group
+  let group: Group | null = null
+  try {
+    group = (await rc<{ group: Group }>(event, 'groups.info', { query: { roomName: name } })).group ?? null
+  } catch (e) {
+    if (!isNotFound(e)) throw e
+  }
+  groupCache.set(name, { at: Date.now(), group })
+  return group
+}
+
+/** The private group, created (owned by the admin account) on first use. */
+export async function ensureGroup(event: H3Event, name: string, topic?: string): Promise<Group> {
+  const existing = await findGroup(event, name)
+  if (existing) return existing
+  let group: Group
+  try {
+    group = (await rc<{ group: Group }>(event, 'groups.create', { method: 'POST', body: { name, readOnly: false } })).group
+  } catch (e) {
+    const again = await findGroup(event, name, true)
+    if (again) return again
+    throw e
+  }
+  const t = String(topic ?? '').replace(/\s+/g, ' ').trim().slice(0, 200)
+  if (t) await rc(event, 'groups.setTopic', { method: 'POST', body: { roomId: group._id, topic: t } }).catch(() => {})
+  groupCache.set(name, { at: Date.now(), group })
+  return group
+}
+
+const groupMemberCache = new Set<string>()
+export async function ensureGroupMember(event: H3Event, group: Group, rcUser: RcUser): Promise<void> {
+  const key = `${group._id}:${rcUser._id}`
+  if (groupMemberCache.has(key)) return
+  await rc(event, 'groups.invite', { method: 'POST', body: { roomId: group._id, userId: rcUser._id } })
+  groupMemberCache.add(key)
+}
+
+/**
+ * Remove someone from a private group (e.g. they left the space). Nothing is
+ * created: no group or no Rocket.Chat account means there's nothing to do.
+ * Resolves true when they were removed.
+ */
+export async function removeGroupMember(event: H3Event, groupName: string, user: DiscussionUser): Promise<boolean> {
+  const group = await findGroup(event, groupName)
+  if (!group) return false
+  const rcUser = userCache.get(user.id) ?? await findRcUser(event, rcUsername(user))
+  if (!rcUser) return false
+  groupMemberCache.delete(`${group._id}:${rcUser._id}`)
+  try {
+    await rc(event, 'groups.kick', { method: 'POST', body: { roomId: group._id, userId: rcUser._id } })
+    return true
+  } catch {
+    return false // not in the group
+  }
+}
+
+/** Delete any message (admin). */
+export async function deleteMessage(event: H3Event, roomId: string, msgId: string): Promise<void> {
+  await rc(event, 'chat.delete', { method: 'POST', body: { roomId, msgId, asUser: false } })
+}
+
+/**
+ * Act as a member: their Rocket.Chat account, its login token, and a REST
+ * caller using them — for reads/uploads that must respect room membership.
+ */
+export async function asMember(event: H3Event, user: DiscussionUser) {
+  const rcUser = await ensureRcUser(event, user)
+  const token = await loginToken(event, rcUser)
+  const { url } = discussionsConfig(event)
+  return {
+    rcUser,
+    url,
+    /** Headers that authenticate as the member (REST + /file-upload). */
+    headers: { 'X-User-Id': rcUser._id, 'X-Auth-Token': token },
+    call: <T = any>(path: string, options: Record<string, any> = {}) => rcAs<T>(event, rcUser, token, path, options),
+  }
+}
