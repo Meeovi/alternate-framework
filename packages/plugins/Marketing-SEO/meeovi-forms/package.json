@@ -47,7 +47,7 @@
     "@jsonforms/core": "^3.8.0",
     "@jsonforms/vue": "^3.8.0",
     "@jsonforms/vue-vuetify": "^3.8.0",
-    "@nuxt/kit": "^4.4.8",
+    "@nuxt/kit": "^4.6.1",
     "maska": "^2.1.11",
     "zod": "^3.24.0"
   },
@@ -58,7 +58,7 @@
   "devDependencies": {
     "@nuxt/module-builder": "^1.0.2",
     "@types/node": "latest",
-    "nuxt": "^4.6.0",
+    "nuxt": "^4.6.1",
     "typescript": "~6.0.3",
     "vue-tsc": "^3.3.3"
   }

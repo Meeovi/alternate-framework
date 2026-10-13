@@ -48,7 +48,7 @@
     "leaflet-routing-machine": "^3.2.12",
     "leaflet.heat": "^0.2.0",
     "leaflet.markercluster": "^1.5.3",
-    "nuxt": "^4.6.0",
+    "nuxt": "^4.6.1",
     "nuxt-security": "^2.4.0",
     "nuxt-skill-hub": "^0.1.1",
     "nuxt-tiptap-editor": "^3.2.0",

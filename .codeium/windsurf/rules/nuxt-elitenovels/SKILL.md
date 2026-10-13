@@ -9,8 +9,8 @@ This is the stable entrypoint for Nuxt guidance in this repository.
 The full generated skill tree lives in the Nuxt build directory so the checked-in skill surface stays small.
 
 ## Generated content
-- Entry: [../../../../apps/ecosystem/elitenovels/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-elitenovels/SKILL.md](../../../../apps/ecosystem/elitenovels/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-elitenovels/SKILL.md)
-- Root: [../../../../apps/ecosystem/elitenovels/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-elitenovels](../../../../apps/ecosystem/elitenovels/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-elitenovels)
+- Entry: [../../../../apps/ecosystem/elitenovels/.nuxt/skill-hub/nuxt-elitenovels/SKILL.md](../../../../apps/ecosystem/elitenovels/.nuxt/skill-hub/nuxt-elitenovels/SKILL.md)
+- Root: [../../../../apps/ecosystem/elitenovels/.nuxt/skill-hub/nuxt-elitenovels](../../../../apps/ecosystem/elitenovels/.nuxt/skill-hub/nuxt-elitenovels)
 
 ## Required workflow
 1. Check whether the generated entry exists.

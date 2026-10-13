@@ -1,7 +1,7 @@
 {
   "name": "@mframework/meeovi-ratings",
   "version": "0.1.0",
-  "description": "Universal 1\u20135 star ratings for M Framework: posts, vibes, products, lists, stations, \u2026 plus creator scores. Replaces likes.",
+  "description": "Universal 1–5 star ratings for M Framework: posts, vibes, products, lists, stations, … plus creator scores. Replaces likes.",
   "license": "MIT",
   "type": "module",
   "main": "./module.ts",
@@ -37,16 +37,16 @@
   ],
   "author": "Meeovi Labs",
   "dependencies": {
-    "@nuxt/kit": "^4.4.8"
+    "@nuxt/kit": "^4.6.1"
   },
   "peerDependencies": {
     "nuxt": "^4.0.0",
     "vue": "^3.4.0"
   },
   "devDependencies": {
-    "@nuxt/schema": "^4.4.8",
+    "@nuxt/schema": "^4.6.1",
     "@types/node": "latest",
-    "nuxt": "^4.6.0",
+    "nuxt": "^4.6.1",
     "typescript": "~6.0.3",
     "vue": "^3.5.41"
   }

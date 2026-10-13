@@ -39,7 +39,7 @@
   "author": "Meeovi Labs",
   "dependencies": {
     "@atproto/api": "^0.20.22",
-    "@nuxt/kit": "^4.4.8",
+    "@nuxt/kit": "^4.6.1",
     "zod": "^4.4.3"
   },
   "peerDependencies": {
@@ -52,9 +52,9 @@
     }
   },
   "devDependencies": {
-    "@nuxt/schema": "^4.4.8",
+    "@nuxt/schema": "^4.6.1",
     "@types/node": "latest",
-    "nuxt": "^4.6.0",
+    "nuxt": "^4.6.1",
     "typescript": "~6.0.3",
     "vitest": "^4.0.0"
   }

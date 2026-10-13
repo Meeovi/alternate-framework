@@ -41,7 +41,7 @@
   ],
   "author": "Meeovi Labs",
   "dependencies": {
-    "@nuxt/kit": "^4.4.8",
+    "@nuxt/kit": "^4.6.1",
     "masto": "^7.10.1",
     "ofetch": "^1.4.1"
   },
@@ -50,9 +50,9 @@
     "vue": "^3.4.0"
   },
   "devDependencies": {
-    "@nuxt/schema": "^4.4.8",
+    "@nuxt/schema": "^4.6.1",
     "@types/node": "latest",
-    "nuxt": "^4.6.0",
+    "nuxt": "^4.6.1",
     "typescript": "~6.0.3",
     "vitest": "^4.0.0"
   }

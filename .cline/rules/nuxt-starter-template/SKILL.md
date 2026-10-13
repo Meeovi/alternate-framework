@@ -9,8 +9,8 @@ This is the stable entrypoint for Nuxt guidance in this repository.
 The full generated skill tree lives in the Nuxt build directory so the checked-in skill surface stays small.
 
 ## Generated content
-- Entry: [../../../packages/plugins/Themes/starter-template/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-starter-template/SKILL.md](../../../packages/plugins/Themes/starter-template/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-starter-template/SKILL.md)
-- Root: [../../../packages/plugins/Themes/starter-template/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-starter-template](../../../packages/plugins/Themes/starter-template/node_modules/.cache/nuxt/.nuxt/skill-hub/nuxt-starter-template)
+- Entry: [../../../packages/plugins/Themes/starter-template/.nuxt/skill-hub/nuxt-starter-template/SKILL.md](../../../packages/plugins/Themes/starter-template/.nuxt/skill-hub/nuxt-starter-template/SKILL.md)
+- Root: [../../../packages/plugins/Themes/starter-template/.nuxt/skill-hub/nuxt-starter-template](../../../packages/plugins/Themes/starter-template/.nuxt/skill-hub/nuxt-starter-template)
 
 ## Required workflow
 1. Check whether the generated entry exists.
