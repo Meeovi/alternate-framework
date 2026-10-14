@@ -46,6 +46,30 @@ export default defineNuxtConfig({
         to: import.meta.env.DIRECTUS_URL + "/**"
       }
     },
+    // The shared layer's `isr: 60` is a no-op on the node-server preset, so
+    // the homepage (~20 Directus calls, ~10s to render) was rebuilt on every
+    // hit. Cache it server-side, stale-while-revalidate. `varies: cookie`
+    // keys the cache on the request's cookies and passes them into the
+    // render: anonymous visitors share one entry, a logged-in user only
+    // ever gets the page rendered with their own session.
+    '/': {
+      swr: 60,
+      cache: { varies: ['cookie'] }
+    },
+  },
+
+  hooks: {
+    // Don't emit <link rel="prefetch"> hints. Cloudflare Speed Brain answers
+    // requests sent with `Sec-Purpose: prefetch` with an empty 503
+    // ("cf-speculation-refused"), and Chrome can then reuse that failed
+    // prefetch for the real dynamic import, so the page dies with "Failed
+    // to fetch dynamically imported module". The hints also made every
+    // visit download ~45 full-size background images up front.
+    'build:manifest': (manifest) => {
+      for (const file of Object.values(manifest)) {
+        file.prefetch = false
+      }
+    },
   },
 
   ssr: true,
