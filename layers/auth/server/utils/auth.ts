@@ -46,6 +46,17 @@ import {
 import { plugins } from '../../shared/utils/plugins'
 import { sendAuthEmail } from '../../shared/utils/infrastructure/email'
 import { MIN_PASSWORD_LENGTH } from '../../shared/utils/username'
+// better-auth plugins from packages (packages/plugins/Authentication/auth-*),
+// collected at build time by modules/auth-plugins.ts.
+import packagePluginFactories from '#auth-server-plugins'
+
+/** What the layer lends package plugins (their `server` entry's argument). */
+export type AuthPluginContext = {
+  logAuditEvent: typeof logAuditEvent
+  sendAuthEmail: typeof sendAuthEmail
+}
+
+const packagePlugins = packagePluginFactories.flatMap((factory) => factory({ logAuditEvent, sendAuthEmail }))
 
 const runtimeConfig = {
   public: {
@@ -357,8 +368,6 @@ export const auth = betterAuth({
       "/sign-in/email": { window: 60, max: 5 },
       "/sign-in/username": { window: 60, max: 5 },
       "/sign-in/email-otp": { window: 60, max: 5 },
-      // Each call creates a user row.
-      "/sign-in/anonymous": { window: 3600, max: 5 },
       "/sign-up/email": { window: 60, max: 3 },
       "/request-password-reset": { window: 60, max: 3 },
       "/reset-password": { window: 60, max: 3 },
@@ -372,7 +381,7 @@ export const auth = betterAuth({
       "/send-verification-email": { window: 60, max: 3 },
     },
   },
-  plugins,
+  plugins: [...plugins, ...packagePlugins],
   telemetry: {
     enabled: true,
     debug: !isProduction

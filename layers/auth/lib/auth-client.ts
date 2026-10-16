@@ -4,11 +4,8 @@ import {
 import {
   twoFactorClient,
   usernameClient,
-  anonymousClient,
-  phoneNumberClient,
   magicLinkClient,
   emailOTPClient,
-  genericOAuthClient,
   oneTapClient,
   adminClient,
   organizationClient,
@@ -28,11 +25,12 @@ import {
   oauthProviderClient
 } from "@better-auth/oauth-provider/client"
 import {
-  ssoClient
-} from "@better-auth/sso/client"
-import {
   stripeClient
 } from "@better-auth/stripe/client"
+// Client halves of better-auth plugins from packages
+// (packages/plugins/Authentication/auth-*), collected at build time by
+// modules/auth-plugins.ts.
+import packageClientFactories from "#auth-client-plugins"
 
 export const authClient = createAuthClient({
   plugins: [
@@ -48,12 +46,9 @@ export const authClient = createAuthClient({
       subscription: true //if you want to enable subscription management
     }),
     usernameClient(),
-    anonymousClient(),
-    phoneNumberClient(),
     magicLinkClient(),
     emailOTPClient(),
     passkeyClient(),
-    genericOAuthClient(),
     oneTapClient({
       clientId: `${process.env.BETTER_AUTH_GOOGLE_CLIENT_ID}`,
       // Optional client configuration:
@@ -89,12 +84,12 @@ export const authClient = createAuthClient({
       },
     }),
     oauthProviderClient(),
-    ssoClient(),
     deviceAuthorizationClient(),
     lastLoginMethodClient(),
     multiSessionClient(),
     oneTimeTokenClient(),
-    jwtClient()
+    jwtClient(),
+    ...packageClientFactories.flatMap((factory) => factory()),
   ]
 })
 

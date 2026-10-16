@@ -20,6 +20,7 @@
   - Directus is registered as a federation network ("Meeovi": the site's members and its published, public posts), so federation always has a source that answers;
   - federation routes stop waiting for a network after 8 s.
 - Search and social were verified in a running app; they reach the demo with the next deploy.
+- Auth: SSO, SCIM, generic OAuth, phone-number and anonymous sign-in moved out of the auth layer into packages under `packages/plugins/Authentication/` (`@mframework/auth-*`). meeovi-frontend doesn't register them, so they're off for launch; registering one turns it back on.
 - English only: the French locale is removed.
 - Notifications: Novu is the only system. The broken `/api/notifications/*` routes and the `@betternotify` packages are gone.
 - Order history comes from the commerce backend (adapter-magento → `Meeovi_MarketplaceApi`). It's read through `/api/commerce/orders`, so the commerce layer stays backend-agnostic.
@@ -67,9 +68,7 @@
 
 ## Should do before launch
 
-- **Auth:**
-  - turn off SSO, SCIM, generic OAuth, phone and anonymous sign-in unless they are launching;
-  - remove the unused SDK auth registrations in adapter-directus and adapter-magento.
+- **Auth:** remove the unused SDK auth registrations in adapter-directus and adapter-magento.
 - **ui-shell:**
   - absorb the `auth`, `search` and social `nolive` layouts;
   - trim the app-level CSS (Bootstrap, Mobirise, `search.css`, `styles.css`) down to brand overrides.

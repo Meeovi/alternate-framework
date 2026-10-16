@@ -1,0 +1,60 @@
+{
+  "name": "@mframework/auth-sso",
+  "version": "0.1.0",
+  "description": "SSO (OIDC and SAML) sign-in for M Framework's auth layer: the better-auth sso plugin, with provisioning audited through the layer's audit log.",
+  "mframework": {
+    "integration": {
+      "name": "Single sign-on (SSO)",
+      "description": "Sign in through a company identity provider (OIDC or SAML).",
+      "category": "Authentication",
+      "icon": "fas fa-building-shield",
+      "admin": true
+    }
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'auth-sso is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "better-auth",
+    "authentication",
+    "mframework",
+    "meeovi",
+    "sso",
+    "saml",
+    "oidc"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1",
+    "@better-auth/sso": "1.6.23"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.6.23",
+    "nuxt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

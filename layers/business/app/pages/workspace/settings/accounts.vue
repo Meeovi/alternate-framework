@@ -60,11 +60,11 @@
                     </v-expansion-panel-text>
                 </v-expansion-panel>
 
-                <v-expansion-panel title="Single Sign On">
+                <v-expansion-panel v-if="SsoSignIn" title="Single Sign On">
                     <v-expansion-panel-text>
                         <v-row>
                             <v-col>
-                                <SSOProvisioningManager />
+                                <component :is="SsoSignIn" />
                             </v-col>
                         </v-row>
                     </v-expansion-panel-text>
@@ -117,16 +117,20 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from "vue"
+    import { ref, resolveComponent } from "vue"
     import TwoFactorManager from '../../../../../auth/app/components/features/plugins/twoFactor.vue'
     import AddressCard from '../../../../../auth/app/components/related/addressCard.vue'
-    import SSOProvisioningManager from '../../../../../auth/app/components/features/plugins/sso.vue'
     import MagicLink from '../../../../../auth/app/components/features/plugins/magicLink.vue'
     import PassKey from '../../../../../auth/app/components/features/plugins/PasskeyManager.vue'
     import OneTapManager from '../../../../../auth/app/components/features/plugins/oneTap.vue'
     import MultiSessionManager from '../../../../../auth/app/components/features/plugins/sessions.vue'
     import OneTimeTokenManager from '../../../../../auth/app/components/features/plugins/ott.vue'
     import AtprotoLink from '../../../../../auth/app/components/features/plugins/atproto.vue'
+
+    // <AuthSsoSignIn> comes from @mframework/auth-sso, when the app registers it.
+    const SsoSignIn = (useAppConfig() as { mframeworkAuth?: { sso?: boolean } }).mframeworkAuth?.sso
+        ? resolveComponent('AuthSsoSignIn')
+        : null
 
     const addresses = ref([])
 

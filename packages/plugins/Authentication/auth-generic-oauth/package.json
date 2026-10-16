@@ -1,0 +1,61 @@
+{
+  "name": "@mframework/auth-generic-oauth",
+  "version": "0.1.0",
+  "description": "Extra OAuth sign-in providers (Auth0, Gumroad, HubSpot, Keycloak, LINE, Microsoft Entra ID, Okta, Slack, Patreon) for M Framework's auth layer; each is on only when its credentials are set.",
+  "mframework": {
+    "integration": {
+      "name": "More OAuth providers",
+      "description": "Auth0, Keycloak, Okta, Microsoft Entra ID, Slack and other OAuth sign-in providers.",
+      "category": "Authentication",
+      "icon": "fas fa-key",
+      "admin": true
+    }
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'auth-generic-oauth is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "better-auth",
+    "authentication",
+    "mframework",
+    "meeovi",
+    "oauth",
+    "oauth2",
+    "auth0",
+    "keycloak",
+    "okta"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.6.23",
+    "nuxt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

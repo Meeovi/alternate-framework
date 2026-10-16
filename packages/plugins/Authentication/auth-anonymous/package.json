@@ -1,0 +1,58 @@
+{
+  "name": "@mframework/auth-anonymous",
+  "version": "0.1.0",
+  "description": "Anonymous (guest) sign-in for M Framework's auth layer: the better-auth anonymous plugin, rate-limited to 5 accounts per IP per hour.",
+  "mframework": {
+    "integration": {
+      "name": "Anonymous sign-in",
+      "description": "Let visitors use the site with a temporary guest account.",
+      "category": "Authentication",
+      "icon": "fas fa-user-secret",
+      "admin": true
+    }
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'auth-anonymous is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "better-auth",
+    "authentication",
+    "mframework",
+    "meeovi",
+    "anonymous",
+    "guest"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.6.23",
+    "nuxt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

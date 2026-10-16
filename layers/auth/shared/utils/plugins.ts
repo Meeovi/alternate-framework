@@ -1,17 +1,13 @@
 import { sql } from 'drizzle-orm'
-import { APIError } from 'better-auth/api'
 import * as schema from '../../server/database/migrations/schema'
 import { db } from '../../server/utils/drizzle'
 import { stripeClient } from '../../server/utils/stripe'
-import { logAuditEvent } from '../../server/utils/audits'
 import { sendAuthEmail } from './infrastructure/email'
 import type { User } from '../../app/types'
 import { dash } from '@better-auth/infra'
-import { sso } from '@better-auth/sso'
 import { oauthProvider } from '@better-auth/oauth-provider'
 import { passkey } from '@better-auth/passkey'
 import { apiKey } from '@better-auth/api-key'
-import { scim } from '@better-auth/scim'
 import { i18n } from '@better-auth/i18n'
 import { stripe } from '@better-auth/stripe'
 import {
@@ -24,25 +20,13 @@ import {
   magicLink,
   emailOTP,
   admin as adminPlugin,
-  anonymous,
-  phoneNumber,
   lastLoginMethod,
   openAPI,
   oAuthProxy,
   oneTap,
-  genericOAuth,
   jwt,
   haveIBeenPwned,
   captcha,
-  auth0,
-  gumroad,
-  hubspot,
-  keycloak,
-  line,
-  microsoftEntraId,
-  okta,
-  slack,
-  patreon,
 } from 'better-auth/plugins'
 import { atprotoAuth } from '@mframework/meeovi-atproto/auth/plugin'
 import { ac, admin, user, seller, myCustomRole } from './permissions'
@@ -248,45 +232,6 @@ export const plugins = [
     },
   }),
 
-  // SSO/SAML — provisioning hooks log through this layer's real audit log
-  // instead of a disconnected Prisma client. No real IdP is configured in
-  // this environment, so the actual SSO login flow can't be exercised end
-  // to end, but the plugin/endpoints are real and wired correctly.
-  sso({
-    provisionUser: async ({ user, userInfo, provider }) => {
-      await logAuditEvent({
-        userId: user.id,
-        category: 'sso',
-        action: 'sso_provision',
-        targetType: 'user',
-        targetId: user.id,
-        status: 'success',
-        details: JSON.stringify({ provider: provider.providerId, email: userInfo.email }),
-        id: '',
-      })
-    },
-    organizationProvisioning: {
-      disabled: false,
-      defaultRole: 'member',
-      getRole: async ({ userInfo }) => {
-        const department = userInfo.attributes?.department
-        const jobTitle = userInfo.attributes?.jobTitle
-        if (
-          jobTitle?.toLowerCase().includes('manager') ||
-          jobTitle?.toLowerCase().includes('director') ||
-          jobTitle?.toLowerCase().includes('vp')
-        ) return 'admin'
-        if (department?.toLowerCase() === 'it') return 'admin'
-        return 'member'
-      },
-    },
-    saml: {
-      enableInResponseToValidation: true,
-      allowIdpInitiated: false,
-      requestTTL: 10 * 60 * 1000,
-    },
-  }),
-
   magicLink({
     sendMagicLink: async ({ email, url }) => {
       const { error } = await sendAuthEmail({
@@ -359,63 +304,13 @@ export const plugins = [
     },
   }),
 
-  // SCIM provisioning token generation, gated to admins/org-admins and
-  // audited through this layer's real audit log.
-  scim({
-    beforeSCIMTokenGenerated: async ({ user, member }) => {
-      const hasRole = (roles: unknown, role: string) =>
-        String(roles || '').split(',').map((r) => r.trim()).includes(role)
-      const isAdmin = hasRole((user as any)?.role, 'admin')
-      const isOrgAdmin = !!member && (hasRole(member.role, 'admin') || hasRole(member.role, 'owner'))
-      // @better-auth/scim <1.7 doesn't bind a provider that has no
-      // organization to its owner (GHSA "account/provider takeover via
-      // missing owner binding on non-organization providers"), and anyone
-      // can create an organization and own it. So org admins/owners may
-      // only mint tokens for their own organization's provider; tokens for
-      // non-organization providers are site-admin only.
-      if (member ? !(isOrgAdmin || isAdmin) : !isAdmin) {
-        throw new APIError('FORBIDDEN', { message: 'User does not have enough permissions' })
-      }
-    },
-    afterSCIMTokenGenerated: async ({ user }) => {
-      await logAuditEvent({
-        userId: user?.id,
-        category: 'scim',
-        action: 'scim_token_generated',
-        targetType: 'user',
-        targetId: user?.id || '',
-        status: 'success',
-        id: '',
-      })
-    },
-  }),
-
   jwt({
     disableSettingJwtHeader: true,
   }),
 
-  anonymous({
-    emailDomainName: 'example.com',
-  }),
-
-  // Phone OTP — falls back to a console log when Twilio isn't configured
-  // (TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN/TWILIO_VERIFY_SERVICE_SID are
-  // placeholders in this environment), same pattern as magicLink/emailOTP.
-  phoneNumber({
-    sendOTP: async ({ phoneNumber, code }) => {
-      // No SMS provider is wired up yet. In production, refuse rather than
-      // "send" a code nobody receives (and that would only exist in the
-      // server log); the console fallback is for local development only.
-      if (process.env.NODE_ENV === 'production') {
-        throw new APIError('NOT_IMPLEMENTED', { message: 'Phone sign-in is not available yet.' })
-      }
-      console.info('[phone-otp] dev OTP for', phoneNumber, code)
-    },
-    signUpOnVerification: {
-      getTempEmail: (phoneNumber) => `${phoneNumber}@example.com`,
-      getTempName: (phoneNumber) => phoneNumber,
-    },
-  }),
+  // SSO/SAML, SCIM, generic OAuth providers, phone numbers and anonymous
+  // sign-in are packages (packages/plugins/Authentication/auth-*), added by
+  // the apps that register them — see modules/auth-plugins.ts.
 
   lastLoginMethod(),
 
@@ -458,57 +353,6 @@ export const plugins = [
   // already configured on the main betterAuth() instance.
   oneTap(),
 
-  // Generic OAuth providers — registered so the endpoints are real and
-  // correctly wired, but none of these have real client credentials in
-  // this environment (AUTH0_CLIENT_ID etc. are unset), so an actual login
-  // through any of them can't be exercised end to end here.
-  genericOAuth({
-    config: [
-      auth0({
-        clientId: `${process.env.AUTH0_CLIENT_ID}`,
-        clientSecret: `${process.env.AUTH0_CLIENT_SECRET}`,
-        domain: `${process.env.AUTH0_DOMAIN}`,
-      }),
-      gumroad({
-        clientId: `${process.env.GUMROAD_CLIENT_ID}`,
-        clientSecret: `${process.env.GUMROAD_CLIENT_SECRET}`,
-      }),
-      hubspot({
-        clientId: `${process.env.HUBSPOT_CLIENT_ID}`,
-        clientSecret: `${process.env.HUBSPOT_CLIENT_SECRET}`,
-        scopes: ['oauth', 'contacts'],
-      }),
-      keycloak({
-        clientId: `${process.env.KEYCLOAK_CLIENT_ID}`,
-        clientSecret: `${process.env.KEYCLOAK_SECRET}`,
-        issuer: `${process.env.KEYCLOAK_ISSUER}`,
-      }),
-      line({
-        providerId: 'line-jp',
-        clientId: `${process.env.LINE_JP_CLIENT_ID}`,
-        clientSecret: `${process.env.LINE_JP_CLIENT_SECRET}`,
-      }),
-      microsoftEntraId({
-        clientId: `${process.env.MS_APP_ID}`,
-        clientSecret: `${process.env.MS_CLIENT_SECRET}`,
-        tenantId: `${process.env.MS_TENANT_ID}`,
-      }),
-      okta({
-        clientId: `${process.env.OKTA_CLIENT_ID}`,
-        clientSecret: `${process.env.OKTA_CLIENT_SECRET}`,
-        issuer: `${process.env.OKTA_ISSUER}`,
-      }),
-      slack({
-        clientId: `${process.env.SLACK_CLIENT_ID}`,
-        clientSecret: `${process.env.SLACK_CLIENT_SECRET}`,
-      }),
-      patreon({
-        clientId: `${process.env.PATREON_CLIENT_ID}`,
-        clientSecret: `${process.env.PATREON_CLIENT_SECRET}`,
-      }),
-    ],
-  }),
-
   adminPlugin({
     ac,
     roles: { admin, user, seller, myCustomRole },
@@ -544,7 +388,8 @@ export const plugins = [
   // email (account spam, inbox bombing). The forms send the token as
   // `x-captcha-response`. Sign-in itself stays on the per-IP limits so
   // scripted/API sign-ins keep working. Off when no secret is configured
-  // (local dev).
+  // (local dev). /sign-in/anonymous only exists when an app registers
+  // @mframework/auth-anonymous; it creates an account, so it's covered here.
   ...(process.env.NUXT_TURNSTILE_SECRET_KEY
     ? [captcha({
         provider: 'cloudflare-turnstile',

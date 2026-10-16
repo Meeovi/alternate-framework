@@ -46,7 +46,12 @@
     "packages/plugins/Media/meeovi-player",
     "packages/plugins/Themes/starter-template",
     "layers/*",
-    "apps/ecosystem/*"
+    "apps/ecosystem/*",
+    "packages/plugins/Authentication/auth-sso",
+    "packages/plugins/Authentication/auth-scim",
+    "packages/plugins/Authentication/auth-generic-oauth",
+    "packages/plugins/Authentication/auth-phone-number",
+    "packages/plugins/Authentication/auth-anonymous"
   ],
   "dependencies": {
     "@better-auth/core": "1.6.23",

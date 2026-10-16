@@ -1,0 +1,59 @@
+{
+  "name": "@mframework/auth-scim",
+  "version": "0.1.0",
+  "description": "SCIM user provisioning for M Framework's auth layer: the better-auth scim plugin, token generation limited to admins and audited.",
+  "mframework": {
+    "integration": {
+      "name": "SCIM provisioning",
+      "description": "Let an identity provider create and remove members through SCIM.",
+      "category": "Authentication",
+      "icon": "fas fa-users-gear",
+      "admin": true
+    }
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'auth-scim is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "better-auth",
+    "authentication",
+    "mframework",
+    "meeovi",
+    "scim",
+    "provisioning"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1",
+    "@better-auth/scim": "1.6.23"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.6.23",
+    "nuxt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  }
+}
