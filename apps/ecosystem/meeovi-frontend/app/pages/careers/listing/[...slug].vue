@@ -7,7 +7,7 @@
             <div class="col-md-12 col-lg-10">
                 <hr class="line">
                 <p class="mbr-text align-center mbr-fonts-style my-4 display-5">
-                    <em>{{ listing?.title }}</em>
+                    <em>{{ listing?.name }}</em>
                 </p>
 
                 <p class="mbr-text align-center mbr-fonts-style my-4 display-5">
@@ -25,7 +25,7 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-10">
                 <blockquote>
-                <h5 class="mbr-section-title mbr-fonts-style mb-2 display-7"><strong>{{ listing?.location }}</strong></h5>
+                <h5 class="mbr-section-title mbr-fonts-style mb-2 display-7"><strong>{{ listing?.type }}</strong></h5>
                 <p class="mbr-text mbr-fonts-style display-4" v-dompurify-html="listing?.description"></p></blockquote>
             </div>
         </div>
@@ -52,27 +52,31 @@
     $readItems
   } = useNuxtApp()
 
-  const { data, status } = useLazyAsyncData(() => `listing-${route.params.slug}`, () => {
-    return $directus.request($readItems('careers', {
-      filter: {
-        slug: {
-          _eq: `${route.params.slug}`
-        }
-      },
-      fields: [
-        '*',
-      ]
+  const route = useRoute()
+
+  // careers has no slug column — listings are addressed by id
+  // (/careers/listing/<id>). The old slug filter made every visit a 500.
+  const id = [].concat(route.params.slug || [])[0]
+
+  const { data: listing, error } = await useAsyncData(`listing-${id}`, async () => {
+    if (!/^\d+$/.test(String(id))) return null
+    const rows = await $directus.request($readItems('careers', {
+      filter: { id: { _eq: Number(id) }, status: { _eq: 'published' } },
+      fields: ['id', 'name', 'description', 'type', 'url', 'image', 'degree_level', 'experience', 'date_created'],
+      limit: 1,
     }))
+    return (Array.isArray(rows) ? rows[0] : null) ?? null
   })
 
-  // Directus returns an array for readItems; normalize to a single listing
-  const listing = computed(() => (Array.isArray(data.value) ? data.value[0] : data.value))
-  const loading = computed(() => status.value === 'pending' && !listing.value)
-
-const route = useRoute()
+  if (error.value) {
+    throw createError({ statusCode: 503, statusMessage: 'This page is temporarily unavailable', fatal: true })
+  }
+  if (!listing.value) {
+    throw createError({ statusCode: 404, statusMessage: 'Job listing not found', fatal: true })
+  }
 
 useHead({
-    title: () => listing.value?.title || 'Listing',
+    title: () => listing.value?.name || 'Listing',
 })
 
   definePageMeta({

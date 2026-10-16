@@ -2,7 +2,7 @@
 
 Habit tracker: one row per item with a "Done today" streak counter.
 
-> **Note:** `list_items` has no `streak` column yet, so streaks only last until reload. Add an integer `streak` field in Directus to persist them.
+Runs in the integrations sandbox (`sandbox/`, plain HTML/JS, no outside connections): the lists page lends it read-only `list.items`. Streaks are each user's own integration data (`MeeoviSandbox.data`), so they persist per user and survive uninstall / reinstall — no `streak` column needed.
 
 One of the plug-and-play `list-type-*` plugins. Each renders one kind of
 list on the social layer's `/lists/list/[slug]` page and is enabled just by

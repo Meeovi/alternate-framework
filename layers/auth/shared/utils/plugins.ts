@@ -1,4 +1,5 @@
 import { sql } from 'drizzle-orm'
+import { APIError } from 'better-auth/api'
 import * as schema from '../../server/database/migrations/schema'
 import { db } from '../../server/utils/drizzle'
 import { stripeClient } from '../../server/utils/stripe'
@@ -32,6 +33,7 @@ import {
   genericOAuth,
   jwt,
   haveIBeenPwned,
+  captcha,
   auth0,
   gumroad,
   hubspot,
@@ -44,7 +46,7 @@ import {
 } from 'better-auth/plugins'
 import { atprotoAuth } from '@mframework/meeovi-atproto/auth/plugin'
 import { ac, admin, user, seller, myCustomRole } from './permissions'
-import { normalizeUsername } from './username'
+import { MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH, isAllowedUsername, storedUsername } from './username'
 
 if (!process.env.NUXT_STRIPE_WEBHOOK_SECRET) {
   console.warn('[stripe] NUXT_STRIPE_WEBHOOK_SECRET is not set — the stripe plugin\'s own webhook endpoint will reject every incoming event with a signature-verification failure.')
@@ -232,11 +234,13 @@ export const plugins = [
   }),
 
   username({
-    minUsernameLength: 5,
-    maxUsernameLength: 100,
-    usernameValidator: (username) => username !== 'admin',
+    minUsernameLength: MIN_USERNAME_LENGTH,
+    maxUsernameLength: MAX_USERNAME_LENGTH,
+    usernameValidator: isAllowedUsername,
     displayUsernameValidator: (displayUsername) => /^[a-zA-Z0-9_-]+$/.test(displayUsername),
-    usernameNormalization: normalizeUsername,
+    // Lowercase only — normalizeUsername's digit folding is for the 'admin'
+    // lookalike check inside isAllowedUsername, not for storage.
+    usernameNormalization: storedUsername,
     displayUsernameNormalization: (displayUsername) => displayUsername.toLowerCase(),
     validationOrder: {
       username: 'post-normalization',
@@ -359,10 +363,18 @@ export const plugins = [
   // audited through this layer's real audit log.
   scim({
     beforeSCIMTokenGenerated: async ({ user, member }) => {
-      const isOrgAdmin = member?.role === 'admin' || member?.role === 'owner'
-      const isAdmin = (user as any)?.role === 'admin'
-      if (!isOrgAdmin && !isAdmin) {
-        throw new Error('User does not have enough permissions')
+      const hasRole = (roles: unknown, role: string) =>
+        String(roles || '').split(',').map((r) => r.trim()).includes(role)
+      const isAdmin = hasRole((user as any)?.role, 'admin')
+      const isOrgAdmin = !!member && (hasRole(member.role, 'admin') || hasRole(member.role, 'owner'))
+      // @better-auth/scim <1.7 doesn't bind a provider that has no
+      // organization to its owner (GHSA "account/provider takeover via
+      // missing owner binding on non-organization providers"), and anyone
+      // can create an organization and own it. So org admins/owners may
+      // only mint tokens for their own organization's provider; tokens for
+      // non-organization providers are site-admin only.
+      if (member ? !(isOrgAdmin || isAdmin) : !isAdmin) {
+        throw new APIError('FORBIDDEN', { message: 'User does not have enough permissions' })
       }
     },
     afterSCIMTokenGenerated: async ({ user }) => {
@@ -391,7 +403,13 @@ export const plugins = [
   // placeholders in this environment), same pattern as magicLink/emailOTP.
   phoneNumber({
     sendOTP: async ({ phoneNumber, code }) => {
-      console.info('[phone-otp] OTP for', phoneNumber, code)
+      // No SMS provider is wired up yet. In production, refuse rather than
+      // "send" a code nobody receives (and that would only exist in the
+      // server log); the console fallback is for local development only.
+      if (process.env.NODE_ENV === 'production') {
+        throw new APIError('NOT_IMPLEMENTED', { message: 'Phone sign-in is not available yet.' })
+      }
+      console.info('[phone-otp] dev OTP for', phoneNumber, code)
     },
     signUpOnVerification: {
       getTempEmail: (phoneNumber) => `${phoneNumber}@example.com`,
@@ -428,7 +446,8 @@ export const plugins = [
     silenceWarnings: { oauthAuthServerConfig: true, openidConfig: true },
   }),
 
-  openAPI(),
+  // /api/auth/reference lists every auth endpoint — development only.
+  ...(process.env.NODE_ENV === 'production' ? [] : [openAPI()]),
 
   oAuthProxy({
     productionURL: process.env.NUXT_PUBLIC_SITE_URL,
@@ -520,4 +539,17 @@ export const plugins = [
   // implemented a pwned-password check; it was a copy-paste of the same
   // oAuthProxy config as proxy.ts above.
   haveIBeenPwned(),
+
+  // Cloudflare Turnstile on the endpoints that create accounts or send
+  // email (account spam, inbox bombing). The forms send the token as
+  // `x-captcha-response`. Sign-in itself stays on the per-IP limits so
+  // scripted/API sign-ins keep working. Off when no secret is configured
+  // (local dev).
+  ...(process.env.NUXT_TURNSTILE_SECRET_KEY
+    ? [captcha({
+        provider: 'cloudflare-turnstile',
+        secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
+        endpoints: ['/sign-up/email', '/request-password-reset', '/sign-in/magic-link', '/sign-in/anonymous'],
+      })]
+    : []),
 ]

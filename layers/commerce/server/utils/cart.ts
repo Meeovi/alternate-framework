@@ -6,6 +6,7 @@ import { db } from '#auth/server/utils/drizzle'
 import { cart, cartItems } from '#auth/server/database/migrations/schema'
 import { getAuthSession } from '#auth/server/utils/sessions'
 import { getDirectusFacade } from './directusClient'
+import { parseProductRef } from './productRef'
 
 // The `cart`/`cart_items` Directus collections exist with a full schema
 // (see layers/auth/server/database/migrations/schema.ts) but their
@@ -107,19 +108,47 @@ export async function resolveCartContext(event: H3Event): Promise<ResolvedCartCo
 }
 
 export interface ResolvedProduct {
+  /** The cart/checkout key: the Directus id, or `<backend>:<key>`. */
   id: string
   name: string
   price: number
   image: string | null
+  /** The Directus products row (cart_items.products FK), if it is one. */
+  directusId: number | null
+  /** The commerce backend that owns it (e.g. 'magento'), if not Directus. */
+  backend: string | null
+  /** The product's key in that backend (e.g. its SKU). */
+  key: string
 }
 
 /**
- * Looks up a product's authoritative name/price/image straight from
- * Directus by id — the same trusted, server-resolved source
+ * Looks up a product's authoritative name/price/image — from Directus by
+ * id, or from the commerce backend that owns it (`magento:<sku>`, see
+ * productRef.ts) — the same trusted, server-resolved source
  * checkout-session.post.ts prices from. A client-supplied price is never
  * used to populate a cart line item.
  */
 export async function resolveProductForCart(productId: string): Promise<ResolvedProduct | null> {
+  const ref = parseProductRef(productId)
+  if (!ref) return null
+  if (ref.kind === 'backend') {
+    const product = await ref.backend
+      .request({ method: 'GET', collection: 'products', key: ref.key })
+      .catch(() => null) as { sku?: string, name?: string, price?: number | string, image?: string | null, status?: string } | null
+    const price = Number(product?.price)
+    if (!product || !Number.isFinite(price) || product.status === 'draft') return null
+    return {
+      id: `${ref.backend.id}:${ref.key}`,
+      name: product.name || ref.key,
+      price,
+      image: typeof product.image === 'string' ? product.image : null,
+      directusId: null,
+      backend: ref.backend.id,
+      key: ref.key,
+    }
+  }
+  productId = ref.id
+
   const directus = getDirectusFacade()
   const product = await directus
     .request(
@@ -140,7 +169,15 @@ export async function resolveProductForCart(productId: string): Promise<Resolved
     ? `${process.env.DIRECTUS_URL}/assets/${product.image.filename_disk}`
     : null
 
-  return { id: String(product.id), name: product.name || String(product.id), price, image }
+  return {
+    id: String(product.id),
+    name: product.name || String(product.id),
+    price,
+    image,
+    directusId: Number(product.id),
+    backend: null,
+    key: String(product.id),
+  }
 }
 
 export async function getCartItems(cartId: number) {

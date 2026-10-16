@@ -1,27 +1,10 @@
 import { defineEventHandler, createError } from 'h3'
-import { getAuthSession } from '../../utils/sessions'
 import { stripeClient } from '../../utils/stripe'
-import { db } from '../../utils/drizzle'
-import { authOrganizations } from '../../database/migrations/schema'
-import { eq } from 'drizzle-orm'
+import { requireOrgStripeManager } from '../../utils/stripeConnect'
 
 export default defineEventHandler(async (event) => {
-  const session = await getAuthSession(event)
-  if (!session?.session?.activeOrganizationId) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'No active organization'
-    })
-  }
-
-  const [org] = await db
-    .select()
-    .from(authOrganizations)
-    .where(eq(authOrganizations.id, session.session.activeOrganizationId))
-    .limit(1)
-
-  const metadata = org?.metadata ? JSON.parse(org.metadata) : undefined
-  const stripeAccountId = metadata?.stripeAccountId as string | undefined
+  // Signed in (401), active org (400), and its owner/admin (403).
+  const { stripeAccountId } = await requireOrgStripeManager(event)
 
   if (!stripeAccountId) {
     return { payouts: [], connected: false }

@@ -45,7 +45,7 @@
                         <div v-else>
                             <v-row>
                                 <v-col cols="12">
-                                    <p v-html="pageBlock?.description"></p>
+                                    <p v-dompurify-html="pageBlock?.description"></p>
                                 </v-col>
                             </v-row>
                         </div>

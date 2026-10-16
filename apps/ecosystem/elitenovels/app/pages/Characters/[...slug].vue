@@ -18,7 +18,7 @@
                 </p>
               </div>
 
-              <p class="mbr-text mbr-fonts-style align-center display-4" v-html="character?.description"></p>
+              <p class="mbr-text mbr-fonts-style align-center display-4" v-dompurify-html="character?.description"></p>
 
               <!-- Type Chips -->
               <div class="mbr-section-btn align-center" v-if="isMonster && typeNames.length">

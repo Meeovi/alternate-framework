@@ -11,7 +11,7 @@
               <h2 class="mbr-section-title mbr-fonts-style display-1">
                 <strong>{{ characterPage?.name }}</strong>
               </h2>
-              <p class="mbr-text mbr-fonts-style display-4" v-html="characterPage?.content"></p>
+              <p class="mbr-text mbr-fonts-style display-4" v-dompurify-html="characterPage?.content"></p>
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
                 <h4 class="item-title mbr-fonts-style display-5 color-title">
                   {{ block?.name }}
                 </h4>
-                <p class="item-text mbr-fonts-style display-4 color-title" v-html="block?.description"></p>
+                <p class="item-text mbr-fonts-style display-4 color-title" v-dompurify-html="block?.description"></p>
                 <div class="mbr-section-btn item-footer">
                   <NuxtLink v-if="block?.content && block?.content[0]?.subject" :to="block?.content[0]?.subject"
                     class="btn item-btn btn-success display-4">

@@ -1,5 +1,5 @@
-import type { CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor } from 'alternate-sdk'
-import type { MagentoAdapter } from '@mframework/adapter-magento'
+import type { CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder } from 'alternate-sdk'
+import type { MagentoAdapter, MagentoOAuth1Credentials } from '@mframework/adapter-magento'
 // Self-referencing package import, not a relative path — nuxt-module-build
 // only compiles module.ts and runtime/** into dist/, so a relative
 // '../normalizers/normalizers' import would resolve to a dist/normalizers/
@@ -76,8 +76,31 @@ async function fetchProductsByCategoryUid(magento: MagentoAdapter, categoryUid: 
   return (result?.items ?? []).map((item: any) => magentoNormalizers.products(item))
 }
 
-export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter): CommerceBackendAdapter {
+/**
+ * `credentials` (the Magento Integration, server-side only) enables
+ * placePaidOrder: orders paid with the app's Stripe checkout are recorded
+ * in Magento (Meeovi_MarketplaceApi ExternalOrderManagement), where Webkul
+ * credits each seller's sale.
+ */
+export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter, credentials?: MagentoOAuth1Credentials | null): CommerceBackendAdapter {
+  const placePaidOrder = credentials
+    ? async (order: PaidOrder) => {
+        const customerId = Number(order.customerId)
+        if (!Number.isInteger(customerId) || customerId <= 0) throw new Error('No Magento customer for this buyer')
+        const placed = await magento.marketplaceOrders.placeOrder(credentials, {
+          customerId,
+          reference: order.reference,
+          items: order.items.map((item) => ({ sku: String(item.key), qty: item.qty })),
+          amountPaid: order.amountPaid,
+          currency: order.currency.toUpperCase(),
+          ...(order.billingAddress ? { billingAddress: order.billingAddress } : {}),
+        })
+        return { id: String(placed.order_id), number: placed.increment_id, created: placed.created }
+      }
+    : undefined
+
   return {
+    ...(placePaidOrder ? { placePaidOrder } : {}),
     id: 'magento',
     collections: ['products', 'orders'],
     isEnabled: () => true,

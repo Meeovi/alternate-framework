@@ -11,11 +11,11 @@
           <v-card-text>
             <p class="text-h4 font-weight-black">{{ dictionary?.pronunction }}</p>
 
-            <div>Type: <p v-html="dictionary?.type"></p></div>
+            <div>Type: <p v-dompurify-html="dictionary?.type"></p></div>
 
             <div>Status: <p class="text-h6">{{ dictionary?.status }}</p></div>
 
-            <div>Definition: <p v-html="dictionary?.description"></p></div>
+            <div>Definition: <p v-dompurify-html="dictionary?.description"></p></div>
           </v-card-text>
 
           <v-card-actions>

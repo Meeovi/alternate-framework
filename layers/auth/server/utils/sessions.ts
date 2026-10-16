@@ -35,7 +35,8 @@ export const requireAuth = async (event: H3Event) => {
  */
 export const requireAdmin = async (event: H3Event) => {
   const user = await requireAuth(event)
-  if ((user as { role?: string }).role !== 'admin') {
+  // Membership, not equality: roles are comma-separated ("admin,seller").
+  if (!hasRole(user as { role?: string }, 'admin')) {
     throw createError({
       statusCode: 403,
       statusMessage: 'Forbidden'

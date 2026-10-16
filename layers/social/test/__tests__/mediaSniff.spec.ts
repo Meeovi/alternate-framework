@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { sniffMedia } from '../../server/utils/mediaSniff'
+import { sniffMedia } from '../../../shared/server/utils/mediaSniff'
 
 // Tiny real files made with ffmpeg (test/fixtures/media). The recorded-*.webm
 // ones were streamed, so like MediaRecorder output their sizes are unknown.

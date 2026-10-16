@@ -4,11 +4,13 @@ import { beforeEach, describe, expect, test, vi } from 'vitest'
 const runtimeConfig = {
   pixanomy: { url: 'https://app.pixanomy.test/', username: 'svc', appPassword: 'app-pass', root: 'Meeovi' },
 }
+// A real 1×1 PNG — uploads are checked by their bytes.
+const PNG = new Uint8Array(Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=', 'base64'))
 vi.stubGlobal('useRuntimeConfig', () => runtimeConfig)
 vi.stubGlobal('createError', (opts: { statusCode: number, statusMessage: string }) =>
   Object.assign(new Error(opts.statusMessage), opts))
 
-const { uploadToPixanomy, listPixanomyAssets, sanitizeSegment, decodeDataUrl, isAllowedAssetType } = await import('../../server/utils/pixanomy')
+const { uploadToPixanomy, listPixanomyAssets, sanitizeSegment, decodeDataUrl, isAllowedAssetType, detectAssetType } = await import('../../server/utils/pixanomy')
 
 describe('pixanomy upload', () => {
   const fetchMock = vi.fn()
@@ -26,7 +28,7 @@ describe('pixanomy upload', () => {
     })
 
     const asset = await uploadToPixanomy({
-      data: new Uint8Array([1, 2, 3]),
+      data: new Uint8Array([0xff, 0xd8, 0xff]),
       filename: '../../My Photo.JPG',
       contentType: 'image/jpeg',
       ownerId: 'user-1',
@@ -36,7 +38,7 @@ describe('pixanomy upload', () => {
     expect(asset.url).toBe('https://app.pixanomy.test/s/AbC123/download')
     expect(asset.fileId).toBe('42')
     expect(asset.size).toBe(3)
-    expect(asset.path).toMatch(/^\/Meeovi\/user-1\/posts\/\d{4}-\d{2}\/[0-9a-f-]{36}-My-Photo.JPG$/)
+    expect(asset.path).toMatch(/^\/Meeovi\/user-1\/posts\/\d{4}-\d{2}\/[0-9a-f-]{36}-My-Photo.jpg$/)
 
     const put = fetchMock.mock.calls.find(([, init]) => init.method === 'PUT')!
     expect(put[0]).toContain('https://app.pixanomy.test/remote.php/dav/files/svc/Meeovi/user-1/posts/')
@@ -52,7 +54,7 @@ describe('pixanomy upload', () => {
     fetchMock.mockImplementation(async (_: string, init: RequestInit) =>
       new Response(null, { status: init.method === 'MKCOL' ? 201 : 507 }))
     await expect(uploadToPixanomy({
-      data: new Uint8Array([1]), filename: 'a.png', contentType: 'image/png', ownerId: 'u',
+      data: PNG, filename: 'a.png', contentType: 'image/png', ownerId: 'u',
     })).rejects.toMatchObject({ statusCode: 502 })
   })
 
@@ -78,6 +80,26 @@ describe('pixanomy helpers', () => {
     expect(decoded?.contentType).toBe('image/png')
     expect(Array.from(decoded!.data)).toEqual([1, 2, 3])
     expect(decodeDataUrl('https://example.com/a.png')).toBeNull()
+  })
+
+  test('detectAssetType trusts bytes, not the declared type', () => {
+    const text = (s: string) => new TextEncoder().encode(s)
+    expect(detectAssetType(PNG, 'image/jpeg')).toBe('image/png')
+    expect(detectAssetType(text('<html><script>alert(1)</script>'), 'image/png')).toBeNull()
+    expect(detectAssetType(text('<svg onload="alert(1)"/>'), 'image/svg+xml')).toBeNull()
+    expect(detectAssetType(text('just some notes'), 'text/plain')).toBe('text/plain')
+    expect(detectAssetType(new Uint8Array([0, 1, 2, 3]), 'text/plain')).toBeNull()
+    expect(detectAssetType(text('%PDF-1.7 ...'), 'application/octet-stream')).toBe('application/pdf')
+    const zip = new Uint8Array([0x50, 0x4b, 0x03, 0x04, ...text('[Content_Types].xml')])
+    expect(detectAssetType(zip, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'))
+      .toBe('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    expect(detectAssetType(zip, 'text/html')).toBe('application/zip')
+  })
+
+  test('an upload is stored as its real type, with a matching extension', async () => {
+    await expect(uploadToPixanomy({
+      data: new TextEncoder().encode('<html></html>'), filename: 'evil.html', contentType: 'image/png', ownerId: 'u',
+    })).rejects.toMatchObject({ statusCode: 415 })
   })
 
   test('isAllowedAssetType blocks active content', () => {

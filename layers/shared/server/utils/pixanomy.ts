@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto'
+import { sniffMedia } from './mediaSniff'
 
 /**
  * Pixanomy (app.pixanomy.com) is the centralized asset store for every
@@ -147,9 +148,17 @@ export async function uploadToPixanomy(input: PixanomyUploadInput): Promise<Pixa
     sanitizeSegment(input.category || 'uploads', 'uploads'),
     month,
   ]
+  // The declared type is whatever the browser (or a script) claimed — store
+  // the file as what its bytes actually are, or not at all.
+  const contentType = detectAssetType(input.data, input.contentType)
+  if (!contentType) {
+    throw createError({ statusCode: 415, statusMessage: `${input.filename}: file contents don't match an allowed type` })
+  }
+
   // Prefix with a uuid so two uploads of "image.jpg" never collide and a
-  // public link can't be guessed from the original filename.
-  const filename = `${randomUUID()}-${sanitizeSegment(input.filename)}`
+  // public link can't be guessed from the original filename. Nextcloud
+  // serves files by extension, so the extension always matches the real type.
+  const filename = `${randomUUID()}-${withExtension(sanitizeSegment(input.filename), contentType)}`
 
   await ensureFolders(cfg, folder)
 
@@ -157,7 +166,7 @@ export async function uploadToPixanomy(input: PixanomyUploadInput): Promise<Pixa
     method: 'PUT',
     headers: {
       Authorization: authHeader(cfg),
-      'Content-Type': input.contentType || 'application/octet-stream',
+      'Content-Type': contentType,
     },
     // TS 5.7+ types Uint8Array<ArrayBufferLike> as not assignable to BodyInit
     // (it could be SharedArrayBuffer-backed); ours is always a plain buffer.
@@ -179,7 +188,7 @@ export async function uploadToPixanomy(input: PixanomyUploadInput): Promise<Pixa
     path,
     fileId: put.headers.get('oc-fileid'),
     filename: input.filename,
-    contentType: input.contentType,
+    contentType,
     size: input.data.byteLength,
   }
 }
@@ -310,4 +319,71 @@ const ALLOWED_TYPES: RegExp[] = [
 
 export function isAllowedAssetType(contentType: string): boolean {
   return ALLOWED_TYPES.some((re) => re.test(contentType.toLowerCase()))
+}
+
+// -- Real file types ----------------------------------------------------------
+
+const OFFICE_TYPE = /^application\/(msword|vnd\.openxmlformats-officedocument\.[\w.]+|vnd\.oasis\.opendocument\.[\w.]+)$/
+
+const latin1 = (b: Uint8Array, at: number, len: number) =>
+  at + len > b.length ? '' : Buffer.from(b.buffer, b.byteOffset + at, len).toString('latin1')
+
+/**
+ * What an upload really is, from its bytes (magic numbers / container
+ * structure), restricted to the allowed types. Returns the MIME type to
+ * store it under, or null to refuse it. `declared` only picks between
+ * formats the bytes can't tell apart (Office files are zips; text is text).
+ */
+export function detectAssetType(data: Uint8Array, declared = ''): string | null {
+  const d = declared.toLowerCase().split(';')[0]!.trim()
+  const b = data
+  const has = (at: number, ...bytes: number[]) => bytes.every((v, i) => b[at + i] === v)
+  let type: string | null = null
+
+  if (has(0, 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) type = 'image/png'
+  else if (has(0, 0xff, 0xd8, 0xff)) type = 'image/jpeg'
+  else if (latin1(b, 0, 6) === 'GIF87a' || latin1(b, 0, 6) === 'GIF89a') type = 'image/gif'
+  else if (latin1(b, 0, 4) === 'RIFF' && latin1(b, 8, 4) === 'WEBP') type = 'image/webp'
+  else if (latin1(b, 4, 4) === 'ftyp' && /^(avif|avis)$/.test(latin1(b, 8, 4))) type = 'image/avif'
+  else if (latin1(b, 4, 4) === 'ftyp' && /^(heic|heix|hevc|hevx|heim|heis|mif1|msf1)$/.test(latin1(b, 8, 4))) type = 'image/heic'
+  else if (latin1(b, 0, 5) === '%PDF-') type = 'application/pdf'
+  else if (has(0, 0x50, 0x4b, 0x03, 0x04)) {
+    // Office Open XML / OpenDocument files are zips with a telltale entry.
+    const head = latin1(b, 0, Math.min(b.length, 4096))
+    const office = head.includes('[Content_Types].xml') || latin1(b, 30, 8) === 'mimetype'
+    type = office && OFFICE_TYPE.test(d) && d !== 'application/msword' ? d : 'application/zip'
+  } else if (has(0, 0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1)) {
+    // Legacy (OLE) Word file — only when that's what was declared.
+    type = d === 'application/msword' ? d : null
+  } else {
+    const media = sniffMedia(b)
+    if (media) type = media.type
+    else if (d === 'text/plain' && isPlainText(b)) type = 'text/plain'
+  }
+
+  return type && isAllowedAssetType(type) ? type : null
+}
+
+/** UTF-8 text with no NUL bytes (binary). */
+function isPlainText(b: Uint8Array): boolean {
+  if (b.includes(0)) return false
+  try { new TextDecoder('utf-8', { fatal: true }).decode(b); return true } catch { return false }
+}
+
+const EXTENSIONS: Record<string, string> = {
+  'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif', 'image/webp': 'webp', 'image/avif': 'avif', 'image/heic': 'heic',
+  'video/mp4': 'mp4', 'video/webm': 'webm', 'video/quicktime': 'mov', 'video/x-matroska': 'mkv', 'video/ogg': 'ogv',
+  'audio/mpeg': 'mp3', 'audio/mp4': 'm4a', 'audio/aac': 'aac', 'audio/ogg': 'ogg', 'audio/wav': 'wav', 'audio/webm': 'weba',
+  'audio/flac': 'flac', 'audio/x-matroska': 'mka',
+  'application/pdf': 'pdf', 'text/plain': 'txt', 'application/zip': 'zip', 'application/msword': 'doc',
+}
+const OFFICE_EXTENSIONS = /^(docx|xlsx|pptx|odt|ods|odp|odg)$/i
+
+/** `name.ext` with ext replaced by the one for `contentType`. */
+function withExtension(name: string, contentType: string): string {
+  const dot = name.lastIndexOf('.')
+  const base = dot > 0 ? name.slice(0, dot) : name
+  const current = dot > 0 ? name.slice(dot + 1) : ''
+  const ext = EXTENSIONS[contentType] ?? (OFFICE_EXTENSIONS.test(current) ? current.toLowerCase() : 'bin')
+  return `${base || 'file'}.${ext}`
 }

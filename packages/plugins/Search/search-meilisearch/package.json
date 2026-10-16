@@ -2,6 +2,15 @@
   "name": "@mframework/search-meilisearch",
   "version": "0.1.0",
   "description": "Meilisearch provider for the M Framework federated search layer (layers/search). Registers itself with the layer's provider registry; enabled by the presence of a Meilisearch host.",
+  "mframework": {
+    "integration": {
+      "name": "Meilisearch search",
+      "description": "Meilisearch as a federated search provider.",
+      "category": "Search",
+      "icon": "fas fa-magnifying-glass",
+      "admin": true
+    }
+  },
   "license": "MIT",
   "type": "module",
   "main": "./module.ts",

@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     readItems('orders', {
       filter: {
         id: { _eq: orderId },
-        user_id: { _eq: user.id },
+        buyer_id: { _eq: user.id },
       },
       fields: ['id', 'date_created', 'payment_status', 'tracking_number', 'tracking_url', 'shipment_carrier', 'shipment_status', 'fulfillment_status', 'line_items_snapshot'],
       limit: 1,

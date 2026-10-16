@@ -4,6 +4,7 @@ import {
 import {
   resolve
 } from 'path'
+import { readdir, rm } from 'node:fs/promises'
 import { defineNuxtConfig } from 'nuxt/config'
 
 const layers = useLayers(__dirname, {
@@ -69,6 +70,16 @@ export default defineNuxtConfig({
       for (const file of Object.values(manifest)) {
         file.prefetch = false
       }
+    },
+    // Client source maps are uploaded to Sentry by its Vite plugin during the
+    // client build; Nitro then copies them into .output/public. Remove them
+    // here, before Nitro builds its public-asset manifest — Sentry's own
+    // filesToDeleteAfterUpload runs after that, leaving manifest entries for
+    // deleted files (requests for them 500 instead of 404).
+    'nitro:build:public-assets': async (nitro) => {
+      const dir = nitro.options.output.publicDir
+      const files = await readdir(dir, { recursive: true })
+      await Promise.all(files.filter((f) => f.endsWith('.map')).map((f) => rm(resolve(dir, f))))
     },
   },
 
@@ -152,6 +163,8 @@ export default defineNuxtConfig({
     '@mframework/meeovi-integrations',
     // Admin tables (SVAR DataGrid over the adapters) on /workspace pages — <MeeoviTable>
     '@mframework/meeovi-tables',
+    // Sellers' supplier accounts (Printful, CJ) → products under their Webkul seller — /workspace/stores/suppliers
+    '@mframework/meeovi-dropshipping',
     // List types rendered by layers/social's /lists/list/[slug] page —
     // drop one to disable that view.
     resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-tasklist/module.ts'),
@@ -355,7 +368,15 @@ export default defineNuxtConfig({
   sentry: {
     org: 'meeovi',
     project: 'meeovi',
-    autoInjectServerSentry: 'top-level-import'
+    autoInjectServerSentry: 'top-level-import',
+    // `sourcemap.client: 'hidden'` only drops the //# sourceMappingURL
+    // comment — the .map files were still published under /_nuxt/, i.e.
+    // the full original source (comments included) to anyone. They're
+    // uploaded to Sentry during the build, then removed from the public
+    // output; server maps never leave the server.
+    sourcemaps: {
+      filesToDeleteAfterUpload: ['.output/public/**/*.map'],
+    },
   },
 
   sourcemap: {

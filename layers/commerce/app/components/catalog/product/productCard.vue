@@ -2,7 +2,7 @@
   <div>
     <div class="product-card rounded-md hover:shadow-lg">
       <div class="product-card__media">
-        <NuxtLink :to="`/product/${product?.id}`" class="block">
+        <NuxtLink :to="productPath" class="block">
           <!-- The placeholder is an external absolute URL that isn't in
                image.domains, so NuxtImg/IPX would blank it — render it as a
                plain <img>; only real provider-backed images go through NuxtImg. -->
@@ -21,7 +21,7 @@
       </div>
 
       <div class="product-card__body p-4">
-        <NuxtLink :to="`/product/${product?.id}`" class="no-underline"> {{ product?.name }}
+        <NuxtLink :to="productPath" class="no-underline"> {{ product?.name }}
         </NuxtLink>
         <div class="flex items-center pt-1">
           <MeeoviRating type="product" :id="product?.id" summary />
@@ -36,12 +36,8 @@
           <s>{{ pricing?.formatted?.regular }}</s>
           <span class="pl-1">{{ pricing?.discountPercent }}% off</span>
         </span>
-        <!--<v-btn size="sm">
-          <template #prefix>
-            <SfIconShoppingCart size="sm" />
-          </template>
-          Add to cart
-        </v-btn>-->
+        <!-- Add to Cart, Install (free integration) or Download (free file). -->
+        <AddToCartBtn :product="product" />
       </div>
     </div>
   </div>
@@ -54,6 +50,8 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   import { computed } from 'vue'
   import { usePrice } from '../../../composables/catalog/price/price'
   import { useWishlistStore } from '../../../stores/wishlist/useWishlistStore'
+  import AddToCartBtn from '../../blocks/addToCartBtn.vue'
+  import { productKey } from '../../../utils/productKey'
 
   const { getProductPrice } = usePrice()
   const wishlistStore = useWishlistStore()
@@ -66,6 +64,8 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   });
 
   const pricing = computed(() => getProductPrice(props.product || {}))
+  // Directus id, or `magento:<sku>` for a commerce backend's product.
+  const productPath = computed(() => `/product/${encodeURIComponent(productKey(props.product))}`)
   const inWishlist = computed(() => wishlistStore.hasItem(props.product?.id))
 
   // getProductPrice() returns a pre-formatted string, but when the backend
@@ -73,6 +73,7 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   // `product.price` number ("19.99" with no currency). Format that fallback
   // the same way rather than showing a bare number.
   const displayPrice = computed(() => {
+    if (!((pricing.value?.final ?? Number(props.product?.price)) > 0)) return 'Free'
     if (pricing.value?.formatted?.final) return pricing.value.formatted.final
     const raw = Number(props.product?.price)
     if (!Number.isFinite(raw)) return props.product?.price ?? ''

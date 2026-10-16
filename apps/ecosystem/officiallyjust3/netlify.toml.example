@@ -1,0 +1,10 @@
+[build]
+publish = "apps/app-1/dist"
+edge_functions = "apps/app-1/custom-edge-functions-dir"
+
+[functions]
+directory = "apps/app-1/my_functions"
+
+# An example local build plugin
+[[plugins]]
+package = "apps/app-1/custom-build-plugin"

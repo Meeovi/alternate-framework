@@ -163,7 +163,7 @@ describe('MagentoAdapter.seller', () => {
       expect(auth).toMatch(/^OAuth /)
       expect(auth).toContain(`oauth_consumer_key="${credentials.consumerKey}"`)
       expect(auth).toContain(`oauth_token="${credentials.accessToken}"`)
-      expect(auth).toContain('oauth_signature_method="HMAC-SHA1"')
+      expect(auth).toContain('oauth_signature_method="HMAC-SHA256"')
       expect(auth).toMatch(/oauth_signature="[^"]+"/)
       expect(auth).toMatch(/oauth_nonce="[^"]+"/)
       expect(auth).toMatch(/oauth_timestamp="\d+"/)

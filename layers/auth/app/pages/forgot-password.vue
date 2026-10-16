@@ -8,7 +8,8 @@
         <div class="request-reset-form">
           <v-form class="mbr-section-btn" :schema="schema" :state="state">
             <v-text-field v-model="state.email" type="email" label="Email" required></v-text-field>
-            <v-btn class="mt-2" type="submit" block @click="handleForgetPassword" :loading="loading" :disabled="loading">
+            <NuxtTurnstile v-if="captchaEnabled" ref="captchaWidget" v-model="captchaToken" class="mt-2" />
+            <v-btn class="mt-2" type="submit" block @click="handleForgetPassword" :loading="loading" :disabled="loading || captchaMissing">
               Send Reset Link
             </v-btn>
           </v-form>
@@ -46,6 +47,7 @@ useHead({
 })
 
 const runtimeConfig = useRuntimeConfig()
+const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha } = useAuthCaptcha()
 const appName = String(runtimeConfig.public?.appName || 'App')
 
 const schema = z.object({
@@ -70,13 +72,15 @@ const handleForgetPassword = async () => {
 	}
   loading.value = true
   message.value = null
-  await (authClient as any).forgetPassword(
+  // POST /request-password-reset — the old forgetPassword() client call
+  // targeted /forget-password, which this better-auth version no longer has.
+  await authClient.requestPasswordReset(
 		{
       email: state.email,
 			redirectTo: "/reset-password",
 		},
 		{
-			// onSuccess find the url with token in server console. For detail check forgetPassword section: https://www.better-auth.com/docs/authentication/email-password
+      ...captchaFetchOptions(),
 			onSuccess() {
         messageType.value = 'success'
         message.value = 'Password reset link sent to your email.'
@@ -87,6 +91,7 @@ const handleForgetPassword = async () => {
 			},
 		},
 	);
+  resetCaptcha()
   loading.value = false
 };
 </script>

@@ -1,82 +1,312 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="contentPage">
-    <v-toolbar color="white">
-      <v-toolbar-title>{{ integration?.name }}</v-toolbar-title>
+    <!-- /workspace/integration: the catalog -->
+    <template v-if="!slug">
+      <v-toolbar color="primary" class="mb-4">
+        <v-toolbar-title>Integrations</v-toolbar-title>
+        <v-toolbar-items>
+          <v-btn variant="text" prepend-icon="fas fa-store" text="Store" :to="STORE_PATH" />
+        </v-toolbar-items>
+      </v-toolbar>
 
-      <v-toolbar-items>
-        <v-btn title="Uninstall integration" text="Uninstall integration" variant="text"></v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
+      <div class="contentSection">
+        <div class="d-flex flex-wrap align-center ga-3 mb-4">
+          <v-btn-toggle v-model="view" mandatory density="comfortable" variant="outlined" color="primary">
+            <v-btn value="browse" text="Browse" />
+            <v-btn value="installed" :text="`Installed (${installedCount})`" />
+          </v-btn-toggle>
+          <v-spacer />
+          <v-select v-model="category" :items="categories" label="Category" density="compact" hide-details clearable
+            class="integrations__filter" />
+          <v-text-field v-model="search" label="Search" prepend-inner-icon="fas fa-magnifying-glass" density="compact"
+            hide-details clearable class="integrations__search" />
+        </div>
 
-    <div class="contentSection">
-      <v-card elevation="0">
-        <v-img class="align-end text-white" height="200" src="assets/images/background4.jpg" cover>
-          <v-card-title style="font-size: 35px;">{{ integration?.name }}</v-card-title>
-        </v-img>
+        <v-alert v-if="catalogError" type="error" variant="tonal"
+          text="Integrations couldn't be loaded right now. Please try again later." />
 
-        <v-card-subtitle class="pt-4">
-          Published: {{ integration?.date_created ? new Date(integration.date_created).toLocaleDateString() : '' }}
-        </v-card-subtitle>
+        <v-alert v-else-if="!catalogPending && !shown.length" type="info" variant="tonal"
+          :text="view === 'installed' && !search && !category ? 'You haven\'t installed any integrations yet.' : 'No integrations match.'" />
 
-        <v-card-text v-dompurify-html="integration?.content"></v-card-text>
+        <v-row v-else>
+          <v-col v-for="item in shown" :key="item.slug" cols="12" sm="6" md="4">
+            <v-card elevation="0" border height="100%" class="d-flex flex-column" :to="pageOf(item)">
+              <v-card-item>
+                <template #prepend>
+                  <v-avatar color="primary" variant="tonal" rounded>
+                    <v-icon :icon="item.icon || 'fas fa-plug'" size="18" />
+                  </v-avatar>
+                </template>
+                <v-card-title>{{ item.name }}</v-card-title>
+                <v-card-subtitle>{{ [item.category, item.developer].filter(Boolean).join(' · ') }}</v-card-subtitle>
+              </v-card-item>
+              <v-card-text class="flex-grow-1">
+                <p class="integrations__description">{{ item.description || 'No description yet.' }}</p>
+                <div class="d-flex flex-wrap ga-2 mt-3">
+                  <v-chip size="small" :color="isPaid(item) && !item.purchased ? 'warning' : 'success'" variant="tonal" :text="priceLabel(item)" />
+                  <v-chip v-if="item.admin" size="small" color="secondary" variant="tonal" prepend-icon="fas fa-user-shield"
+                    text="Admin" />
+                  <v-chip v-if="item.sandboxed" size="small" color="info" variant="tonal" prepend-icon="fas fa-shield-halved"
+                    text="Sandboxed" />
+                  <v-chip v-if="item.version" size="small" variant="tonal" :text="`v${item.version}`" />
+                </div>
+              </v-card-text>
+              <v-card-actions>
+                <template v-if="item.state === 'installed'">
+                  <v-chip color="success" variant="flat" size="small" prepend-icon="fas fa-check" text="Installed" />
+                  <v-spacer />
+                  <v-btn variant="text" color="error" text="Uninstall" :loading="busy === item.slug"
+                    @click.prevent="uninstall(item)" />
+                </template>
+                <v-btn v-else-if="item.state === 'available'" color="primary" variant="flat" text="Install"
+                  :loading="busy === item.slug" @click.prevent="install(item)" />
+                <v-btn v-else-if="item.state === 'paid' && item.productRef" color="warning" variant="flat"
+                  prepend-icon="fas fa-cart-shopping" :text="`Buy · ${priceLabel(item)}`"
+                  @click.prevent="navigateTo(productPage(item))" />
+                <v-btn v-else disabled variant="tonal" :text="blockedLabel(item)" />
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
 
-        <v-card-actions>
-          <share />
-        </v-card-actions>
-      </v-card>
-    </div>
+    <!-- /workspace/integration/<slug>: one integration -->
+    <template v-else>
+      <v-toolbar color="primary" class="mb-4">
+        <template #prepend>
+          <v-btn icon color="white" variant="text" :to="catalogPath" aria-label="All integrations">
+            <v-icon icon="fas fa-arrow-left" size="18" />
+          </v-btn>
+        </template>
+        <v-toolbar-title>{{ integration?.name || 'Integration' }}</v-toolbar-title>
+        <v-toolbar-items v-if="integration">
+          <v-btn v-if="integration.state === 'installed'" variant="text" text="Uninstall" :loading="busy === integration.slug"
+            @click="uninstall(integration)" />
+          <v-btn v-else-if="integration.state === 'available'" variant="text" text="Install"
+            :loading="busy === integration.slug" @click="install(integration)" />
+          <v-btn v-else-if="integration.state === 'paid' && integration.productRef" variant="text"
+            :text="`Buy · ${priceLabel(integration)}`" :to="productPage(integration)" />
+        </v-toolbar-items>
+      </v-toolbar>
+
+      <div class="contentSection">
+        <v-alert v-if="itemError" type="info" variant="tonal" text="This integration doesn't exist, or isn't available to you." />
+
+        <v-card v-else-if="integration" elevation="0" border>
+          <v-card-item>
+            <template #prepend>
+              <v-avatar color="primary" variant="tonal" size="56" rounded>
+                <v-icon :icon="integration.icon || 'fas fa-plug'" size="26" />
+              </v-avatar>
+            </template>
+            <v-card-title class="text-h5">{{ integration.name }}</v-card-title>
+            <v-card-subtitle>
+              {{ [integration.category, integration.developer, integration.version && `v${integration.version}`].filter(Boolean).join(' · ') }}
+            </v-card-subtitle>
+          </v-card-item>
+
+          <v-card-text>
+            <div class="d-flex flex-wrap ga-2 mb-4">
+              <v-chip :color="stateColor(integration)" variant="flat" size="small" :text="stateLabel(integration)" />
+              <v-chip size="small" :color="isPaid(integration) && !integration.purchased ? 'warning' : 'success'" variant="tonal" :text="priceLabel(integration)" />
+              <v-chip v-if="integration.admin" size="small" color="secondary" variant="tonal" prepend-icon="fas fa-user-shield"
+                text="Admins only" />
+              <v-chip v-if="integration.sandboxed" size="small" color="info" variant="tonal" prepend-icon="fas fa-shield-halved"
+                text="Sandboxed" />
+            </div>
+
+            <p class="text-body-1">{{ integration.description || 'No description yet.' }}</p>
+
+            <v-alert v-if="integration.state === 'paid'" type="warning" variant="tonal" density="comfortable" class="mt-4"
+              icon="fas fa-cart-shopping">
+              {{ integration.name }} costs {{ priceLabel(integration) }}. Buy it in the store, and once your payment
+              goes through you can install it here.
+            </v-alert>
+
+            <v-sheet v-if="integration.plugin" border rounded class="pa-4 mt-4">
+              <div class="text-subtitle-2 mb-2">
+                <v-icon icon="fas fa-shield-halved" size="16" class="mr-2" />Security
+              </div>
+              <p v-if="integration.sandboxed" class="mb-2">
+                Runs in an isolated sandbox. It can't see your account, your session or the rest of Meeovi — only
+                its own data for you, and what the page it's shown on lends it.
+              </p>
+              <p v-else-if="integration.admin" class="mb-2">
+                First-party infrastructure, managed by admins. It runs inside Meeovi, not in the sandbox.
+              </p>
+              <p v-else class="mb-2">
+                Not sandboxed yet — it can't be installed until it runs in the integrations sandbox.
+              </p>
+              <div class="text-body-2">
+                <strong>Outside connections:</strong>
+                <template v-if="integration.hosts.length">
+                  only
+                  <v-chip v-for="host in integration.hosts" :key="host" size="x-small" variant="outlined" class="ml-1"
+                    :text="host" />
+                </template>
+                <template v-else> none.</template>
+              </div>
+            </v-sheet>
+
+            <v-alert v-if="integration.plugin" type="info" variant="tonal" density="comfortable" class="mt-4"
+              icon="fas fa-user-lock">
+              Installing turns {{ integration.name }} on for your account only. What you create with it stays attached to
+              your account — uninstalling switches it off but keeps your data, and reinstalling brings it back.
+            </v-alert>
+
+            <p v-if="integration.installedAt" class="text-medium-emphasis mt-4">
+              Installed {{ new Date(integration.installedAt).toLocaleDateString() }}
+            </p>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn v-if="integration.state === 'installed'" color="error" variant="tonal" text="Uninstall"
+              :loading="busy === integration.slug" @click="uninstall(integration)" />
+            <v-btn v-else-if="integration.state === 'available'" color="primary" variant="flat" text="Install"
+              :loading="busy === integration.slug" @click="install(integration)" />
+            <v-btn v-else-if="integration.state === 'paid' && integration.productRef" color="warning" variant="flat"
+              prepend-icon="fas fa-cart-shopping" :text="`Buy · ${priceLabel(integration)}`" :to="productPage(integration)" />
+            <v-btn v-else disabled variant="tonal" :text="blockedLabel(integration)" />
+            <v-btn v-if="integration.productRef" variant="text" prepend-icon="fas fa-store" text="View in store"
+              :to="productPage(integration)" />
+            <v-spacer />
+            <share />
+          </v-card-actions>
+        </v-card>
+      </div>
+    </template>
+
+    <v-snackbar v-model="toast.show" :color="toast.color" timeout="3500">{{ toast.text }}</v-snackbar>
   </div>
 </template>
 
-<script setup>
-  definePageMeta({ middleware: 'seller', key: (route) => route.fullPath })
+<script setup lang="ts">
+import { computed, reactive, ref } from 'vue'
+import type {
+  IntegrationCatalogItem,
+  IntegrationCatalogResponse,
+  IntegrationDetailResponse,
+} from '@mframework/meeovi-integrations'
+import share from '#social/app/components/blocks/share.vue'
 
-  import {
-    ref
-  } from 'vue'
-  import Pagebar from '../../../components/menus/page/pagebar.vue'
-  import share from '#social/app/components/blocks/share.vue'
+// Integrations are discovered from the plugins folder and sold (or given
+// away) as store products — a paid one installs only after the user bought
+// it; installs are per user (@mframework/meeovi-integrations), so
+// installing only switches a plugin on for whoever clicks Install. Admin
+// plugins are only ever returned to admins.
+definePageMeta({ middleware: 'auth', key: (route) => route.fullPath })
 
-  const route = useRoute()
-  const {
-    $directus,
-    $readItems,
-  } = useNuxtApp()
+const route = useRoute()
+const { apiBase, catalogPath, install: installPlugin, uninstall: uninstallPlugin } = useIntegrations()
 
-  const {
-    data: integration
-  } = await useAsyncData(`integration-${route.params.slug}`, async () => {
-    const result = await $directus.request($readItems('integrations', {
-      filter: {
-        slug: {
-          _eq: `${route.params.slug}`
-        }
-      },
-      fields: '*',
-      limit: 1
-    }))
-    return Array.isArray(result) ? result[0] : null
+const slug = computed(() => {
+  const parts = ([] as string[]).concat(route.params.slug || []).filter(Boolean)
+  return parts.join('/')
+})
+const pageOf = (item: IntegrationCatalogItem) => `${catalogPath.replace(/\/+$/, '')}/${item.slug}`
+// The store's Integrations category, and an integration's product page.
+const STORE_PATH = '/departments/category/integrations'
+const productPage = (item: IntegrationCatalogItem) => `/product/${encodeURIComponent(item.productRef ?? '')}`
+
+// ---- catalog --------------------------------------------------------------
+
+const { data: catalog, pending: catalogPending, error: catalogError, refresh: refreshCatalog } =
+  await useFetch<IntegrationCatalogResponse>(apiBase, {
+    key: 'workspace:integrations',
+    default: () => ({ signedIn: false, admin: false, items: [] }),
+    immediate: !slug.value,
   })
 
-  useHead({
-    title: () => integration.value?.name || 'Integration',
-  })
+const items = computed(() => catalog.value?.items ?? [])
+const installedCount = computed(() => items.value.filter((i) => i.state === 'installed').length)
+const categories = computed(() => [...new Set(items.value.map((i) => i.category).filter(Boolean))].sort() as string[])
 
-  useSeoMeta({
-    title: () => integration.value?.name || 'Integration',
-    description: () => integration.value?.description || 'E-Commerce application built with Nuxt & Shopify',
-    ogTitle: () => integration.value?.name || 'Integration',
-    ogDescription: () => integration.value?.description || 'E-Commerce application built with Nuxt & Shopify',
-    twitterCard: 'summary_large_image',
-  })
+const view = ref<'browse' | 'installed'>('browse')
+const category = ref<string | null>(null)
+const search = ref('')
 
-  defineOgImageComponent('Nuxt', {
-    title: () => integration.value?.name || 'Nuxt Commerce',
-    description: () => integration.value?.description ||
-      'A high-performance, server-rendered E-commerce app built with Nuxt & Shopify',
-    theme: '#4ADE80',
-    headline: '',
-    colorMode: 'dark',
-  })
+// Installable first, then installed, then the rest; alphabetical within.
+const ORDER = { available: 0, installed: 1, paid: 2, 'coming-soon': 3 } as const
+const shown = computed(() => {
+  const q = (search.value || '').trim().toLowerCase()
+  return items.value
+    .filter((i) => view.value === 'browse' || i.state === 'installed')
+    .filter((i) => !category.value || i.category === category.value)
+    .filter((i) => !q || [i.name, i.description, i.developer, i.category].some((v) => v?.toLowerCase().includes(q)))
+    .sort((a, b) => ORDER[a.state] - ORDER[b.state] || a.name.localeCompare(b.name))
+})
+
+// ---- one integration ------------------------------------------------------
+
+const { data: detail, error: itemError, refresh: refreshItem } = await useFetch<IntegrationDetailResponse>(
+  () => `${apiBase}/${encodeURIComponent(slug.value)}`,
+  { key: `workspace:integration:${slug.value}`, immediate: !!slug.value },
+)
+const integration = computed(() => (slug.value ? detail.value?.item : null) ?? null)
+
+const title = computed(() => (slug.value ? integration.value?.name || 'Integration' : 'Integrations'))
+useHead({ title })
+useSeoMeta({ title, description: () => integration.value?.description || 'Add integrations to your Meeovi workspace.' })
+
+// ---- shared ---------------------------------------------------------------
+
+const isPaid = (item: IntegrationCatalogItem) => item.cost === 'paid' || Number(item.price) > 0
+const priceLabel = (item: IntegrationCatalogItem) => {
+  if (!isPaid(item)) return 'Free'
+  if (item.purchased) return 'Purchased'
+  return Number(item.price) > 0 ? `$${Number(item.price).toFixed(2)}` : 'Paid'
+}
+const blockedLabel = (item: IntegrationCatalogItem) =>
+  item.state === 'paid' ? 'Not for sale yet'
+    : item.reason === 'not-sandboxed' ? 'Moving to the sandbox'
+      : 'Coming soon'
+const stateLabel = (item: IntegrationCatalogItem) =>
+  ({ installed: 'Installed', available: 'Not installed', paid: 'Paid', 'coming-soon': 'Coming soon' })[item.state]
+const stateColor = (item: IntegrationCatalogItem) =>
+  ({ installed: 'success', available: 'primary', paid: 'warning', 'coming-soon': 'grey' })[item.state]
+
+const busy = ref<string | null>(null)
+const toast = reactive({ show: false, text: '', color: 'success' })
+const notify = (text: string, color = 'success') => Object.assign(toast, { show: true, text, color })
+
+async function run(item: IntegrationCatalogItem, action: () => Promise<void>, done: string) {
+  busy.value = item.slug
+  try {
+    await action()
+    await Promise.all([slug.value ? refreshItem() : refreshCatalog()])
+    notify(done)
+  } catch (e: any) {
+    const status = e?.statusCode ?? e?.status
+    notify(status === 401 ? 'Please sign in again.'
+      : status === 402 ? `Buy ${item.name} in the store first.`
+      : status === 409 ? `${item.name} can't be installed yet.`
+        : 'Something went wrong. Please try again.', 'error')
+  } finally {
+    busy.value = null
+  }
+}
+
+const install = (item: IntegrationCatalogItem) =>
+  run(item, () => installPlugin(item.plugin!), `${item.name} installed.`)
+const uninstall = (item: IntegrationCatalogItem) =>
+  run(item, () => uninstallPlugin(item.plugin!), `${item.name} uninstalled. Your data is kept if you reinstall.`)
 </script>
+
+<style scoped>
+.integrations__filter {
+  max-width: 200px;
+}
+
+.integrations__search {
+  max-width: 280px;
+}
+
+.integrations__description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>

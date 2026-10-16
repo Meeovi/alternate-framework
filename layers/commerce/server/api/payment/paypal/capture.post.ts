@@ -1,4 +1,4 @@
-import { capturePayPalOrder } from '../../../utils/paypal'
+import { capturePayPalOrder, getPayPalOrderOwner, PAYPAL_ORDER_ID } from '../../../utils/paypal'
 import { requireAuth } from '#auth/server/utils/sessions'
 import Joi from 'joi'
 
@@ -8,7 +8,7 @@ const captureSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
-  await requireAuth(event)
+  const user = await requireAuth(event)
 
   try {
     const body = await readBody(event)
@@ -25,6 +25,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const { orderId, idempotencyKey } = value
+
+    // Only the user the order was created for may capture it (and see the
+    // captured order, which carries the payer's name, email and address).
+    // Same 404 for "not yours" and "doesn't exist", so ids can't be probed.
+    if (!PAYPAL_ORDER_ID.test(orderId) || (await getPayPalOrderOwner(orderId)) !== user.id) {
+      throw createError({ statusCode: 404, statusMessage: 'Order not found' })
+    }
     const result = await capturePayPalOrder(orderId, idempotencyKey)
 
     return { success: true, order: result }

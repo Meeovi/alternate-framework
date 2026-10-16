@@ -45,8 +45,17 @@ export default defineNuxtModule<MeeoviTablesModuleOptions>({
     addComponentsDir({ path: resolver.resolve('runtime/components'), pathPrefix: false })
     addImportsDir(resolver.resolve('runtime/composables'))
 
-    // SVAR ships ESM that Nuxt's server build should bundle, not externalize.
-    nuxt.options.build.transpile.push('@svar-ui/vue-grid', '@svar-ui/vue-core', '@svar-ui/vue-editor')
+    // SVAR ships ESM that Nuxt's server build should bundle, not externalize
+    // — every @svar-ui package, including SVAR's own dependencies. With only
+    // vue-grid/vue-core/vue-editor transpiled, Vite left vue-core's import of
+    // its nested core-locales (vue-core/node_modules/@svar-ui/core-locales@
+    // 2.6.0) external by file path, while Nitro's dependency tracing dedupes
+    // the two installed versions into one top-level copy — the production
+    // server then 500s on every <MeeoviTable> page with "Cannot find module
+    // …/vue-core/node_modules/@svar-ui/core-locales/locales/en.js".
+    // (nitro.externals.inline doesn't help: the path is fixed by Vite's SSR
+    // build before Nitro sees it.) Dev is unaffected.
+    nuxt.options.build.transpile.push(/@svar-ui\//)
 
     addServerHandler({
       route: apiBase,

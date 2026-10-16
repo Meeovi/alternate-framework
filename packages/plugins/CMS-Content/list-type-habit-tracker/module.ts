@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addComponent } from '@nuxt/kit'
+import { defineNuxtModule } from '@nuxt/kit'
 import type { ListTypeModuleOptions, ListTypeRegistration } from './runtime/types'
 
 export * from './runtime/types'
@@ -20,18 +20,13 @@ export default defineNuxtModule<ModuleOptions>({
   },
 
   setup(options, nuxt) {
-    const resolver = createResolver(import.meta.url)
-
-    // Global so the list page can render it by name from the registry
-    // without importing this package.
-    addComponent({
-      name: 'ListTypeHabitTracker',
-      filePath: resolver.resolve('runtime/components/HabitTracker.vue'),
-      global: true,
-    })
-
+    // Runs in the integrations sandbox (sandbox/ — see package.json
+    // `mframework.integration.sandbox`): the list page embeds it with
+    // <IntegrationFrame>, lending it read-only access to the list's items. Streaks are
+    // the user's own plugin data.
     const entry: ListTypeRegistration = {
-      component: 'ListTypeHabitTracker',
+      sandbox: true,
+      capabilities: ['list.items'],
       label: 'Habit Tracker',
       icon: 'fas fa-repeat',
       plugin: '@mframework/list-type-habit-tracker',

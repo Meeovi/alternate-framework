@@ -91,7 +91,7 @@
 
     // [...id].vue is a catch-all route, so route.params.id is an array.
     // Ownership is enforced server-side by server/api/shipment/order-
-    // tracking.get.ts (requireAuth + orders.user_id scoping with a
+    // tracking.get.ts (requireAuth + orders.buyer_id scoping with a
     // privileged token) rather than by querying Directus directly from the
     // client — the client-exposed static Directus token has no per-session
     // scoping of its own, so a client-side `user_id` filter alone doesn't

@@ -1,11 +1,12 @@
 // server/api/payment/stripe/checkout-session.post.ts
 import Stripe from 'stripe'
 import Joi from 'joi'
-import { readItem } from '@directus/sdk'
 import { stripe } from '../../../utils/stripe'
 import { getAuthSession } from '#auth/server/utils/sessions'
 import { getRate } from '../../../utils/shippo'
-import { getDirectusFacade } from '../../../utils/directusClient'
+import { resolveProductForCart } from '../../../utils/cart'
+import { backendCustomerId } from '../../../utils/productRef'
+import { CommerceBackendRegistry } from 'alternate-sdk'
 
 // 8 random letters for the integration_identifier suffix (per stripe skill).
 const randomSuffix = Array.from({ length: 8 }, () =>
@@ -200,10 +201,10 @@ export default defineEventHandler(async (event) => {
     // Ensure we have a guaranteed currency string
     const activeCurrency = currency || 'usd';
 
-    // A privileged client used only to look up each item's authoritative
-    // price — never trust a client-supplied `item.price`, since that would
-    // let a caller dictate what they get charged.
-    const directus = getDirectusFacade()
+    // Each item's authoritative price comes from the server-side product
+    // lookup (Directus, or the commerce backend that owns it — see
+    // utils/productRef.ts) — never trust a client-supplied `item.price`,
+    // since that would let a caller dictate what they get charged.
 
     // 1. Explicitly type our temporary processing array
     interface TempLineItem {
@@ -213,6 +214,11 @@ export default defineEventHandler(async (event) => {
       tax_rates ? : string[];
       _mode: 'payment' | 'subscription'; // Our helper flag
     }
+
+    // Set when a line belongs to another commerce backend (Magento): that
+    // backend records the order at its own price, so these lines take no
+    // Stripe-side tax or discounts (the amounts must match).
+    let hasBackendLines = false
 
     const tempLineItems: TempLineItem[] = await Promise.all(
       items.map(async (item) => {
@@ -230,37 +236,38 @@ export default defineEventHandler(async (event) => {
             lineItem.tax_rates = taxRates
           }
         } else {
-          // Never trust item.price/name/description/images from the client —
-          // resolve the real product from Directus and price it from there.
-          // Note: `description` is intentionally not requested — the static
-          // token used here does not have field-level read access to it on
-          // `products`, and it's not essential to computing a safe price.
-          const product = await directus.request(
-            readItem('products', item.id, {
-              fields: ['id', 'name', 'price', 'image.filename_disk']
-            })
-          ).catch(() => null) as {
-            id: string
-            name?: string
-            price?: number | string
-            image?: { filename_disk?: string }
-          } | null
-
-          // Directus serializes decimal columns as strings, so this must be
-          // coerced rather than checked with typeof — otherwise every
-          // correctly-priced product gets rejected as "unpriced".
-          const productPrice = Number(product?.price)
-
-          if (!product || !Number.isFinite(productPrice)) {
+          // Never trust item.price/name/description/images from the client.
+          const product = await resolveProductForCart(String(item.id))
+          if (!product) {
             throw createError({
               statusCode: 400,
               statusMessage: `Unknown or unpriced product: ${item.id}`
             })
           }
+          const productPrice = product.price
 
-          const productImageUrl = product.image?.filename_disk
-            ? `${process.env.DIRECTUS_URL}/assets/${product.image.filename_disk}`
-            : undefined
+          // Products owned by another commerce backend (`magento:<sku>`)
+          // are recorded there once paid (webhooks.post.ts →
+          // placePaidOrder), under the buyer's own customer account there —
+          // so check now, before taking money, that that's possible.
+          if (product.backend) {
+            hasBackendLines = true
+            const backend = CommerceBackendRegistry.get(product.backend)
+            if (typeof backend?.placePaidOrder !== 'function') {
+              throw createError({ statusCode: 409, statusMessage: `${product.name} can't be bought here right now.` })
+            }
+            if (!buyerId) {
+              throw createError({ statusCode: 401, statusMessage: `Sign in to buy ${product.name}.` })
+            }
+            if (!backendCustomerId(product.backend, authSession?.user as Record<string, any>)) {
+              throw createError({
+                statusCode: 409,
+                statusMessage: `Your account isn't linked to the store yet, so ${product.name} can't be bought. Please contact support.`,
+              })
+            }
+          }
+
+          const productImageUrl = product.image || undefined
 
           lineItem.price_data = {
             currency: activeCurrency, // Fixed: guaranteed string, never undefined
@@ -270,10 +277,11 @@ export default defineEventHandler(async (event) => {
                 images: [productImageUrl]
               }),
               // internal_product_id lets the webhook re-link this Stripe line
-              // item back to the real Directus product when it writes the order.
+              // item back to the real product when it writes the order — the
+              // Directus id, or `<backend>:<key>` for a commerce backend's.
               metadata: {
                 ...(item.metadata || {}),
-                internal_product_id: item.id
+                internal_product_id: product.id
               }
             },
             unit_amount: Math.round(productPrice * 100)
@@ -285,7 +293,7 @@ export default defineEventHandler(async (event) => {
             }
           }
 
-          if (taxRates && taxRates.length > 0) {
+          if (taxRates && taxRates.length > 0 && !product.backend) {
             lineItem.tax_rates = taxRates
           }
         }
@@ -349,7 +357,7 @@ export default defineEventHandler(async (event) => {
       ...(locale && locale !== 'auto' && {
         locale: locale as Stripe.Checkout.SessionCreateParams.Locale
       }),
-      ...(allowPromotionCodes && {
+      ...(allowPromotionCodes && !hasBackendLines && {
         allow_promotion_codes: allowPromotionCodes
       }),
       // Session metadata used for fulfillment/attribution decisions
@@ -437,7 +445,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Add discounts
-    if (discounts && discounts.length > 0) {
+    if (discounts && discounts.length > 0 && !hasBackendLines) {
       sessionConfig.discounts = discounts
     }
 

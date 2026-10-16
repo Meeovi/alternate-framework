@@ -9,7 +9,7 @@
 
     <div>{{ short?.description }}</div>
 
-    <v-btn color="orange" text="View" :href="`/social/vibe/${short?.id}`"></v-btn>
+    <v-btn color="orange" text="View" :href="`/connect/vibe/${short?.id}`"></v-btn>
   </v-card>
 </template>
 

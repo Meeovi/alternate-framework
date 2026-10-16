@@ -23,7 +23,12 @@ export default defineNuxtPlugin(() => {
     AuthAdapterRegistry.register('magento', adapterInstance.content.auth as any)
     NotifyAdapterRegistry.register('magento', adapterInstance.content.notifications as any)
   }
-  CommerceBackendRegistry.register(createMagentoCommerceBackendAdapter(adapterInstance))
+  // During SSR this runs in the same process as the Nitro plugin
+  // (runtime/server/commerce-link.ts), whose registration carries the
+  // server-only Integration (placePaidOrder) — don't replace it.
+  if (!CommerceBackendRegistry.get('magento')) {
+    CommerceBackendRegistry.register(createMagentoCommerceBackendAdapter(adapterInstance))
+  }
 
   // Expose the adapter instance as $magentoAdapter on the Nuxt app context
   nuxtApp.$magentoAdapter = adapterInstance

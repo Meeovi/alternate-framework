@@ -6,6 +6,6 @@ import { installedPlugins, integrationsUser } from '../utils/installs'
  *  (empty when signed out). */
 export default defineEventHandler(async (event): Promise<InstalledIntegrationsResponse> => {
   const user = await integrationsUser(event)
-  if (!user) return { plugins: [], integrations: [] }
-  return installedPlugins(event, user.id)
+  if (!user) return { plugins: [] }
+  return { plugins: await installedPlugins(event, user) }
 })

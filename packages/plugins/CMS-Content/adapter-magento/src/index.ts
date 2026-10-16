@@ -9,7 +9,7 @@ import type { RawMagentoInventory } from './normalizers/inventory'
  * Integrations) are OAuth 1.0a — a consumer key/secret plus an access
  * token/secret that don't expire, not a simple bearer token. Every
  * `seller.*` admin-scoped call below signs its request with these per the
- * OAuth 1.0a spec (HMAC-SHA1) rather than sending them as `Bearer ...`.
+ * OAuth 1.0a spec (HMAC-SHA256) rather than sending them as `Bearer ...`.
  */
 export interface MagentoOAuth1Credentials {
   consumerKey: string
@@ -1329,6 +1329,126 @@ export class MagentoAdapter {
   }
 
   /**
+   * Admin-side REST for server jobs (Integration token, OAuth 1.0a):
+   * Meeovi_MarketplaceApi's seller catalogue sync routes (dropshipping —
+   * @mframework/meeovi-dropshipping) and the core order/shipment endpoints
+   * it needs. Each sync call names the seller; the Magento module refuses
+   * SKUs that aren't linked to that seller. Server-only, like `seller.*`.
+   */
+  public catalogSync = {
+    upsertProduct: (credentials: MagentoOAuth1Credentials, product: {
+      customerId: number
+      sku: string
+      name: string
+      price: number
+      description?: string
+      shortDescription?: string
+      qty?: number
+      weight?: number | null
+      categoryIds?: number[]
+      enabled?: boolean
+    }) => this.adminRest<{ product_id: number, sku: string, marketplace_product_id: number | null }>(
+      'POST', '/meeovi-marketplace/sync/products', credentials, product),
+
+    updateStock: (credentials: MagentoOAuth1Credentials, update: {
+      customerId: number
+      sku: string
+      qty: number
+      price?: number | null
+      enabled?: boolean | null
+    }) => this.adminRest<boolean>('POST', '/meeovi-marketplace/sync/stock', credentials, update),
+
+    addImage: (credentials: MagentoOAuth1Credentials, image: {
+      customerId: number
+      sku: string
+      base64Content: string
+      mimeType: 'image/jpeg' | 'image/png' | 'image/gif'
+      fileName: string
+      isMain?: boolean
+    }) => this.adminRest<boolean>('POST', '/meeovi-marketplace/sync/images', credentials, image),
+
+    /** Core `GET /V1/orders` with a flat searchCriteria filter list (AND). */
+    listOrders: (credentials: MagentoOAuth1Credentials, filters: { field: string, value: string, condition?: string }[], pageSize = 50) => {
+      const query = new URLSearchParams()
+      filters.forEach((filter, i) => {
+        query.set(`searchCriteria[filterGroups][${i}][filters][0][field]`, filter.field)
+        query.set(`searchCriteria[filterGroups][${i}][filters][0][value]`, filter.value)
+        query.set(`searchCriteria[filterGroups][${i}][filters][0][conditionType]`, filter.condition ?? 'eq')
+      })
+      query.set('searchCriteria[pageSize]', String(pageSize))
+      return this.adminRest<{ items: any[], total_count: number }>('GET', `/orders?${query}`, credentials)
+    },
+
+    /** Core `POST /V1/order/{id}/ship` — ships the given items with tracking. */
+    shipOrder: (credentials: MagentoOAuth1Credentials, orderId: number, shipment: {
+      items: { order_item_id: number, qty: number }[]
+      tracks: { track_number: string, title: string, carrier_code: string }[]
+      notify?: boolean
+    }) => this.adminRest<number>('POST', `/order/${orderId}/ship`, credentials, shipment),
+  }
+
+  /**
+   * Orders paid with Stripe in the Meeovi app and recorded in Magento
+   * (Meeovi_MarketplaceApi ExternalOrderManagement), so the catalogue,
+   * order history and Webkul's seller sales/commission stay in Magento.
+   * Integration token with the `Meeovi_MarketplaceApi::external_orders` ACL.
+   */
+  public marketplaceOrders = {
+    /** Place an already-paid order (virtual/downloadable items only).
+     *  Idempotent on `reference` (the Stripe payment id). */
+    placeOrder: (credentials: MagentoOAuth1Credentials, order: {
+      customerId: number
+      reference: string
+      items: { sku: string, qty: number }[]
+      amountPaid: number
+      currency: string
+      billingAddress?: {
+        firstname?: string
+        lastname?: string
+        street?: string[]
+        city?: string
+        region_code?: string
+        postcode?: string
+        country_id?: string
+        telephone?: string
+      }
+    }) => this.adminRest<{ order_id: number, increment_id: string, created: boolean }>(
+      'POST', '/meeovi-marketplace/orders', credentials, order),
+
+    /** SKUs the customer has paid for (invoiced, not refunded). */
+    purchasedSkus: (credentials: MagentoOAuth1Credentials, customerId: number) =>
+      this.adminRest<string[]>('GET', `/meeovi-marketplace/customers/${encodeURIComponent(String(customerId))}/purchased-skus`, credentials),
+
+    /** The approved Webkul seller of each SKU (store-owned SKUs are left out). */
+    productSellers: (credentials: MagentoOAuth1Credentials, skus: string[]) => {
+      const query = new URLSearchParams()
+      skus.forEach((sku, i) => query.set(`skus[${i}]`, sku))
+      return this.adminRest<{ sku: string, seller_id: number, shop_title: string | null, shop_url: string | null }[]>(
+        'GET', `/meeovi-marketplace/products/sellers?${query}`, credentials)
+    },
+  }
+
+  /** Signed admin REST call; throws with Magento's message on failure. */
+  private async adminRest<T>(method: 'GET' | 'POST' | 'PUT', path: string, credentials: MagentoOAuth1Credentials, body?: unknown): Promise<T> {
+    const url = this.restUrl(path)
+    const response = await fetch(url, {
+      method,
+      headers: {
+        ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+        Authorization: await this.oauth1Header(method, url, credentials),
+      },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    })
+    const data = await response.json().catch(() => null) as any
+    if (!response.ok) {
+      const error = new Error(`Magento ${method} ${path.split('?')[0]} failed (${response.status}): ${data?.message ?? 'no message'}`) as Error & { status?: number }
+      error.status = response.status
+      throw error
+    }
+    return data as T
+  }
+
+  /**
    * Inventory (MSI) contract — implements the layer's CommerceClient interface.
    * Magento exposes stock through the `products` query (`stock_status`,
    * `only_x_left_in_stock`); source-level operations use the MSI GraphQL
@@ -1475,7 +1595,7 @@ export class MagentoAdapter {
   }
 
   /**
-   * Signs a request per OAuth 1.0a (HMAC-SHA1) using a Magento Integration's
+   * Signs a request per OAuth 1.0a (HMAC-SHA256) using a Magento Integration's
    * consumer key/secret + access token/secret. Only query-string params are
    * folded into the signature base string alongside the oauth_* params —
    * these calls always send JSON bodies (not form-encoded), which OAuth 1.0a
@@ -1505,7 +1625,9 @@ export class MagentoAdapter {
     const oauthParams: Record<string, string> = {
       oauth_consumer_key: consumerKey,
       oauth_token: accessToken,
-      oauth_signature_method: 'HMAC-SHA1',
+      // Magento 2.4.x only accepts HMAC-SHA256 ("Signature method HMAC-SHA1
+      // is not supported" — verified live 2026-10-15).
+      oauth_signature_method: 'HMAC-SHA256',
       oauth_timestamp: String(Math.floor(Date.now() / 1000)),
       oauth_nonce: randomBytes(16).toString('hex'),
       oauth_version: '1.0',
@@ -1519,7 +1641,7 @@ export class MagentoAdapter {
 
     const baseString = [method.toUpperCase(), rfc3986Encode(baseUrl), rfc3986Encode(normalizedParams)].join('&')
     const signingKey = `${rfc3986Encode(consumerSecret)}&${rfc3986Encode(accessTokenSecret)}`
-    const signature = createHmac('sha1', signingKey).update(baseString).digest('base64')
+    const signature = createHmac('sha256', signingKey).update(baseString).digest('base64')
 
     const headerParams = { ...oauthParams, oauth_signature: signature }
     const headerString = Object.keys(headerParams)

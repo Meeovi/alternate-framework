@@ -27,17 +27,19 @@ export default defineEventHandler(async (event) => {
   const directus = getDirectusFacade()
 
   // 2. Fetch the order record to verify ownership and status
+  // Directus answers a nonexistent id with 403 "You don't have permission",
+  // not 404 — treat any lookup failure as "not found" instead of a 500.
   const order = await directus.request(
     readItem('orders', orderId, {
-      fields: ['id', 'user_id', 'fulfillment_status', 'file_id', 'download_token', 'download_expires_at'],
+      fields: ['id', 'buyer_id', 'fulfillment_status', 'file_id', 'download_token', 'download_expires_at'],
     }),
-  )
+  ).catch(() => null)
 
   if (!order) {
     throw createError({ statusCode: 404, message: 'Order not found' })
   }
 
-  if (order.user_id !== user.id) {
+  if (!order.buyer_id || order.buyer_id !== user.id) {
     throw createError({ statusCode: 403, message: 'Access denied to this asset.' })
   }
 

@@ -10,6 +10,9 @@ type RawMagentoProduct = Mage_BundleProduct | Mage_ProductInterface;
 // Directus Products type fields aligned with meeovi-frontend graphql.ts
 type DirectusProduct = {
   id: string
+  /** Which commerce backend the product came from: the app keys these
+   *  products as `magento:<sku>` (cart lines, /product/<key>). */
+  source?: 'magento'
   sku?: string
   name?: string
   status?: string
@@ -55,6 +58,7 @@ export function normalizeMagentoProduct(rawProduct: RawMagentoProduct): Partial<
 
   return {
     id: String(rawProduct.uid ?? rawProduct.id ?? ''),
+    source: 'magento',
     sku: String(rawProduct.sku ?? ''),
     name: rawProduct.name ?? '',
     

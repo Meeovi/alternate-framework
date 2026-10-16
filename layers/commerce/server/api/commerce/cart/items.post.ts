@@ -23,7 +23,8 @@ export default defineEventHandler(async (event) => {
   }
 
   // Never trust a client-supplied price/name — resolve the real product
-  // from Directus, the same trusted path checkout re-prices from.
+  // from Directus or its commerce backend (`magento:<sku>`), the same
+  // trusted path checkout re-prices from.
   const product = await resolveProductForCart(value.productId)
   if (!product) {
     throw createError({ statusCode: 400, statusMessage: `Unknown or unpriced product: ${value.productId}` })
@@ -61,7 +62,7 @@ export default defineEventHandler(async (event) => {
   } else {
     await db.insert(cartItems).values({
       cart: cartId,
-      products: Number(product.id),
+      products: product.directusId,
       productId: product.id,
       quantity: value.quantity,
       price: unitPriceCents,

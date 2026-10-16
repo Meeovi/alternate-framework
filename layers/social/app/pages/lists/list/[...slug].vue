@@ -26,7 +26,12 @@
           <v-btn v-if="integrationsCatalog" :href="integrationsCatalog" variant="text" text="Get it" />
         </template>
       </v-alert>
-      <component :is="listTypeEntry.component" :listId="list.id" :items="list.items" />
+      <!-- Sandboxed list types run isolated (@mframework/meeovi-integrations):
+           they only get the capabilities they declare, for this list. -->
+      <IntegrationFrame v-if="listTypeEntry.sandbox && integrationsApi" :plugin="listTypeEntry.plugin"
+        :title="listTypeEntry.label" :context="{ list: { id: list.id, name: list.name } }"
+        :capabilities="listCapabilities(listTypeEntry)" :min-height="320" />
+      <component :is="listTypeEntry.component" v-else-if="listTypeEntry.component" :listId="list.id" :items="list.items" />
     </div>
 
     <v-alert v-else type="info" variant="tonal" class="ma-4">
@@ -114,9 +119,74 @@
 
   const listTypeEntry = computed(() => {
     const entry = (appConfig.listTypes || {})[listTypeName.value]
-    if (entry && !lockedListType.value) return entry
+    // A sandboxed type needs the integrations module to run it.
+    if (entry && !lockedListType.value && (!entry.sandbox || integrationsApi)) return entry
     return fallbackListType.value
   })
+
+  // ---- Capabilities lent to sandboxed list types --------------------------
+  // Everything is scoped to the list on screen (list_id is forced, item ids
+  // are checked against it) and limited to these fields; Directus access
+  // still goes through the app's own client and its permission checks.
+  const LIST_ITEMS = 'list_items'
+  const ITEM_FIELDS = ['id', 'title', 'status', 'description', 'priority', 'due_date', 'position']
+  const STATUSES = ['todo', 'doing', 'done']
+  const { $createItem, $updateItem, $deleteItem } = useNuxtApp()
+
+  const cleanItem = (input) => {
+    const src = input && typeof input === 'object' ? input : {}
+    const out = {}
+    if ('title' in src) out.title = String(src.title ?? '').slice(0, 500) || 'Untitled'
+    if ('description' in src) out.description = src.description == null ? null : String(src.description).slice(0, 5000)
+    if ('status' in src) out.status = STATUSES.includes(src.status) ? src.status : 'todo'
+    if ('priority' in src) out.priority = Math.min(3, Math.max(0, Math.round(Number(src.priority) || 0)))
+    if ('position' in src) out.position = Math.max(0, Math.round(Number(src.position) || 0))
+    if ('due_date' in src) {
+      const d = src.due_date ? new Date(src.due_date) : null
+      out.due_date = d && !Number.isNaN(d.getTime()) ? d.toISOString() : null
+    }
+    return out
+  }
+
+  const listItems = () => $directus.request($readItems(LIST_ITEMS, {
+    fields: ITEM_FIELDS,
+    filter: { list_id: { _eq: list.value.id } },
+    sort: ['position'],
+    limit: -1,
+  }))
+
+  const ownItem = async (id) => {
+    const found = await $directus.request($readItems(LIST_ITEMS, {
+      fields: ['id'],
+      filter: { _and: [{ id: { _eq: id } }, { list_id: { _eq: list.value.id } }] },
+      limit: 1,
+    }))
+    if (!found?.length) throw new Error('Not an item of this list')
+  }
+
+  const ALL_CAPABILITIES = {
+    'list.items': () => listItems(),
+    'list.create': async (item) => {
+      await $directus.request($createItem(LIST_ITEMS, { ...cleanItem(item), list_id: list.value.id }))
+      return listItems()
+    },
+    'list.update': async ({ id, changes } = {}) => {
+      await ownItem(id)
+      await $directus.request($updateItem(LIST_ITEMS, id, cleanItem(changes)))
+      return listItems()
+    },
+    'list.remove': async ({ id } = {}) => {
+      await ownItem(id)
+      await $directus.request($deleteItem(LIST_ITEMS, id))
+      return listItems()
+    },
+  }
+
+  /** Only what the list type declared (read-only when it declares nothing). */
+  const listCapabilities = (entry) => Object.fromEntries(
+    (entry.capabilities?.length ? entry.capabilities : ['list.items'])
+      .filter((name) => Object.hasOwn(ALL_CAPABILITIES, name))
+      .map((name) => [name, ALL_CAPABILITIES[name]]))
 
   const mediaItems = computed(() => {
     if (list.value?.type !== 'playlist') return []

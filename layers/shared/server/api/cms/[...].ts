@@ -1,6 +1,8 @@
 import { joinURL } from 'ufo'
-import { defineEventHandler, proxyRequest, createError, readBody } from 'h3'
-import { requireAuth } from '#auth/server/utils/sessions'
+import qs from 'qs'
+import { defineEventHandler, proxyRequest, createError, readBody, getHeader, setResponseHeader } from 'h3'
+import { getAuthSession, requireAuth } from '#auth/server/utils/sessions'
+import { checkReadQuery, checkWritePayload, loadRelationGraph, type GuardRules } from '../../utils/cmsQueryGuard'
 
 /**
  * Same-origin Directus proxy.
@@ -11,11 +13,14 @@ import { requireAuth } from '#auth/server/utils/sessions'
  * Directus directly (see layers/commerce/app/plugins/directus.ts).
  *
  * Access rules:
- *  - system / admin endpoints (`/users`, `/roles`, `/flows`, …) are blocked
- *    outright, for everyone;
+ *  - only `/items`, `/fields`, `/files` and `/assets` are proxied; system /
+ *    admin endpoints (`/users`, `/roles`, `/flows`, …) are blocked for everyone;
  *  - writes (POST/PATCH/DELETE) require an authenticated app session;
  *  - reads of the public CMS collections below are open;
- *  - reads of anything else require an authenticated app session.
+ *  - reads of anything else require an authenticated app session;
+ *  - orders / invoices / transactions are filtered to the caller's own rows;
+ *  - every relation a query or payload follows is checked (cmsQueryGuard.ts),
+ *    so a protected table can't be reached through a readable one.
  *
  * The allowlist is deliberately default-deny. The proper long-term fix is
  * to scope the Directus token's role to exactly the public-readable
@@ -32,23 +37,93 @@ import { requireAuth } from '#auth/server/utils/sessions'
 const BLOCKED_PREFIX =
   /^\/(users|roles|permissions|policies|access|flows|operations|dashboards|panels|presets|settings|extensions|schema|relations|collections|server|utils|auth|activity|revisions|folders|webhooks|graphql)(\/|$|\?)/i
 
+// The only Directus endpoints the app's SDK client uses.
+const PROXIED_PREFIX = /^\/(items|fields|files|assets)(\/|$)/
+
+// SEARCH (query-in-body) and anything exotic would skip the query checks.
+const ALLOWED_METHODS = new Set(['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'])
+
 const PUBLIC_READ_COLLECTIONS = new Set<string>([
   'navigation', 'pages', 'page_blocks', 'blocks',
   'brands', 'shops', 'departments', 'categories', 'about_departments',
   'products', 'product_variants', 'attributes',
   'articles', 'coupons', 'incentives', 'callouts',
   'currencies', 'tags', 'websites', 'radios', 'videos', 'shorts',
+  // public job listings (/careers)
+  'careers',
 ])
 
-// Ownership columns the proxy fills from the app session. Clients can't be
-// trusted to say who created something (it would let anyone post "as"
-// another user and show their avatar), so on create the value is always
-// overwritten with the signed-in user's id, and on update it's stripped.
-const OWNER_FIELDS: Record<string, string> = {
-  shorts: 'creator_id',
-  radios: 'creator_id',
-  posts: 'creator_id',
+// The only collections a non-admin may write through this proxy (the proxy
+// writes with the static token, so anything else — navigation, pages,
+// products, lists… — is admin-only here; admins also edit in Directus or
+// via <MeeoviTable>, which has its own /api/tables rules).
+//
+// `owner` is the column holding the app user's id. Clients can't be trusted
+// to say who created something (it would let anyone post "as" another user),
+// so on create it's always overwritten with the signed-in user's id, on
+// update it's stripped, and only that user (or an admin) may PATCH/DELETE.
+// `createOnly` collections have no owner column: users may add rows, never
+// change or delete them.
+//
+// `parentList` collections belong to whoever owns the list in `list_id`.
+//
+// `lists` themselves aren't here: they're created / changed through
+// /api/social/lists (ownership lives in the lists_directus_users junction).
+const USER_WRITABLE: Record<string, { owner?: string; createOnly?: boolean; parentList?: string }> = {
+  posts: { owner: 'creator_id' },
+  shorts: { owner: 'creator_id' },
+  radios: { owner: 'creator_id' },
+  // A profile's primary key IS its user's id (profiles.id → users.id).
+  profiles: { owner: 'id' },
+  reactions: { owner: 'user_id' },
+  media_folders: { owner: 'user' },
+  spaces: { owner: 'owner' },
+  websites: { owner: 'creator' },
+  report: { createOnly: true },
+  // Kanban / task list / habit tracker cards.
+  list_items: { parentList: 'list_id' },
 }
+
+// Tables in the same Postgres database that Directus also exposes as
+// collections, but which belong to better-auth / OAuth / billing internals:
+// session tokens, password hashes, 2FA secrets, API keys, OAuth client
+// secrets, JWKS private keys... Through this proxy (static token) any
+// signed-in user could read AND write them — e.g. set their own auth_role
+// to admin. Never reachable here, for anyone — not even through a relation.
+// Also per-user server-only collections: dropshipping credentials, and
+// integration installs (each user's installs and plugin data, served only
+// by the integrations API, scoped to the session user).
+const AUTH_TABLES = /^(sessions|users|accounts|verification|two_factor|apikey|api_keys|passkeys?|rate_limit|atproto_sessions|oauth_[a-z_]*|jwks|audit_log_entries|device_code|member|invitation|organization[a-z_]*|team[a-z_]*|sso_provider|scim_provider|dropship_[a-z_]*|integration_installs)$/i
+
+// Directus' own tables (its admin users, roles, settings…), apart from the
+// file library the app uploads to.
+const SYSTEM_TABLES = /^directus_(?!files$|folders$)/i
+
+// Personal / billing data the app never reads from the browser: admins only.
+const PRIVATE_COLLECTIONS = /^(address|addresses|os_[a-z_]+|subscriptions[a-z_]*|help_feedback)$/i
+
+// Customer billing records. The app reads them client-side (order /
+// invoice / transaction pages), so instead of being admin-only, a
+// non-admin's read is always narrowed to their own rows here — whatever
+// filter the client sent. Only server routes (Stripe webhook, Shippo) write
+// them, so non-admin writes are refused.
+const OWNER_SCOPED: Record<string, (userId: string) => Record<string, unknown>> = {
+  // orders.user_id is a Directus-users relation; the better-auth buyer is buyer_id.
+  orders: (id) => ({ buyer_id: { _eq: id } }),
+  invoices: (id) => ({ user: { _eq: id } }),
+  transactions: (id) => ({ order: { buyer_id: { _eq: id } } }),
+}
+// An owner-scoped read may follow its own billing relations.
+const OWNER_SCOPED_REACHABLE = /^(orders|invoices|transactions|address|addresses)$/i
+
+// better-auth roles are comma-separated ("user,admin"), so check membership.
+const isAdmin = (user: { role?: string | null } | null | undefined) =>
+  !!user && (user.role || '').split(',').map((r) => r.trim()).includes('admin')
+
+const own = <T>(map: Record<string, T>, key: string): T | undefined =>
+  Object.hasOwn(map, key) ? map[key] : undefined
+
+const denied = () => createError({ statusCode: 403, statusMessage: 'This Directus path is not available through the CMS proxy' })
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -59,42 +134,178 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 503, statusMessage: 'Directus is not configured' })
   }
 
-  const rest = event.path.replace(/^\/api\/cms\/?/, '/')
+  let rest = event.path.replace(/^\/api\/cms\/?/, '/')
   const pathOnly = rest.replace(/\?.*$/, '')
+  const search = rest.slice(pathOnly.length + 1)
 
-  if (BLOCKED_PREFIX.test(rest)) {
-    throw createError({ statusCode: 403, statusMessage: 'This Directus path is not available through the CMS proxy' })
+  // Dot segments / encoded separators could make Directus resolve a
+  // different path than the one checked here.
+  if (/(^|\/)\.{1,2}(\/|$)|%2e|%2f|%5c|\\/i.test(pathOnly)) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid CMS path' })
   }
+  if (BLOCKED_PREFIX.test(rest) || !PROXIED_PREFIX.test(pathOnly)) throw denied()
 
   const method = (event.method || 'GET').toUpperCase()
+  if (!ALLOWED_METHODS.has(method)) {
+    throw createError({ statusCode: 405, statusMessage: 'Method not allowed' })
+  }
+  const isRead = method === 'GET' || method === 'HEAD'
+
+  const [, itemsCollection, itemId] = pathOnly.match(/^\/items\/([^/]+)(?:\/([^/]+))?/) || []
+  const collection = decodeURIComponent(itemsCollection || '').toLowerCase()
+  const fieldsCollection = pathOnly.match(/^\/fields\/([^/]+)$/)?.[1]
+  // `/files` is the directus_files collection (relations: uploaded_by → directus_users…).
+  const queryCollection = collection || (/^\/files(\/|$)/.test(pathOnly) ? 'directus_files' : '')
+
+  const protectedTable = (c: string) => AUTH_TABLES.test(c) || SYSTEM_TABLES.test(c)
+  if ((collection && protectedTable(collection)) || (fieldsCollection && protectedTable(fieldsCollection))) throw denied()
+
+  // Who is asking. Writes, private collections and non-public reads need a
+  // session; public reads only look one up when a cookie is present.
+  const needsSession = !isRead
+    || PRIVATE_COLLECTIONS.test(collection)
+    || !!own(OWNER_SCOPED, collection)
+    || pathOnly === '/fields'
+    || /^\/files(\/|$)/.test(pathOnly)
+    || (!!collection && !PUBLIC_READ_COLLECTIONS.has(collection))
+    || (!!fieldsCollection && !PUBLIC_READ_COLLECTIONS.has(fieldsCollection))
+  const user = needsSession
+    ? await requireAuth(event)
+    : getHeader(event, 'cookie') ? (await getAuthSession(event).catch(() => null))?.user ?? null : null
+  const admin = isAdmin(user)
+
+  if (PRIVATE_COLLECTIONS.test(collection) && !admin) throw denied()
+
+  const scope = !admin && user ? own(OWNER_SCOPED, collection) : undefined
+  const rules: GuardRules = {
+    allowNestedWrites: admin,
+    canReach: (c) => {
+      if (protectedTable(c)) return false
+      if (admin) return true
+      // From your own order/invoice/transaction: its billing relations.
+      if (scope) return !PRIVATE_COLLECTIONS.test(c) || OWNER_SCOPED_REACHABLE.test(c)
+      return !PRIVATE_COLLECTIONS.test(c) && !own(OWNER_SCOPED, c.toLowerCase())
+    },
+  }
+
+  // Ownership of a list lives in the lists_directus_users junction (user_id = app user id).
+  const userOwnsList = async (listId: unknown) => {
+    if (listId === null || listId === undefined || listId === '' || typeof listId === 'object') return false
+    const found = await $fetch<{ data?: unknown[] }>(joinURL(directusUrl, 'items', 'lists'), {
+      headers: { authorization: token ? `Bearer ${token}` : '' },
+      query: { fields: 'id', limit: 1, filter: JSON.stringify({ _and: [{ id: { _eq: listId } }, { user: { user_id: { _eq: user!.id } } }] }) },
+    }).catch(() => null)
+    return !!found?.data?.length
+  }
+
+  // Directus parses query strings with qs (bracket syntax included) — parse
+  // the same way so the checks see what Directus will see.
+  const query = qs.parse(search, { depth: 20, arrayLimit: 1000, parameterLimit: 2000 }) as Record<string, unknown>
+  if (queryCollection) {
+    const graph = await loadRelationGraph(directusUrl, token).catch(() => {
+      throw createError({ statusCode: 503, statusMessage: 'CMS is unavailable' })
+    })
+    checkReadQuery(graph, rules, queryCollection, query)
+    if (!isRead && getHeader(event, 'content-type')?.includes('application/json')) {
+      checkWritePayload(graph, rules, queryCollection, await readBody(event))
+    }
+  }
+
+  if (scope) {
+    if (!isRead) throw createError({ statusCode: 403, statusMessage: 'Billing records are read-only here' })
+    // AND the caller's own-rows filter onto whatever the client asked for.
+    const ownRows = scope(user!.id)
+    const clientFilter = typeof query.filter === 'string' ? JSON.parse(query.filter) : query.filter
+    const filters = [ownRows, ...(clientFilter ? [clientFilter] : [])]
+    if (itemId) {
+      // Directus ignores `filter` on a single-item read (/items/x/<id>), so
+      // look the item up as a filtered list instead.
+      const id = decodeURIComponent(itemId)
+      if (id.includes(',')) throw createError({ statusCode: 400, statusMessage: 'One item at a time' })
+      const listQuery = { ...query, filter: JSON.stringify({ _and: [...filters, { id: { _eq: id } }] }), limit: 1 }
+      const found = await $fetch<{ data?: unknown[] }>(
+        `${joinURL(directusUrl, 'items', collection)}?${qs.stringify(listQuery, { encodeValuesOnly: true, arrayFormat: 'brackets' })}`,
+        { headers: { authorization: token ? `Bearer ${token}` : '' } },
+      )
+      // Same answer Directus gives for a missing item, so ids can't be probed.
+      if (!found.data?.length) throw createError({ statusCode: 403, statusMessage: "You don't have permission to access this." })
+      return { data: found.data[0] }
+    }
+    const scoped = { ...query, filter: JSON.stringify(filters.length > 1 ? { _and: filters } : ownRows) }
+    rest = `${pathOnly}?${qs.stringify(scoped, { encodeValuesOnly: true, arrayFormat: 'brackets' })}`
+  }
 
   let body: string | undefined
-  if (method !== 'GET' && method !== 'HEAD') {
-    const user = await requireAuth(event)
-    const ownerField = OWNER_FIELDS[pathOnly.match(/^\/items\/([^/]+)/)?.[1] || '']
+  if (!isRead) {
+    const policy = own(USER_WRITABLE, collection)
+    const ownerField = policy?.owner
+
+    if (!admin) {
+      // Includes /files: user uploads go to Pixanomy (/api/assets/upload),
+      // which checks file contents — Directus would store whatever type the
+      // browser claimed and serve it from this origin.
+      if (!policy) {
+        throw createError({ statusCode: 403, statusMessage: 'Only an admin can change this content' })
+      }
+      if (policy?.createOnly && method !== 'POST') {
+        throw createError({ statusCode: 403, statusMessage: 'This content cannot be changed once sent' })
+      }
+    }
+
+    // List items: the list (and, on PATCH, any list it's moved to) must be the caller's.
+    const parentField = policy?.parentList
+    if (parentField && !admin) {
+      if (method !== 'POST' && !itemId) {
+        throw createError({ statusCode: 403, statusMessage: 'Only an admin can change several items at once' })
+      }
+      const listIds = new Set<unknown>()
+      if (itemId) {
+        const existing = await $fetch<{ data?: Record<string, unknown> }>(
+          joinURL(directusUrl, 'items', collection, itemId),
+          { headers: { authorization: token ? `Bearer ${token}` : '' }, query: { fields: parentField } },
+        ).catch(() => null)
+        listIds.add(existing?.data?.[parentField] ?? null)
+      }
+      if (method !== 'DELETE') {
+        const payload = await readBody(event)
+        for (const item of Array.isArray(payload) ? payload : [payload]) {
+          if (method === 'POST' || (item && typeof item === 'object' && parentField in item)) listIds.add(item?.[parentField] ?? null)
+        }
+      }
+      for (const listId of listIds) {
+        if (!(await userOwnsList(listId))) {
+          throw createError({ statusCode: 403, statusMessage: 'You can only change your own lists' })
+        }
+      }
+    }
+
+    // Only an item's owner (or an admin) may change or delete it — hiding the
+    // edit menu in the UI isn't enough, the proxy's token can write anything.
+    // Batch PATCH/DELETE on /items/<collection> (no id) is admin-only, since
+    // it can target any rows.
+    if (ownerField && (method === 'PATCH' || method === 'DELETE') && !admin) {
+      if (!itemId) {
+        throw createError({ statusCode: 403, statusMessage: 'Only an admin can change several items at once' })
+      }
+      const existing = await $fetch<{ data?: Record<string, unknown> }>(
+        joinURL(directusUrl, 'items', collection, itemId),
+        { headers: { authorization: token ? `Bearer ${token}` : '' }, query: { fields: ownerField } },
+      ).catch(() => null)
+      if (!existing?.data || existing.data[ownerField] !== user!.id) {
+        throw createError({ statusCode: 403, statusMessage: 'You can only change your own content' })
+      }
+    }
+
     if (ownerField && (method === 'POST' || method === 'PATCH')) {
       const payload = await readBody(event)
       const stamp = (item: Record<string, unknown>) => {
         if (!item || typeof item !== 'object') return item
         const next = { ...item }
-        if (method === 'POST') next[ownerField] = user.id
+        if (method === 'POST') next[ownerField] = user!.id
         else delete next[ownerField]
         return next
       }
       body = JSON.stringify(Array.isArray(payload) ? payload.map(stamp) : stamp(payload))
-    }
-  } else {
-    const itemsCollection = pathOnly.match(/^\/items\/([^/]+)/)?.[1]
-    const fieldsCollection = pathOnly.match(/^\/fields\/([^/]+)$/)?.[1]
-    // Non-`/items/...`/`/fields/...` reads (e.g. `/assets/...`) and
-    // allowlisted collections are open; the whole-schema `/fields` listing
-    // (no collection) and everything else needs a session.
-    if (
-      pathOnly === '/fields' ||
-      (itemsCollection && !PUBLIC_READ_COLLECTIONS.has(itemsCollection)) ||
-      (fieldsCollection && !PUBLIC_READ_COLLECTIONS.has(fieldsCollection))
-    ) {
-      await requireAuth(event)
     }
   }
 
@@ -110,5 +321,21 @@ export default defineEventHandler(async (event) => {
     // proxyRequest forwards the original request body unless fetchOptions
     // supplies one (a top-level `body` is ignored).
     ...(body !== undefined ? { fetchOptions: { body, duplex: undefined } } : {}),
+    onResponse: (ev: typeof event, response: Response) => {
+      // This proxy is same-origin only — don't pass on Directus' own CORS
+      // headers (it sends `Access-Control-Allow-Origin: *` + credentials).
+      for (const name of [...response.headers.keys()]) {
+        if (name.startsWith('access-control-')) ev.node.res.removeHeader(name)
+      }
+      // Library files are served from this origin: never let one run as a page.
+      if (pathOnly.startsWith('/assets/')) {
+        setResponseHeader(ev, 'x-content-type-options', 'nosniff')
+        setResponseHeader(ev, 'content-security-policy', "sandbox; default-src 'none'; img-src 'self'; media-src 'self'; style-src 'unsafe-inline'")
+        const type = (response.headers.get('content-type') || '').toLowerCase()
+        if (!/^(image\/(png|jpe?g|gif|webp|avif|heic|heif)|video\/|audio\/|application\/pdf)/.test(type)) {
+          setResponseHeader(ev, 'content-disposition', 'attachment')
+        }
+      }
+    },
   })
 })

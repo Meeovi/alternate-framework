@@ -33,7 +33,15 @@ const novuCssPath = (() => {
 })()
 
 /**
- * The site-wide Content-Security-Policy header (applied via routeRules).
+ * The site-wide Content-Security-Policy (applied via routeRules).
+ *
+ * Sent as Content-Security-Policy-Report-Only for now: nuxt-security strips
+ * a routeRules `Content-Security-Policy` header (its own CSP is disabled
+ * below), so this policy was never actually delivered, and switching it on
+ * enforced in one go would break whatever it doesn't list yet. Browsers
+ * report would-be violations to /api/csp-report (logged once each, see
+ * server/api/csp-report.post.ts); once the reports are clean, rename the
+ * header to enforce it.
  *
  * Only the directives listed here are enforced; anything not named is
  * unrestricted. `connect-src` is the tight one — every host the browser is
@@ -115,9 +123,16 @@ function buildContentSecurityPolicy(): string {
     //  - form-action: 'self' plus the payment redirect targets that
     //    legitimately receive a form POST (PayPal classic checkout).
     "object-src 'none';",
+    // Starting point for the script/frame hardening pass: only reports
+    // (from Report-Only) what a strict policy would need — http: or data:
+    // scripts, eval, and non-https frames.
+    "script-src 'self' 'unsafe-inline' https: blob:;",
+    "frame-src 'self' https: blob:;",
     "base-uri 'self';",
     "frame-ancestors 'self';",
     "form-action 'self' https://www.paypal.com https://www.sandbox.paypal.com https://checkout.stripe.com;",
+    'report-uri /api/csp-report;',
+    'report-to csp;',
   ].join(' ')
 }
 
@@ -147,11 +162,8 @@ export default defineNuxtConfig({
           async: true,
           tagPosition: 'bodyClose'
         },
-        {
-          src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3854548303717312',
-          async: true,
-          crossorigin: 'anonymous'
-        }
+        // AdSense's loader is no longer here: it's advertising, so it waits
+        // for cookie consent (app/plugins/cookie-consent.client.ts).
       ]
     }
   },
@@ -333,33 +345,36 @@ export default defineNuxtConfig({
 
   scripts: {
     registry: {
+      // Analytics, advertising and pixels are 'manual': they load only once
+      // the visitor consents (app/plugins/cookie-consent.client.ts), never
+      // on page load — UK/EU PECR + GDPR.
       googleAnalytics: {
-        trigger: 'onNuxtReady'
+        trigger: 'manual'
       },
       googleAdsense: {
-        trigger: 'onNuxtReady'
+        trigger: 'manual'
       },
       // Tracking pixels — registered only when their id env var is set, so
       // an unconfigured pixel neither warns at build time nor ships an
       // inert <script>. Google Tag Manager (below) can also fire these
       // downstream from its own container config.
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_META_PIXEL_ID ? { metaPixel: { trigger: 'onNuxtReady' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_REDDIT_PIXEL_ID ? { redditPixel: { trigger: 'onNuxtReady' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_SNAPCHAT_PIXEL_ID ? { snapchatPixel: { trigger: 'onNuxtReady' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_TIKTOK_PIXEL_ID ? { tiktokPixel: { trigger: 'onNuxtReady' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_X_PIXEL_ID ? { xPixel: { trigger: 'onNuxtReady' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_META_PIXEL_ID ? { metaPixel: { trigger: 'manual' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_REDDIT_PIXEL_ID ? { redditPixel: { trigger: 'manual' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_SNAPCHAT_PIXEL_ID ? { snapchatPixel: { trigger: 'manual' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_TIKTOK_PIXEL_ID ? { tiktokPixel: { trigger: 'manual' } } : {}),
+      ...(process.env.NUXT_PUBLIC_SCRIPTS_X_PIXEL_ID ? { xPixel: { trigger: 'manual' } } : {}),
       bingUet: {
-        trigger: 'onNuxtReady'
+        trigger: 'manual'
       },
       carbonAds: {
-        trigger: 'onNuxtReady',
+        trigger: 'manual',
       },
       googleTagManager: {
-        trigger: 'onNuxtReady'
+        trigger: 'manual'
       },
       blueskyEmbed: {},
       googleRecaptcha: {
-        trigger: 'onNuxtReady'
+        trigger: 'manual'
       },
       gravatar: {
         trigger: 'onNuxtReady',
@@ -393,7 +408,8 @@ export default defineNuxtConfig({
       robots: true,
       isr: process.env.NODE_ENV === 'development' ? false : 60,
       headers: {
-        'Content-Security-Policy': buildContentSecurityPolicy(),
+        'Content-Security-Policy-Report-Only': buildContentSecurityPolicy(),
+        'Reporting-Endpoints': 'csp="/api/csp-report"',
       }
     },
     // nuxt-og-image's own routes must not be caught by the wildcard ISR
@@ -418,6 +434,23 @@ export default defineNuxtConfig({
         requestSizeLimiter: {
           maxUploadFileRequestInBytes: Number(process.env.NUXT_PIXANOMY_MAX_UPLOAD_MB || 200) * 1024 * 1024,
         },
+      },
+    },
+    // Every SSR page load checks the session in-process (route middleware →
+    // /api/auth/get-session), and those self-calls count against the
+    // site-wide per-IP limit — fast browsing then 429s the session check,
+    // which the (fail-closed) middleware turns into a 503. The check is
+    // cheap (cookie cache) and read-only; sign-in / sign-up / reset keep
+    // better-auth's own per-path limits.
+    '/api/auth/get-session': {
+      security: { rateLimiter: false },
+    },
+    // Browser CSP reports quote the offending snippet — nuxt-security's
+    // XSS validator would reject exactly the reports we want.
+    '/api/csp-report': {
+      security: {
+        xssValidator: false,
+        requestSizeLimiter: { maxRequestSizeInBytes: 64 * 1024 },
       },
     },
     '/u/**': { isr: false },

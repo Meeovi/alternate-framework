@@ -13,4 +13,5 @@ declare global {
   const refreshNuxtData: typeof import('nuxt/app')['refreshNuxtData']
   const defineNuxtRouteMiddleware: typeof import('nuxt/app')['defineNuxtRouteMiddleware']
   const navigateTo: typeof import('nuxt/app')['navigateTo']
+  const useStorage: (base?: string) => { getItemRaw: (key: string) => Promise<any> }
 }

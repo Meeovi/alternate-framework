@@ -25,6 +25,35 @@ export type CategoryProductsRef = {
   externalId?: string
 }
 
+/**
+ * An order whose payment was taken outside the backend (the app's Stripe
+ * checkout), to be recorded in it — so orders, and any marketplace
+ * seller's sale, live in the commerce backend.
+ */
+export type PaidOrder = {
+  /** The payment's own id (e.g. the Stripe payment intent). Backends must
+   *  be idempotent on it: a repeat call returns the same order. */
+  reference: string
+  /** The buyer's customer id in this backend. */
+  customerId: string
+  /** Lines, by this adapter's product key (`request({ collection: 'products', key })`). */
+  items: { key: string, qty: number }[]
+  /** What the buyer paid for these lines, in `currency`. */
+  amountPaid: number
+  currency: string
+  /** Used when the backend has no billing address for the customer. */
+  billingAddress?: {
+    firstname?: string
+    lastname?: string
+    street?: string[]
+    city?: string
+    region_code?: string
+    postcode?: string
+    country_id?: string
+    telephone?: string
+  }
+}
+
 export interface CommerceBackendAdapter {
   readonly id: string
   readonly collections: string[]
@@ -42,6 +71,11 @@ export interface CommerceBackendAdapter {
    * `typeof adapter.getProductsByCategory === 'function'`.
    */
   getProductsByCategory?(ref: CategoryProductsRef): Promise<any[]>
+  /**
+   * Record an order the app already took payment for (see PaidOrder).
+   * Optional: feature-detect with `typeof adapter.placePaidOrder === 'function'`.
+   */
+  placePaidOrder?(order: PaidOrder): Promise<{ id: string, number: string, created: boolean }>
 }
 
 const registry = new Map<string, CommerceBackendAdapter>()

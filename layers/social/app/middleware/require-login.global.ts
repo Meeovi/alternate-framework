@@ -10,9 +10,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   try {
     session = await useRequestFetch()('/api/auth/get-session')
   } catch {
-    // A failed check isn't "logged out": let the page's own data calls
-    // surface a real 401 rather than bouncing a signed-in user.
-    return
+    // Fail closed (see the auth layer's middleware/auth.ts).
+    return abortNavigation(createError({ statusCode: 503, statusMessage: "We couldn't verify your session. Please try again." }))
   }
   if (!session?.user) {
     return navigateTo({ path: '/login', query: { redirect: to.fullPath } })

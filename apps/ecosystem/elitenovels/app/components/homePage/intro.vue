@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="container-fluid">
-                <p class="mbr-text mbr-fonts-style mb-0 align-left display-4" v-html="blocksSlider?.description"></p>
+                <p class="mbr-text mbr-fonts-style mb-0 align-left display-4" v-dompurify-html="blocksSlider?.description"></p>
                 <div class="mbr-section-btn align-left mt-3">
                     <a class="btn btn-info display-4" href="/stories">
                         Find your story!

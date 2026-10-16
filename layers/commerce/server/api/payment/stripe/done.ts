@@ -13,10 +13,12 @@ export default defineEventHandler(async (event) => {
     const lineItem = session.line_items?.data?.[0]
     const product = lineItem?.price?.product
 
+    // No session/ownership check here (guest checkout lands on /success), so
+    // return nothing personal — the session id in a shared or logged URL
+    // would otherwise reveal the buyer's email.
     const checkout = {
       id: session.id,
       status: session.status,
-      customer_email: session.customer_details?.email,
     }
 
     const productData =

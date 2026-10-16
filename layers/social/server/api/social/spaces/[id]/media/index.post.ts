@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, getRouterParam, readMultipartFormData } from 'h3'
-import { sniffMedia } from '../../../../../utils/mediaSniff'
+import { sniffMedia } from '../../../../../../../shared/server/utils/mediaSniff'
 import { requireSpaceMember, SPACE_MEDIA_LIMITS, spaceRoom, type SpaceMediaKind } from '../../../../../utils/spaceMedia'
 
 /**

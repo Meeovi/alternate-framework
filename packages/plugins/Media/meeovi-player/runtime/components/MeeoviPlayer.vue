@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
-import { isAudioKind, loadPlayer } from '../loaders'
+import { isAudioKind, loadPlayer, mediaTag, skinTag } from '../loaders'
 import type { MeeoviPlayerKind, MeeoviPlayerPublicConfig, MeeoviPlayerSkin } from '../types'
 
 /**
@@ -15,6 +15,7 @@ import type { MeeoviPlayerKind, MeeoviPlayerPublicConfig, MeeoviPlayerSkin } fro
  * `kind` is detected from `type` (MIME) or the file extension when omitted.
  * The Video.js elements are registered client-side the first time a player
  * of that kind is shown; the server renders a same-sized placeholder.
+ * Video players include the Google Cast extension.
  */
 const props = withDefaults(defineProps<{
   src?: string | null
@@ -24,8 +25,9 @@ const props = withDefaults(defineProps<{
   live?: boolean
   /** MIME type, e.g. 'audio/mpeg' or 'application/x-mpegURL'. */
   type?: string | null
+  /** Poster image (video). Set on the player, so the skin shows it. */
   poster?: string | null
-  /** Accessible name / shown by audio skins. */
+  /** Content title, shown by the skin (the player's `content-title`). */
   title?: string | null
   autoplay?: boolean
   muted?: boolean
@@ -81,19 +83,40 @@ watch([kind, skin, isHls], () => { if (ready.value || failed.value) register() }
 const unavailable = computed(() => !props.src || failed.value)
 const message = computed(() => props.unavailableText || (isAudio.value ? 'Audio is not available' : 'Video is not available'))
 
-// The underlying <video>/<audio>/<hls-*> element, for callers that control
-// playback themselves (play(), pause(), currentTime, …).
+// Player > packaged skin > media, by tag name.
+const playerTag = computed(() => `${kind.value}-player`)
+const skinElement = computed(() => skinTag(kind.value, skin.value))
+const mediaElement = computed(() => mediaTag(kind.value, isHls.value))
+
+/** The player element's store: its state and actions (play, pause, seek…). */
+interface PlayerStore {
+  paused: boolean
+  play: () => Promise<void>
+  pause: () => void
+  subscribe: (listener: () => void) => () => void
+}
+
+// The player element owns playback state, including while casting, so
+// actions go through its store rather than the media element.
+const player = ref<(HTMLElement & { store: PlayerStore }) | null>(null)
+// The underlying <video>/<audio>/<hlsjs-video>/<hls-audio> element, for
+// callers that need it directly (currentTime, native events, …).
 const media = ref<HTMLMediaElement | null>(null)
 defineExpose({
+  player,
   media,
-  play: () => media.value?.play(),
-  pause: () => media.value?.pause(),
+  play: () => player.value?.store.play(),
+  pause: () => player.value?.store.pause(),
 })
+
+// Metadata lives on the player: the skin's poster and title read it there.
+const playerAttrs = computed(() => ({
+  'poster': isAudio.value ? undefined : props.poster || undefined,
+  'content-title': props.title || undefined,
+}))
 
 const mediaAttrs = computed(() => ({
   src: props.src || undefined,
-  poster: isAudio.value ? undefined : props.poster || undefined,
-  title: props.title || undefined,
   autoplay: props.autoplay || undefined,
   muted: props.muted || undefined,
   loop: props.loop || undefined,
@@ -114,68 +137,13 @@ const on = {
     :class="[`meeovi-player--${isAudio ? 'audio' : 'video'}`]"
     :style="isAudio ? undefined : { aspectRatio }"
   >
-    <template v-if="ready && !unavailable">
-      <!-- One branch per preset: Video.js 10 player > skin > media. -->
-      <video-player v-if="kind === 'video'">
-        <video-skin v-if="skin === 'default'">
-          <hls-video v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <video v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </video-skin>
-        <video-neutral-skin v-else-if="skin === 'neutral'">
-          <hls-video v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <video v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </video-neutral-skin>
-        <video-compat-skin v-else>
-          <hls-video v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <video v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </video-compat-skin>
-      </video-player>
-
-      <live-video-player v-else-if="kind === 'live-video'">
-        <live-video-skin v-if="skin === 'default'">
-          <hls-video v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <video v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </live-video-skin>
-        <live-video-neutral-skin v-else-if="skin === 'neutral'">
-          <hls-video v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <video v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </live-video-neutral-skin>
-        <live-video-compat-skin v-else>
-          <hls-video v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <video v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </live-video-compat-skin>
-      </live-video-player>
-
-      <audio-player v-else-if="kind === 'audio'">
-        <audio-skin v-if="skin === 'default'">
-          <hls-audio v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <audio v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </audio-skin>
-        <audio-neutral-skin v-else-if="skin === 'neutral'">
-          <hls-audio v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <audio v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </audio-neutral-skin>
-        <audio-compat-skin v-else>
-          <hls-audio v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <audio v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </audio-compat-skin>
-      </audio-player>
-
-      <live-audio-player v-else>
-        <live-audio-skin v-if="skin === 'default'">
-          <hls-audio v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <audio v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </live-audio-skin>
-        <live-audio-neutral-skin v-else-if="skin === 'neutral'">
-          <hls-audio v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <audio v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </live-audio-neutral-skin>
-        <live-audio-compat-skin v-else>
-          <hls-audio v-if="isHls" ref="media" v-bind="mediaAttrs" v-on="on" />
-          <audio v-else ref="media" v-bind="mediaAttrs" v-on="on" />
-        </live-audio-compat-skin>
-      </live-audio-player>
-    </template>
+    <!-- Video.js 10: player (state) > packaged skin (UI) > media. -->
+    <component :is="playerTag" v-if="ready && !unavailable" ref="player" v-bind="playerAttrs">
+      <component :is="skinElement">
+        <component :is="mediaElement" ref="media" v-bind="mediaAttrs" v-on="on" />
+        <google-cast v-if="!isAudio" />
+      </component>
+    </component>
 
     <!-- Server render / loading, and "nothing to play" -->
     <div v-else class="meeovi-player__placeholder" :aria-busy="!unavailable">

@@ -19,41 +19,64 @@
 
                 <v-col cols="12">
                 <v-list lines="two">
-                    <v-list-subheader inset>Permissions</v-list-subheader>
-
-                    <v-list-item v-for="permission in permissions" :key="permission.title"
-                        :subtitle="permission.subtitle" :title="permission.title">
+                    <v-list-subheader inset>Your data</v-list-subheader>
+                    <v-list-item title="Download your data"
+                        subtitle="Your account, sign-in history and everything you've posted, as a JSON file">
                         <template v-slot:prepend>
-                            <v-avatar color="grey-lighten-1">
-                                <v-icon color="white">fas fa-shield-halved</v-icon>
-                            </v-avatar>
+                            <v-avatar color="blue"><v-icon color="white">fas fa-download</v-icon></v-avatar>
                         </template>
-
                         <template v-slot:append>
-                            <v-switch label="Enable" true-icon="fas fa-check" false-icon="fas fa-xmark"></v-switch>
+                            <v-btn variant="tonal" href="/api/account/export" download>Download</v-btn>
                         </template>
                     </v-list-item>
-
-                    <v-divider inset></v-divider>
-
-                    <v-list-subheader inset>Security</v-list-subheader>
-
-                    <v-list-item v-for="secure in security" :key="secure.title" :subtitle="secure.subtitle"
-                        :title="secure.title">
+                    <v-list-item title="Two-factor authentication" subtitle="Ask for a code as well as your password"
+                        to="/workspace/settings/two-factor">
                         <template v-slot:prepend>
-                            <v-avatar :color="secure.color">
-                                <v-icon color="white">{{ secure.icon }}</v-icon>
-                            </v-avatar>
+                            <v-avatar color="amber"><v-icon color="white">fas fa-hand-pointer</v-icon></v-avatar>
                         </template>
-
+                    </v-list-item>
+                    <v-list-item title="Cookie settings" subtitle="Choose whether we use analytics and advertising cookies"
+                        @click="openCookieSettings">
+                        <template v-slot:prepend>
+                            <v-avatar color="teal"><v-icon color="white">fas fa-cookie-bite</v-icon></v-avatar>
+                        </template>
+                    </v-list-item>
+                    <v-list-item title="Privacy policy" subtitle="What we collect, why, and your rights"
+                        to="/privacy-policies">
+                        <template v-slot:prepend>
+                            <v-avatar color="grey-lighten-1"><v-icon color="white">fas fa-shield-halved</v-icon></v-avatar>
+                        </template>
+                    </v-list-item>
+                    <v-divider inset></v-divider>
+                    <v-list-subheader inset>Delete account</v-list-subheader>
+                    <v-list-item title="Delete your account"
+                        subtitle="Permanently removes your account, sign-ins and profile. This can't be undone.">
+                        <template v-slot:prepend>
+                            <v-avatar color="error"><v-icon color="white">fas fa-trash</v-icon></v-avatar>
+                        </template>
                         <template v-slot:append>
-                            <v-switch label="Enable" true-icon="fas fa-check" false-icon="fas fa-xmark"></v-switch>
+                            <v-btn color="error" variant="tonal" @click="deleteDialog = true">Delete</v-btn>
                         </template>
                     </v-list-item>
                 </v-list>
                 </v-col>
             </v-row>
         </v-sheet>
+
+        <v-dialog v-model="deleteDialog" max-width="480">
+            <v-card title="Delete your account?">
+                <v-card-text>
+                    <p class="mb-4">This permanently deletes your account and signs you out everywhere. Download your data first if you want a copy.</p>
+                    <v-text-field v-model="deletePassword" type="password" label="Your password" hint="Signed up with Google, Apple etc.? Leave blank — you'll need to have signed in within the last day." persistent-hint
+                        autocomplete="current-password" variant="outlined" :error-messages="deleteError || undefined" />
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer />
+                    <v-btn @click="deleteDialog = false">Cancel</v-btn>
+                    <v-btn color="error" :loading="deleting" @click="deleteAccount">Delete account</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -61,6 +84,10 @@
     import {
         ref
     } from '#imports'
+    import { authClient } from '../../../../../auth/lib/auth-client'
+    import { useCookieConsent } from '#shared/app/composables/useCookieConsent'
+
+    const { openSettings: openCookieSettings } = useCookieConsent()
 
     const tab = ref(null)
     const {
@@ -68,42 +95,25 @@
         $readItems
     } = useNuxtApp()
     
-    const security = [{
-            color: 'blue',
-            icon: 'fas fa-clipboard',
-            subtitle: 'We keep your data secure',
-            title: 'Meeovi Security',
-        },
-        {
-            color: 'amber',
-            icon: 'fas fa-hand-pointer',
-            subtitle: 'Enable two-factor authentication',
-            title: 'Two-Factor Authentication',
-        },
-    ]
-
-    const permissions = [{
-            subtitle: 'Personalized offers, personalized ads, advertising ID',
-            title: 'Recommendation & Offers',
-        },
-        {
-            subtitle: 'Diagnostic data, feedback frequency, crash reports',
-            title: 'Diagnostics & Feedback',
-        },
-        {
-            subtitle: 'Display your search history, search suggestions',
-            title: 'Search Suggestions',
-        },
-        {
-            subtitle: 'Display your location history, ask for location',
-            title: 'Location',
-        },
-        {
-            subtitle: 'Allow camera access',
-            title: 'Camera',
-        },
-    ]
-    
+    const deleteDialog = ref(false)
+    const deletePassword = ref('')
+    const deleteError = ref('')
+    const deleting = ref(false)
+    async function deleteAccount() {
+        deleting.value = true
+        deleteError.value = ''
+        // better-auth POST /delete-user: checks the password, runs
+        // deleteUser.beforeDelete (open subscriptions block it), then
+        // removes the user — sessions, logins, profile cascade.
+        const { error } = await authClient.deleteUser({ ...(deletePassword.value ? { password: deletePassword.value } : {}), callbackURL: '/' })
+        deleting.value = false
+        if (error) {
+            deleteError.value = error.message || "Couldn't delete your account"
+            return
+        }
+        deletePassword.value = ''
+        await navigateTo('/', { external: true })
+    }
     const {
       data: accountPrivacy
     } = await useAsyncData('accountPrivacy', async () => {

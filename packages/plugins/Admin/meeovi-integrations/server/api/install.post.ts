@@ -1,19 +1,20 @@
 import { createError, defineEventHandler, getRouterParam } from 'h3'
-import { addInstall, catalogRows, installable, installsFor, integrationId, requireUser } from '../utils/installs'
+import { catalogItem, install, pluginOrThrow, requireUser } from '../utils/installs'
 
-/** POST {apiBase}/:id/install — install a catalog entry for the signed-in
- *  user. Only published, free entries linked to a plugin; idempotent. */
+/** POST {apiBase}/:slug/install — switch a plugin on for the signed-in user.
+ *  Admin plugins: admins only (404 otherwise). Paid plugins: only after the
+ *  user bought the product (402). Idempotent; reinstalling brings back the
+ *  user's earlier data. */
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event)
-  const id = integrationId(getRouterParam(event, 'id'))
-
-  const row = (await catalogRows(event, true)).find((r) => r.id === id)
-  if (!row) throw createError({ statusCode: 404, statusMessage: 'Integration not found' })
-  if (!installable(row)) {
-    throw createError({ statusCode: 409, statusMessage: `${row.name || 'This integration'} can't be installed yet` })
+  const plugin = pluginOrThrow(event, user, getRouterParam(event, 'slug'))
+  const item = await catalogItem(event, user, plugin.slug)
+  if (item?.state === 'paid') {
+    throw createError({ statusCode: 402, statusMessage: `Buy ${item.name} in the store to install it` })
   }
-
-  const existing = (await installsFor(event, user.id)).some((i) => Number(i.integration) === id)
-  if (!existing) await addInstall(event, user.id, row)
-  return { installed: true, plugin: row.plugin }
+  if (!item || (item.state !== 'available' && item.state !== 'installed')) {
+    throw createError({ statusCode: 409, statusMessage: `${plugin.name} can't be installed yet` })
+  }
+  await install(event, user, plugin)
+  return { installed: true, plugin: plugin.plugin }
 })

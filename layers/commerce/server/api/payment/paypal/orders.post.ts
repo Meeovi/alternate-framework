@@ -17,7 +17,7 @@ const createOrderSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
-  await requireAuth(event)
+  const user = await requireAuth(event)
 
   try {
     const body = await readBody(event)
@@ -57,7 +57,7 @@ export default defineEventHandler(async (event) => {
       return total + productPrice * item.quantity
     }, Promise.resolve(0))
 
-    const order = await createPayPalOrder(amount, currency, idempotencyKey)
+    const order = await createPayPalOrder(amount, currency, idempotencyKey, user.id)
 
     return { success: true, order }
   } catch (error: any) {

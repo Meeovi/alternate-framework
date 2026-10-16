@@ -319,6 +319,8 @@
   import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import shop from '../../components/catalog/shops/stores.vue'
   import productCompare from '../../components/catalog/product/compare.vue'
+  import { CommerceBackendRegistry } from 'alternate-sdk'
+  import { parseProductKey } from '../../utils/productKey'
 
   const tab = ref(null);
   // Each v-slide-group needs its own model — they used to all share one
@@ -389,6 +391,16 @@
       'tags.tags_id.*',
       'image.*',
     ]
+
+    // `magento:<sku>`: a product the commerce backend owns (see
+    // utils/productKey.ts) — read it from that backend's adapter.
+    const backendKey = parseProductKey(String(productId.value ?? ''))
+    if (backendKey) {
+      const backend = CommerceBackendRegistry.get(backendKey.backend)
+      const found = backend ? await backend.request({ method: 'GET', collection: 'products', key: backendKey.key }).catch(() => null) : null
+      if (!found) throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+      return found
+    }
 
     try {
       return await $directus.request($readItem('products', productId.value, {

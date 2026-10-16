@@ -17,7 +17,10 @@ Sentry.init({
 
   // Enable sending of user PII (Personally Identifiable Information)
   // https://docs.sentry.io/platforms/javascript/guides/nuxt/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  // Off: on the server this attaches request cookies/headers/IP to every
+  // event — i.e. live session tokens stored at a third party. Errors still
+  // carry the URL, stack and release; set a user id explicitly if needed.
+  sendDefaultPii: false,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,

@@ -7,8 +7,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   try {
     session = await useRequestFetch()('/api/auth/get-session')
   } catch {
-    // Don't bounce on a transient failure to reach the session endpoint.
-    return
+    // Fail closed (see middleware/auth.ts).
+    return abortNavigation(createError({ statusCode: 503, statusMessage: "We couldn't verify your session. Please try again." }))
   }
 
   if (!session?.user) {

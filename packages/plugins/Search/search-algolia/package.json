@@ -2,6 +2,15 @@
   "name": "@mframework/search-algolia",
   "version": "0.1.0",
   "description": "Algolia provider for the M Framework federated search layer (layers/search). Registers itself with the layer's provider registry; enabled by the presence of Algolia credentials.",
+  "mframework": {
+    "integration": {
+      "name": "Algolia search",
+      "description": "Algolia as a federated search provider.",
+      "category": "Search",
+      "icon": "fas fa-magnifying-glass",
+      "admin": true
+    }
+  },
   "license": "MIT",
   "type": "module",
   "main": "./module.ts",

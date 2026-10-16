@@ -1,8 +1,16 @@
-import { createDirectus, rest, staticToken, readItems } from '@directus/sdk'
+import { createDirectus, rest, staticToken, readItem, readItems } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
 import { triggerNovuWorkflow } from '#shared/server/utils/novu'
 
 type ContentType = 'post' | 'short'
+
+const CONTENT_COLLECTION: Record<ContentType, string> = {
+  post: 'posts',
+  short: 'shorts',
+}
+// One notification per item: re-posting the same id is a no-op for the
+// life of this server process (stops follower spam from a loop/script).
+const alreadyNotified = new Set<string>()
 
 const CONTENT_LABEL: Record<ContentType, string> = {
   post: 'a new post',
@@ -26,6 +34,22 @@ export default defineEventHandler(async (event) => {
   if (!contentType || !['post', 'short'].includes(contentType)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid payload parameters' })
   }
+
+  // Only the author of an existing post/vibe can announce it — otherwise any
+  // user could send "new post" notifications to all their followers for any
+  // (or a made-up) id, as often as they like.
+  if (itemId === undefined || itemId === null || !/^[A-Za-z0-9_-]{1,64}$/.test(String(itemId))) {
+    throw createError({ statusCode: 400, statusMessage: 'itemId is required' })
+  }
+  const item = await directus.request(
+    readItem(CONTENT_COLLECTION[contentType] as any, String(itemId), { fields: ['id', 'creator_id'] as any }),
+  ).catch(() => null) as { creator_id?: string | null } | null
+  if (!item || item.creator_id !== user.id) {
+    throw createError({ statusCode: 404, statusMessage: 'Content not found' })
+  }
+  const key = `${contentType}:${itemId}`
+  if (alreadyNotified.has(key)) return { notified: 0, alreadyNotified: true }
+  alreadyNotified.add(key)
 
   const followers = await directus.request(
     readItems('follows', {

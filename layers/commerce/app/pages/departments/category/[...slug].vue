@@ -1,0 +1,169 @@
+<template>
+  <div class="departmentPage">
+    <div v-if="category?.slug === 'restaurants'">
+      <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`"
+        :title="category?.name" />
+      <restaurants :category="category?.slug" />
+    </div>
+
+    <div v-else-if="category">
+      <v-card variant="text">
+        <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`">
+          <v-toolbar-title>
+            <NuxtLink :to="`/departments/${category?.departments?.[0]?.departments_id?.name?.toLowerCase()}`">
+              Meeovi {{ category?.departments?.[0]?.departments_id?.name }}
+            </NuxtLink>
+            - {{ category?.name }}
+          </v-toolbar-title>
+          <v-slide-group v-if="category?.categories?.length" show-arrows>
+            <v-slide-group-item v-slot="{ isSelected }">
+              <v-menu>
+                <template #activator="{ props }">
+                  <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" v-bind="props" variant="text">
+                    Categories
+                  </v-btn>
+                </template>
+
+                <v-list class="departmentMenu">
+                  <v-row>
+                    <v-col v-for="sub in category.categories" :key="sub?.categories_id?.id" cols="3">
+                      <v-list-item>
+                        <NuxtLink :to="`/departments/categories/${sub.categories_id.id}`">
+                          {{ sub.categories_id.name }}
+                        </NuxtLink>
+                      </v-list-item>
+                    </v-col>
+                  </v-row>
+                </v-list>
+              </v-menu>
+            </v-slide-group-item>
+
+            <v-slide-group-item v-for="menu in category.menus" :key="menu.id" v-slot="{ isSelected }">
+              <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" :href="menu.url">
+                {{ menu.name }}
+              </v-btn>
+            </v-slide-group-item>
+          </v-slide-group>
+        </v-toolbar>
+      </v-card>
+
+      <v-row>
+        <!-- A deleted product leaves its junction row behind with no product. -->
+        <v-col v-for="productRel in (category.products || []).filter((rel) => rel?.products_id)" :key="productRel.products_id.id" cols="3">
+          <ProductCard :product="productRel.products_id" />
+        </v-col>
+      </v-row>
+    </div>
+
+    <div v-else class="p-10 text-center text-xl text-medium-emphasis">
+      Category not found...
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import {
+    ref,
+    computed,
+    watch
+  } from 'vue'
+  import ProductCard from '../../../components/catalog/product/productCard.vue'
+  import {
+    useAppGateway
+  } from '#shared/app/composables/useAppGateway'
+  import {
+    useRoute,
+    useNuxtApp,
+    useHead,
+    useRuntimeConfig
+  } from '#imports'
+  import { CommerceBackendRegistry } from 'alternate-sdk'
+  import Restaurants from '../../../components/catalog/categories/restaurants.vue'
+
+  const route = useRoute()
+  const {
+    $directus,
+    $readItems
+  } = useNuxtApp() as any
+
+  const routeslug = computed(() => {
+    const s = route.params.slug
+    return Array.isArray(s) ? s[0] : s
+  })
+
+  const categoryKey = computed(() => {
+    if (route.params.id) {
+      return 'category-' + (Array.isArray(route.params.id) ? route.params.id[0] : route.params.id)
+    }
+    return 'category-' + routeslug.value
+  })
+
+  const {
+    data: categoryRaw
+  } = await useAsyncData<any>(() => categoryKey.value, async () => {
+    try {
+      // Links use either the category id (/departments/category/96) or its
+      // slug (/departments/category/integrations).
+      const key = route.params.id ? (Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) : routeslug.value
+      const filter = /^\d+$/.test(String(key ?? '')) ? {
+        id: {
+          _eq: key
+        }
+      } : {
+        slug: {
+          _eq: key
+        }
+      }
+      const resp = await $directus.request($readItems('categories', {
+        fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*', 'products.products_id.*',
+          'products.products_id.image.*', 'menus.*', 'image.*'
+        ],
+        filter,
+        limit: 1,
+      }))
+      return Array.isArray(resp?.data) ? resp.data[0] : (resp?.data || resp || [])[0] || null
+    } catch {
+      return null
+    }
+  })
+
+  // Cross-references this category's products grid with whichever commerce
+  // backend is active. See the matching comment in
+  // departments/[...slug].vue — same rationale, same scope (category
+  // metadata always stays Directus-sourced; only its products swap).
+  // Uses categoryRaw.value.slug rather than routeslug.value: this page's
+  // own route is a catch-all on `id`, so route.params.slug is effectively
+  // always undefined here — the fetched record's own slug is the reliable
+  // cross-reference key regardless of which route param resolved it.
+  const activeCommerceBackend = useRuntimeConfig().public.commerceBackend || 'directus'
+
+  const {
+    data: backendCategoryProducts
+  } = await useAsyncData(() => `${categoryKey.value}-backend-products`, async () => {
+    if (!categoryRaw.value) return null
+    // A category whose `uid` names its category in a commerce backend
+    // (e.g. Integrations → Magento, where sellers list them) takes its
+    // products from that backend even while the site's catalog is
+    // Directus; otherwise only when the active backend isn't Directus.
+    const adapter = (activeCommerceBackend !== 'directus'
+      ? CommerceBackendRegistry.get(activeCommerceBackend)
+      : categoryRaw.value.uid
+        ? CommerceBackendRegistry.list().find((a: any) => a.id !== 'directus' && a.isEnabled?.() && typeof a.getProductsByCategory === 'function')
+        : null) as any
+    if (!adapter?.isEnabled?.() || typeof adapter.getProductsByCategory !== 'function') return null
+    return adapter.getProductsByCategory({
+      slug: categoryRaw.value.slug,
+      externalId: categoryRaw.value.uid || undefined,
+    })
+  })
+
+  if (backendCategoryProducts.value) {
+    categoryRaw.value.products = backendCategoryProducts.value.map((product: any) => ({ products_id: product }))
+  }
+
+  const category = computed(() => categoryRaw.value as any)
+
+  useHead({
+    title: computed(() => category.value?.name || 'Category Page'),
+  })
+</script>

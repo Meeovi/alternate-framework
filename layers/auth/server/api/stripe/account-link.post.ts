@@ -1,32 +1,10 @@
 import { defineEventHandler, createError } from 'h3'
-import { getAuthSession } from '../../utils/sessions'
 import { stripeClient } from '../../utils/stripe'
-import { db } from '../../utils/drizzle'
-import { authOrganizations } from '../../database/migrations/schema'
-import { eq } from 'drizzle-orm'
+import { requireOrgStripeManager } from '../../utils/stripeConnect'
 
 export default defineEventHandler(async (event) => {
-  const session = await getAuthSession(event)
-  if (!session?.session?.activeOrganizationId) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'No active organization'
-    })
-  }
-
-  // authOrganizations, the real better-auth org table this app's
-  // organization() plugin actually writes to — not the legacy Directus CRM
-  // `organizations` table, which has no `metadata` column at all and would
-  // silently make stripeAccountId undefined for every request.
-  const [org] = await db
-    .select()
-    .from(authOrganizations)
-    .where(eq(authOrganizations.id, session.session.activeOrganizationId))
-    .limit(1)
-
-  // better-auth's organization plugin stores metadata as a JSON string.
-  const metadata = org?.metadata ? JSON.parse(org.metadata) : undefined
-  const stripeAccountId = metadata?.stripeAccountId as string | undefined
+  // Signed in (401), active org (400), and its owner/admin (403).
+  const { stripeAccountId } = await requireOrgStripeManager(event)
 
   if (!stripeAccountId) {
     throw createError({

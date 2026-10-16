@@ -32,7 +32,7 @@
                             <!-- Product Price -->
                             <v-list-item>
                                 <div style="display: inline-block;">
-                                    <v-list-item-title>{{ pricing?.formatted?.final || productDetails?.price }}</v-list-item-title>
+                                    <v-list-item-title>{{ isFree ? 'Free' : (pricing?.formatted?.final || productDetails?.price) }}</v-list-item-title>
 
                                     <!-- Product Discount -->
                                     <v-list-item-subtitle v-if="pricing?.hasDiscount">
@@ -57,8 +57,8 @@
                                 </v-list-item-title>
                             </v-list-item>
 
-                            <!-- Product Quantity -->
-                            <v-list-item v-if="productDetails?.product_types?.product_types_id?.name !== 'Digital'">
+                            <!-- Product Quantity (only for things bought through the cart) -->
+                            <v-list-item v-if="!isFree && productDetails?.product_types?.product_types_id?.name !== 'Digital'">
                                 <div class="product-actions">
                                     <div class="qty-stepper">
                                         <v-btn variant="flat" :disabled="count <= min" square size="x-small"
@@ -90,16 +90,15 @@
                                 </div>
                             </v-list-item>
 
-                            <!-- Product Add to Cart / Download + Compare. These were nested
+                            <!-- Product Add to Cart / Download / Install + Compare. These were nested
                                  col-6 grids inside a col-6 list item, so each button got a
                                  quarter of the panel and was clipped; a wrapping flex row
                                  lets them take their natural width. -->
                             <v-list-item>
                                 <div class="product-actions">
-                                    <addToCartBtn v-if="productDetails?.price > '0.01'" :product="productDetails"
-                                        :quantity="count" />
-                                    <v-btn v-else prepend-icon="fas fa-download" :product="productDetails"
-                                        text="Download" :href="getAssetURL(productDetails?.file) ?? undefined" download />
+                                    <!-- Picks Add to Cart (priced), Install (free integration)
+                                         or Download (free with a file) itself. -->
+                                    <addToCartBtn :product="productDetails" :quantity="count" />
                                     <compareBtn :product="productDetails" />
                                 </div>
                             </v-list-item>
@@ -201,6 +200,8 @@
         currency: preferredCurrency.value
     }));
     const productRssLink = ref < string | null > (null);
+    // Nothing to pay: no cart, no quantity — Install or Download instead.
+    const isFree = computed(() => !((pricing.value?.final ?? Number(props.productDetails?.price)) > 0))
 
     // products.tags is the products_tags junction ({ tags_id: {...} }); skip
     // rows whose tag wasn't expanded or has been deleted.

@@ -46,7 +46,6 @@ type CheckoutDetails = {
   checkout: {
     id: string
     status: string | null
-    customer_email: string | null
   } | null
   product: {
     name: string | null

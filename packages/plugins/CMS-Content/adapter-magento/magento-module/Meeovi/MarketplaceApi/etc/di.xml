@@ -11,4 +11,16 @@
                 type="Meeovi\MarketplaceApi\Model\Data\SellerRegistrationResult"/>
     <preference for="Meeovi\MarketplaceApi\Api\SellerDashboardManagementInterface"
                 type="Meeovi\MarketplaceApi\Model\SellerDashboardManagement"/>
+    <preference for="Meeovi\MarketplaceApi\Api\SellerCatalogSyncInterface"
+                type="Meeovi\MarketplaceApi\Model\SellerCatalogSync"/>
+    <preference for="Meeovi\MarketplaceApi\Api\ExternalOrderManagementInterface"
+                type="Meeovi\MarketplaceApi\Model\ExternalOrderManagement"/>
+    <preference for="Meeovi\MarketplaceApi\Api\Data\ExternalOrderItemInterface"
+                type="Meeovi\MarketplaceApi\Model\Data\ExternalOrderItem"/>
+    <preference for="Meeovi\MarketplaceApi\Api\Data\ExternalOrderResultInterface"
+                type="Meeovi\MarketplaceApi\Model\Data\ExternalOrderResult"/>
+    <preference for="Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface"
+                type="Meeovi\MarketplaceApi\Model\ProductSellerManagement"/>
+    <preference for="Meeovi\MarketplaceApi\Api\Data\ProductSellerInterface"
+                type="Meeovi\MarketplaceApi\Model\Data\ProductSeller"/>
 </config>

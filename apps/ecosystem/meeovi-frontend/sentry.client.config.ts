@@ -18,14 +18,19 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0,
   
   // If you don't want to use Session Replay, just remove the line below:
-  integrations: [Sentry.replayIntegration()],
+  // Replays mask all text and block media (explicit, so a library default
+  // change can't start recording what users type).
+  integrations: [Sentry.replayIntegration({ maskAllText: true, maskAllInputs: true, blockAllMedia: true })],
 
   // Enable logs to be sent to Sentry
   enableLogs: true,
 
   // Enable sending of user PII (Personally Identifiable Information)
   // https://docs.sentry.io/platforms/javascript/guides/nuxt/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  // Off: on the server this attaches request cookies/headers/IP to every
+  // event — i.e. live session tokens stored at a third party. Errors still
+  // carry the URL, stack and release; set a user id explicitly if needed.
+  sendDefaultPii: false,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,

@@ -1,0 +1,69 @@
+{
+  "name": "@mframework/meeovi-dropshipping",
+  "version": "0.1.0",
+  "description": "Dropshipping for the M Framework marketplace: sellers connect their own supplier accounts (Printful, CJdropshipping), import products into Magento under their Webkul seller, keep stock in sync and forward paid orders to the supplier.",
+  "mframework": {
+    "integration": {
+      "name": "Dropshipping",
+      "description": "Connect your Printful or CJdropshipping account and sell their products from your store.",
+      "category": "Selling",
+      "icon": "fas fa-truck-fast",
+      "hosts": [
+        "api.printful.com",
+        "*.printful.com",
+        "developers.cjdropshipping.com",
+        "*.cjdropshipping.com"
+      ]
+    }
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./types": "./runtime/types.ts",
+    "./providers": "./server/providers/index.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "server",
+    "scripts",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'meeovi-dropshipping is consumed from source (module.ts); no build step' && exit 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "setup:directus": "node scripts/setup-directus.mjs"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "dropshipping",
+    "printful",
+    "cjdropshipping",
+    "magento",
+    "webkul",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "adapter-magento": "file:../../CMS-Content/adapter-magento",
+    "@nuxt/kit": "^4.6.1"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vue": "^3.5.41"
+  }
+}

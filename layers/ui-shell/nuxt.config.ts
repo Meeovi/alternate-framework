@@ -97,6 +97,14 @@ export default defineNuxtConfig({
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+      // @vite-pwa/nuxt defaults this to /_nuxt/, precaching every chunk with
+      // `revision: null` on the assumption that its filename hash covers its
+      // content. It doesn't: Rolldown can rewrite a chunk's import list
+      // without renaming it, so returning visitors kept the previous build's
+      // copy forever and the nuxt-security SRI check blocked it ("Failed to
+      // fetch dynamically imported module"). A never-matching pattern makes
+      // Workbox revision every file by its content hash instead.
+      dontCacheBustURLsMatching: /^$/,
     },
     injectManifest: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
@@ -115,7 +123,15 @@ export default defineNuxtConfig({
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
     },
-  }, 
+  },
+
+  // The service worker and web manifest must always be revalidated: a CDN
+  // (Cloudflare caches .js by default) or browser holding an old sw.js keeps
+  // visitors on the previous build's precache after a deploy.
+  routeRules: {
+    '/sw.js': { headers: { 'cache-control': 'no-cache, no-store, must-revalidate' } },
+    '/manifest.webmanifest': { headers: { 'cache-control': 'no-cache, no-store, must-revalidate' } },
+  },
 
   build: {
     transpile: [

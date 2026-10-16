@@ -19,7 +19,9 @@
                 <v-text-field label="Name (only for new users)" v-model="name" type="text" placeholder="Your name" class="w-full px-4 py-2 border rounded" />
             </div>
 
-            <v-btn type="submit" :disabled="status === 'sending'"
+            <NuxtTurnstile v-if="captchaEnabled" ref="captchaWidget" v-model="captchaToken" />
+
+            <v-btn type="submit" :disabled="status === 'sending' || captchaMissing"
                 class="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50">
                 {{ status === "sending" ? "Sending..." : "Send Magic Link" }}
             </v-btn>
@@ -41,6 +43,7 @@
     const name = ref("");
     const status = ref<"idle" | "sending" | "sent" | "error">("idle");
     const errorMessage = ref("");
+    const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha } = useAuthCaptcha();
 
     async function sendMagicLink() {
         status.value = "sending";
@@ -52,7 +55,8 @@
             name: name.value || undefined,
             callbackURL: "/",
             errorCallbackURL: "/login?error=magic-link",
-        });
+        }, captchaFetchOptions());
+        resetCaptcha();
 
         if (error) {
             status.value = "error";

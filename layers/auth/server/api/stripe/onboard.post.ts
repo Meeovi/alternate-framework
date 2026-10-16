@@ -1,9 +1,9 @@
 import { defineEventHandler, createError } from 'h3'
-import { getAuthSession } from '../../utils/sessions'
 import { stripeClient } from '../../utils/stripe'
 import { db } from '../../utils/drizzle'
 import { authOrganizations } from '../../database/migrations/schema'
 import { eq } from 'drizzle-orm'
+import { requireOrgStripeManager } from '../../utils/stripeConnect'
 
 /**
  * POST /api/stripe/onboard
@@ -20,31 +20,17 @@ import { eq } from 'drizzle-orm'
  * immediately returns an onboarding account-link URL to redirect to.
  */
 export default defineEventHandler(async (event) => {
-  const session = await getAuthSession(event)
-  if (!session?.user?.id || !session?.session?.activeOrganizationId) {
-    throw createError({ statusCode: 400, statusMessage: 'No active organization' })
-  }
+  // Signed in (401), active org (400), and its owner/admin (403) — creating
+  // the account and its onboarding link hands over control of payouts.
+  const { user, organizationId, metadata } = await requireOrgStripeManager(event)
 
-  const organizationId = session.session.activeOrganizationId
-
-  const [org] = await db
-    .select()
-    .from(authOrganizations)
-    .where(eq(authOrganizations.id, organizationId))
-    .limit(1)
-
-  if (!org) {
-    throw createError({ statusCode: 404, statusMessage: 'Organization not found' })
-  }
-
-  const metadata = org.metadata ? JSON.parse(org.metadata) : {}
   let stripeAccountId = metadata.stripeAccountId as string | undefined
 
   if (!stripeAccountId) {
     try {
       const account = await stripeClient.accounts.create({
         type: 'express',
-        email: session.user.email,
+        email: user.email,
         capabilities: {
           card_payments: { requested: true },
           transfers: { requested: true },

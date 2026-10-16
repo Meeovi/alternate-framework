@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { requireAuth } from '#auth/server/utils/sessions'
+import { requireAdmin } from '#auth/server/utils/sessions'
 import { federationError, requireCapability, useFederationNetwork } from '../../utils/federation'
 
 /**
@@ -25,7 +25,9 @@ const bodySchema = z.object({
 })
 
 export default defineEventHandler(async (event) => {
-  await requireAuth(event)
+  // Publishes as the site's own ActivityPub account (one shared access
+  // token), not as the signed-in user — so admins only.
+  await requireAdmin(event)
 
   const { payload } = bodySchema.parse(await readBody(event))
   const text = String(payload.status ?? '').trim()

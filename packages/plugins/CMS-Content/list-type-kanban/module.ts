@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addComponent } from '@nuxt/kit'
+import { defineNuxtModule } from '@nuxt/kit'
 import type { ListTypeModuleOptions, ListTypeRegistration } from './runtime/types'
 
 export * from './runtime/types'
@@ -20,18 +20,12 @@ export default defineNuxtModule<ModuleOptions>({
   },
 
   setup(options, nuxt) {
-    const resolver = createResolver(import.meta.url)
-
-    // Global so the list page can render it by name from the registry
-    // without importing this package.
-    addComponent({
-      name: 'ListTypeKanban',
-      filePath: resolver.resolve('runtime/components/Kanban.vue'),
-      global: true,
-    })
-
+    // Runs in the integrations sandbox (sandbox/ — see package.json
+    // `mframework.integration.sandbox`): the list page embeds it with
+    // <IntegrationFrame> and lends it CRUD on this list's items only.
     const entry: ListTypeRegistration = {
-      component: 'ListTypeKanban',
+      sandbox: true,
+      capabilities: ['list.items', 'list.create', 'list.update', 'list.remove'],
       label: 'Kanban Board',
       icon: 'fas fa-table-columns',
       plugin: '@mframework/list-type-kanban',

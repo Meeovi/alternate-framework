@@ -8,6 +8,21 @@ import { CommerceCustomerLinkRegistry, CommerceBackendRegistry } from 'alternate
 // that's never generated.
 import { MagentoAdapter } from '@mframework/adapter-magento'
 import { createMagentoCommerceBackendAdapter } from '../commerce-backend'
+import { INTEGRATION_STORE_KEY, createMagentoIntegrationStore } from './integration-store'
+
+const clean = (value: unknown) => String(value ?? '').trim().replace(/^(['"])(.*)\1$/, '$2')
+
+/** The Magento Integration (OAuth 1.0a) for server-to-server admin calls
+ *  — env only, never runtime config, so it can't reach the client. */
+function integrationCredentials() {
+  const credentials = {
+    consumerKey: clean(process.env.MAGENTO_CONSUMER_KEY),
+    consumerSecret: clean(process.env.MAGENTO_CONSUMER_SECRET),
+    accessToken: clean(process.env.MAGENTO_ACCESS_TOKEN),
+    accessTokenSecret: clean(process.env.MAGENTO_ACCESS_TOKEN_SECRET),
+  }
+  return Object.values(credentials).every(Boolean) ? credentials : null
+}
 
 // Runs in Nitro, separate from runtime/plugin.ts (a universal Vue plugin) —
 // better-auth's signup flow is handled entirely server-side and doesn't go
@@ -29,8 +44,14 @@ export default defineNitroPlugin(() => {
   // public/guest createCustomerV2 mutation used below. Customer creation
   // needs no auth at all, so the client is built without it.
   const magento = new MagentoAdapter(options.endpoint, options.storeCode)
+  const credentials = integrationCredentials()
 
-  CommerceBackendRegistry.register(createMagentoCommerceBackendAdapter(magento))
+  // placePaidOrder (orders paid with the app's Stripe checkout) needs the
+  // Integration; without it the adapter only reads.
+  CommerceBackendRegistry.register(createMagentoCommerceBackendAdapter(magento, credentials))
+
+  // Integrations are sold as Magento products (@mframework/meeovi-integrations).
+  ;(globalThis as Record<symbol, unknown>)[INTEGRATION_STORE_KEY] = createMagentoIntegrationStore(magento, credentials)
 
   CommerceCustomerLinkRegistry.register({
     id: 'magento',

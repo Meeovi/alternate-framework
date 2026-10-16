@@ -32,20 +32,33 @@
     $readItems,
   } = useNuxtApp()
 
+  // `/about/team` arrives as ['about', 'team'].
+  const slug = [].concat(route.params.slug || []).join('/')
+
   const {
-    data: page
-  } = await useAsyncData(`page-${route.params.slug}`, async () => {
+    data: page,
+    error
+  } = await useAsyncData(`page-${slug}`, async () => {
     const result = await $directus.request($readItems('pages', {
       filter: {
         slug: {
-          _eq: `${route.params.slug}`
+          _eq: slug
         }
       },
       fields: '*',
       limit: 1
     }))
-    return Array.isArray(result) ? result[0] : null
+    return (Array.isArray(result) ? result[0] : null) ?? null
   })
+
+  // This page catches every URL nothing else claims — answer a real 404
+  // (not an empty 200 page) when the CMS has no page for it.
+  if (error.value) {
+    throw createError({ statusCode: 503, statusMessage: 'This page is temporarily unavailable', fatal: true })
+  }
+  if (!page.value) {
+    throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+  }
 
   useHead({
     title: () => page.value?.name || 'Page',

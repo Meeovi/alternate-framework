@@ -73,6 +73,7 @@ yourself), then:
 bin/magento module:enable Meeovi_MarketplaceApi
 bin/magento setup:upgrade
 bin/magento setup:di:compile
+bin/magento setup:static-content:deploy -f en_US en_GB   # production mode (meeovi.com is)
 bin/magento cache:flush
 ```
 
@@ -261,3 +262,40 @@ GET /rest/V1/meeovi-marketplace/seller/low-stock
 → JSON array of `{id, name, sku, stock, threshold}` — this seller's
 products at or below their configured `LowStockQuantity` (falls back to a
 plain `10` if unset).
+
+## Orders paid in the Meeovi app (integrations)
+
+The app sells integrations (and any other virtual/downloadable product it
+lists from Magento) through its own Stripe checkout; once Stripe confirms
+payment, the webhook records the order here so the order history and each
+seller's sale stay in Magento. Server-to-server, Integration token with
+the **`Meeovi_MarketplaceApi::external_orders`** ACL resource (grant it on
+the Integration in Magento admin → System → Integrations).
+
+```
+POST /rest/V1/meeovi-marketplace/orders
+{ "customerId": 42, "reference": "pi_…", "items": [{ "sku": "ACME-KANBAN", "qty": 1 }],
+  "amountPaid": 9.99, "currency": "USD", "billingAddress": { … optional … } }
+```
+→ `{order_id, increment_id, created}`. Built as a normal customer quote and
+placed with `CartManagementInterface::placeOrder()`, which fires
+`checkout_submit_all_after` — Webkul's `SalesOrderPlaceAfterObserver` records
+the seller's sale — then invoiced offline (Webkul's invoice observer runs
+too; a virtual order completes). Paid with **`meeovi_external`** ("Paid on
+Meeovi (Stripe)"), an offline method that is never offered at the
+storefront checkout. Idempotent on `reference` (stored as `ext_order_id`,
+with a lock against concurrent webhook retries). Refused if Magento's total
+differs from `amountPaid`, if the currency isn't the store's, or if an item
+needs shipping. Billing address: the customer's default, else the one sent.
+
+```
+GET /rest/V1/meeovi-marketplace/customers/:customerId/purchased-skus
+```
+→ SKUs the customer paid for: processing/complete orders, lines invoiced
+and not refunded.
+
+```
+GET /rest/V1/meeovi-marketplace/products/sellers?skus[0]=ACME-KANBAN
+```
+→ `[{sku, seller_id, shop_title, shop_url}]` for approved Webkul seller
+products (store-owned SKUs are left out).

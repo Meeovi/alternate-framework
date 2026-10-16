@@ -1,6 +1,8 @@
 # @mframework/list-type-kanban
 
-Kanban board (SVAR `@svar-ui/vue-kanban`) with To Do / In Progress / Done columns mapped to `list_items.status`. Also serves the legacy `Board` list type.
+Kanban board with To Do / In Progress / Done columns mapped to `list_items.status`. Also serves the legacy `Board` list type.
+
+Runs in the integrations sandbox (`sandbox/`, plain HTML/JS, no outside connections): the lists page embeds it with `<IntegrationFrame>` and lends it `list.items` / `list.create` / `list.update` / `list.remove`, scoped to the list on screen. Cards move by drag and drop or with the ← → buttons.
 
 One of the plug-and-play `list-type-*` plugins. Each renders one kind of
 list on the social layer's `/lists/list/[slug]` page and is enabled just by

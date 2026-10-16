@@ -23,7 +23,7 @@
             {{ story?.name }}
           </h1>
 
-          <p class="storyDesc" v-html="story?.description"></p>
+          <p class="storyDesc" v-dompurify-html="story?.description"></p>
         </section>
       </div>
 

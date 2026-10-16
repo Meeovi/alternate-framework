@@ -58,6 +58,6 @@
     })
 
     definePageMeta({
-        //middleware: ['authenticated']
+        middleware: ['auth']
     })
 </script>

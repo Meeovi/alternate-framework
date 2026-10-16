@@ -18,10 +18,10 @@
                 </p>
               </div>
 
-              <p class="mbr-text mbr-fonts-style align-center display-4" v-html="facet?.description"></p>
+              <p class="mbr-text mbr-fonts-style align-center display-4" v-dompurify-html="facet?.description"></p>
 
               <div class="mbr-section-btn align-center">
-                <p class="btn btn-white-outline display-7" v-if="facet?.type" v-html="facet?.type"></p>
+                <p class="btn btn-white-outline display-7" v-if="facet?.type" v-dompurify-html="facet?.type"></p>
               </div>
             </div>
           </div>

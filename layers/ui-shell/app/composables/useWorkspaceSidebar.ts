@@ -124,7 +124,7 @@ export const WORKSPACE_FALLBACK_MENU: WorkspaceMenu[] = [
   },
   { title: 'Activity Feed', icon: 'fas fa-rss', to: '/connect/notes' },
   { divider: true },
-  { title: 'Integrations', icon: 'fas fa-plug', to: '/workspace/dashboard/integrations' },
+  { title: 'Integrations', icon: 'fas fa-plug', to: '/workspace/integration' },
   { title: 'Account', icon: 'fas fa-user', to: '/workspace/account' },
   { title: 'Security', icon: 'fas fa-shield-halved', to: '/workspace/security' },
   { title: 'Settings', icon: 'fas fa-gear', to: '/workspace/settings' }

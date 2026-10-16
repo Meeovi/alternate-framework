@@ -29,6 +29,7 @@ import {
   waitUntil
 } from "@vercel/functions";
 import { stripeClient } from "./stripe";
+import { eraseUserContent } from "./eraseUserContent";
 
 import {
   logAuditEvent,
@@ -44,6 +45,7 @@ import {
 
 import { plugins } from '../../shared/utils/plugins'
 import { sendAuthEmail } from '../../shared/utils/infrastructure/email'
+import { MIN_PASSWORD_LENGTH } from '../../shared/utils/username'
 
 const runtimeConfig = {
   public: {
@@ -165,6 +167,9 @@ export const auth = betterAuth({
           });
         }
       },
+      afterDelete: async (user: User) => {
+        await eraseUserContent(String(user.id));
+      },
     },
     additionalFields: {
       // Referenced by deleteUser.beforeDelete above and needed by the
@@ -236,16 +241,20 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    // LAUNCH TOGGLE: flip to `true` at launch to block sign-in until the
-    // email is confirmed (a sign-in on an unverified account then fails
-    // with 403 and better-auth auto-resends the verification link). Left
-    // off pre-launch so existing/unverified accounts can still sign in;
-    // the verify-email UX (register → /verify-email → /login) and the
-    // verification email on sign-up both stay active regardless.
-    requireEmailVerification: false,
+    // Enforced on sign-up, password reset and change-password; the
+    // registration form checks the same constant before submitting.
+    minPasswordLength: MIN_PASSWORD_LENGTH,
+    // Sign-in is blocked until the email is confirmed: an unverified
+    // account's sign-in fails with 403 and a fresh verification link is
+    // emailed (emailVerification.sendOnSignIn below). Turned on 2026-10-15
+    // once transactional email (Resend) was working again.
+    requireEmailVerification: true,
     // Don't mint a session on sign-up: the user is routed to /verify-email,
     // then signs in explicitly.
     autoSignIn: false,
+    // A password reset is usually "someone else may have my password":
+    // sign out every existing session, not just issue a new password.
+    revokeSessionsOnPasswordReset: true,
     password: {
       hash: hashPassword,
       verify: verifyPassword,
@@ -281,6 +290,9 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendOnSignUp: true,
+    // Unverified user tries to sign in → send them a new link rather than
+    // leaving them stuck with an expired one.
+    sendOnSignIn: true,
     // After the link is clicked the user lands on the sign-in page (the
     // verification endpoint redirects to the sign-up call's callbackURL,
     // e.g. /login?verified=1) rather than being auto-signed-in.
@@ -337,10 +349,24 @@ export const auth = betterAuth({
     max: 100,
     storage: "database",
     customRules: {
+      // Read-only, and called in-process by SSR route middleware, where
+      // there's no socket for trustedProxies to vouch for — so every
+      // visitor's check landed in one shared "no-trusted-ip" bucket and,
+      // under load, signed-in users got the middleware's fail-closed 503.
+      "/get-session": false,
       "/sign-in/email": { window: 60, max: 5 },
+      "/sign-in/username": { window: 60, max: 5 },
+      "/sign-in/email-otp": { window: 60, max: 5 },
+      // Each call creates a user row.
+      "/sign-in/anonymous": { window: 3600, max: 5 },
       "/sign-up/email": { window: 60, max: 3 },
-      "/forget-password": { window: 60, max: 3 },
+      "/request-password-reset": { window: 60, max: 3 },
       "/reset-password": { window: 60, max: 3 },
+      // 6-digit TOTP / OTP / backup codes: ~5 guesses a minute per IP
+      // instead of the plugin's 3 per 10 s (18/min).
+      "/two-factor/verify-*": { window: 60, max: 5 },
+      "/two-factor/send-otp": { window: 60, max: 3 },
+      "/one-time-token/verify": { window: 60, max: 10 },
       "/change-password": { window: 60, max: 5 },
       "/change-email": { window: 60, max: 3 },
       "/send-verification-email": { window: 60, max: 3 },

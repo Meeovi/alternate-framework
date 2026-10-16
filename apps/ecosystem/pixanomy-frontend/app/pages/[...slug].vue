@@ -4,7 +4,7 @@
 
     <div class="contentSection">
       <v-card elevation="0">
-        <v-card-text v-html="page?.content"></v-card-text>
+        <v-card-text v-dompurify-html="page?.content"></v-card-text>
 
         <v-card-actions>
           <share />

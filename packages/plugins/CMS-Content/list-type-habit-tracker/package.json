@@ -2,6 +2,15 @@
   "name": "@mframework/list-type-habit-tracker",
   "version": "0.1.0",
   "description": "Plug-and-play 'Habit Tracker' list type for M Framework lists: daily streak tracking over the Directus list_items collection.",
+  "mframework": {
+    "integration": {
+      "name": "Habit Tracker",
+      "description": "Turn a list into daily habits with streak tracking.",
+      "category": "Productivity",
+      "icon": "fas fa-calendar-check",
+      "sandbox": "sandbox/index.html"
+    }
+  },
   "license": "MIT",
   "type": "module",
   "main": "./module.ts",
@@ -16,6 +25,7 @@
   "files": [
     "module.ts",
     "runtime",
+    "sandbox",
     "README.md"
   ],
   "scripts": {

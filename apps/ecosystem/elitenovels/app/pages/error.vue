@@ -11,7 +11,7 @@
               </h1>
 
               <p class="mbr-fonts-style mbr-text mbr-white mb-3 display-7" style="color: white !important;"
-                v-html="page?.content"></p>
+                v-dompurify-html="page?.content"></p>
 
               <div class="mbr-section-btn"><NuxtLink class="btn btn-primary display-4" :to="page?.url">Go Back</NuxtLink></div>
             </div>

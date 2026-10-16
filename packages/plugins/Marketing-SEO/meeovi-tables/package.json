@@ -2,6 +2,15 @@
   "name": "@mframework/meeovi-tables",
   "version": "0.1.0",
   "description": "Dynamic data tables for M Framework: SVAR Vue DataGrid over any installed adapter-* (Magento, ...) with Directus as the fallback source and schema.",
+  "mframework": {
+    "integration": {
+      "name": "Data tables",
+      "description": "Admin data tables (SVAR DataGrid) over the store and CMS adapters.",
+      "category": "Admin",
+      "icon": "fas fa-table",
+      "admin": true
+    }
+  },
   "license": "MIT",
   "type": "module",
   "main": "./module.ts",

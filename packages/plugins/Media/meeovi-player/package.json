@@ -38,7 +38,9 @@
   "author": "Meeovi Labs",
   "dependencies": {
     "@nuxt/kit": "^4.6.1",
-    "@videojs/html": "10.0.1"
+    "@videojs/google-cast": "10.1.0",
+    "@videojs/hlsjs-video": "10.1.0",
+    "@videojs/html": "10.1.0"
   },
   "peerDependencies": {
     "nuxt": "^4.0.0",

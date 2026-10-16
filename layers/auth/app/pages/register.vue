@@ -5,7 +5,7 @@
 			<v-card-subtitle>Enter your information to create an account</v-card-subtitle>
 
 			<v-card-text>
-				<v-form class="space-y-4" @submit.prevent="signUp">
+				<v-form ref="form" class="space-y-4" @submit.prevent="signUp">
 					<div class="d-flex gap-4">
 						<v-text-field v-model="firstName" label="First Name" placeholder="Max" required
 							variant="outlined" class="grow" />
@@ -13,14 +13,20 @@
 							variant="outlined" class="grow" />
 					</div>
 
+					<v-text-field v-model="username" label="Username" placeholder="maxrobinson" required
+						autocomplete="username" variant="outlined" :rules="usernameRules"
+						:hint="`At least ${MIN_USERNAME_LENGTH} characters: letters, numbers, _ and .`" />
+
 					<v-text-field v-model="email" label="Email" type="email" placeholder="m@example.com" required
 						variant="outlined" />
 
 					<v-text-field v-model="password" label="Password" type="password"
-						placeholder="Enter a secure password" autocomplete="new-password" required variant="outlined" />
+						placeholder="Enter a secure password" autocomplete="new-password" required variant="outlined"
+						:rules="passwordRules" :hint="`At least ${MIN_PASSWORD_LENGTH} characters`" />
 
 					<v-text-field v-model="passwordConfirmation" label="Confirm Password" type="password"
-						placeholder="Confirm your password" autocomplete="new-password" required variant="outlined" />
+						placeholder="Confirm your password" autocomplete="new-password" required variant="outlined"
+						:rules="confirmRules" />
 
 					<div>
 						<v-label class="mb-2 d-block">Profile Image (optional)</v-label>
@@ -34,9 +40,17 @@
 						messages="You'll get access to the seller dashboard once your account is created."
 						hide-details="auto" density="comfortable" />
 
-					<v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" size="large">
+					<NuxtTurnstile v-if="captchaEnabled" ref="captchaWidget" v-model="captchaToken" class="mb-2" />
+
+					<v-btn type="submit" block color="primary" :disabled="loading || captchaMissing" :loading="loading" size="large">
 						{{ loading ? 'Creating account...' : 'Create Account' }}
 					</v-btn>
+
+					<p class="text-caption text-medium-emphasis mt-2">
+						By creating an account you agree to our
+						<NuxtLink to="/terms-and-conditions">Terms</NuxtLink> and confirm you've read our
+						<NuxtLink to="/privacy-policies">Privacy Policy</NuxtLink>, including how we use your data.
+					</p>
 				</v-form>
 
 				<v-divider class="my-4" />
@@ -78,8 +92,15 @@ import {
 	useToast
 } from '../composables/useSnackbar';
 import AtprotoAuth from '../components/features/plugins/atproto.vue'
+import {
+	MAX_USERNAME_LENGTH,
+	MIN_PASSWORD_LENGTH,
+	MIN_USERNAME_LENGTH,
+	isAllowedUsername
+} from '../../shared/utils/username'
 
 	const auth = useAuth();
+	const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha } = useAuthCaptcha()
 
 	definePageMeta({
 		layout: 'auth',
@@ -93,6 +114,7 @@ import AtprotoAuth from '../components/features/plugins/atproto.vue'
 
 	const firstName = ref("");
 	const lastName = ref("");
+	const username = ref("");
 	const email = ref("");
 	const password = ref("");
 	const passwordConfirmation = ref("");
@@ -100,6 +122,23 @@ import AtprotoAuth from '../components/features/plugins/atproto.vue'
 	const imagePreview = ref(null);
 	const becomeSeller = ref(false);
 	const loading = ref(false);
+	const form = ref(null);
+
+	// Same limits the server's username() plugin and emailAndPassword config
+	// enforce — these just say so before the request is sent.
+	const usernameRules = [
+		(v) => !!v?.trim() || 'Username is required',
+		(v) => v.trim().length >= MIN_USERNAME_LENGTH || `Username must be at least ${MIN_USERNAME_LENGTH} characters`,
+		(v) => v.trim().length <= MAX_USERNAME_LENGTH || `Username must be at most ${MAX_USERNAME_LENGTH} characters`,
+		(v) => isAllowedUsername(v.trim()) || 'Use only letters, numbers, _ and . (and not "admin")',
+	];
+	const passwordRules = [
+		(v) => !!v || 'Password is required',
+		(v) => v.length >= MIN_PASSWORD_LENGTH || `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+	];
+	const confirmRules = [
+		(v) => v === password.value || 'Passwords do not match',
+	];
 
 	async function convertImageToBase64(file) {
 		return new Promise((resolve, reject) => {
@@ -112,6 +151,8 @@ import AtprotoAuth from '../components/features/plugins/atproto.vue'
 
 	async function signUp() {
 		if (loading.value) return
+		const { valid } = await form.value.validate()
+		if (!valid) return
 		if (password.value !== passwordConfirmation.value) {
 			toast.add({ title: 'Error', description: 'Passwords do not match', color: 'error' });
 			return;
@@ -121,6 +162,7 @@ import AtprotoAuth from '../components/features/plugins/atproto.vue'
 			error
 		} = await auth.signUp.email({
 			email: email.value,
+			username: username.value.trim(),
 			password: password.value,
 			name: `${firstName.value} ${lastName.value}`,
 			image: imageFile.value ? await convertImageToBase64(imageFile.value) : undefined,
@@ -132,7 +174,8 @@ import AtprotoAuth from '../components/features/plugins/atproto.vue'
 			// Where better-auth sends the user once the verification link is
 			// clicked. See emailVerification config in server/utils/auth.ts.
 			callbackURL: '/login?verified=1',
-		})
+		}, captchaFetchOptions())
+		resetCaptcha()
 		if (error) {
 			toast.add({ title: 'Error', description: error.message, color: 'error' });
 			loading.value = false

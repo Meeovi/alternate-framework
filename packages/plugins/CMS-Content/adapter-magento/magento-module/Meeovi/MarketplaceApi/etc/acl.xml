@@ -16,6 +16,8 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Meeovi_MarketplaceApi::seller_dashboard" title="Seller Dashboard API (Meeovi Marketplace)" sortOrder="10"/>
+                <resource id="Meeovi_MarketplaceApi::catalog_sync" title="Seller Catalogue Sync API (Meeovi Dropshipping)" sortOrder="20"/>
+                <resource id="Meeovi_MarketplaceApi::external_orders" title="Orders Paid in the Meeovi App + Product Sellers (Meeovi Marketplace)" sortOrder="30"/>
             </resource>
         </resources>
     </acl>

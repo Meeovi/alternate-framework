@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeUsername } from '../../shared/utils/username'
+import { MIN_PASSWORD_LENGTH, MIN_USERNAME_LENGTH, isAllowedUsername, normalizeUsername, storedUsername } from '../../shared/utils/username'
 
 // usernameValidator (in plugins.ts) blocks the literal string 'admin' after
 // normalization runs — these tests cover the two real bugs found and fixed
@@ -39,5 +39,35 @@ describe('normalizeUsername', () => {
 
   it('a genuinely different username still passes usernameValidator after normalization', () => {
     expect(usernameValidator(normalizeUsername('adm1nistrator_bob'))).toBe(true)
+  })
+})
+
+describe('storedUsername / isAllowedUsername', () => {
+  it('stores usernames lowercased only — digits are kept', () => {
+    expect(storedUsername('Max2024')).toBe('max2024')
+    expect(storedUsername('test1')).toBe('test1')
+  })
+
+  it('rejects admin and its lookalikes', () => {
+    for (const candidate of ['admin', 'ADMIN', 'adm1n', '4dm1n']) {
+      expect(isAllowedUsername(candidate)).toBe(false)
+    }
+  })
+
+  it('rejects characters outside letters, digits, _ and .', () => {
+    for (const candidate of ['max robinson', 'max-r', 'max@x', 'mäx']) {
+      expect(isAllowedUsername(candidate)).toBe(false)
+    }
+  })
+
+  it('accepts ordinary usernames, including ones with lookalike digits', () => {
+    for (const candidate of ['joanne', 'test1', 'max2024', 'first.last', 'snake_case']) {
+      expect(isAllowedUsername(candidate)).toBe(true)
+    }
+  })
+
+  it('exposes the minimum lengths the form and server share', () => {
+    expect(MIN_USERNAME_LENGTH).toBe(3)
+    expect(MIN_PASSWORD_LENGTH).toBe(8)
   })
 })

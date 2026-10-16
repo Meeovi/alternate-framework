@@ -88,6 +88,8 @@ export async function createPayPalOrder(
   amount: number,
   currency: string,
   idempotencyKey?: string,
+  /** App user id, stored as the order's custom_id so capture can check ownership. */
+  customId?: string,
 ): Promise<{ id: string; status: string }> {
   const accessToken = await getPayPalAccessToken()
   const { baseUrl } = getPayPalConfig()
@@ -110,6 +112,7 @@ export async function createPayPalOrder(
           currency_code: currency.toUpperCase(),
           value: amount.toFixed(2),
         },
+        ...(customId ? { custom_id: customId } : {}),
       },
     ],
   }
@@ -127,6 +130,23 @@ export async function createPayPalOrder(
   }
 
   return response.json()
+}
+
+/** PayPal order ids are short upper-case alphanumerics. Checked before an
+ *  id is put into an API path (`../` would otherwise reach other endpoints). */
+export const PAYPAL_ORDER_ID = /^[A-Z0-9]{8,40}$/
+
+/** The app user an order was created for (custom_id), or null. */
+export async function getPayPalOrderOwner(orderId: string): Promise<string | null> {
+  if (!PAYPAL_ORDER_ID.test(orderId)) return null
+  const accessToken = await getPayPalAccessToken()
+  const { baseUrl } = getPayPalConfig()
+  const response = await fetch(`${baseUrl}/v2/checkout/orders/${orderId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  if (!response.ok) return null
+  const order = await response.json().catch(() => null) as { purchase_units?: Array<{ custom_id?: string }> } | null
+  return order?.purchase_units?.[0]?.custom_id ?? null
 }
 
 /**

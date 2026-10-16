@@ -4,13 +4,20 @@
  * Each plugin registers one or more entries under `appConfig.listTypes`,
  * keyed by the Directus `list_types.name` it renders (e.g. "Kanban"). The
  * list page (layers/social/app/pages/lists/list/[...slug].vue) looks the
- * list's type up there and renders `<component :is="entry.component">`, so
- * a list type is enabled simply by registering its plugin in an app's
- * `nuxt.config.ts` — no layer code changes needed.
+ * list's type up there and renders `<component :is="entry.component">` —
+ * or, for a sandboxed entry, the plugin's sandboxed UI in an
+ * <IntegrationFrame> (@mframework/meeovi-integrations) — so a list type is
+ * enabled simply by registering its plugin in an app's `nuxt.config.ts`.
  */
 export interface ListTypeRegistration {
-  /** Globally registered component name that renders the list. */
-  component: string
+  /** Globally registered component name that renders the list (in-app types). */
+  component?: string
+  /** Rendered by the plugin's sandboxed UI instead of an in-app component. */
+  sandbox?: boolean
+  /** What the list page lends a sandboxed type, all scoped to the list on
+   *  screen: 'list.items' (read), 'list.create', 'list.update', 'list.remove'.
+   *  Default: read only. */
+  capabilities?: string[]
   /** Human-readable label, for pickers / menus. */
   label: string
   /** Icon class (Font Awesome / MDI). */

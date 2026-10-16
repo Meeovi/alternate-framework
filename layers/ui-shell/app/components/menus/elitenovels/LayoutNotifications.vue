@@ -8,7 +8,7 @@
       </template>
       <v-list lines="two">
         <v-list-item v-for="notifications in activities" :key="notifications?.id" :href="notifications?.id">
-          <v-list-item-title v-html="notifications?.title"></v-list-item-title>
+          <v-list-item-title v-dompurify-html="notifications?.title"></v-list-item-title>
           <v-list-item-subtitle>{{ new Date(notifications?.date).toLocaleDateString() }}</v-list-item-subtitle>
         </v-list-item>
         <v-divider></v-divider>

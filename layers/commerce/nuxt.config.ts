@@ -4,8 +4,33 @@ import {
 import {
   defineNuxtConfig
 } from 'nuxt/config'
+import { readFileSync } from 'node:fs'
+import type { NuxtPage } from 'nuxt/schema'
+
+const commercePages = fileURLToPath(new URL('./app/pages', import.meta.url))
+
+// Customer account pages need a signed-in user (the storefront, cart and
+// checkout stay open for guests; /success and /tracking too — guest
+// checkout lands on /success, and tracking is looked up by number).
+// Pages that declare their own middleware are left alone, since meta set
+// here would override definePageMeta.
+const ACCOUNT_PAGES = /^\/(orders|order|invoice|transactions|transaction|shipment|customer-portal|wishlist|your-friends|return)(\/|$)/
+function requireLoginOnAccountPages(pages: NuxtPage[]) {
+  for (const page of pages) {
+    if (page.file?.startsWith(commercePages) && ACCOUNT_PAGES.test(page.path) && !page.meta?.middleware) {
+      let source = ''
+      try { source = readFileSync(page.file, 'utf8') } catch {}
+      if (!/\bmiddleware\s*:/.test(source)) page.meta = { ...page.meta, middleware: ['auth'] }
+    }
+    if (page.children?.length) requireLoginOnAccountPages(page.children)
+  }
+}
 
 export default defineNuxtConfig({
+  hooks: {
+    'pages:extend': requireLoginOnAccountPages,
+  },
+
   $meta: {
     name: 'commerce',
     description: 'Commerce Layer provides functionalities for managing and processing e-commerce transactions.',

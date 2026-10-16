@@ -74,16 +74,16 @@
             <div class="item features-image col-12 col-md-6 col-lg-4" v-for="career in careersGrid" :key="career?.id">
                 <div class="item-wrapper">
                     <div class="item-img">
-                        <img :src="career?.image" :alt="career?.title">
+                        <img :src="career?.image" :alt="career?.name">
                     </div>
                     <div class="item-content">
-                        <h5 class="item-title mbr-fonts-style display-7"><strong>{{ career?.title }}</strong></h5>
+                        <h5 class="item-title mbr-fonts-style display-7"><strong>{{ career?.name }}</strong></h5>
                         <h6 class="item-subtitle mbr-fonts-style mt-1 display-7">
-                            <em>{{ career?.location }}</em>
+                            <em>{{ career?.type }}</em>
                         </h6>
                         <p class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="career?.description"></p>
                     </div>
-                    <div class="mbr-section-btn item-footer mt-2"><NuxtLink :to="`/listing/${career?.id}`" class="btn btn-primary item-btn display-7" target="_blank">View Details
+                    <div class="mbr-section-btn item-footer mt-2"><NuxtLink :to="`/careers/listing/${career?.id}`" class="btn btn-primary item-btn display-7" target="_blank">View Details
                             &gt;</NuxtLink></div>
                 </div>
             </div>

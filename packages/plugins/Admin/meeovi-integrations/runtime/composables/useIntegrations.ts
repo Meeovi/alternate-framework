@@ -3,9 +3,13 @@ import type { InstalledIntegrationsResponse, MeeoviIntegrationsPublicConfig } fr
 
 const KEY = 'meeovi-integrations:installed'
 
+/** URL slug for a plugin package: '@mframework/list-type-kanban' → 'list-type-kanban'. */
+export const integrationSlug = (plugin: string) => plugin.replace(/^@[^/]+\//, '')
+
 /**
  * The signed-in user's installed integrations (shared across components;
- * SSR forwards the visitor's cookie), plus install / uninstall.
+ * SSR forwards the visitor's cookie), plus install / uninstall by slug or
+ * package name.
  *
  *   const { isInstalled } = useIntegrations()
  *   isInstalled('@mframework/list-type-kanban')
@@ -17,27 +21,27 @@ export function useIntegrations() {
 
   const { data, status, refresh } = useAsyncData<InstalledIntegrationsResponse>(
     KEY,
-    () => request<InstalledIntegrationsResponse>(`${apiBase}/installed`).catch(() => ({ plugins: [], integrations: [] })),
-    { default: () => ({ plugins: [], integrations: [] }) },
+    () => request<InstalledIntegrationsResponse>(`${apiBase}/installed`).catch(() => ({ plugins: [] })),
+    { default: () => ({ plugins: [] }) },
   )
 
   const plugins = computed(() => data.value?.plugins ?? [])
   const isInstalled = (plugin: string) => plugins.value.includes(plugin)
 
-  async function install(id: number) {
-    await $fetch(`${apiBase}/${id}/install`, { method: 'POST' })
+  async function install(plugin: string) {
+    await $fetch(`${apiBase}/${encodeURIComponent(integrationSlug(plugin))}/install`, { method: 'POST' })
     await refreshNuxtData(KEY)
   }
 
-  async function uninstall(id: number) {
-    await $fetch(`${apiBase}/${id}/install`, { method: 'DELETE' })
+  async function uninstall(plugin: string) {
+    await $fetch(`${apiBase}/${encodeURIComponent(integrationSlug(plugin))}/install`, { method: 'DELETE' })
     await refreshNuxtData(KEY)
   }
 
   return {
     apiBase,
+    catalogPath: config?.catalogPath || '/workspace/integration',
     plugins,
-    integrations: computed(() => data.value?.integrations ?? []),
     pending: computed(() => status.value === 'pending'),
     isInstalled,
     install,

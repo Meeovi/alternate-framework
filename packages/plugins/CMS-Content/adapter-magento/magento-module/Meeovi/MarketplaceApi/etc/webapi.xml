@@ -94,4 +94,55 @@
             <resource ref="Meeovi_MarketplaceApi::seller_dashboard"/>
         </resources>
     </route>
+    <!--
+      Below: SellerCatalogSyncInterface — dropshipping catalogue sync
+      (@mframework/meeovi-dropshipping), called server-to-server with the
+      Integration token while no seller is present. Own ACL resource, so an
+      Integration can be granted this without the dashboard routes or
+      store-wide product access; the model itself only touches products
+      linked to the named seller.
+    -->
+    <route url="/V1/meeovi-marketplace/sync/products" method="POST">
+        <service class="Meeovi\MarketplaceApi\Api\SellerCatalogSyncInterface" method="upsertProduct"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::catalog_sync"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/sync/stock" method="POST">
+        <service class="Meeovi\MarketplaceApi\Api\SellerCatalogSyncInterface" method="updateStock"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::catalog_sync"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/sync/images" method="POST">
+        <service class="Meeovi\MarketplaceApi\Api\SellerCatalogSyncInterface" method="addImage"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::catalog_sync"/>
+        </resources>
+    </route>
+    <!--
+      Below: orders paid with Stripe in the Meeovi app and recorded here
+      (ExternalOrderManagementInterface), and the seller behind a product
+      (ProductSellerManagementInterface) — server-to-server with the
+      Integration token. Own ACL resource, so the Integration needs no
+      store-wide Magento_Sales access.
+    -->
+    <route url="/V1/meeovi-marketplace/orders" method="POST">
+        <service class="Meeovi\MarketplaceApi\Api\ExternalOrderManagementInterface" method="placeOrder"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::external_orders"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/customers/:customerId/purchased-skus" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\ExternalOrderManagementInterface" method="getPurchasedSkus"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::external_orders"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/products/sellers" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface" method="getProductSellers"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::external_orders"/>
+        </resources>
+    </route>
 </routes>

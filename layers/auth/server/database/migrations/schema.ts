@@ -5170,7 +5170,8 @@ export const productsWebsites = pgTable.withRLS("products_websites", {
 });
 
 export const profiles = pgTable.withRLS("profiles", {
-	id: uuid().primaryKey().references(() => usersInAuth.id, { onDelete: "cascade" } ),
+	// App users (better-auth), not Supabase auth.users — see migration 20261015120000_profiles_reference_app_users.
+	id: uuid().primaryKey().references(() => users.id, { onDelete: "cascade" } ),
 	username: text(),
 	birthDate: date("birth_date"),
 	description: text(),
@@ -6455,7 +6456,11 @@ export const users = pgTable.withRLS("users", {
 	// Pixanomy link. See migration 20260924200000_add_user_image.
 	image: text(),
 }, (table) => [
-	unique("users_phone_key").on(table.phone),check("users_email_change_confirm_status_check", sql`((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2))`),]);
+	unique("users_phone_key").on(table.phone),
+	// Case-insensitive uniqueness — see migration 20261014120000_unique_username_email.
+	uniqueIndex("users_email_lower_key").using("btree", sql`lower(email)`),
+	uniqueIndex("users_username_lower_key").using("btree", sql`lower(username)`),
+	check("users_email_change_confirm_status_check", sql`((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2))`),]);
 
 // One resumable AT Protocol session per local user, keyed on users.id —
 // separate from the users.atprotoDid/atprotoHandle identity columns above

@@ -13,6 +13,8 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ middleware: ['auth'] })
+
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import type { NovuUI } from '@novu/js/ui'
 import { useNovuSession } from '#shared/app/composables/notifications/useNovuSession'

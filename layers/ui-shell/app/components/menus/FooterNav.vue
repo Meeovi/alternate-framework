@@ -2,7 +2,7 @@
   <div>
     <BottomFooter />
 
-    <adBlock />
+    <adBlock v-if="consent?.ads" />
     <Newsletter />
     <v-btn class="footertotopbtn" title="To the Top of the Page" prepend-icon="fas fa-arrow-up" rounded="0"
       href="#mainSection">Back to Top</v-btn>
@@ -29,6 +29,9 @@
                 <NuxtLink :href="toPath(child?.slug)">{{ child?.name }}</NuxtLink>
               </h3>
             </div>
+            <h3 class="mbr-section-subtitle mbr-fonts-style mbr-lighter display-4">
+              <a href="#cookie-consent" @click.prevent="openSettings">Cookie settings</a>
+            </h3>
           </v-col>
           <v-col cols="4" class="md-pb">
             <h2 class="mbr-section-title pb-2 mbr-fonts-style display-7">
@@ -56,6 +59,11 @@
   import copyright from '~/components/blocks/copyright.vue'
   import BottomFooter from '#social/app/components/menus/BottomFooter.vue'
   import adBlock from '#shared/app/components/blocks/adBlock.vue'
+  import { useCookieConsent } from '#shared/app/composables/useCookieConsent'
+
+  // Ads only render with advertising consent; the footer link reopens the
+  // cookie banner (mounted by #shared/app/plugins/cookie-consent.client.ts).
+  const { consent, openSettings } = useCookieConsent()
 
   const {
     $directus,

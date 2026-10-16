@@ -4,6 +4,7 @@ import { centsToDollars } from '../../../utils/currency'
 import { stripe } from '../../../utils/stripe'
 import { createTransaction, getRate } from '../../../utils/shippo'
 import { triggerNovuWorkflow } from '#shared/server/utils/novu'
+import { recordBackendOrders } from '../../../utils/backendOrders'
 
 // A privileged, static-token client — webhook fulfillment writes orders,
 // payments, and fulfillment tokens on behalf of the buyer, so it must not
@@ -188,6 +189,15 @@ export default defineEventHandler(async (event) => {
 
         if (checkoutSession.mode !== 'payment' || !paymentIntentId) {
           break
+        }
+
+        // Lines owned by another commerce backend (Magento) are ordered
+        // there once paid — first, and on every retry (it's idempotent),
+        // so a failure here makes Stripe retry before anything below is
+        // written and short-circuits later retries. Delayed payments are
+        // recorded on async_payment_succeeded instead.
+        if (checkoutSession.payment_status === 'paid') {
+          await recordBackendOrders(checkoutSession, paymentIntentId)
         }
 
         // Idempotency guard
@@ -377,9 +387,12 @@ export default defineEventHandler(async (event) => {
           // all). Attaching a file to a product is itself the fulfillment
           // signal here, so detection keys directly on `file` being set
           // rather than on a type tag.
+          // Only Directus products here — a commerce backend's lines
+          // (`magento:<sku>`) were ordered there (recordBackendOrders), and
+          // a non-numeric id would fail this bigint lookup outright.
           const purchasedProductIds = items
             .map((item) => item.product_id)
-            .filter((id): id is string => !!id)
+            .filter((id): id is string => !!id && /^\d+$/.test(id))
 
           let digitalFileId: string | null = null
           let downloadToken: string | null = null
@@ -513,7 +526,10 @@ export default defineEventHandler(async (event) => {
           // populated with fabricated values.
           const createdOrder = await directusServer.request(
             createItem('orders', {
-              user_id: buyer_id || null,
+              // orders.user_id relates to Directus's own users, which app
+              // (better-auth) users aren't — writing the buyer there failed
+              // the whole order on its foreign key. The buyer is buyer_id.
+              buyer_id: buyer_id || null,
               stripe_payment_id: paymentIntentId,
               payment_status: orderPaymentStatus,
               // A shipping label being purchased takes precedence (it means
@@ -577,6 +593,10 @@ export default defineEventHandler(async (event) => {
         const asyncSession = stripeEvent.data.object as Stripe.Checkout.Session
         const asyncPaymentIntentId = asyncSession.payment_intent as string | null
         if (!asyncPaymentIntentId) break
+
+        if (stripeEvent.type === 'checkout.session.async_payment_succeeded') {
+          await recordBackendOrders(asyncSession, asyncPaymentIntentId)
+        }
 
         const ordersToUpdate = await directusServer.request(
           readItems('orders', {

@@ -9,6 +9,8 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "security:lint": "node packages/plugins/Scripts/security-lint/check.mjs",
+    "security:test": "node --env-file=apps/ecosystem/meeovi-frontend/.env packages/plugins/Scripts/prod-tests/security.mjs",
     "preview": "cd apps/ecosystem/meeovi-frontend && npx nuxi preview",
     "postinstall": "node packages/plugins/Scripts/apply-patches.cjs"
   },
@@ -40,6 +42,7 @@
     "packages/plugins/Admin/meeovi-integrations",
     "packages/plugins/Social/meeovi-discussions",
     "packages/plugins/Social/meeovi-ratings",
+    "packages/plugins/Shipping-Fulfillment/meeovi-dropshipping",
     "packages/plugins/Media/meeovi-player",
     "packages/plugins/Themes/starter-template",
     "layers/*",

@@ -293,7 +293,7 @@
         const results = await $directus.request($readItems('orders', {
             filter: {
                 id: { _eq: route.params.id },
-                user_id: { _eq: currentUserId }
+                buyer_id: { _eq: currentUserId }
             },
             limit: 1
         }))

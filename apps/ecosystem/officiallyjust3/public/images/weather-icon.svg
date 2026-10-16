@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="35" fill="#FFD700"/>
+  <circle cx="50" cy="50" r="25" fill="#FFA500"/>
+  <!-- Sun rays -->
+  <line x1="50" y1="15" x2="50" y2="5" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <line x1="50" y1="95" x2="50" y2="85" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <line x1="15" y1="50" x2="5" y2="50" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <line x1="95" y1="50" x2="85" y2="50" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <line x1="26" y1="26" x2="19" y2="19" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <line x1="74" y1="74" x2="81" y2="81" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <line x1="26" y1="74" x2="19" y2="81" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <line x1="74" y1="26" x2="81" y2="19" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <!-- Cloud -->
+  <path d="M65,60 C65,53.4 59.6,48 53,48 C47.5,48 42.9,51.6 41.4,56.5 C40.9,56.4 40.5,56.3 40,56.3 C35.6,56.3 32,59.9 32,64.3 C32,68.7 35.6,72.3 40,72.3 L65,72.3 C69.4,72.3 73,68.7 73,64.3 C73,60.5 69.4,57.3 65,57.3 C65,57.3 65,58.7 65,60 Z" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="1"/>
+</svg>

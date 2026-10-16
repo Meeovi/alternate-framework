@@ -116,7 +116,7 @@
             <v-toolbar v-if="page?.description"
                 title="DESCRIPTION" density="comfortable" color="transparent"></v-toolbar>
 
-            <p class="pageDescription mbr-text mbr-fonts-style display-4" v-html="page?.content"></p>
+            <p class="pageDescription mbr-text mbr-fonts-style display-4" v-dompurify-html="page?.content"></p>
         </div>
     </div>
     </div>

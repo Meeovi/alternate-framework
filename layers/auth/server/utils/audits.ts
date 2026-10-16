@@ -72,24 +72,42 @@ export const fixupRememberMeCookie = async (ctx: any) => {
   ctx.setCookie(cookie.name, '', { ...cookie.attributes, maxAge: 0 })
 }
 
+// Polled constantly by every page (route middleware, session refresh) —
+// thousands of rows a day that drown the events that matter.
+const AUDIT_SKIP = new Set(['/get-session', '/ok', '/jwks', '/token', '/list-sessions', '/error'])
+
+// Where a FAILED attempt is itself a security event (password guessing,
+// 2FA brute force, account probing) — recorded even without a signed-in
+// user, keyed by the email/username that was tried.
+const AUDIT_FAILURES = /^\/(sign-in|sign-up|two-factor\/verify|reset-password|request-password-reset|change-password|change-email|verify-email|email-otp|magic-link|passkey\/verify|admin\/)/
+
 export const createAuthAuditMiddleware = () => createAuthMiddleware(async (ctx) => {
-  const ipAddress =
-    ctx.getHeader('x-forwarded-for') || ctx.getHeader('remoteAddress') || undefined
-  const userAgent = ctx.getHeader('user-agent') || undefined
+  if (AUDIT_SKIP.has(ctx.path)) return
+  // Apache overwrites X-Forwarded-For with the real client IP (from
+  // Cloudflare) — first entry only, in case of an un-proxied hop.
+  const ipAddress = String(ctx.getHeader('x-forwarded-for') || ctx.getHeader('remoteAddress') || '').split(',')[0]!.trim() || undefined
+  const userAgent = ctx.getHeader('user-agent')?.slice(0, 300) || undefined
   const userId = ctx.context.session?.user?.id || ctx.context.newSession?.user?.id
-  // Guard against events without a known user (e.g. failed sign-in
-  // attempts) so the hook never throws and breaks the auth flow.
-  if (!userId) return
+  // better-auth hands an after-hook the APIError as `returned` when the
+  // endpoint failed.
+  const returned = ctx.context.returned as { statusCode?: number, status?: string | number, body?: { code?: string, message?: string } } | undefined
+  const failed = returned instanceof Error
+  if (!userId && !(failed && AUDIT_FAILURES.test(ctx.path))) return
+
+  const body = (ctx.body ?? {}) as { email?: unknown, username?: unknown }
+  const attempted = String(body.email ?? body.username ?? '').toLowerCase().slice(0, 200)
   await logAuditEvent({
-      userId,
-      category: 'auth',
-      action: ctx.path,
-      targetType: 'user',
-      targetId: userId,
-      ipAddress,
-      userAgent,
-      status: 'success',
-      id: ''
+    userId,
+    category: 'auth',
+    action: ctx.path,
+    targetType: userId ? 'user' : 'login',
+    targetId: userId || attempted || 'unknown',
+    ipAddress,
+    userAgent,
+    status: failed ? 'failure' : 'success',
+    // Error code only (e.g. INVALID_EMAIL_OR_PASSWORD) — never the body.
+    details: failed ? String(returned?.body?.code || returned?.status || returned?.statusCode || 'error') : undefined,
+    id: '',
   })
 })
 

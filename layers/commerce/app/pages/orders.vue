@@ -196,7 +196,7 @@
             return $directus.request($readItems('orders', {
                 fields: ['id', 'date_created', 'customer_firstname', 'customer_lastname', 'payment_status'],
                 filter: {
-                    user_id: { _eq: currentUserId },
+                    buyer_id: { _eq: currentUserId },
                     ...(status && { payment_status: { _eq: status } })
                 },
                 sort: ['-date_created']

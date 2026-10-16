@@ -106,7 +106,10 @@
   const redirectTarget = computed(() => {
     const raw = route.query.redirect;
     const path = typeof raw === 'string' ? raw : '';
-    return /^\/(?!\/)/.test(path) ? path : '/';
+    // Same-site path only: one leading "/", then no "/" or "\\" (browsers
+    // read "/\\evil.example" as "//evil.example") and no whitespace/control
+    // characters anywhere.
+    return /^\/(?![\/\\])[^\\\s\u0000-\u001f]*$/.test(path) ? path : '/';
   });
 
   const form = ref(null);

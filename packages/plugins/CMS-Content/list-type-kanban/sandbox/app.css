@@ -1,0 +1,101 @@
+:root {
+  color-scheme: light dark;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --column: rgba(127, 127, 127, 0.1);
+  --card: #ffffff;
+  --line: rgba(127, 127, 127, 0.28);
+  --accent: #5b8def;
+  --high: #ef4444;
+  --low: #22c55e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e8eaf0;
+    --muted: #a0a6b4;
+    --card: #23262e;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 16px;
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: transparent;
+}
+
+button, input, textarea, select { font: inherit; color: inherit; }
+
+.board__status { margin: 0; color: var(--muted); }
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 160px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--column);
+}
+
+.column--over { outline: 2px dashed var(--accent); outline-offset: -2px; }
+
+.column__head { display: flex; align-items: center; justify-content: space-between; font-weight: 600; }
+.column__count { color: var(--muted); font-weight: 400; }
+
+.card {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: 8px;
+  background: var(--card);
+  cursor: grab;
+}
+
+.card--high { border-left-color: var(--high); }
+.card--low { border-left-color: var(--low); }
+.card--dragging { opacity: 0.5; }
+
+.card__title { margin: 0; overflow-wrap: anywhere; }
+.card__meta { margin-top: 4px; font-size: 0.8rem; color: var(--muted); }
+.card__actions { display: flex; gap: 4px; margin-top: 8px; }
+
+.button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.button--primary { border-color: var(--accent); background: var(--accent); color: #fff; }
+.button--danger { color: var(--high); }
+.button:focus-visible, .field:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.editor { display: grid; gap: 6px; }
+
+.field {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+}
+
+.add { display: flex; gap: 6px; margin-top: auto; }
+.add .field { flex: 1; }
+
+@media (max-width: 640px) {
+  .board { grid-template-columns: 1fr; }
+}
