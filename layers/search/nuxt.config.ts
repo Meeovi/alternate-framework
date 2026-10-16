@@ -128,17 +128,10 @@ export default defineNuxtConfig({
         searchColumns: (process.env.ALTERNATE_SEARCH_MYSQL_COLUMNS || 'title,description')
           .split(',').map((column) => column.trim()).filter(Boolean),
       },
-      // Reuses the same env vars adapter-magento's Nuxt module already
-      // reads (see packages/plugins/CMS-Content/adapter-magento) — no new config to
-      // duplicate just to enable federated Magento search.
-      magento: {
-        enabled: Boolean(process.env.MAGENTO_GRAPHQL_URL),
-        endpoint: process.env.MAGENTO_GRAPHQL_URL || '',
-        token: process.env.GQL_KEY || '',
-      },
-      // algolia / meilisearch / typesense moved to plugins
-      // (packages/plugins/Search/search-*) — each module sets its own
-      // searchProviders.<name> block and registers the provider itself.
+      // Backend-specific providers live in their plugins, which set their
+      // own searchProviders.<name> block and register the provider:
+      // algolia / meilisearch / typesense (packages/plugins/Search/search-*),
+      // magento (adapter-magento) and atproto (meeovi-atproto).
       // A third, zero-infra SQL option alongside postgres/mysql above —
       // local dev or small deployments that don't want a database server
       // just for search. Uses SQLite's own FTS5 virtual tables when
@@ -161,24 +154,6 @@ export default defineNuxtConfig({
         idField: process.env.ALTERNATE_SEARCH_MEMORY_ID_FIELD || 'id',
         searchFields: (process.env.ALTERNATE_SEARCH_MEMORY_FIELDS || 'title,description')
           .split(',').map((field) => field.trim()).filter(Boolean),
-      },
-      // AT Protocol (Bluesky) — federates posts + profiles from this
-      // deployment's hosted PDS via meeovi-atproto's AtprotoClient
-      // (app.bsky.feed.searchPosts / app.bsky.actor.searchActors). Unlike
-      // every provider above, this is on by default (opt out explicitly)
-      // since this deployment always has a hosted PDS to search — same
-      // "primary backend" default opensearch uses.
-      atproto: {
-        enabled: process.env.ALTERNATE_SEARCH_ATPROTO_ENABLED !== 'false',
-        service: process.env.ALTERNATE_SEARCH_ATPROTO_SERVICE || process.env.ATPROTO_SERVICE || 'https://sky.meeovicms.com',
-        // Confirmed live: sky.meeovicms.com's app.bsky.feed.searchPosts /
-        // app.bsky.actor.searchActors reject unauthenticated requests
-        // (401 AuthMissing) — unlike the public bsky.social AppView.
-        // Reuses the same service-account credentials layers/social's
-        // useAtprotoClient() bootstrap uses, rather than requiring a
-        // second set just for search.
-        identifier: process.env.ALTERNATE_SEARCH_ATPROTO_IDENTIFIER || process.env.ATPROTO_IDENTIFIER || '',
-        password: process.env.ALTERNATE_SEARCH_ATPROTO_PASSWORD || process.env.ATPROTO_APP_PASSWORD || '',
       },
       // Directus CMS content, queried live (server/providers/directus.ts).
       // Off unless an app turns it on, because each app's Directus has its

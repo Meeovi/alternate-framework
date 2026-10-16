@@ -30,6 +30,15 @@ meeoviAtproto: {
 | --- | --- |
 | `ATPROTO_SERVICE` | PDS/AppView URL. Defaults to `https://sky.meeovicms.com`. |
 | `ATPROTO_IDENTIFIER`, `ATPROTO_APP_PASSWORD` | Service account for server-side reads. This PDS requires a session even for search. Secrets stay server-only. |
+| `ALTERNATE_SEARCH_ATPROTO_ENABLED` | `false` keeps Bluesky out of the site search. |
+| `ALTERNATE_SEARCH_ATPROTO_SERVICE`, `_IDENTIFIER`, `_PASSWORD` | A different PDS or account for site search only. |
+
+## Site search
+
+The module adds Bluesky posts and profiles to the search layer's federated
+`/api/search` as the `atproto` provider (`runtime/search.ts`), registered
+through the layer's provider registry. Turn it off with the module option
+`search: false`, or with `runtimeConfig.searchProviders.atproto.enabled`.
 
 ## Federation network
 

@@ -62,5 +62,22 @@ export default defineNuxtModule<ModuleOptions>({
     // separate from #2 above since better-auth signup runs in Nitro, not
     // through the Vue app's plugin lifecycle.
     addServerPlugin(resolver.resolve('./runtime/server/commerce-link'))
+
+    // 4. Magento product search for the search layer's federated /api/search
+    //    (runtime/server/search-provider.ts). On whenever the endpoint is
+    //    set; ALTERNATE_SEARCH_MAGENTO_ENABLED=false or an app's own
+    //    runtimeConfig.searchProviders.magento.enabled turns it off.
+    const runtimeConfig = nuxt.options.runtimeConfig as Record<string, any>
+    const endpoint = options.endpoint || existingPublic.endpoint || ''
+    runtimeConfig.searchProviders = {
+      ...runtimeConfig.searchProviders,
+      magento: {
+        enabled: Boolean(endpoint) && process.env.ALTERNATE_SEARCH_MAGENTO_ENABLED !== 'false',
+        endpoint,
+        storeCode: options.storeCode ?? existingPublic.storeCode,
+        ...runtimeConfig.searchProviders?.magento,
+      },
+    }
+    addServerPlugin(resolver.resolve('./runtime/server/search'))
   }
 })

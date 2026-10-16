@@ -19,9 +19,10 @@ server/api/search.ts, server/api/search/facet-values.post.ts
         │
         ▼
 federatedSearch() / federatedSearchFacetValues() (server/search/federate.ts)
-        │  Promise.allSettled — every enabled provider queried in parallel
+        │  every enabled provider queried in parallel, each with a timeout
         ▼
-server/providers/{opensearch,postgres,mysql}.ts
+server/providers/{opensearch,postgres,mysql,...}.ts, plus plugin providers
+(server/search/registry.ts)
         │  each translates the shared SearchProviderOptions into its own
         │  query language and normalizes its response back
         ▼
@@ -32,9 +33,12 @@ OpenSearch / Postgres (incl. Supabase) / MySQL
   (`SearchProvider`). A provider takes `SearchProviderOptions` (query, page,
   facets, InstantSearch-shaped filters, sort) and returns a
   `ProviderSearchResult` (normalized hits, total, facets, timing).
-- **`server/search/federate.ts`** — holds `ALL_PROVIDERS`, the single list of
-  registered backends. It queries every provider whose `isEnabled()` returns
-  true, tolerates individual providers failing (`Promise.allSettled`),
+- **`server/search/federate.ts`** — queries the built-in providers and every
+  provider a plugin registered (`server/search/registry.ts`) whose
+  `isEnabled()` returns true. It tolerates individual providers failing, stops
+  waiting for one after its timeout (`ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS`,
+  default 5000 ms, or the provider's own `timeoutMs`) and reports it in
+  `backends[]`, then
   normalizes each provider's relevance score onto a comparable 0–1 scale, and
   interleaves the results into one globally-sorted, paginated list. See the
   file header comment for the pagination/depth-cap tradeoff of federating
@@ -144,27 +148,26 @@ used. `ALTERNATE_SEARCH_DIRECTUS_ENABLED=true` also enables it.
 
 ## Adding a new backend
 
-The provider contract is intentionally small, so wiring in another backend
-(Algolia, Typesense, Meilisearch, ...) is three steps and touches no existing
-provider:
+Backend-specific providers ship with their plugin, not in this layer:
+Algolia, Meilisearch and Typesense (`packages/plugins/Search/search-*`),
+Magento (adapter-magento) and AT Protocol (meeovi-atproto). A new backend is
+a plugin too:
 
-1. **Implement `SearchProvider`** in `server/providers/<name>.ts`:
-   `id`, `isEnabled()`, `search(options)`, and optionally
-   `searchFacetValues(field, facetQuery, options)` if the backend can support
-   InstantSearch's searchable-facet-value lookups. Read `SearchProviderOptions`
-   / `ProviderSearchResult` in `server/providers/types.ts` for the exact
-   shape — `postgres.ts` and `mysql.ts` are the most complete reference
-   implementations (identifier quoting, filter translation, sort handling,
-   faceting).
-2. **Add its config block** to `runtimeConfig.searchProviders` in
-   `nuxt.config.ts`, enabled purely by the presence of its connection config
-   (same pattern as the existing backends) — no separate `ENABLED` flag.
-3. **Register it** by adding the provider to the `ALL_PROVIDERS` array at the
-   top of `server/search/federate.ts`.
+1. **Implement `SearchProvider`**: `id`, `isEnabled()`, `search(options)`,
+   optionally `searchFacetValues(field, facetQuery, options)` and
+   `timeoutMs`. Keep a copy of `server/providers/types.ts` in the plugin
+   (type-only); pass `options.signal` to your own requests so they're
+   cancelled when the provider times out. `postgres.ts` and `mysql.ts` here
+   are the most complete reference implementations.
+2. **Set its config block** at `runtimeConfig.searchProviders.<name>` from the
+   plugin's Nuxt module, enabled by the presence of its connection config.
+3. **Register it** from a Nitro plugin, on the Map at
+   `globalThis[Symbol.for('mframework.search.providers')]`. See
+   `packages/plugins/Search/search-meilisearch` for the whole pattern.
 
-That's it — `federate.ts`'s merge logic, `/api/search`, `/api/search/facet-values`,
-and every InstantSearch widget in `app/components/` all work against the
-shared contract, so none of them need to change.
+`federate.ts`'s merge logic, `/api/search`, `/api/search/facet-values` and
+every InstantSearch widget in `app/components/` work against the shared
+contract, so none of them need to change.
 
 ## Frontend
 

@@ -34,6 +34,10 @@ export type SearchProviderOptions = {
   facets?: string[]
   filters?: SearchProviderFilters
   sort?: SearchProviderSort | null
+  /** Aborted when federate.ts stops waiting for this provider (its
+   *  timeout). Providers that make their own requests should pass it on;
+   *  the aggregator doesn't wait for them either way. */
+  signal?: AbortSignal
 }
 
 export type NormalizedHit = {
@@ -70,6 +74,10 @@ export type ProviderStatus = {
 
 export interface SearchProvider {
   readonly id: string
+  /** How long federate.ts waits for this provider before reporting it as
+   *  failed and answering without it. Defaults to the search-wide timeout
+   *  (ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS, 5000 ms). */
+  readonly timeoutMs?: number
   isEnabled(): boolean
   search(options: SearchProviderOptions): Promise<ProviderSearchResult>
   /** Optional: powers ais-refinement-list's `searchable` facet-value search.

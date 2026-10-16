@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { NormalizedHit, ProviderSearchResult, SearchProviderOptions } from '../../server/providers/types'
 
 vi.mock('../../server/providers/opensearch', () => ({
@@ -10,9 +10,6 @@ vi.mock('../../server/providers/postgres', () => ({
 vi.mock('../../server/providers/mysql', () => ({
   mysqlProvider: { id: 'mysql', isEnabled: vi.fn(), search: vi.fn() },
 }))
-vi.mock('../../server/providers/magento', () => ({
-  magentoProvider: { id: 'magento', isEnabled: vi.fn(), search: vi.fn() },
-}))
 vi.mock('../../server/providers/database', () => ({
   databaseProvider: { id: 'database', isEnabled: vi.fn(), search: vi.fn(), searchFacetValues: vi.fn() },
 }))
@@ -22,14 +19,10 @@ vi.mock('../../server/providers/memory', () => ({
 vi.mock('../../server/providers/directus', () => ({
   directusProvider: { id: 'directus', isEnabled: vi.fn(), search: vi.fn() },
 }))
-vi.mock('../../server/providers/atproto', () => ({
-  atprotoProvider: { id: 'atproto', isEnabled: vi.fn(), search: vi.fn() },
-}))
 
 import { openSearchProvider } from '../../server/providers/opensearch'
 import { postgresProvider } from '../../server/providers/postgres'
 import { mysqlProvider } from '../../server/providers/mysql'
-import { magentoProvider } from '../../server/providers/magento'
 import { federatedSearch, federatedSearchFacetValues, getEnabledProviders } from '../../server/search/federate'
 import { SEARCH_PROVIDER_REGISTRY_KEY } from '../../server/search/registry'
 
@@ -49,7 +42,6 @@ describe('federatedSearch', () => {
     vi.mocked(openSearchProvider.isEnabled).mockReturnValue(true)
     vi.mocked(postgresProvider.isEnabled).mockReturnValue(true)
     vi.mocked(mysqlProvider.isEnabled).mockReturnValue(false)
-    vi.mocked(magentoProvider.isEnabled).mockReturnValue(false)
   })
 
   it('getEnabledProviders only returns providers whose isEnabled() is true', () => {
@@ -176,13 +168,72 @@ describe('federatedSearch', () => {
   })
 })
 
+describe('provider timeouts', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.useFakeTimers()
+    vi.mocked(openSearchProvider.isEnabled).mockReturnValue(true)
+    vi.mocked(postgresProvider.isEnabled).mockReturnValue(true)
+    vi.mocked(mysqlProvider.isEnabled).mockReturnValue(false)
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    delete process.env.ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS
+  })
+
+  it('answers without a provider that hangs, reports it as timed out, and aborts its signal', async () => {
+    let signal: AbortSignal | undefined
+    vi.mocked(openSearchProvider.search).mockImplementation((options) => {
+      signal = options.signal
+      return new Promise(() => {})
+    })
+    vi.mocked(postgresProvider.search).mockResolvedValue(result('postgres', [hit('p1', 1)]))
+
+    const pending = federatedSearch(baseOptions)
+    await vi.advanceTimersByTimeAsync(5000)
+    const response = await pending
+
+    expect(response.items.map((i) => i.objectID)).toEqual(['postgres:p1'])
+    expect(response.backends).toContainEqual(
+      expect.objectContaining({ provider: 'opensearch', ok: false, error: 'timed out after 5000 ms' }),
+    )
+    expect(signal?.aborted).toBe(true)
+  })
+
+  it('uses ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS, and a provider\'s own timeoutMs over it', async () => {
+    process.env.ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS = '1000'
+    const slow = { id: 'slow', timeoutMs: 3000, isEnabled: () => true, search: vi.fn(() => new Promise<never>(() => {})) }
+    ;(globalThis as any)[SEARCH_PROVIDER_REGISTRY_KEY] = new Map([['slow', slow]])
+    vi.mocked(openSearchProvider.search).mockImplementation(() => new Promise(() => {}))
+    vi.mocked(postgresProvider.search).mockResolvedValue(result('postgres', []))
+    try {
+      const pending = federatedSearch(baseOptions)
+      await vi.advanceTimersByTimeAsync(3000)
+      const response = await pending
+      expect(response.backends).toContainEqual(expect.objectContaining({ provider: 'opensearch', error: 'timed out after 1000 ms' }))
+      expect(response.backends).toContainEqual(expect.objectContaining({ provider: 'slow', error: 'timed out after 3000 ms' }))
+    } finally {
+      delete (globalThis as any)[SEARCH_PROVIDER_REGISTRY_KEY]
+    }
+  })
+
+  it('a facet-value lookup that hangs is skipped after the timeout', async () => {
+    vi.mocked(openSearchProvider.searchFacetValues!).mockImplementation(() => new Promise(() => {}))
+    vi.mocked(postgresProvider.searchFacetValues!).mockResolvedValue([{ value: 'red', count: 2 }])
+
+    const pending = federatedSearchFacetValues('color', 're', baseOptions)
+    await vi.advanceTimersByTimeAsync(5000)
+
+    expect(await pending).toEqual([{ value: 'red', count: 2 }])
+  })
+})
+
 describe('federatedSearchFacetValues', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(openSearchProvider.isEnabled).mockReturnValue(true)
     vi.mocked(postgresProvider.isEnabled).mockReturnValue(true)
     vi.mocked(mysqlProvider.isEnabled).mockReturnValue(false)
-    vi.mocked(magentoProvider.isEnabled).mockReturnValue(false)
   })
 
   it('merges facet-value counts across providers that implement searchFacetValues, skipping those that don\'t', async () => {

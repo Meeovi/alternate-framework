@@ -12,6 +12,10 @@ export interface MeeoviAtprotoModuleOptions {
   /** Register Bluesky as a network in the social layer's federation core
    *  (/api/social/federation/*). Default true. */
   federation?: boolean
+  /** Add Bluesky posts and profiles to the search layer's federated
+   *  /api/search. Default true; ALTERNATE_SEARCH_ATPROTO_ENABLED=false or
+   *  an app's runtimeConfig.searchProviders.atproto.enabled turns it off. */
+  search?: boolean
 }
 
 export type { MeeoviAtprotoModuleOptions as ModuleOptions }
@@ -34,6 +38,7 @@ export default defineNuxtModule<MeeoviAtprotoModuleOptions>({
   },
   defaults: {
     federation: true,
+    search: true,
   },
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -61,5 +66,23 @@ export default defineNuxtModule<MeeoviAtprotoModuleOptions>({
     // AtprotoClient) — see runtime/server/bootstrap.ts.
     addServerPlugin(resolver.resolve('./runtime/server/bootstrap'))
     if (options.federation !== false) addServerPlugin(resolver.resolve('./runtime/server/network'))
+
+    // Search: same env vars the search layer used before this provider
+    // moved here. The PDS rejects unauthenticated search, so it signs in
+    // with the service account (ALTERNATE_SEARCH_ATPROTO_* override it).
+    if (options.search !== false) {
+      const runtimeConfig = nuxt.options.runtimeConfig as Record<string, any>
+      runtimeConfig.searchProviders = {
+        ...runtimeConfig.searchProviders,
+        atproto: {
+          enabled: process.env.ALTERNATE_SEARCH_ATPROTO_ENABLED !== 'false',
+          service: process.env.ALTERNATE_SEARCH_ATPROTO_SERVICE || (nuxt.options.runtimeConfig.public as any).atproto.service,
+          identifier: process.env.ALTERNATE_SEARCH_ATPROTO_IDENTIFIER || privateAtproto.identifier || process.env.ATPROTO_IDENTIFIER || '',
+          password: process.env.ALTERNATE_SEARCH_ATPROTO_PASSWORD || privateAtproto.appPassword || process.env.ATPROTO_APP_PASSWORD || '',
+          ...runtimeConfig.searchProviders?.atproto,
+        },
+      }
+      addServerPlugin(resolver.resolve('./runtime/server/search'))
+    }
   },
 })

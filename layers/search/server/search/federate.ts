@@ -19,28 +19,54 @@
 import { openSearchProvider } from '../providers/opensearch'
 import { postgresProvider } from '../providers/postgres'
 import { mysqlProvider } from '../providers/mysql'
-import { magentoProvider } from '../providers/magento'
 import { databaseProvider } from '../providers/database'
 import { memoryProvider } from '../providers/memory'
 import { directusProvider } from '../providers/directus'
-import { atprotoProvider } from '../providers/atproto'
 import { getRegisteredProviders } from './registry'
 import type { FacetBucket, NormalizedHit, ProviderStatus, SearchProvider, SearchProviderOptions } from '../providers/types'
 
 const MAX_FEDERATED_DEPTH = 500
 
-// Built-in providers. Algolia, Meilisearch and Typesense now ship as
-// plugins (packages/plugins/Search/search-*) that add themselves via
-// ./registry.ts when registered in an app's nuxt.config.ts.
+// How long to wait for one provider before answering without it, so a slow
+// or hanging backend can't hold up every search. A provider can set its own
+// `timeoutMs`.
+const DEFAULT_PROVIDER_TIMEOUT_MS = 5000
+
+function providerTimeout(provider: SearchProvider): number {
+  const configured = provider.timeoutMs ?? Number(process.env.ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS)
+  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_PROVIDER_TIMEOUT_MS
+}
+
+/** Runs one provider call, rejecting once its timeout passes. The provider
+ *  gets an AbortSignal so it can cancel its own requests. */
+async function withTimeout<T>(provider: SearchProvider, call: (signal: AbortSignal) => Promise<T>): Promise<T> {
+  const ms = providerTimeout(provider)
+  const controller = new AbortController()
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      controller.abort()
+      reject(new Error(`timed out after ${ms} ms`))
+    }, ms)
+  })
+  try {
+    return await Promise.race([call(controller.signal), timeout])
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
+// Built-in providers. Backend-specific ones ship with their plugins and add
+// themselves via ./registry.ts: Algolia, Meilisearch and Typesense
+// (packages/plugins/Search/search-*), Magento (adapter-magento) and
+// AT Protocol (meeovi-atproto).
 const BUILT_IN_PROVIDERS: SearchProvider[] = [
   openSearchProvider,
   postgresProvider,
   mysqlProvider,
-  magentoProvider,
   databaseProvider,
   memoryProvider,
   directusProvider,
-  atprotoProvider,
 ]
 
 export function getEnabledProviders(): SearchProvider[] {
@@ -124,7 +150,7 @@ export async function federatedSearch(options: SearchProviderOptions): Promise<F
   const overfetchOptions: SearchProviderOptions = { ...options, page: 1, pageSize: overfetchSize }
 
   const settled = await Promise.allSettled(
-    providers.map((provider) => provider.search(overfetchOptions)),
+    providers.map((provider) => withTimeout(provider, (signal) => provider.search({ ...overfetchOptions, signal }))),
   )
 
   const backends: ProviderStatus[] = []
@@ -187,7 +213,7 @@ export async function federatedSearchFacetValues(field: string, facetQuery: stri
   const providers = getEnabledProviders().filter((provider) => typeof provider.searchFacetValues === 'function')
 
   const settled = await Promise.allSettled(
-    providers.map((provider) => provider.searchFacetValues!(field, facetQuery, options)),
+    providers.map((provider) => withTimeout(provider, (signal) => provider.searchFacetValues!(field, facetQuery, { ...options, signal }))),
   )
 
   const merged = new Map<string, number>()

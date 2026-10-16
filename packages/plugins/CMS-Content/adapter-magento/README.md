@@ -45,6 +45,14 @@ MAGENTO_STORE_CODE=default
 MAGENTO_TOKEN=your-bearer-token
 ```
 
+### Site search
+
+With an endpoint set, the module adds Magento product search to the search
+layer's federated `/api/search` as the `magento` provider
+(`src/runtime/server/search-provider.ts`), registered through the layer's
+provider registry. `ALTERNATE_SEARCH_MAGENTO_ENABLED=false`, or
+`runtimeConfig.searchProviders.magento.enabled`, turns it off.
+
 ## Usage
 
 ### Accessing the Adapter

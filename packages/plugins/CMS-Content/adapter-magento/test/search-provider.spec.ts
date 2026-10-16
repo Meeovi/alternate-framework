@@ -4,16 +4,16 @@ const { searchMock } = vi.hoisted(() => ({ searchMock: vi.fn() }))
 
 vi.mock('#imports', () => ({
   useRuntimeConfig: () => ({
-    searchProviders: { magento: { enabled: true, endpoint: 'https://example.com/graphql', token: '' } },
+    searchProviders: { magento: { enabled: true, endpoint: 'https://example.com/graphql' } },
   }),
 }))
-vi.mock('adapter-magento', () => ({
+vi.mock('@mframework/adapter-magento', () => ({
   MagentoAdapter: class {
     content = { search: searchMock }
   },
 }))
 
-import { buildFilter, buildSort, aggregationsToFacets, magentoProvider } from '../../server/providers/magento'
+import { buildFilter, buildSort, aggregationsToFacets, magentoProvider } from '../src/runtime/server/search-provider'
 
 describe('buildFilter', () => {
   it('maps facetsRefinements to Magento\'s FilterEqualTypeInput "in" shape', () => {
