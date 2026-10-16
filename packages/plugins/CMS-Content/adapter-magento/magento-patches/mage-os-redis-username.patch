@@ -1,0 +1,57 @@
+--- a/Cache/Frontend/Adapter/SymfonyAdapterProvider.php	2026-10-16 15:16:50.997899553 +0000
++++ b/Cache/Frontend/Adapter/SymfonyAdapterProvider.php	2026-10-16 15:16:51.026788176 +0000
+@@ -245,6 +245,10 @@
+         $host = $options['server'] ?? $options['host'] ?? '127.0.0.1';
+         $port = (int)($options['port'] ?? 6379);
+         $password = $options['password'] ?? null;
++        // Redis 6+ ACL user (backend_options.username); null = the default user.
++        $this->redisUsername = isset($options['username']) && $options['username'] !== ''
++            ? (string)$options['username']
++            : null;
+         $database = (int)($options['database'] ?? 0);
+ 
+         // OPTIMIZATION: Auto-enable igbinary if available (2-3x faster serialization)
+@@ -271,7 +275,7 @@
+         // The client's internal cache is cleared on writes and database switches,
+         // so connection pooling is safe and provides better performance
+         $usePhpRedis = extension_loaded('redis');
+-        $connectionKey = sprintf('redis:%s:%d:%d', $host, $port, $database);
++        $connectionKey = sprintf('redis:%s@%s:%d:%d', $this->redisUsername ?? '', $host, $port, $database);
+ 
+         if (!isset($this->connectionPool[$connectionKey])) {
+             if ($usePhpRedis) {
+@@ -391,6 +395,13 @@
+     }
+ 
+     /**
++     * Redis ACL username for the connection being built (see createRedisAdapter)
++     *
++     * @var string|null
++     */
++    private ?string $redisUsername = null;
++
++    /**
+      * Build the base Redis DSN for a TCP host or a unix socket path
+      *
+      * A host beginning with '/' is treated as a unix socket path, matching the
+@@ -412,6 +423,10 @@
+         ?string $password
+     ): string {
+         $auth = $password !== null && $password !== '' ? rawurlencode($password) . '@' : '';
++        if ($auth !== '' && $this->redisUsername !== null) {
++            // redis://user:pass@… — Symfony then sends AUTH <user> <pass>.
++            $auth = rawurlencode($this->redisUsername) . ':' . $auth;
++        }
+ 
+         if (str_starts_with($host, '/')) {
+             return sprintf('redis://%s%s/%d', $auth, $host, $database);
+@@ -484,6 +499,9 @@
+ 
+         if ($password) {
+             $params['password'] = $password;
++            if ($this->redisUsername !== null) {
++                $params['username'] = $this->redisUsername;
++            }
+         }
+ 
+         return $params;
