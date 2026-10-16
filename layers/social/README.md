@@ -30,6 +30,28 @@ const { getActivityFeed } = useSocial()
 const feed = await getActivityFeed('sebastian')
 ```
 
+## Federation
+
+The layer's federation core (`server/utils/federation.ts`, contract in
+`shared/types/federation.ts`) lists every installed network under
+`/api/social/federation`:
+
+| Network | From | Needs |
+| --- | --- | --- |
+| `directus` ("Meeovi") | this layer (`server/utils/federation-directus.ts`) | `DIRECTUS_URL` and the server token. This site's own members (better-auth users) and published, public posts; the fallback that always answers. `SOCIAL_FEDERATION_DIRECTUS=false` turns it off. |
+| `atproto` ("Bluesky") | `@mframework/meeovi-atproto` | `ATPROTO_IDENTIFIER`, `ATPROTO_APP_PASSWORD` |
+| `activitypub` ("Fediverse") | `@mframework/meeovi-activitypub` | `ACTIVITYPUB_ACCESS_TOKEN` for more than hashtag search |
+
+```
+GET /api/social/federation                          → networks, capabilities, status
+GET /api/social/federation/:network/profile?handle=
+GET /api/social/federation/:network/feed?actor=&limit=
+GET /api/social/federation/search?q=&networks=      → posts from every network, newest first
+```
+
+Each network gets 8 seconds (`withNetworkTimeout`); one that fails or times
+out is reported in `errors` and the rest still answer.
+
 ## Providers
 
 A provider implements the `SocialProvider` interface:

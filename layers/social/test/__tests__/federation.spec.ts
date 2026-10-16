@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   federationCapabilities,
   federationError,
@@ -6,6 +6,7 @@ import {
   registerFederationNetwork,
   requireCapability,
   useFederationNetwork,
+  withNetworkTimeout,
 } from '../../server/utils/federation'
 import { FEDERATION_REGISTRY, type FederationNetwork } from '../../shared/types/federation'
 import { extractFederationAttachments } from '../../shared/federation/attachments'
@@ -91,5 +92,18 @@ describe('federation helpers', () => {
       [{ id: '2', protocol: 'atproto', createdAt: '2026-01-02T00:00:00.000Z', payload: {} }],
     ])
     expect(merged[0]?.id).toBe('2')
+  })
+})
+
+describe('withNetworkTimeout', () => {
+  afterEach(() => { vi.useRealTimers() })
+
+  it('passes a result through, and rejects a call that hangs past the timeout', async () => {
+    expect(await withNetworkTimeout(Promise.resolve(3))).toBe(3)
+    vi.useFakeTimers()
+    const hanging = withNetworkTimeout(new Promise(() => {}), 1000)
+    const check = expect(hanging).rejects.toThrow('timed out')
+    await vi.advanceTimersByTimeAsync(1000)
+    await check
   })
 })

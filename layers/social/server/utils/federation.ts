@@ -53,3 +53,20 @@ export function federationError(network: FederationNetwork, error: unknown): nev
   console.error(`[federation:${network.id}]`, e?.message || error)
   throw createError({ statusCode: 502, statusMessage: `${network.label} is unavailable right now` })
 }
+
+/** How long a federation route waits for one network before answering
+ *  without it. */
+export const NETWORK_TIMEOUT_MS = 8000
+
+/** The call's result, or a rejection once `ms` passes. */
+export async function withNetworkTimeout<T>(call: Promise<T>, ms = NETWORK_TIMEOUT_MS): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  try {
+    return await Promise.race([
+      call,
+      new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('timed out')), ms) }),
+    ])
+  } finally {
+    clearTimeout(timer)
+  }
+}
