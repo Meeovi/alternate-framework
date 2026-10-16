@@ -79,33 +79,5 @@
       "sendEmailSuccess": "認証メールを送信しました",
       "sendEmailError": "認証メールの送信に失敗しました"
     }
-  },
-  "fr": {
-    "signIn": {
-      "welcome": "Bienvenue sur {name}",
-      "email": "E-mail",
-      "password": "Mot de passe",
-      "emailPlaceholder": "Adresse e-mail",
-      "passwordPlaceholder": "Mot de passe",
-      "rememberMe": "Se souvenir de moi",
-      "forgotPassword": "Mot de passe oublié ?",
-      "signIn": "Se connecter",
-      "noAccount": "Vous n'avez pas de compte ?",
-      "createAccount": "Créez-en un !",
-      "or": "Ou",
-      "signInSuccess": "Connexion réussie",
-      "errors": {
-        "invalidEmail": "Adresse e-mail invalide",
-        "passwordLength": "Le mot de passe doit contenir au moins {min} caractères"
-      },
-      "emailNotVerified": "Email non vérifié",
-      "emailNotVerifiedDesc": "Veuillez vérifier votre adresse e-mail pour continuer.",
-      "resendEmail": "Renvoyer l'e-mail de vérification",
-      "resendEmailSuccess": "L'e-mail de vérification a été envoyé",
-      "resendEmailError": "Échec de l'envoi de l'e-mail de vérification",
-      "sendEmail": "Envoyer l'e-mail de vérification",
-      "sendEmailSuccess": "L'e-mail de vérification a été envoyé",
-      "sendEmailError": "Échec de l'envoi de l'e-mail de vérification"
-    }
   }
 }

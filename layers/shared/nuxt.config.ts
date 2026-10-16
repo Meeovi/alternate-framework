@@ -345,15 +345,12 @@ export default defineNuxtConfig({
   },
 
   i18n: {
+    // English only for launch; add locales here (and a file in
+    // i18n/locales) when translations exist.
     locales: [{
         code: 'en',
         language: 'en-US',
         file: 'en.json'
-      },
-      {
-        code: 'fr',
-        language: 'fr-FR',
-        file: 'fr.json'
       }
     ],
     langDir: 'locales',
