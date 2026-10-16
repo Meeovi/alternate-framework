@@ -92,17 +92,48 @@ function buildContentSecurityPolicy(): string {
     'https://cdn.carbonads.com',
   ]
 
+  // AdSense and its ad-quality pings (seen in the CSP reports), plus
+  // Bing UET's beacon host (bat.bing.net, distinct from bat.bing.com).
+  const adHosts = [
+    'https://pagead2.googlesyndication.com',
+    'https://*.adtrafficquality.google',
+    'https://bat.bing.net',
+  ]
+
+  // Browser-side calls the reports haven't covered yet (nobody has run
+  // them on the demo): Stripe Embedded Checkout, Cloudflare Turnstile,
+  // PayPal buttons, and the commerce backend's storefront GraphQL
+  // (adapter-magento's client plugin on product/category navigation).
+  const paymentHosts = [
+    'https://api.stripe.com',
+    'https://m.stripe.com',
+    'https://m.stripe.network',
+    'https://r.stripe.com',
+    'https://q.stripe.com',
+    'https://errors.stripe.com',
+    'https://merchant-ui-api.stripe.com',
+    'https://www.paypal.com',
+    'https://*.paypal.com',
+  ]
+  const commerceGraphql = httpsOrigin(process.env.MAGENTO_GRAPHQL_URL)
+    ? new URL(httpsOrigin(process.env.MAGENTO_GRAPHQL_URL)).origin
+    : ''
+
   const connectSrc = [
     "'self'",
     'https://*.mux.com',
     // Covers every regional Sentry ingest host (o<org>.ingest.us.sentry.io,
     // .ingest.de.sentry.io, …) — without it every error report is dropped.
     'https://*.sentry.io',
+    'https://challenges.cloudflare.com',
     directusHttps,
+    commerceGraphql,
     novuApi,
     novuWs,
     novuWss,
     ...analyticsHosts,
+    ...adHosts,
+    ...paymentHosts,
   ].filter(Boolean).join(' ')
 
   return [
