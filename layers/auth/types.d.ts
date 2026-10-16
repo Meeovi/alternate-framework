@@ -6,15 +6,6 @@ declare module '#i18n' {
   export function useI18n(): any
 }
 
-declare module '../composables/useAlert' {
-  export function useAlert(): {
-    error: (message: string) => void
-    success: (message: string) => void
-    info: (message: string) => void
-    warning: (message: string) => void
-  }
-}
-
 declare module '../composables/useAuth' {
   export function useAuth(): any
 }

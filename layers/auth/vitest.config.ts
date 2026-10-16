@@ -8,8 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       // Matches the '#shared' alias every other layer's nuxt.config.ts
-      // registers for cross-layer imports — needed here too since
-      // useAlert.ts imports from '#shared/server/notifications/*'.
+      // registers for cross-layer imports.
       '#shared': path.resolve(__dirname, '../shared'),
     },
   },
