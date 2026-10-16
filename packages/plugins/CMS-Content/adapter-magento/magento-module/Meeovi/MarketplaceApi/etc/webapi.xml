@@ -139,6 +139,18 @@
             <resource ref="Meeovi_MarketplaceApi::external_orders"/>
         </resources>
     </route>
+    <route url="/V1/meeovi-marketplace/customers/:customerId/orders" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\ExternalOrderManagementInterface" method="getCustomerOrders"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::external_orders"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/customers/:customerId/orders/:orderId" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\ExternalOrderManagementInterface" method="getCustomerOrder"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::external_orders"/>
+        </resources>
+    </route>
     <route url="/V1/meeovi-marketplace/products/sellers" method="GET">
         <service class="Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface" method="getProductSellers"/>
         <resources>

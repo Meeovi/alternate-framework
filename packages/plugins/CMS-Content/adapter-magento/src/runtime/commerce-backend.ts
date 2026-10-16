@@ -1,5 +1,5 @@
-import type { CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder } from 'alternate-sdk'
-import type { MagentoAdapter, MagentoOAuth1Credentials } from '@mframework/adapter-magento'
+import type { BackendOrder, CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder } from 'alternate-sdk'
+import type { MagentoAdapter, MagentoCustomerOrder, MagentoOAuth1Credentials } from '@mframework/adapter-magento'
 // Self-referencing package import, not a relative path — nuxt-module-build
 // only compiles module.ts and runtime/** into dist/, so a relative
 // '../normalizers/normalizers' import would resolve to a dist/normalizers/
@@ -76,6 +76,41 @@ async function fetchProductsByCategoryUid(magento: MagentoAdapter, categoryUid: 
   return (result?.items ?? []).map((item: any) => magentoNormalizers.products(item))
 }
 
+const cents = (amount: number) => Math.round((Number(amount) || 0) * 100)
+
+/** A Magento order in the app's order shape (alternate-sdk BackendOrder). */
+function toBackendOrder(order: MagentoCustomerOrder): BackendOrder {
+  const track = order.tracking?.[0]
+  return {
+    id: String(order.id),
+    number: order.number,
+    date_created: order.createdAt ? new Date(order.createdAt.replace(' ', 'T') + 'Z').toISOString() : '',
+    payment_status: order.paymentStatus,
+    fulfillment_status: order.state === 'complete' ? 'delivered' : order.state === 'canceled' ? 'cancelled' : order.status,
+    order_currency_code: order.currency,
+    grand_total: cents(order.grandTotal),
+    subtotal: cents(order.subtotal),
+    tax_amount: cents(order.taxAmount),
+    shipping_amount: cents(order.shippingAmount),
+    total_paid: cents(order.totalPaid),
+    total_refunded: cents(order.totalRefunded),
+    total_due: cents(order.totalDue),
+    customer_firstname: order.customer?.firstname || null,
+    customer_lastname: order.customer?.lastname || null,
+    customer_email: order.customer?.email || null,
+    line_items_snapshot: (order.items ?? []).map((item) => ({
+      product_id: `magento:${item.sku}`,
+      name: item.name,
+      quantity: item.qty,
+      unit_amount: item.price,
+      subtotal: item.rowTotal,
+    })),
+    tracking_number: track?.number || null,
+    tracking_url: null,
+    shipment_carrier: track?.title || track?.carrier || null,
+  }
+}
+
 /**
  * `credentials` (the Magento Integration, server-side only) enables
  * placePaidOrder: orders paid with the app's Stripe checkout are recorded
@@ -99,8 +134,24 @@ export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter, cre
       }
     : undefined
 
+  // Order history lives in Magento; reading it needs the Integration too.
+  const orders = credentials
+    ? {
+        async customerOrders(customerId: string, options?: { page?: number, pageSize?: number }) {
+          const rows = await magento.marketplaceOrders.customerOrders(credentials, Number(customerId), options?.page ?? 1, options?.pageSize ?? 50)
+          return rows.map(toBackendOrder)
+        },
+        async customerOrder(customerId: string, orderId: string) {
+          if (!/^\d+$/.test(orderId)) return null
+          const row = await magento.marketplaceOrders.customerOrder(credentials, Number(customerId), Number(orderId))
+          return row ? toBackendOrder(row) : null
+        },
+      }
+    : {}
+
   return {
     ...(placePaidOrder ? { placePaidOrder } : {}),
+    ...orders,
     id: 'magento',
     collections: ['products', 'orders'],
     isEnabled: () => true,

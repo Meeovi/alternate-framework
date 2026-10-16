@@ -141,7 +141,7 @@ export { SocialDriverRegistry, registerSocialDriver, setDefaultSocialDriver } fr
 export { BusinessDriverRegistry, registerBusinessDriver, setDefaultBusinessDriver } from './src/contracts/business.js'
 export { CommerceDriverRegistry, registerCommerceDriver, setDefaultCommerceDriver } from './src/contracts/commerce.js'
 export { CommerceBackendRegistry, registerCommerceBackendAdapter, listCommerceBackendAdapters } from './src/contracts/commerce-backend.js'
-export type { CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder } from './src/contracts/commerce-backend.js'
+export type { BackendOrder, CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder } from './src/contracts/commerce-backend.js'
 export { CommerceCustomerLinkRegistry, registerCommerceCustomerLinker } from './src/contracts/commerce-customer-link.js'
 export type { CommerceCustomerLinker } from './src/contracts/commerce-customer-link.js'
 export { ContentAdapterRegistry, registerContentAdapter, getContentAdapter } from './src/contracts/content.js'

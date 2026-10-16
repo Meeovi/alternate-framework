@@ -181,28 +181,17 @@
     // 'processing', 'on-hold', and 'cancelled' have no producer anywhere in
     // this app yet — there's no admin/staff action that sets them — so
     // those three tabs will legitimately stay empty until that exists.
-    const fetchOrders = (status?: string) => useAsyncData<any>(
-        status ? `orders-${status}` : 'orders',
-        async () => {
-            if (!currentUserId) return []
-            // Explicit field list — orders/invoices/transactions have a
-            // broken Directus M2M relation between invoices and
-            // transactions (invoices.transaction_id / transactions.invoices
-            // are declared alias fields with no relation config behind
-            // them), so any wildcard/deep-expand fields param here throws
-            // a Directus 500. This needs a real schema fix in Directus
-            // (reconfigure or remove that relation); until then, only
-            // request fields orderCard.vue actually renders.
-            return $directus.request($readItems('orders', {
-                fields: ['id', 'date_created', 'customer_firstname', 'customer_lastname', 'payment_status'],
-                filter: {
-                    buyer_id: { _eq: currentUserId },
-                    ...(status && { payment_status: { _eq: status } })
-                },
-                sort: ['-date_created']
-            }))
-        }
-    )
+    // Every source's orders (each commerce backend's own history, plus the
+    // app's Directus orders) come from /api/commerce/orders; the tabs are
+    // just filters on that one list.
+    const { data: orderHistory } = await useFetch<{ orders: any[] }>('/api/commerce/orders', {
+        key: 'order-history',
+        headers: useRequestHeaders(['cookie']),
+        default: () => ({ orders: [] }),
+        immediate: !!currentUserId,
+    })
+    const byStatus = (status?: string) => computed(() =>
+        (orderHistory.value?.orders ?? []).filter((o) => !status || o.payment_status === status))
 
     const { data: orderBar } = await useAsyncData<any>('orderBar', () => {
         return $directus.request($readItem('navigation', '84', {
@@ -216,15 +205,15 @@
         }))
     })
 
-    const { data: orders } = await fetchOrders()
-    const { data: pending } = await fetchOrders('pending')
-    const { data: processing } = await fetchOrders('processing')
-    const { data: onHold } = await fetchOrders('on-hold')
-    const { data: failed } = await fetchOrders('failed')
-    const { data: disputed } = await fetchOrders('disputed')
-    const { data: completed } = await fetchOrders('completed')
-    const { data: refunded } = await fetchOrders('refunded')
-    const { data: cancelled } = await fetchOrders('cancelled')
+    const orders = byStatus()
+    const pending = byStatus('pending')
+    const processing = byStatus('processing')
+    const onHold = byStatus('on-hold')
+    const failed = byStatus('failed')
+    const disputed = byStatus('disputed')
+    const completed = byStatus('completed')
+    const refunded = byStatus('refunded')
+    const cancelled = byStatus('cancelled')
 
     useHead({
         title: 'Activity Feed',

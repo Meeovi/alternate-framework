@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-12 title_block">
                         <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
-                            <strong>Order: {{ order?.id }}</strong></h3>
+                            <strong>Order: {{ order?.number ?? order?.id }}</strong></h3>
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -19,11 +19,11 @@
                                         <span class="mbr-iconfont mobi-mbri-cart-full mobi-mbri"></span>
                                     </div>
                                 </div>
-                                <p class="card-text mbr-fonts-style display-4">Order: {{ order?.id }}</p>
+                                <p class="card-text mbr-fonts-style display-4">Order: {{ order?.number ?? order?.id }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Order Date: {{ order?.date_created ? new Date(order.date_created).toLocaleDateString() : '' }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Bill to Name: {{ order?.customer_firstname }} {{ order?.customer_lastname }}</p>
                                 <p class="card-text mbr-fonts-style display-4">Payment Status: {{ order?.payment_status }}</p>
-                                <p class="btn_link mbr-fonts-style display-4"><NuxtLink :to="`/order/${order?.id}`" class="text-secondary">View<span class="mobi-mbri mobi-mbri-right mbr-iconfont"></span></NuxtLink></p>
+                                <p class="btn_link mbr-fonts-style display-4"><NuxtLink :to="`/order/${encodeURIComponent(order?.key ?? order?.id)}`" class="text-secondary">View<span class="mobi-mbri mobi-mbri-right mbr-iconfont"></span></NuxtLink></p>
                             </div>
                         </div>
                     </div>

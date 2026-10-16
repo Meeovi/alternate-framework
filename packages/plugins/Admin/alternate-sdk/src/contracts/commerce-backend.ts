@@ -54,6 +54,38 @@ export type PaidOrder = {
   }
 }
 
+/**
+ * An order as the app's order pages show it — the same shape the app's
+ * own (Directus) orders have, so pages don't care which backend it came
+ * from. Totals are integer minor units (cents, like Stripe); line item
+ * amounts are major units.
+ */
+export type BackendOrder = {
+  /** The backend's own order id (the app routes it as `<backend>:<id>`). */
+  id: string
+  /** The order number shown to the customer. */
+  number: string
+  date_created: string
+  /** pending | completed | refunded | cancelled | on-hold | failed */
+  payment_status: string
+  fulfillment_status?: string | null
+  order_currency_code: string
+  grand_total: number
+  subtotal: number
+  tax_amount: number
+  shipping_amount: number
+  total_paid: number
+  total_refunded: number
+  total_due: number
+  customer_firstname?: string | null
+  customer_lastname?: string | null
+  customer_email?: string | null
+  line_items_snapshot: { product_id: string | null, name: string, quantity: number, unit_amount: number, subtotal: number }[]
+  tracking_number?: string | null
+  tracking_url?: string | null
+  shipment_carrier?: string | null
+}
+
 export interface CommerceBackendAdapter {
   readonly id: string
   readonly collections: string[]
@@ -76,6 +108,13 @@ export interface CommerceBackendAdapter {
    * Optional: feature-detect with `typeof adapter.placePaidOrder === 'function'`.
    */
   placePaidOrder?(order: PaidOrder): Promise<{ id: string, number: string, created: boolean }>
+  /**
+   * A customer's order history in this backend, newest first. Optional:
+   * feature-detect with `typeof adapter.customerOrders === 'function'`.
+   */
+  customerOrders?(customerId: string, options?: { page?: number, pageSize?: number }): Promise<BackendOrder[]>
+  /** One of the customer's orders; null when it isn't theirs or doesn't exist. */
+  customerOrder?(customerId: string, orderId: string): Promise<BackendOrder | null>
 }
 
 const registry = new Map<string, CommerceBackendAdapter>()

@@ -46,4 +46,29 @@ interface ExternalOrderManagementInterface
      * @return string[]
      */
     public function getPurchasedSkus(int $customerId): array;
+
+    /**
+     * The customer's orders, newest first (order history for the app).
+     *
+     * @param int $customerId
+     * @param int $pageSize 1-100
+     * @param int $currentPage 1-based
+     * @return string JSON array of orders: {id, number, createdAt, status,
+     *   state, paymentStatus, currency, grandTotal, subtotal, taxAmount,
+     *   shippingAmount, totalPaid, totalRefunded, totalDue,
+     *   customer: {firstname, lastname, email},
+     *   items: [{sku, name, qty, price, rowTotal}],
+     *   tracking: [{number, carrier, title}]}
+     */
+    public function getCustomerOrders(int $customerId, int $pageSize = 50, int $currentPage = 1): string;
+
+    /**
+     * One of the customer's orders (404 when it isn't theirs).
+     *
+     * @param int $customerId
+     * @param int $orderId
+     * @return string JSON object, same shape as one getCustomerOrders row.
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getCustomerOrder(int $customerId, int $orderId): string;
 }

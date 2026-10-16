@@ -24,8 +24,8 @@
                                       <h4 class="card-title mbr-fonts-style display-7">
                                           Order Information
                                       </h4>
-                                      <NuxtLink class="card-text mbr-fonts-style display-7" :to="`/order/${order?.id}`">Order #:
-                                          {{ order?.id }}</NuxtLink>
+                                      <NuxtLink class="card-text mbr-fonts-style display-7" :to="`/order/${encodeURIComponent(order?.key ?? order?.id)}`">Order #:
+                                          {{ order?.number ?? order?.id }}</NuxtLink>
                                       <p class="card-text mbr-fonts-style display-7">Order Date:
                                           {{ order?.date_created ? new Date(order.date_created).toLocaleDateString() : '' }}</p>
                                       <p class="card-text mbr-fonts-style display-7">Order Status:
@@ -281,30 +281,26 @@
     // interpolating the raw integer.
     const { formatPrice } = useCurrencyStore()
 
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
-
     const { data: session } = await useAuth().getSession()
     const currentUserId = session?.user?.id ?? null
 
+    // The order comes from wherever it lives — a commerce backend's order
+    // history (route key `<backend>:<id>`, e.g. Magento) or the app's own
+    // Directus orders — via /api/commerce/orders/:key, which only ever
+    // returns the signed-in user's own order.
+    const orderKey = computed(() => String(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id ?? ''))
+    const requestFetch = useRequestFetch()
     const {
         data: order
     } = await useAsyncData('order', async () => {
-        if (!currentUserId) return null
-        const results = await $directus.request($readItems('orders', {
-            filter: {
-                id: { _eq: route.params.id },
-                buyer_id: { _eq: currentUserId }
-            },
-            limit: 1
-        }))
-        return results?.[0] ?? null
-    })
+        if (!currentUserId || !orderKey.value) return null
+        const result = await requestFetch<{ order: any }>(`/api/commerce/orders/${encodeURIComponent(orderKey.value)}`)
+            .catch(() => null)
+        return result?.order ?? null
+    }, { watch: [orderKey] })
 
     useHead({
-        title: order?.value?.id ? `Order ${order.value.id}` : 'Order Page',
+        title: order?.value?.id ? `Order ${order.value.number ?? order.value.id}` : 'Order Page',
     })
 
     // Fallback to the confirmation email's download link (server/api/
@@ -316,7 +312,7 @@
         return !!expiresAt && new Date(expiresAt) < new Date()
     })
     const downloadUrl = computed(() => {
-        if (!order?.value?.id) return ''
+        if (!order?.value?.id || order.value.source !== 'directus') return ''
         const token = order.value.download_token
         return token ? `/api/download/${order.value.id}?token=${token}` : `/api/download/${order.value.id}`
     })

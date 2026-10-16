@@ -127,6 +127,102 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getCustomerOrders(int $customerId, int $pageSize = 50, int $currentPage = 1): string
+    {
+        $orders = $this->orderCollectionFactory->create();
+        $orders->addFieldToFilter('customer_id', $customerId);
+        $orders->setOrder('created_at', 'DESC');
+        $orders->setPageSize(max(1, min(100, $pageSize)));
+        $orders->setCurPage(max(1, $currentPage));
+
+        $rows = [];
+        /** @var Order $order */
+        foreach ($orders as $order) {
+            $rows[] = $this->orderRow($order);
+        }
+        return json_encode($rows, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCustomerOrder(int $customerId, int $orderId): string
+    {
+        try {
+            /** @var Order $order */
+            $order = $this->orderRepository->get($orderId);
+        } catch (NoSuchEntityException $e) {
+            $order = null;
+        }
+        // Someone else's order is "not found", not "forbidden".
+        if ($order === null || (int) $order->getCustomerId() !== $customerId) {
+            throw new NoSuchEntityException(__('Order %1 not found.', $orderId));
+        }
+        return json_encode($this->orderRow($order), JSON_THROW_ON_ERROR);
+    }
+
+    /** An order as the app's order history shows it. */
+    private function orderRow(Order $order): array
+    {
+        $items = [];
+        foreach ($order->getAllVisibleItems() as $item) {
+            $items[] = [
+                'sku' => (string) $item->getSku(),
+                'name' => (string) $item->getName(),
+                'qty' => (float) $item->getQtyOrdered(),
+                'price' => (float) $item->getPrice(),
+                'rowTotal' => (float) $item->getRowTotal(),
+            ];
+        }
+        $tracking = [];
+        foreach ($order->getTracksCollection() as $track) {
+            $tracking[] = [
+                'number' => (string) $track->getTrackNumber(),
+                'carrier' => (string) $track->getCarrierCode(),
+                'title' => (string) $track->getTitle(),
+            ];
+        }
+        return [
+            'id' => (int) $order->getId(),
+            'number' => (string) $order->getIncrementId(),
+            'createdAt' => (string) $order->getCreatedAt(),
+            'status' => (string) $order->getStatus(),
+            'state' => (string) $order->getState(),
+            'paymentStatus' => $this->paymentStatus($order),
+            'currency' => (string) $order->getOrderCurrencyCode(),
+            'grandTotal' => (float) $order->getGrandTotal(),
+            'subtotal' => (float) $order->getSubtotal(),
+            'taxAmount' => (float) $order->getTaxAmount(),
+            'shippingAmount' => (float) $order->getShippingAmount(),
+            'totalPaid' => (float) $order->getTotalPaid(),
+            'totalRefunded' => (float) $order->getTotalRefunded(),
+            'totalDue' => (float) $order->getTotalDue(),
+            'customer' => [
+                'firstname' => (string) $order->getCustomerFirstname(),
+                'lastname' => (string) $order->getCustomerLastname(),
+                'email' => (string) $order->getCustomerEmail(),
+            ],
+            'items' => $items,
+            'tracking' => $tracking,
+        ];
+    }
+
+    /** The app's payment statuses (pending, completed, refunded, cancelled, on-hold). */
+    private function paymentStatus(Order $order): string
+    {
+        return match ((string) $order->getState()) {
+            Order::STATE_CLOSED => 'refunded',
+            Order::STATE_CANCELED => 'cancelled',
+            Order::STATE_HOLDED => 'on-hold',
+            Order::STATE_PROCESSING, Order::STATE_COMPLETE =>
+                (float) $order->getTotalDue() > 0.0049 ? 'pending' : 'completed',
+            default => 'pending',
+        };
+    }
+
+    /**
      * @param ExternalOrderItemInterface[] $items
      */
     private function place(

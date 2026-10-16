@@ -22,6 +22,27 @@ function rfc3986Encode(value: string): string {
   return encodeURIComponent(value).replace(/[!*'()]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`)
 }
 
+/** A customer's order as Meeovi_MarketplaceApi returns it. */
+export interface MagentoCustomerOrder {
+  id: number
+  number: string
+  createdAt: string
+  status: string
+  state: string
+  paymentStatus: string
+  currency: string
+  grandTotal: number
+  subtotal: number
+  taxAmount: number
+  shippingAmount: number
+  totalPaid: number
+  totalRefunded: number
+  totalDue: number
+  customer: { firstname: string, lastname: string, email: string }
+  items: { sku: string, name: string, qty: number, price: number, rowTotal: number }[]
+  tracking: { number: string, carrier: string, title: string }[]
+}
+
 export class MagentoAdapter {
   [x: string]: any;
   private client: GraphQLClient
@@ -1418,6 +1439,22 @@ export class MagentoAdapter {
     /** SKUs the customer has paid for (invoiced, not refunded). */
     purchasedSkus: (credentials: MagentoOAuth1Credentials, customerId: number) =>
       this.adminRest<string[]>('GET', `/meeovi-marketplace/customers/${encodeURIComponent(String(customerId))}/purchased-skus`, credentials),
+
+    /** The customer's orders, newest first (JSON rows, see the Magento module's README). */
+    customerOrders: async (credentials: MagentoOAuth1Credentials, customerId: number, page = 1, pageSize = 50) =>
+      JSON.parse(await this.adminRest<string>('GET',
+        `/meeovi-marketplace/customers/${encodeURIComponent(String(customerId))}/orders?pageSize=${pageSize}&currentPage=${page}`, credentials)) as MagentoCustomerOrder[],
+
+    /** One of the customer's orders; null when it isn't theirs or doesn't exist. */
+    customerOrder: async (credentials: MagentoOAuth1Credentials, customerId: number, orderId: number) => {
+      try {
+        return JSON.parse(await this.adminRest<string>('GET',
+          `/meeovi-marketplace/customers/${encodeURIComponent(String(customerId))}/orders/${encodeURIComponent(String(orderId))}`, credentials)) as MagentoCustomerOrder
+      } catch (error) {
+        if ((error as { status?: number }).status === 404) return null
+        throw error
+      }
+    },
 
     /** The approved Webkul seller of each SKU (store-owned SKUs are left out). */
     productSellers: (credentials: MagentoOAuth1Credentials, skus: string[]) => {

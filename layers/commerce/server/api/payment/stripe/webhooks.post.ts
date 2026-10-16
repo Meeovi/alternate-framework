@@ -377,6 +377,18 @@ export default defineEventHandler(async (event) => {
             }
           })
 
+          // Lines a commerce backend owns (`magento:<sku>`) were ordered
+          // there (recordBackendOrders, above) and live in its order
+          // history. A Directus order only records the Directus-catalog
+          // lines; a cart with none of those writes no Directus order.
+          const directusItems = items.filter((item) => !item.product_id || /^\d+$/.test(item.product_id))
+          if (!directusItems.length) {
+            if (buyer_id) {
+              await notifyPurchase(buyer_id, { id: paymentIntentId }, checkoutSession.amount_total ?? 0, checkoutSession.currency)
+            }
+            break
+          }
+
           // Digital fulfillment for the standard cart checkout — distinct
           // from the marketplace listing_type branch above, which has no
           // reachable purchase flow of its own. `products.type` doesn't
@@ -547,7 +559,7 @@ export default defineEventHandler(async (event) => {
               customer_email: buyerEmail || null,
               customer_firstname: customerFirstname || null,
               customer_lastname: customerLastname || null,
-              line_items_snapshot: items,
+              line_items_snapshot: directusItems,
               tracking_number: shipment?.tracking_number || null,
               tracking_url: shipment?.tracking_url || null,
               label_url: shipment?.label_url || null,
