@@ -2,7 +2,15 @@
 
 Kanban board with To Do / In Progress / Done columns mapped to `list_items.status`. Also serves the legacy `Board` list type.
 
-Runs in the integrations sandbox (`sandbox/`, plain HTML/JS, no outside connections): the lists page embeds it with `<IntegrationFrame>` and lends it `list.items` / `list.create` / `list.update` / `list.remove`, scoped to the list on screen. Cards move by drag and drop or with the ← → buttons.
+A [SVAR Kanban](https://docs.svar.dev/vue/kanban/) board (`@svar-ui/vue-kanban`: drag and drop, card editor, context menu, toolbar search/sort) run in the integrations sandbox, with no outside connections: the lists page embeds it with `<IntegrationFrame>` and lends it `list.items` / `list.create` / `list.update` / `list.remove`, scoped to the list on screen.
+
+The sandbox UI is built from `sandbox-src/` (Vue + SVAR) into `sandbox/app.js` + `sandbox/app.css`:
+
+```bash
+npm run build:sandbox -w @mframework/list-type-kanban
+```
+
+Rebuild and commit `sandbox/` after changing `sandbox-src/` or upgrading SVAR. The build is a single classic script (the sandbox is an opaque origin) with SVAR's icon font inlined (its CDN is blocked by the sandbox CSP); `sandbox/index.html` is hand-written.
 
 One of the plug-and-play `list-type-*` plugins. Each renders one kind of
 list on the social layer's `/lists/list/[slug]` page and is enabled just by

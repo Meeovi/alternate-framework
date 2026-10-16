@@ -1,7 +1,7 @@
 {
   "name": "@mframework/list-type-kanban",
   "version": "0.1.0",
-  "description": "Plug-and-play 'Kanban' / 'Board' list type for M Framework lists: a SVAR Kanban board over the Directus list_items collection.",
+  "description": "Plug-and-play Kanban list type for M Framework lists: a SVAR Kanban board, run in the integrations sandbox.",
   "mframework": {
     "integration": {
       "name": "Kanban board",
@@ -30,6 +30,7 @@
   ],
   "scripts": {
     "build": "echo 'list-type-kanban is consumed from source (module.ts); no build step' && exit 0",
+    "build:sandbox": "vite build --config sandbox-src/vite.config.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "keywords": [
@@ -56,6 +57,8 @@
     "@types/node": "latest",
     "nuxt": "^4.6.1",
     "typescript": "~6.0.3",
-    "vue": "^3.5.41"
+    "vue": "^3.5.41",
+    "vite": "^8.3.3",
+    "@vitejs/plugin-vue": "^6.0.9"
   }
 }
