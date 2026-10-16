@@ -69,9 +69,11 @@ await test('SP3', 'OpenSearch description is served', async () => {
   expect(r.status === 200 && /OpenSearchDescription/.test(r.text), `HTTP ${r.status}`)
   expect(!/localhost|127\.0\.0\.1|0\.0\.0\.0/.test(r.text), 'points at a local URL')
 })
-await test('SP4', 'search notifications need a session', async () => {
+// The per-layer notification routes were removed (Novu is the only
+// notification system); make sure they stay gone.
+await test('SP4', 'the old search notifications route stays removed', async () => {
   const r = await req('POST', '/api/notifications/search', { json: {} })
-  expect(r.status === 401, `HTTP ${r.status}`)
+  expect(r.status === 404 || r.status === 405, `HTTP ${r.status}`)
 })
 
 finish('/home/meebuzo/.meeovi-demo/test-results-search.json')
