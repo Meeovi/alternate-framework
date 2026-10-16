@@ -23,6 +23,15 @@ export default defineNuxtModule<ModuleOptions>({
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
 
+    // 0. Under `nuxt dev`, DEV_MAGENTO_* (the dev store's Integration) stand
+    //    in for MAGENTO_* — set here, before the Nitro server and later
+    //    modules (meeovi-dropshipping, the business driver) read them.
+    if (nuxt.options.dev) {
+      for (const key of ['MAGENTO_CONSUMER_KEY', 'MAGENTO_CONSUMER_SECRET', 'MAGENTO_ACCESS_TOKEN', 'MAGENTO_ACCESS_TOKEN_SECRET']) {
+        if (process.env[`DEV_${key}`]) process.env[key] = process.env[`DEV_${key}`]
+      }
+    }
+
     // 1. Publish only non-secret fields to `public` runtime config (it is
     //    serialized into the client payload). `token` is deliberately kept
     //    out of `public` — the adapter never attaches it anyway (GQL_KEY is
