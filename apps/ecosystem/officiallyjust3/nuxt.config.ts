@@ -7,12 +7,12 @@ import {
 import { defineNuxtConfig } from 'nuxt/config'
 
 const layers = useLayers(__dirname, {
-  shared: '../../../../layers/shared',
-  auth: '../../../../layers/auth',
-  search: '../../../../layers/search',
-  commerce: '../../../../layers/commerce',
-  social: '../../../../layers/social',
-  ui: '../../../../layers/ui-shell'
+  shared: '../../../layers/shared',
+  auth: '../../../layers/auth',
+  search: '../../../layers/search',
+  commerce: '../../../layers/commerce',
+  social: '../../../layers/social',
+  ui: '../../../layers/ui-shell'
 })
 
 export default defineNuxtConfig({
@@ -21,8 +21,8 @@ export default defineNuxtConfig({
     ...Object.fromEntries(
       Object.entries(layers.alias('#')).map(([key, value]) => [key, resolve(__dirname, value)])
     ),
-    '@mframework/meeovi-forms': resolve(__dirname, '../../../../packages/plugins/Marketing-SEO/meeovi-forms/src'),
-    '@mframework/meeovi-forms/': resolve(__dirname, '../../../../packages/plugins/Marketing-SEO/meeovi-forms/src/') + '/'
+    '@mframework/meeovi-forms': resolve(__dirname, '../../../packages/plugins/Marketing-SEO/meeovi-forms/src'),
+    '@mframework/meeovi-forms/': resolve(__dirname, '../../../packages/plugins/Marketing-SEO/meeovi-forms/src/') + '/'
   },
   routeRules: {
     '/auth/login': {
@@ -104,12 +104,12 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@sentry/nuxt/module',
-    resolve(__dirname, '../../../../packages/plugins/Email-Notifications/meeovi-newsletter/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/Email-Notifications/meeovi-newsletter/module.ts'),
     // Optional federated-search backends for layers/search — each is off
     // until its env/config is set.
-    resolve(__dirname, '../../../../packages/plugins/Search/search-algolia/module.ts'),
-    resolve(__dirname, '../../../../packages/plugins/Search/search-meilisearch/module.ts'),
-    resolve(__dirname, '../../../../packages/plugins/Search/search-typesense/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/Search/search-algolia/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/Search/search-meilisearch/module.ts'),
+    resolve(__dirname, '../../../packages/plugins/Search/search-typesense/module.ts'),
   ],
 
   pinia: {

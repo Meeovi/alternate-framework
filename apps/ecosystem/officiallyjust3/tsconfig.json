@@ -4,7 +4,7 @@
     "verbatimModuleSyntax": false
   },
   "exclude": [
-    "../../../../layers/**/app/**/__tests__/**/*",
-    "../../../../layers/**/server/**/__tests__/**/*"
+    "../../../layers/**/app/**/__tests__/**/*",
+    "../../../layers/**/server/**/__tests__/**/*"
   ]
 }
