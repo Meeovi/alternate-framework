@@ -278,15 +278,18 @@ POST /rest/V1/meeovi-marketplace/orders
   "amountPaid": 9.99, "currency": "USD", "billingAddress": { … optional … } }
 ```
 → `{order_id, increment_id, created}`. Built as a normal customer quote and
-placed with `CartManagementInterface::placeOrder()`, which fires
-`checkout_submit_all_after` — Webkul's `SalesOrderPlaceAfterObserver` records
+placed the way `CartManagement::placeOrder()` places one (`submit()` between
+`checkout_submit_before` and `checkout_submit_all_after`, on the same quote
+object) — Webkul's `SalesOrderPlaceAfterObserver` records
 the seller's sale — then invoiced offline (Webkul's invoice observer runs
 too; a virtual order completes). Paid with **`meeovi_external`** ("Paid on
 Meeovi (Stripe)"), an offline method that is never offered at the
 storefront checkout. Idempotent on `reference` (stored as `ext_order_id`,
 with a lock against concurrent webhook retries). Refused if Magento's total
 differs from `amountPaid`, if the currency isn't the store's, or if an item
-needs shipping. Billing address: the customer's default, else the one sent.
+needs shipping. Billing address: the customer's default, else the one sent;
+it isn't validated, because the payment provider already took the payment and
+for a card only collects country and postcode.
 
 ```
 GET /rest/V1/meeovi-marketplace/customers/:customerId/purchased-skus

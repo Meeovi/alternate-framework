@@ -8,15 +8,16 @@ use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\DB\TransactionFactory;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Lock\LockManagerInterface;
 use Magento\Payment\Model\Method\AbstractMethod;
-use Magento\Quote\Api\CartManagementInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\AddressInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteFactory;
+use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
@@ -33,9 +34,10 @@ use Psr\Log\LoggerInterface;
 /**
  * See ExternalOrderManagementInterface.
  *
- * The order is built as a normal customer quote and placed with
- * CartManagementInterface::placeOrder(), which dispatches
- * `checkout_submit_all_after` — the event Webkul_Marketplace records each
+ * The order is built as a normal customer quote and placed the way
+ * CartManagement::placeOrder() places one (submit() between the
+ * `checkout_submit_before` and `checkout_submit_all_after` events) —
+ * `checkout_submit_all_after` is the event Webkul_Marketplace records each
  * seller's sale on (Webkul\Marketplace\Observer\SalesOrderPlaceAfterObserver).
  * The offline invoice that follows fires `sales_order_invoice_save_after`,
  * Webkul's invoice/commission hook. Only virtual and downloadable products:
@@ -55,7 +57,8 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         private StoreManagerInterface $storeManager,
         private QuoteFactory $quoteFactory,
         private CartRepositoryInterface $cartRepository,
-        private CartManagementInterface $cartManagement,
+        private QuoteManagement $quoteManagement,
+        private EventManager $eventManager,
         private OrderRepositoryInterface $orderRepository,
         private OrderCollectionFactory $orderCollectionFactory,
         private InvoiceService $invoiceService,
@@ -287,10 +290,21 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         }
 
         $this->cartRepository->save($quote);
-        $orderId = (int) $this->cartManagement->placeOrder((int) $quote->getId());
+
+        // What CartManagement::placeOrder() does for a customer cart, on this
+        // quote object: placeOrder() reloads the quote, which would drop the
+        // billing address's skip-validation flag (it isn't stored). The two
+        // events are the ones Webkul and inventory listen to; Webkul credits
+        // the seller from checkout_submit_all_after.
+        $this->eventManager->dispatch('checkout_submit_before', ['quote' => $quote]);
+        $placed = $this->quoteManagement->submit($quote);
+        if (!$placed) {
+            throw new LocalizedException(__('Magento could not place the order.'));
+        }
+        $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $placed, 'quote' => $quote]);
 
         /** @var Order $order */
-        $order = $this->orderRepository->get($orderId);
+        $order = $this->orderRepository->get((int) $placed->getId());
         $order->setExtOrderId($reference);
         $order->addCommentToStatusHistory(__('Paid with Stripe in the Meeovi app (%1).', $reference));
         $this->orderRepository->save($order);
@@ -299,10 +313,16 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         return $order;
     }
 
-    /** The customer's default billing address, or the one sent with the order. */
+    /**
+     * The customer's default billing address, or the one sent with the order.
+     * Not validated: the app's payment provider has already taken the
+     * payment, and for a card it only collects country and postcode, which
+     * Magento's address rules (street, city, phone) would otherwise refuse.
+     */
     private function setBillingAddress(Quote $quote, CustomerInterface $customer, ?AddressInterface $sent): void
     {
         $billing = $quote->getBillingAddress();
+        $billing->setShouldIgnoreValidation(true);
         $defaultId = $customer->getDefaultBilling();
         if ($defaultId) {
             try {
