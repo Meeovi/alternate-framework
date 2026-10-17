@@ -1,6 +1,6 @@
 import { createDirectus, rest, staticToken, readItems, createItem } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
-import { resolveListItemKind, normalizeId } from '#social/server/utils/listItemKinds'
+import { resolveListItemKind, normalizeId, savedItemId } from '#social/server/utils/listItemKinds'
 
 // Saves an item (a product, space, or vibe — see listItemKinds.ts) to one
 // of the current user's lists via the real per-kind junction table.
@@ -21,7 +21,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'listId and itemId are required' })
   }
   const listId = normalizeId(body.listId)
-  const itemId = normalizeId(body.itemId)
+  const itemId = savedItemId(body.itemId)
+  if (itemId === null) throw createError({ statusCode: 400, statusMessage: 'This item can\'t be saved to a list' })
 
   const owned = await directus.request(
     readItems('lists' as any, {

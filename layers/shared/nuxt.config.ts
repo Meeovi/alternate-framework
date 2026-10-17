@@ -57,16 +57,15 @@ function buildContentSecurityPolicy(): string {
   // server/utils/pixanomy.ts. Public share links are played back directly.
   const pixanomyHttps = httpsOrigin(process.env.NUXT_PIXANOMY_URL || 'https://app.pixanomy.com')
 
-  // Self-hosted Novu (/home/meebuzo/github/novu) is plain http:// on a raw
-  // IP, not https:// like the others above — httpsOrigin() would rewrite
-  // the scheme to something nothing is actually listening on, so these are
-  // used as-is. NOVU_WEBSOCKET_HOSTNAME is given as http:// too (matches
-  // its own container's exposed port) but the client opens it as a
-  // WebSocket, and Novu's socket.io client also polls over plain http
-  // before upgrading — both schemes need to be allowed for that host.
+  // Self-hosted Novu (/home/meebuzo/github/novu). Used as given: either
+  // its own ports (http://<ip>:3090 / :3092 — browsers block those from an
+  // https page) or proxied over the site's https, e.g.
+  // NOVU_API_HOSTNAME=https://<site>/novu-api, NOVU_WEBSOCKET_HOSTNAME=https://<site>
+  // and NOVU_WEBSOCKET_PATH=/novu-ws/socket.io. Novu's socket.io client
+  // polls over http(s) before upgrading, so both schemes are allowed.
   const novuApi = process.env.NOVU_API_HOSTNAME || ''
   const novuWs = process.env.NOVU_WEBSOCKET_HOSTNAME || ''
-  const novuWss = novuWs.replace(/^https?:\/\//, 'ws://')
+  const novuWss = novuWs.replace(/^http(s?):\/\//, 'ws$1://')
 
   // Analytics / marketing tag endpoints. Google Tag Manager (configured
   // with a real container id) can itself load any of these downstream, and
@@ -573,6 +572,8 @@ export default defineNuxtConfig({
       // their notifications by passing it as `subscriber` client-side).
       novuBackendUrl: process.env.NOVU_API_HOSTNAME || '',
       novuSocketUrl: process.env.NOVU_WEBSOCKET_HOSTNAME || '',
+      // socket.io path when Novu is proxied under a prefix (see novuApi above).
+      novuSocketPath: process.env.NOVU_WEBSOCKET_PATH || '',
       segmentWriteKey: process.env.NUXT_PUBLIC_SEGMENT_WRITE_KEY || '',
       googleAdsense: {
         id: process.env.GOOGLE_ADSENSE_ID,

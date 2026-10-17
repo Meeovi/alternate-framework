@@ -78,6 +78,7 @@ onMounted(async () => {
     // all — same fix pattern as adapter-magento's node:crypto import
     // earlier this session.
     const { NovuUI } = await import('@novu/js/ui')
+    const novuSocketPath = (config.public as { novuSocketPath?: string }).novuSocketPath
     novu = new NovuUI({
       options: {
         applicationIdentifier: session.applicationIdentifier,
@@ -85,6 +86,7 @@ onMounted(async () => {
         subscriberHash: session.subscriberHash,
         apiUrl: (config.public as { novuBackendUrl?: string }).novuBackendUrl,
         socketUrl: (config.public as { novuSocketUrl?: string }).novuSocketUrl,
+        ...(novuSocketPath && { socketOptions: { socketType: 'self-hosted', path: novuSocketPath } }),
       },
     })
     novu.mountComponent({ name: 'Inbox', props: {}, element: containerEl.value })

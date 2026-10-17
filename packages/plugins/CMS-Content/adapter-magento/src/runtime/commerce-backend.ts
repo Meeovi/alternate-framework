@@ -134,7 +134,7 @@ export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter, cre
       }
     : undefined
 
-  // Order history lives in Magento; reading it needs the Integration too.
+  // Order history and sellers live in Magento; reading them needs the Integration too.
   const orders = credentials
     ? {
         async customerOrders(customerId: string, options?: { page?: number, pageSize?: number }) {
@@ -145,6 +145,13 @@ export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter, cre
           if (!/^\d+$/.test(orderId)) return null
           const row = await magento.marketplaceOrders.customerOrder(credentials, Number(customerId), Number(orderId))
           return row ? toBackendOrder(row) : null
+        },
+        // Webkul sellers, by SKU (Meeovi_MarketplaceApi products/sellers).
+        async productSellers(skus: string[]) {
+          const wanted = [...new Set(skus.filter(Boolean))].slice(0, 100)
+          if (!wanted.length) return {}
+          const rows = await magento.marketplaceOrders.productSellers(credentials, wanted)
+          return Object.fromEntries(rows.map((row) => [row.sku, { customerId: String(row.seller_id), name: row.shop_title?.trim() || null }]))
         },
       }
     : {}

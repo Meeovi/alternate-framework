@@ -1,6 +1,6 @@
 import { createDirectus, rest, staticToken, readItems, deleteItems } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
-import { resolveListItemKind, normalizeId } from '#social/server/utils/listItemKinds'
+import { resolveListItemKind, normalizeId, savedItemId } from '#social/server/utils/listItemKinds'
 
 const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
@@ -15,7 +15,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'listId and itemId are required' })
   }
   const listId = normalizeId(body.listId)
-  const itemId = normalizeId(body.itemId)
+  const itemId = savedItemId(body.itemId)
+  if (itemId === null) throw createError({ statusCode: 400, statusMessage: 'This item can\'t be saved to a list' })
 
   const owned = await directus.request(
     readItems('lists' as any, {

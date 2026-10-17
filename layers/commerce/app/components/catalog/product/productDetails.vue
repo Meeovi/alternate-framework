@@ -25,7 +25,10 @@
                             <!-- Product Made By -->
                             <v-list-item>
                                 <v-list-item-title>
-                                    By: <strong>{{ productDetails?.shops?.[0]?.shops_id?.name || 'Unknown' }}</strong>
+                                    By: <strong>
+                                        <NuxtLink v-if="sellerProfile" :to="sellerProfile">{{ sellerName }}</NuxtLink>
+                                        <template v-else>{{ sellerName }}</template>
+                                    </strong>
                                 </v-list-item-title>
                             </v-list-item>
 
@@ -106,7 +109,8 @@
                             <!-- Create List / RSS Feed -->
                             <v-list-item>
                                 <div class="product-actions">
-                                    <createListBtn :item="listProduct" kind="product" />
+                                    <!-- Lists hold Directus products only (lists_products). -->
+                                    <createListBtn v-if="!backendKey" :item="listProduct" kind="product" />
                                     <NuxtLink v-if="productRssLink" :to="productRssLink" target="_blank"
                                         rel="noopener" class="text-sm no-underline">
                                         Follow product feed
@@ -154,6 +158,7 @@
     import addToCartBtn from '../../blocks/addToCartBtn.vue';
     import compareBtn from '../../blocks/compareBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
+    import { parseProductKey, productKey } from '../../../utils/productKey';
     import {
         getAssetURL,
         hasAsset
@@ -208,6 +213,25 @@
     const productTags = computed(() => (props.productDetails?.tags || [])
         .map((row: any) => row?.tags_id)
         .filter((tag: any) => tag && typeof tag === 'object' && (tag.name || tag.slug)));
+
+    // A commerce backend's product (`magento:<sku>`) has its seller in that
+    // backend; Directus products name their shop on the product.
+    const backendKey = computed(() => {
+        const key = productKey(props.productDetails)
+        return parseProductKey(key) ? key : null
+    })
+    const { data: backendSeller } = useLazyFetch('/api/commerce/products/seller', {
+        query: { key: backendKey },
+        immediate: !!backendKey.value,
+        watch: [backendKey],
+    })
+    const sellerName = computed(() => (backendKey.value
+        ? (backendSeller.value as { seller?: { name?: string } } | null)?.seller?.name
+        : props.productDetails?.shops?.[0]?.shops_id?.name) || 'Unknown')
+    const sellerProfile = computed(() => {
+        const username = (backendSeller.value as { seller?: { username?: string | null } } | null)?.seller?.username
+        return backendKey.value && username ? `/u/${encodeURIComponent(username)}` : null
+    })
 
     // createListBtn's panel needs a resolved image URL, not the raw Directus
     // asset reference productDetails.image holds.

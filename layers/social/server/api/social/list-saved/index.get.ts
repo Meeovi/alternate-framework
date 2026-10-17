@@ -1,6 +1,6 @@
 import { createDirectus, rest, staticToken, readItems } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
-import { resolveListItemKind, normalizeId } from '#social/server/utils/listItemKinds'
+import { resolveListItemKind, savedItemId } from '#social/server/utils/listItemKinds'
 
 // Membership check: "which of this user's lists already contain item X of
 // kind Y (product/space/vibe)". Scoped in a single query via the `lists`
@@ -20,7 +20,9 @@ export default defineEventHandler(async (event) => {
   if (!query.itemId) {
     throw createError({ statusCode: 400, statusMessage: 'itemId is required' })
   }
-  const itemId = normalizeId(query.itemId)
+  const itemId = savedItemId(query.itemId)
+  // Not a kind of item lists can hold, so it's in none of them.
+  if (itemId === null) return []
 
   // `lists.user` is an M2M alias (-> lists_directus_users, columns
   // list_id/user_id), not a plain scalar field — a bare `_eq` 500s

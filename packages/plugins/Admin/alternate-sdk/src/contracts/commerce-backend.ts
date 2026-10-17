@@ -86,6 +86,14 @@ export type BackendOrder = {
   shipment_carrier?: string | null
 }
 
+/** Who sells a product in a marketplace backend (e.g. a Webkul seller). */
+export type BackendSeller = {
+  /** The seller's customer id in the backend (what the app links users by). */
+  customerId: string
+  /** Shop name, when the seller set one. */
+  name: string | null
+}
+
 export interface CommerceBackendAdapter {
   readonly id: string
   readonly collections: string[]
@@ -115,6 +123,11 @@ export interface CommerceBackendAdapter {
   customerOrders?(customerId: string, options?: { page?: number, pageSize?: number }): Promise<BackendOrder[]>
   /** One of the customer's orders; null when it isn't theirs or doesn't exist. */
   customerOrder?(customerId: string, orderId: string): Promise<BackendOrder | null>
+  /**
+   * The seller of each product, keyed by product key; products with no
+   * seller are left out. Optional (marketplace backends only).
+   */
+  productSellers?(keys: string[]): Promise<Record<string, BackendSeller>>
 }
 
 const registry = new Map<string, CommerceBackendAdapter>()

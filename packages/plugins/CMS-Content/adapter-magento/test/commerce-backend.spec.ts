@@ -70,3 +70,19 @@ describe('createMagentoCommerceBackendAdapter.getProductsByCategory', () => {
     expect(adapter.collections).toEqual(['products', 'orders'])
   })
 })
+
+describe('productSellers', () => {
+  it('maps Webkul sellers by SKU, with the shop title as the name', async () => {
+    const productSellers = vi.fn(async () => [
+      { sku: 'a', seller_id: 97, shop_title: ' Max Shop ', shop_url: 'seller-97' },
+      { sku: 'b', seller_id: 5, shop_title: null, shop_url: 'elitenovels' },
+    ])
+    const backend = createMagentoCommerceBackendAdapter({ marketplaceOrders: { productSellers } } as any, { consumerKey: 'k', consumerSecret: 's', accessToken: 't', accessTokenSecret: 'u' })
+    expect(await backend.productSellers!(['a', 'b', 'a', ''])).toEqual({ a: { customerId: '97', name: 'Max Shop' }, b: { customerId: '5', name: null } })
+    expect(productSellers).toHaveBeenCalledWith(expect.anything(), ['a', 'b'])
+  })
+
+  it('is absent without Integration credentials', () => {
+    expect(createMagentoCommerceBackendAdapter({} as any).productSellers).toBeUndefined()
+  })
+})

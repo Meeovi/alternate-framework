@@ -45,6 +45,7 @@ onMounted(async () => {
     // line: a static top-level import of this Solid.js-based module
     // throws during SSR the moment it's evaluated, not just when called.
     const { NovuUI } = await import('@novu/js/ui')
+    const novuSocketPath = (config.public as { novuSocketPath?: string }).novuSocketPath
     novu = new NovuUI({
       options: {
         applicationIdentifier: session.applicationIdentifier,
@@ -52,6 +53,7 @@ onMounted(async () => {
         subscriberHash: session.subscriberHash,
         apiUrl: (config.public as { novuBackendUrl?: string }).novuBackendUrl,
         socketUrl: (config.public as { novuSocketUrl?: string }).novuSocketUrl,
+        ...(novuSocketPath && { socketOptions: { socketType: 'self-hosted', path: novuSocketPath } }),
       },
     })
     novu.mountComponent({ name: 'InboxContent', props: {}, element: containerEl.value })

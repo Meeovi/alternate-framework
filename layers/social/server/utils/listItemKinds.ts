@@ -48,3 +48,13 @@ export function normalizeId(raw: unknown): string | number {
   const asNumber = Number(asString)
   return asString !== '' && Number.isFinite(asNumber) ? asNumber : asString
 }
+
+/**
+ * The item id for a saved-item junction, or null: every kind's id is a
+ * positive integer, so anything else (e.g. a commerce backend's product,
+ * keyed `magento:<sku>` or by its uid) isn't something a list can hold.
+ */
+export function savedItemId(raw: unknown): number | null {
+  const id = normalizeId(raw)
+  return typeof id === 'number' && Number.isInteger(id) && id > 0 ? id : null
+}
