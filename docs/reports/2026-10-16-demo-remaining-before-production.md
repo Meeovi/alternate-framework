@@ -7,15 +7,14 @@
 ## Remaining blockers
 
 1. **Enforce the CSP.** It is report-only today. Exercise checkout (Stripe and PayPal), sign-in (Turnstile), search, notifications and ads on the demo, make sure no violations are reported, then switch it to enforce.
-2. **Restrict the Directus token's role** so it can't read the auth tables.
-3. **Auth flows behind Turnstile.** Check sign-up and password reset by hand in a browser, since the test suite can't solve the captcha.
-4. **Production test accounts.** The user clean-up removed the QA user and QA seller accounts, so the suites that sign in as them now fail. Recreate them through the sign-up form (it needs the captcha), or point those suites at QA Admin where that's enough.
-5. **Rotate keys and sign out all sessions.** Scheduled for the end of the project; do it last, before the move to meeovi.com:
-   - JWKS, the OAuth client secret, API keys and Directus tokens;
+2. **Deploy the Turnstile change** (commit `77bcee50`, not deployed yet). Once it's live, scripts can't sign in, so the production tests need another way to get a session (see "Waiting on you"), and sign-up, sign-in and password reset need a browser check.
+3. **Production test accounts.** The user clean-up removed the QA user and QA seller accounts, so the suites that sign in as them now fail. Recreate them through the sign-up form (it needs the captcha), or point those suites at QA Admin where that's enough.
+4. **Rotate keys and sign out all sessions.** Scheduled for the end of the project; do it last, before the move to meeovi.com:
+   - JWKS, the OAuth client secret, API keys and Directus tokens (the app now uses the "Meeovi app server" token; remove the static token from the "Meeovi Administrator" account, kept in `/root/directus-admin-token` until then);
    - the Magento Integration tokens: reauthorize "Meeovi App" and update `demo.env` and the local `.env`;
    - the Stripe Tax secret key stored in commerce's Magento config: its encrypted value was printed during the 17 October checks;
    - the Bluesky app password "meeovi-app" (revoke it on the account and create a new one).
-6. **Switch Novu to `NODE_ENV=production`.** It runs as `local` on purpose until launch. Change it in `/root/novu-3.19/api.env`, then run `docker compose up -d api` from that folder.
+5. **Switch Novu to `NODE_ENV=production`.** It runs as `local` on purpose until launch. Change it in `/root/novu-3.19/api.env`, then run `docker compose up -d api` from that folder.
 
 ## Before the move to meeovi.com
 
@@ -39,7 +38,7 @@
   - absorb the `auth`, `search` and social `nolive` layouts;
   - trim the app-level CSS (Bootstrap, Mobirise, `search.css`, `styles.css`) down to brand overrides.
 - **Fediverse:** set `ACTIVITYPUB_ACCESS_TOKEN`; without it, ActivityPub is limited to anonymous hashtag search.
-- **Plugins:** register the remaining 11 absolute-path plugins by name, as workspace and app dependencies.
+- **Env clean-up:** the app's `.env` still carries `NUXTUS_DIRECTUS_ADMIN_EMAIL` / `NUXTUS_DIRECTUS_ADMIN_PASSWORD` (Directus admin login), which no code reads; remove them.
 
 ## After launch
 
@@ -61,6 +60,7 @@
 | Approval for any change on live meeovi.com Magento, or confirming meeovi.com uses commerce | Moving to meeovi.com |
 | Tax decision for Magento products | Moving to meeovi.com |
 | An ActivityPub (Mastodon) access token | Fediverse search |
+| How the production tests get a session once sign-in needs Turnstile | Blocker 2 |
 
 ## Done
 
@@ -118,3 +118,6 @@
 - **Auth:** the unused alternate-sdk auth path is gone (the adapters' `AuthAdapterRegistry` registrations and the auth layer's dead `runtimeConfig.mframework`). better-auth is the only auth.
 - **officiallyjust3:** its layer and plugin paths are fixed (three levels up, not four), so `nuxt prepare` and the repo-wide `npm install` post-install step work again.
 - **Bluesky server:** the three old test accounts (`claudetest1`–`3`) were deleted; only `meeovi.sky.meeovicms.com` remains.
+- **Directus token restricted:** the app uses a new "Meeovi app server" account (policy: all 478 content collections, files, read-only schema; no access to the 32 auth tables, settings or roles). Live on the demo and in local dev; verified (auth tables refused, content and lists flows work, no permission errors in the test run).
+- **Plugins:** every plugin is registered by name (`acc7dc85`); meeovi-forms and experience-builder moved from the shared layer into the apps that use them.
+- **Turnstile** now guards every unauthenticated auth flow in code (`77bcee50`): password, username and email-code sign-in, Bluesky sign-in and sign-up, and resending the verification email, besides sign-up, password reset and magic link.
