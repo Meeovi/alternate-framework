@@ -35,15 +35,11 @@
 
 ## Should do before launch
 
-- **Auth:** remove the unused SDK auth registrations in adapter-directus and adapter-magento.
 - **ui-shell:**
   - absorb the `auth`, `search` and social `nolive` layouts;
   - trim the app-level CSS (Bootstrap, Mobirise, `search.css`, `styles.css`) down to brand overrides.
 - **Fediverse:** set `ACTIVITYPUB_ACCESS_TOKEN`; without it, ActivityPub is limited to anonymous hashtag search.
-- **Lists and Magento products:** lists can only hold Directus products, so "Add to List" is hidden for Magento products. Saving them needs somewhere to store a product reference; decide whether it's needed.
-- **Bluesky PDS clean-up:** sky.meeovicms.com still has 3 test accounts (likely `claudetest1`, `claudetest2` and one more) whose app users were deleted.
 - **Plugins:** register the remaining 11 absolute-path plugins by name, as workspace and app dependencies.
-- **Repo:** `apps/ecosystem/officiallyjust3` has layer paths that go one level too far up, which breaks `npm install`'s post-install step for the whole repo.
 
 ## After launch
 
@@ -55,6 +51,7 @@
 - **Indexing:** index Magento products into OpenSearch, or query Magento's own index.
 - **Dropshipping:** port it to the sandbox and deploy it, as planned for after launch.
 - **Localization:** a full extraction pass if more languages are added.
+- **officiallyjust3 test:** `test/unit/alternate-search-layer.test.ts` imports `packages/modules/alternate-search`, which was deleted in an older commit; remove or rewrite the test.
 - **Novu analytics:** the API logs ClickHouse connection errors because none is installed. Only activity analytics are affected; add ClickHouse if those are wanted.
 
 ## Waiting on you
@@ -64,13 +61,12 @@
 | Approval for any change on live meeovi.com Magento, or confirming meeovi.com uses commerce | Moving to meeovi.com |
 | Tax decision for Magento products | Moving to meeovi.com |
 | An ActivityPub (Mastodon) access token | Fediverse search |
-| Whether Magento products should be savable to lists | Lists |
 
 ## Done
 
 ### 16 October
 
-- The working tree is committed on `beta/production-readiness` (19 commits as of `45a8d746`, not pushed yet).
+- The working tree is committed on `beta/production-readiness` (not pushed yet).
 - Production tests were rerun against the redeployed demo:
   - shared (31), ui-shell (9), search (10), social (22), security (15) and business (16) pass;
   - business has 1 check deliberately skipped, because it would change real shop data or request a payout;
@@ -118,3 +114,7 @@
   - service account `meeovi.sky.meeovicms.com` (support@meeovi.com), with its main password in `/home/meebuzo/.meeovi-demo/bluesky-service-account.json`;
   - the "meeovi-app" app password is in `demo.env` and the local `.env`;
   - site search returns Bluesky posts.
+- **Lists:** products from any commerce backend (e.g. `magento:<sku>`) can be saved to lists. They're stored in the new Directus collection `lists_backend_products` with a snapshot from their backend, and the list page has a "Saved products" section for both kinds. Verified end to end on the demo.
+- **Auth:** the unused alternate-sdk auth path is gone (the adapters' `AuthAdapterRegistry` registrations and the auth layer's dead `runtimeConfig.mframework`). better-auth is the only auth.
+- **officiallyjust3:** its layer and plugin paths are fixed (three levels up, not four), so `nuxt prepare` and the repo-wide `npm install` post-install step work again.
+- **Bluesky server:** the three old test accounts (`claudetest1`–`3`) were deleted; only `meeovi.sky.meeovicms.com` remains.
