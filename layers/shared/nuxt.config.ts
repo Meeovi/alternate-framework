@@ -57,12 +57,12 @@ function buildContentSecurityPolicy(): string {
   // server/utils/pixanomy.ts. Public share links are played back directly.
   const pixanomyHttps = httpsOrigin(process.env.NUXT_PIXANOMY_URL || 'https://app.pixanomy.com')
 
-  // Self-hosted Novu (/home/meebuzo/github/novu). Used as given: either
-  // its own ports (http://<ip>:3090 / :3092 — browsers block those from an
-  // https page) or proxied over the site's https, e.g.
-  // NOVU_API_HOSTNAME=https://<site>/novu-api, NOVU_WEBSOCKET_HOSTNAME=https://<site>
-  // and NOVU_WEBSOCKET_PATH=/novu-ws/socket.io. Novu's socket.io client
-  // polls over http(s) before upgrading, so both schemes are allowed.
+  // Self-hosted Novu, served over https at its own host:
+  // NOVU_API_HOSTNAME=https://novu.meeovicms.com/api and
+  // NOVU_WEBSOCKET_HOSTNAME=https://novu.meeovicms.com (its containers listen
+  // on 127.0.0.1 only). NOVU_WEBSOCKET_PATH is only for a host that serves
+  // socket.io under a prefix. Novu's socket.io client polls over http(s)
+  // before upgrading, so both schemes are allowed.
   const novuApi = process.env.NOVU_API_HOSTNAME || ''
   const novuWs = process.env.NOVU_WEBSOCKET_HOSTNAME || ''
   const novuWss = novuWs.replace(/^http(s?):\/\//, 'ws$1://')
