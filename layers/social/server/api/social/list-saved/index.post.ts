@@ -1,13 +1,16 @@
 import { createDirectus, rest, staticToken, readItems, createItem } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
-import { resolveListItemKind, normalizeId, savedItemId } from '#social/server/utils/listItemKinds'
+import { normalizeId, savedItemTarget } from '#social/server/utils/listItemKinds'
+import { backendProductSnapshot } from '#social/server/utils/backendProducts'
 
 // Saves an item (a product, space, or vibe — see listItemKinds.ts) to one
 // of the current user's lists via the real per-kind junction table.
 // `list_items` (a separate collection for todo-style entries: title,
 // status, dueDate, etc.) has no columns for any of these — the older
 // addtolist.vue/createListBtn.vue components wrote product fields onto it,
-// which never matched the live schema.
+// which never matched the live schema. Commerce-backend products
+// (`magento:<sku>`) go to lists_backend_products with a display snapshot
+// read from their backend.
 const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
   .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
@@ -15,14 +18,13 @@ const directus = createDirectus(process.env.DIRECTUS_URL!)
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const body = await readBody(event)
-  const { junctionCollection, itemIdColumn } = resolveListItemKind(body?.kind)
-
   if (!body?.listId || !body?.itemId) {
     throw createError({ statusCode: 400, statusMessage: 'listId and itemId are required' })
   }
   const listId = normalizeId(body.listId)
-  const itemId = savedItemId(body.itemId)
-  if (itemId === null) throw createError({ statusCode: 400, statusMessage: 'This item can\'t be saved to a list' })
+  const target = savedItemTarget(body.kind, body.itemId)
+  if (!target) throw createError({ statusCode: 400, statusMessage: 'This item can\'t be saved to a list' })
+  const { junctionCollection, itemIdColumn, itemId } = target
 
   const owned = await directus.request(
     readItems('lists' as any, {
@@ -45,6 +47,14 @@ export default defineEventHandler(async (event) => {
   if ((existing as any[]).length) {
     // Already saved to this list — treat as a success, not a conflict.
     return (existing as any[])[0]
+  }
+
+  if (target.backend) {
+    const snapshot = await backendProductSnapshot(target.backend.id, target.backend.key)
+    if (!snapshot) throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+    return directus.request(
+      createItem(junctionCollection as any, { lists_id: listId, [itemIdColumn]: itemId, ...snapshot }),
+    )
   }
 
   return directus.request(

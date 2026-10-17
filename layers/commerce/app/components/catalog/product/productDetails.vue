@@ -109,8 +109,7 @@
                             <!-- Create List / RSS Feed -->
                             <v-list-item>
                                 <div class="product-actions">
-                                    <!-- Lists hold Directus products only (lists_products). -->
-                                    <createListBtn v-if="!backendKey" :item="listProduct" kind="product" />
+                                    <createListBtn :item="listProduct" kind="product" />
                                     <NuxtLink v-if="productRssLink" :to="productRssLink" target="_blank"
                                         rel="noopener" class="text-sm no-underline">
                                         Follow product feed
@@ -234,9 +233,10 @@
     })
 
     // createListBtn's panel needs a resolved image URL, not the raw Directus
-    // asset reference productDetails.image holds.
+    // asset reference productDetails.image holds. Its id is the product key:
+    // the Directus id, or `<backend>:<sku>` (saved to lists_backend_products).
     const listProduct = computed(() => ({
-        id: props.productDetails?.id,
+        id: backendKey.value || props.productDetails?.id,
         name: props.productDetails?.name,
         image: hasAsset(props.productDetails?.image) ? getAssetURL(props.productDetails?.image) : undefined,
         price: pricing.value?.formatted?.final || props.productDetails?.price,

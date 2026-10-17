@@ -1,6 +1,6 @@
 import { createDirectus, rest, staticToken, readItems } from '@directus/sdk'
 import { requireAuth } from '#auth/server/utils/sessions'
-import { resolveListItemKind, savedItemId } from '#social/server/utils/listItemKinds'
+import { savedItemTarget } from '#social/server/utils/listItemKinds'
 
 // Membership check: "which of this user's lists already contain item X of
 // kind Y (product/space/vibe)". Scoped in a single query via the `lists`
@@ -8,6 +8,8 @@ import { resolveListItemKind, savedItemId } from '#social/server/utils/listItemK
 // saved items elsewhere, see app/pages/lists/list/[...slug].vue) filtered
 // by both `user` and the nested item id — Directus resolves that against
 // the real junction table, so there's no separate ownership lookup needed.
+// Commerce-backend products (`magento:<sku>`) are matched on
+// lists.backend_products.product_key.
 const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(rest())
   .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
@@ -15,14 +17,13 @@ const directus = createDirectus(process.env.DIRECTUS_URL!)
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const query = getQuery(event)
-  const { listsAliasField, itemIdColumn } = resolveListItemKind(query.kind)
 
   if (!query.itemId) {
     throw createError({ statusCode: 400, statusMessage: 'itemId is required' })
   }
-  const itemId = savedItemId(query.itemId)
+  const target = savedItemTarget(query.kind, query.itemId)
   // Not a kind of item lists can hold, so it's in none of them.
-  if (itemId === null) return []
+  if (!target) return []
 
   // `lists.user` is an M2M alias (-> lists_directus_users, columns
   // list_id/user_id), not a plain scalar field — a bare `_eq` 500s
@@ -32,7 +33,7 @@ export default defineEventHandler(async (event) => {
       fields: ['id'],
       filter: {
         user: { user_id: { _eq: user.id } },
-        [listsAliasField]: { [itemIdColumn]: { _eq: itemId } },
+        [target.listsAliasField]: { [target.itemIdColumn]: { _eq: target.itemId } },
       },
     }),
   )

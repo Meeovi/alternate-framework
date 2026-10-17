@@ -16,3 +16,31 @@ describe('savedItemId', () => {
     expect(savedItemId(1.5)).toBeNull()
   })
 })
+
+describe('savedItemTarget', () => {
+  it('sends commerce-backend product keys to lists_backend_products', async () => {
+    const { savedItemTarget } = await import('../../server/utils/listItemKinds')
+    expect(savedItemTarget('product', 'magento:meeovi-habit-tracker')).toEqual({
+      junctionCollection: 'lists_backend_products',
+      itemIdColumn: 'product_key',
+      listsAliasField: 'backend_products',
+      itemId: 'magento:meeovi-habit-tracker',
+      backend: { id: 'magento', key: 'meeovi-habit-tracker' },
+    })
+  })
+
+  it('keeps Directus products, spaces and vibes on their junctions', async () => {
+    const { savedItemTarget } = await import('../../server/utils/listItemKinds')
+    expect(savedItemTarget('product', '42')).toMatchObject({ junctionCollection: 'lists_products', itemIdColumn: 'products_id', itemId: 42 })
+    expect(savedItemTarget('product', 'directus:42')).toBeNull()
+    expect(savedItemTarget('space', 7)).toMatchObject({ junctionCollection: 'spaces_lists', itemId: 7 })
+    // Only products can come from a commerce backend.
+    expect(savedItemTarget('vibe', 'magento:x')).toBeNull()
+  })
+
+  it('refuses what lists can\'t hold', async () => {
+    const { savedItemTarget } = await import('../../server/utils/listItemKinds')
+    expect(savedItemTarget('product', 'MjExNg==')).toBeNull()
+    expect(savedItemTarget('product', '')).toBeNull()
+  })
+})

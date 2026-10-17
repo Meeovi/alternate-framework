@@ -58,3 +58,43 @@ export function savedItemId(raw: unknown): number | null {
   const id = normalizeId(raw)
   return typeof id === 'number' && Number.isInteger(id) && id > 0 ? id : null
 }
+
+/**
+ * A product from a commerce backend (adapter-magento, …), keyed
+ * `<backend>:<key>` like everywhere else in the app (cart lines,
+ * /product/<key>). Lists keep these in `lists_backend_products`
+ * (lists.backend_products), since `lists_products` can only point at a
+ * Directus product.
+ */
+const BACKEND_PRODUCT_KEY = /^([a-z][a-z0-9-]{1,31}):(.{1,128})$/
+
+export type SavedItemTarget = {
+  /** Where the saved row lives, and the column holding the item. */
+  junctionCollection: string
+  itemIdColumn: string
+  /** The lists alias that reads these rows back. */
+  listsAliasField: string
+  itemId: string | number
+  /** Set for a commerce-backend product. */
+  backend?: { id: string, key: string }
+}
+
+/** Where a saved item is stored, or null when lists can't hold it. */
+export function savedItemTarget(rawKind: unknown, rawId: unknown): SavedItemTarget | null {
+  const kind = resolveListItemKind(rawKind)
+  if (kind.kind === 'product') {
+    const match = BACKEND_PRODUCT_KEY.exec(String(rawId ?? '').trim())
+    if (match && match[1] !== 'directus') {
+      return {
+        junctionCollection: 'lists_backend_products',
+        itemIdColumn: 'product_key',
+        listsAliasField: 'backend_products',
+        itemId: `${match[1]}:${match[2]}`,
+        backend: { id: match[1]!, key: match[2]! },
+      }
+    }
+  }
+  const itemId = savedItemId(rawId)
+  if (itemId === null) return null
+  return { junctionCollection: kind.junctionCollection, itemIdColumn: kind.itemIdColumn, listsAliasField: kind.listsAliasField, itemId }
+}

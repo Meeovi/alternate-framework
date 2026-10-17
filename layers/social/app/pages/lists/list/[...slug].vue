@@ -37,6 +37,18 @@
     <v-alert v-else type="info" variant="tonal" class="ma-4">
       No list-type plugin is installed for "{{ listTypeName || 'this list' }}".
     </v-alert>
+
+    <!-- Products saved with "Add to List": the site's own catalogue
+         (lists_products) and commerce backends such as Magento
+         (lists_backend_products). -->
+    <section v-if="savedProducts.length" class="pa-4">
+      <h2 class="text-h6 mb-3">Saved products</h2>
+      <v-row>
+        <v-col v-for="product in savedProducts" :key="product.key" cols="12" sm="6" md="4" lg="3">
+          <productCard :product="product" />
+        </v-col>
+      </v-row>
+    </section>
   </div>
 </template>
 
@@ -45,6 +57,7 @@
     useRoute
   } from 'vue-router'
   import Grid from '#ui/app/components/ui/DataGrid/components/Grid.vue'
+  import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 
   const route = useRoute();
   const {
@@ -71,6 +84,7 @@
         'spaces.spaces_id.*',
         'products.products_id.*',
         'products.products_id.image.*',
+        'backend_products.*',
         'vibez.shorts_id.*',
         'list_template.templates.*',
         'image.*',
@@ -91,6 +105,29 @@
   })
 
   const list = computed(() => listRaw.value?.[0] || null)
+
+  // A backend product's row keeps a snapshot; `source` + `sku` give
+  // productCard its /product/<backend>:<sku> link and cart key.
+  const savedProducts = computed(() => [
+    ...(list.value?.products || [])
+      .map((row) => row?.products_id)
+      .filter((product) => product && typeof product === 'object')
+      .map((product) => ({ ...product, key: `directus:${product.id}` })),
+    ...(list.value?.backend_products || [])
+      .filter((row) => typeof row?.product_key === 'string' && row.product_key.includes(':'))
+      .map((row) => {
+        const split = row.product_key.indexOf(':')
+        return {
+          key: row.product_key,
+          id: row.backend_id || row.product_key,
+          source: row.product_key.slice(0, split),
+          sku: row.product_key.slice(split + 1),
+          name: row.name,
+          image: row.image,
+          price: row.price,
+        }
+      }),
+  ])
 
   const appConfig = useAppConfig()
   const listTypeName = computed(() => list.value?.list_type?.list_type_id?.name)
