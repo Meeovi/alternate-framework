@@ -1,68 +1,35 @@
 # demo.meeovicms.com: what's left before production
 
-**Date:** 16 October 2026
+**Date:** 16 October 2026, updated 17 October 2026
 **Follows:** [Production readiness: layers and meeovi-frontend](2026-10-16-production-readiness.md)
 **Path to production:** meeovi-frontend is finished and tested on demo.meeovicms.com, then moves to meeovi.com, with commerce data from commerce.meeovicms.com (Mage-OS 3.6.0).
 
-## Done since the readiness report
+## Remaining blockers
 
-- The working tree is committed on `beta/production-readiness` (11 commits, not pushed yet).
-- **Demo redeployed** (16 October, from commit `4d5a5828`): order history, the kanban board, the CSP host list, English-only and the `DEV_` key handling are live.
-- Production tests were rerun against the redeployed demo:
-  - shared (31), ui-shell (9), search (10), social (22), security (15) and business (16) all pass;
-  - business has 1 check deliberately skipped, because it would change real shop data or request a payout;
-  - commerce has one known failure (`/api/commerce/driver`, see "After launch");
-  - auth: 9 checks are blocked by Turnstile and 1 by the sign-in rate limit, not by bugs.
-- Search:
-  - each provider now has a timeout (`ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS`, default 5 s), so one slow backend no longer holds up a search;
-  - the Magento provider moved into adapter-magento and the AT Protocol provider into meeovi-atproto.
-- Social:
-  - Directus is registered as a federation network ("Meeovi": the site's members and its published, public posts), so federation always has a source that answers;
-  - federation routes stop waiting for a network after 8 s.
-- Search and social were verified in a running app; they reach the demo with the next deploy.
-- Auth: SSO, SCIM, generic OAuth, phone-number and anonymous sign-in moved out of the auth layer into packages under `packages/plugins/Authentication/` (`@mframework/auth-*`). meeovi-frontend doesn't register them, so they're off for launch; registering one turns it back on.
-- English only: the French locale is removed.
-- Notifications: Novu is the only system. The broken `/api/notifications/*` routes and the `@betternotify` packages are gone.
-- Order history comes from the commerce backend (adapter-magento → `Meeovi_MarketplaceApi`). It's read through `/api/commerce/orders`, so the commerce layer stays backend-agnostic.
-- Magento Integration "Meeovi App" on commerce:
-  - granted `external_orders`, `seller_dashboard` and `catalog_sync`, and nothing else;
-  - its keys are in the demo env, and as `DEV_MAGENTO_*` for local dev;
-  - verified with signed API calls.
-- commerce.meeovicms.com:
-  - upgraded to Mage-OS 3.6.0;
-  - Redis cache restored through a composer patch;
-  - orphaned extension attributes removed.
-- The kanban list type is built on `@svar-ui/vue-kanban` inside the sandbox.
-
-## Blockers
-
-1. **Test purchase on staging, end to end.** Buy a paid integration product on demo.meeovicms.com with Stripe test mode, and confirm that:
-   - the Magento order is created on commerce, and Webkul credits the seller;
-   - the integration unlocks (it shows "Purchased" and installs);
-   - the order appears under Orders, read from Magento.
-
-   No purchase has been made on commerce yet, so this path hasn't run with real data.
-2. **Customer links.** At last count, 16 of 60 users had no linked Magento customer, so they can't buy Magento products. Either backfill them, or do it as part of the user clean-up (item 3).
-3. **User clean-up.** Remove every user except Joanne Doe and Max Doe.
-   - This can't be undone.
-   - It also removes the QA accounts the production test suites sign in with.
-   - Run it last, after the final test run, or recreate QA accounts afterwards.
-4. **Enforce the CSP.** It is report-only today. Exercise checkout (Stripe and PayPal), sign-in (Turnstile), search and ads on the demo, make sure no violations are reported, then switch it to enforce.
-5. **Restrict the Directus token's role** so it can't read the auth tables.
-6. **Rotate keys and sign out all sessions.** This is scheduled for the end of the project; do it last, before the move to meeovi.com:
+1. **Enforce the CSP.** It is report-only today. Exercise checkout (Stripe and PayPal), sign-in (Turnstile), search, notifications and ads on the demo, make sure no violations are reported, then switch it to enforce.
+2. **Restrict the Directus token's role** so it can't read the auth tables.
+3. **Auth flows behind Turnstile.** Check sign-up and password reset by hand in a browser, since the test suite can't solve the captcha.
+4. **Production test accounts.** The user clean-up removed the QA user and QA seller accounts, so the suites that sign in as them now fail. Recreate them through the sign-up form (it needs the captcha), or point those suites at QA Admin where that's enough.
+5. **Rotate keys and sign out all sessions.** Scheduled for the end of the project; do it last, before the move to meeovi.com:
    - JWKS, the OAuth client secret, API keys and Directus tokens;
-   - the Magento Integration tokens: reauthorize the Integration and update both env files.
-7. **Auth flows behind Turnstile.** Check sign-up and password reset by hand in a browser, since the test suite can't solve the captcha.
+   - the Magento Integration tokens: reauthorize "Meeovi App" and update `demo.env` and the local `.env`;
+   - the Stripe Tax secret key stored in commerce's Magento config: its encrypted value was printed during the 17 October checks;
+   - the Bluesky app password "meeovi-app" (revoke it on the account and create a new one).
+6. **Switch Novu to `NODE_ENV=production`.** It runs as `local` on purpose until launch. Change it in `/root/novu-3.19/api.env`, then run `docker compose up -d api` from that folder.
 
 ## Before the move to meeovi.com
 
-- **Live meeovi.com Magento:**
-  - it still has the orphaned extension attributes that crashed the commerce admin;
-  - it doesn't have the `Meeovi_MarketplaceApi` additions from today (external orders, order history, product sellers);
-  - it needs approval before anything is changed there.
-
-  Alternatively, meeovi.com keeps using commerce.meeovicms.com as its backend, as planned.
-- **Magento-side tax.** Stripe tax and discount codes are switched off for Magento lines. Decide whether Magento or Stripe calculates tax for backend products.
+- **Live meeovi.com Magento** needs approval before anything changes there. Alternatively, meeovi.com keeps using commerce.meeovicms.com as its backend, as planned. If live stays in use, it:
+  - still has the orphaned extension attributes that crashed the commerce admin;
+  - lacks the `Meeovi_MarketplaceApi` additions (external orders, order history, product sellers);
+  - probably has the same Stripe Tax setup (a live key in the "test" slot) and the same Bss "Also Bought" PHP error that blocked every order on commerce;
+  - still has the old 85% marketplace commission.
+- **meeovi.com app configuration:**
+  - its own Stripe webhook endpoint for `/api/payment/stripe/webhooks`, with that endpoint's secret in its env;
+  - Novu: `NOVU_API_HOSTNAME=https://novu.meeovicms.com/api` and `NOVU_WEBSOCKET_HOSTNAME=https://novu.meeovicms.com`;
+  - Bluesky: `ATPROTO_IDENTIFIER` and `ATPROTO_APP_PASSWORD`.
+- **Magento-side tax.** Stripe tax and discount codes are switched off for Magento lines, and Stripe Tax is now off on commerce. Decide whether Magento or Stripe calculates tax for backend products.
+- **Indexing on commerce.** The cron job that applies the indexer backlog (`indexer_update_all_views`) hasn't run since the Mage-OS 3.6 upgrade, so new products don't reach the storefront until someone reindexes by hand.
 - **Magento full-page cache.** The commerce homepage is sent as `no-cache`, so it is never cached. Find the block or setting that makes it uncacheable.
 - **Directus latency.** Directus runs on Supabase in Frankfurt while the server is in Canada, so uncached pages take about 10 s. Turn on Directus caching, or move the database closer.
 
@@ -72,8 +39,9 @@
 - **ui-shell:**
   - absorb the `auth`, `search` and social `nolive` layouts;
   - trim the app-level CSS (Bootstrap, Mobirise, `search.css`, `styles.css`) down to brand overrides.
-- **Social credentials (yours to create):**
-  - set the AT Protocol service account (`ATPROTO_IDENTIFIER`, `ATPROTO_APP_PASSWORD`) and `ACTIVITYPUB_ACCESS_TOKEN`; Bluesky timelines and search are empty without them.
+- **Fediverse:** set `ACTIVITYPUB_ACCESS_TOKEN`; without it, ActivityPub is limited to anonymous hashtag search.
+- **Lists and Magento products:** lists can only hold Directus products, so "Add to List" is hidden for Magento products. Saving them needs somewhere to store a product reference; decide whether it's needed.
+- **Bluesky PDS clean-up:** sky.meeovicms.com still has 3 test accounts (likely `claudetest1`, `claudetest2` and one more) whose app users were deleted.
 - **Plugins:** register the remaining 11 absolute-path plugins by name, as workspace and app dependencies.
 - **Repo:** `apps/ecosystem/officiallyjust3` has layer paths that go one level too far up, which breaks `npm install`'s post-install step for the whole repo.
 
@@ -87,14 +55,66 @@
 - **Indexing:** index Magento products into OpenSearch, or query Magento's own index.
 - **Dropshipping:** port it to the sandbox and deploy it, as planned for after launch.
 - **Localization:** a full extraction pass if more languages are added.
+- **Novu analytics:** the API logs ClickHouse connection errors because none is installed. Only activity analytics are affected; add ClickHouse if those are wanted.
 
 ## Waiting on you
 
 | Item | Needed for |
 | --- | --- |
-| Bluesky service account and an ActivityPub token | Social |
-| Removing the search layer's unused adapter-magento and meeovi-atproto dependencies | Clean-up |
-| Stripe test-mode purchase (or approval for me to run one on staging) | Blocker 1 |
-| When to run the user clean-up | Blocker 3 |
-| Approval for any change on live meeovi.com Magento | Moving to meeovi.com |
+| Approval for any change on live meeovi.com Magento, or confirming meeovi.com uses commerce | Moving to meeovi.com |
 | Tax decision for Magento products | Moving to meeovi.com |
+| An ActivityPub (Mastodon) access token | Fediverse search |
+| Whether Magento products should be savable to lists | Lists |
+
+## Done
+
+### 16 October
+
+- The working tree is committed on `beta/production-readiness` (19 commits as of `45a8d746`, not pushed yet).
+- Production tests were rerun against the redeployed demo:
+  - shared (31), ui-shell (9), search (10), social (22), security (15) and business (16) pass;
+  - business has 1 check deliberately skipped, because it would change real shop data or request a payout;
+  - commerce has one known failure (`/api/commerce/driver`, see "After launch");
+  - auth: 9 checks are blocked by Turnstile and 1 by the sign-in rate limit, not by bugs.
+- English only: the French locale is removed.
+- Notifications: Novu is the only system. The broken `/api/notifications/*` routes and the `@betternotify` packages are gone.
+- Order history comes from the commerce backend (adapter-magento → `Meeovi_MarketplaceApi`), read through `/api/commerce/orders`, so the commerce layer stays backend-agnostic.
+- Magento Integration "Meeovi App" on commerce: granted `external_orders`, `seller_dashboard` and `catalog_sync` only; its keys are in the demo env, and as `DEV_MAGENTO_*` for local dev.
+- commerce.meeovicms.com: upgraded to Mage-OS 3.6.0, Redis cache restored through a composer patch, orphaned extension attributes removed.
+- The kanban list type is built on `@svar-ui/vue-kanban` inside the sandbox.
+
+### 17 October
+
+- **Search:**
+  - each provider has a timeout (`ALTERNATE_SEARCH_PROVIDER_TIMEOUT_MS`, default 5 s);
+  - the Magento and AT Protocol providers live in adapter-magento and meeovi-atproto;
+  - the search layer no longer depends on either package.
+- **Social:**
+  - Directus is a federation network ("Meeovi": the site's members and their published, public posts);
+  - federation routes stop waiting for a network after 8 s.
+- **Auth:** SSO, SCIM, generic OAuth, phone-number and anonymous sign-in are packages under `packages/plugins/Authentication/` (`@mframework/auth-*`). meeovi-frontend doesn't register them, so they're off for launch.
+- **User clean-up:** 57 accounts deleted. Joanne Doe, Max Doe and QA Admin (the only admin) remain. Backup: `/root/backups/users-cleanup-2026-10-17T0416/backup.json`.
+- **Staging test purchase passed end to end.** Habit Tracker is a paid integration ($4.99, SKU `meeovi-habit-tracker`, sold by Max Doe). QA Admin bought it with Stripe's test card:
+  - install was refused (402) before buying and worked after;
+  - Magento order 000000005 was created and invoiced;
+  - Webkul credited the seller;
+  - Orders shows it as paid.
+- **Fixes made along the way:**
+  - a test-mode Stripe webhook endpoint for the demo;
+  - checkout skips address and shipping when nothing in the cart ships;
+  - the order module no longer re-validates the billing address Stripe collected;
+  - Stripe Tax switched off on commerce (it held a live key in its test slot);
+  - the Bss "Also Bought" PHP 8.4 error that failed every commerce order is fixed.
+- **Commission:** sellers keep 85% and Meeovi 15% on commerce (the global setting and every seller's rate).
+- **Product page:**
+  - the seller shows as "By: Max Doe", linked to their profile;
+  - the list check no longer returns 500 for Magento products;
+  - the notification bell, which never loaded because of a plain-http address, now works.
+- **Novu:**
+  - served at https://novu.meeovicms.com: dashboard at `/`, API at `/api`, live connection at `/socket.io`;
+  - containers rebuilt from their running settings in `/root/novu-3.19`, with ports 3090, 3092 and 4000 closed to the internet;
+  - the demo and local dev both point at the new host.
+- **Bluesky:**
+  - service account `meeovi.sky.meeovicms.com` (support@meeovi.com), with its main password in `/home/meebuzo/.meeovi-demo/bluesky-service-account.json`;
+  - the "meeovi-app" app password is in `demo.env` and the local `.env`;
+  - site search returns Bluesky posts.
