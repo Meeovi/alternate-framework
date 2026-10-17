@@ -3,8 +3,9 @@ import { useRuntimeConfig } from '#imports'
 
 /**
  * Cloudflare Turnstile for the auth forms whose endpoints the server-side
- * better-auth `captcha` plugin guards (sign-up, password reset, magic link —
- * see shared/utils/plugins.ts). Render
+ * better-auth `captcha` plugin guards (sign-in, sign-up, password reset,
+ * magic link, verification email, Bluesky sign-in — see
+ * shared/utils/plugins.ts). Render
  * `<NuxtTurnstile v-if="captchaEnabled" ref="captchaWidget" v-model="captchaToken" />`
  * and pass `captchaFetchOptions()` as the auth call's fetch options.
  * Tokens are single-use, so call `resetCaptcha()` after every attempt.

@@ -384,17 +384,28 @@ export const plugins = [
   // oAuthProxy config as proxy.ts above.
   haveIBeenPwned(),
 
-  // Cloudflare Turnstile on the endpoints that create accounts or send
-  // email (account spam, inbox bombing). The forms send the token as
-  // `x-captcha-response`. Sign-in itself stays on the per-IP limits so
-  // scripted/API sign-ins keep working. Off when no secret is configured
-  // (local dev). /sign-in/anonymous only exists when an app registers
-  // @mframework/auth-anonymous; it creates an account, so it's covered here.
+  // Cloudflare Turnstile on every unauthenticated auth flow: signing in
+  // (password guessing), creating accounts (spam) and sending email (inbox
+  // bombing). The forms send the token as `x-captcha-response`
+  // (app/composables/useAuthCaptcha.ts). Endpoints match by substring, so
+  // /sign-in/email also covers /sign-in/email-otp. Off when no secret is
+  // configured (local dev). Scripts and the production tests can't pass
+  // it; the tests open sessions directly instead.
   ...(process.env.NUXT_TURNSTILE_SECRET_KEY
     ? [captcha({
         provider: 'cloudflare-turnstile',
         secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
-        endpoints: ['/sign-up/email', '/request-password-reset', '/sign-in/magic-link', '/sign-in/anonymous'],
+        endpoints: [
+          // sign-in
+          '/sign-in/email', '/sign-in/username', '/sign-in/magic-link', '/sign-in/atproto',
+          // accounts
+          '/sign-up/email', '/sign-up/atproto',
+          // only exists when an app registers @mframework/auth-anonymous
+          '/sign-in/anonymous',
+          // email sending
+          '/request-password-reset', '/send-verification-email',
+          '/email-otp/send-verification-otp', '/email-otp/request-password-reset', '/forget-password/email-otp',
+        ],
       })]
     : []),
 ]

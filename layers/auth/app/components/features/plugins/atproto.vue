@@ -72,12 +72,14 @@
         class="mb-4"
       />
 
+      <!-- Sign-in and sign-up are behind Turnstile; linking needs a session. -->
+      <NuxtTurnstile v-if="needsCaptcha" ref="captchaWidget" v-model="captchaToken" class="mb-2" />
       <v-btn
         type="submit"
         block
         :color="mode === 'link' ? 'secondary' : 'primary'"
         :loading="loading"
-        :disabled="loading"
+        :disabled="loading || (needsCaptcha && captchaMissing)"
         size="large"
       >
         {{ buttonLabel }}
@@ -90,6 +92,7 @@
   import { computed, ref, watchEffect } from 'vue'
   import { navigateTo, useFetch } from '#imports'
   import { useAuth } from '../../../composables/useAuth'
+  import { useAuthCaptcha } from '../../../composables/useAuthCaptcha'
 
   const props = defineProps<{
     /** 'sign-in': existing atproto identity, issues a fresh session (may
@@ -114,6 +117,8 @@
   const password = ref('')
   const passwordConfirmation = ref('')
   const loading = ref(false)
+  const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha } = useAuthCaptcha()
+  const needsCaptcha = computed(() => captchaEnabled && mode.value !== 'link')
   const alertMessage = ref('')
   const alertType = ref<'error' | 'success'>('error')
 
@@ -161,7 +166,7 @@
         session?: Record<string, unknown>
         isNewUser?: boolean
         atproto: { did: string, handle: string }
-      }>(path, { method: 'POST', body })
+      }>(path, { method: 'POST', body, ...(needsCaptcha.value ? captchaFetchOptions() : {}) })
 
       if (error) {
         alertType.value = 'error'
@@ -185,6 +190,7 @@
       console.error('atproto auth error:', err)
     } finally {
       loading.value = false
+      if (needsCaptcha.value) resetCaptcha()
     }
   }
 </script>

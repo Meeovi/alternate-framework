@@ -24,7 +24,8 @@
 
         <div class="text-center">
           <span class="text-caption">Didn't get the email?</span>
-          <v-btn variant="text" size="small" :loading="loading" :disabled="loading || !email"
+          <NuxtTurnstile v-if="captchaEnabled && email" ref="captchaWidget" v-model="captchaToken" class="my-2" />
+          <v-btn variant="text" size="small" :loading="loading" :disabled="loading || !email || captchaMissing"
             @click="resend">
             Resend link
           </v-btn>
@@ -60,6 +61,8 @@ const email = computed(() => {
 
 const loading = ref(false)
 const message = ref('')
+// Resending is behind Turnstile (it sends email).
+const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha } = useAuthCaptcha()
 const messageType = ref<'success' | 'error'>('success')
 
 async function resend() {
@@ -70,7 +73,7 @@ async function resend() {
     const { error } = await (authClient as any).sendVerificationEmail({
       email: email.value,
       callbackURL: '/login?verified=1',
-    })
+    }, captchaFetchOptions())
     if (error) {
       messageType.value = 'error'
       message.value = error.message || 'Could not resend the verification email.'
@@ -83,6 +86,7 @@ async function resend() {
     message.value = 'Could not resend the verification email.'
   } finally {
     loading.value = false
+    resetCaptcha()
   }
 }
 </script>

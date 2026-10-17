@@ -33,7 +33,9 @@
             </NuxtLink>
           </div>
 
-          <v-btn type="submit" block color="primary" :disabled="loading" :loading="loading" size="large" class="mb-4">
+          <NuxtTurnstile v-if="captchaEnabled" ref="captchaWidget" v-model="captchaToken" class="mb-2" />
+
+          <v-btn type="submit" block color="primary" :disabled="loading || captchaMissing" :loading="loading" size="large" class="mb-4">
             {{ redirecting ? 'Redirecting…' : (loading ? 'Signing in...' : 'Sign In') }}
           </v-btn>
         </v-form>
@@ -122,6 +124,9 @@
   // give the user feedback for that whole wait instead of the page just
   // appearing to hang after the "Signing in..." spinner already stopped.
   const redirecting = ref(false);
+  // Password sign-in is behind Turnstile (server: captcha endpoints in
+  // shared/utils/plugins.ts).
+  const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha } = useAuthCaptcha();
   const rememberMe = ref(false);
 
   // Alert local states
@@ -169,7 +174,7 @@
         email: email.value,
         password: password.value,
         rememberMe: rememberMe.value,
-      });
+      }, captchaFetchOptions());
       if (error) {
         const unverified = error.code === 'EMAIL_NOT_VERIFIED'
           || error.status === 403
@@ -197,6 +202,8 @@
     } finally {
       loading.value = false;
       redirecting.value = false;
+      // Turnstile tokens are single-use.
+      resetCaptcha();
     }
   }
 
