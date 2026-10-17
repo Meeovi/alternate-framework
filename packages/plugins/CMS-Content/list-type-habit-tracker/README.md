@@ -37,3 +37,12 @@ falls back to the entry marked `fallback` (the task list), or a
 Data goes through the host app's `$directus` client and
 `$readItems`/`$createItem`/`$updateItem`/`$deleteItem` builders
 (provided by `layers/shared`).
+
+## Sold in the store
+
+The manifest names the SKU `meeovi-habit-tracker`. That product lives in the
+commerce backend (a virtual Magento product, $4.99, sold by Max Doe through
+Webkul on commerce.meeovicms.com), so the integration is paid: a member can
+install it once they've bought it through the app's checkout, and the seller
+can always install it. See @mframework/meeovi-integrations, "Integrations are
+store products".

@@ -8,7 +8,8 @@
       "description": "Turn a list into daily habits with streak tracking.",
       "category": "Productivity",
       "icon": "fas fa-calendar-check",
-      "sandbox": "sandbox/index.html"
+      "sandbox": "sandbox/index.html",
+      "sku": "meeovi-habit-tracker"
     }
   },
   "license": "MIT",
