@@ -179,12 +179,6 @@ export default defineNuxtConfig({
 
   /*imports: {
     presets: [{
-        from: 'alternate-sdk/auth/adapter',
-        imports: [
-          ['default', 'useSdkAuthAdapter']
-        ],
-      },
-      {
         from: 'alternate-sdk/commerce/adapter',
         imports: [
           ['default', 'useSdkCommerceAdapter']

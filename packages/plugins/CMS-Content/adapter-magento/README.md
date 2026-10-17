@@ -8,7 +8,7 @@ Official Magento 2 adapter for the M Framework. This Nuxt module exposes a `$mag
 - **GraphQL client** — pre-configured `graphql-request` client pointed at your Magento endpoint
 - **Entity reader** — `readEntity` API that resolves GraphQL Mesh-prefixed or raw Magento root fields automatically
 - **50+ normalizers** — maps Magento payloads to normalized Directus-compatible shapes for products, categories, customers, orders, carts, and more
-- **alternate-sdk integration** — registers search, auth, and notification capabilities into shared registries for backend-agnostic composables
+- **alternate-sdk integration** — registers search, notification and commerce-backend capabilities into shared registries for backend-agnostic composables (auth is better-auth in layers/auth, not an SDK adapter)
 - **Environment-based config** — endpoint, store code, and token pulled from `runtimeConfig.public.magento`
 
 ## Installation
@@ -114,11 +114,10 @@ The runtime plugin automatically registers the adapter into shared registries so
 ```ts
 // Automatically registered by the plugin
 SearchAdapterRegistry.register('magento', adapterInstance.content.search)
-AuthAdapterRegistry.register('magento', adapterInstance.content.auth)
 NotifyAdapterRegistry.register('magento', adapterInstance.content.notifications)
 ```
 
-This means any composable using `SearchAdapterRegistry`, `AuthAdapterRegistry`, or `NotifyAdapterRegistry` can switch to Magento by changing the provider key without changing component code.
+This means any composable using `SearchAdapterRegistry` or `NotifyAdapterRegistry` can switch to Magento by changing the provider key without changing component code.
 
 ## Normalizer Coverage
 

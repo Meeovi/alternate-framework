@@ -1,7 +1,7 @@
 // packages/plugins/CMS-Content/adapter-magento/src/runtime/plugin.ts
 import { defineNuxtPlugin, useNuxtApp, useRuntimeConfig } from 'nuxt/app'
 import { MagentoAdapter } from '@mframework/adapter-magento'
-import { SearchAdapterRegistry, AuthAdapterRegistry, NotifyAdapterRegistry, CommerceBackendRegistry } from 'alternate-sdk'
+import { SearchAdapterRegistry, NotifyAdapterRegistry, CommerceBackendRegistry } from 'alternate-sdk'
 import { createMagentoCommerceBackendAdapter } from './commerce-backend'
 
 export default defineNuxtPlugin(() => {
@@ -20,7 +20,8 @@ export default defineNuxtPlugin(() => {
   // so shared composables can resolve them backend-agnostically
   if (adapterInstance.content) {
     SearchAdapterRegistry.register('magento', adapterInstance.content.search as any)
-    AuthAdapterRegistry.register('magento', adapterInstance.content.auth as any)
+    // Auth is better-auth (layers/auth) only; adapters don't register an
+    // SDK auth adapter.
     NotifyAdapterRegistry.register('magento', adapterInstance.content.notifications as any)
   }
   // During SSR this runs in the same process as the Nitro plugin

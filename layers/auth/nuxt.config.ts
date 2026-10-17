@@ -33,10 +33,6 @@ export default defineNuxtConfig({
   alias: {},
 
   runtimeConfig: {
-    mframework: {
-      auth: '~/auth/authContract',
-      user: '~/auth/currentUser',
-    },  
     auth: {
       redirect: {
         login: '/login',

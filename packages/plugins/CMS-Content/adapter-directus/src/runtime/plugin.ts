@@ -1,7 +1,7 @@
 // packages/plugins/CMS-Content/adapter-directus/src/runtime/plugin.ts
 import { defineNuxtPlugin, useNuxtApp, useRuntimeConfig } from '#app'
 import { DirectusAdapter } from '../index.js'
-import { SearchAdapterRegistry, AuthAdapterRegistry, NotifyAdapterRegistry } from 'alternate-sdk'
+import { SearchAdapterRegistry, NotifyAdapterRegistry } from 'alternate-sdk'
 
 // ContentAdapterRegistry is intentionally NOT registered here — unlike the
 // other registries below, createDirectusContentAdapter() holds a real
@@ -22,7 +22,8 @@ export default defineNuxtPlugin(() => {
   // Register adapter capabilities into the alternate-sdk registries
   // so shared composables can resolve them backend-agnostically
   SearchAdapterRegistry.register('directus', adapterInstance.content.search as any)
-  AuthAdapterRegistry.register('directus', adapterInstance.content.auth as any)
+  // Auth is better-auth (layers/auth) only; adapters don't register an
+  // SDK auth adapter.
   NotifyAdapterRegistry.register('directus', adapterInstance.content.notifications as any)
 
   nuxtApp.hook('app:created', () => {
