@@ -1,17 +1,13 @@
 // Production tests for the shared layer (layers/shared): the CMS proxy
 // (/api/cms), the generic Directus proxy (/api/proxy), uploads/assets, the
 // Novu session, security headers, sitemap/robots. See lib.mjs.
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar } from './lib.mjs'
 
 const accounts = loadAccounts()
 if (!accounts.user || !accounts.admin) throw new Error('QA accounts missing — run auth.mjs first')
 
-const signIn = async (account) => {
-  const jar = new Jar()
-  const r = await req('POST', '/api/auth/sign-in/email', { jar, json: { email: account.email, password: account.password } })
-  if (r.status !== 200) throw new Error(`sign-in failed for ${account.username}: HTTP ${r.status}`)
-  return jar
-}
+// Password sign-in is behind Turnstile: open the session directly (lib.mjs).
+const signIn = (account) => signInJar(account)
 const jars = {}
 // Must match ADMIN_WRITE_COLLECTIONS in layers/shared/server/api/cms/[...].ts
 const SITE_CONTENT = ['navigation', 'pages', 'page_blocks', 'blocks', 'brands', 'shops', 'departments', 'categories',

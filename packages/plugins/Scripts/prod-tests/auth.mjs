@@ -4,8 +4,7 @@
 import { randomBytes, createHmac } from 'node:crypto'
 import {
   BASE, Jar, req, test, section, finish, expect, blocked, withDb, sleep,
-  loadAccounts, saveAccounts, requireFromRepo,
-} from './lib.mjs'
+  loadAccounts, saveAccounts, requireFromRepo, signInJar } from './lib.mjs'
 
 const QA = [
   { key: 'user', username: 'qauser', name: 'QA User', role: null },
@@ -113,8 +112,10 @@ await test('R8', 'none of the rejected sign-ups created a user', async () => {
 // ---------------------------------------------------------------------------
 section('Sign-in, session and sign-out')
 await test('S1', 'email + password sign-in sets a secure session cookie', async () => {
-  const jar = new Jar(); jars.user = jar
-  const r = await signIn(jar, U)
+  // Later checks need the user's session either way (lib.mjs signInJar).
+  jars.user = await signInJar(U)
+  const r = await signIn(new Jar(), U)
+  captchaGate(r)
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
   const cookie = r.setCookies.find(c => /session_token=/.test(c))
   expect(cookie, 'no session_token cookie set')
@@ -133,22 +134,24 @@ await test('S2', 'get-session returns the user without secrets', async () => {
 })
 await test('S3', 'wrong password is rejected with 401', async () => {
   const r = await signIn(new Jar(), { ...U, password: `${U.password}x` })
+  captchaGate(r)
   expect(r.status === 401, `HTTP ${r.status}`)
   return r.body?.message
 })
 await test('S4', 'unknown email gives the same answer as a wrong password', async () => {
   const wrong = await signIn(new Jar(), { ...U, password: `${U.password}x` })
+  captchaGate(wrong)
   const unknown = await signIn(new Jar(), { email: emailFor('qanobody'), password: U.password })
   expect(unknown.status === wrong.status && unknown.body?.message === wrong.body?.message,
     `differs (${unknown.status} "${unknown.body?.message}" vs ${wrong.status} "${wrong.body?.message}") — reveals which emails exist`)
 })
 await test('S5', 'sign-in by username works, case-insensitively', async () => {
   const r = await req('POST', '/api/auth/sign-in/username', { jar: new Jar(), json: { username: 'QAUser', password: U.password } })
+  captchaGate(r)
   expect(r.status === 200 && r.body?.user?.id === U.id, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
 })
 await test('S6', 'sign-out ends the session', async () => {
-  const jar = new Jar()
-  expect((await signIn(jar, U)).status === 200, 'sign-in failed')
+  const jar = await signInJar(U)
   const out = await req('POST', '/api/auth/sign-out', { jar, json: {} })
   expect(out.status === 200, `sign-out HTTP ${out.status}`)
   const after = await req('GET', '/api/auth/get-session', { jar })
@@ -158,10 +161,10 @@ await test('S6', 'sign-out ends the session', async () => {
 // ---------------------------------------------------------------------------
 section('Route protection (auth / seller middleware)')
 for (const qa of ['seller', 'admin']) {
-  await test(`S1-${qa}`, `${qa} account can sign in`, async () => {
-    const jar = new Jar(); jars[qa] = jar
-    const r = await signIn(jar, accounts[qa])
-    expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
+  await test(`S1-${qa}`, `${qa} account has a working session`, async () => {
+    jars[qa] = await signInJar(accounts[qa])
+    const r = await req('GET', '/api/auth/get-session', { jar: jars[qa] })
+    expect(r.body?.user?.id === accounts[qa].id, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
   })
 }
 const location = (r) => r.headers.get('location') || ''
@@ -273,6 +276,7 @@ await test('C2', 'change-password works and the new password signs in', async ()
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
   U.password = next; saveAccounts(accounts)
   const check = await signIn(new Jar(), U)
+  captchaGate(check)
   expect(check.status === 200, `new password rejected: HTTP ${check.status}`)
 })
 
@@ -317,9 +321,13 @@ await test('E5', 'password-reset request for an unknown email looks identical', 
   captchaGate(r)
   expect(r.status === 200, `HTTP ${r.status} — reveals which emails exist`)
 })
-await test('CAP1', 'account creation and email-sending endpoints demand a CAPTCHA; sign-in does not', async () => {
+await test('CAP1', 'sign-in, account creation and email-sending endpoints demand a CAPTCHA', async () => {
   const missing = []
   for (const [path, json] of [
+    ['/api/auth/sign-in/email', { email: emailFor('qanobody'), password: 'not-the-password-123' }],
+    ['/api/auth/sign-in/username', { username: 'qanobody', password: 'not-the-password-123' }],
+    ['/api/auth/send-verification-email', { email: emailFor('qanobody') }],
+    ['/api/auth/email-otp/send-verification-otp', { email: emailFor('qanobody'), type: 'sign-in' }],
     ['/api/auth/sign-up/email', { email: emailFor('qacaptcha'), password: newPassword(), name: 'QA Captcha', username: 'qacaptcha' }],
     ['/api/auth/request-password-reset', { email: emailFor('qanobody'), redirectTo: '/reset-password' }],
     ['/api/auth/sign-in/magic-link', { email: emailFor('qanobody'), callbackURL: '/' }],
@@ -329,8 +337,6 @@ await test('CAP1', 'account creation and email-sending endpoints demand a CAPTCH
     if (!(r.status === 400 || r.status === 403) || !/captcha|verification/i.test(r.text)) missing.push(`${path} → ${r.status}`)
   }
   expect(!missing.length, `no CAPTCHA check: ${missing.join('; ')}`)
-  const s = await req('POST', '/api/auth/sign-in/email', { pace: false, json: { email: emailFor('qanobody'), password: 'not-the-password-123' } })
-  expect(!/captcha/i.test(s.text), 'sign-in asks for a CAPTCHA — scripted sign-ins (and these tests) would break')
 })
 
 // ---------------------------------------------------------------------------
@@ -361,6 +367,7 @@ await test('T3', 'password sign-in now stops at the 2FA step', async () => {
   if (!totpSecret) blocked('2FA not enabled')
   const jar = new Jar()
   const r = await signIn(jar, A)
+  captchaGate(r)
   expect(r.status === 200 && r.body?.twoFactorRedirect === true, `no 2FA challenge: ${r.text.slice(0, 160)}`)
   const session = await req('GET', '/api/auth/get-session', { jar })
   expect(!session.body?.user, 'a full session was issued before the 2FA step')

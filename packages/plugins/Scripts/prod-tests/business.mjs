@@ -2,7 +2,7 @@
 // pages, the legacy redirects and POST /api/business/driver. See lib.mjs.
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot, signInJar } from './lib.mjs'
 
 const layer = join(repoRoot, 'layers/business')
 const accounts = loadAccounts()
@@ -39,12 +39,8 @@ const config = readFileSync(join(layer, 'nuxt.config.ts'), 'utf8')
 const redirects = [...config.matchAll(/'([^']+)':\s*\{\s*redirect:\s*'([^']+)'\s*\}/g)]
   .map(([, from, to]) => ({ from: from.replace('/**', '/x'), to: to.replace('/**', '/x') }))
 
-const signIn = async (account) => {
-  const jar = new Jar()
-  const r = await req('POST', '/api/auth/sign-in/email', { jar, json: { email: account.email, password: account.password } })
-  if (r.status !== 200) throw new Error(`sign-in failed for ${account.username}: HTTP ${r.status}`)
-  return jar
-}
+// Password sign-in is behind Turnstile: open the session directly (lib.mjs).
+const signIn = (account) => signInJar(account)
 const location = (r) => (r.headers.get('location') || '').replace(/^https?:\/\/[^/]+/, '')
 const isLoginRedirect = (r) => [301, 302, 307].includes(r.status) && location(r).startsWith('/login')
 const errorPage = (r) => {

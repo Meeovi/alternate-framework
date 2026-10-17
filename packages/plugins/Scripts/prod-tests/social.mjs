@@ -3,18 +3,14 @@
 // views, notify-followers and the social driver. See lib.mjs.
 import { readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot, signInJar } from './lib.mjs'
 
 const accounts = loadAccounts()
 if (!accounts.user || !accounts.seller) throw new Error('QA accounts missing — run auth.mjs first')
 const U = accounts.user, S = accounts.seller
 
-const signIn = async (account) => {
-  const jar = new Jar()
-  const r = await req('POST', '/api/auth/sign-in/email', { jar, json: { email: account.email, password: account.password } })
-  if (r.status !== 200) throw new Error(`sign-in failed for ${account.username}: HTTP ${r.status}`)
-  return jar
-}
+// Password sign-in is behind Turnstile: open the session directly (lib.mjs).
+const signIn = (account) => signInJar(account)
 const location = (r) => (r.headers.get('location') || '').replace(/^https?:\/\/[^/]+/, '')
 const errorTitle = (r) => {
   const title = r.text.match(/<title>([^<]*)/)?.[1] ?? ''

@@ -135,6 +135,33 @@ export async function withDb(fn) {
   try { return await fn(client) } finally { await client.end() }
 }
 
+/**
+ * A signed-in cookie jar for a QA account. Password sign-in is behind
+ * Turnstile on the demo, which scripts can't solve, so this opens the
+ * session the way better-auth does: a `sessions` row plus the session
+ * cookie (`<token>.<base64 HMAC-SHA256(token, BETTER_AUTH_SECRET)>`).
+ * Signing out (POST /api/auth/sign-out with the jar) deletes the row.
+ */
+export async function signInJar(account) {
+  if (!account?.id) throw new Blocked('QA account missing')
+  const exists = await withDb((db) => db.query('select 1 from users where id = $1', [account.id]))
+  if (!exists.rowCount) throw new Blocked(`QA account ${account.username} no longer exists`)
+  const secret = process.env.BETTER_AUTH_SECRET
+  if (!secret) throw new Error('BETTER_AUTH_SECRET not in env — cannot open a test session')
+  const { createHmac, randomBytes, randomUUID } = await import('node:crypto')
+  const token = randomBytes(24).toString('base64url')
+  await withDb((db) => db.query(
+    `insert into sessions (id, user_id, token, expires_at, created_at, updated_at, ip_address, user_agent)
+     values ($1, $2, $3, now() + interval '2 hours', now(), now(), '127.0.0.1', 'meeovi-prod-tests')`,
+    [randomUUID(), account.id, token],
+  ))
+  const signature = createHmac('sha256', secret).update(token).digest('base64')
+  const name = `${BASE.startsWith('https://') ? '__Secure-' : ''}custom_session_token`
+  const jar = new Jar()
+  jar.cookies.set(name, encodeURIComponent(`${token}.${signature}`))
+  return jar
+}
+
 export function loadAccounts() {
   return existsSync(ACCOUNTS_FILE) ? JSON.parse(readFileSync(ACCOUNTS_FILE, 'utf8')) : {}
 }

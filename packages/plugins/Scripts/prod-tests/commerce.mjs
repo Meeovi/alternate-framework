@@ -1,7 +1,7 @@
 // Production tests for the commerce layer (layers/commerce): storefront and
 // account pages, the guest/user cart, the commerce driver, payments and
 // shipping endpoints. Nothing here buys, refunds or ships. See lib.mjs.
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar } from './lib.mjs'
 
 const accounts = loadAccounts()
 if (!accounts.user) throw new Error('QA accounts missing — run auth.mjs first')
@@ -10,12 +10,8 @@ const errorTitle = (r) => {
   const title = r.text.match(/<title>([^<]*)/)?.[1] ?? ''
   return /^\s*(500|503)\b|Internal Server Error/i.test(title) ? title : null
 }
-const signIn = async (account) => {
-  const jar = new Jar()
-  const r = await req('POST', '/api/auth/sign-in/email', { jar, json: { email: account.email, password: account.password } })
-  if (r.status !== 200) throw new Error(`sign-in failed: HTTP ${r.status}`)
-  return jar
-}
+// Password sign-in is behind Turnstile: open the session directly (lib.mjs).
+const signIn = (account) => signInJar(account)
 const jars = {}
 
 section('Setup')

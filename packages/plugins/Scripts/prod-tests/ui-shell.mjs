@@ -1,6 +1,6 @@
 // Production tests for the ui-shell layer (layers/ui-shell): app chrome,
 // layouts, PWA files and caching, error handling. See lib.mjs.
-import { Jar, req, test, section, finish, expect, loadAccounts } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, loadAccounts, signInJar } from './lib.mjs'
 
 const accounts = loadAccounts()
 const errorTitle = (r) => /^\s*(500|503)\b|Internal Server Error/i.test(r.text.match(/<title>([^<]*)/)?.[1] ?? '')
@@ -32,8 +32,7 @@ await test('UI3b', 'an unknown /api URL answers a JSON 404, not the HTML app', a
 })
 await test('UI4', 'workspace layout renders for a signed-in user', async () => {
   if (!accounts.user) return 'skipped (no QA accounts)'
-  const jar = new Jar()
-  await req('POST', '/api/auth/sign-in/email', { jar, json: { email: accounts.user.email, password: accounts.user.password } })
+  const jar = await signInJar(accounts.user)
   const r = await req('GET', '/workspace', { jar })
   expect(r.status === 200 && !errorTitle(r), `HTTP ${r.status}`)
 })
