@@ -7,6 +7,8 @@ import type { Query as DirectusQuery } from 'adapter-directus';
 // Union of possible codegen product models from your query
 type RawMagentoProduct = Mage_BundleProduct | Mage_ProductInterface;
 
+const NO_SHIPPING_TYPES = new Set(['VirtualProduct', 'DownloadableProduct'])
+
 // Directus Products type fields aligned with meeovi-frontend graphql.ts
 type DirectusProduct = {
   id: string
@@ -17,6 +19,8 @@ type DirectusProduct = {
   name?: string
   status?: string
   in_stock?: boolean
+  /** False for virtual and downloadable products. */
+  requires_shipping?: boolean
   price?: number
   description?: string | null
   short_description?: string | null
@@ -65,6 +69,11 @@ export function normalizeMagentoProduct(rawProduct: RawMagentoProduct): Partial<
     // Status mapping (Magento status 1 = enabled -> Directus 'published')
     status: rawProduct.status === 1 ? 'published' : 'draft',
     in_stock: rawProduct.stock_status === 'IN_STOCK',
+
+    // Virtual and downloadable products never ship (checkout skips the
+    // address and shipping steps for them). Anything else, including an
+    // unknown or missing type, is treated as shippable.
+    requires_shipping: !NO_SHIPPING_TYPES.has(String((rawProduct as { __typename?: string }).__typename ?? '')),
 
     // Price range parsing
     price: rawProduct.price_range?.minimum_price?.final_price?.value ?? 0,

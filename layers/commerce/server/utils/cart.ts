@@ -119,6 +119,9 @@ export interface ResolvedProduct {
   backend: string | null
   /** The product's key in that backend (e.g. its SKU). */
   key: string
+  /** False for items that never ship (virtual/downloadable backend
+   *  products); checkout then skips the address and shipping steps. */
+  requiresShipping: boolean
 }
 
 /**
@@ -134,7 +137,7 @@ export async function resolveProductForCart(productId: string): Promise<Resolved
   if (ref.kind === 'backend') {
     const product = await ref.backend
       .request({ method: 'GET', collection: 'products', key: ref.key })
-      .catch(() => null) as { sku?: string, name?: string, price?: number | string, image?: string | null, status?: string } | null
+      .catch(() => null) as { sku?: string, name?: string, price?: number | string, image?: string | null, status?: string, requires_shipping?: boolean } | null
     const price = Number(product?.price)
     if (!product || !Number.isFinite(price) || product.status === 'draft') return null
     return {
@@ -145,6 +148,7 @@ export async function resolveProductForCart(productId: string): Promise<Resolved
       directusId: null,
       backend: ref.backend.id,
       key: ref.key,
+      requiresShipping: product.requires_shipping !== false,
     }
   }
   productId = ref.id
@@ -177,6 +181,8 @@ export async function resolveProductForCart(productId: string): Promise<Resolved
     directusId: Number(product.id),
     backend: null,
     key: String(product.id),
+    // Directus products don't say whether they ship; assume they do.
+    requiresShipping: true,
   }
 }
 
@@ -233,6 +239,7 @@ export async function serializeCart(cartId: number) {
       variantId: item.variantId ?? undefined,
       name: (item.metadata as any)?.name ?? '',
       image: (item.metadata as any)?.image ?? null,
+      requiresShipping: (item.metadata as any)?.requiresShipping !== false,
       price: (item.price ?? 0) / 100,
       quantity: item.quantity ?? 0,
       qty: item.quantity ?? 0,

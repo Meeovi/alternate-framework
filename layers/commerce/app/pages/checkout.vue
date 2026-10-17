@@ -3,8 +3,21 @@
     <div v-if="cartEmpty" class="error">Your cart is empty</div>
 
     <template v-else>
+      <div v-if="cartStore.loading && step === 'address'" class="loading">Loading your cart…</div>
+
+      <!-- Nothing ships (virtual/downloadable items only): straight to payment -->
+      <div v-else-if="step === 'address' && !needsShipping" class="checkoutStep">
+        <h2>Checkout</h2>
+        <p>Nothing in your cart needs shipping, so there's no address or delivery to choose.</p>
+        <div class="checkoutActions">
+          <button type="button" :disabled="startingPayment" @click="startPayment">
+            {{ startingPayment ? 'Loading payment…' : 'Continue to payment' }}
+          </button>
+        </div>
+      </div>
+
       <!-- Step 1: shipping address -->
-      <form v-if="step === 'address'" class="checkoutStep" @submit.prevent="fetchRates">
+      <form v-else-if="step === 'address'" class="checkoutStep" @submit.prevent="fetchRates">
         <h2>Shipping address</h2>
         <div v-if="addressError" class="error">{{ addressError }}</div>
 
@@ -105,6 +118,9 @@
   // Don't flash the empty-cart message while that first fetch is still in
   // flight — the store starts with loading = true.
   const cartEmpty = computed(() => !cartStore.loading && cartStore.items.length === 0)
+
+  // Items added before the cart recorded this flag count as shippable.
+  const needsShipping = computed(() => cartStore.items.some((item) => item.requiresShipping !== false))
 
   // Generated once per page load and reused across every checkout attempt
   // on this visit (including a retry after a network error or a double
@@ -208,7 +224,7 @@
         // source for prices.
         body: {
           items,
-          shippoRateId: selectedRateId.value,
+          ...(needsShipping.value && { shippoRateId: selectedRateId.value }),
           allowPromotionCodes: true,
           idempotencyKey: checkoutIdempotencyKey,
           // Already collected above for the Shippo rate quote — passed
@@ -216,7 +232,7 @@
           // server treats it as informational only (never used for
           // pricing/fulfillment authorization), same as the rest of
           // metadata handling in checkout-session.post.ts.
-          shippingAddress: {
+          ...(needsShipping.value && { shippingAddress: {
             name: address.value.name,
             street1: address.value.street1,
             street2: address.value.street2,
@@ -225,7 +241,7 @@
             zip: address.value.zip,
             country: address.value.country,
             phone: address.value.phone
-          }
+          } }),
         }
       })
 

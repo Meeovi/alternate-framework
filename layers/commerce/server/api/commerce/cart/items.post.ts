@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
         // stale price from whenever the item was first added.
         price: unitPriceCents,
         total: unitPriceCents * nextQuantity,
-        metadata: { name: product.name, image: product.image },
+        metadata: { name: product.name, image: product.image, requiresShipping: product.requiresShipping },
       })
       .where(eq(cartItems.id, existing.id))
   } else {
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event) => {
       total: unitPriceCents * value.quantity,
       variantId: value.variantId,
       variant: value.variant,
-      metadata: { name: product.name, image: product.image },
+      metadata: { name: product.name, image: product.image, requiresShipping: product.requiresShipping },
     })
   }
 

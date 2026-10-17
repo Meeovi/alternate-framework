@@ -16,7 +16,7 @@ import { magentoNormalizers } from '@mframework/adapter-magento/normalizers'
 // (resolveCategoryUid below) to scope a products query, see
 // getProductsByCategory on the returned adapter.
 const PRODUCT_FIELDS = [
-  'id', 'uid', 'sku', 'name', 'status', 'stock_status',
+  '__typename', 'id', 'uid', 'sku', 'name', 'status', 'stock_status',
   { price_range: [{ minimum_price: [{ final_price: ['value'] }] }] },
   { description: ['html'] },
   { short_description: ['html'] },
