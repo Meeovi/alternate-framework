@@ -148,6 +148,10 @@ export default defineNuxtConfig({
   ],
 
   modules: [
+    // Forms (JSON Forms on Vuetify) and the page builder, used by the
+    // social and business layers' pages.
+    '@mframework/meeovi-forms/module',
+    '@mframework/experience-builder',
     // Live discussions (Rocket.Chat, collaborrate.com) — <MeeoviDiscussion>
     '@mframework/meeovi-discussions',
     // Video / audio / radio player on Video.js 10 — <MeeoviPlayer>
@@ -157,7 +161,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@sentry/nuxt/module',
     'adapter-magento/module',
-    resolve(__dirname, '../../../packages/plugins/Email-Notifications/meeovi-newsletter/module.ts'),
+    '@mframework/meeovi-newsletter',
     // Per-user integrations (installed from Meeovi Workspace): list types
     // below only render for users who installed them.
     '@mframework/meeovi-integrations',
@@ -167,14 +171,14 @@ export default defineNuxtConfig({
     '@mframework/meeovi-dropshipping',
     // List types rendered by layers/social's /lists/list/[slug] page —
     // drop one to disable that view.
-    resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-tasklist/module.ts'),
-    resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-kanban/module.ts'),
-    resolve(__dirname, '../../../packages/plugins/CMS-Content/list-type-habit-tracker/module.ts'),
+    '@mframework/list-type-tasklist',
+    '@mframework/list-type-kanban',
+    '@mframework/list-type-habit-tracker',
     // Optional federated-search backends for layers/search — each is off
     // until its env/config is set.
-    resolve(__dirname, '../../../packages/plugins/Search/search-algolia/module.ts'),
-    resolve(__dirname, '../../../packages/plugins/Search/search-meilisearch/module.ts'),
-    resolve(__dirname, '../../../packages/plugins/Search/search-typesense/module.ts')
+    '@mframework/search-algolia',
+    '@mframework/search-meilisearch',
+    '@mframework/search-typesense',
   ],
 
   /*imports: {

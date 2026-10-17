@@ -59,7 +59,16 @@
     "pg": "^8.22.0",
     "pinia": "^4.0.3",
     "playwright-core": "^1.59.1",
-    "postgres": "^3.4.9"
+    "postgres": "^3.4.9",
+    "@mframework/list-type-habit-tracker": "file:../../../packages/plugins/CMS-Content/list-type-habit-tracker",
+    "@mframework/list-type-kanban": "file:../../../packages/plugins/CMS-Content/list-type-kanban",
+    "@mframework/list-type-tasklist": "file:../../../packages/plugins/CMS-Content/list-type-tasklist",
+    "@mframework/meeovi-newsletter": "file:../../../packages/plugins/Email-Notifications/meeovi-newsletter",
+    "@mframework/search-algolia": "file:../../../packages/plugins/Search/search-algolia",
+    "@mframework/search-meilisearch": "file:../../../packages/plugins/Search/search-meilisearch",
+    "@mframework/search-typesense": "file:../../../packages/plugins/Search/search-typesense",
+    "@mframework/meeovi-forms": "file:../../../packages/plugins/Marketing-SEO/meeovi-forms",
+    "@mframework/experience-builder": "file:../../../packages/plugins/CMS-Content/experience-builder"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^7.2.0",

@@ -102,14 +102,17 @@ export default defineNuxtConfig({
   ],
 
   modules: [
+    // Forms and the page builder, used by the social layer's pages.
+    '@mframework/meeovi-forms/module',
+    '@mframework/experience-builder',
     '@pinia/nuxt',
     '@sentry/nuxt/module',
-    resolve(__dirname, '../../../packages/plugins/Email-Notifications/meeovi-newsletter/module.ts'),
+    '@mframework/meeovi-newsletter',
     // Optional federated-search backends for layers/search — each is off
     // until its env/config is set.
-    resolve(__dirname, '../../../packages/plugins/Search/search-algolia/module.ts'),
-    resolve(__dirname, '../../../packages/plugins/Search/search-meilisearch/module.ts'),
-    resolve(__dirname, '../../../packages/plugins/Search/search-typesense/module.ts'),
+    '@mframework/search-algolia',
+    '@mframework/search-meilisearch',
+    '@mframework/search-typesense',
   ],
 
   pinia: {

@@ -217,8 +217,6 @@ export default defineNuxtConfig({
     '@nuxtjs/leaflet',
     '@nuxt/scripts',
     '@nuxtjs/mcp-toolkit',
-    resolve(__dirname, '../../packages/plugins/Marketing-SEO/meeovi-forms/module.ts'),
-    resolve(__dirname, '../../packages/plugins/CMS-Content/experience-builder/module.ts'),
     'nuxt-skill-hub'
   ],
 

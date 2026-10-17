@@ -35,7 +35,13 @@
       "@vite-pwa/assets-generator": "^1.0.2",
       "dotenv": "^17.4.2",
       "pinia": "^4.0.3",
-      "playwright-core": "^1.59.1"
+      "playwright-core": "^1.59.1",
+      "@mframework/meeovi-newsletter": "file:../../../packages/plugins/Email-Notifications/meeovi-newsletter",
+      "@mframework/search-algolia": "file:../../../packages/plugins/Search/search-algolia",
+      "@mframework/search-meilisearch": "file:../../../packages/plugins/Search/search-meilisearch",
+      "@mframework/search-typesense": "file:../../../packages/plugins/Search/search-typesense",
+      "@mframework/meeovi-forms": "file:../../../packages/plugins/Marketing-SEO/meeovi-forms",
+      "@mframework/experience-builder": "file:../../../packages/plugins/CMS-Content/experience-builder"
    },
    "devDependencies": {
       "@parcel/watcher": "^2.6.0",

@@ -51,7 +51,13 @@
     "packages/plugins/Authentication/auth-scim",
     "packages/plugins/Authentication/auth-generic-oauth",
     "packages/plugins/Authentication/auth-phone-number",
-    "packages/plugins/Authentication/auth-anonymous"
+    "packages/plugins/Authentication/auth-anonymous",
+    "packages/plugins/CMS-Content/list-type-habit-tracker",
+    "packages/plugins/CMS-Content/list-type-kanban",
+    "packages/plugins/CMS-Content/list-type-tasklist",
+    "packages/plugins/Search/search-algolia",
+    "packages/plugins/Search/search-meilisearch",
+    "packages/plugins/Search/search-typesense"
   ],
   "dependencies": {
     "@better-auth/core": "1.6.23",
