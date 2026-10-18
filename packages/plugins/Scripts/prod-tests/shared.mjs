@@ -265,15 +265,14 @@ section('Site-wide headers and SEO files')
 await test('H1', 'security headers on HTML pages', async () => {
   const r = await req('GET', '/login')
   const h = (n) => r.headers.get(n)
-  // CSP is in Report-Only rollout (see buildContentSecurityPolicy) — once
-  // the reports are clean this should require the enforced header instead.
-  const missing = ['content-security-policy-report-only', 'reporting-endpoints', 'x-frame-options', 'x-content-type-options', 'referrer-policy', 'strict-transport-security'].filter(n => !h(n))
+  // The CSP is enforced (layers/shared/server/plugins/content-security-policy.ts).
+  const missing = ['content-security-policy', 'reporting-endpoints', 'x-frame-options', 'x-content-type-options', 'referrer-policy', 'strict-transport-security'].filter(n => !h(n))
   expect(!missing.length, `missing: ${missing.join(', ')}`)
-  const csp = h('content-security-policy-report-only') || ''
+  expect(!h('content-security-policy-report-only'), 'CSP sent as report-only (NUXT_CSP_REPORT_ONLY set?)')
+  const csp = h('content-security-policy') || ''
   for (const d of ["object-src 'none'", "base-uri 'self'", "frame-ancestors 'self'", 'report-uri /api/csp-report']) {
     expect(csp.includes(d), `CSP lacks ${d}`)
   }
-  return h('content-security-policy') ? 'note: an enforced CSP is also being sent' : 'report-only'
 })
 await test('H1b', 'the CSP report endpoint accepts both report formats', async () => {
   const legacy = await req('POST', '/api/csp-report', { json: { 'csp-report': { 'document-uri': 'https://demo.meeovicms.com/qa', 'violated-directive': 'script-src-elem', 'blocked-uri': 'https://qa.invalid/x.js?token=secret' } } })

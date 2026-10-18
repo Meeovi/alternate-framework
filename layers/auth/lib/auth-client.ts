@@ -35,11 +35,11 @@ import packageClientFactories from "#auth-client-plugins"
 export const authClient = createAuthClient({
   plugins: [
     twoFactorClient({
-      onTwoFactorRedirect({
-        twoFactorMethods
-      }) {
-        // twoFactorMethods is e.g. ["totp", "otp"]
-        window.location.href = "/2fa" // Handle the 2FA verification redirect
+      onTwoFactorRedirect() {
+        // Password accepted on a 2FA account: finish on /2fa (the
+        // two-factor cookie is set), keeping where the user was headed.
+        const redirect = new URLSearchParams(window.location.search).get("redirect")
+        window.location.href = redirect ? `/2fa?redirect=${encodeURIComponent(redirect)}` : "/2fa"
       }
     }),
     stripeClient({

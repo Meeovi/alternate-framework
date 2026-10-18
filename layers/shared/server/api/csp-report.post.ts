@@ -1,7 +1,7 @@
 /**
  * POST /api/csp-report — where browsers send Content-Security-Policy
- * violations (see buildContentSecurityPolicy in nuxt.config.ts, currently
- * Report-Only). Accepts both formats:
+ * violations (see buildContentSecurityPolicy in nuxt.config.ts). Accepts
+ * both formats:
  *   - legacy `report-uri`: application/csp-report  { "csp-report": {…} }
  *   - Reporting API `report-to`: application/reports+json  [{ type: "csp-violation", body: {…} }]
  *

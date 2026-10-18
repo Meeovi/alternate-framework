@@ -96,23 +96,13 @@
   import { useSupportedSocialProviders } from '../composables/plugins/useSupportSocialProviders';
   import { authClient } from "../../lib/auth-client"
   import AtprotoAuth from '../components/features/plugins/atproto.vue'
+  import { safeRedirectPath } from '../utils/safeRedirectPath'
 
   const route = useRoute();
   const { providers: socialProviders, load: loadSocialProviders } = useSupportedSocialProviders();
   const lastMethod = authClient.getLastUsedLoginMethod();
 
-  // Where to send the user after a successful sign-in. The `auth` route
-  // middleware appends ?redirect=<intended path> when it bounces a guest
-  // here. Accept only same-origin absolute paths (not "//evil.com" or a
-  // full URL) so this can't be turned into an open redirect.
-  const redirectTarget = computed(() => {
-    const raw = route.query.redirect;
-    const path = typeof raw === 'string' ? raw : '';
-    // Same-site path only: one leading "/", then no "/" or "\\" (browsers
-    // read "/\\evil.example" as "//evil.example") and no whitespace/control
-    // characters anywhere.
-    return /^\/(?![\/\\])[^\\\s\u0000-\u001f]*$/.test(path) ? path : '/';
-  });
+  const redirectTarget = computed(() => safeRedirectPath(route.query.redirect));
 
   const form = ref(null);
   const email = ref("");
@@ -183,6 +173,13 @@
         alertMessage.value = unverified
           ? "Your email isn't verified yet. We've sent a new verification link — check your inbox, then sign in."
           : error.message;
+      } else if (data?.twoFactorRedirect) {
+        // 2FA account: no session yet. twoFactorClient's onTwoFactorRedirect
+        // (lib/auth-client.ts) is already taking the browser to /2fa.
+        alertType.value = "info";
+        alertMessage.value = "Password accepted — enter your verification code next.";
+        redirecting.value = true;
+        return;
       } else {
         alertType.value = "success";
         alertMessage.value = "You're signed in — redirecting you now…";

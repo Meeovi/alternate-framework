@@ -33,15 +33,12 @@ const novuCssPath = (() => {
 })()
 
 /**
- * The site-wide Content-Security-Policy (applied via routeRules).
- *
- * Sent as Content-Security-Policy-Report-Only for now: nuxt-security strips
- * a routeRules `Content-Security-Policy` header (its own CSP is disabled
- * below), so this policy was never actually delivered, and switching it on
- * enforced in one go would break whatever it doesn't list yet. Browsers
- * report would-be violations to /api/csp-report (logged once each, see
- * server/api/csp-report.post.ts); once the reports are clean, rename the
- * header to enforce it.
+ * The site-wide Content-Security-Policy, enforced since 18 October 2026
+ * (sent by server/plugins/content-security-policy.ts; NUXT_CSP_REPORT_ONLY=true
+ * switches it back to report-only without a rebuild). Browsers report
+ * violations to /api/csp-report (logged once each, see
+ * server/api/csp-report.post.ts):
+ *   journalctl -u meeovi-demo | grep '\[csp\]'
  *
  * Only the directives listed here are enforced; anything not named is
  * unrestricted. `connect-src` is the tight one — every host the browser is
@@ -91,18 +88,18 @@ function buildContentSecurityPolicy(): string {
     'https://cdn.carbonads.com',
   ]
 
-  // AdSense and its ad-quality pings (seen in the CSP reports), plus
-  // Bing UET's beacon host (bat.bing.net, distinct from bat.bing.com).
+  // AdSense, its ad-quality pings and performance beacon (csi.gstatic.com),
+  // plus Bing UET's beacon host (bat.bing.net, distinct from bat.bing.com).
   const adHosts = [
     'https://pagead2.googlesyndication.com',
+    'https://csi.gstatic.com',
     'https://*.adtrafficquality.google',
     'https://bat.bing.net',
   ]
 
-  // Browser-side calls the reports haven't covered yet (nobody has run
-  // them on the demo): Stripe Embedded Checkout, Cloudflare Turnstile,
-  // PayPal buttons, and the commerce backend's storefront GraphQL
-  // (adapter-magento's client plugin on product/category navigation).
+  // Stripe Embedded Checkout, PayPal buttons, and the commerce backend's
+  // storefront GraphQL (adapter-magento's client plugin on product/category
+  // navigation).
   const paymentHosts = [
     'https://api.stripe.com',
     'https://m.stripe.com',
@@ -153,9 +150,8 @@ function buildContentSecurityPolicy(): string {
     //  - form-action: 'self' plus the payment redirect targets that
     //    legitimately receive a form POST (PayPal classic checkout).
     "object-src 'none';",
-    // Starting point for the script/frame hardening pass: only reports
-    // (from Report-Only) what a strict policy would need — http: or data:
-    // scripts, eval, and non-https frames.
+    // Starting point for a stricter script/frame pass: blocks http: and
+    // data: scripts, eval, and non-https frames.
     "script-src 'self' 'unsafe-inline' https: blob:;",
     "frame-src 'self' https: blob:;",
     "base-uri 'self';",
@@ -433,7 +429,7 @@ export default defineNuxtConfig({
       robots: true,
       isr: process.env.NODE_ENV === 'development' ? false : 60,
       headers: {
-        'Content-Security-Policy-Report-Only': buildContentSecurityPolicy(),
+        // The CSP itself is sent by server/plugins/content-security-policy.ts.
         'Reporting-Endpoints': 'csp="/api/csp-report"',
       }
     },
@@ -517,6 +513,12 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Sent by server/plugins/content-security-policy.ts. reportOnly:
+    // NUXT_CSP_REPORT_ONLY=true switches it back to report-only at runtime.
+    csp: {
+      policy: buildContentSecurityPolicy(),
+      reportOnly: false,
+    },
     redisUrl: process.env.NUXT_REDIS_URL || 'redis://localhost:6379',
     googleAdClientId: process.env.NUXT_GOOGLE_ADSENSE_CLIENT_ID || '',
     googleAdSlotId: process.env.NUXT_GOOGLE_ADSENSE_SLOT_ID || '',
