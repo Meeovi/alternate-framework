@@ -13,7 +13,7 @@
     "@cline/sdk": "^0.0.46",
     "@geoman-io/leaflet-geoman-free": "^2.20.0",
     "@mframework/alternate-sdk": "file:../../packages/plugins/Admin/alternate-sdk",
-    "@mframework/meeovi-atproto": "file:../../packages/plugins/CMS-Content/meeovi-atproto",
+    "@mframework/meeovi-atproto": "file:../../packages/plugins/Social/meeovi-atproto",
     "@novu/js": "^3.19.2",
     "@nuxt/scripts": "^1.2.1",
     "@nuxtjs/cloudinary": "^4.0.0",

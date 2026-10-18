@@ -29,7 +29,7 @@
     "@better-auth/prisma-adapter": "1.6.23",
     "@better-auth/stripe": "1.6.23",
     "@better-fetch/fetch": "^1.0.0",
-    "@mframework/meeovi-atproto": "file:../../packages/plugins/CMS-Content/meeovi-atproto",
+    "@mframework/meeovi-atproto": "file:../../packages/plugins/Social/meeovi-atproto",
     "@mframework/adapter-prisma": "file:../../packages/plugins/Storage/adapter-prisma",
     "@node-rs/argon2": "^2.0.2",
     "@polar-sh/better-auth": "^1.8.4",

@@ -34,8 +34,8 @@
   "workspaces": [
     "packages/plugins/Admin/alternate-sdk",
     "packages/plugins/CMS-Content/experience-builder",
-    "packages/plugins/CMS-Content/meeovi-atproto",
-    "packages/plugins/CMS-Content/meeovi-activitypub",
+    "packages/plugins/Social/meeovi-atproto",
+    "packages/plugins/Social/meeovi-activitypub",
     "packages/plugins/Email-Notifications/meeovi-newsletter",
     "packages/plugins/Marketing-SEO/meeovi-forms",
     "packages/plugins/Marketing-SEO/meeovi-tables",
