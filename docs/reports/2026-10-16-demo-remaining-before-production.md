@@ -33,9 +33,6 @@
 
 ## Should do before launch
 
-- **ui-shell:**
-  - absorb the `auth`, `search` and social `nolive` layouts;
-  - trim the app-level CSS (Bootstrap, Mobirise, `search.css`, `styles.css`) down to brand overrides.
 - **Fediverse:** set `ACTIVITYPUB_ACCESS_TOKEN`; without it, ActivityPub is limited to anonymous hashtag search.
 - **Env clean-up:** the app's `.env` still carries `NUXTUS_DIRECTUS_ADMIN_EMAIL` / `NUXTUS_DIRECTUS_ADMIN_PASSWORD` (Directus admin login), which no code reads; remove them.
 
@@ -130,3 +127,4 @@
   - business: 16 pass, 1 skipped on purpose (real shop or payout changes);
   - commerce: 20 pass, 1 known failure (`/api/commerce/driver`, see "After launch");
   - auth: 42 pass, 14 blocked by Turnstile; T3 (2FA step) was rate-limited and is now reported as blocked.
+- **ui-shell owns every layout.** `auth` (from the auth layer) and `search` (from the search layer, with its header menus) moved into ui-shell. Social's own `nolive` was deleted: it used components the starter apps don't register. Apps now list the layouts they use (`uiShell.layouts`), and starter apps serve `nolive` with the starter shell (`uiShell.aliases`). The app-level CSS stays as it is, since it's part of the design.

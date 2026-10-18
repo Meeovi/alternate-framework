@@ -19,14 +19,19 @@ export default defineNuxtConfig({
 })
 ```
 
-`uiShell.layout` names a file in `app/layouts/`. It becomes the app's `default` layout, and this layer's other layouts are left out of the app's build; list any you still want in `uiShell.layouts` (meeovi-frontend keeps `nolive` and `settings`). Layouts from other layers (auth, search…) are unaffected.
+Every layout lives in this layer's `app/layouts/`; other layers ship none. `uiShell.layout` names the file that becomes the app's `default` layout, and the rest are left out of the app's build unless the app asks for them:
 
-| App | `uiShell.layout` | Menus / blocks |
-| --- | --- | --- |
-| meeovi-frontend | `default` | `components/menus/`, `components/blocks/` |
-| elitenovels | `elitenovels` | `components/menus/elitenovels/`, `components/blocks/elitenovels/` |
-| pixanomy-frontend | `pixanomy` | `components/menus/pixanomy/`, `components/blocks/pixanomy/` |
-| business-frontend, starter-template | `starter` | `components/menus/starter/`, `components/blocks/starter/` (plus the shared `menus/`, `blocks/Newsletter.vue`) |
+- `uiShell.layouts`: other layouts the app's pages use, such as `auth` (the auth layer's sign-in pages) and `search` (the search layer's `/search` page);
+- `uiShell.aliases`: serve a layout name that layer pages ask for with a different shell layout. Starter apps map `nolive` to `starter`.
+
+A layout the app defines itself always wins.
+
+| App | `layout` | `layouts` / `aliases` | Menus / blocks |
+| --- | --- | --- | --- |
+| meeovi-frontend | `default` | `nolive`, `settings`, `workspace`, `auth`, `search` | `components/menus/`, `components/menus/search/`, `components/blocks/` |
+| elitenovels | `elitenovels` | `auth` | `components/menus/elitenovels/`, `components/blocks/elitenovels/` |
+| pixanomy-frontend | `pixanomy` | `auth` | `components/menus/pixanomy/`, `components/blocks/pixanomy/` |
+| officiallyjust3, starter-template | `starter` | `auth`, `search`; `nolive` → `starter` | `components/menus/starter/`, `components/blocks/starter/` (plus the shared `menus/`, `blocks/Newsletter.vue`) |
 
 Apps must not ship their own `plugins/vuetify.ts`, `plugins/pwa.client.ts` or `vite-plugin-vuetify` — Nuxt runs plugins from every layer, so a second copy creates a second Vuetify instance. Apps should also depend on `"@mframework/ui-shell": "file:../../../layers/ui-shell"` so a workspace-scoped install (Vercel) pulls in this layer's modules.
 

@@ -47,8 +47,8 @@
   import {
     useTheme
   } from 'vuetify'
-  import ecosystemmenu from './topmenu/ecosystemmenu.vue'
-  import myaccounttopmenu from './topmenu/accountMenu.vue'
+  import ecosystemmenu from './ecosystemmenu.vue'
+  import myaccounttopmenu from './accountMenu.vue'
 
   defineProps({
     drawer: {

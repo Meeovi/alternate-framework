@@ -121,11 +121,12 @@ export default defineNuxtConfig({
   },
 
   appConfig: {
-    // ui-shell's default/nolive/settings layouts, plus `workspace` for the
-    // business layer's /workspace pages; the other apps' layouts stay out of this build
+    // ui-shell's default/nolive/settings layouts, `workspace` for the
+    // business layer's /workspace pages, `auth` and `search` for those
+    // layers' pages; the other apps' layouts stay out of this build
     uiShell: {
       layout: 'default',
-      layouts: ['nolive', 'settings', 'workspace'],
+      layouts: ['nolive', 'settings', 'workspace', 'auth', 'search'],
       // Directus `navigation` record ids for the /workspace sidebar, one
       // section each (see layers/ui-shell/app/composables/useWorkspaceSidebar.ts)
       workspaceSidebar: [139, 140, 141, 142, 143, 144, 145, 14],

@@ -59,7 +59,7 @@ export default defineNuxtConfig({
 
   appConfig: {
     // ui-shell renders layers/ui-shell/app/layouts/pixanomy.vue as this app's default layout
-    uiShell: { layout: 'pixanomy' },
+    uiShell: { layout: 'pixanomy', layouts: ['auth'] },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Pixanomy'}`
   },
 

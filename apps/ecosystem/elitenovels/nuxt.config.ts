@@ -65,7 +65,7 @@ export default defineNuxtConfig({
 
   appConfig: {
     // ui-shell renders layers/ui-shell/app/layouts/elitenovels.vue as this app's default layout
-    uiShell: { layout: 'elitenovels' },
+    uiShell: { layout: 'elitenovels', layouts: ['auth'] },
     // Use layers/search headless: its /api/search + providers, with this
     // app's own search box (components/search/search.vue) and /results page.
     search: { ui: false },

@@ -58,11 +58,11 @@
     // the app's own component tree, never the layer's, which is how an
     // earlier notifications fix silently never reached this app). This
     // matches how Search/cart below already reach into their layers.
-    import LayoutNotifications from '#search/app/components/menus/topmenu/LayoutNotifications.vue'
+    import LayoutNotifications from './topmenu/LayoutNotifications.vue'
     import ecosystemmenu from './topmenu/ecosystemmenu.vue'
     import Search from '#search/app/components/searchBar.vue'
     import cart from '#commerce/app/components/menus/cart.vue'
-    import mobilesearch from '#search/app/components/menus/mobilesearch.vue'
+    import mobilesearch from './mobile/mobilesearch.vue'
     import myaccounttopmenu from './topmenu/myaccounttopmenu.vue'
 
     defineProps({

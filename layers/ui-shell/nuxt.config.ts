@@ -48,32 +48,32 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     '@nuxt/fonts',
     '@storefront-ui/nuxt',
-    // Each app picks its shell layout from this layer's app/layouts/ in its
-    // own nuxt.config:
-    //   appConfig: { uiShell: { layout: 'elitenovels', layouts: [...extra] } }
-    // That layout becomes the app's `default`; this layer's other layouts
-    // are dropped from its build unless listed in `layouts` — they import
-    // layers (#social, #shared…) and app files other apps don't have.
-    // Named layouts are taken from this layer even when a higher-priority
-    // layer has one with the same name (social has its own `nolive`), unless
-    // the app itself overrides it. Other layers' layouts (auth, search…)
-    // are otherwise left alone.
+    // Every layout lives in this layer's app/layouts/. Each app picks its
+    // own in its nuxt.config:
+    //   appConfig: { uiShell: { layout: 'starter', layouts: ['auth'], aliases: { nolive: 'starter' } } }
+    // `layout` becomes the app's `default`; `layouts` are the other ones its
+    // pages use (auth for the auth layer's pages, search for /search…);
+    // `aliases` serve a layer page's layout name with another shell layout.
+    // Everything else here is dropped from the app's build — those layouts
+    // import layers (#social, #shared…) and files other apps don't have.
+    // A layout the app itself defines always wins.
     (_options: unknown, nuxt: any) => {
       const shellLayouts = resolve(__dirname, 'app/layouts')
       nuxt.hook('app:resolve', (app: { layouts: Record<string, { name: string, file: string }> }) => {
-        const { layout, layouts = [] } = nuxt.options.appConfig?.uiShell || {}
+        const { layout, layouts = [], aliases = {} } = nuxt.options.appConfig?.uiShell || {}
         if (!layout) return
-        for (const name of [layout, ...layouts]) {
-          const file = resolve(shellLayouts, `${name}.vue`)
-          const current = app.layouts[name]
-          if (existsSync(file) && !current?.file.startsWith(nuxt.options.srcDir)) app.layouts[name] = { name, file }
-        }
-        const chosen = app.layouts[layout]
-        if (!chosen) throw new Error(`[ui-shell] appConfig.uiShell.layout "${layout}" not found; available: ${Object.keys(app.layouts).join(', ')}`)
+        const wanted: Record<string, string> = { ...aliases }
+        for (const name of [layout, ...layouts]) wanted[name] = name
+        const appOwn = (name: string) => app.layouts[name]?.file.startsWith(nuxt.options.srcDir)
         for (const [name, entry] of Object.entries(app.layouts)) {
-          if (entry.file.startsWith(shellLayouts) && name !== layout && !layouts.includes(name)) delete app.layouts[name]
+          if (entry.file.startsWith(shellLayouts) && !appOwn(name)) delete app.layouts[name]
         }
-        app.layouts.default = { ...chosen, name: 'default' }
+        for (const [name, source] of Object.entries(wanted)) {
+          const file = resolve(shellLayouts, `${source}.vue`)
+          if (!existsSync(file)) throw new Error(`[ui-shell] layout "${source}" (wanted as "${name}") not found in ${shellLayouts}`)
+          if (!appOwn(name)) app.layouts[name] = { name, file }
+        }
+        app.layouts.default = { ...app.layouts[layout]!, name: 'default' }
       })
     },
   ],

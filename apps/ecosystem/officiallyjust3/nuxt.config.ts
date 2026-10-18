@@ -83,7 +83,7 @@ export default defineNuxtConfig({
 
   appConfig: {
     // ui-shell renders layers/ui-shell/app/layouts/starter.vue as this app's default layout
-    uiShell: { layout: 'starter' },
+    uiShell: { layout: 'starter', layouts: ['auth', 'search'], aliases: { nolive: 'starter' } },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Meeovi'}`
   },
 
