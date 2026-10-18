@@ -94,11 +94,13 @@ await test('C2', 'auth refuses an off-site callbackURL', async () => {
   return `HTTP ${r.status} ${r.body?.code ?? ''}`
 })
 await test('C3', 'auth refuses a state-changing request from a foreign Origin', async () => {
-  const r = await req('POST', '/api/auth/sign-in/email', {
-    json: { email: 'nobody@example.invalid', password: 'not-the-password-123' },
-    headers: { origin: 'https://evil.example' },
+  // sign-in is behind Turnstile, which answers first; sign-out isn't, so it
+  // reaches better-auth's origin check (a cookie makes the check apply).
+  const r = await req('POST', '/api/auth/sign-out', {
+    json: {},
+    headers: { origin: 'https://evil.example', cookie: '__Secure-custom_session_token=x' },
   })
-  expect(r.status === 403, `HTTP ${r.status}: ${r.text.slice(0, 120)}`)
+  expect(r.status === 403 && /origin/i.test(r.text), `HTTP ${r.status}: ${r.text.slice(0, 120)}`)
 })
 
 section('Session cookies')

@@ -1,20 +1,19 @@
 # demo.meeovicms.com: what's left before production
 
-**Date:** 16 October 2026, updated 17 October 2026
+**Date:** 16 October 2026, updated 18 October 2026
 **Follows:** [Production readiness: layers and meeovi-frontend](2026-10-16-production-readiness.md)
 **Path to production:** meeovi-frontend is finished and tested on demo.meeovicms.com, then moves to meeovi.com, with commerce data from commerce.meeovicms.com (Mage-OS 3.6.0).
 
 ## Remaining blockers
 
 1. **Enforce the CSP.** It is report-only today. Exercise checkout (Stripe and PayPal), sign-in (Turnstile), search, notifications and ads on the demo, make sure no violations are reported, then switch it to enforce.
-2. **Deploy the Turnstile change** (commit `77bcee50`, not deployed yet). Once it's live, scripts can't sign in, so the production tests need another way to get a session (see "Waiting on you"), and sign-up, sign-in and password reset need a browser check.
-3. **Production test accounts.** The user clean-up removed the QA user and QA seller accounts, so the suites that sign in as them now fail. Recreate them through the sign-up form (it needs the captcha), or point those suites at QA Admin where that's enough.
-4. **Rotate keys and sign out all sessions.** Scheduled for the end of the project; do it last, before the move to meeovi.com:
+2. **Browser check of the Turnstile flows.** Scripts can't pass the captcha, so these are covered by hand only: sign-up, password and username sign-in (including the cookie flags and the 2FA step), password reset, resending the verification email and Bluesky sign-in.
+3. **Rotate keys and sign out all sessions.** Scheduled for the end of the project; do it last, before the move to meeovi.com:
    - JWKS, the OAuth client secret, API keys and Directus tokens (the app now uses the "Meeovi app server" token; remove the static token from the "Meeovi Administrator" account, kept in `/root/directus-admin-token` until then);
    - the Magento Integration tokens: reauthorize "Meeovi App" and update `demo.env` and the local `.env`;
    - the Stripe Tax secret key stored in commerce's Magento config: its encrypted value was printed during the 17 October checks;
    - the Bluesky app password "meeovi-app" (revoke it on the account and create a new one).
-5. **Switch Novu to `NODE_ENV=production`.** It runs as `local` on purpose until launch. Change it in `/root/novu-3.19/api.env`, then run `docker compose up -d api` from that folder.
+4. **Switch Novu to `NODE_ENV=production`.** It runs as `local` on purpose until launch. Change it in `/root/novu-3.19/api.env`, then run `docker compose up -d api` from that folder.
 
 ## Before the move to meeovi.com
 
@@ -60,7 +59,6 @@
 | Approval for any change on live meeovi.com Magento, or confirming meeovi.com uses commerce | Moving to meeovi.com |
 | Tax decision for Magento products | Moving to meeovi.com |
 | An ActivityPub (Mastodon) access token | Fediverse search |
-| How the production tests get a session once sign-in needs Turnstile | Blocker 2 |
 
 ## Done
 
@@ -121,3 +119,14 @@
 - **Directus token restricted:** the app uses a new "Meeovi app server" account (policy: all 478 content collections, files, read-only schema; no access to the 32 auth tables, settings or roles). Live on the demo and in local dev; verified (auth tables refused, content and lists flows work, no permission errors in the test run).
 - **Plugins:** every plugin is registered by name (`acc7dc85`); meeovi-forms and experience-builder moved from the shared layer into the apps that use them.
 - **Turnstile** now guards every unauthenticated auth flow in code (`77bcee50`): password, username and email-code sign-in, Bluesky sign-in and sign-up, and resending the verification email, besides sign-up, password reset and magic link.
+
+### 18 October
+
+- **Turnstile deployed** on the demo: `/api/auth/sign-in/email` without a captcha token returns `400 Missing CAPTCHA response`, and the login page shows the widget.
+- **QA accounts recreated:** QA user and QA seller (email verified, linked to Magento customers 111 and 112); details in `/home/meebuzo/.meeovi-demo/qa-accounts.json`.
+- **Production tests** open sessions directly in the database (signed like better-auth's own cookie) instead of signing in, and report sign-in checks as "blocked — verify in a browser". Results against the demo:
+  - social (22), search (10), shared (31), ui-shell (9) pass;
+  - security: 14 pass, 1 blocked (K1, cookie flags; browser check);
+  - business: 16 pass, 1 skipped on purpose (real shop or payout changes);
+  - commerce: 20 pass, 1 known failure (`/api/commerce/driver`, see "After launch");
+  - auth: 42 pass, 14 blocked by Turnstile; T3 (2FA step) was rate-limited and is now reported as blocked.

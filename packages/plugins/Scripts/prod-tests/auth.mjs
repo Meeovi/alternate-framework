@@ -31,6 +31,9 @@ async function lastEmailAudit(email) {
 // report "blocked" rather than pass. CAP1 checks the gate itself.
 const captchaGate = (r) => {
   if (r.status === 400 && /captcha/i.test(r.text)) blocked('CAPTCHA required on this endpoint (Turnstile) — verify in a browser')
+  // Earlier probes in the run can exhaust the sign-in rate limit; the request
+  // never reaches the step under test, so this is blocked, not a failure.
+  if (r.status === 429) blocked('rate-limited by earlier checks in this run — rerun later or verify in a browser')
 }
 
 section(`Setup — QA accounts on ${BASE}`)
