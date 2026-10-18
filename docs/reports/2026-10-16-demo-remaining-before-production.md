@@ -6,14 +6,13 @@
 
 ## Remaining blockers
 
-1. **Enforce the CSP.** It is report-only today. Exercise checkout (Stripe and PayPal), sign-in (Turnstile), search, notifications and ads on the demo, make sure no violations are reported, then switch it to enforce.
-2. **Browser check of the Turnstile flows.** Scripts can't pass the captcha, so these are covered by hand only: sign-up, password and username sign-in (including the cookie flags and the 2FA step), password reset, resending the verification email and Bluesky sign-in.
-3. **Rotate keys and sign out all sessions.** Scheduled for the end of the project; do it last, before the move to meeovi.com:
+1. **Tick the Turnstile checkbox once, by hand.** Cloudflare refuses automated browsers, so the real challenge on demo.meeovicms.com needs one human sign-in. Everything after the checkbox is verified (see 18 October).
+2. **Rotate keys and sign out all sessions.** Scheduled for the end of the project; do it last, before the move to meeovi.com:
    - JWKS, the OAuth client secret, API keys and Directus tokens (the app now uses the "Meeovi app server" token; remove the static token from the "Meeovi Administrator" account, kept in `/root/directus-admin-token` until then);
    - the Magento Integration tokens: reauthorize "Meeovi App" and update `demo.env` and the local `.env`;
    - the Stripe Tax secret key stored in commerce's Magento config: its encrypted value was printed during the 17 October checks;
    - the Bluesky app password "meeovi-app" (revoke it on the account and create a new one).
-4. **Switch Novu to `NODE_ENV=production`.** It runs as `local` on purpose until launch. Change it in `/root/novu-3.19/api.env`, then run `docker compose up -d api` from that folder.
+3. **Switch Novu to `NODE_ENV=production`.** It runs as `local` on purpose until launch. Change it in `/root/novu-3.19/api.env`, then run `docker compose up -d api` from that folder.
 
 ## Before the move to meeovi.com
 
@@ -34,7 +33,6 @@
 ## Should do before launch
 
 - **Fediverse:** set `ACTIVITYPUB_ACCESS_TOKEN`; without it, ActivityPub is limited to anonymous hashtag search.
-- **Env clean-up:** the app's `.env` still carries `NUXTUS_DIRECTUS_ADMIN_EMAIL` / `NUXTUS_DIRECTUS_ADMIN_PASSWORD` (Directus admin login), which no code reads; remove them.
 
 ## After launch
 
@@ -128,3 +126,7 @@
   - commerce: 20 pass, 1 known failure (`/api/commerce/driver`, see "After launch");
   - auth: 42 pass, 14 blocked by Turnstile; T3 (2FA step) was rate-limited and is now reported as blocked.
 - **ui-shell owns every layout.** `auth` (from the auth layer) and `search` (from the search layer, with its header menus) moved into ui-shell. Social's own `nolive` was deleted: it used components the starter apps don't register. Apps now list the layouts they use (`uiShell.layouts`), and starter apps serve `nolive` with the starter shell (`uiShell.aliases`). The app-level CSS stays as it is, since it's part of the design.
+- **CSP enforced** on demo.meeovicms.com (`13ca55af`). It's sent by `layers/shared/server/plugins/content-security-policy.ts`; setting `NUXT_CSP_REPORT_ONLY=true` in `demo.env` and restarting switches it back to report-only without a rebuild. Before switching, Chrome crawled 20 pages signed out and signed in, with cookies accepted (ads and trackers loading) and through Stripe's embedded checkout. That found two violations, both fixed: AdSense's `csi.gstatic.com` beacon (now allowed) and Zod's eval probe (turned off). The same crawl under enforcement found none.
+- **Turnstile flows checked in a real browser** (Chrome) against a localhost copy of the demo build with Cloudflare's always-pass test keys, so everything except the human checkbox is real: password sign-in (session cookie HttpOnly, SameSite=Lax, `__Secure-` name), wrong password (widget resets for the next try), username sign-in, password reset, sign-up then resend verification (test account removed), Bluesky sign-in (passes the captcha and reaches the PDS) and the 2FA step.
+- **2FA sign-in fixed.** Accounts with two-factor on couldn't sign in: the page they were sent to, `/2fa`, didn't exist. It now takes an authenticator code, an emailed code or a backup code, and offers "trust this device". Verified end to end, then 2FA was switched off again on the QA account.
+- **Env clean-up:** the app's `.env` (and the demo's copy) went from 198 to 112 variables, removing 86 that nothing reads (old WordPress, WooCommerce, Keycloak, MySQL, Mongo, Coral and Elite Novels settings, the Directus admin login, a JWT secret in public config, and more). `MAGENTO_STORE_URL` was also removed from `demo.env`. Backups sit next to each file as `.bak-<timestamp>`. The demo restarted on the cleaned files and the suites pass.
