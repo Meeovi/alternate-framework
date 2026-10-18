@@ -342,7 +342,12 @@
   color: #11389b !important
 }
 
- .v-field__input::placeholder {
+ /* Only where no label sits in the field: label-less fields (the search
+    bar) and active ones (focused or filled, label floated or hidden).
+    Unscoped, this showed the placeholder underneath every resting label
+    (sign-in, newsletter…). */
+ .v-field--no-label .v-field__input::placeholder,
+ .v-field--active .v-field__input::placeholder {
     color: #6b7280 !important;
     opacity: 1 !important;
   }
