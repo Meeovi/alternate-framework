@@ -2,7 +2,7 @@
 
 ## Phase 1 Contract Freeze Checklist (v1.0)
 
-**Status: READY FOR APPROVAL.** Every item below is done and points at where it's satisfied. The freeze takes effect when the owner signs off under "Approval".
+**Status: CONTRACT FROZEN** (approved 19 October 2026). Every item below is done and points at where it's satisfied. Changes to the frozen contracts now require version review.
 
 Module: [`layers/commerce/server/licensing/`](../../layers/commerce/server/licensing/) ([README](../../layers/commerce/server/licensing/README.md)). Tests: `npx vitest run --config server/licensing/vitest.config.ts` from `layers/commerce` (54 tests passing).
 
@@ -283,9 +283,9 @@ All in the module [README](../../layers/commerce/server/licensing/README.md).
 
 ## Approval
 
-- [ ] Approved by the module owner (name and date)
+- [x] Approved by the module owner: Sebastian Hilton, 19 October 2026
 
-## Outcome After Approval
+## Outcome (in effect since 19 October 2026)
 
 - Module status: **CONTRACT FROZEN**
 - Public API: **STABLE**

@@ -1,12 +1,12 @@
 # Licensing module
 
-**Contract version 1.0, ready for freeze approval.** Freeze checklist: [docs/architecture/licensing-contract-freeze-v1.md](../../../../docs/architecture/licensing-contract-freeze-v1.md). Specification: [docs/architecture/licensing-module-spec.md](../../../../docs/architecture/licensing-module-spec.md).
+**Contract version 1.0: CONTRACT FROZEN** (approved 19 October 2026). Public contracts are stable; breaking changes require version review, and implementations and adapters may now be built. Freeze checklist: [docs/architecture/licensing-contract-freeze-v1.md](../../../../docs/architecture/licensing-contract-freeze-v1.md). Specification: [docs/architecture/licensing-module-spec.md](../../../../docs/architecture/licensing-module-spec.md).
 
 ## Overview
 
 One licensing engine for every digital product Meeovi sells: fonts, icons, photos, stock images, videos, music, templates, eBooks, Vibez assets, software, plugins, language packs, AI tools, courses and future product types. It's backend-agnostic: it consumes normalized commerce events and host interfaces, and never talks to Magento, Webkul, Shopify, WooCommerce, Saleor or Directus.
 
-This folder holds **contracts only**: types, rules as pure functions, and their tests. It registers no routes, has no database, and doesn't authenticate anyone. Hosts implement the interfaces once the freeze is approved.
+This folder holds **contracts only**: types, rules as pure functions, and their tests. It registers no routes, has no database, and doesn't authenticate anyone. Hosts implement the interfaces.
 
 It lives in `server/licensing/`, not `server/modules/`, on purpose. Nitro loads every folder in `server/modules/` as a Nitro module, which fails the build ("Cannot redefine property: setup").
 

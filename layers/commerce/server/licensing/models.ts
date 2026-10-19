@@ -1,5 +1,5 @@
 /**
- * Licensing domain model — contract v1.0 (frozen fields; see
+ * Licensing domain model — contract v1.0, frozen 19 October 2026 (see
  * docs/architecture/licensing-contract-freeze-v1.md).
  *
  * Product and user ids are opaque references owned by the host (commerce
