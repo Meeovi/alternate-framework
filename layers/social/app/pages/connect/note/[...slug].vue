@@ -179,12 +179,14 @@
     const {
         data: post
     } = await useAsyncData('post', async () => {
+        // /connect/note/<slug>, or /connect/note/<id> for posts saved
+        // without a slug (see utils/postPath.ts).
+        const param = route.params.slug
+        const key = String(Array.isArray(param) ? param.join('/') : param || '')
         const resp = await $directus.request($readItems('posts', {
-            filter: {
-                slug: {
-                    _eq: `${route.params.slug}`
-                }
-            },
+            filter: /^\d+$/.test(key)
+                ? { _or: [{ slug: { _eq: key } }, { id: { _eq: Number(key) } }] }
+                : { slug: { _eq: key } },
             fields: ['*', 'author.*', 'image.*', 'file.*', 'audio.*'],
             limit: 1
         }))

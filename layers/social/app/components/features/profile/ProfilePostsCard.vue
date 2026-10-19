@@ -22,6 +22,7 @@
 <script setup>
 import ProfileSectionCard from './ProfileSectionCard.vue'
 import ProfileEntityList from './ProfileEntityList.vue'
+import { postPath } from '../../../utils/postPath'
 
 defineProps({
   title: { type: String, default: 'Recent Posts' },
@@ -33,5 +34,5 @@ defineProps({
   mt: { type: Boolean, default: false },
 })
 
-const postLink = (post) => (post?.slug ? `/connect/note/${post.slug}` : '/connect')
+const postLink = (post) => postPath(post) || '/connect'
 </script>

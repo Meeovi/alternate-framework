@@ -52,7 +52,7 @@
                         <!--Comments-->
                         <v-btn variant="text" class="mbr-section-btn">
                             <v-btn prepend-icon="fas fa-comment" title="Comment on this post" text="Comment"
-                                variant="text" :href="`/connect/note/${post?.slug}`"></v-btn>
+                                variant="text" :to="noteLink" :disabled="!noteLink"></v-btn>
                         </v-btn>
 
                         <!--<v-btn variant="text" class="mbr-section-btn">
@@ -78,7 +78,9 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     import share from '#social/app/components/blocks/share.vue';
     //import repost from '#social/app/components/blocks/repost/repost.vue';
     import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
+    import { postPath } from '#social/app/utils/postPath';
     import {
+        computed,
         toRef
     } from '#imports'
 
@@ -91,6 +93,8 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
         },
     });
     const post = toRef(props, 'post');
+    // The post's page (slug, or id for posts saved without one).
+    const noteLink = computed(() => postPath(post.value));
 
     const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetURL(file) || '')
         .toLowerCase()

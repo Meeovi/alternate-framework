@@ -80,7 +80,7 @@ export function createDirectusNetwork(deps: DirectusNetworkDeps): FederationNetw
     return {
       id: String(post.id),
       network: DIRECTUS_NETWORK,
-      url: site && post.slug ? `${site}/connect/note/${encodeURIComponent(post.slug)}` : undefined,
+      url: site && (post.slug || post.id) ? `${site}/connect/note/${encodeURIComponent(String(post.slug || post.id))}` : undefined,
       text,
       createdAt: new Date(post.date_published || post.date_created || 0).toISOString(),
       author: authorOf(post, members),

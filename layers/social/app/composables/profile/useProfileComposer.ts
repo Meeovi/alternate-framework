@@ -3,6 +3,7 @@ import { useNuxtApp } from '#imports'
 import { useProfileIdentity } from './useProfileIdentity'
 import { useProfileSocial } from './useProfileSocial'
 import { usePosts } from '../posts/usePosts'
+import { newPostSlug } from '../../utils/postPath'
 
 /**
  * Inline post composer for `/u/` (Timeline tab).
@@ -31,6 +32,8 @@ export function useProfileComposer() {
     if (!$directus || typeof $createItem !== 'function') return null
     const res = await $directus.request($createItem('posts', {
       content,
+      // The note page (/connect/note/<slug>) and post cards link by slug.
+      slug: newPostSlug(content),
       status: 'published',
       content_type: 'Post',
       visibility_scope: 'public',
@@ -63,6 +66,7 @@ export function useProfileComposer() {
       }
       addPost({
         id: created.id,
+        slug: created.slug,
         content: created.content ?? content,
         username: created.username ?? displayName.value,
         date_created: created.createdAt ?? created.date_created ?? new Date().toISOString(),
