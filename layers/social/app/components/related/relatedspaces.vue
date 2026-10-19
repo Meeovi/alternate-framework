@@ -5,9 +5,16 @@
         <v-toolbar title="Check out these Spaces from the community" color="transparent">
           <NuxtLink to="/connect/spaces/">All Spaces</NuxtLink>
         </v-toolbar>
-        <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+        <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows="always">
           <v-slide-group-item v-for="space in group" :key="space.id" v-slot="{ isSelected, toggle, selectedClass }">
-            <spaceCard :space="space" :class="['ma-4', selectedClass]" v-if="isSelected" @click="toggle" />
+            <div class="d-flex align-items-stretch" :class="selectedClass" @click="toggle">
+              <spaceCard :space="space" class="ma-4" />
+              <div class="d-flex fill-height align-center justify-center">
+                <v-scale-transition>
+                  <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
+                </v-scale-transition>
+              </div>
+            </div>
           </v-slide-group-item>
         </v-slide-group>
       </v-sheet>

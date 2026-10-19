@@ -9,14 +9,16 @@
           <div class="line"></div>
         </div>
         <v-sheet class="mx-auto">
-          <v-slide-group v-model="model" class="pa-4" show-arrows>
+          <v-slide-group v-model="model" class="pa-4" show-arrows="always">
             <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="(products, index) in latest" :key="index">
-              <productCard  :product="products" :class="['ma-4', selectedClass]" @click="toggle" />
+              <div class="d-flex align-items-stretch" :class="selectedClass" @click="toggle">
+                <productCard :product="products" class="ma-4" />
 
-              <div class="d-flex fill-height align-center justify-center">
-                <v-scale-transition>
-                  <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
-                </v-scale-transition>
+                <div class="d-flex fill-height align-center justify-center">
+                  <v-scale-transition>
+                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
+                  </v-scale-transition>
+                </div>
               </div>
             </v-slide-group-item>
           </v-slide-group>

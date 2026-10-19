@@ -45,6 +45,11 @@ import {
 
 import { plugins } from '../../shared/utils/plugins'
 import { sendAuthEmail } from '../../shared/utils/infrastructure/email'
+// Better Auth Infrastructure: dash() and organization() are registered in
+// shared/utils/plugins.ts; sentinel() is server-only, so it's added here.
+// Both read BETTER_AUTH_API_KEY (without it the online dashboard's calls to
+// /dash/config fail with "Invalid API key" and it sees no plugins).
+import { sentinel } from "@better-auth/infra";
 import { MIN_PASSWORD_LENGTH } from '../../shared/utils/username'
 // better-auth plugins from packages (packages/plugins/Authentication/auth-*),
 // collected at build time by modules/auth-plugins.ts.
@@ -381,7 +386,7 @@ export const auth = betterAuth({
       "/send-verification-email": { window: 60, max: 3 },
     },
   },
-  plugins: [...plugins, ...packagePlugins],
+  plugins: [...plugins, ...packagePlugins, sentinel()],
   telemetry: {
     enabled: true,
     debug: !isProduction

@@ -18,6 +18,8 @@ import {
 import {
   apiKeyClient
 } from "@better-auth/api-key/client"
+import { sentinelClient } from "@better-auth/infra/client";
+
 import {
   passkeyClient
 } from "@better-auth/passkey/client"
@@ -88,6 +90,9 @@ export const authClient = createAuthClient({
     lastLoginMethodClient(),
     multiSessionClient(),
     oneTimeTokenClient(),
+    sentinelClient({
+      identifyUrl: process.env.BETTER_AUTH_IDENTIFY_URL,
+    }),
     jwtClient(),
     ...packageClientFactories.flatMap((factory) => factory()),
   ]

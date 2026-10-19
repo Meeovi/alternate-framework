@@ -1,19 +1,17 @@
 <template>
   <div class="contentPage">
-    <Pagebar v-if="page?.type !== 'Page'" :about="page?.name" />
+    <Pagebar v-if="page && page.type !== 'Page'" :about="page.name" />
+    
+    <component :is="customPage" v-if="customPage" />
 
-    <div class="contentSection">
+    <div v-else class="contentSection">
       <v-card elevation="0">
-        <v-card-subtitle class="pt-4" style="width: 100% !important;">
+        <v-card-text v-dompurify-html="page?.content"></v-card-text>
+
+        <v-card-actions class="pt-4" style="width: 100% !important;">
           Published: {{ page?.date_created ? new Date(page.date_created).toLocaleDateString() : '' }} &middot;
 
           Updated: {{ page?.date_updated ? new Date(page.date_updated).toLocaleDateString() : '' }}
-        </v-card-subtitle>
-
-        <v-card-text v-dompurify-html="page?.content"></v-card-text>
-
-        <v-card-actions>
-          
         </v-card-actions>
       </v-card>
     </div>
@@ -21,9 +19,6 @@
 </template>
 
 <script setup>
-  import {
-    ref
-  } from 'vue'
   import Pagebar from '#ui/app/components/menus/page/pagebar.vue'
 
   const route = useRoute()
@@ -34,11 +29,19 @@
 
   // `/about/team` arrives as ['about', 'team'].
   const slug = [].concat(route.params.slug || []).join('/')
+  const customPages = import.meta.glob('../components/content/*.vue', {
+    eager: true,
+    import: 'default'
+  })
+  const customPage = customPages[`../components/content/${slug}.vue`]
+  const hasCustomPage = Boolean(customPage)
 
   const {
     data: page,
     error
   } = await useAsyncData(`page-${slug}`, async () => {
+    if (hasCustomPage) return null
+
     const result = await $directus.request($readItems('pages', {
       filter: {
         slug: {
@@ -53,11 +56,19 @@
 
   // This page catches every URL nothing else claims — answer a real 404
   // (not an empty 200 page) when the CMS has no page for it.
-  if (error.value) {
-    throw createError({ statusCode: 503, statusMessage: 'This page is temporarily unavailable', fatal: true })
+  if (error.value && !hasCustomPage) {
+    throw createError({
+      statusCode: 503,
+      statusMessage: 'This page is temporarily unavailable',
+      fatal: true
+    })
   }
-  if (!page.value) {
-    throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+  if (!page.value && !hasCustomPage) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Page not found',
+      fatal: true
+    })
   }
 
   useHead({

@@ -5,41 +5,39 @@
                 <div class="cardWrapper">
                     <v-toolbar color="transparent" flat>
                         <v-toolbar-title>
-                            <v-list>
+                            <v-list style="position: relative; left: -16px;">
                                 <v-list-item :title="post?.author?.name"
                                     :prepend-avatar="getAssetURL(post?.author?.avatar)">
                                     <template #subtitle>
-                                        <TimeAgo v-if="post?.date_created" :time="post.date_created" :label="null" size="small" />
+                                        <TimeAgo v-if="post?.date_created" :time="post.date_created" :label="null"
+                                            size="small" />
                                         <span v-else>Unknown date</span>
                                     </template>
                                 </v-list-item>
                             </v-list>
                         </v-toolbar-title>
 
-                        <v-spacer></v-spacer>
 
                         <editMenu :post="post" />
                     </v-toolbar>
-                    <div class="align-end text-white" min-height="200" v-if="post?.file_url || post?.file">
+
+                    <div class="align-end text-white" max-height="200px" v-if="post?.file_url || post?.file">
                         <MeeoviPlayer :src="getAssetURL(post?.file_url || post?.file)" :title="post?.title" />
                     </div>
 
-                    <div class="align-end text-white" min-height="200" v-else-if="post?.audio_url || post?.audio">
-                        <MeeoviPlayer kind="audio" :src="getAssetURL(post?.audio_url || post?.audio)" :title="post?.title" />
+                    <div class="align-end text-white" max-height="200px" v-else-if="post?.audio_url || post?.audio">
+                        <MeeoviPlayer kind="audio" :src="getAssetURL(post?.audio_url || post?.audio)"
+                            :title="post?.title" />
                     </div>
 
-                    <div class="align-end text-white" min-height="200" v-else-if="post?.image_url || post?.image">
+                    <div class="align-end text-white" max-height="200px" v-else-if="post?.image_url || post?.image">
                         <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image_url || post?.image)"
                             :alt="post?.title || 'No Title'" />
                     </div>
-                    <v-img v-else class="align-end text-white" height="200"
-                        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" :alt="post?.title || 'No Title'" cover>
-                        <v-card-title>{{ post?.title }}</v-card-title>
-                    </v-img>
+                    <NuxtImg v-else class="align-end text-white" max-height="200px"
+                        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" :alt="post?.title || 'No Title'" cover />
 
-                    <v-card-subtitle class="pt-4">
-                        {{ post?.description }}
-                    </v-card-subtitle>
+                    <v-card-title>{{ post?.title }}</v-card-title>
 
                     <v-card-text>
                         <p v-dompurify-html="post?.content" class="postContent"></p>
@@ -73,7 +71,9 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+    import {
+        getAssetURL
+    } from '#shared/app/utils/get-asset-url'
     import editMenu from '#social/app/components/blocks/postEditMenu.vue';
     import share from '#social/app/components/blocks/share.vue';
     //import repost from '#social/app/components/blocks/repost/repost.vue';
@@ -84,7 +84,9 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
         toRef
     } from '#imports'
 
-    const { $sdk } = useNuxtApp()
+    const {
+        $sdk
+    } = useNuxtApp()
 
     const props = defineProps({
         post: {
@@ -96,14 +98,23 @@ import { getAssetURL } from '#shared/app/utils/get-asset-url'
     // The post's page (slug, or id for posts saved without one).
     const noteLink = computed(() => postPath(post.value));
 
-    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetURL(file) || '')
+    const fileNameOf = (file) => String(file?.filename_download || file?.title || file?.type || getAssetURL(
+            file) || '')
         .toLowerCase()
     const matchesExtension = (file, extensions) => extensions.some((ext) => fileNameOf(file).endsWith(ext))
 </script>
 
 <style scoped>
+    .card__wrap {
+        max-width: 300px;
+    }
+
     .align-end {
         min-height: 200px;
+        max-height: 200px;
+    }
+
+    .cardWrapper img {
         max-height: 200px;
     }
 </style>
