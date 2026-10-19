@@ -1,7 +1,8 @@
 import type { LicensingEvent } from '../../events'
-import type { AuthenticatedUser, LicensingModuleDependencies } from '../../interfaces'
+import type { AuthenticatedUser, IdempotencyProvider, LicenseRepository, LicensingModuleDependencies } from '../../interfaces'
 import type { LicenseType, LicenseTypeVersion, ProductLicense } from '../../models'
-import { createReferenceLicensingModule, MemoryIdempotency, MemoryRepository } from './reference-module'
+import { createLicensingModule } from '../../service'
+import { MemoryIdempotency, MemoryRepository } from './memory'
 
 export const buyer: AuthenticatedUser = { id: 'user-1', roles: ['user'], identityProvider: 'meeovi' }
 export const otherUser: AuthenticatedUser = { id: 'user-2', roles: ['user'], identityProvider: 'sso' }
@@ -28,8 +29,24 @@ export function offer(over: Partial<ProductLicense> = {}): ProductLicense {
   }
 }
 
+/**
+ * Storage for the flow tests: in memory, or the real Postgres repository
+ * and idempotency store when LICENSING_TEST_DATABASE_URL points at a
+ * throwaway database with the licensing migration applied: every
+ * licensing table is emptied before each test. Never point it at a real one.
+ */
+async function storage(): Promise<{ repository: LicenseRepository, idempotency: IdempotencyProvider }> {
+  const url = process.env.LICENSING_TEST_DATABASE_URL
+  if (!url) return { repository: new MemoryRepository(), idempotency: new MemoryIdempotency() }
+  const { testDb, truncate } = await import('./postgres-db')
+  const db = testDb(url)
+  await truncate(db)
+  const { PostgresIdempotency, PostgresLicenseRepository } = await import('../../../licensing-host/postgres')
+  return { repository: new PostgresLicenseRepository(db), idempotency: new PostgresIdempotency(db) }
+}
+
 export async function setup(options: { offer?: Partial<ProductLicense> } = {}) {
-  const repository = new MemoryRepository()
+  const { repository, idempotency } = await storage()
   const published: LicensingEvent[] = []
   let clock = new Date('2026-06-01T00:00:00Z')
   let seq = 0
@@ -45,7 +62,7 @@ export async function setup(options: { offer?: Partial<ProductLicense> } = {}) {
     outlets: { userCanAccessOutlet: async () => true },
     integrations: { isIntegrationAvailable: async () => true },
     repository,
-    idempotency: new MemoryIdempotency(),
+    idempotency,
     events: { publish: async (e) => { published.push(e) } },
     now: () => clock,
     generateId: () => `id-${++seq}`,
@@ -54,7 +71,7 @@ export async function setup(options: { offer?: Partial<ProductLicense> } = {}) {
   await repository.saveLicenseType(commercialType)
   await repository.insertLicenseTypeVersion(v1_0)
   await repository.saveProductLicense(offer(options.offer))
-  const module = createReferenceLicensingModule(deps)
+  const module = createLicensingModule(deps)
   let keys = 0
   /** Services for one request; each call gets a fresh Idempotency-Key unless one is given. */
   const as = (user: AuthenticatedUser | null, idempotencyKey: string | undefined = `k-${++keys}`) => module.forRequest({ user, idempotencyKey })

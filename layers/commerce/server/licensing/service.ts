@@ -1,91 +1,40 @@
 /**
- * In-memory reference implementation of the licensing contracts, used only
- * by the contract tests (not exported from the module). It shows the
- * frozen interfaces can be implemented as specified — idempotency,
- * uniqueness, lifecycle, refund, subscription and versioning rules — and
- * gives real implementations a behaviour to match.
+ * The licensing service: implements the v1.0 contracts (interfaces.ts) on
+ * top of the host ports — storage (LicenseRepository), idempotency,
+ * events, identity and workspace answers. Storage-agnostic and free of
+ * commerce, auth and framework dependencies; hosts supply the ports.
+ *
+ * - Commerce events (`commerceEvents.handle`) apply purchases, refunds and
+ *   subscription changes; they come from the host, not a user request.
+ * - `forRequest({ user, idempotencyKey })` gives the request-scoped
+ *   services; every state change runs once per Idempotency-Key and every
+ *   call is authorized (authorization.ts).
+ * - Uniqueness races (a purchase event delivered twice at once, two
+ *   installs on one target) are settled by the repository's unique
+ *   constraints: the loser re-reads the winner's row.
  */
-import { randomUUID } from 'node:crypto'
-import { assertAllowed, type AuthorizationContext, type LicensingAction } from '../../authorization'
-import { LicensingError } from '../../errors'
-import { parseLicensingEvent, type CommerceEvent, type LicensingEvent } from '../../events'
+import { assertAllowed, type AuthorizationContext, type LicensingAction } from './authorization'
+import { LicensingError } from './errors'
+import { parseLicensingEvent, type CommerceEvent, type LicensingEvent } from './events'
 import type {
   AuthenticatedUser,
-  IdempotencyProvider,
-  LicenseRepository,
   LicensingModule,
   LicensingModuleDependencies,
   LicensingRequestContext,
   Purchase,
-} from '../../interfaces'
-import type { LicenseDownload, LicenseInstallation, LicenseType, LicenseTypeVersion, ProductLicense, UserLicense, UserLicenseStatus } from '../../models'
-import { canTransition, grantsAccess, withinLimit } from '../../models'
-import { latestPurchasableVersion } from '../../versioning'
+} from './interfaces'
+import type { LicenseInstallation, LicenseType, LicenseTypeVersion, ProductLicense, UserLicense, UserLicenseStatus } from './models'
+import { canTransition, grantsAccess, withinLimit } from './models'
+import { latestPurchasableVersion } from './versioning'
 
 const DAY = 86_400_000
-const clone = <T>(v: T): T => structuredClone(v)
+const randomId = () => globalThis.crypto.randomUUID()
 
-export class MemoryRepository implements LicenseRepository {
-  types = new Map<string, LicenseType>()
-  versions = new Map<string, LicenseTypeVersion>()
-  offers = new Map<string, ProductLicense>()
-  licenses = new Map<string, UserLicense>()
-  installations = new Map<string, LicenseInstallation>()
-  downloads: LicenseDownload[] = []
-
-  async saveLicenseType(t: LicenseType) { this.types.set(t.id, clone(t)); return clone(t) }
-  async getLicenseType(id: string) { return clone(this.types.get(id) ?? null) }
-  async insertLicenseTypeVersion(v: LicenseTypeVersion) {
-    if (this.versions.has(v.id)) throw new LicensingError('VALIDATION_ERROR', 'License terms versions are immutable', { id: v.id })
-    this.versions.set(v.id, clone(v)); return clone(v)
-  }
-  async getLicenseTypeVersion(id: string) { return clone(this.versions.get(id) ?? null) }
-  async listLicenseTypeVersions(typeId: string) { return [...this.versions.values()].filter((v) => v.licenseTypeId === typeId).map(clone) }
-  async saveProductLicense(o: ProductLicense) { this.offers.set(o.id, clone(o)); return clone(o) }
-  async getProductLicense(id: string) { return clone(this.offers.get(id) ?? null) }
-  async getUserLicense(id: string) { return clone(this.licenses.get(id) ?? null) }
-  async findUserLicenseByPurchase(purchaseId: string, offerId?: string) {
-    return [...this.licenses.values()].filter((l) => l.purchaseId === purchaseId && (!offerId || l.productLicenseId === offerId)).map(clone)
-  }
-  async listUserLicenses(userId: string) { return [...this.licenses.values()].filter((l) => l.userId === userId).map(clone) }
-  async listUserLicensesForProduct(userId: string, productId: string) {
-    return [...this.licenses.values()].filter((l) => l.userId === userId && l.productId === productId).map(clone)
-  }
-  async saveUserLicense(l: UserLicense) {
-    const dupe = [...this.licenses.values()].find((x) => x.id !== l.id && ((x.purchaseId === l.purchaseId && x.productLicenseId === l.productLicenseId) || x.licenseKey === l.licenseKey))
-    if (dupe) throw new Error('unique violation: user license')
-    this.licenses.set(l.id, clone(l)); return clone(l)
-  }
-  async getInstallation(id: string) { return clone(this.installations.get(id) ?? null) }
-  async listInstallations(licenseId: string) { return [...this.installations.values()].filter((i) => i.userLicenseId === licenseId).map(clone) }
-  async saveInstallation(i: LicenseInstallation) {
-    const dupe = [...this.installations.values()].find((x) => x.id !== i.id && x.active && i.active && x.userLicenseId === i.userLicenseId && x.targetType === i.targetType && x.targetId === i.targetId)
-    if (dupe) throw new Error('unique violation: installation')
-    this.installations.set(i.id, clone(i)); return clone(i)
-  }
-  async insertDownload(d: LicenseDownload) { this.downloads.push(clone(d)); return clone(d) }
-  async countDownloads(licenseId: string) { return this.downloads.filter((d) => d.userLicenseId === licenseId).length }
-}
-
-export class MemoryIdempotency implements IdempotencyProvider {
-  private results = new Map<string, { fingerprint: string, result: Promise<unknown> }>()
-  async execute<T>(key: string, fingerprint: string, operation: () => Promise<T>): Promise<T> {
-    const seen = this.results.get(key)
-    if (seen) {
-      if (seen.fingerprint !== fingerprint) throw new LicensingError('DUPLICATE_IDEMPOTENCY_KEY', 'This Idempotency-Key was used for a different request', { key })
-      return clone(await seen.result) as T
-    }
-    const result = operation()
-    this.results.set(key, { fingerprint, result })
-    try { return clone(await result) } catch (e) { this.results.delete(key); throw e }
-  }
-}
-
-export function createReferenceLicensingModule(deps: LicensingModuleDependencies): LicensingModule {
+export function createLicensingModule(deps: LicensingModuleDependencies): LicensingModule {
   const repo = deps.repository
   const now = deps.now ?? (() => new Date())
-  const newId = deps.generateId ?? (() => randomUUID())
-  const newKey = deps.generateLicenseKey ?? (() => randomUUID().replace(/-/g, '').toUpperCase())
+  const newId = deps.generateId ?? randomId
+  const newKey = deps.generateLicenseKey ?? (() => `${randomId()}${randomId()}`.replace(/-/g, '').toUpperCase())
   const publish = (e: LicensingEvent) => deps.events.publish(parseLicensingEvent(e))
 
   const mustGetLicense = async (id: string) => {
@@ -120,7 +69,13 @@ export function createReferenceLicensingModule(deps: LicensingModuleDependencies
         id: newId(), licenseKey: newKey(), userId: purchase.userId, productId: purchase.productId, productLicenseId: offer.id,
         purchaseId: purchase.id, versionId: latest?.id ?? offer.licenseVersionId, status: 'active', activatedAt: at,
         expiresAt: offer.expiresAfterDays !== undefined ? new Date(at.getTime() + offer.expiresAfterDays * DAY) : undefined, createdAt: at,
+      }).catch(async (error: unknown) => {
+        // Lost a race with the same purchase event: the winner's license stands.
+        const winner = (await repo.findUserLicenseByPurchase(purchase.id, purchase.productLicenseId))[0]
+        if (winner) return null
+        throw error
       })
+      if (!license) return (await repo.findUserLicenseByPurchase(purchase.id, purchase.productLicenseId))[0]!
       await publish({ event: 'license.activated', licenseId: license.id })
       return license
     },
@@ -229,6 +184,13 @@ export function createReferenceLicensingModule(deps: LicensingModuleDependencies
         if (!withinLimit((await offerFor(l)).maxInstallations, active.length)) throw new LicensingError('INSTALL_LIMIT_EXCEEDED', 'Installation limit reached')
         const pluginId = String((await repo.getProductLicense(l.productLicenseId))?.metadata?.pluginId ?? l.productId)
         const saved = await repo.saveInstallation({ id: newId(), userLicenseId: licenseId, targetType, targetId, installedAt: now(), active: true })
+          .catch(async (error: unknown) => {
+            // Lost a race with a simultaneous install on the same target.
+            if ((await repo.listInstallations(licenseId)).some((i) => i.active && i.targetType === targetType && i.targetId === targetId)) {
+              throw new LicensingError('LICENSE_ALREADY_INSTALLED', 'Already installed here', { targetType, targetId })
+            }
+            throw error
+          })
         await publish({ event: 'plugin.installed', pluginId, licenseId })
         return saved
       }),

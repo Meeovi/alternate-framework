@@ -6,7 +6,7 @@
 
 One licensing engine for every digital product Meeovi sells: fonts, icons, photos, stock images, videos, music, templates, eBooks, Vibez assets, software, plugins, language packs, AI tools, courses and future product types. It's backend-agnostic: it consumes normalized commerce events and host interfaces, and never talks to Magento, Webkul, Shopify, WooCommerce, Saleor or Directus.
 
-This folder holds **contracts only**: types, rules as pure functions, and their tests. It registers no routes, has no database, and doesn't authenticate anyone. Hosts implement the interfaces.
+This folder holds the contracts (types, rules as pure functions) and `service.ts`, the licensing service built on them. It registers no routes, has no database, and doesn't authenticate anyone: the host supplies storage, identity and events (see "In this app").
 
 It lives in `server/licensing/`, not `server/modules/`, on purpose. Nitro loads every folder in `server/modules/` as a Nitro module, which fails the build ("Cannot redefine property: setup").
 
@@ -19,7 +19,8 @@ It lives in `server/licensing/`, not `server/modules/`, on purpose. Nitro loads 
 | `authorization.ts` | Who may do what (users, workspace admins, platform admins) |
 | `errors.ts` | Error envelope, codes, status mapping, `LicensingError` |
 | `api-contracts.ts` | REST endpoints with statuses, permissions, idempotency and error codes; request and response bodies |
-| `tests/` | Contract tests, plus an in-memory reference implementation (`tests/support/`, not exported) that exercises every flow |
+| `service.ts` | `createLicensingModule(dependencies)`: the service, on the host's ports. Settles uniqueness races by re-reading after a unique violation |
+| `tests/` | Contract and flow tests; in-memory storage in `tests/support/` (not exported) |
 
 ## Ownership boundaries
 
@@ -150,8 +151,22 @@ Every error is `{ "success": false, "error": { "code", "message", "details" } }`
 - Limits: an omitted `maxDownloads` or `maxInstallations` means unlimited, and `0` means none. Only active installations count.
 - `plugin.*` events carry `pluginId`, taken from the offer's `metadata.pluginId` and falling back to the product id.
 - Downloads are an append-only audit log. Store what the host's audit policy needs in `metadata`.
-- `tests/support/reference-module.ts` is an in-memory reference implementation that shows the intended behavior. Real implementations should pass the same flow tests.
+- Storage implementations must pass the flow tests: run them with `LICENSING_TEST_DATABASE_URL` (see "Verification").
 - Not in v1.0: license transfer, and "view version history" beyond `listLicenseTypeVersions`. Both are additive, for v1.1.
+
+## In this app
+
+| Piece | Where |
+| --- | --- |
+| Database | `licensing` schema in the app's Postgres, created by `layers/auth/server/database/migrations/20261019120000_licensing_schema` (applied 19 October 2026). Unique constraints, immutable terms and append-only downloads are enforced in the database. Hidden from Directus and Supabase's API roles |
+| Storage and idempotency | `layers/commerce/server/licensing-host/postgres.ts` (`PostgresLicenseRepository`, `PostgresIdempotency`) |
+| Wiring | `licensing-host/index.ts`: `useLicensing()`, `licensingFor(event)` (better-auth user, `Idempotency-Key` header), the response envelope, default integration offers. A user's workspace id is their user id; better-auth organisation owners and admins manage their organisation. Webhook events go to the Nitro hook `licensing:event` |
+| REST | `layers/commerce/server/api/licenses/…` and `api/installations/[id].delete.ts`, exactly the frozen endpoints |
+| Commerce events | `licensing-host/commerce-events.ts`, called by the Stripe webhook: a paid checkout issues a license per paid integration line (`purchase.completed`, purchase id `stripe:<payment intent>`); a full refund (`charge.refunded`) revokes them (`purchase.refunded`) |
+| Offers | Seeded license types Personal, Commercial and Workspace (terms v1.0). Each paid integration gets a default Personal offer (`default:<product key>`) at the store price, created on first sale |
+| Integrations | `layers/commerce/server/plugins/licensing-entitlements.ts` registers licensing as meeovi-integrations' entitlement source: paid integrations are on while the user holds an active license; switching one on or off records a licensing installation on their account |
+
+Licenses issued before this existed: the 17 October Habit Tracker test purchase (qaadmin) was backfilled under its Stripe payment intent.
 
 ## Verification
 
@@ -159,4 +174,12 @@ From `layers/commerce`:
 
 ```sh
 npx vitest run --config server/licensing/vitest.config.ts
+```
+
+The flow tests run in memory by default. To run them on the Postgres storage, start a throwaway database with the migration applied and point `LICENSING_TEST_DATABASE_URL` at it; every licensing table there is emptied before each test:
+
+```sh
+docker run -d --rm --name licensing-test-pg -e POSTGRES_PASSWORD=… -p 127.0.0.1:55432:5432 postgres:14
+docker exec -i licensing-test-pg psql -U postgres < ../auth/server/database/migrations/20261019120000_licensing_schema/migration.sql
+LICENSING_TEST_DATABASE_URL=postgres://postgres:…@127.0.0.1:55432/postgres npx vitest run --config server/licensing/vitest.config.ts
 ```

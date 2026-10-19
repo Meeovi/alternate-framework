@@ -5,6 +5,7 @@ import { stripe } from '../../../utils/stripe'
 import { createTransaction, getRate } from '../../../utils/shippo'
 import { triggerNovuWorkflow } from '#shared/server/utils/novu'
 import { recordBackendOrders } from '../../../utils/backendOrders'
+import { issueLicensesForCheckout, revokeLicensesForRefund } from '../../../licensing-host/commerce-events'
 
 // A privileged, static-token client — webhook fulfillment writes orders,
 // payments, and fulfillment tokens on behalf of the buyer, so it must not
@@ -198,6 +199,8 @@ export default defineEventHandler(async (event) => {
         // recorded on async_payment_succeeded instead.
         if (checkoutSession.payment_status === 'paid') {
           await recordBackendOrders(checkoutSession, paymentIntentId)
+          // Licenses for paid integrations (idempotent per payment).
+          await issueLicensesForCheckout(checkoutSession, paymentIntentId)
         }
 
         // Idempotency guard
@@ -608,6 +611,7 @@ export default defineEventHandler(async (event) => {
 
         if (stripeEvent.type === 'checkout.session.async_payment_succeeded') {
           await recordBackendOrders(asyncSession, asyncPaymentIntentId)
+          await issueLicensesForCheckout(asyncSession, asyncPaymentIntentId)
         }
 
         const ordersToUpdate = await directusServer.request(
@@ -635,6 +639,10 @@ export default defineEventHandler(async (event) => {
         const charge = stripeEvent.data.object as Stripe.Charge
         const refundedPaymentIntentId = charge.payment_intent as string | null
         if (!refundedPaymentIntentId) break
+
+        // A full refund revokes the licenses the payment bought (paid
+        // integrations live in another backend, so no Directus order).
+        await revokeLicensesForRefund(charge)
 
         const refundedOrders = await directusServer.request(
           readItems('orders', {

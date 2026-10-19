@@ -8,7 +8,7 @@ const sourceFiles = (dir: string): string[] => readdirSync(dir).flatMap((name) =
   if (statSync(path).isDirectory()) return name === 'tests' ? [] : sourceFiles(path)
   return path.endsWith('.ts') && name !== 'vitest.config.ts' ? [path] : []
 })
-const imports = (file: string) => [...readFileSync(file, 'utf8').matchAll(/(?:import|export)[^'"]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g)].map((m) => m[1] ?? m[2])
+const imports = (file: string) => [...readFileSync(file, 'utf8').matchAll(/(?:import|export)[^'"]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g)].map((m) => m[1] ?? m[2]).filter((s): s is string => !!s)
 
 describe('module boundaries', () => {
   const files = sourceFiles(root)

@@ -61,6 +61,14 @@ seller's sale stay there. A plugin names the SKU that sells it:
 - The store is whatever registers itself as the `IntegrationStore` under
   `Symbol.for('mframework.integrations.store')` (adapter-magento does, see
   `runtime/types.ts`). Without one, SKU plugins can't be installed.
+- **Licenses:** an `IntegrationEntitlements` source registered under
+  `Symbol.for('mframework.integrations.entitlements')` replaces the store's
+  purchase history: a paid plugin is on for users it says are entitled
+  (and for its seller). It's also told when a paid plugin is switched on
+  or off, and may refuse an install (e.g. an installation limit). The
+  meeovi apps register their licensing module (layers/commerce
+  `server/plugins/licensing-entitlements.ts`), so a payment issues a
+  license and a full refund revokes it.
 
 ## The sandbox
 

@@ -33,6 +33,20 @@ describe('idempotency', () => {
     expect(licenses).toHaveLength(1)
     expect(t.published.filter((e) => e.event === 'license.activated')).toHaveLength(1)
   })
+  it('the same purchase event delivered twice at once issues one license', async () => {
+    const t = await setup()
+    await Promise.all([t.purchase('p-race'), t.purchase('p-race'), t.purchase('p-race')])
+    expect(await t.repository.findUserLicenseByPurchase('p-race')).toHaveLength(1)
+    expect(t.published.filter((e) => e.event === 'license.activated')).toHaveLength(1)
+  })
+  it('simultaneous retries with one key run the operation once and get the same result', async () => {
+    const t = await setup()
+    await t.purchase()
+    const [license] = await t.repository.listUserLicenses(buyer.id)
+    const results = await Promise.all([1, 2, 3].map(() => t.as(buyer, 'race-key').installations.install(license!.id, 'user', buyer.id)))
+    expect(new Set(results.map((r) => r.id)).size).toBe(1)
+    expect(await t.repository.listInstallations(license!.id)).toHaveLength(1)
+  })
   it('installing twice on the same target is LICENSE_ALREADY_INSTALLED', async () => {
     const t = await setup()
     await t.purchase()
@@ -132,7 +146,7 @@ describe('limits and access', () => {
     await t.as(buyer).downloads.recordDownload(license!.id, 'file-1')
     expect(await t.as(buyer).downloads.authorizeDownload(buyer.id, 'prod-1')).toBe(false)
     await expect(t.as(buyer).downloads.recordDownload(license!.id, 'file-1')).rejects.toMatchObject({ code: 'DOWNLOAD_LIMIT_EXCEEDED' })
-    expect(t.repository.downloads).toHaveLength(2)
+    expect(await t.repository.countDownloads(license!.id)).toBe(2)
   })
   it("other users can't see or use someone's license; signed-out callers get AUTH_REQUIRED", async () => {
     const t = await setup()

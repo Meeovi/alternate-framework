@@ -2,6 +2,7 @@ import { createError, getRequestHeader } from 'h3'
 import type { H3Event } from 'h3'
 import type {
   IntegrationCatalogItem,
+  IntegrationEntitlements,
   IntegrationPlugin,
   IntegrationState,
   IntegrationStore,
@@ -160,11 +161,30 @@ const isPaid = (product: IntegrationStoreProduct | undefined) => !!product && pr
 const storeCustomer = (user: IntegrationsUser | null) =>
   (user && integrationStore()?.customerId(user.session)) || null
 
+/** The registered entitlement source (e.g. the app's licensing), if any. */
+export function integrationEntitlements(): IntegrationEntitlements | null {
+  const source = (globalThis as Record<symbol, unknown>)[Symbol.for('mframework.integrations.entitlements')] as IntegrationEntitlements | undefined
+  return source && typeof source.entitledRefs === 'function' ? source : null
+}
+
 /**
- * SKUs this user has paid for. Fails closed: if the store can't tell, paid
- * plugins stay off.
+ * SKUs of paid plugins this user may use: from the entitlement source
+ * (licenses) when one is registered, else the store's purchase history.
+ * Fails closed: if neither can tell, paid plugins stay off.
  */
-export async function purchasedSkus(user: IntegrationsUser | null): Promise<Set<string>> {
+export async function purchasedSkus(user: IntegrationsUser | null, products?: Map<string, IntegrationStoreProduct>): Promise<Set<string>> {
+  if (!user) return new Set()
+  const entitlements = integrationEntitlements()
+  if (entitlements) {
+    const paid = [...(products ?? new Map<string, IntegrationStoreProduct>()).values()].filter(isPaid)
+    if (!paid.length) return new Set()
+    try {
+      const refs = new Set(await entitlements.entitledRefs(user.id, paid.map((p) => p.ref)))
+      return new Set(paid.filter((p) => refs.has(p.ref)).map((p) => p.sku))
+    } catch {
+      return new Set()
+    }
+  }
   const customerId = storeCustomer(user)
   const store = integrationStore()
   if (!customerId || !store) return new Set()
@@ -244,12 +264,12 @@ export function pluginItem(
 /** Everything this user may see, with each entry's state for them. */
 export async function catalogFor(event: H3Event, user: IntegrationsUser | null): Promise<IntegrationCatalogItem[]> {
   const plugins = visiblePlugins(event, user)
-  const [products, installs, purchased] = await Promise.all([
+  const [products, installs] = await Promise.all([
     storeProducts(event),
     user ? activeInstalls(event, user.id) : Promise.resolve([]),
-    // Only ask the store about purchases when something here is paid.
-    user && plugins.some((p) => p.sku) ? purchasedSkus(user) : Promise.resolve(new Set<string>()),
   ])
+  // Only ask about purchases when something here is paid.
+  const purchased = user && plugins.some((p) => p.sku) ? await purchasedSkus(user, products) : new Set<string>()
   const installedAt = new Map(installs.map((i) => [i.plugin, i.date_created ?? '']))
   return plugins.map((p) => pluginItem(
     event, p, products,
@@ -313,7 +333,7 @@ export async function installedPlugins(event: H3Event, user: IntegrationsUser): 
   const installed = [...new Set((await activeInstalls(event, user.id)).map((r) => r.plugin).filter((p) => live.has(p)))]
   const sold = integrationsConfig(event).registry.filter((p) => p.sku && installed.includes(p.plugin))
   if (!sold.length) return installed
-  const purchased = sold.some((p) => isPaid(products.get(p.sku!))) ? await purchasedSkus(user) : new Set<string>()
+  const purchased = sold.some((p) => isPaid(products.get(p.sku!))) ? await purchasedSkus(user, products) : new Set<string>()
   const off = new Set(sold.filter((p) => !entitled(p, products.get(p.sku!), user, purchased)).map((p) => p.plugin))
   return installed.filter((p) => !off.has(p))
 }
@@ -346,6 +366,9 @@ export async function install(event: H3Event, user: IntegrationsUser, plugin: In
   const { installsCollection } = integrationsConfig(event)
   const rows = (await installsFor(event, user.id)).filter((r) => r.plugin === plugin.plugin)
   if (rows.some(isActive)) return
+  // Paid: tell the entitlement source first; it may refuse (e.g. a limit).
+  const product = plugin.sku ? (await storeProducts(event)).get(plugin.sku) : undefined
+  if (product && isPaid(product)) await integrationEntitlements()?.installed?.(user.id, product.ref, plugin.slug)
   const row = rows.at(-1)
   if (row) {
     await directus(event)(`/items/${installsCollection}/${row.id}`, { method: 'PATCH', body: { status: 'installed' } })
@@ -363,6 +386,8 @@ export async function uninstall(event: H3Event, user: IntegrationsUser, plugin: 
   const ids = (await installsFor(event, user.id)).filter((r) => r.plugin === plugin.plugin && isActive(r)).map((r) => r.id)
   if (!ids.length) return
   await directus(event)(`/items/${installsCollection}`, { method: 'PATCH', body: { keys: ids, data: { status: 'uninstalled' } } })
+  const product = plugin.sku ? (await storeProducts(event)).get(plugin.sku) : undefined
+  if (product && isPaid(product)) await integrationEntitlements()?.uninstalled?.(user.id, product.ref, plugin.slug)
 }
 
 // ---------------------------------------------------------------------------

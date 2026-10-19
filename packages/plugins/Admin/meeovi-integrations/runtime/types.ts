@@ -192,6 +192,22 @@ export interface IntegrationStore {
   purchasedSkus(customerId: string): Promise<string[]>
 }
 
+/**
+ * Optional source of truth for who may use paid integrations, registered
+ * on the server under `Symbol.for('mframework.integrations.entitlements')`
+ * (the app's licensing does). When registered it replaces the store's
+ * purchase history (`IntegrationStore.purchasedSkus`); sellers of a plugin
+ * stay entitled to it either way.
+ */
+export interface IntegrationEntitlements {
+  /** Of these product refs, the ones the user may use now. Throws when it can't tell (paid plugins then stay off). */
+  entitledRefs(userId: string, refs: string[]): Promise<string[]>
+  /** The user switched a paid integration on. Throw (an h3 error) to refuse, e.g. an installation limit. */
+  installed?(userId: string, ref: string, plugin: string): Promise<void>
+  /** The user switched a paid integration off. */
+  uninstalled?(userId: string, ref: string, plugin: string): Promise<void>
+}
+
 export interface IntegrationStoreProduct {
   sku: string
   /** The app's product key (`/product/<ref>`, cart lines). */
