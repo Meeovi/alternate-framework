@@ -682,10 +682,22 @@ body {
 a {
   transition: color 0.6s;
 }
+/* Keyboard focus ring in the theme's primary colour (was red, which read
+   as a form error). Vuetify text fields show focus on the field itself:
+   outlined/filled/underlined ones with their own border, so their inner
+   input gets no ring; solo ones have no border, so the ring goes around
+   the field box rather than across the input and label. */
 *:focus-visible {
-  outline: red solid 2px !important;
+  outline: rgb(var(--v-theme-primary, 98, 0, 238)) solid 2px !important;
   outline-offset: 2px !important;
   transition: outline 0.2s ease-in-out;
+}
+.v-field__input:focus-visible {
+  outline: none !important;
+}
+.v-field--focused:is(.v-field--variant-solo, .v-field--variant-solo-filled, .v-field--variant-solo-inverted) {
+  outline: rgb(var(--v-theme-primary, 98, 0, 238)) solid 2px;
+  outline-offset: 2px;
 }
 .cid-txNpxNwJRD {
   padding-top: 150px;
