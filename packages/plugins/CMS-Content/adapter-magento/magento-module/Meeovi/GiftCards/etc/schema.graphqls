@@ -1,0 +1,6 @@
+type GiftCardProduct implements ProductInterface, RoutableInterface, CustomizableProductInterface @doc(description: "A gift card (Ecomteck_GiftCard).") {
+    giftcard_amounts: [Float] @doc(description: "The fixed amounts a shopper can choose, for the current website.") @resolver(class: "Meeovi\\GiftCards\\Model\\Resolver\\Amounts")
+    allow_open_amount: Boolean @doc(description: "Whether the shopper may enter their own amount.")
+    open_amount_min: Float @doc(description: "The lowest amount a shopper may enter.")
+    open_amount_max: Float @doc(description: "The highest amount a shopper may enter.")
+}

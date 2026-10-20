@@ -55,6 +55,8 @@ provider registry. `ALTERNATE_SEARCH_MAGENTO_ENABLED=false`, or
 
 ## Usage
 
+For querying, filtering, sorting, paging and CRUD, see [HOWTO.md](HOWTO.md).
+
 ### Accessing the Adapter
 
 The module exposes the adapter as `$magentoAdapter` on the Nuxt app context and as `useMagentoAdapter()` via the plugin provide:
@@ -68,28 +70,23 @@ const magento = nuxtApp.$magentoAdapter
 
 ### Reading Magento Entities
 
-Use `readEntity` to query any Magento GraphQL entity. The adapter automatically tries multiple root field formats (`Mage_Product`, `Product`, `product`) so it works with both raw Magento and GraphQL Mesh-prefixed schemas.
-
 ```ts
-// Fetch products
-const products = await magento.store.readEntity('Product', {
-  filter: { name: { like: '%shirt%' } },
-  pageSize: 10,
-  currentPage: 1
-}, {
-  fields: [
-    'sku',
-    'name',
-    'price',
-    'stock_status',
-    'thumbnail { url label }',
-    'url_key'
-  ]
+const { items, total } = await magento.commerce.getProductsPage({
+  filter: { category_uid: { eq: 'MTI=' } },
+  sort: { price: 'ASC' },
+  pageSize: 12,
+  currentPage: 1,
 })
 
-// products is the raw GraphQL response for the Product root field
-// items are already available at products.items when paginated
+// Any other root query on the storefront schema
+const categories = await magento.store.queryField('categories', { filters: { parent_id: { eq: '2' } } }, {
+  fields: [{ items: ['uid', 'name', 'url_key'] }, 'total_count'],
+})
 ```
+
+`store.readEntity` guesses singular root fields (`Product`, `Mage_Product`)
+that Magento's schema doesn't have, so it always throws. Use `queryField`.
+See [HOWTO.md](HOWTO.md) for filters, sorting and writes.
 
 ### Using Normalizers
 

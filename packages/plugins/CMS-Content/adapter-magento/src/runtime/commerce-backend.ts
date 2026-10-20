@@ -1,7 +1,7 @@
 import type {
-  BackendAdminOrder, BackendField, BackendOrder, BackendRefund, CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder,
+  BackendAdminOrder, BackendField, BackendGiftCard, BackendOrder, BackendRefund, CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder,
 } from 'alternate-sdk'
-import type { MagentoAdapter, MagentoCustomerOrder, MagentoOAuth1Credentials } from '@mframework/adapter-magento'
+import type { MagentoAdapter, MagentoCustomerOrder, MagentoGiftCard, MagentoOAuth1Credentials } from '@mframework/adapter-magento'
 // Self-referencing package import, not a relative path — nuxt-module-build
 // only compiles module.ts and runtime/** into dist/, so a relative
 // '../normalizers/normalizers' import would resolve to a dist/normalizers/
@@ -175,6 +175,24 @@ const creditMemoRow = (m: any) => ({
 })
 
 /** A core REST order as an admin order, with what's left to refund per line. */
+// Magento's REST output can leave null fields out.
+const toGiftCard = (c: Partial<MagentoGiftCard>): BackendGiftCard => ({
+  code: c.code ?? null,
+  state: c.state ?? 'pending',
+  enabled: !!c.enabled,
+  balance: c.balance == null ? null : Number(c.balance),
+  created_at: c.created_at ?? null,
+  expires_at: c.expires_at ?? null,
+  recipient_name: c.recipient_name ?? null,
+  recipient_email: c.recipient_email ?? null,
+  sender_name: c.sender_name ?? null,
+  sender_email: c.sender_email ?? null,
+  product_name: c.product_name ?? null,
+  product_sku: c.product_sku ?? null,
+  order_number: c.order_number ?? null,
+  message: c.message ?? null,
+})
+
 function toAdminOrder(o: any): BackendAdminOrder {
   const lines = (o.items ?? []).filter((item: any) => !item.parent_item_id)
   return {
@@ -317,6 +335,23 @@ export function createMagentoCommerceBackendAdapter(
           if (!wanted.length) return {}
           const rows = await magento.marketplaceOrders.productSellers(credentials, wanted)
           return Object.fromEntries(rows.map((row) => [row.sku, { customerId: String(row.seller_id), name: row.shop_title?.trim() || null }]))
+        },
+        // Gift cards (Meeovi_GiftCards module): products through the
+        // storefront, the customer's cards through the Integration.
+        async giftCardProducts() {
+          const skus = (await magento.giftCards.productSkus(credentials)).slice(0, 100)
+          if (!skus.length) return []
+          const result = await magento.store.queryField('products', { filter: { sku: { in: skus } }, pageSize: skus.length }, {
+            fields: [{ items: PRODUCT_FIELDS }],
+          })
+          return (result?.items ?? []).map((item: any) => magentoNormalizers.products(item))
+        },
+        async receivedGiftCards(email: string) {
+          return (await magento.giftCards.received(credentials, email)).map(toGiftCard)
+        },
+        async purchasedGiftCards(customerId: string) {
+          if (!/^\d+$/.test(customerId)) return []
+          return (await magento.giftCards.purchased(credentials, Number(customerId))).map(toGiftCard)
         },
       }
     : {}

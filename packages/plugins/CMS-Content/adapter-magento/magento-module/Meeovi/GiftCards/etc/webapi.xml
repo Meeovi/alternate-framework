@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+  Read-only, for the app's server with its Integration token. The app only
+  ever asks for the signed-in user's own email / customer id.
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/meeovi-giftcards/products" method="GET">
+        <service class="Meeovi\GiftCards\Api\GiftCardReadInterface" method="getProductSkus"/>
+        <resources>
+            <resource ref="Meeovi_GiftCards::read"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-giftcards/received" method="GET">
+        <service class="Meeovi\GiftCards\Api\GiftCardReadInterface" method="getReceived"/>
+        <resources>
+            <resource ref="Meeovi_GiftCards::read"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-giftcards/customers/:customerId/purchased" method="GET">
+        <service class="Meeovi\GiftCards\Api\GiftCardReadInterface" method="getPurchased"/>
+        <resources>
+            <resource ref="Meeovi_GiftCards::read"/>
+        </resources>
+    </route>
+</routes>

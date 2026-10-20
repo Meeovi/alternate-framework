@@ -117,6 +117,27 @@ export type BackendAdminOrder = BackendOrder & {
   refundable: { key: string, name: string, qty: number, unit_amount: number }[]
 }
 
+/** A gift card a customer received or bought. Amounts are major units. */
+export type BackendGiftCard = {
+  /** Null until the backend generates it (e.g. before the order is invoiced). */
+  code: string | null
+  /** pending | available | used | redeemed | expired */
+  state: string
+  enabled: boolean
+  balance: number | null
+  created_at: string | null
+  expires_at: string | null
+  recipient_name: string | null
+  recipient_email: string | null
+  sender_name: string | null
+  sender_email: string | null
+  /** Bought cards: the product and the order it was on. */
+  product_name: string | null
+  product_sku: string | null
+  order_number: string | null
+  message: string | null
+}
+
 export type BackendSeller = {
   /** The seller's customer id in the backend (what the app links users by). */
   customerId: string
@@ -158,6 +179,15 @@ export interface CommerceBackendAdapter {
    * seller are left out. Optional (marketplace backends only).
    */
   productSellers?(keys: string[]): Promise<Record<string, BackendSeller>>
+  /**
+   * Gift card products, normalized like request()'s products. Optional
+   * (backends that sell gift cards).
+   */
+  giftCardProducts?(): Promise<any[]>
+  /** Gift cards sent to this email address. */
+  receivedGiftCards?(email: string): Promise<BackendGiftCard[]>
+  /** Gift cards on this customer's orders. */
+  purchasedGiftCards?(customerId: string): Promise<BackendGiftCard[]>
 
   // ---- Admin (all optional; feature-detect each) -------------------------
 

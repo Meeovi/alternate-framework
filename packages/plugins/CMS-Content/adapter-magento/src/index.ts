@@ -38,6 +38,40 @@ function rfc3986Encode(value: string): string {
 }
 
 /** A customer's order as Meeovi_MarketplaceApi returns it. */
+/** A gift card from the Meeovi_GiftCards REST routes. */
+export interface MagentoGiftCard {
+  code: string | null
+  /** pending | available | used | redeemed | expired */
+  state: string
+  enabled: boolean
+  balance: number | null
+  created_at: string | null
+  expires_at: string | null
+  recipient_name: string | null
+  recipient_email: string | null
+  sender_name: string | null
+  sender_email: string | null
+  product_name: string | null
+  product_sku: string | null
+  order_number: string | null
+  message: string | null
+}
+
+/** `commerce.getProducts` / `getProductsPage` arguments. */
+export interface MagentoProductQuery {
+  /** Full-text search; '' (the default) matches every product. */
+  search?: string
+  /** Magento's ProductAttributeFilterInput, e.g. `{ category_uid: { eq: 'MTI=' } }`. */
+  filter?: Record<string, any>
+  /** `{ price: 'ASC' }` — name, position, price or relevance. */
+  sort?: Record<string, 'ASC' | 'DESC' | 'asc' | 'desc'>
+  pageSize?: number
+  /** 1-based. */
+  currentPage?: number
+  /** GraphQL selection for each item (same format as `store.queryField`). */
+  fields?: any[]
+}
+
 export interface MagentoCustomerOrder {
   id: number
   number: string
@@ -192,11 +226,8 @@ export class MagentoAdapter {
       }
       if (options?.currentPage) args.currentPage = options.currentPage
       if (options?.filter && Object.keys(options.filter).length) args.filter = options.filter
-      if (options?.sort && Object.keys(options.sort).length) {
-        args.sort = Object.fromEntries(
-          Object.entries(options.sort).map(([field, direction]) => [field, this.rawGraphQLEnum(direction)]),
-        )
-      }
+      const sort = this.sortArgument(options?.sort)
+      if (sort) args.sort = sort
 
       const resultFields: any[] = [{ items: options?.fields || defaultFields }, 'total_count']
       if (options?.aggregations) {
@@ -309,14 +340,27 @@ export class MagentoAdapter {
      * `store.queryField`. `search: ''` (rather than omitting it) matches
      * `content.search`, the one product-reading path already proven live.
      */
-    getProducts: async (params?: Record<string, any>) => {
+    getProducts: async (params?: MagentoProductQuery) => {
+      return (await this.commerce.getProductsPage(params)).items
+    },
+
+    /**
+     * One page of products plus the total match count — `getProducts` with
+     * paging info. `sort` takes `{ price: 'ASC' }` (any case); Magento only
+     * sorts by name, position, price and relevance.
+     */
+    getProductsPage: async (params?: MagentoProductQuery) => {
       const fields = params?.fields || ['sku', 'name', { price_range: [{ minimum_price: [{ final_price: ['value', 'currency'] }] }] }]
-      const args: Record<string, any> = { search: '', pageSize: params?.pageSize || 20 }
+      const pageSize = params?.pageSize || 20
+      const args: Record<string, any> = { search: params?.search ?? '', pageSize }
       if (params?.filter && Object.keys(params.filter).length) args.filter = params.filter
+      const sort = this.sortArgument(params?.sort)
+      if (sort) args.sort = sort
       if (params?.currentPage) args.currentPage = params.currentPage
 
       const result = await this.store.queryField('products', args, { fields: [{ items: fields }, 'total_count'] })
-      return result?.items ?? []
+      const items = result?.items ?? []
+      return { items, total: result?.total_count ?? items.length, page: params?.currentPage || 1, pageSize }
     },
 
     /**
@@ -1481,6 +1525,24 @@ export class MagentoAdapter {
   }
 
   /**
+   * Ecomteck gift cards, read-only (Meeovi_GiftCards module, Integration
+   * with `Meeovi_GiftCards::read`).
+   */
+  public giftCards = {
+    /** SKUs of the enabled gift card products, newest first. */
+    productSkus: (credentials: MagentoOAuth1Credentials) =>
+      this.adminRest<string[]>('GET', '/meeovi-giftcards/products', credentials),
+
+    /** Enabled gift cards sent to this email address. */
+    received: (credentials: MagentoOAuth1Credentials, email: string) =>
+      this.adminRest<MagentoGiftCard[]>('GET', `/meeovi-giftcards/received?email=${encodeURIComponent(email)}`, credentials),
+
+    /** Gift cards on this customer's orders (`code` null until generated). */
+    purchased: (credentials: MagentoOAuth1Credentials, customerId: number) =>
+      this.adminRest<MagentoGiftCard[]>('GET', `/meeovi-giftcards/customers/${encodeURIComponent(String(customerId))}/purchased`, credentials),
+  }
+
+  /**
    * Store admin through Magento's core REST API, for the app's /workspace
    * (customers, orders, credit memos). The Integration needs these ACL
    * resources: Magento_Customer::customer / ::manage / ::delete,
@@ -1787,14 +1849,30 @@ export class MagentoAdapter {
    * Helper to convert JS configuration objects directly into inline query arguments
    */
   private serializeArguments(args: Record<string, any>): string {
+    // Only GraphQL names are unquoted (object keys, enum values): anything
+    // else stays a quoted string, so a filter value can't add to the query.
     return Object.entries(args)
-      .map(([key, val]) => `${key}: ${JSON.stringify(val).replace(/"([^"]+)":/g, '$1:')}`)
+      .map(([key, val]) => `${key}: ${JSON.stringify(val).replace(/"([_A-Za-z][_0-9A-Za-z]*)":/g, '$1:')}`)
       .join(', ')
       // rawGraphQLEnum() below marks enum values (e.g. SortEnum's ASC/DESC)
       // with a sentinel so they survive JSON.stringify as strings, then get
       // unquoted here — GraphQL enum arguments are bare identifiers, and
       // sending them as quoted strings is a schema validation error.
-      .replace(/"ENUM:([^"]*)"/g, '$1')
+      .replace(/"ENUM:([_A-Za-z][_0-9A-Za-z]*)"/g, '$1')
+  }
+
+  /** `{ price: 'asc' }` → Magento's ProductAttributeSortInput (bare
+   *  ASC/DESC enums); null when there's nothing to sort by. */
+  private sortArgument(sort?: Record<string, string>): Record<string, unknown> | null {
+    const entries = Object.entries(sort ?? {})
+    if (!entries.length) return null
+    return Object.fromEntries(entries.map(([field, direction]) => {
+      const dir = String(direction).replace(/^ENUM:/, '').toUpperCase()
+      if (!/^[_A-Za-z][_0-9A-Za-z]*$/.test(field) || (dir !== 'ASC' && dir !== 'DESC')) {
+        throw new Error(`Invalid product sort: ${field} ${direction} (use { field: 'ASC' | 'DESC' })`)
+      }
+      return [field, this.rawGraphQLEnum(dir)]
+    }))
   }
 
   /** See serializeArguments — wraps a value so it's emitted as a bare

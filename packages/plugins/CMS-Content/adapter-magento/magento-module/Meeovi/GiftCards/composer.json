@@ -1,0 +1,22 @@
+{
+    "name": "meeovi/module-gift-cards",
+    "description": "Ecomteck gift cards for the Meeovi app: GraphQL support for the giftcard product type, and read-only REST routes for a customer's received and purchased gift cards.",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0||~8.4.0",
+        "magento/module-catalog": "*",
+        "magento/module-catalog-graph-ql": "*",
+        "magento/module-sales": "*",
+        "magento/module-webapi": "*",
+        "ecomteck/module-gift-card": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Meeovi\\GiftCards\\": ""
+        }
+    }
+}

@@ -44,6 +44,46 @@ describe('MagentoAdapter.commerce catalog reads', () => {
     })
   })
 
+  describe('getProductsPage (sort, paging, total)', () => {
+    it('sends sort as bare enums and returns the total', async () => {
+      const magento = new MagentoAdapter('https://fake-magento.test/graphql')
+      const request = vi.fn().mockResolvedValueOnce({ products: { items: [{ sku: 'A' }], total_count: 7 } })
+      ;(magento as any).client = { request }
+
+      const page = await magento.commerce.getProductsPage({
+        search: 'shoe', filter: { price: { from: '5', to: '50' } }, sort: { price: 'asc' }, pageSize: 1, currentPage: 3,
+      })
+
+      expect(page).toEqual({ items: [{ sku: 'A' }], total: 7, page: 3, pageSize: 1 })
+      const query = request.mock.calls[0]![0] as string
+      expect(query).toContain('products(search: "shoe", pageSize: 1, filter: {price:{from:"5",to:"50"}}, sort: {price:ASC}, currentPage: 3)')
+    })
+
+    it('getProducts keeps returning the items only', async () => {
+      const magento = new MagentoAdapter('https://fake-magento.test/graphql')
+      magento.store.queryField = vi.fn().mockResolvedValueOnce({ items: [{ sku: 'A' }], total_count: 9 })
+      expect(await magento.commerce.getProducts({ sort: { name: 'DESC' } })).toEqual([{ sku: 'A' }])
+    })
+
+    it('refuses unknown sort directions and odd field names', async () => {
+      const magento = new MagentoAdapter('https://fake-magento.test/graphql')
+      magento.store.queryField = vi.fn()
+      await expect(magento.commerce.getProducts({ sort: { price: 'UP' as any } })).rejects.toThrow(/Invalid product sort/)
+      await expect(magento.commerce.getProducts({ sort: { 'price) { x': 'ASC' } })).rejects.toThrow(/Invalid product sort/)
+      expect(magento.store.queryField).not.toHaveBeenCalled()
+    })
+
+    it('keeps filter values that look like enums or keys quoted', async () => {
+      const magento = new MagentoAdapter('https://fake-magento.test/graphql')
+      const request = vi.fn().mockResolvedValueOnce({ products: { items: [], total_count: 0 } })
+      ;(magento as any).client = { request }
+      await magento.commerce.getProducts({ filter: { name: { match: 'ENUM:x) { evil' }, sku: { eq: 'a"b' } } })
+      const query = request.mock.calls[0]![0] as string
+      expect(query).toContain('match:"ENUM:x) { evil"')
+      expect(query).toContain('eq:"a\\"b"')
+    })
+  })
+
   describe('getProductBySku / getProductById / getProductBySlug', () => {
     it('getProductBySku filters by sku and returns the first item', async () => {
       const magento = new MagentoAdapter('https://fake-magento.test/graphql')
