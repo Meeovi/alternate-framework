@@ -24,4 +24,3 @@ export const authPluginHost = createAuthPluginHost({
   }),
 })
 
-export type { AuthPluginInfo } from './host'

@@ -82,7 +82,8 @@ export function createLicensingModule(deps: LicensingModuleDependencies): Licens
     async revoke(id: string, reason: string) {
       const l = await mustGetLicense(id)
       if (l.status === 'revoked') return l
-      const saved = await transition(l, 'revoked')
+      // The reason is kept on the license, for admins.
+      const saved = await transition(l, 'revoked', { metadata: { ...(l.metadata ?? {}), revokedReason: reason, revokedAt: now().toISOString() } })
       await deactivateInstallations(id)
       await publish({ event: 'license.revoked', licenseId: id, reason })
       return saved

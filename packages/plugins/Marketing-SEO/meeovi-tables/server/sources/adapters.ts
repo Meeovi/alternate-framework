@@ -1,6 +1,6 @@
 import { CommerceBackendRegistry } from 'alternate-sdk'
 import type { CommerceBackendAdapter } from 'alternate-sdk'
-import type { MeeoviTableQuery, MeeoviTableResult, MeeoviTableSource } from '../../runtime/types'
+import type { MeeoviTableField, MeeoviTableQuery, MeeoviTableResult, MeeoviTableSource } from '../../runtime/types'
 
 /**
  * Installed adapter-* packages (adapter-magento, ...) register a
@@ -55,6 +55,30 @@ export function queryRows(all: Record<string, unknown>[], query: MeeoviTableQuer
   }
 }
 
+/**
+ * Writes to a commerce backend first pass the app's guard, if one is
+ * registered under `Symbol.for('mframework.tables.guard')`: it may throw
+ * (an h3 error) to refuse, e.g. deleting a store customer that's still
+ * linked to an app account.
+ */
+export interface MeeoviTablesGuard {
+  beforeWrite(write: { action: 'create' | 'update' | 'remove', source: string, collection: string, id?: string | number, data?: Record<string, unknown> }): Promise<void> | void
+}
+
+async function guard(write: Parameters<MeeoviTablesGuard['beforeWrite']>[0]) {
+  const registered = (globalThis as Record<symbol, unknown>)[Symbol.for('mframework.tables.guard')] as MeeoviTablesGuard | undefined
+  await registered?.beforeWrite?.(write)
+}
+
+/** Adapter errors carry `status`; h3 (and sourceError) read `statusCode`.
+ *  The backend refusing the app's own credentials (401/403) isn't the
+ *  admin's session, so those stay a 502. */
+function withStatus(error: unknown): never {
+  const status = (error as { status?: number, statusCode?: number })?.status
+  if (status && status !== 401 && status !== 403 && !(error as { statusCode?: number }).statusCode) Object.assign(error as object, { statusCode: status })
+  throw error
+}
+
 export function adapterSources(): MeeoviTableSource[] {
   return registered().map((adapter) => ({
     id: adapter.id,
@@ -71,5 +95,27 @@ export function adapterSources(): MeeoviTableSource[] {
       const all = Array.isArray(data) ? data : data ? [data] : []
       return queryRows(all as Record<string, unknown>[], query)
     },
+    // Columns and writes, where the adapter offers them (adapter-magento
+    // with its Integration: customers are editable; orders and credit
+    // memos read-only — refunds have their own flow).
+    ...(adapter.schema ? { schema: (collection: string) => adapter.schema!(collection) as Promise<MeeoviTableField[] | null> } : {}),
+    ...(adapter.create ? {
+      async create(collection: string, data: Record<string, unknown>) {
+        await guard({ action: 'create', source: adapter.id, collection, data })
+        return adapter.create!(collection, data).catch(withStatus)
+      },
+    } : {}),
+    ...(adapter.update ? {
+      async update(collection: string, id: string | number, data: Record<string, unknown>) {
+        await guard({ action: 'update', source: adapter.id, collection, id, data })
+        return adapter.update!(collection, id, data).catch(withStatus)
+      },
+    } : {}),
+    ...(adapter.remove ? {
+      async remove(collection: string, id: string | number) {
+        await guard({ action: 'remove', source: adapter.id, collection, id })
+        await adapter.remove!(collection, id).catch(withStatus)
+      },
+    } : {}),
   }))
 }

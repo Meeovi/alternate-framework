@@ -48,7 +48,11 @@ export default defineNitroPlugin(() => {
 
   // placePaidOrder (orders paid with the app's Stripe checkout) needs the
   // Integration; without it the adapter only reads.
-  CommerceBackendRegistry.register(createMagentoCommerceBackendAdapter(magento, credentials))
+  // With it, /workspace admins also manage customers, orders and refunds
+  // (customers created there join MAGENTO_WEBSITE_ID, default 1).
+  CommerceBackendRegistry.register(createMagentoCommerceBackendAdapter(magento, credentials, {
+    websiteId: Number(process.env.MAGENTO_WEBSITE_ID) || 1,
+  }))
 
   // Integrations are sold as Magento products (@mframework/meeovi-integrations).
   ;(globalThis as Record<symbol, unknown>)[INTEGRATION_STORE_KEY] = createMagentoIntegrationStore(magento, credentials)

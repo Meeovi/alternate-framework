@@ -11,6 +11,21 @@ import type { RawMagentoInventory } from './normalizers/inventory'
  * `seller.*` admin-scoped call below signs its request with these per the
  * OAuth 1.0a spec (HMAC-SHA256) rather than sending them as `Bearer ...`.
  */
+/** Core REST `searchCriteria` query: AND-ed filters, newest first by `sortField`. */
+function searchCriteria(filters: { field: string, value: string, condition?: string }[], pageSize: number, sortField: string): string {
+  const query = new URLSearchParams()
+  filters.forEach((filter, i) => {
+    query.set(`searchCriteria[filterGroups][${i}][filters][0][field]`, filter.field)
+    query.set(`searchCriteria[filterGroups][${i}][filters][0][value]`, filter.value)
+    query.set(`searchCriteria[filterGroups][${i}][filters][0][conditionType]`, filter.condition ?? 'eq')
+  })
+  query.set('searchCriteria[pageSize]', String(pageSize))
+  query.set('searchCriteria[currentPage]', '1')
+  query.set('searchCriteria[sortOrders][0][field]', sortField)
+  query.set('searchCriteria[sortOrders][0][direction]', 'DESC')
+  return query.toString()
+}
+
 export interface MagentoOAuth1Credentials {
   consumerKey: string
   consumerSecret: string
@@ -1465,8 +1480,55 @@ export class MagentoAdapter {
     },
   }
 
+  /**
+   * Store admin through Magento's core REST API, for the app's /workspace
+   * (customers, orders, credit memos). The Integration needs these ACL
+   * resources: Magento_Customer::customer / ::manage / ::delete,
+   * Magento_Sales::actions_view, Magento_Sales::sales_creditmemo and
+   * Magento_Sales::creditmemo.
+   */
+  public admin = {
+    /** Newest customers first (up to `pageSize`). */
+    customers: (credentials: MagentoOAuth1Credentials, pageSize = 500) =>
+      this.adminRest<{ items: any[], total_count: number }>('GET', `/customers/search?${searchCriteria([], pageSize, 'entity_id')}`, credentials),
+    customer: (credentials: MagentoOAuth1Credentials, id: number) =>
+      this.adminRest<any>('GET', `/customers/${id}`, credentials),
+    createCustomer: (credentials: MagentoOAuth1Credentials, customer: Record<string, unknown>) =>
+      this.adminRest<any>('POST', '/customers', credentials, { customer }),
+    /** Magento's PUT replaces the customer: send the full record (see updateCustomer in commerce-backend.ts). */
+    saveCustomer: (credentials: MagentoOAuth1Credentials, id: number, customer: Record<string, unknown>) =>
+      this.adminRest<any>('PUT', `/customers/${id}`, credentials, { customer }),
+    deleteCustomer: (credentials: MagentoOAuth1Credentials, id: number) =>
+      this.adminRest<boolean>('DELETE', `/customers/${id}`, credentials),
+    /** Newest orders first. */
+    orders: (credentials: MagentoOAuth1Credentials, filters: { field: string, value: string, condition?: string }[] = [], pageSize = 200) =>
+      this.adminRest<{ items: any[], total_count: number }>('GET', `/orders?${searchCriteria(filters, pageSize, 'entity_id')}`, credentials),
+    order: async (credentials: MagentoOAuth1Credentials, id: number) => {
+      try {
+        return await this.adminRest<any>('GET', `/orders/${id}`, credentials)
+      } catch (error) {
+        if ((error as { status?: number }).status === 404) return null
+        throw error
+      }
+    },
+    /** Newest credit memos first. */
+    creditMemos: (credentials: MagentoOAuth1Credentials, pageSize = 200) =>
+      this.adminRest<{ items: any[], total_count: number }>('GET', `/creditmemos?${searchCriteria([], pageSize, 'entity_id')}`, credentials),
+    /** Core `POST /V1/order/{id}/refund`: an offline credit memo (no payment gateway call). */
+    refundOrder: (credentials: MagentoOAuth1Credentials, orderId: number, refund: {
+      items: { order_item_id: number, qty: number }[]
+      notify?: boolean
+      comment?: string
+    }) => this.adminRest<number>('POST', `/order/${orderId}/refund`, credentials, {
+      items: refund.items,
+      notify: refund.notify ?? false,
+      ...(refund.comment ? { comment: { comment: refund.comment, is_visible_on_front: 0 } } : {}),
+      arguments: { shipping_amount: 0, adjustment_positive: 0, adjustment_negative: 0 },
+    }),
+  }
+
   /** Signed admin REST call; throws with Magento's message on failure. */
-  private async adminRest<T>(method: 'GET' | 'POST' | 'PUT', path: string, credentials: MagentoOAuth1Credentials, body?: unknown): Promise<T> {
+  private async adminRest<T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, credentials: MagentoOAuth1Credentials, body?: unknown): Promise<T> {
     const url = this.restUrl(path)
     const response = await fetch(url, {
       method,

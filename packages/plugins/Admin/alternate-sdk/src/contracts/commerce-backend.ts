@@ -87,6 +87,36 @@ export type BackendOrder = {
 }
 
 /** Who sells a product in a marketplace backend (e.g. a Webkul seller). */
+/** A column of a collection an adapter serves (admin tables). */
+export type BackendField = {
+  field: string
+  label: string
+  type: 'string' | 'text' | 'number' | 'boolean' | 'datetime' | 'json'
+  readonly?: boolean
+  required?: boolean
+  primary?: boolean
+  hidden?: boolean
+  choices?: Array<{ id: string | number, label: string }>
+}
+
+/** An offline refund (credit memo) in the backend: the money itself is
+ *  returned by the app's payment provider. Without `items`, everything
+ *  still refundable on the order is refunded. */
+export type BackendRefund = {
+  orderId: string
+  items?: { key: string, qty: number }[]
+  comment?: string
+}
+
+/** An order as admins see it (any customer). */
+export type BackendAdminOrder = BackendOrder & {
+  /** The payment reference the app placed it with (Stripe payment intent), if any. */
+  reference: string | null
+  customer_id: string | null
+  /** Per line: what can still be refunded. */
+  refundable: { key: string, name: string, qty: number, unit_amount: number }[]
+}
+
 export type BackendSeller = {
   /** The seller's customer id in the backend (what the app links users by). */
   customerId: string
@@ -128,6 +158,21 @@ export interface CommerceBackendAdapter {
    * seller are left out. Optional (marketplace backends only).
    */
   productSellers?(keys: string[]): Promise<Record<string, BackendSeller>>
+
+  // ---- Admin (all optional; feature-detect each) -------------------------
+
+  /** Column definitions for a collection this adapter serves. */
+  schema?(collection: string): Promise<BackendField[] | null>
+  /** Admin writes to a collection's rows. Each throws when the backend refuses. */
+  create?(collection: string, data: Record<string, unknown>): Promise<Record<string, unknown>>
+  update?(collection: string, key: string | number, data: Record<string, unknown>): Promise<Record<string, unknown>>
+  remove?(collection: string, key: string | number): Promise<void>
+  /** Any customer's order, by the backend's order id. */
+  adminOrder?(orderId: string): Promise<BackendAdminOrder | null>
+  /** The order placed with this payment reference (placePaidOrder's `reference`). */
+  orderByReference?(reference: string): Promise<BackendAdminOrder | null>
+  /** Record a refund (offline credit memo). Returns the credit memo id. */
+  refundOrder?(refund: BackendRefund): Promise<{ creditMemoId: string }>
 }
 
 const registry = new Map<string, CommerceBackendAdapter>()

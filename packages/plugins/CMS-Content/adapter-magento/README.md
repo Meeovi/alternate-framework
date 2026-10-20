@@ -119,6 +119,47 @@ NotifyAdapterRegistry.register('magento', adapterInstance.content.notifications)
 
 This means any composable using `SearchAdapterRegistry` or `NotifyAdapterRegistry` can switch to Magento by changing the provider key without changing component code.
 
+## Store admin (/workspace)
+
+With the Magento Integration configured (`MAGENTO_CONSUMER_KEY` and the
+other three OAuth values), the commerce backend this adapter registers also
+serves the app's `/workspace` admin:
+
+- **Tables** (meeovi-tables): `customers` (list, create, edit, delete),
+  `orders` and `creditmemos` (read-only), newest first. Customers created
+  there join `MAGENTO_WEBSITE_ID` (default 1).
+- **Refunds**: `adminOrder`, `orderByReference` (the Stripe payment id the
+  app placed the order with, stored as `ext_order_id`) and `refundOrder`.
+  That's an offline credit memo through `POST /V1/order/{id}/refund`; the
+  money itself is refunded through Stripe by the app.
+
+The Integration needs these API resources (Mage-OS admin → System →
+Integrations → the app's integration → API):
+
+| Resource | For |
+| --- | --- |
+| `Magento_Customer::customer` | Listing customers |
+| `Magento_Customer::manage` | Editing customers |
+| `Magento_Customer::delete` | Deleting customers |
+| `Magento_Sales::actions_view` | Listing and reading orders |
+| `Magento_Sales::sales_creditmemo` | Listing credit memos |
+| `Magento_Sales::creditmemo` | Creating credit memos (refunds) |
+
+Without them, Magento answers 401 ("The consumer isn't authorized") and the
+tables show that error.
+
+`dist/` (not in git) is what apps load, so rebuild it after changing `src/`.
+`nuxt-module-build` wipes `dist` and regenerates only the module and runtime
+files, so `npm run prepare` alone leaves it incomplete. To rebuild what
+changed instead:
+
+```sh
+npm run build:index                       # dist/index.js (+ graphql, types)
+npx esbuild src/runtime/commerce-backend.ts --format=esm --platform=neutral \
+  --target=es2022 --outfile=dist/runtime/commerce-backend.js   # likewise per runtime file;
+                                                               # keep relative imports ending in .js
+```
+
 ## Normalizer Coverage
 
 The module ships with normalizers for the following Magento entities:

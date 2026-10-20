@@ -143,6 +143,25 @@ Custom sources take priority over adapters, which take priority over Directus.
 Sources that return whole collections can use `queryRows()` (same export) for
 in-memory search / sort / paging.
 
+## Commerce backend writes
+
+An installed commerce adapter (`adapter-magento`, …) can make its tables
+writable by implementing `schema`, `create`, `update` and `remove` on its
+`CommerceBackendAdapter` (alternate-sdk). Adapter-magento does this for
+`customers`. Each write first passes the app's guard, if one is registered:
+
+```ts
+// a Nitro plugin in the app or a layer
+globalThis[Symbol.for('mframework.tables.guard')] = {
+  async beforeWrite({ action, source, collection, id, data }) {
+    // throw createError({ statusCode: 409, statusMessage: '…' }) to refuse
+  },
+}
+```
+
+layers/commerce uses the guard to refuse deleting a store customer that's
+linked to a Meeovi account (`server/plugins/store-admin-guard.ts`).
+
 ## Notes
 
 - The commerce adapters are GET-only, so adapter rows are read-only; Directus

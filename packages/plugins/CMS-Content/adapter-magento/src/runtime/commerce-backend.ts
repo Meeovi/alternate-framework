@@ -1,4 +1,6 @@
-import type { BackendOrder, CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder } from 'alternate-sdk'
+import type {
+  BackendAdminOrder, BackendField, BackendOrder, BackendRefund, CategoryProductsRef, CommerceBackendAdapter, DirectusRequestDescriptor, PaidOrder,
+} from 'alternate-sdk'
 import type { MagentoAdapter, MagentoCustomerOrder, MagentoOAuth1Credentials } from '@mframework/adapter-magento'
 // Self-referencing package import, not a relative path — nuxt-module-build
 // only compiles module.ts and runtime/** into dist/, so a relative
@@ -111,13 +113,176 @@ function toBackendOrder(order: MagentoCustomerOrder): BackendOrder {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Store admin (the app's /workspace tables and refunds), through the
+// Integration. Rows are flat and in the store's currency units.
+
+const ADMIN_SCHEMAS: Record<string, BackendField[]> = {
+  customers: [
+    { field: 'id', label: 'ID', type: 'number', primary: true, readonly: true },
+    { field: 'email', label: 'Email', type: 'string', required: true },
+    { field: 'firstname', label: 'First name', type: 'string', required: true },
+    { field: 'lastname', label: 'Last name', type: 'string', required: true },
+    { field: 'group_id', label: 'Group', type: 'number' },
+    { field: 'website_id', label: 'Website', type: 'number', readonly: true },
+    { field: 'created_at', label: 'Created', type: 'datetime', readonly: true },
+    { field: 'updated_at', label: 'Updated', type: 'datetime', readonly: true },
+  ],
+  orders: [
+    { field: 'id', label: 'ID', type: 'number', primary: true, readonly: true },
+    { field: 'number', label: 'Order', type: 'string', readonly: true },
+    { field: 'status', label: 'Status', type: 'string', readonly: true },
+    { field: 'customer_email', label: 'Customer', type: 'string', readonly: true },
+    { field: 'customer_name', label: 'Name', type: 'string', readonly: true },
+    { field: 'grand_total', label: 'Total', type: 'number', readonly: true },
+    { field: 'total_refunded', label: 'Refunded', type: 'number', readonly: true },
+    { field: 'currency', label: 'Currency', type: 'string', readonly: true },
+    { field: 'reference', label: 'Payment', type: 'string', readonly: true },
+    { field: 'created_at', label: 'Placed', type: 'datetime', readonly: true },
+  ],
+  creditmemos: [
+    { field: 'id', label: 'ID', type: 'number', primary: true, readonly: true },
+    { field: 'number', label: 'Credit memo', type: 'string', readonly: true },
+    { field: 'order_id', label: 'Order ID', type: 'number', readonly: true },
+    { field: 'grand_total', label: 'Refunded', type: 'number', readonly: true },
+    { field: 'currency', label: 'Currency', type: 'string', readonly: true },
+    { field: 'created_at', label: 'Created', type: 'datetime', readonly: true },
+  ],
+}
+
+const magentoDate = (value: unknown) => (typeof value === 'string' && value ? new Date(value.replace(' ', 'T') + 'Z').toISOString() : null)
+const num = (value: unknown) => (value == null || value === '' ? 0 : Number(value))
+
+const customerRow = (c: any) => ({
+  id: c.id, email: c.email, firstname: c.firstname, lastname: c.lastname, group_id: c.group_id,
+  website_id: c.website_id, created_at: magentoDate(c.created_at), updated_at: magentoDate(c.updated_at),
+})
+const orderRow = (o: any) => ({
+  id: o.entity_id,
+  number: o.increment_id,
+  status: o.status,
+  customer_email: o.customer_email ?? null,
+  customer_name: [o.customer_firstname, o.customer_lastname].filter(Boolean).join(' ') || null,
+  grand_total: num(o.grand_total),
+  total_refunded: num(o.total_refunded),
+  currency: o.order_currency_code,
+  reference: o.ext_order_id || null,
+  created_at: magentoDate(o.created_at),
+})
+const creditMemoRow = (m: any) => ({
+  id: m.entity_id, number: m.increment_id, order_id: m.order_id, grand_total: num(m.grand_total),
+  currency: m.order_currency_code, created_at: magentoDate(m.created_at),
+})
+
+/** A core REST order as an admin order, with what's left to refund per line. */
+function toAdminOrder(o: any): BackendAdminOrder {
+  const lines = (o.items ?? []).filter((item: any) => !item.parent_item_id)
+  return {
+    id: String(o.entity_id),
+    number: o.increment_id,
+    date_created: magentoDate(o.created_at) ?? '',
+    payment_status: num(o.total_refunded) >= num(o.grand_total) && num(o.grand_total) > 0 ? 'refunded' : o.state === 'canceled' ? 'cancelled' : num(o.total_paid) > 0 ? 'completed' : 'pending',
+    fulfillment_status: o.status,
+    order_currency_code: o.order_currency_code,
+    grand_total: cents(o.grand_total),
+    subtotal: cents(o.subtotal),
+    tax_amount: cents(o.tax_amount),
+    shipping_amount: cents(o.shipping_amount),
+    total_paid: cents(o.total_paid),
+    total_refunded: cents(o.total_refunded),
+    total_due: cents(o.total_due),
+    customer_firstname: o.customer_firstname ?? null,
+    customer_lastname: o.customer_lastname ?? null,
+    customer_email: o.customer_email ?? null,
+    line_items_snapshot: lines.map((item: any) => ({
+      product_id: `magento:${item.sku}`, name: item.name, quantity: num(item.qty_ordered),
+      unit_amount: num(item.price_incl_tax ?? item.price), subtotal: num(item.row_total_incl_tax ?? item.row_total),
+    })),
+    reference: o.ext_order_id || null,
+    customer_id: o.customer_id ? String(o.customer_id) : null,
+    refundable: lines
+      .map((item: any) => ({ key: String(item.item_id), sku: item.sku, name: item.name, qty: num(item.qty_invoiced) - num(item.qty_refunded), unit_amount: num(item.price_incl_tax ?? item.price) }))
+      .filter((line: { qty: number }) => line.qty > 0)
+      .map(({ key, name, qty, unit_amount }: any) => ({ key, name, qty, unit_amount })),
+  }
+}
+
+/** Customer fields an admin may set (Magento's PUT replaces the whole record). */
+const CUSTOMER_FIELDS = ['email', 'firstname', 'lastname', 'group_id'] as const
+const pickCustomer = (data: Record<string, unknown>) =>
+  Object.fromEntries(CUSTOMER_FIELDS.filter((k) => data[k] !== undefined).map((k) => [k, k === 'group_id' ? Number(data[k]) : data[k]]))
+
+function storeAdmin(magento: MagentoAdapter, credentials: MagentoOAuth1Credentials, options: { websiteId: number }) {
+  const integerKey = (key: string | number) => {
+    const id = Number(key)
+    if (!Number.isInteger(id) || id <= 0) throw Object.assign(new Error('Invalid id'), { status: 400 })
+    return id
+  }
+  return {
+    async list(collection: string): Promise<Record<string, unknown>[]> {
+      if (collection === 'customers') return (await magento.admin.customers(credentials)).items.map(customerRow)
+      if (collection === 'orders') return (await magento.admin.orders(credentials)).items.map(orderRow)
+      if (collection === 'creditmemos') return (await magento.admin.creditMemos(credentials)).items.map(creditMemoRow)
+      throw new Error(`magento commerce-backend adapter: unmapped collection "${collection}"`)
+    },
+    async schema(collection: string) {
+      return ADMIN_SCHEMAS[collection] ?? null
+    },
+    async create(collection: string, data: Record<string, unknown>) {
+      if (collection !== 'customers') throw Object.assign(new Error(`Can't create ${collection} here`), { status: 405 })
+      return customerRow(await magento.admin.createCustomer(credentials, { ...pickCustomer(data), website_id: options.websiteId }))
+    },
+    async update(collection: string, key: string | number, data: Record<string, unknown>) {
+      if (collection !== 'customers') throw Object.assign(new Error(`Can't edit ${collection} here`), { status: 405 })
+      const id = integerKey(key)
+      const current = await magento.admin.customer(credentials, id)
+      return customerRow(await magento.admin.saveCustomer(credentials, id, { ...current, ...pickCustomer(data), id }))
+    },
+    async remove(collection: string, key: string | number) {
+      if (collection !== 'customers') throw Object.assign(new Error(`Can't delete ${collection} here`), { status: 405 })
+      await magento.admin.deleteCustomer(credentials, integerKey(key))
+    },
+    async adminOrder(orderId: string) {
+      if (!/^\d+$/.test(orderId)) return null
+      const order = await magento.admin.order(credentials, Number(orderId))
+      return order ? toAdminOrder(order) : null
+    },
+    async orderByReference(reference: string) {
+      const { items } = await magento.admin.orders(credentials, [{ field: 'ext_order_id', value: reference }], 1)
+      return items[0] ? toAdminOrder(items[0]) : null
+    },
+    async refundOrder(refund: BackendRefund) {
+      const order = await magento.admin.order(credentials, integerKey(refund.orderId))
+      if (!order) throw Object.assign(new Error('Order not found'), { status: 404 })
+      const refundable = toAdminOrder(order).refundable
+      const wanted = refund.items?.length ? refund.items : refundable.map((line) => ({ key: line.key, qty: line.qty }))
+      for (const item of wanted) {
+        const line = refundable.find((l) => l.key === String(item.key))
+        if (!line || !(item.qty > 0) || item.qty > line.qty) throw Object.assign(new Error(`Line ${item.key} can't be refunded ${item.qty}×`), { status: 400 })
+      }
+      if (!wanted.length) throw Object.assign(new Error('Nothing left to refund on this order'), { status: 409 })
+      const id = await magento.admin.refundOrder(credentials, Number(order.entity_id), {
+        items: wanted.map((item) => ({ order_item_id: Number(item.key), qty: item.qty })),
+        ...(refund.comment ? { comment: refund.comment } : {}),
+      })
+      return { creditMemoId: String(id) }
+    },
+  }
+}
+
 /**
  * `credentials` (the Magento Integration, server-side only) enables
  * placePaidOrder: orders paid with the app's Stripe checkout are recorded
  * in Magento (Meeovi_MarketplaceApi ExternalOrderManagement), where Webkul
  * credits each seller's sale.
  */
-export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter, credentials?: MagentoOAuth1Credentials | null): CommerceBackendAdapter {
+export function createMagentoCommerceBackendAdapter(
+  magento: MagentoAdapter,
+  credentials?: MagentoOAuth1Credentials | null,
+  options: { websiteId?: number } = {},
+): CommerceBackendAdapter {
+  const admin = credentials ? storeAdmin(magento, credentials, { websiteId: options.websiteId ?? 1 }) : null
+
   const placePaidOrder = credentials
     ? async (order: PaidOrder) => {
         const customerId = Number(order.customerId)
@@ -159,10 +324,23 @@ export function createMagentoCommerceBackendAdapter(magento: MagentoAdapter, cre
   return {
     ...(placePaidOrder ? { placePaidOrder } : {}),
     ...orders,
+    ...(admin ? {
+      schema: admin.schema,
+      create: admin.create,
+      update: admin.update,
+      remove: admin.remove,
+      adminOrder: admin.adminOrder,
+      orderByReference: admin.orderByReference,
+      refundOrder: admin.refundOrder,
+    } : {}),
     id: 'magento',
-    collections: ['products', 'orders'],
+    // Customers and credit memos are admin data: only with the Integration.
+    collections: admin ? ['products', 'orders', 'customers', 'creditmemos'] : ['products', 'orders'],
     isEnabled: () => true,
     async request({ collection, key }: DirectusRequestDescriptor) {
+      if (admin && (collection === 'orders' || collection === 'customers' || collection === 'creditmemos') && key === undefined) {
+        return admin.list(collection)
+      }
       switch (collection) {
         case 'products': {
           const items = await fetchProducts(magento, key)

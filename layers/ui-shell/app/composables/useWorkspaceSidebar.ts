@@ -65,6 +65,8 @@ export const WORKSPACE_FALLBACK_MENU: WorkspaceMenu[] = [
       { title: 'Transactions', to: '/workspace/sales/transactions' },
       { title: 'Invoices', to: '/workspace/sales/invoices' },
       { title: 'Credit Memos', to: '/workspace/sales/credit-memos' },
+      { title: 'Refunds', to: '/workspace/sales/refunds' },
+      { title: 'Licenses', to: '/workspace/sales/licenses' },
       { title: 'Payments', to: '/workspace/sales/payments' },
       { title: 'Billing Agreements', to: '/workspace/sales/billing-agreements' }
     ]

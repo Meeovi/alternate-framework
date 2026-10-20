@@ -296,7 +296,8 @@ useSeoMeta({ title, description: () => integration.value?.description || 'Add in
 
 const settingsFields = computed(() => integration.value?.settings ?? {})
 const hasSettings = computed(() => Object.keys(settingsFields.value).length > 0)
-const settingsDraft = reactive<Record<string, unknown>>({})
+// Field values of any declared type (text, list, boolean, …).
+const settingsDraft = reactive<Record<string, any>>({})
 const settingsError = ref('')
 const settingsSaving = ref(false)
 const settingsUrl = computed(() => `${apiBase}/${encodeURIComponent(slug.value)}/settings`)
