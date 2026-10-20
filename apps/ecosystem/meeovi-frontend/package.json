@@ -41,6 +41,7 @@
     "@mframework/meeovi-discussions": "file:../../../packages/plugins/Social/meeovi-discussions",
     "@directus/sdk": "^23.0.0",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@mframework/auth-email-domains": "file:../../../packages/plugins/Authentication/auth-email-domains",
     "@mframework/meeovi-integrations": "file:../../../packages/plugins/Admin/meeovi-integrations",
     "@mframework/meeovi-tables": "file:../../../packages/plugins/Marketing-SEO/meeovi-tables",
     "@mframework/meeovi-dropshipping": "file:../../../packages/plugins/Shipping-Fulfillment/meeovi-dropshipping",

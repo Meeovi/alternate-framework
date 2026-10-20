@@ -70,6 +70,22 @@ seller's sale stay there. A plugin names the SKU that sells it:
   `server/plugins/licensing-entitlements.ts`), so a payment issues a
   license and a full refund revokes it.
 
+## Site plugins
+
+Some plugins are switched on for the **whole site** rather than per user:
+auth plugins (`packages/plugins/Authentication/*`), for example. Something
+registers an `IntegrationSiteScope` under
+`Symbol.for('mframework.integrations.site')` and claims those packages; the
+auth layer does this for every auth plugin package. For them:
+
+- only admins see them; everyone else gets a 404;
+- **Install** / **Uninstall** switch the plugin on or off for everyone
+  (`setEnabled`), and catalog items say `scope: 'site'`;
+- catalog items carry `permissions` (a plain-language list of what the
+  plugin can do) and `settings` (the fields it declares);
+- `GET | PUT {apiBase}/:slug/settings` reads and saves those settings.
+  This is admins only, and each value is validated by the scope.
+
 ## The sandbox
 
 User integrations run **sandboxed**: an integration that users can install

@@ -44,22 +44,73 @@ curl -i -X POST "http://localhost:3006/api/auth/create-session" \
 If BetterAuth is configured and the DB is reachable, the endpoint will upsert the user and attempt to create a session cookie. If the DB isn't available you will see a 500 error from the upsert.
 
 If you want me to attempt to run the server here (I will need a reachable Postgres instance or permission to start one), tell me and I can try to start a Docker Postgres and re-run the test.
-## Optional sign-in methods are packages
+## Auth plugins
 
-The layer runs one better-auth instance (`server/utils/auth.ts`, plugin list in
-`shared/utils/plugins.ts`). Sign-in methods an app may not launch with live in
-`packages/plugins/Authentication/` and are off until the app registers them:
+The layer runs one better-auth instance (`server/utils/auth.ts`, built-in
+plugin list in `shared/utils/plugins.ts`). Everything else plugs in from
+packages in `packages/plugins/Authentication/`, registered by name in an
+app's `modules`, in two tiers:
 
-| Package | Adds |
-| --- | --- |
-| `@mframework/auth-sso` | SSO over OIDC and SAML, plus `<AuthSsoSignIn>` |
-| `@mframework/auth-scim` | SCIM provisioning |
-| `@mframework/auth-generic-oauth` | Auth0, Keycloak, Okta, Entra ID, Slack and other OAuth providers (each one only when its env is set) |
-| `@mframework/auth-phone-number` | Phone-number sign-in (no SMS provider yet) |
-| `@mframework/auth-anonymous` | Guest accounts |
+| Tier | What it is | Access | Starts |
+| --- | --- | --- | --- |
+| **Trusted** | Real better-auth plugins (first-party) | Full, inside sign-in | On |
+| **Sandboxed** | A self-contained module run in its own locked-down process | Only what its manifest declares | Off, until an admin turns it on |
 
-They plug in through `modules/auth-plugins.ts`: a package's Nuxt module pushes
-`{ name, server, client }` (paths to entry files) from the
-`mframework:auth-plugins` hook. The layer imports the server factories from
-`#auth-server-plugins` (each gets `{ logAuditEvent, sendAuthEmail }`) and the
-client ones from `#auth-client-plugins`.
+| Package | Tier | Adds |
+| --- | --- | --- |
+| `@mframework/auth-sso` | trusted | SSO over OIDC and SAML, plus `<AuthSsoSignIn>` |
+| `@mframework/auth-scim` | trusted | SCIM provisioning |
+| `@mframework/auth-generic-oauth` | trusted | Auth0, Keycloak, Okta, Entra ID, Slack and other OAuth providers (each one only when its env is set) |
+| `@mframework/auth-phone-number` | trusted | Phone-number sign-in (no SMS provider yet) |
+| `@mframework/auth-anonymous` | trusted | Guest accounts |
+| `@mframework/auth-email-domains` | sandboxed | Block sign-up email domains, or allow only some |
+
+**Admins switch every plugin on or off for the whole site, at run time**,
+from the integrations page (`/workspace/integration`, Authentication
+category), where they also see what a sandboxed plugin may do and edit its
+settings. A plugin that's off is gone: its endpoints answer 404 and its
+hooks don't run. Pages show a plugin's sign-in option only while it's on:
+`useAuthPlugins().isOn('sso')` (from `GET /api/auth/plugin/enabled`).
+
+How it fits together (`server/utils/plugins/`):
+
+- `modules/auth-plugins.ts` collects packages from the
+  `mframework:auth-plugins` hook: `{ name, server, client }` for trusted
+  plugins (entry files the layer imports through `#auth-server-plugins` /
+  `#auth-client-plugins`; servers get `{ logAuditEvent, sendAuthEmail }`), or
+  `{ name, sandbox }` for sandboxed ones (read as text, validated against the
+  package's `mframework.auth` manifest — a broken manifest fails the build).
+- `host.ts` gates trusted plugins behind their switch, and adds one bridge
+  plugin (`mframework-plugins`) that runs sandboxed plugins' hooks and
+  endpoints.
+- `runner.ts` + `sandbox-child.mjs`: each sandboxed plugin's process.
+- `state.ts`: switches, settings and plugins' own data, in the
+  `auth_plugins` schema (migration `20261020090000_auth_plugins_schema`).
+- `server/plugins/auth-plugins.ts` registers the host as the integrations
+  catalog's site scope.
+
+### The sandbox
+
+A sandboxed plugin's code never runs in the app. Its process is started
+with Node's permission model and nothing allowed — no files, child
+processes, workers, addons or inspector — no `eval` / `new Function`, an
+empty environment (no secrets) and a 64 MB heap. Before the plugin loads,
+the runner limits network connections to the hosts its manifest declares
+(resolving names itself and refusing private and loopback addresses, so it
+can't reach this server's services), turns off DNS and UDP, and takes away
+`process.kill`. Each call has the plugin's timeout; a plugin that runs over
+it is killed and restarted on the next call, and one that keeps failing is
+paused.
+
+It never sees better-auth, the database, sessions, passwords or tokens. It
+gets the user fields in `PluginUser` (id, name, the part of the email after
+the @, verified flag, created date; the full email only with the
+`user:email` permission), its settings, its own key-value store and the
+audit log. Its `*.before` hooks may refuse with a message; when it fails,
+its manifest's `failMode` decides: `closed` refuses, `open` skips it.
+
+Sandboxed plugins need a long-running Node server (the node-server preset):
+serverless functions can't keep the processes, so there every call fails and
+`failMode` decides.
+
+Writing one: see `packages/plugins/Authentication/README.md`.

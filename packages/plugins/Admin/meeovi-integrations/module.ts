@@ -156,6 +156,7 @@ export default defineNuxtModule<MeeoviIntegrationsModuleOptions>({
     addServerHandler({ route: `${apiBase}/:slug/install`, method: 'post', handler: resolver.resolve('server/api/install.post') })
     addServerHandler({ route: `${apiBase}/:slug/install`, method: 'delete', handler: resolver.resolve('server/api/install.delete') })
     addServerHandler({ route: `${apiBase}/:slug/data`, handler: resolver.resolve('server/api/data') })
+    addServerHandler({ route: `${apiBase}/:slug/settings`, handler: resolver.resolve('server/api/settings') })
 
     // Sandboxed plugin UIs: `<sandboxBase>/<slug>/<file>`, served with an
     // enforced CSP of their own (see server/sandbox.get.ts).

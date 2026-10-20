@@ -52,8 +52,10 @@ import { sendAuthEmail } from '../../shared/utils/infrastructure/email'
 import { sentinel } from "@better-auth/infra";
 import { MIN_PASSWORD_LENGTH } from '../../shared/utils/username'
 // better-auth plugins from packages (packages/plugins/Authentication/auth-*),
-// collected at build time by modules/auth-plugins.ts.
+// collected at build time by modules/auth-plugins.ts. Admins switch each
+// package on or off at run time (server/utils/plugins).
 import packagePluginFactories from '#auth-server-plugins'
+import { authPluginHost } from './plugins'
 
 /** What the layer lends package plugins (their `server` entry's argument). */
 export type AuthPluginContext = {
@@ -61,7 +63,10 @@ export type AuthPluginContext = {
   sendAuthEmail: typeof sendAuthEmail
 }
 
-const packagePlugins = packagePluginFactories.flatMap((factory) => factory({ logAuditEvent, sendAuthEmail }))
+// Trusted packages, each behind its switch; sandboxed packages run through
+// the host's bridge plugin (added last, below).
+const packagePlugins = authPluginHost.registry.trusted.flatMap((entry, i) =>
+  authPluginHost.gateTrusted(entry, [packagePluginFactories[i]!({ logAuditEvent, sendAuthEmail })].flat()))
 
 const runtimeConfig = {
   public: {
@@ -386,7 +391,7 @@ export const auth = betterAuth({
       "/send-verification-email": { window: 60, max: 3 },
     },
   },
-  plugins: [...plugins, ...packagePlugins, sentinel()],
+  plugins: [...plugins, ...packagePlugins, authPluginHost.betterAuthPlugin(), sentinel()],
   telemetry: {
     enabled: true,
     debug: !isProduction

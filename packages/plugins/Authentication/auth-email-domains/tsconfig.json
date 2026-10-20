@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "noEmit": true
+  },
+  "include": ["module.ts", "sandbox/**/*", "test/**/*.ts"],
+  "exclude": ["node_modules"]
+}

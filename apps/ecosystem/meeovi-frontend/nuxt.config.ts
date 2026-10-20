@@ -166,6 +166,9 @@ export default defineNuxtConfig({
     // Per-user integrations (installed from Meeovi Workspace): list types
     // below only render for users who installed them.
     '@mframework/meeovi-integrations',
+    // Sandboxed auth plugin (layers/auth server/utils/plugins): off until an
+    // admin turns it on from the integrations page.
+    '@mframework/auth-email-domains',
     // Admin tables (SVAR DataGrid over the adapters) on /workspace pages — <MeeoviTable>
     '@mframework/meeovi-tables',
     // Sellers' supplier accounts (Printful, CJ) → products under their Webkul seller — /workspace/stores/suppliers

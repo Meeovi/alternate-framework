@@ -1,5 +1,5 @@
 <template>
-  <section class="auth-sso">
+  <section v-if="enabled" class="auth-sso">
     <p class="text-body-2 text-medium-emphasis mb-3">
       Sign in through your organization's identity provider. Enter your work email and you'll be sent to it.
     </p>
@@ -22,14 +22,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 /**
  * Starts better-auth's SSO flow (POST /api/auth/sign-in/sso). The email's
  * domain picks the identity provider registered for it; the response holds
- * the provider's sign-in URL.
+ * the provider's sign-in URL. Hidden while an admin has SSO switched off
+ * (the auth layer's GET /api/auth/plugin/enabled).
  */
 const props = withDefaults(defineProps<{ callbackURL?: string }>(), { callbackURL: '/' })
+
+const { data: plugins } = await useFetch<{ plugins: string[] }>('/api/auth/plugin/enabled', {
+  key: 'auth-plugins-enabled',
+  default: () => ({ plugins: [] }),
+})
+const enabled = computed(() => plugins.value?.plugins.includes('sso') ?? false)
 
 const email = ref('')
 const loading = ref(false)

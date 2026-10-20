@@ -4,6 +4,8 @@ import type {
   IntegrationCatalogItem,
   IntegrationEntitlements,
   IntegrationPlugin,
+  IntegrationSiteDetails,
+  IntegrationSiteScope,
   IntegrationState,
   IntegrationStore,
   IntegrationStoreProduct,
@@ -102,9 +104,10 @@ export async function requireUser(event: H3Event): Promise<IntegrationsUser> {
 // ---------------------------------------------------------------------------
 // Plugins
 
-/** Plugins this user may see: everything for admins, no admin plugins otherwise. */
+/** Plugins this user may see: everything for admins; no admin or site
+ *  plugins (switched on for everyone) otherwise. */
 export function visiblePlugins(event: H3Event, user: IntegrationsUser | null): IntegrationPlugin[] {
-  return integrationsConfig(event).registry.filter((p) => !p.admin || user?.admin)
+  return integrationsConfig(event).registry.filter((p) => user?.admin || (!p.admin && !isSitePlugin(p)))
 }
 
 /** A plugin by slug or package name, if this user may see it. Admin plugins
@@ -207,6 +210,31 @@ const entitled = (
   return (!!customer && product.seller?.id === customer) || purchased.has(product.sku)
 }
 
+// ---------------------------------------------------------------------------
+// Site plugins (switched on for everyone by an admin, e.g. auth plugins)
+
+/** The registered site scope (the auth layer's plugin host), if any. */
+export function integrationSite(): IntegrationSiteScope | null {
+  const scope = (globalThis as Record<symbol, unknown>)[Symbol.for('mframework.integrations.site')] as IntegrationSiteScope | undefined
+  return scope && typeof scope.handles === 'function' ? scope : null
+}
+
+/** Is this a site plugin? */
+export const isSitePlugin = (plugin: IntegrationPlugin) => !!integrationSite()?.handles(plugin.plugin)
+
+/** Site details for the site plugins among these, by package. */
+async function siteDetails(plugins: IntegrationPlugin[]): Promise<Map<string, IntegrationSiteDetails>> {
+  const site = integrationSite()
+  const handled = site ? plugins.filter((p) => site.handles(p.plugin)) : []
+  const entries = await Promise.all(handled.map(async (p) => [p.plugin, await site!.details(p.plugin).catch(() => null)] as const))
+  return new Map(entries.filter((e): e is readonly [string, IntegrationSiteDetails] => !!e[1]))
+}
+
+/** Admins only, for site plugins. */
+function requireSiteAdmin(user: IntegrationsUser) {
+  if (!user.admin) throw createError({ statusCode: 404, statusMessage: 'Integration not found' })
+}
+
 /**
  * Why a plugin can't be switched on here, if it can't: not registered in
  * this app; for user plugins while sandboxing is required, no sandboxed UI
@@ -233,7 +261,7 @@ export function pluginState(reason: IntegrationCatalogItem['reason'], paidFor: b
 
 export function pluginItem(
   event: H3Event, plugin: IntegrationPlugin, products: Map<string, IntegrationStoreProduct>,
-  installedAt: string | null, paidFor: boolean,
+  installedAt: string | null, paidFor: boolean, site?: IntegrationSiteDetails | null,
 ): IntegrationCatalogItem {
   const reason = blockedReason(event, plugin, products)
   const product = plugin.sku ? products.get(plugin.sku) : undefined
@@ -253,7 +281,10 @@ export function pluginItem(
     purchased: paid && paidFor,
     plugin: plugin.plugin,
     admin: plugin.admin,
-    sandboxed: Boolean(plugin.sandbox),
+    sandboxed: site ? site.sandboxed : Boolean(plugin.sandbox),
+    scope: site ? 'site' : 'user',
+    permissions: site?.permissions ?? [],
+    settings: site?.settings ?? {},
     hosts: plugin.hosts ?? [],
     state: pluginState(reason, paidFor || !!reason, installedAt !== null),
     reason,
@@ -271,10 +302,17 @@ export async function catalogFor(event: H3Event, user: IntegrationsUser | null):
   // Only ask about purchases when something here is paid.
   const purchased = user && plugins.some((p) => p.sku) ? await purchasedSkus(user, products) : new Set<string>()
   const installedAt = new Map(installs.map((i) => [i.plugin, i.date_created ?? '']))
+  // Site plugins are "installed" while they're on for the site.
+  const site = await siteDetails(plugins)
+  for (const [plugin, details] of site) {
+    if (details.enabled) installedAt.set(plugin, details.updatedAt ?? '')
+    else installedAt.delete(plugin)
+  }
   return plugins.map((p) => pluginItem(
     event, p, products,
     installedAt.has(p.plugin) ? installedAt.get(p.plugin)! : null,
     entitled(p, p.sku ? products.get(p.sku) : undefined, user, purchased),
+    site.get(p.plugin) ?? null,
   ))
 }
 
@@ -363,6 +401,10 @@ export async function requireIntegration(event: H3Event, plugin: string): Promis
  * so their plugin data is still there. Idempotent.
  */
 export async function install(event: H3Event, user: IntegrationsUser, plugin: IntegrationPlugin): Promise<void> {
+  if (isSitePlugin(plugin)) {
+    requireSiteAdmin(user)
+    return integrationSite()!.setEnabled(plugin.plugin, true, user.id)
+  }
   const { installsCollection } = integrationsConfig(event)
   const rows = (await installsFor(event, user.id)).filter((r) => r.plugin === plugin.plugin)
   if (rows.some(isActive)) return
@@ -382,6 +424,10 @@ export async function install(event: H3Event, user: IntegrationsUser, plugin: In
 
 /** Switch a plugin off for this user. Their row and data are kept. */
 export async function uninstall(event: H3Event, user: IntegrationsUser, plugin: IntegrationPlugin): Promise<void> {
+  if (isSitePlugin(plugin)) {
+    requireSiteAdmin(user)
+    return integrationSite()!.setEnabled(plugin.plugin, false, user.id)
+  }
   const { installsCollection } = integrationsConfig(event)
   const ids = (await installsFor(event, user.id)).filter((r) => r.plugin === plugin.plugin && isActive(r)).map((r) => r.id)
   if (!ids.length) return
@@ -419,6 +465,26 @@ export async function setIntegrationData(
   const { installsCollection } = integrationsConfig(event)
   await directus(event)(`/items/${installsCollection}/${row.id}`, { method: 'PATCH', body: { settings: next } })
   return next
+}
+
+/** A site plugin's settings (admins only; 404 otherwise or for user plugins). */
+export async function siteSettings(user: IntegrationsUser, plugin: IntegrationPlugin) {
+  requireSiteAdmin(user)
+  const site = integrationSite()
+  if (!site?.handles(plugin.plugin)) throw createError({ statusCode: 404, statusMessage: 'This integration has no site settings' })
+  const details = await site.details(plugin.plugin)
+  return { plugin: plugin.plugin, fields: details?.settings ?? {}, values: await site.settings(plugin.plugin) }
+}
+
+/** Saves a site plugin's settings; 400 with the reason when invalid. */
+export async function saveSiteSettings(user: IntegrationsUser, plugin: IntegrationPlugin, input: unknown) {
+  const current = await siteSettings(user, plugin)
+  try {
+    const values = await integrationSite()!.saveSettings(plugin.plugin, input, user.id)
+    return { ...current, values }
+  } catch (error) {
+    throw createError({ statusCode: 400, statusMessage: String((error as Error)?.message || 'Invalid settings').slice(0, 300) })
+  }
 }
 
 // ---------------------------------------------------------------------------

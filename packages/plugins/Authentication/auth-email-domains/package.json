@@ -1,0 +1,82 @@
+{
+  "name": "@mframework/auth-email-domains",
+  "version": "0.1.0",
+  "description": "Sign-up email domains for M Framework's auth layer: block domains, or allow only some. A sandboxed auth plugin — it runs in its own locked-down process and only sees the part of an email after the @.",
+  "mframework": {
+    "integration": {
+      "name": "Sign-up email domains",
+      "description": "Only let people sign up with email addresses from domains you choose, or block domains you don't want.",
+      "category": "Authentication",
+      "icon": "fas fa-at",
+      "admin": true
+    },
+    "auth": {
+      "hooks": ["user.create.before"],
+      "endpoints": [{ "method": "GET", "path": "/check", "access": "public" }],
+      "failMode": "closed",
+      "timeoutMs": 2000,
+      "settings": {
+        "mode": {
+          "type": "select",
+          "label": "Mode",
+          "options": ["block", "allow"],
+          "default": "block",
+          "help": "Block: refuse sign-ups from the domains below. Allow: accept sign-ups only from the domains below."
+        },
+        "domains": {
+          "type": "list",
+          "label": "Domains",
+          "default": [],
+          "help": "For example example.com, or *.example.com for its subdomains. An empty list restricts nothing."
+        },
+        "message": {
+          "type": "text",
+          "label": "Message shown when a sign-up is refused",
+          "default": "Sign-ups with this email address aren't allowed."
+        }
+      }
+    }
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts"
+  },
+  "files": [
+    "module.ts",
+    "sandbox",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'auth-email-domains is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "better-auth",
+    "authentication",
+    "mframework",
+    "meeovi",
+    "sandboxed"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

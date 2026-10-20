@@ -49,6 +49,8 @@
                     text="Admin" />
                   <v-chip v-if="item.sandboxed" size="small" color="info" variant="tonal" prepend-icon="fas fa-shield-halved"
                     text="Sandboxed" />
+                  <v-chip v-if="item.scope === 'site'" size="small" color="warning" variant="tonal" prepend-icon="fas fa-globe"
+                    text="Site-wide" />
                   <v-chip v-if="item.version" size="small" variant="tonal" :text="`v${item.version}`" />
                 </div>
               </v-card-text>
@@ -129,7 +131,19 @@
               <div class="text-subtitle-2 mb-2">
                 <v-icon icon="fas fa-shield-halved" size="16" class="mr-2" />Security
               </div>
-              <p v-if="integration.sandboxed" class="mb-2">
+              <template v-if="integration.scope === 'site'">
+                <p v-if="integration.sandboxed" class="mb-2">
+                  Runs in its own locked-down server process. It can't read files, other plugins' data, sessions,
+                  passwords or secrets — only what's listed below.
+                </p>
+                <p v-else class="mb-2">
+                  First-party: runs inside the sign-in system with full access.
+                </p>
+                <ul v-if="integration.permissions.length" class="integrations__permissions mb-2">
+                  <li v-for="line in integration.permissions" :key="line">{{ line }}</li>
+                </ul>
+              </template>
+              <p v-else-if="integration.sandboxed" class="mb-2">
                 Runs in an isolated sandbox. It can't see your account, your session or the rest of Meeovi — only
                 its own data for you, and what the page it's shown on lends it.
               </p>
@@ -150,8 +164,35 @@
               </div>
             </v-sheet>
 
-            <v-alert v-if="integration.plugin" type="info" variant="tonal" density="comfortable" class="mt-4"
-              icon="fas fa-user-lock">
+            <v-alert v-if="integration.scope === 'site'" type="warning" variant="tonal" density="comfortable" class="mt-4"
+              icon="fas fa-globe">
+              Installing turns {{ integration.name }} on for the whole site — every user, straight away. Only admins
+              can switch it on or off, and uninstalling takes it away for everyone (its settings are kept).
+            </v-alert>
+
+            <v-sheet v-if="integration.scope === 'site' && hasSettings" border rounded class="pa-4 mt-4">
+              <div class="text-subtitle-2 mb-3">
+                <v-icon icon="fas fa-sliders" size="16" class="mr-2" />Settings
+              </div>
+              <v-alert v-if="settingsError" type="error" variant="tonal" density="compact" class="mb-3" :text="settingsError" />
+              <template v-for="(field, key) in settingsFields" :key="key">
+                <v-switch v-if="field.type === 'boolean'" v-model="settingsDraft[key]" :label="field.label" :hint="field.help"
+                  persistent-hint color="primary" class="mb-2" />
+                <v-select v-else-if="field.type === 'select'" v-model="settingsDraft[key]" :items="field.options" :label="field.label"
+                  :hint="field.help" persistent-hint class="mb-2" />
+                <v-combobox v-else-if="field.type === 'list'" v-model="settingsDraft[key]" :label="field.label"
+                  :hint="field.help || 'Press Enter after each one.'" persistent-hint multiple chips closable-chips class="mb-2" />
+                <v-textarea v-else-if="field.type === 'textarea'" v-model="settingsDraft[key]" :label="field.label" :hint="field.help"
+                  persistent-hint auto-grow class="mb-2" />
+                <v-text-field v-else-if="field.type === 'number'" v-model.number="settingsDraft[key]" type="number" :label="field.label"
+                  :hint="field.help" persistent-hint class="mb-2" />
+                <v-text-field v-else v-model="settingsDraft[key]" :label="field.label" :hint="field.help" persistent-hint class="mb-2" />
+              </template>
+              <v-btn color="primary" variant="flat" text="Save settings" :loading="settingsSaving" @click="saveSettings" />
+            </v-sheet>
+
+            <v-alert v-if="integration.plugin && integration.scope !== 'site'" type="info" variant="tonal"
+              density="comfortable" class="mt-4" icon="fas fa-user-lock">
               Installing turns {{ integration.name }} on for your account only. What you create with it stays attached to
               your account — uninstalling switches it off but keeps your data, and reinstalling brings it back.
             </v-alert>
@@ -183,11 +224,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, toRaw, watch } from 'vue'
 import type {
   IntegrationCatalogItem,
   IntegrationCatalogResponse,
   IntegrationDetailResponse,
+  IntegrationSettingsResponse,
 } from '@mframework/meeovi-integrations'
 import share from '#social/app/components/blocks/share.vue'
 
@@ -250,6 +292,41 @@ const title = computed(() => (slug.value ? integration.value?.name || 'Integrati
 useHead({ title })
 useSeoMeta({ title, description: () => integration.value?.description || 'Add integrations to your Meeovi workspace.' })
 
+// ---- site plugin settings (admins) ----------------------------------------
+
+const settingsFields = computed(() => integration.value?.settings ?? {})
+const hasSettings = computed(() => Object.keys(settingsFields.value).length > 0)
+const settingsDraft = reactive<Record<string, unknown>>({})
+const settingsError = ref('')
+const settingsSaving = ref(false)
+const settingsUrl = computed(() => `${apiBase}/${encodeURIComponent(slug.value)}/settings`)
+
+const { data: settingsData, execute: loadSettings } = await useFetch<IntegrationSettingsResponse>(settingsUrl, {
+  key: `workspace:integration-settings:${slug.value}`,
+  immediate: false,
+})
+watch(() => integration.value?.scope === 'site' && hasSettings.value, (load) => {
+  if (load) void loadSettings()
+}, { immediate: true })
+watch(settingsData, (value) => {
+  for (const key of Object.keys(settingsDraft)) delete settingsDraft[key]
+  Object.assign(settingsDraft, structuredClone(toRaw(value?.values ?? {})))
+}, { immediate: true })
+
+async function saveSettings() {
+  settingsSaving.value = true
+  settingsError.value = ''
+  try {
+    const saved = await $fetch<IntegrationSettingsResponse>(settingsUrl.value, { method: 'PUT', body: toRaw(settingsDraft) })
+    settingsData.value = saved
+    notify('Settings saved.')
+  } catch (e: any) {
+    settingsError.value = e?.data?.statusMessage || e?.statusMessage || 'The settings couldn\'t be saved.'
+  } finally {
+    settingsSaving.value = false
+  }
+}
+
 // ---- shared ---------------------------------------------------------------
 
 const isPaid = (item: IntegrationCatalogItem) => item.cost === 'paid' || Number(item.price) > 0
@@ -289,9 +366,11 @@ async function run(item: IntegrationCatalogItem, action: () => Promise<void>, do
 }
 
 const install = (item: IntegrationCatalogItem) =>
-  run(item, () => installPlugin(item.plugin!), `${item.name} installed.`)
+  run(item, () => installPlugin(item.plugin!), item.scope === 'site' ? `${item.name} is on for the whole site.` : `${item.name} installed.`)
 const uninstall = (item: IntegrationCatalogItem) =>
-  run(item, () => uninstallPlugin(item.plugin!), `${item.name} uninstalled. Your data is kept if you reinstall.`)
+  run(item, () => uninstallPlugin(item.plugin!), item.scope === 'site'
+    ? `${item.name} is off for the whole site. Its settings are kept.`
+    : `${item.name} uninstalled. Your data is kept if you reinstall.`)
 </script>
 
 <style scoped>
@@ -301,6 +380,10 @@ const uninstall = (item: IntegrationCatalogItem) =>
 
 .integrations__search {
   max-width: 280px;
+}
+
+.integrations__permissions {
+  padding-left: 1.25rem;
 }
 
 .integrations__description {

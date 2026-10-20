@@ -133,8 +133,16 @@ export interface IntegrationCatalogItem {
   plugin: string | null
   /** Admin-only plugin (only admins ever see these). */
   admin: boolean
-  /** Runs in the sandbox (isolated iframe, no outside access beyond `hosts`). */
+  /** Runs in the sandbox (isolated iframe, or for site plugins a locked-down
+   *  server process), with no outside access beyond `hosts`. */
   sandboxed: boolean
+  /** `user`: each user installs it for themselves. `site`: an admin switches
+   *  it on for everyone (e.g. auth plugins) — see IntegrationSiteScope. */
+  scope: 'user' | 'site'
+  /** Site plugins: plain-language list of what it can do, for admins. */
+  permissions: string[]
+  /** Site plugins: settings an admin can edit (empty: none). */
+  settings: Record<string, IntegrationSettingField>
   /** Outside hosts it is allowed to reach. Empty: none. */
   hosts: string[]
   state: IntegrationState
@@ -206,6 +214,48 @@ export interface IntegrationEntitlements {
   installed?(userId: string, ref: string, plugin: string): Promise<void>
   /** The user switched a paid integration off. */
   uninstalled?(userId: string, ref: string, plugin: string): Promise<void>
+}
+
+/**
+ * Plugins switched on for the whole site rather than per user, registered
+ * on the server under `Symbol.for('mframework.integrations.site')` (the auth
+ * layer does, for auth plugin packages). Only admins see, switch or
+ * configure them; installing/uninstalling one from the catalog calls
+ * `setEnabled`.
+ */
+export interface IntegrationSiteScope {
+  /** Does this scope manage the plugin package? */
+  handles(plugin: string): boolean
+  details(plugin: string): Promise<IntegrationSiteDetails | null>
+  setEnabled(plugin: string, enabled: boolean, actorId: string): Promise<void>
+  settings(plugin: string): Promise<Record<string, unknown>>
+  /** Validates and saves; throws an Error with a readable message when invalid. */
+  saveSettings(plugin: string, input: unknown, actorId: string): Promise<Record<string, unknown>>
+}
+
+export interface IntegrationSiteDetails {
+  enabled: boolean
+  updatedAt: string | null
+  /** Runs sandboxed (its server code in a locked-down process). */
+  sandboxed: boolean
+  permissions: string[]
+  settings: Record<string, IntegrationSettingField>
+}
+
+/** One setting a site plugin declares (rendered as a form for admins). */
+export interface IntegrationSettingField {
+  type: 'text' | 'textarea' | 'boolean' | 'number' | 'select' | 'list'
+  label: string
+  help?: string
+  default?: unknown
+  options?: string[]
+}
+
+/** GET|PUT {apiBase}/:slug/settings — a site plugin's settings (admins). */
+export interface IntegrationSettingsResponse {
+  plugin: string
+  fields: Record<string, IntegrationSettingField>
+  values: Record<string, unknown>
 }
 
 export interface IntegrationStoreProduct {

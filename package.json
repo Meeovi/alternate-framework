@@ -52,6 +52,7 @@
     "packages/plugins/Authentication/auth-generic-oauth",
     "packages/plugins/Authentication/auth-phone-number",
     "packages/plugins/Authentication/auth-anonymous",
+    "packages/plugins/Authentication/auth-email-domains",
     "packages/plugins/CMS-Content/list-type-habit-tracker",
     "packages/plugins/CMS-Content/list-type-kanban",
     "packages/plugins/CMS-Content/list-type-tasklist",
