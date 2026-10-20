@@ -1,4 +1,5 @@
-import { defineNuxtPlugin, useRuntimeConfig } from '#imports';
+import { defineNuxtPlugin, useRequestEvent, useRuntimeConfig } from '#imports';
+import { PRIVATE_CONTENT_COLLECTIONS } from '#shared/server/utils/privateContent';
 import { createDirectus, rest, readItem, readItems, createItem, deleteItem, updateItem, uploadFiles, readSingleton, readCollection, updateCollection, readFields, readFieldsByCollection, realtime, authentication, readMe, staticToken } from '@directus/sdk';
 import type { RestCommand } from '@directus/sdk';
 import { CommerceBackendRegistry } from 'alternate-sdk';
@@ -41,6 +42,17 @@ export default defineNuxtPlugin(() => {
         ? createDirectus(directusUrl).with(rest()).with(authentication()).with(staticToken(serverToken || ''))
         : createDirectus(`${window.location.origin}/api/cms`).with(rest())
 
+    // Content that can be private (privateContent.ts) is read through the
+    // /api/cms proxy on the server too, as the signed-in user, so a
+    // server-rendered page gets only what that user may see. Nitro's
+    // event.fetch calls the proxy in-process with the request's cookies.
+    const event = import.meta.server ? useRequestEvent() : undefined
+    const viewerClient = event
+        ? createDirectus('http://localhost/api/cms', {
+            globals: { fetch: (url: string | URL | Request, init?: RequestInit) => event.fetch(String(url).replace(/^https?:\/\/[^/]+/, ''), init) },
+        }).with(rest())
+        : requestClient
+
     const activeBackendName = (config.public as any).commerceBackend || 'directus'
 
     // readItem/readItems bake `path: /items/<collection>[/<key>]` into a
@@ -62,6 +74,10 @@ export default defineNuxtPlugin(() => {
                 if (adapter?.collections.includes(collection)) {
                     return adapter.request({ method: 'GET', collection, key: match?.[2], params: options.params })
                 }
+            }
+            const readCollection = options.method === 'GET' ? options.path.match(/^\/items\/([^/]+)/)?.[1] : undefined
+            if (readCollection && PRIVATE_CONTENT_COLLECTIONS.has(readCollection)) {
+                return viewerClient.request(getOptions)
             }
             // Server: real Directus + token. Browser: the /api/cms proxy.
             return requestClient.request(getOptions)

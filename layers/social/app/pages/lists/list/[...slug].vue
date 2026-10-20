@@ -8,7 +8,9 @@
     </v-toolbar>
 
     <div v-if="error" class="error pa-4">Failed to load list.</div>
-    <div v-else-if="!list" class="pa-4">Loading...</div>
+    <div v-else-if="!list && pending" class="pa-4">Loading...</div>
+    <!-- Missing, or someone else's private list (the CMS proxy only returns private lists to their owner). -->
+    <div v-else-if="!list" class="pa-4">This list doesn't exist or is private.</div>
 
     <!-- Wishlist: the products saved with the heart on product cards
          (#commerce stores/wishlist); un-hearting one removes it here. -->

@@ -3,6 +3,7 @@ import qs from 'qs'
 import { defineEventHandler, proxyRequest, createError, readBody, getHeader, setResponseHeader } from 'h3'
 import { getAuthSession, requireAuth } from '#auth/server/utils/sessions'
 import { checkReadQuery, checkWritePayload, loadRelationGraph, type GuardRules } from '../../utils/cmsQueryGuard'
+import { PRIVATE_CONTENT_COLLECTIONS, privateContentFilter } from '../../utils/privateContent'
 
 /**
  * Same-origin Directus proxy.
@@ -19,6 +20,8 @@ import { checkReadQuery, checkWritePayload, loadRelationGraph, type GuardRules }
  *  - reads of the public CMS collections below are open;
  *  - reads of anything else require an authenticated app session;
  *  - orders / invoices / transactions are filtered to the caller's own rows;
+ *  - private content (private lists, draft/private posts, private spaces…,
+ *    see privateContent.ts) is only returned to its owner;
  *  - every relation a query or payload follows is checked (cmsQueryGuard.ts),
  *    so a protected table can't be reached through a readable one.
  *
@@ -167,7 +170,9 @@ export default defineEventHandler(async (event) => {
     || !!own(OWNER_SCOPED, collection)
     || pathOnly === '/fields'
     || /^\/files(\/|$)/.test(pathOnly)
-    || (!!collection && !PUBLIC_READ_COLLECTIONS.has(collection))
+    // Content that can be private is filtered per viewer instead: signed
+    // out, only its public rows.
+    || (!!collection && !PUBLIC_READ_COLLECTIONS.has(collection) && !(isRead && PRIVATE_CONTENT_COLLECTIONS.has(collection)))
     || (!!fieldsCollection && !PUBLIC_READ_COLLECTIONS.has(fieldsCollection))
   const user = needsSession
     ? await requireAuth(event)
@@ -211,10 +216,18 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (scope) {
-    if (!isRead) throw createError({ statusCode: 403, statusMessage: 'Billing records are read-only here' })
-    // AND the caller's own-rows filter onto whatever the client asked for.
-    const ownRows = scope(user!.id)
+  if (scope && !isRead) throw createError({ statusCode: 403, statusMessage: 'Billing records are read-only here' })
+
+  // Rows this viewer may read: their own billing records, or — for content
+  // that can be private (lists, posts, spaces…) — public rows plus their own
+  // private ones (privateContent.ts). Admins read everything.
+  const rowFilter = scope
+    ? scope(user!.id)
+    : !admin && isRead && collection ? privateContentFilter(collection, user?.id ? String(user.id) : null) : undefined
+
+  if (rowFilter && isRead) {
+    // AND the row filter onto whatever the client asked for.
+    const ownRows = rowFilter
     const clientFilter = typeof query.filter === 'string' ? JSON.parse(query.filter) : query.filter
     const filters = [ownRows, ...(clientFilter ? [clientFilter] : [])]
     if (itemId) {
