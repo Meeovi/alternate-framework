@@ -13,7 +13,7 @@ import { useRuntimeConfig } from 'nitropack/runtime'
 import { stripe } from '../utils/stripe'
 import { centsToDollars } from '../utils/currency'
 import { parseProductRef } from '../utils/productRef'
-import { ensureIntegrationOffer, useLicensing } from '.'
+import { ensureIntegrationOffer, repository, useLicensing } from '.'
 
 const purchaseIdFor = (paymentIntentId: string) => `stripe:${paymentIntentId}`
 
@@ -58,6 +58,8 @@ export async function issueLicensesForCheckout(session: Stripe.Checkout.Session,
       productId: productKey,
       licenseId: offer.id,
     })
+    const [license] = await repository().findUserLicenseByPurchase(purchaseIdFor(paymentIntentId), offer.id)
+    console.info(`[licensing] ${pluginId} license ${license?.id ?? 'MISSING'} (${license?.status ?? '-'}) for ${paymentIntentId}`)
   }
 }
 
