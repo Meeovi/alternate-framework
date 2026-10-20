@@ -2,40 +2,35 @@
   <div class="contentPage wishlistPage">
     <h1>Your Wishlist</h1>
 
-    <div v-if="wishlistStore.itemCount === 0" class="empty">
+    <div class="empty">
       Nothing saved yet — tap the heart on any product to add it here.
+      <div class="mt-4">
+        <v-btn variant="text" to="/lists" text="Go to your lists" />
+      </div>
     </div>
-
-    <v-row v-else>
-      <v-col cols="6" sm="4" md="3" v-for="product in products" :key="product.id">
-        <productCard :product="product" />
-      </v-col>
-    </v-row>
   </div>
 </template>
 
 <script setup>
-  import productCard from '../components/catalog/product/productCard.vue'
+  import { onMounted } from 'vue'
   import { useWishlistStore } from '../stores/wishlist/useWishlistStore'
 
+  // The wishlist is a list of type "Wishlist" (layers/social): this page
+  // opens it at /lists/list/<slug>. Until the first product is saved there
+  // is no list yet, so it shows the empty state.
+  const requestFetch = useRequestFetch()
+  const { data } = await useAsyncData('wishlist', () => requestFetch('/api/social/wishlist').catch(() => null))
+  if (data.value?.list?.slug) {
+    await navigateTo(`/lists/list/${data.value.list.slug}`, { replace: true })
+  }
+
+  // Products saved in this browser before signing in move into the list
+  // here; open it once they have.
   const wishlistStore = useWishlistStore()
-
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
-
-  const { data: products } = await useAsyncData(
-    'wishlist-products',
-    () => {
-      if (wishlistStore.items.length === 0) return Promise.resolve([])
-      return $directus.request($readItems('products', {
-        fields: ['*', 'image.*', 'shops.shops_id.*'],
-        filter: { id: { _in: wishlistStore.items } }
-      }))
-    },
-    { watch: [() => wishlistStore.items.length] }
-  )
+  onMounted(async () => {
+    await wishlistStore.load(true)
+    if (wishlistStore.listSlug) await navigateTo(`/lists/list/${wishlistStore.listSlug}`, { replace: true })
+  })
 
   useHead({
     title: 'Your Wishlist'

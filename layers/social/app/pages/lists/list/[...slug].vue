@@ -10,6 +10,19 @@
     <div v-if="error" class="error pa-4">Failed to load list.</div>
     <div v-else-if="!list" class="pa-4">Loading...</div>
 
+    <!-- Wishlist: the products saved with the heart on product cards
+         (#commerce stores/wishlist); un-hearting one removes it here. -->
+    <div v-else-if="isWishlist" class="pa-4">
+      <v-row v-if="wishlistProducts.length">
+        <v-col v-for="product in wishlistProducts" :key="product.key" cols="12" sm="6" md="4" lg="3">
+          <productCard :product="product" />
+        </v-col>
+      </v-row>
+      <div v-else class="text-center text-medium-emphasis py-10">
+        Nothing saved yet — tap the heart on any product to add it here.
+      </div>
+    </div>
+
     <div v-else-if="list?.list_type?.list_type_id?.name === 'Checklist'" class="pa-4">
       <Grid :data="list.items || list" :autoConfig="true" />
     </div>
@@ -41,7 +54,7 @@
     <!-- Products saved with "Add to List": the site's own catalogue
          (lists_products) and commerce backends such as Magento
          (lists_backend_products). -->
-    <section v-if="savedProducts.length" class="pa-4">
+    <section v-if="savedProducts.length && !isWishlist" class="pa-4">
       <h2 class="text-h6 mb-3">Saved products</h2>
       <v-row>
         <v-col v-for="product in savedProducts" :key="product.key" cols="12" sm="6" md="4" lg="3">
@@ -58,6 +71,8 @@
   } from 'vue-router'
   import Grid from '#ui/app/components/ui/DataGrid/components/Grid.vue'
   import productCard from '#commerce/app/components/catalog/product/productCard.vue'
+  import { useWishlistStore } from '#commerce/app/stores/wishlist/useWishlistStore'
+  import { productKey } from '#commerce/app/utils/productKey'
 
   const route = useRoute();
   const {
@@ -85,6 +100,7 @@
         'products.products_id.*',
         'products.products_id.image.*',
         'backend_products.*',
+        'lists_type.lists_type_id.name',
         'vibez.shorts_id.*',
         'list_template.templates.*',
         'image.*',
@@ -128,6 +144,18 @@
         }
       }),
   ])
+
+  // A list of type "Wishlist" (Directus lists_type) shows its products as a
+  // grid instead of a list-type view.
+  const isWishlist = computed(() => (list.value?.lists_type || []).some((row) => row?.lists_type_id?.name === 'Wishlist'))
+  const wishlistStore = useWishlistStore()
+  onMounted(() => { if (isWishlist.value) wishlistStore.load() })
+  // Once the store knows the wishlist, a product un-hearted here disappears
+  // without reloading the list (only for the viewer's own wishlist).
+  const ownWishlist = computed(() => wishlistStore.loaded && wishlistStore.listSlug === list.value?.slug)
+  const wishlistProducts = computed(() => (ownWishlist.value
+    ? savedProducts.value.filter((product) => wishlistStore.hasItem(productKey(product)))
+    : savedProducts.value))
 
   const appConfig = useAppConfig()
   const listTypeName = computed(() => list.value?.list_type?.list_type_id?.name)

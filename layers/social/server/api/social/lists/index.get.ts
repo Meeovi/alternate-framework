@@ -24,8 +24,12 @@ export default defineEventHandler(async (event) => {
   // list_id/user_id) rather than a plain scalar field — filtering it with
   // a bare `_eq` 500s ("Invalid numeric value"). Filter through the
   // junction's own field instead.
+  // ?listsType=Wishlist: the Directus `lists_type` (e.g. Wishlist, Bookmarks).
+  const listsType = typeof query.listsType === 'string' && /^[\w -]{1,40}$/.test(query.listsType) ? query.listsType : undefined
+
   const filter: Record<string, any> = { user: { user_id: { _eq: user.id } } }
   if (typeFilter) filter.type = { _eq: typeFilter }
+  if (listsType) filter.lists_type = { lists_type_id: { name: { _eq: listsType } } }
 
   const result = await directus.request(
     readItems('lists' as any, {

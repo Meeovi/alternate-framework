@@ -15,7 +15,7 @@
         <v-btn variant="flat" size="sm" square color="surface"
           class="product-card__wishlist"
           :aria-label="inWishlist ? 'Remove from wishlist' : 'Add to wishlist'"
-          @click="wishlistStore.toggleItem(product?.id)">
+          @click="wishlistStore.toggleItem(wishlistKey)">
           <v-icon icon="fas fa-heart" size="sm" :color="inWishlist ? 'red' : undefined"></v-icon>
         </v-btn>
       </div>
@@ -47,7 +47,7 @@
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
 import { useImageFallback } from '#shared/app/composables/media/useImageFallback'
 
-  import { computed } from 'vue'
+  import { computed, onMounted } from 'vue'
   import { usePrice } from '../../../composables/catalog/price/price'
   import { useWishlistStore } from '../../../stores/wishlist/useWishlistStore'
   import AddToCartBtn from '../../blocks/addToCartBtn.vue'
@@ -66,7 +66,11 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   const pricing = computed(() => getProductPrice(props.product || {}))
   // Directus id, or `magento:<sku>` for a commerce backend's product.
   const productPath = computed(() => `/product/${encodeURIComponent(productKey(props.product))}`)
-  const inWishlist = computed(() => wishlistStore.hasItem(props.product?.id))
+  // The heart saves to the user's Wishlist list (stores/wishlist), by the
+  // same key as cart lines and product links.
+  const wishlistKey = computed(() => productKey(props.product))
+  const inWishlist = computed(() => wishlistStore.hasItem(wishlistKey.value))
+  onMounted(() => { wishlistStore.load() })
 
   // getProductPrice() returns a pre-formatted string, but when the backend
   // omits price metadata it's null and the template fell back to the raw

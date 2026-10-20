@@ -9,10 +9,9 @@ import { getDirectusFacade } from '../../../utils/directusClient'
 // "Your friends" = the users the signed-in viewer follows. "What they're
 // shopping for" = the line items in each of those users' currently *active*
 // cart — deliberately not orders/purchases, which live in a different
-// collection and a different page (orders.vue). The wishlist store is
-// localStorage-only (see stores/wishlist/useWishlistStore.ts) so it can't
-// be read for another user; the cart is the only server-persisted signal
-// of shopping intent.
+// collection and a different page (orders.vue). Wishlists are now lists of
+// type "Wishlist" (layers/social) and private by default, so they aren't
+// read here; the cart is the shopping intent friends can see.
 //
 // `follows` is read through Directus (follower_id + target_id/target_type,
 // matching follow.post.ts) — the same flat cross-system reference the

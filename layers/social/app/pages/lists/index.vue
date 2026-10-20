@@ -89,6 +89,16 @@
                     <div class="center-text" v-else>No archived lists yet</div>
                 </v-row>
             </v-tabs-window-item>
+
+            <!-- Wishlists (lists of type "Wishlist"; the heart on a product saves to yours) -->
+            <v-tabs-window-item :value="listBar?.menus?.[6]?.value">
+                <v-row>
+                    <v-col v-if="wishlists?.length" cols="3" v-for="wishlist in wishlists" :key="wishlist.id">
+                        <ListCard :list="wishlist" />
+                    </v-col>
+                    <div class="center-text" v-else>No wishlist yet — tap the heart on any product to start one.</div>
+                </v-row>
+            </v-tabs-window-item>
         </v-tabs-window>
     </div>
 </template>
@@ -197,6 +207,13 @@
         }))
         return resp?.data || resp || []
     })
+
+    // The signed-in user's own wishlists (server/api/social/lists).
+    const requestFetch = useRequestFetch()
+    const {
+        data: wishlists
+    } = await useAsyncData('wishlists', () =>
+        requestFetch('/api/social/lists', { query: { listsType: 'Wishlist' } }).catch(() => []))
 
     const {
         data: archivedLists
