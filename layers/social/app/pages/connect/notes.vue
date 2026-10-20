@@ -58,9 +58,9 @@
             </v-tabs-window-item>
             <v-tabs-window-item :value="feedBar?.menus?.[2]?.value">
                 <v-row class="media-container-row">
-                    <v-col class="wrap col-sm-12 col-md-4 feedPost" v-if="circles?.length"
-                        v-for="circlesPost in circles" :key="circlesPost.id">
-                        <postCard :post="circlesPost?.posts_id" />
+                    <v-col class="wrap col-sm-12 col-md-4 feedPost" v-if="thoughts?.length"
+                        v-for="thoughtPost in thoughts" :key="thoughtPost.id">
+                        <postCard :post="thoughtPost?.posts_id" />
                     </v-col>
 
                     <div class="center-text" v-else>No Circles yet</div>
@@ -140,14 +140,17 @@
     const postsScrollContainer = ref(null)
 
     const {
-        data: circles
-    } = await useAsyncData('circles', async () => {
-        const resp = await $directus.request($readItems('circles', {
+        data: thoughts
+    } = await useAsyncData('thoughts', async () => {
+        const resp = await $directus.request($readItems('posts', {
             fields: ['*', 'posts.posts_id.*', 'products.products_id.*', 'users.*'],
             filter: {
                 creator: {
                     _eq: session.value?.data?.user?.id
-                }
+                },
+                status: {
+                    _eq: 'Private'
+                },
             }
         }))
         return resp?.data ?? resp ?? []

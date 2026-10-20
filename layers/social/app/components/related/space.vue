@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card class="mx-auto" max-width="400" height="550">
+        <v-card class="mx-auto spaceCard" height="550">
             <NuxtImg provider="cloudinary" v-if="hasAsset(space?.image_url || space?.image)" class="align-end text-white" height="200"
                 :src="getAssetURL(space?.image_url || space?.image)" :alt="space?.name" />
 
@@ -42,3 +42,14 @@ import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
         space
     } = props;
 </script>
+
+<style scoped>
+    .spaceCard {
+        max-width: 300px;
+    }
+
+    .align-end {
+        min-height: 200px;
+        max-height: 200px;
+    }
+</style>
