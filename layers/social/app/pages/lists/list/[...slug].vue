@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div v-else-if="list?.list_type?.list_type_id?.name === 'Checklist'" class="pa-4">
+    <div v-else-if="listTypeNames.includes('Checklist')" class="pa-4">
       <Grid :data="list.items || list" :autoConfig="true" />
     </div>
 
@@ -149,7 +149,7 @@
 
   // A list of type "Wishlist" (Directus lists_type) shows its products as a
   // grid instead of a list-type view.
-  const isWishlist = computed(() => (list.value?.lists_type || []).some((row) => row?.lists_type_id?.name === 'Wishlist'))
+  const isWishlist = computed(() => listTypeNames.value.includes('Wishlist'))
   const wishlistStore = useWishlistStore()
   onMounted(() => { if (isWishlist.value) wishlistStore.load() })
   // Once the store knows the wishlist, a product un-hearted here disappears
@@ -160,7 +160,11 @@
     : savedProducts.value))
 
   const appConfig = useAppConfig()
-  const listTypeName = computed(() => list.value?.list_type?.list_type_id?.name)
+  // A list's types (Directus lists_type, M2M): the first one a list-type
+  // plugin is installed for picks the view.
+  const listTypeNames = computed(() => (list.value?.lists_type || []).map((row) => row?.lists_type_id?.name).filter(Boolean))
+  const listTypeName = computed(() =>
+    listTypeNames.value.find((name) => (appConfig.listTypes || {})[name]) ?? listTypeNames.value[0])
   const fallbackListType = computed(() => Object.values(appConfig.listTypes || {}).find(t => t?.fallback) || null)
 
   // Per-user integrations (@mframework/meeovi-integrations, when the app

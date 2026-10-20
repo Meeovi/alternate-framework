@@ -3,7 +3,7 @@ import qs from 'qs'
 import { defineEventHandler, proxyRequest, createError, readBody, getHeader, setResponseHeader } from 'h3'
 import { getAuthSession, requireAuth } from '#auth/server/utils/sessions'
 import { checkReadQuery, checkWritePayload, loadRelationGraph, type GuardRules } from '../../utils/cmsQueryGuard'
-import { PRIVATE_CONTENT_COLLECTIONS, privateContentFilter } from '../../utils/privateContent'
+import { PRIVATE_CONTENT_COLLECTIONS, mergeDeep, privateContentFilter, privateRelationDeep } from '../../utils/privateContent'
 
 /**
  * Same-origin Directus proxy.
@@ -206,6 +206,7 @@ export default defineEventHandler(async (event) => {
   // Directus parses query strings with qs (bracket syntax included) — parse
   // the same way so the checks see what Directus will see.
   const query = qs.parse(search, { depth: 20, arrayLimit: 1000, parameterLimit: 2000 }) as Record<string, unknown>
+  let queryChanged = false
   if (queryCollection) {
     const graph = await loadRelationGraph(directusUrl, token).catch(() => {
       throw createError({ statusCode: 503, statusMessage: 'CMS is unavailable' })
@@ -213,6 +214,15 @@ export default defineEventHandler(async (event) => {
     checkReadQuery(graph, rules, queryCollection, query)
     if (!isRead && getHeader(event, 'content-type')?.includes('application/json')) {
       checkWritePayload(graph, rules, queryCollection, await readBody(event))
+    }
+    // Private rows nested through relations (a public space's private lists…).
+    if (isRead && !admin && query.fields !== undefined) {
+      const ours = privateRelationDeep(graph, queryCollection, query.fields, user?.id ? String(user.id) : null)
+      if (Object.keys(ours).length) {
+        const clientDeep = typeof query.deep === 'string' ? JSON.parse(query.deep) : query.deep
+        query.deep = JSON.stringify(mergeDeep(clientDeep, ours))
+        queryChanged = true
+      }
     }
   }
 
@@ -246,6 +256,8 @@ export default defineEventHandler(async (event) => {
     }
     const scoped = { ...query, filter: JSON.stringify(filters.length > 1 ? { _and: filters } : ownRows) }
     rest = `${pathOnly}?${qs.stringify(scoped, { encodeValuesOnly: true, arrayFormat: 'brackets' })}`
+  } else if (queryChanged) {
+    rest = `${pathOnly}?${qs.stringify(query, { encodeValuesOnly: true, arrayFormat: 'brackets' })}`
   }
 
   let body: string | undefined
