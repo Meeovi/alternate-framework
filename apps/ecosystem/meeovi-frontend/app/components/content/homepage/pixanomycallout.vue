@@ -55,10 +55,11 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
     // server: false — personal media shouldn't be rendered into (or cached in)
     // the shared SSR HTML; the section simply appears once the user's own
     // request resolves. A guest gets a 401, which leaves `media` null.
-    const { data } = useFetch('/api/assets/mine', {
+    const { data } = useFetch('/api/assets/mine', { getCachedData: reuseServerData,
         query: { limit: 12 },
         server: false,
         lazy: true,

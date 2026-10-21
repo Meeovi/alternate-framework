@@ -41,6 +41,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import { useRoutePath } from '#shared/app/composables/routing/useRoutePath'
   import ProductCard from '#commerce/app/components/catalog/product/productCard.vue'
   import {
@@ -71,7 +72,7 @@
     } catch {
       return null
     }
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 </script>
 
 <style scoped>

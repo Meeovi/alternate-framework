@@ -358,6 +358,14 @@ export default defineNuxtConfig({
   },
 
   scripts: {
+    // Third-party scripts are downloaded and bundled at build time. Under
+    // build load the default fetch timed out on bat.bing.com and failed the
+    // whole build (2026-10-21): allow longer + retry, and if a download still
+    // fails, load that script from its own URL (allowed by the CSP above).
+    assets: {
+      fallbackOnSrcOnBundleFail: true,
+      fetchOptions: { timeout: 30_000, retry: 2 },
+    },
     registry: {
       // Analytics, advertising and pixels are 'manual': they load only once
       // the visitor consents (app/plugins/cookie-consent.client.ts), never

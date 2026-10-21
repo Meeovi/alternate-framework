@@ -23,6 +23,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import {
     ref
   } from '#imports'
@@ -50,5 +51,5 @@
         },
       },
     }))
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 </script>

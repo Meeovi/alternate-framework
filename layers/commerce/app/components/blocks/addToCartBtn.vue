@@ -28,6 +28,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import {
     ref,
     computed,
@@ -98,7 +99,7 @@
     ? useAsyncData(
       'meeovi-integrations:store-catalog',
       () => request(integrationsApi).catch(() => ({ items: [] })),
-      { default: () => ({ items: [] }) },
+      { default: () => ({ items: [] }), getCachedData: reuseServerData },
     )
     : { data: ref({ items: [] }) }
   // The integration this product sells: its plugin names this SKU.

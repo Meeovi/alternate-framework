@@ -1,4 +1,4 @@
-import { defineNuxtModule, addPlugin, createResolver, addComponentsDir, addImportsDir, addServerHandler } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, addComponentsDir, addImportsDir, addServerHandler } from '@nuxt/kit'
 
 export interface ExperienceBuilderOptions {
   /** Base path for API routes, e.g. /api/experience-pages */
@@ -22,8 +22,8 @@ export default defineNuxtModule<ExperienceBuilderOptions>({
     nuxt.options.alias['#experience-builder'] = resolver.resolve('runtime')
     nuxt.options.alias['#experience-builder/'] = resolver.resolve('runtime') + '/'
 
-    // GrapesJS plugin
-    addPlugin(resolver.resolve('runtime/plugins/grapesjs.client'))
+    // GrapesJS is imported by ExperienceBuilderCanvas when it mounts — not a
+    // global plugin, which put GrapesJS + CodeMirror in every page's bundle.
 
     // Components
     addComponentsDir({

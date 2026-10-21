@@ -1,36 +1,24 @@
 // plugins/vuetify.ts
 import 'vuetify/styles'
-// @fortawesome/vue-fontawesome renders raw <svg class="svg-inline--fa ...">
-// elements directly (no auto CSS injection, unlike the plain fontawesome.js
-// webfont/CSS kit) — without this stylesheet, .svg-inline--fa has no
-// `display` rule of its own and every icon rendered through the `fa`
-// iconset below (icon="fas fa-*") computes to `display: none`, i.e.
-// present in the DOM with correct path data but fully invisible. See
-// https://docs.fontawesome.com/web/use-with/vue for why this import is
-// required when autoAddCss isn't enabled (the Vite/Nuxt-bundled default).
-import '@fortawesome/fontawesome-svg-core/styles.css'
+// Font Awesome as a webfont (CSS classes), not the SVG/JS packs: every
+// `icon="fas fa-*"` (code and CMS menus alike) resolves from the stylesheet,
+// and each font file downloads only when a page shows that style. The SVG
+// packs (fas + far + fab, ~2,000 icons) were bundled into the entry chunk
+// that every page loads.
+import '@fortawesome/fontawesome-free/css/all.min.css'
 import { createVuetify } from 'vuetify'
-import { aliases, fa } from 'vuetify/iconsets/fa-svg'
+import { aliases, fa } from 'vuetify/iconsets/fa'
 import { faIconAliases } from '@mframework/meeovi-forms/icons'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { far } from '@fortawesome/free-regular-svg-icons'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-import * as components from 'vuetify/components'
-import * as labsComponents from 'vuetify/labs/components'
-import * as directives from 'vuetify/directives'
 import { mdi } from 'vuetify/iconsets/mdi'
 
-// fab (brands) was missing — the only icons that ever needed it were the
-// Google/GitHub social-login buttons, so it silently failed with "Could
-// not find one or more icon(s)" and both buttons rendered with no icon.
-library.add(fas, far, fab)
+// Components and directives are NOT registered here: vite-plugin-vuetify's
+// autoImport (layers/ui-shell/nuxt.config.ts) imports the ones each
+// template uses. Registering `* as components` (+ labs) defeated that and
+// shipped all of Vuetify in the entry chunk.
 
 export default defineNuxtPlugin(nuxtApp => {
   const vuetify = createVuetify({
     ssr: true,
-    directives,
     icons: {
       defaultSet: 'fa',
       aliases: { ...aliases, ...faIconAliases },
@@ -38,10 +26,6 @@ export default defineNuxtPlugin(nuxtApp => {
         fa,
         mdi,
       },
-    },
-    components: {
-      ...components,
-      ...labsComponents,
     },
     theme: {
       defaultTheme: 'light',
@@ -83,6 +67,5 @@ export default defineNuxtPlugin(nuxtApp => {
       },
     },
   })
-  nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon as any);
-  (nuxtApp.vueApp as any).use(vuetify)
+  nuxtApp.vueApp.use(vuetify)
 })

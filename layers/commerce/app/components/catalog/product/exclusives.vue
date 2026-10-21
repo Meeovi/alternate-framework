@@ -28,6 +28,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import productCard from './productCard.vue'
 
   const model = ref(null);
@@ -54,5 +55,5 @@
         }
       }
     }))
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 </script>

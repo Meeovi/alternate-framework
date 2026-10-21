@@ -63,7 +63,8 @@
   import Header from '../components/menus/Header.vue'
   import sidebarnav from '../components/menus/sidebar/sidebarnav.vue'
   import LowerBar from '../components/menus/LowerBar.vue'
-  import FooterNav from '../components/menus/FooterNav.vue'
+  // Below the fold on every page: hydrates when scrolled into view.
+  const FooterNav = defineLazyHydrationComponent('visible', () => import('../components/menus/FooterNav.vue'))
   import live from '#social/app/components/menus/livebar/live.vue'
   import mobileNav from '../components/menus/mobile/mobileNav.vue'
   import OfflineAlert from '#shared/app/components/alerts/OfflineAlert.vue'

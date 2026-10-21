@@ -27,6 +27,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
 // Newsletter sign-up is provided by @mframework/meeovi-newsletter.
 // This wrapper only supplies the Directus-managed copy around the form.
 const { $directus, $readItem } = useNuxtApp()
@@ -42,7 +43,7 @@ const { data: blocksNewsletter } = useAsyncData('blocksNewsletter', async () => 
     } catch {
         return {}
     }
-}, { lazy: true })
+}, { getCachedData: reuseServerData, lazy: true })
 
 function onSubscribed(result) {
     // Hook for analytics / toasts; the component handles its own UI state.

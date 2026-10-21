@@ -22,6 +22,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import {
     computed,
   } from '#imports'
@@ -49,7 +50,7 @@
     } catch {
       return []
     }
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 
   const stationItems = computed(() => Array.isArray(stationSlide.value) ? stationSlide.value : [])
 </script>

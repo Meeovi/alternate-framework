@@ -28,6 +28,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
 import brandCard from '../../related/brandCard.vue'
 
   const model = ref(null)
@@ -55,5 +56,5 @@ import brandCard from '../../related/brandCard.vue'
     } catch {
       return null
     }
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 </script>

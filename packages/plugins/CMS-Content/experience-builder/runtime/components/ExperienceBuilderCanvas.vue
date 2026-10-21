@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import type { Editor } from 'grapesjs'
-import { useRoute, useNuxtApp } from 'nuxt/app'
+import { useRoute } from 'nuxt/app'
 import { useSpacesBuilder } from '../composables/useExperienceBuilder'
 import { getAllComponents } from '../registry'
 import { sanitizeGrapesJson } from '../utils/sanitize'
@@ -14,7 +14,6 @@ const props = defineProps<{
   entityType: string
 }>()
 
-const { $grapesjs } = useNuxtApp() as any
 const { setEditor, loadPage, savePage } = useSpacesBuilder()
 
 const editor = ref<Editor | null>(null)
@@ -27,7 +26,12 @@ async function initEditor () {
   const container = document.getElementById('spaces-builder-canvas')
   if (!container) return
 
-  const e = $grapesjs.init({
+  // Loaded on demand (GrapesJS + CodeMirror are ~1 MB): only this canvas uses them.
+  const [{ default: grapesjs }] = await Promise.all([
+    import('grapesjs'),
+    import('grapesjs/dist/css/grapes.min.css'),
+  ])
+  const e = grapesjs.init({
     container,
     height: '100vh',
     fromElement: false,

@@ -90,6 +90,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
     const { $directus, $readItem, $readItems } = useNuxtApp()
 
     import { getAssetURL } from '#shared/app/utils/get-asset-url'
@@ -110,5 +111,5 @@
         } catch {
             return null
         }
-    }, { lazy: true })
+    }, { getCachedData: reuseServerData, lazy: true })
 </script>

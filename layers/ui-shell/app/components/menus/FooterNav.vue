@@ -52,6 +52,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import {
     useRoutePath
   } from '#shared/app/composables/routing/useRoutePath'
@@ -82,19 +83,19 @@
   } = useAsyncData('about', async () => {
     const resp = await $directus.request($readItem('navigation', '7'))
     return resp?.data || resp || {}
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 
   const {
     data: legal
   } = useAsyncData('legal', async () => {
     const resp = await $directus.request($readItem('navigation', '8'))
     return resp?.data || resp || {}
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 
   const {
     data: company
   } = useAsyncData('company', async () => {
     const resp = await $directus.request($readItem('navigation', '9'))
     return resp?.data || resp || {}
-  }, { lazy: true })
+  }, { getCachedData: reuseServerData, lazy: true })
 </script>

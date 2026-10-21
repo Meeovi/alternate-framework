@@ -20,6 +20,7 @@
 </template>
 
 <script setup>
+  import { reuseServerData } from '#shared/app/utils/reuseServerData'
     import { useRoutePath } from '#shared/app/composables/routing/useRoutePath'
 
     const { normalizeRoutePath } = useRoutePath()
@@ -37,12 +38,12 @@
             fields: ['*', 'media.*.*'],
         }))
         return result?.data || result || {}
-    }, { lazy: true })
+    }, { getCachedData: reuseServerData, lazy: true })
 
     const {
         data: copyright
     } = useAsyncData('copyright', async () => {
         const result = await $directus.request($readItem('navigation', '10'))
         return result?.data || result || {}
-    }, { lazy: true })
+    }, { getCachedData: reuseServerData, lazy: true })
 </script>
