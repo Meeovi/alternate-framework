@@ -415,6 +415,17 @@ export async function removeGroupMember(event: H3Event, groupName: string, user:
   }
 }
 
+/** A Rocket.Chat account's username and when it was created (admin). */
+export async function rcUserInfo(event: H3Event | undefined, userId: string): Promise<{ username?: string, createdAt?: string } | null> {
+  const res = await rc<{ user?: { username?: string, createdAt?: string } }>(event, 'users.info', { query: { userId } }).catch(() => null)
+  return res?.user ?? null
+}
+
+/** Stop a user posting in one room (admin). */
+export async function muteInRoom(event: H3Event | undefined, roomId: string, userId: string): Promise<void> {
+  await rc(event, 'rooms.muteUser', { method: 'POST', body: { roomId, userId } })
+}
+
 /** Delete any message (admin). */
 export async function deleteMessage(event: H3Event, roomId: string, msgId: string): Promise<void> {
   await rc(event, 'chat.delete', { method: 'POST', body: { roomId, msgId, asUser: false } })

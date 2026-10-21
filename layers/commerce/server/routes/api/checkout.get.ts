@@ -2,11 +2,7 @@ import { getPolarClient } from '../../utils/polar'
 import { requireAuth } from '#auth/server/utils/sessions'
 
 // Unused scaffolding: this Polar checkout route has no caller anywhere in
-// the app (grepped, none found). The real subscription-billing plugin
-// registered on the betterAuth instance is @better-auth/stripe (layers/
-// auth/shared/utils/plugins.ts), not Polar. See server/routes/api/
-// customer-portal.get.ts for the Stripe-based portal this app actually
-// uses. Kept rather than deleted since it's not broken, just disconnected
+// the app (grepped, none found); payments run on PayPal. Kept rather than deleted since it's not broken, just disconnected
 // — remove if Polar is confirmed permanently out of scope for this app.
 // Still reachable with the live Polar token: signed-in only, and the
 // checkout is always for the account's own email (never one from the URL).

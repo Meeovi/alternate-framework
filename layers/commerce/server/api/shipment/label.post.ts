@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   try {
     // This actually spends money against the merchant's Shippo balance —
     // only trusted backend/ops callers may hit it directly. The buyer-
-    // facing checkout flow purchases labels via the Stripe webhook after
+    // facing checkout buys labels in server/utils/paidCheckout.ts after
     // payment clears, never through this endpoint.
     requireShippingAdmin(event)
 

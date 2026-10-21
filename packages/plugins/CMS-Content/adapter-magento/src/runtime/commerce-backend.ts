@@ -290,7 +290,7 @@ function storeAdmin(magento: MagentoAdapter, credentials: MagentoOAuth1Credentia
 
 /**
  * `credentials` (the Magento Integration, server-side only) enables
- * placePaidOrder: orders paid with the app's Stripe checkout are recorded
+ * placePaidOrder: orders paid with the app's PayPal checkout are recorded
  * in Magento (Meeovi_MarketplaceApi ExternalOrderManagement), where Webkul
  * credits each seller's sale.
  */

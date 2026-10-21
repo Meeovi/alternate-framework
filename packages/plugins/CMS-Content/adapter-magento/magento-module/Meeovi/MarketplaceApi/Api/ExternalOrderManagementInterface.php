@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Meeovi\MarketplaceApi\Api;
 
 /**
- * Orders paid for outside Magento — the Meeovi app's Stripe checkout — and
+ * Orders paid for outside Magento — the Meeovi app's PayPal checkout — and
  * recorded here so the catalogue, the order history and Webkul's seller
  * sales/commission stay in Magento. Called server-to-server with the
  * Integration token (Meeovi_MarketplaceApi::external_orders).
@@ -17,7 +17,7 @@ interface ExternalOrderManagementInterface
      * The order goes through Magento's own quote → placeOrder flow (so
      * Webkul records each seller's sale), is paid with the internal-only
      * `meeovi_external` method and invoiced offline. Idempotent on
-     * $reference (the Stripe payment id, stored as the order's
+     * $reference (the PayPal capture id, stored as the order's
      * ext_order_id): a repeat call returns the existing order. Refused if
      * Magento's total for the items differs from $amountPaid.
      *

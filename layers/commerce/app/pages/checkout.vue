@@ -82,11 +82,16 @@
         </div>
       </div>
 
-      <!-- Step 3: payment -->
-      <div v-else>
-        <div v-if="loading" class="loading">Setting up checkout...</div>
-        <div v-else-if="error" class="error">{{ error }}</div>
-        <div id="checkout" ref="checkoutRef"></div>
+      <!-- Step 3: payment (PayPal) -->
+      <div v-else class="checkoutStep">
+        <h2>Payment</h2>
+        <div v-if="loading" class="loading">Setting up payment…</div>
+        <div v-if="error" class="error">{{ error }}</div>
+        <div v-if="paying" class="loading">Completing your payment…</div>
+        <paypal-button v-show="paypalReady && !paying" type="pay" @click="pay"></paypal-button>
+        <div class="checkoutActions">
+          <button type="button" class="secondary" :disabled="paying" @click="step = needsShipping ? 'rates' : 'address'">Back</button>
+        </div>
       </div>
     </template>
   </div>
@@ -94,14 +99,10 @@
 
 <script setup>
   import {
-    loadStripe
-  } from '@stripe/stripe-js'
-  import {
     useRuntimeConfig
   } from '#app'
   import { useCartStore } from '../stores/cart'
 
-  const checkoutRef = ref(null)
   const loading = ref(false)
   const error = ref('')
   const config = useRuntimeConfig()
@@ -122,12 +123,17 @@
   // Items added before the cart recorded this flag count as shippable.
   const needsShipping = computed(() => cartStore.items.some((item) => item.requiresShipping !== false))
 
-  // Generated once per page load and reused across every checkout attempt
-  // on this visit (including a retry after a network error or a double
-  // click), so the server can dedupe against Stripe rather than create a
-  // second Checkout Session/order for the same purchase. A fresh page load
-  // gets a fresh key, matching a genuinely new checkout attempt.
-  const checkoutIdempotencyKey = crypto.randomUUID()
+  // PayPal's v6 SDK, loaded only once the buyer reaches payment. The
+  // instance authenticates with a short-lived client token from the server;
+  // clientId only satisfies the script registry's options.
+  const { onLoaded, load: loadPayPal } = useScriptPayPal({
+    clientId: config.public.scripts?.paypal?.clientId || 'unused',
+    sandbox: config.public.paypalMode !== 'live',
+    scriptOptions: { trigger: 'manual' },
+  })
+  const paypalReady = ref(false)
+  const paying = ref(false)
+  let paymentSession = null
 
   const step = ref('address')
 
@@ -200,62 +206,77 @@
     startingPayment.value = true
     error.value = ''
     step.value = 'payment'
+    if (paymentSession) {
+      startingPayment.value = false
+      return
+    }
     loading.value = true
 
     try {
-      const stripe = await loadStripe(config.public.stripePublishableKey)
+      const { clientToken } = await $fetch('/api/payment/paypal/client')
+      loadPayPal()
+      const paypal = await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('PayPal SDK did not load')), 20000)
+        onLoaded(({ paypal }) => { clearTimeout(timer); resolve(paypal) })
+      })
+      const sdk = await paypal.createInstance({ clientToken, components: ['paypal-payments'], pageType: 'checkout' })
+      const methods = await sdk.findEligibleMethods({ currencyCode: 'USD' })
+      if (!methods.isEligible('paypal')) throw new Error('PayPal is not available here')
+      paymentSession = sdk.createPayPalOneTimePaymentSession({
+        onApprove,
+        onCancel: () => { error.value = 'Payment cancelled — you have not been charged.' },
+        onError: () => { error.value = 'PayPal ran into a problem. You have not been charged; please try again.' },
+      })
+      paypalReady.value = true
+    } catch (err) {
+      error.value = 'Payment could not be loaded. Please try again.'
+    } finally {
+      loading.value = false
+      startingPayment.value = false
+    }
+  }
 
-      // The server resolves each item's real price from the catalog by id,
-      // and re-resolves the shipping rate's real amount from Shippo by id —
-      // neither is trusted from this page.
-      const items = cartStore.items.map((item) => ({
+  // The server prices each item from the catalogue by id and re-fetches the
+  // shipping rate's amount from Shippo by id — nothing here sets a price.
+  const createOrder = () => $fetch('/api/payment/paypal/orders', {
+    method: 'POST',
+    body: {
+      items: cartStore.items.map((item) => ({
         id: String(item.productId ?? item.id),
         quantity: Number(item.quantity ?? item.qty ?? 1)
-      }))
+      })),
+      ...(needsShipping.value && {
+        shippoRateId: selectedRateId.value,
+        // The address the rate was quoted for; PayPal ships to it.
+        shippingAddress: { ...address.value, country: address.value.country.toUpperCase() },
+      }),
+      // One PayPal order per click, even if the request is retried.
+      idempotencyKey: crypto.randomUUID(),
+    }
+  }).then(({ orderId }) => ({ orderId }))
 
-      const {
-        clientSecret
-      } = await $fetch('/api/payment/stripe/checkout-session', {
-        method: 'POST',
-        // Discount codes are entered and validated inside Stripe's own
-        // checkout UI (allowPromotionCodes) rather than a custom coupon
-        // system — Stripe is the trusted source for whether a code is
-        // valid and what it discounts, the same way it's the trusted
-        // source for prices.
-        body: {
-          items,
-          ...(needsShipping.value && { shippoRateId: selectedRateId.value }),
-          allowPromotionCodes: true,
-          idempotencyKey: checkoutIdempotencyKey,
-          // Already collected above for the Shippo rate quote — passed
-          // through so it's not just discarded after fetchRates(). The
-          // server treats it as informational only (never used for
-          // pricing/fulfillment authorization), same as the rest of
-          // metadata handling in checkout-session.post.ts.
-          ...(needsShipping.value && { shippingAddress: {
-            name: address.value.name,
-            street1: address.value.street1,
-            street2: address.value.street2,
-            city: address.value.city,
-            state: address.value.state,
-            zip: address.value.zip,
-            country: address.value.country,
-            phone: address.value.phone
-          } }),
-        }
-      })
-
-      const checkout = await stripe.initEmbeddedCheckout({
-        clientSecret
-      })
-
-      checkout.mount('#checkout')
-      loading.value = false
+  const pay = async () => {
+    if (!paymentSession || paying.value) return
+    error.value = ''
+    try {
+      // The SDK opens PayPal straight away and fills it once the order exists.
+      await paymentSession.start({ presentationMode: 'auto' }, createOrder())
     } catch (err) {
-      error.value = 'Failed to load checkout'
-      loading.value = false
-    } finally {
-      startingPayment.value = false
+      error.value = err?.data?.statusMessage || 'PayPal could not be opened. Please try again.'
+    }
+  }
+
+  async function onApprove ({ orderId }) {
+    paying.value = true
+    error.value = ''
+    try {
+      await $fetch('/api/payment/paypal/capture', { method: 'POST', body: { orderId } })
+      await navigateTo(`/success?order=${encodeURIComponent(orderId)}`)
+    } catch (err) {
+      paying.value = false
+      // The server says what happened; without an answer (a lost response)
+      // the payment may have gone through, so don't claim it didn't.
+      error.value = err?.data?.statusMessage || "We couldn't confirm your payment. Please check your orders or email before trying again."
     }
   }
 

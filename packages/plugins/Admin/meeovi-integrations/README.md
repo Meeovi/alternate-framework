@@ -51,7 +51,7 @@ seller's sale stay there. A plugin names the SKU that sells it:
   lives in Magento; sellers list it there like any product, typically in the
   Integrations category.
 - **Free** (price 0): the store's button is **Install**.
-- **Paid** (price above 0): **Add to Cart** → the app's Stripe checkout →
+- **Paid** (price above 0): **Add to Cart** → the app's PayPal checkout →
   the payment webhook places the order in Magento under the buyer's
   customer account (Webkul credits the seller). The plugin installs for
   users Magento says paid for it (invoiced, not refunded), and for its

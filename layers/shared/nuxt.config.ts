@@ -97,17 +97,10 @@ function buildContentSecurityPolicy(): string {
     'https://bat.bing.net',
   ]
 
-  // Stripe Embedded Checkout, PayPal buttons, and the commerce backend's
+  // PayPal's checkout SDK and buttons, and the commerce backend's
   // storefront GraphQL (adapter-magento's client plugin on product/category
   // navigation).
   const paymentHosts = [
-    'https://api.stripe.com',
-    'https://m.stripe.com',
-    'https://m.stripe.network',
-    'https://r.stripe.com',
-    'https://q.stripe.com',
-    'https://errors.stripe.com',
-    'https://merchant-ui-api.stripe.com',
     'https://www.paypal.com',
     'https://*.paypal.com',
   ]
@@ -156,7 +149,7 @@ function buildContentSecurityPolicy(): string {
     "frame-src 'self' https: blob:;",
     "base-uri 'self';",
     "frame-ancestors 'self';",
-    "form-action 'self' https://www.paypal.com https://www.sandbox.paypal.com https://checkout.stripe.com;",
+    "form-action 'self' https://www.paypal.com https://www.sandbox.paypal.com;",
     'report-uri /api/csp-report;',
     'report-to csp;',
   ].join(' ')
@@ -400,11 +393,10 @@ export default defineNuxtConfig({
       gravatar: {
         trigger: 'onNuxtReady',
       },
+      // Loaded only on /checkout's payment step (checkout.vue), not on
+      // every page.
       paypal: {
-        trigger: 'onNuxtReady',
-      },
-      stripe: {
-        trigger: 'onNuxtReady'
+        trigger: 'manual',
       },
       lemonSqueezy: {
         trigger: 'onNuxtReady',
@@ -484,7 +476,6 @@ export default defineNuxtConfig({
     // Social surfaces are personalised (feed, spaces, DMs, calendar).
     '/connect/**': { isr: false },
     // Commerce: cart / checkout / account / post-purchase are per-user.
-    '/cart': { isr: false },
     '/checkout': { isr: false },
     '/checkout/**': { isr: false },
     '/orders': { isr: false },
@@ -494,8 +485,6 @@ export default defineNuxtConfig({
     '/transactions': { isr: false },
     '/wishlist': { isr: false },
     '/compare': { isr: false },
-    '/customer-portal': { isr: false },
-    '/return': { isr: false },
     '/success': { isr: false },
     '/tracking': { isr: false },
     '/shipment/**': { isr: false },

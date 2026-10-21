@@ -2,7 +2,6 @@ import { db } from './drizzle';
 import * as schema from '../database/migrations/schema';
 import { v7 as uuidv7 } from 'uuid';
 import { createAuthMiddleware } from 'better-auth/api';
-import { stripeClient } from './stripe';
 import { CommerceCustomerLinkRegistry } from 'alternate-sdk';
 import { eq } from 'drizzle-orm';
 import { decodeDataUrl, isAllowedAssetType, isPixanomyConfigured, uploadToPixanomy } from '#shared/server/utils/pixanomy';

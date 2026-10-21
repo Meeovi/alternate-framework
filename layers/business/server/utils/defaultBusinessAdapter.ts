@@ -83,7 +83,7 @@ const ATTRIBUTES: SellerAttribute[] = [
 ]
 
 const INTEGRATIONS: SellerIntegration[] = [
-  { id: 1, name: 'Stripe Payments', provider: 'Stripe', category: 'Payments', status: 'connected', connected: '2026-05-14' },
+  { id: 1, name: 'PayPal Payments', provider: 'PayPal', category: 'Payments', status: 'connected', connected: '2026-05-14' },
   { id: 2, name: 'Mailchimp Sync', provider: 'Mailchimp', category: 'Marketing', status: 'connected', connected: '2026-06-20' },
   { id: 3, name: 'UPS Shipping', provider: 'UPS', category: 'Shipping', status: 'error', connected: '2026-07-02' },
   { id: 4, name: 'Google Analytics', provider: 'Google', category: 'Analytics', status: 'pending', connected: null },

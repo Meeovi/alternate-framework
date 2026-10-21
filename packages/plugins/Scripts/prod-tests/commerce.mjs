@@ -1,7 +1,7 @@
 // Production tests for the commerce layer (layers/commerce): storefront and
 // account pages, the guest/user cart, the commerce driver, payments and
 // shipping endpoints. Nothing here buys, refunds or ships. See lib.mjs.
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
 const accounts = loadAccounts()
 if (!accounts.user) throw new Error('QA accounts missing — run auth.mjs first')
@@ -40,8 +40,8 @@ await test('S1', 'storefront pages render for a signed-out visitor', async () =>
 })
 
 section('Account pages (orders, invoices, transactions…)')
-const ACCOUNT_PAGES = ['/orders', '/order/1', '/invoice/1', '/transactions', '/transaction/1', '/shipment/1', '/customer-portal',
-  '/wishlist', '/your-friends', '/return', '/promotions']
+const ACCOUNT_PAGES = ['/orders', '/order/1', '/invoice/1', '/transactions', '/transaction/1', '/shipment/1',
+  '/wishlist', '/promotions']
 
 await test('S2', 'account pages send a signed-out visitor to /login', async () => {
   const open = []
@@ -109,11 +109,6 @@ await test('K5', 'the guest can update, remove and clear', async () => {
 // ---------------------------------------------------------------------------
 section('Commerce driver (POST /api/commerce/driver)')
 const driver = (jar, method, args) => req('POST', '/api/commerce/driver', { jar, json: { method, ...(args ? { args } : {}) } })
-await test('D1', 'public catalogue methods work signed out', async () => {
-  const r = await driver(null, 'getProducts', [{ pageSize: 1 }])
-  expect(r.status < 500, `HTTP ${r.status}: ${r.text.slice(0, 120)}`)
-  return `getProducts ${r.status}`
-})
 await test('D2', 'customer methods need a session', async () => {
   for (const m of ['getCustomer', 'getCustomerAddresses', 'getOrders']) {
     const r = await driver(null, m)
@@ -131,33 +126,40 @@ await test('D3', 'methods outside the allow-list are refused', async () => {
 section('Payments')
 await test('P1', 'payment endpoints need a session', async () => {
   const open = []
-  for (const [m, p] of [['GET', '/api/payment/methods'], ['POST', '/api/payment/paypal/orders'], ['POST', '/api/payment/paypal/capture'],
-    ['POST', '/api/payment/stripe/paymentintent'], ['GET', '/api/download/1'],
-    ['POST', '/api/commerce/connect/account'], ['POST', '/api/commerce/connect/product'], ['GET', '/api/commerce/connect/products'],
+  for (const [m, p] of [['GET', '/api/download/1'],
     ['GET', '/api/commerce/friends/shopping'], ['GET', '/api/shipment/my-shipments'], ['POST', '/api/notifications/commerce']]) {
     const r = await req(m, p, m === 'GET' ? {} : { json: {} })
     if (r.status !== 401 && r.status !== 404 && r.status !== 405) open.push(`${m} ${p} → ${r.status}`)
   }
   expect(!open.length, open.join('; '))
 })
-await test('P1b', 'checkout-session allows guest checkout but validates the basket', async () => {
-  // Guest checkout is intended (getAuthSession is optional there).
-  const r = await req('POST', '/api/payment/stripe/checkout-session', { json: {} })
-  expect(r.status === 400, `HTTP ${r.status}`)
+await test('P1b', 'starting a PayPal payment needs a Turnstile token (guests included)', async () => {
+  const r = await req('POST', '/api/payment/paypal/orders', { json: {} })
+  expect(isTurnstileRefusal(r), `HTTP ${r.status}`)
 })
-await test('P2', 'Stripe webhook rejects unsigned events', async () => {
-  const r = await req('POST', '/api/payment/stripe/webhooks', { json: { type: 'checkout.session.completed', data: { object: {} } } })
+await test('P1c', 'PayPal capture refuses a bogus order id', async () => {
+  const bad = await req('POST', '/api/payment/paypal/capture', { json: { orderId: '../v1/x' } })
+  const unknown = await req('POST', '/api/payment/paypal/capture', { json: { orderId: 'QABOGUS0000000000' } })
+  expect(bad.status === 400 && unknown.status === 404, `HTTP ${bad.status} / ${unknown.status}`)
+})
+await test('P1d', 'PayPal account-wide endpoints are admin-only', async () => {
+  const open = []
+  for (const [m, p] of [['GET', '/api/payment/paypal/search?startTime=2026-01-01T00:00:00Z&endTime=2026-01-02T00:00:00Z'],
+    ['POST', '/api/payment/paypal/subscriptions'], ['POST', '/api/payment/paypal/vault']]) {
+    const r = await req(m, p, { jar: jars.user, ...(m === 'GET' ? {} : { json: {} }) })
+    if (r.status !== 403) open.push(`${m} ${p} → ${r.status}`)
+  }
+  expect(!open.length, open.join('; '))
+})
+await test('P2', 'PayPal webhook rejects unsigned events', async () => {
+  const r = await req('POST', '/api/payment/paypal/webhooks', { json: { event_type: 'PAYMENT.CAPTURE.COMPLETED', resource: {} } })
   expect(r.status === 400 || r.status === 401, `HTTP ${r.status}`)
 })
-await test('P3', 'checkout-session status endpoint leaks nothing for a bogus id', async () => {
-  const r = await req('GET', '/api/payment/stripe/checkout-session/cs_test_qa_bogus')
-  expect(r.status >= 400 && r.status < 500, `HTTP ${r.status}`)
-})
-await test('P4', 'payment "done" endpoint does not return customer details without a session', async () => {
-  const r = await req('GET', '/api/payment/stripe/done?session_id=cs_test_qa_bogus')
+await test('P4', 'payment "done" endpoint does not return customer details', async () => {
+  const r = await req('GET', '/api/payment/paypal/done?order=QABOGUS0000000000')
   expect(r.status < 500, `HTTP ${r.status}`)
   // Only a bogus id can be probed here; the field must not exist at all.
-  expect(!/customer_email|customer_details/.test(r.text), 'response carries customer email fields')
+  expect(!/email|payer|address/.test(r.text), 'response carries customer fields')
   return `HTTP ${r.status}`
 })
 await test('P5', 'downloads check order ownership', async () => {
@@ -183,7 +185,7 @@ await test('SH2', 'tracking webhook rejects a missing/wrong token', async () => 
 })
 await test('SH3', 'rate quotes are open (informational)', async () => {
   const r = await req('POST', '/api/shipment/rates', { json: {} })
-  return `signed-out POST {} → HTTP ${r.status} (open endpoint; validation only)`
+  return `signed-out POST {} → HTTP ${r.status} (open to guests, behind Turnstile)`
 })
 
 finish('/home/meebuzo/.meeovi-demo/test-results-commerce.json')

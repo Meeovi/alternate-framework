@@ -3,7 +3,7 @@ import { createError, defineEventHandler, getQuery, readBody } from 'h3'
 import { safeEqual } from '../../utils/shipping-admin'
 import { getDirectusFacade } from '../../utils/directusClient'
 
-// Shippo doesn't sign webhook payloads with an HMAC the way Stripe/Polar do,
+// Shippo doesn't sign webhook payloads the way PayPal/Polar do,
 // so this route is secured with a shared-secret token in the webhook URL
 // itself (configured when the webhook is registered via POST
 // /api/shipment/webhook — e.g. https://.../api/shipment/track-updated?token=...).
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Writes always go to real Directus, regardless of active commerce
-  // backend — shipment-tracking fields are Directus/Stripe-specific
+  // backend — shipment-tracking fields are Directus-specific
   // bookkeeping with no Magento normalizer.
   const directusWrite = createDirectus(process.env.DIRECTUS_URL!)
     .with(rest())

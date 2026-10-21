@@ -1468,14 +1468,14 @@ export class MagentoAdapter {
   }
 
   /**
-   * Orders paid with Stripe in the Meeovi app and recorded in Magento
+   * Orders paid with PayPal in the Meeovi app and recorded in Magento
    * (Meeovi_MarketplaceApi ExternalOrderManagement), so the catalogue,
    * order history and Webkul's seller sales/commission stay in Magento.
    * Integration token with the `Meeovi_MarketplaceApi::external_orders` ACL.
    */
   public marketplaceOrders = {
     /** Place an already-paid order (virtual/downloadable items only).
-     *  Idempotent on `reference` (the Stripe payment id). */
+     *  Idempotent on `reference` (the PayPal capture id). */
     placeOrder: (credentials: MagentoOAuth1Credentials, order: {
       customerId: number
       reference: string

@@ -45,6 +45,11 @@ export default defineNuxtConfig({
     name: 'social'
   },
 
+  // The wishlist page was merged into /lists (wishlists are a list type).
+  routeRules: {
+    '/wishlist': { redirect: '/lists?tab=wishlists' },
+  },
+
   runtimeConfig: {
     adminKey: '',
     cloudflare: {

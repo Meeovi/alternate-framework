@@ -176,6 +176,15 @@ export class Blocked extends Error {}
 export const blocked = (why) => { throw new Blocked(why) }
 export function expect(cond, message) { if (!cond) throw new Error(message) }
 
+/**
+ * Form submissions need a Cloudflare Turnstile token
+ * (layers/shared/shared/formProtection.ts), which a script can't get: a
+ * check that has to get past that gate reports blocked. The gate itself is
+ * tested in shared.mjs (FP*).
+ */
+export const isTurnstileRefusal = (r) => r.status === 403 && r.body?.data?.turnstile === true
+export const turnstileGate = (r) => { if (isTurnstileRefusal(r)) blocked('behind Turnstile (form protection) — verify in a browser') }
+
 export async function test(id, name, fn) {
   if (ONLY && !id.startsWith('SETUP') && !`${id} ${name}`.toLowerCase().includes(ONLY.toLowerCase())) return
   const started = Date.now()

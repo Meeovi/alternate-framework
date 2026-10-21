@@ -1,6 +1,6 @@
 import Joi from 'joi'
 import { searchPayPalTransactions } from '../../../utils/paypal'
-import { requireAuth } from '#auth/server/utils/sessions'
+import { requireAdmin } from '#auth/server/utils/sessions'
 
 const searchSchema = Joi.object({
   startTime: Joi.string().required(),
@@ -9,7 +9,9 @@ const searchSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
-  await requireAuth(event)
+  // Admin only: it acts on the shop's whole PayPal account (any
+  // customer's transactions, subscriptions or saved payment methods).
+  await requireAdmin(event)
 
   try {
     if (event.node.req.method !== 'GET') {

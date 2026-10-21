@@ -9,7 +9,7 @@
  * (meeovi-plugin-test.invalid), so only that domain is refused while it
  * runs; tries to create one account at that domain — only after the
  * plugin's endpoint confirms it refuses it, because a created account would
- * also get a Stripe and a Magento customer. Then switches the plugin off and
+ * also get a Magento customer. Then switches the plugin off and
  * removes its state and data.
  *
  *   node auth-plugins.mjs                 (against PROD_TEST_BASE_URL)
@@ -94,8 +94,8 @@ await test('AP6', 'its endpoint runs in the sandbox with the saved settings', as
 })
 
 await test('AP7', 'its hook refuses an account at a blocked domain', async () => {
-  // Creating an account also creates a Stripe customer and a Magento
-  // customer (user.create.after hooks): only try once the plugin has shown
+  // Creating an account also creates a Magento customer
+  // (user.create.after hooks): only try once the plugin has shown
   // it will refuse this domain.
   const check = await req('GET', `/api/auth/plugin/email-domains/check?email=probe@${DOMAIN}`)
   if (check.body?.allowed !== false) blocked(`the plugin isn't refusing ${DOMAIN} yet (${check.status} ${check.text.slice(0, 100)}), so no account is attempted`)

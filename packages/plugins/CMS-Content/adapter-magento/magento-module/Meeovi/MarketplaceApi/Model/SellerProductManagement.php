@@ -245,7 +245,10 @@ class SellerProductManagement implements SellerProductManagementInterface
         $product->setPrice($price);
         $product->setTypeId('simple');
         $product->setAttributeSetId($attributeSetId ?? $this->getDefaultAttributeSetId());
-        $product->setStatus(ProductStatus::STATUS_ENABLED);
+        // Offline until approved when the store reviews seller products
+        // (Webkul's own seller panel does the same; approving enables it).
+        $requiresApproval = (bool) $this->scopeConfig->getValue(self::XML_PATH_PRODUCT_APPROVAL, ScopeInterface::SCOPE_STORE);
+        $product->setStatus($requiresApproval ? ProductStatus::STATUS_DISABLED : ProductStatus::STATUS_ENABLED);
         $product->setVisibility(Visibility::VISIBILITY_BOTH);
         $product->setWebsiteIds($websiteIds !== [] ? $websiteIds : [(int) $this->storeManager->getWebsite()->getId()]);
 

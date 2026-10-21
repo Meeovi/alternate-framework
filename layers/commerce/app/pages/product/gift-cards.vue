@@ -5,8 +5,8 @@
         </v-toolbar>
 
         <!-- Gift Card Products Section (commerce) -->
-        <v-sheet style="background-color: transparent; box-shadow: none;" v-if="giftCards?.length">
-            <v-toolbar title="Your Gift Cards" color="transparent"></v-toolbar>
+        <v-sheet style="background-color: transparent; box-shadow: none;" v-if="giftCards.length">
+            <v-toolbar title="Gift Cards" color="transparent"></v-toolbar>
 
             <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in giftCards"
@@ -21,152 +21,88 @@
             </v-slide-group>
         </v-sheet>
 
-        <!-- Devices Type Products Section (commerce) -->
-        <v-sheet style="background-color: transparent; box-shadow: none;" v-if="meeGiftCards?.length">
-            <v-toolbar title="Meeovi branded Gift Cards" color="transparent"></v-toolbar>
+        <!-- Received Gift Cards Section (sent to the user's verified email) -->
+        <v-sheet style="background-color: transparent; box-shadow: none;" v-if="receivedGiftCards.length">
+            <v-toolbar title="Your Gift Cards" color="transparent"></v-toolbar>
 
-            <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in meeGiftCards"
-                    :key="product.id">
-                    <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
-                    <div class="d-flex fill-height align-center justify-center">
-                        <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
-                        </v-scale-transition>
-                    </div>
+            <v-slide-group class="pa-4" show-arrows>
+                <v-slide-group-item v-for="(card, i) in receivedGiftCards" :key="`r-${i}`">
+                    <v-card variant="outlined" class="ma-4 giftCards__card">
+                        <v-card-item>
+                            <v-card-title>{{ money(card.balance) }}</v-card-title>
+                            <v-card-subtitle>{{ card.sender_name ? `From ${card.sender_name}` : 'Gift card' }}</v-card-subtitle>
+                        </v-card-item>
+                        <v-card-text>
+                            <div class="giftCards__code">{{ card.code }}</div>
+                            <p v-if="card.message" class="mt-2">{{ card.message }}</p>
+                            <div class="d-flex flex-wrap ga-2 mt-3">
+                                <v-chip size="small" variant="tonal" :color="STATE_COLORS[card.state]" :text="card.state" />
+                                <v-chip v-if="card.expires_at" size="small" variant="tonal" :text="`Expires ${date(card.expires_at)}`" />
+                            </div>
+                        </v-card-text>
+                    </v-card>
                 </v-slide-group-item>
             </v-slide-group>
         </v-sheet>
 
-        <!-- App Type Products Section (commerce) -->
-        <v-sheet style="background-color: transparent; box-shadow: none;" v-if="myGiftCards?.length">
+        <!-- Purchased Gift Cards Section (on the user's orders) -->
+        <v-sheet style="background-color: transparent; box-shadow: none;" v-if="purchasedGiftCards.length">
             <v-toolbar title="Purchased Gift Cards" color="transparent"></v-toolbar>
 
-            <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in myGiftCards"
-                    :key="product.id">
-                    <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
-                    <div class="d-flex fill-height align-center justify-center">
-                        <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
-                        </v-scale-transition>
-                    </div>
+            <v-slide-group class="pa-4" show-arrows>
+                <v-slide-group-item v-for="(card, i) in purchasedGiftCards" :key="`p-${i}`">
+                    <v-card variant="outlined" class="ma-4 giftCards__card">
+                        <v-card-item>
+                            <v-card-title>{{ card.product_name || 'Gift card' }}</v-card-title>
+                            <v-card-subtitle>
+                                {{ card.recipient_name || card.recipient_email ? `For ${card.recipient_name || card.recipient_email}` : 'For you' }}
+                            </v-card-subtitle>
+                        </v-card-item>
+                        <v-card-text>
+                            <div class="giftCards__code">{{ card.code || card.masked_code || 'Code on its way' }}</div>
+                            <div class="d-flex flex-wrap ga-2 mt-3">
+                                <v-chip size="small" variant="tonal" :color="STATE_COLORS[card.state]" :text="card.state" />
+                                <v-chip v-if="card.balance != null" size="small" variant="tonal" :text="money(card.balance)" />
+                                <v-chip v-if="card.order_number" size="small" variant="tonal" :text="`Order ${card.order_number}`" />
+                            </div>
+                        </v-card-text>
+                    </v-card>
                 </v-slide-group-item>
             </v-slide-group>
         </v-sheet>
 
-        <!-- Music Type Products Section (commerce) -->
-        <v-sheet style="background-color: transparent; box-shadow: none;" v-if="giftCertificates?.length">
-            <v-toolbar title="Purchased Music" color="transparent"></v-toolbar>
-
-            <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in giftCertificates"
-                    :key="product.id">
-                    <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
-                    <div class="d-flex fill-height align-center justify-center">
-                        <v-scale-transition>
-                            <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48"></v-icon>
-                        </v-scale-transition>
-                    </div>
-                </v-slide-group-item>
-            </v-slide-group>
-        </v-sheet>
+        <div class="center-text" v-if="!giftCards.length && !receivedGiftCards.length && !purchasedGiftCards.length">
+            {{ signedIn ? 'No gift cards yet' : 'No gift cards yet. Sign in to see the gift cards you\'ve received or bought.' }}
+        </div>
     </div>
 </template>
 
 <script setup>
-    import {
-        useHead
-    } from 'nuxt/app';
+    import { computed } from 'vue'
+    import { useHead } from 'nuxt/app';
     import productCard from '../../components/catalog/product/productCard.vue'
-    import { useAuth } from '#auth/app/composables/useAuth'
 
-    const {
-        $directus,
-        $readItems
-    } = useNuxtApp()
-
-    const { data: session } = await useAuth().getSession()
-
-    // product_types is a M2M relation (products -> product_types via
-    // product_types_id, an integer FK) — filtering product_types_id
-    // directly against a string name is an int-vs-string mismatch that
-    // Directus rejects outright (confirmed live: HTTP 400 "Invalid numeric
-    // value"). The real vocabulary name lives one level deeper, at
-    // product_types_id.name. Likewise `user` is a M2M through the
-    // products_directus_users junction, whose real fields are
-    // product_id/user_id — there's no `directus_users` field on it.
-    const {
-        data: giftCards
-    } = await useAsyncData('giftCards', () => {
-        return $directus.request($readItems('products', {
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        name: { _eq: 'Gift Card' }
-                    }
-                }
-            }
-        }))
+    // Gift card products from the commerce backends that sell them
+    // (server/api/commerce/wishes/products) — never Directus.
+    const { data: products } = await useFetch('/api/commerce/wishes/products', {
+        key: 'gift-cards-products',
+        default: () => ({ products: [] }),
     })
+    const giftCards = computed(() => products.value?.products ?? [])
 
-    // NOTE: there's no established concept of a platform-official
-    // "Meeovi" user id anywhere else in this app — this can't be fixed to
-    // a real value without one (a hardcoded 'Meeovi' string will never
-    // match a real user_id UUID either way), so it stays empty by design
-    // rather than guessing at a user id.
-    const {
-        data: meeGiftCards
-    } = await useAsyncData('meeGiftCards', () => {
-        return $directus.request($readItems('products', {
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        name: { _eq: 'Gift Card' }
-                    }
-                },
-                user: {
-                    user_id: {
-                        _eq: '00000000-0000-0000-0000-000000000000'
-                    }
-                }
-            }
-        }))
+    // The signed-in user's own gift cards, received + purchased
+    // (server/api/commerce/wishes/mine). 401 when signed out.
+    const { data: mine, error: mineError } = await useFetch('/api/commerce/wishes/mine', {
+        key: 'gift-cards-mine',
+        default: () => ({ received: [], purchased: [] }),
     })
+    const signedIn = computed(() => mineError.value?.status !== 401)
+    const receivedGiftCards = computed(() => mine.value?.received ?? [])
+    const purchasedGiftCards = computed(() => mine.value?.purchased ?? [])
 
-    const {
-        data: myGiftCards
-    } = await useAsyncData('myGiftCards', () => {
-        if (!session?.user?.id) return []
-        return $directus.request($readItems('products', {
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        name: { _eq: 'Gift Card' }
-                    }
-                },
-                user: {
-                    user_id: {
-                        _eq: session.user.id
-                    }
-                }
-            }
-        }))
-    })
-
-    const {
-        data: giftCertificates
-    } = await useAsyncData('giftCertificates', () => {
-        return $directus.request($readItems('products', {
-            filter: {
-                product_types: {
-                    product_types_id: {
-                        name: { _eq: 'Gift Certificate' }
-                    }
-                }
-            }
-        }))
-    })
+    const STATE_COLORS = { available: 'success', pending: 'info', used: 'grey', redeemed: 'grey', expired: 'error' }
+    const money = (amount) => (amount == null ? '' : new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(amount))
+    const date = (value) => new Date(String(value).replace(' ', 'T')).toLocaleDateString()
 
     useHead({
         title: 'Gift Card Center',
@@ -176,3 +112,15 @@
         }]
     })
 </script>
+
+<style scoped>
+    .giftCards__card {
+        width: 280px;
+    }
+
+    .giftCards__code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        letter-spacing: 0.05em;
+        word-break: break-all;
+    }
+</style>

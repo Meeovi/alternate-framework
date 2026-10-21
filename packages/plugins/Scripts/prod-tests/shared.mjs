@@ -1,7 +1,7 @@
 // Production tests for the shared layer (layers/shared): the CMS proxy
 // (/api/cms), the generic Directus proxy (/api/proxy), uploads/assets, the
 // Novu session, security headers, sitemap/robots. See lib.mjs.
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
 const accounts = loadAccounts()
 if (!accounts.user || !accounts.admin) throw new Error('QA accounts missing — run auth.mjs first')
@@ -34,8 +34,18 @@ await test('C1b', 'the site menus load (`menus.*` on a JSON field)', async () =>
   expect(r.status === 200 && Array.isArray(r.body?.data?.menus), `HTTP ${r.status}: ${r.body?.message ?? ''}`)
 })
 await test('C2', 'non-public collections need a session', async () => {
-  const r = await req('GET', '/api/cms/items/posts?limit=1&fields=id')
+  const r = await req('GET', '/api/cms/items/orders?limit=1&fields=id')
   expect(r.status === 401, `HTTP ${r.status}`)
+})
+await test('C2b', 'signed out, collections with private rows return only public ones', async () => {
+  const hidden = { posts: ['Private', 'draft', 'in_review', 'scheduled'], lists: ['Private', 'Space-only'], spaces: ['Private', 'Hidden'] }
+  const leaked = []
+  for (const [collection, statuses] of Object.entries(hidden)) {
+    const r = await req('GET', `/api/cms/items/${collection}?limit=200&fields=id,status`)
+    expect(r.status === 200, `${collection} → HTTP ${r.status}`)
+    for (const row of r.body?.data ?? []) if (statuses.includes(row.status)) leaked.push(`${collection}/${row.id} (${row.status})`)
+  }
+  expect(!leaked.length, `private rows shown: ${leaked.join(', ')}`)
 })
 await test('C3', 'Directus system endpoints are blocked even when signed in', async () => {
   const open = []
@@ -170,10 +180,12 @@ await test('W6', 'a user can create and edit their own profile', async () => {
   if (own.status !== 200) {
     // Profile rows are keyed by user id; the proxy stamps it from the session.
     const created = await req('POST', '/api/cms/items/profiles', { jar: jars.user, json: { first_name: 'QA', last_name: 'User', id: accounts.admin.id } })
+    turnstileGate(created)
     expect(created.status === 200, `create HTTP ${created.status}: ${created.text.slice(0, 120)}`)
     expect(created.body?.data?.id === accounts.user.id, `profile created with id ${created.body?.data?.id}, not the user's own`)
   }
   const r = await req('PATCH', `/api/cms/items/profiles/${accounts.user.id}`, { jar: jars.user, json: { position: 'QA tester' } })
+  turnstileGate(r)
   expect(r.status === 200, `edit HTTP ${r.status}: ${r.text.slice(0, 120)}`)
 })
 await test('W7', "an ordinary user can only write allow-listed collections, and only their own rows", async () => {
@@ -196,6 +208,38 @@ await test('W7', "an ordinary user can only write allow-listed collections, and 
     if (r.status !== 403) open.push(`${m} ${p} → ${r.status}`)
   }
   expect(!open.length, open.join('; '))
+})
+
+// ---------------------------------------------------------------------------
+section('Form protection (Turnstile on every form, spam)')
+const FORMS = [
+  ['POST', '/api/cms/items/posts'], ['PATCH', '/api/cms/items/spaces/1'], ['POST', '/api/assets/upload'],
+  ['POST', '/api/social/lists'], ['POST', '/api/social/notify-followers'], ['POST', '/api/shipment/rates'],
+  ['POST', '/api/payment/paypal/orders'], ['POST', '/api/newsletter/subscribe'], ['POST', '/api/dropshipping/import'],
+]
+await test('FP1', 'form submissions without a Turnstile token are refused before the route runs', async () => {
+  const open = []
+  for (const [m, p] of FORMS) {
+    const r = await req(m, p, { jar: jars.user, json: {} })
+    if (!isTurnstileRefusal(r)) open.push(`${m} ${p} → ${r.status}`)
+  }
+  expect(!open.length, open.join('; '))
+})
+await test('FP2', 'a made-up token is refused', async () => {
+  const r = await req('POST', '/api/payment/paypal/orders', { headers: { 'x-turnstile-token': 'XXXX.DUMMY.TOKEN.XXXX' }, json: {} })
+  expect(isTurnstileRefusal(r), `HTTP ${r.status}: ${r.text.slice(0, 100)}`)
+})
+await test('FP3', 'one-click actions are not gated', async () => {
+  const r = await req('POST', '/api/commerce/cart/items', { json: {} })
+  expect(!isTurnstileRefusal(r) && r.status === 400, `HTTP ${r.status}`)
+})
+await test('FP4', 'account forms (update-user) need a CAPTCHA', async () => {
+  const r = await req('POST', '/api/auth/update-user', { jar: jars.user, json: { name: 'x' } })
+  expect(r.status === 400 && /captcha/i.test(r.text), `HTTP ${r.status}: ${r.text.slice(0, 100)}`)
+})
+await test('FP5', 'the comment spam webhook refuses an unknown secret', async () => {
+  const r = await req('POST', '/api/social/discussions/moderate', { json: { token: 'not-the-secret', text: 'x' } })
+  expect(r.status === 401, `HTTP ${r.status}`)
 })
 
 // ---------------------------------------------------------------------------
@@ -222,20 +266,23 @@ const upload = (jar, bytes, type, name) => {
 }
 await test('U1', 'signed-out uploads are refused', async () => {
   const r = await upload(null, PNG, 'image/png', 'qa.png')
-  expect(r.status === 401, `HTTP ${r.status}`)
+  expect(r.status === 401 || isTurnstileRefusal(r), `HTTP ${r.status}`)
 })
 await test('U2', 'disallowed file types are refused', async () => {
   const r = await upload(jars.user, Buffer.from('<h1>qa</h1>'), 'text/html', 'qa.html')
+  turnstileGate(r)
   expect(r.status === 415, `HTTP ${r.status}`)
 })
 await test('U3', 'a small image uploads', async () => {
   const r = await upload(jars.user, PNG, 'image/png', 'qa-pixel.png')
+  turnstileGate(r)
   if (r.status === 503 || /not configured/i.test(r.text)) blocked(`Pixanomy unavailable: ${r.text.slice(0, 100)}`)
   expect(r.status === 200 && r.body?.assets?.length === 1, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
   return r.body.assets[0]?.url ?? ''
 })
 await test('U4', "an HTML file labelled image/png is refused (content isn't trusted)", async () => {
   const r = await upload(jars.user, Buffer.from('<!doctype html><script>alert(1)</script>'), 'image/png', 'qa-spoof.png')
+  turnstileGate(r)
   expect(r.status === 415, `accepted (HTTP ${r.status}) — the upload type is only checked against the client-declared MIME type`)
 })
 await test('U5', 'assets/mine lists the user’s uploads and needs a session', async () => {

@@ -4,7 +4,7 @@
 import { randomBytes, createHmac } from 'node:crypto'
 import {
   BASE, Jar, req, test, section, finish, expect, blocked, withDb, sleep,
-  loadAccounts, saveAccounts, requireFromRepo, signInJar } from './lib.mjs'
+  loadAccounts, saveAccounts, requireFromRepo, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
 const QA = [
   { key: 'user', username: 'qauser', name: 'QA User', role: null },
@@ -132,7 +132,7 @@ await test('S2', 'get-session returns the user without secrets', async () => {
   expect(r.body?.user?.id === U.id, `wrong/no user: ${r.text.slice(0, 160)}`)
   for (const secret of ['password', 'encryptedPassword', 'encrypted_password'])
     expect(!(secret in r.body.user), `session user exposes "${secret}"`)
-  const notable = ['stripeCustomerId', 'polarCustomerId', 'magentoCustomerId'].filter(k => k in r.body.user)
+  const notable = ['polarCustomerId', 'magentoCustomerId'].filter(k => k in r.body.user)
   return notable.length ? `note: also returns ${notable.join(', ')}` : ''
 })
 await test('S3', 'wrong password is rejected with 401', async () => {
@@ -223,10 +223,12 @@ section('Content ownership through the CMS proxy (/api/cms/items/posts)')
 let postId = null
 await test('O1', 'signed-out create is refused', async () => {
   const r = await req('POST', '/api/cms/items/posts', { json: { title: 'qa anon', status: 'draft' } })
-  expect(r.status === 401, `HTTP ${r.status}`)
+  // The form-protection gate answers first (403) when there's no token.
+  expect(r.status === 401 || isTurnstileRefusal(r), `HTTP ${r.status}`)
 })
 await test('O2', 'create stamps creator_id with the signed-in user (spoofing ignored)', async () => {
   const r = await req('POST', '/api/cms/items/posts', { jar: jars.user, json: { title: 'QA ownership test (auto-deleted)', status: 'draft', creator_id: S.id } })
+  turnstileGate(r)
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
   postId = r.body?.data?.id
   expect(postId, 'no id returned')
@@ -270,12 +272,14 @@ await test('O8', 'the owner can delete it', async () => {
 section('Passwords')
 await test('C1', 'change-password refuses a password shorter than 8', async () => {
   const r = await req('POST', '/api/auth/change-password', { jar: jars.user, json: { currentPassword: U.password, newPassword: 'Qa!4567' } })
+  captchaGate(r)
   expect(r.status >= 400 && r.status < 500, `HTTP ${r.status}`)
   return `${r.status} ${r.body?.code ?? ''}`
 })
 await test('C2', 'change-password works and the new password signs in', async () => {
   const next = newPassword()
   const r = await req('POST', '/api/auth/change-password', { jar: jars.user, json: { currentPassword: U.password, newPassword: next } })
+  captchaGate(r)
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
   U.password = next; saveAccounts(accounts)
   const check = await signIn(new Jar(), U)
@@ -389,17 +393,6 @@ await test('T4', 'disable 2FA again', async () => {
 
 // ---------------------------------------------------------------------------
 section('Other auth-layer endpoints')
-await test('X1', 'Stripe Connect endpoints refuse a signed-out caller', async () => {
-  const notes = []
-  for (const [m, p] of [['GET', '/api/stripe/balance'], ['GET', '/api/stripe/payouts'], ['POST', '/api/stripe/account-link'], ['POST', '/api/stripe/onboard']]) {
-    const r = await req(m, p, m === 'POST' ? { json: {} } : {})
-    // 401, not 400 "No active organization": the session check comes first.
-    // Beyond that, org owners/admins only (layers/auth/server/utils/stripeConnect.ts).
-    expect(r.status === 401, `${p} → HTTP ${r.status}`)
-    notes.push(`${p.split('/').pop()} ${r.status}`)
-  }
-  return notes.join(', ')
-})
 await test('X2', 'better-auth health check', async () => {
   const r = await req('GET', '/api/auth/ok')
   expect(r.status === 200, `HTTP ${r.status}`)

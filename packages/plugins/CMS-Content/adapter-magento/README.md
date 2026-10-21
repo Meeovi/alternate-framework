@@ -125,10 +125,10 @@ serves the app's `/workspace` admin:
 - **Tables** (meeovi-tables): `customers` (list, create, edit, delete),
   `orders` and `creditmemos` (read-only), newest first. Customers created
   there join `MAGENTO_WEBSITE_ID` (default 1).
-- **Refunds**: `adminOrder`, `orderByReference` (the Stripe payment id the
+- **Refunds**: `adminOrder`, `orderByReference` (the PayPal capture id the
   app placed the order with, stored as `ext_order_id`) and `refundOrder`.
   That's an offline credit memo through `POST /V1/order/{id}/refund`; the
-  money itself is refunded through Stripe by the app.
+  money itself is refunded through PayPal by the app.
 
 The Integration needs these API resources (Mage-OS admin → System →
 Integrations → the app's integration → API):

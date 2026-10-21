@@ -80,7 +80,7 @@ class SellerCatalogSync implements SellerCatalogSyncInterface
 
         $existing->setName($name);
         $existing->setPrice($price);
-        $existing->setStatus($enabled ? ProductStatus::STATUS_ENABLED : ProductStatus::STATUS_DISABLED);
+        $existing->setStatus($enabled && $this->isApproved($existing) ? ProductStatus::STATUS_ENABLED : ProductStatus::STATUS_DISABLED);
         if ($description !== '') {
             $existing->setDescription($description);
         }
@@ -123,7 +123,7 @@ class SellerCatalogSync implements SellerCatalogSyncInterface
                 $product->setPrice($price);
             }
             if ($enabled !== null) {
-                $product->setStatus($enabled ? ProductStatus::STATUS_ENABLED : ProductStatus::STATUS_DISABLED);
+                $product->setStatus($enabled && $this->isApproved($product) ? ProductStatus::STATUS_ENABLED : ProductStatus::STATUS_DISABLED);
             }
             $this->productRepository->save($product);
         }
@@ -204,6 +204,20 @@ class SellerCatalogSync implements SellerCatalogSyncInterface
         if (!$links->getSize()) {
             throw new LocalizedException(__('SKU "%1" belongs to another seller or to the store.', $product->getSku()));
         }
+    }
+
+    /**
+     * Whether the store has approved this seller product for sale. With
+     * marketplace/product_settings/product_approval on, new seller
+     * products wait for an admin; a sync must never switch one on first
+     * (Webkul enables it when the admin approves).
+     */
+    private function isApproved(ProductInterface $product): bool
+    {
+        $links = $this->marketplaceProducts->create();
+        $links->addFieldToFilter('mageproduct_id', (int) $product->getId());
+        $links->addFieldToFilter('is_approved', 1);
+        return (bool) $links->getSize();
     }
 
     private function assertPriceAndQty(float $price, float $qty): void

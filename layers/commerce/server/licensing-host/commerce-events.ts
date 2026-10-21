@@ -1,21 +1,21 @@
 /**
- * Turns Stripe checkout payments and refunds into licensing commerce
- * events. Scope (first rollout): paid integrations — lines whose product
- * key is `<backend>:<sku>` for a SKU an installable integration names in
- * its manifest (meeovi-integrations registry).
+ * Turns checkout payments and refunds into licensing commerce events.
+ * Scope (first rollout): paid integrations — lines whose product key is
+ * `<backend>:<sku>` for a SKU an installable integration names in its
+ * manifest (meeovi-integrations registry).
  *
- * The purchase id is `stripe:<payment intent>`: one license per paid
- * integration line (the offer tells lines apart), and a full refund of the
- * payment revokes them all. Partial refunds change nothing (contract v1.0).
+ * The purchase id is `<provider>:<payment id>` (e.g. `paypal:<capture>`):
+ * one license per paid integration line
+ * (the offer tells lines apart), and a full refund of the payment revokes
+ * them all. Partial refunds change nothing (contract v1.0).
  */
-import type Stripe from 'stripe'
 import { useRuntimeConfig } from 'nitropack/runtime'
-import { stripe } from '../utils/stripe'
 import { centsToDollars } from '../utils/currency'
 import { parseProductRef } from '../utils/productRef'
+import type { PaidCheckout } from '../utils/paidCheckout'
 import { ensureIntegrationOffer, repository, useLicensing } from '.'
 
-const purchaseIdFor = (paymentIntentId: string) => `stripe:${paymentIntentId}`
+const purchaseIdFor = (provider: string, paymentId: string) => `${provider}:${paymentId}`
 
 /** SKU → integration slug, for integrations sold through the store. */
 function integrationSkus(): Map<string, string> {
@@ -25,49 +25,38 @@ function integrationSkus(): Map<string, string> {
 }
 
 /**
- * Issues licenses for the paid integration lines of a checkout (on
- * checkout.session.completed with payment_status paid, and
- * async_payment_succeeded). Idempotent; throws so Stripe retries.
+ * Issues licenses for the paid integration lines of a checkout once its
+ * payment has cleared. Idempotent; throws so the webhook retries.
  */
-export async function issueLicensesForCheckout(session: Stripe.Checkout.Session, paymentIntentId: string): Promise<void> {
+export async function issueLicensesForPayment(paid: PaidCheckout): Promise<void> {
   const integrations = integrationSkus()
   if (!integrations.size) return
-  const buyerId = session.metadata?.buyer_id
-  const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { expand: ['data.price.product'], limit: 100 })
-  for (const line of lineItems.data) {
-    const product = line.price?.product
-    const productKey = product && typeof product === 'object' && !('deleted' in product && product.deleted)
-      ? (product as Stripe.Product).metadata?.internal_product_id
-      : undefined
-    const ref = productKey ? parseProductRef(productKey) : null
-    if (!productKey || ref?.kind !== 'backend') continue
+  const purchaseId = purchaseIdFor(paid.provider, paid.paymentId)
+  for (const line of paid.lines) {
+    const ref = line.ref ? parseProductRef(line.ref) : null
+    if (!line.ref || ref?.kind !== 'backend') continue
     const pluginId = integrations.get(ref.key)
     if (!pluginId) continue
-    if (!buyerId) throw new Error(`Paid integration ${productKey} in ${paymentIntentId} has no buyer to license`)
-    const quantity = line.quantity || 1
+    if (!paid.buyerId) throw new Error(`Paid integration ${line.ref} in ${paid.paymentId} has no buyer to license`)
     const offer = await ensureIntegrationOffer({
-      productKey,
-      title: (product as Stripe.Product).name || pluginId,
-      price: centsToDollars(Math.round((line.amount_total ?? 0) / quantity)),
+      productKey: line.ref,
+      title: line.name || pluginId,
+      price: centsToDollars(line.unitCents),
       pluginId,
     })
     await useLicensing().commerceEvents.handle({
       event: 'purchase.completed',
-      purchaseId: purchaseIdFor(paymentIntentId),
-      userId: buyerId,
-      productId: productKey,
+      purchaseId,
+      userId: paid.buyerId,
+      productId: line.ref,
       licenseId: offer.id,
     })
-    const [license] = await repository().findUserLicenseByPurchase(purchaseIdFor(paymentIntentId), offer.id)
-    console.info(`[licensing] ${pluginId} license ${license?.id ?? 'MISSING'} (${license?.status ?? '-'}) for ${paymentIntentId}`)
+    const [license] = await repository().findUserLicenseByPurchase(purchaseId, offer.id)
+    console.info(`[licensing] ${pluginId} license ${license?.id ?? 'MISSING'} (${license?.status ?? '-'}) for ${purchaseId}`)
   }
 }
 
 /** A full refund of a payment revokes the licenses it bought. */
-export async function revokeLicensesForRefund(charge: Stripe.Charge): Promise<void> {
-  const paymentIntentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id
-  if (!paymentIntentId) return
-  const fullyRefunded = (charge.amount_refunded ?? 0) >= (charge.amount ?? 0)
-  if (!fullyRefunded) return
-  await useLicensing().commerceEvents.handle({ event: 'purchase.refunded', purchaseId: purchaseIdFor(paymentIntentId) })
+export async function revokeLicensesForPayment(provider: string, paymentId: string): Promise<void> {
+  await useLicensing().commerceEvents.handle({ event: 'purchase.refunded', purchaseId: purchaseIdFor(provider, paymentId) })
 }

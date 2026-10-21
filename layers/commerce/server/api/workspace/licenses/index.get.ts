@@ -9,7 +9,7 @@ import { licenseInstallations, productLicenses, userLicenses } from '../../../li
 /**
  * GET /api/workspace/licenses?search=&status=&page= — every license, for
  * admins (newest first, 50 a page). `search` matches the owner's email or
- * username, the product, the license key or the purchase (e.g. a Stripe
+ * username, the product, the license key or the purchase (e.g. a PayPal
  * payment id).
  */
 export default defineEventHandler(async (event) => {

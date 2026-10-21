@@ -34,6 +34,12 @@ export default defineConfig({
           name: 'nuxt',
           include: ['test/nuxt/*.{test,spec}.ts'],
           environment: 'nuxt',
+          // Layers this one boots (layers/commerce app/plugins/directus.ts)
+          // import '#shared/…'. Apps point it at this layer; Nuxt's own
+          // default (<root>/shared) doesn't exist here.
+          environmentOptions: {
+            nuxt: { overrides: { alias: { '#shared': path.resolve(__dirname) } } },
+          },
           // This layer's nuxt.config registers a large number of modules —
           // booting the real Nuxt test environment for it reliably takes
           // longer than vitest's 10s default hook timeout.

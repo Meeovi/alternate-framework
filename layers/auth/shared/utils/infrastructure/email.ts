@@ -1,6 +1,6 @@
-// Real transactional email via Resend's HTTP API — same working pattern
-// already proven live in layers/commerce's Stripe webhook handler
-// (server/api/payment/stripe/webhooks.post.ts). Replaces a previous
+// Real transactional email via Resend's HTTP API — the same pattern
+// layers/commerce's order emails use (server/utils/paidCheckout.ts).
+// Replaces a previous
 // dead-prototype file that depended on a nonexistent `sendEmail` from
 // `@better-auth/infra` and a nonsensical `viem/tempo/actions` import.
 export async function sendAuthEmail(params: {

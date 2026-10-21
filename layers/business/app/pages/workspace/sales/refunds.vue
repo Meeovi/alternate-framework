@@ -11,14 +11,14 @@
 
       <template v-else>
         <p class="text-body-2 text-medium-emphasis mb-4">
-          Refunding sends the money back through Stripe, then records a credit memo in the store so its books and the
+          Refunding sends the money back through PayPal, then records a credit memo in the store so its books and the
           seller's sale match. A full refund of a payment also revokes the licenses it bought.
         </p>
 
         <div class="d-flex flex-wrap ga-2 align-center mb-4">
           <v-select v-if="stores.length > 1" v-model="store" :items="stores" item-title="label" item-value="id" label="Store"
             density="compact" hide-details class="refunds__store" />
-          <v-text-field v-model="lookup" label="Order number or Stripe payment (pi_…)" density="compact" hide-details clearable
+          <v-text-field v-model="lookup" label="Order number or PayPal payment (capture id)" density="compact" hide-details clearable
             prepend-inner-icon="fas fa-magnifying-glass" class="refunds__lookup" @keyup.enter="find()" />
           <v-btn color="primary" variant="flat" text="Find" :loading="loading" :disabled="!lookup?.trim()" @click="find()" />
         </div>
@@ -45,13 +45,13 @@
               <v-chip size="small" variant="tonal" :color="detail.order.total_refunded ? 'warning' : undefined"
                 :text="`Refunded in store ${money(detail.order.total_refunded / 100)}`" />
               <v-chip v-if="detail.payment" size="small" variant="tonal" color="info"
-                :text="`Stripe ${detail.payment.id}: ${money(detail.payment.amount / 100)} paid, ${money(detail.payment.refunded / 100)} refunded`" />
+                :text="`PayPal ${detail.payment.id}: ${money(detail.payment.amount / 100)} paid, ${money(detail.payment.refunded / 100)} refunded`" />
               <v-chip v-for="l in detail.licenses" :key="l.id" size="small" variant="tonal"
                 :color="l.status === 'active' ? 'success' : 'grey'" prepend-icon="fas fa-key" :text="`${l.productId} · ${l.status}`" />
             </div>
 
             <v-alert v-if="!detail.payment" type="info" variant="tonal" density="comfortable" class="mb-4"
-              text="This order wasn't paid through the app's Stripe checkout, so it can't be refunded here. Refund it in the store's own admin." />
+              text="This order wasn't paid through the app's PayPal checkout, so it can't be refunded here. Refund it where it was paid." />
             <v-alert v-else-if="!detail.order.refundable.length" type="success" variant="tonal" density="comfortable" class="mb-4"
               text="Everything on this order has been refunded." />
 
@@ -120,7 +120,7 @@
       <v-card>
         <v-card-title>Refund {{ money(refundCents / 100) }}?</v-card-title>
         <v-card-text>
-          The money goes back to the customer's card through Stripe, and a credit memo is recorded on order
+          The money goes back to the customer through PayPal, and a credit memo is recorded on order
           {{ detail?.order.number }}. This can't be undone.
         </v-card-text>
         <v-card-actions>
@@ -138,7 +138,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 
-// Admins refund store orders paid through the app's Stripe checkout:
+// Admins refund store orders paid through the app's PayPal checkout:
 // server/api/workspace/refunds (layers/commerce).
 definePageMeta({ middleware: 'auth', roles: ['admin'] })
 useHead({ title: 'Refunds' })
@@ -193,7 +193,8 @@ const refundCents = computed(() => chosen.value.reduce((sum, c) => sum + Math.ro
 async function find(by?: { id: string }) {
   error.value = ''
   const text = lookup.value?.trim() ?? ''
-  const query = by ?? (text.startsWith('pi_') ? { reference: text } : { number: text })
+  // A PayPal capture id has letters; an order number is all digits.
+  const query = by ?? (/^(?=[0-9]*[A-Za-z])[A-Za-z0-9]{12,40}$/.test(text) ? { reference: text.toUpperCase() } : { number: text })
   loading.value = true
   try {
     detail.value = await $fetch<Detail>('/api/workspace/refunds/order', { query: { store: store.value, ...query } })
@@ -234,7 +235,7 @@ async function refund() {
       // Same key on purpose: retrying records the credit memo without refunding again.
       error.value = result.creditMemoError
     } else {
-      Object.assign(toast, { show: true, color: 'success', text: `Refunded ${money(result.amount / 100)} (Stripe ${result.refundId}, credit memo ${result.creditMemoId}).` })
+      Object.assign(toast, { show: true, color: 'success', text: `Refunded ${money(result.amount / 100)} (PayPal ${result.refundId}, credit memo ${result.creditMemoId}).` })
       const id = detail.value.order.id
       await Promise.all([find({ id }), refreshRecent()])
     }

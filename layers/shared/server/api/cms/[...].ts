@@ -4,6 +4,7 @@ import { defineEventHandler, proxyRequest, createError, readBody, getHeader, set
 import { getAuthSession, requireAuth } from '#auth/server/utils/sessions'
 import { checkReadQuery, checkWritePayload, loadRelationGraph, type GuardRules } from '../../utils/cmsQueryGuard'
 import { PRIVATE_CONTENT_COLLECTIONS, mergeDeep, privateContentFilter, privateRelationDeep } from '../../utils/privateContent'
+import { checkSpam, contentText } from '../../utils/spam'
 
 /**
  * Same-origin Directus proxy.
@@ -87,6 +88,11 @@ const USER_WRITABLE: Record<string, { owner?: string; createOnly?: boolean; pare
   list_items: { parentList: 'list_id' },
 }
 
+// User-written collections checked for spam on write, and the fields that
+// aren't prose (links, ids, slugs, status…) left out of the check.
+const SPAM_CHECKED = new Set(['posts', 'shorts', 'radios', 'profiles', 'spaces', 'websites', 'report', 'list_items'])
+const NOT_PROSE = /(^|_)(id|ids|url|urls|slug|status|type|image|file|video|audio|thumbnail|date|time|at)$|^(url|link|href)$/i
+
 // Tables in the same Postgres database that Directus also exposes as
 // collections, but which belong to better-auth / OAuth / billing internals:
 // session tokens, password hashes, 2FA secrets, API keys, OAuth client
@@ -108,7 +114,7 @@ const PRIVATE_COLLECTIONS = /^(address|addresses|os_[a-z_]+|subscriptions[a-z_]*
 // Customer billing records. The app reads them client-side (order /
 // invoice / transaction pages), so instead of being admin-only, a
 // non-admin's read is always narrowed to their own rows here — whatever
-// filter the client sent. Only server routes (Stripe webhook, Shippo) write
+// filter the client sent. Only server routes (checkout fulfilment, Shippo) write
 // them, so non-admin writes are refused.
 const OWNER_SCOPED: Record<string, (userId: string) => Record<string, unknown>> = {
   // orders.user_id is a Directus-users relation; the better-auth buyer is buyer_id.
@@ -318,6 +324,26 @@ export default defineEventHandler(async (event) => {
       ).catch(() => null)
       if (!existing?.data || existing.data[ownerField] !== user!.id) {
         throw createError({ statusCode: 403, statusMessage: 'You can only change your own content' })
+      }
+    }
+
+    // Spam in user-written content (server/utils/spam.ts): titles,
+    // descriptions, bodies… — every top-level text field except links,
+    // slugs and ids, which aren't prose.
+    if (!admin && SPAM_CHECKED.has(collection) && (method === 'POST' || method === 'PATCH')) {
+      const payload = await readBody(event)
+      for (const item of Array.isArray(payload) ? payload : [payload]) {
+        const fields = item && typeof item === 'object' ? Object.keys(item).filter((k) => !NOT_PROSE.test(k)) : []
+        const createdAt = (user as { createdAt?: string | Date } | null)?.createdAt
+        const verdict = checkSpam(contentText(item, fields), {
+          authorId: user?.id,
+          scope: collection,
+          accountAgeHours: createdAt ? (Date.now() - new Date(createdAt).getTime()) / 3_600_000 : null,
+        })
+        if (verdict.spam) {
+          console.warn(`[spam] refused ${method} ${collection} by ${user?.id}: ${verdict.reasons.join(', ')}`)
+          throw createError({ statusCode: 422, statusMessage: 'This looks like spam, so it wasn\'t saved. If it isn\'t, remove links or repeated text and try again.' })
+        }
       }
     }
 

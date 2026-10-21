@@ -7,7 +7,7 @@ import { backendCustomerId } from './productRef'
  * Order history, backend-agnostic. Each installed commerce backend that
  * keeps orders (CommerceBackendAdapter.customerOrders — adapter-magento's
  * Magento) owns the orders for its products; Directus holds the rest (the
- * app's own catalogue, written by the Stripe webhook). Pages read both
+ * app's own catalogue, written by server/utils/paidCheckout.ts). Pages read both
  * through /api/commerce/orders and never talk to a backend directly.
  *
  * Routing keys: `<backend>:<id>` for a backend's order, the plain id for

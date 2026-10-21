@@ -30,7 +30,7 @@ await test('Q3', 'injection-style queries are handled', async () => {
   expect(!bad.length, bad.join('; '))
 })
 await test('Q4', 'asking for sensitive fields/facets/sort returns nothing sensitive', async () => {
-  const sensitive = ['email', 'password', 'encrypted_password', 'token', 'stripeCustomerId', 'auth_role']
+  const sensitive = ['email', 'password', 'encrypted_password', 'token', 'auth_role']
   const r = await search({ q: 'qa', fields: sensitive, facets: sensitive, sort: { field: 'encrypted_password', direction: 'asc' } })
   expect(r.status < 500, `HTTP ${r.status}: ${r.text.slice(0, 120)}`)
   const found = leaked(r.text)

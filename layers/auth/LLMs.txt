@@ -187,7 +187,6 @@
 - [System for Cross-domain Identity Management (SCIM)](/llms.txt/docs/plugins/scim.md): Integrate SCIM with your application.
 - [Sign In With Ethereum (SIWE)](/llms.txt/docs/plugins/siwe.md): Sign in with Ethereum plugin for Better Auth
 - [Single Sign-On (SSO)](/llms.txt/docs/plugins/sso.md): Integrate Single Sign-On (SSO) with your application.
-- [Stripe](/llms.txt/docs/plugins/stripe.md): Stripe plugin for Better Auth to manage subscriptions and payments.
 - [Test Utils](/llms.txt/docs/plugins/test-utils.md): Testing utilities for integration and E2E testing
 - [Username](/llms.txt/docs/plugins/username.md): Username plugin
 - [Advanced Features](/llms.txt/docs/plugins/api-key/advanced.md): Advanced API Key features including sessions, multiple configurations, organization keys, storage modes, and more.

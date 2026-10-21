@@ -1,7 +1,5 @@
-import { sql } from 'drizzle-orm'
 import * as schema from '../../server/database/migrations/schema'
 import { db } from '../../server/utils/drizzle'
-import { stripeClient } from '../../server/utils/stripe'
 import { sendAuthEmail } from './infrastructure/email'
 import type { User } from '../../app/types'
 import { dash } from '@better-auth/infra'
@@ -9,7 +7,6 @@ import { oauthProvider } from '@better-auth/oauth-provider'
 import { passkey } from '@better-auth/passkey'
 import { apiKey } from '@better-auth/api-key'
 import { i18n } from '@better-auth/i18n'
-import { stripe } from '@better-auth/stripe'
 import {
   deviceAuthorization,
   multiSession,
@@ -30,11 +27,8 @@ import {
 } from 'better-auth/plugins'
 import { atprotoAuth } from '@mframework/meeovi-atproto/auth/plugin'
 import { ac, admin, user, seller, myCustomRole } from './permissions'
+import { AUTH_CAPTCHA_ENDPOINTS } from '../../../shared/shared/formProtection'
 import { MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH, isAllowedUsername, storedUsername } from './username'
-
-if (!process.env.NUXT_STRIPE_WEBHOOK_SECRET) {
-  console.warn('[stripe] NUXT_STRIPE_WEBHOOK_SECRET is not set — the stripe plugin\'s own webhook endpoint will reject every incoming event with a signature-verification failure.')
-}
 
 export const plugins = [
   dash(),
@@ -66,109 +60,6 @@ export const plugins = [
         }
       }
     }
-  }),
-  stripe({
-    stripeClient,
-    // Real var is NUXT_STRIPE_WEBHOOK_SECRET — the unprefixed name was
-    // never set anywhere in .env, so webhook signature verification for
-    // this plugin's own webhook handling has never actually worked.
-    stripeWebhookSecret: process.env.NUXT_STRIPE_WEBHOOK_SECRET!,
-    createCustomerOnSignUp: true,
-    onCustomerCreate: async ({
-      stripeCustomer,
-      user
-    }, ctx) => {
-      console.log(`Customer ${stripeCustomer.id} created for user ${user.id}`);
-    },
-    getCustomerCreateParams: async (user, ctx) => {
-      // Previously read user.metadata?.referralSource — `metadata` was
-      // never declared as an additionalField anywhere on the user model,
-      // so this was always undefined regardless of who signed up. Attach
-      // the one piece of real, available data instead.
-      return {
-        metadata: {
-          appUserId: user.id ?? ''
-        }
-      };
-    },
-    subscription: {
-      enabled: true,
-      plans: async () => {
-        // Plan catalog — also a dedicated table (auth_subscription_plans),
-        // distinct from the per-user subscription records above. Starts
-        // empty; real pricing plans need to be inserted before checkout
-        // has anything to offer.
-        const plans = await db.select().from(schema.authSubscriptionPlans);
-
-        return plans.map((plan: any) => ({
-          name: plan.name,
-          priceId: plan.stripe_price_id,
-          limits: typeof plan.limits === 'string'
-            ? JSON.parse(plan.limits)
-            : plan.limits || {}
-        }));
-      },
-      getCheckoutSessionParams: async ({
-        user,
-        session,
-        plan,
-        subscription
-      }, ctx) => {
-        return {
-          params: {
-            tax_id_collection: {
-              enabled: true
-            },
-            automatic_tax: {
-              enabled: true
-            },
-            allow_promotion_codes: true,
-            billing_address_collection: "required",
-            custom_text: {
-              submit: {
-                message: "We'll start your subscription right away"
-              }
-            },
-            // Previously hardcoded planType: "business" regardless of
-            // which plan was actually purchased, and referralCode read
-            // user.metadata?.referralCode — never declared anywhere, so
-            // always undefined. Use the real plan name instead of both.
-            metadata: {
-              planName: plan.name,
-              appUserId: user.id
-            }
-          },
-          options: {
-            idempotencyKey: `sub_${user.id}_${plan.name}_${Date.now()}`
-          }
-        };
-      },
-      authorizeReference: async ({
-        user,
-        referenceId,
-        action
-      }) => {
-        const [member] = await db.execute(sql`
-          SELECT * FROM auth_organization_members
-          WHERE user_id = ${user.id} AND organization_id = ${referenceId}
-          LIMIT 1
-        `) as any[];
-        return member?.role === "owner" || member?.role === "admin";
-      },
-    },
-    // modelName was previously "subscriptions" — a pre-existing Directus
-    // content table (status/subscriptionNumber/startDate/endDate, no
-    // stripe_price_id or limits column) — this plugin could never have
-    // stored real subscription state there. Points at a dedicated table
-    // instead, same fix as organizations above. stripePriceId/limits live
-    // on the separate authSubscriptionPlans catalog table (read directly
-    // via drizzle in `plans` below), not on the plugin's own subscription
-    // row schema, so they aren't valid keys for this fields remap.
-    schema: {
-      subscription: {
-        modelName: "authSubscriptions",
-      }
-    },
   }),
   deviceAuthorization({
     verificationUri: "/device",
@@ -384,9 +275,9 @@ export const plugins = [
   // oAuthProxy config as proxy.ts above.
   haveIBeenPwned(),
 
-  // Cloudflare Turnstile on every unauthenticated auth flow: signing in
-  // (password guessing), creating accounts (spam) and sending email (inbox
-  // bombing). The forms send the token as `x-captcha-response`
+  // Cloudflare Turnstile on the auth forms: signing in (password
+  // guessing), creating accounts (spam), sending email (inbox bombing) and
+  // the account forms. The forms send the token as `x-captcha-response`
   // (app/composables/useAuthCaptcha.ts). Endpoints match by substring, so
   // /sign-in/email also covers /sign-in/email-otp. Off when no secret is
   // configured (local dev). Scripts and the production tests can't pass
@@ -395,17 +286,9 @@ export const plugins = [
     ? [captcha({
         provider: 'cloudflare-turnstile',
         secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
-        endpoints: [
-          // sign-in
-          '/sign-in/email', '/sign-in/username', '/sign-in/magic-link', '/sign-in/atproto',
-          // accounts
-          '/sign-up/email', '/sign-up/atproto',
-          // only exists when an app registers @mframework/auth-anonymous
-          '/sign-in/anonymous',
-          // email sending
-          '/request-password-reset', '/send-verification-email',
-          '/email-otp/send-verification-otp', '/email-otp/request-password-reset', '/forget-password/email-otp',
-        ],
+        // The same list the browser plugin uses to attach a token
+        // (layers/shared/shared/formProtection.ts).
+        endpoints: AUTH_CAPTCHA_ENDPOINTS,
       })]
     : []),
 ]

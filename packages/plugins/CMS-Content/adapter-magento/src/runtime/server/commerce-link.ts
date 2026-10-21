@@ -46,7 +46,7 @@ export default defineNitroPlugin(() => {
   const magento = new MagentoAdapter(options.endpoint, options.storeCode)
   const credentials = integrationCredentials()
 
-  // placePaidOrder (orders paid with the app's Stripe checkout) needs the
+  // placePaidOrder (orders paid with the app's PayPal checkout) needs the
   // Integration; without it the adapter only reads.
   // With it, /workspace admins also manage customers, orders and refunds
   // (customers created there join MAGENTO_WEBSITE_ID, default 1).

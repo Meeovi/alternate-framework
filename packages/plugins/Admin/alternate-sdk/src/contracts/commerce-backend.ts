@@ -26,12 +26,12 @@ export type CategoryProductsRef = {
 }
 
 /**
- * An order whose payment was taken outside the backend (the app's Stripe
+ * An order whose payment was taken outside the backend (the app's PayPal
  * checkout), to be recorded in it — so orders, and any marketplace
  * seller's sale, live in the commerce backend.
  */
 export type PaidOrder = {
-  /** The payment's own id (e.g. the Stripe payment intent). Backends must
+  /** The payment's own id (e.g. the PayPal capture id). Backends must
    *  be idempotent on it: a repeat call returns the same order. */
   reference: string
   /** The buyer's customer id in this backend. */
@@ -57,7 +57,7 @@ export type PaidOrder = {
 /**
  * An order as the app's order pages show it — the same shape the app's
  * own (Directus) orders have, so pages don't care which backend it came
- * from. Totals are integer minor units (cents, like Stripe); line item
+ * from. Totals are integer minor units (cents); line item
  * amounts are major units.
  */
 export type BackendOrder = {
@@ -110,7 +110,7 @@ export type BackendRefund = {
 
 /** An order as admins see it (any customer). */
 export type BackendAdminOrder = BackendOrder & {
-  /** The payment reference the app placed it with (Stripe payment intent), if any. */
+  /** The payment reference the app placed it with (a PayPal capture id), if any. */
   reference: string | null
   customer_id: string | null
   /** Per line: what can still be refunded. */

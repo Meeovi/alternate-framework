@@ -10,7 +10,6 @@ export interface User {
   first_name?: string
   last_name?: string
   email?: string
-  stripeCustomerId?: string
   metadata?: {
     referralSource?: string | null
     [key: string]: any

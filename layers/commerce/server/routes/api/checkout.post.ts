@@ -7,7 +7,7 @@ import { requireAuth } from '#auth/server/utils/sessions'
 // below is still the docs' literal placeholder domain, unfixed because
 // nothing reaches this route. See checkout.get.ts for more context on why
 // this whole Polar checkout surface is disconnected from the app's real
-// (Stripe-based) subscription billing.
+// (PayPal) payments.
 // Still reachable with the live Polar token, so it's signed-in only.
 export default defineEventHandler(async (event) => {
   await requireAuth(event)

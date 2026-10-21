@@ -14,7 +14,7 @@ const commercePages = fileURLToPath(new URL('./app/pages', import.meta.url))
 // checkout lands on /success, and tracking is looked up by number).
 // Pages that declare their own middleware are left alone, since meta set
 // here would override definePageMeta.
-const ACCOUNT_PAGES = /^\/(orders|order|invoice|transactions|transaction|shipment|customer-portal|wishlist|your-friends|return)(\/|$)/
+const ACCOUNT_PAGES = /^\/(orders|order|invoice|transactions|transaction|shipment|wishlist|your-friends)(\/|$)/
 function requireLoginOnAccountPages(pages: NuxtPage[]) {
   for (const page of pages) {
     if (page.file?.startsWith(commercePages) && ACCOUNT_PAGES.test(page.path) && !page.meta?.middleware) {
@@ -29,6 +29,13 @@ function requireLoginOnAccountPages(pages: NuxtPage[]) {
 export default defineNuxtConfig({
   hooks: {
     'pages:extend': requireLoginOnAccountPages,
+  },
+
+  // /wishes was merged into the gift cards page; the /cart page was a
+  // duplicate of the header cart (menus/cart.vue).
+  routeRules: {
+    '/wishes': { redirect: '/product/gift-cards' },
+    '/cart': { redirect: '/checkout' },
   },
 
   $meta: {
@@ -86,10 +93,6 @@ export default defineNuxtConfig({
       user: '~/auth/currentUser'
     },
     mode: process.env.POLAR_MODE,
-    stripeSecretKey: process.env.NUXT_STRIPE_SECRET_KEY,
-    stripeWebhookSecret: process.env.NUXT_STRIPE_WEBHOOK_SECRET,
-    stripePriceIdProMonth: process.env.NUXT_STRIPE_PRICE_ID_PRO_MONTH,
-    stripePriceIdProYear: process.env.NUXT_STRIPE_PRICE_ID_PRO_YEAR,
     // Polar
     polarServer: process.env.NUXT_POLAR_SERVER,
     polarAccessToken: process.env.NUXT_POLAR_ACCESS_TOKEN,
@@ -107,15 +110,22 @@ export default defineNuxtConfig({
     // undefined (it reads the top-level key; the value only existed at
     // `public.shippoApiKey`).
     shippoApiKey: process.env.SHIPPO_API_KEY,
-    paypalClientSecret: process.env.PAYPAL_CLIENT_SECRET,
+    // The PayPal keys default to '' so they survive into the built config:
+    // an `undefined` key is dropped at build time, and NUXT_PAYPAL_* env
+    // vars only override keys that exist — the server then had no creds.
+    paypalClientSecret: process.env.PAYPAL_CLIENT_SECRET || '',
     // server/utils/paypal.ts reads these two as top-level config as well
     // (config.paypalClientId / config.paypalMode, not config.public.*) —
     // there's already a separate, genuinely-public
     // public.scripts.paypal.clientId (a different env var) for the
     // client-side PayPal SDK script, so these don't need to be public at
     // all; they were just as unreachable as the two secrets above.
-    paypalClientId: process.env.PAYPAL_CLIENT_ID,
+    paypalClientId: process.env.PAYPAL_CLIENT_ID || '',
     paypalMode: process.env.PAYPAL_MODE || 'sandbox',
+    // The id of the webhook registered for this app in the PayPal
+    // developer dashboard (NUXT_PAYPAL_WEBHOOK_ID) — webhooks are only
+    // trusted once PayPal confirms their signature against it.
+    paypalWebhookId: process.env.PAYPAL_WEBHOOK_ID || '',
     // Server-only. The Directus static token — injected into outgoing
     // Directus requests by the /api/cms proxy (layers/shared) so it is
     // never serialized into the client payload. Was previously exposed at
@@ -124,25 +134,16 @@ export default defineNuxtConfig({
       token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN,
     },
     public: {
-      payment: process.env.NUXT_PAYMENT || 'stripe',
+      payment: process.env.NUXT_PAYMENT || 'paypal',
+      // Which PayPal SDK the browser loads (sandbox or live); the same
+      // mode as the server's (NUXT_PUBLIC_PAYPAL_MODE).
+      paypalMode: process.env.PAYPAL_MODE || 'sandbox',
       // Selects which CommerceBackendRegistry adapter (see alternate-sdk)
       // the layers/commerce Directus facade routes product/category/order
       // reads to. 'directus' (default) means every request passes straight
       // through to the real Directus client, unmodified.
       commerceBackend: process.env.NUXT_PUBLIC_COMMERCE_BACKEND || 'directus',
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
-      // Stripe publishable key (pk_live_... in prod, pk_test_... in dev).
-      // Accept NUXT_STRIPE_PUBLISHABLE_KEY too: the server-side keys in the
-      // app .env all use the NUXT_STRIPE_* prefix (NUXT_STRIPE_SECRET_KEY,
-      // NUXT_STRIPE_WEBHOOK_SECRET), and the publishable key was set the
-      // same way — but this entry only read NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-      // so config.public.stripePublishableKey came back undefined and
-      // checkout.vue's loadStripe(undefined) threw "Failed to load checkout"
-      // at the payment step.
-      stripePublishableKey:
-        process.env.NUXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-        process.env.NUXT_STRIPE_PUBLISHABLE_KEY,
-      stripePricingTableId: process.env.NUXT_PUBLIC_STRIPE_PRICING_TABLE_ID,
       scripts: {
         paypal: {
           clientId: `${process.env.NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID}`, // NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID

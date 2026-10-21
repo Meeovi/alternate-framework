@@ -28,7 +28,7 @@
     import {
         useHead
     } from 'nuxt/app';
-    import productCard from '../../components/catalog/product/productCard.vue'
+    import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 
     const {
         $directus,
@@ -41,8 +41,8 @@
     // populated on real rows besides — the six-section version of this
     // page (previously filtering on that nonexistent field) always
     // returned nothing for any of them. `products.file` being set is the
-    // same real fulfillment signal server/api/payment/stripe/webhooks.post
-    // .ts uses to decide an order is digitally deliverable, so this lists
+    // same real fulfillment signal server/utils/paidCheckout.ts uses to
+    // decide an order is digitally deliverable, so this lists
     // by that instead of a fictional category breakdown.
     //
     // This also isn't yet scoped to what the signed-in user actually

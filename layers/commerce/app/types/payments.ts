@@ -4,7 +4,6 @@ import type { ID, Maybe, Money, Timestamps } from './common'
 export type PaymentMethodCode =
   | 'card'
   | 'paypal'
-  | 'stripe'
   | 'klarna'
   | 'apple_pay'
   | 'google_pay'

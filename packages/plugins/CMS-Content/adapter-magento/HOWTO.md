@@ -337,7 +337,7 @@ const { items } = await magento.admin.orders(credentials, [
 ], 50)
 const order = await magento.admin.order(credentials, 3)
 
-// Offline credit memo for some lines (the money itself is refunded through Stripe by the app)
+// Offline credit memo for some lines (the money itself is refunded through PayPal by the app)
 await magento.admin.refundOrder(credentials, 3, { items: [{ order_item_id: 7, qty: 1 }], comment: 'Customer request' })
 
 // Ship
@@ -352,13 +352,13 @@ comma-separated value), `gt`, `gteq`, `lt`, `lteq`, `null` and `notnull`.
 
 Through the commerce backend:
 - `backend.adminOrder(id)` returns what's left to refund on each line.
-- `backend.orderByReference('pi_…')` finds an order by its Stripe payment.
+- `backend.orderByReference('<capture id>')` finds an order by its PayPal payment.
 - `backend.refundOrder({ orderId, items?, comment? })` refunds everything
   left when you leave out `items`.
 
-Orders placed with the app's Stripe checkout are created by
+Orders placed with the app's PayPal checkout are created by
 `magento.marketplaceOrders.placeOrder(...)`. That call is idempotent on the
-Stripe payment id.
+PayPal capture id.
 
 ### Gift cards
 

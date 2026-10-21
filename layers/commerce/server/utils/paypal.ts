@@ -1,10 +1,6 @@
-// Unused end to end: PayPal is a fully implemented backend integration
-// (this file plus server/api/payment/paypal/*) with zero frontend caller
-// anywhere in the app (grepped app/ across every layer, none found) — no
-// button, page, or composable ever hits /api/payment/paypal/*. Stripe is
-// the only checkout rail actually reachable from the storefront. Kept
-// rather than deleted since the code isn't broken, just disconnected —
-// remove if PayPal is confirmed permanently out of scope for this app.
+// PayPal REST (Orders v2, refunds, webhooks, subscriptions, vault). The
+// storefront checkout runs on it: /api/payment/paypal/{orders,capture,done}
+// and the PayPal webhook, which fulfil through utils/paidCheckout.ts.
 interface PayPalConfig {
   clientId: string
   clientSecret: string
@@ -50,6 +46,121 @@ export async function getPayPalAccessToken(): Promise<string> {
 
   const data = await response.json()
   return data.access_token
+}
+
+let cachedToken: { value: string, expiresAt: number, key: string } | null = null
+
+/** An access token, reused until a minute before it expires. */
+async function accessToken(): Promise<string> {
+  const { clientId, baseUrl } = getPayPalConfig()
+  const key = `${baseUrl}|${clientId}`
+  if (cachedToken && cachedToken.key === key && cachedToken.expiresAt > Date.now()) return cachedToken.value
+  const { clientSecret } = getPayPalConfig()
+  const response = await fetch(`${baseUrl}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: basicAuthHeader(clientId, clientSecret),
+    },
+    body: 'grant_type=client_credentials',
+  })
+  if (!response.ok) throw new Error(`PayPal token request failed: ${response.status}`)
+  const data = await response.json() as { access_token: string, expires_in?: number }
+  cachedToken = { value: data.access_token, key, expiresAt: Date.now() + Math.max(0, (data.expires_in ?? 300) - 60) * 1000 }
+  return data.access_token
+}
+
+export class PayPalError extends Error {
+  constructor(message: string, public status: number, public details?: unknown) {
+    super(message)
+  }
+}
+
+/** One PayPal REST call; throws PayPalError with PayPal's own message. */
+export async function paypalRequest<T = any>(
+  path: string,
+  init: { method?: string, body?: unknown, requestId?: string } = {},
+): Promise<T> {
+  const { baseUrl } = getPayPalConfig()
+  const response = await fetch(`${baseUrl}${path}`, {
+    method: init.method ?? 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${await accessToken()}`,
+      Prefer: 'return=representation',
+      ...(init.requestId && { 'PayPal-Request-Id': init.requestId }),
+    },
+    ...(init.body !== undefined && { body: JSON.stringify(init.body) }),
+  })
+  const data = await response.json().catch(() => ({})) as any
+  if (!response.ok) {
+    const detail = data?.details?.[0]
+    throw new PayPalError(
+      detail ? `${detail.issue}: ${detail.description}` : data?.message || `PayPal ${path} failed (${response.status})`,
+      response.status,
+      data?.details,
+    )
+  }
+  return data as T
+}
+
+/** The full order (purchase units, items, payer, captures). */
+export function getPayPalOrder(orderId: string): Promise<PayPalOrder> {
+  if (!PAYPAL_ORDER_ID.test(orderId)) throw new PayPalError('Invalid order id', 404)
+  return paypalRequest<PayPalOrder>(`/v2/checkout/orders/${orderId}`)
+}
+
+/** Refunds a capture — all of it, or `amount` in its currency. */
+export function refundPayPalCapture(captureId: string, opts: { amount?: number, currency?: string, note?: string, requestId?: string } = {}) {
+  if (!PAYPAL_ORDER_ID.test(captureId)) throw new PayPalError('Invalid capture id', 404)
+  return paypalRequest<{ id: string, status: string, amount?: { value: string, currency_code: string } }>(
+    `/v2/payments/captures/${captureId}/refund`,
+    {
+      method: 'POST',
+      requestId: opts.requestId,
+      body: {
+        ...(opts.amount !== undefined && { amount: { value: opts.amount.toFixed(2), currency_code: (opts.currency || 'USD').toUpperCase() } }),
+        ...(opts.note && { note_to_payer: opts.note.slice(0, 255) }),
+      },
+    },
+  )
+}
+
+/**
+ * Checks a webhook really came from PayPal (verify-webhook-signature,
+ * against the webhook id registered for this app: NUXT_PAYPAL_WEBHOOK_ID).
+ */
+export async function verifyPayPalWebhook(headers: Record<string, string | undefined>, event: unknown): Promise<boolean> {
+  const webhookId = (useRuntimeConfig() as any).paypalWebhookId as string | undefined
+  if (!webhookId) return false
+  const result = await paypalRequest<{ verification_status: string }>('/v1/notifications/verify-webhook-signature', {
+    method: 'POST',
+    body: {
+      auth_algo: headers['paypal-auth-algo'],
+      cert_url: headers['paypal-cert-url'],
+      transmission_id: headers['paypal-transmission-id'],
+      transmission_sig: headers['paypal-transmission-sig'],
+      transmission_time: headers['paypal-transmission-time'],
+      webhook_id: webhookId,
+      webhook_event: event,
+    },
+  }).catch(() => null)
+  return result?.verification_status === 'SUCCESS'
+}
+
+type Money = { currency_code: string, value: string }
+export interface PayPalOrder {
+  id: string
+  status: string
+  payer?: { email_address?: string, payer_id?: string, name?: { given_name?: string, surname?: string }, phone?: { phone_number?: { national_number?: string } } }
+  purchase_units?: Array<{
+    custom_id?: string
+    invoice_id?: string
+    amount?: Money & { breakdown?: { item_total?: Money, shipping?: Money, tax_total?: Money, discount?: Money } }
+    items?: Array<{ name: string, sku?: string, quantity: string, unit_amount: Money }>
+    shipping?: { name?: { full_name?: string }, address?: { address_line_1?: string, address_line_2?: string, admin_area_2?: string, admin_area_1?: string, postal_code?: string, country_code?: string } }
+    payments?: { captures?: Array<{ id: string, status: string, amount: Money, create_time?: string, final_capture?: boolean }> }
+  }>
 }
 
 /**

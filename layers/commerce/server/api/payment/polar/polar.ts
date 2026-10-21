@@ -1,7 +1,6 @@
 // Unused: setupPolarSafe/ensurePolarCustomerSafe below have no caller
-// anywhere in the app (grepped, none found). See server/routes/api/
-// customer-portal.get.ts for why Polar is disconnected from this app's
-// real (Stripe-based) subscription billing.
+// anywhere in the app (grepped, none found); Polar isn't wired into any
+// purchase flow (payments run on PayPal).
 import { ensurePolarCustomer, setupPolar } from '../../../utils/polar'
 import { useRuntimeConfig } from '#imports'
 import type { User } from 'alternate-sdk/contracts'

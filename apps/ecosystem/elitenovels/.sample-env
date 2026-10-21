@@ -50,12 +50,6 @@ NUXT_PUBLIC_GTAG_ID=''
 GRAPHQL_HOST="http://example:8089/v1/graphql"
 GRAPHQL_TOKEN=""
 
-# Stripe Credentials
-
-STRIPE_SECRET_KEY=
-STRIPE_PUBLISHABLE_KEY=
-STRIPE_WEBHOOK_SECRET=
-
 # Logto Authentication
 
 NUXT_LOGTO_ENDPOINT=https://example.logto.app/

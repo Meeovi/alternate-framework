@@ -162,11 +162,11 @@ Every error is `{ "success": false, "error": { "code", "message", "details" } }`
 | Storage and idempotency | `layers/commerce/server/licensing-host/postgres.ts` (`PostgresLicenseRepository`, `PostgresIdempotency`) |
 | Wiring | `licensing-host/index.ts`: `useLicensing()`, `licensingFor(event)` (better-auth user, `Idempotency-Key` header), the response envelope, default integration offers. A user's workspace id is their user id; better-auth organisation owners and admins manage their organisation. Webhook events go to the Nitro hook `licensing:event` |
 | REST | `layers/commerce/server/api/licenses/…` and `api/installations/[id].delete.ts`, exactly the frozen endpoints |
-| Commerce events | `licensing-host/commerce-events.ts`, called by the Stripe webhook: a paid checkout issues a license per paid integration line (`purchase.completed`, purchase id `stripe:<payment intent>`); a full refund (`charge.refunded`) revokes them (`purchase.refunded`) |
+| Commerce events | `licensing-host/commerce-events.ts`, called by paid-checkout fulfilment (server/utils/paidCheckout.ts): a paid checkout issues a license per paid integration line (`purchase.completed`, purchase id `paypal:<capture id>`); a full refund (PayPal `PAYMENT.CAPTURE.REFUNDED`) revokes them (`purchase.refunded`) |
 | Offers | Seeded license types Personal, Commercial and Workspace (terms v1.0). Each paid integration gets a default Personal offer (`default:<product key>`) at the store price, created on first sale |
 | Integrations | `layers/commerce/server/plugins/licensing-entitlements.ts` registers licensing as meeovi-integrations' entitlement source: paid integrations are on while the user holds an active license; switching one on or off records a licensing installation on their account |
 
-Licenses issued before this existed: the 17 October Habit Tracker test purchase (qaadmin) was backfilled under its Stripe payment intent.
+Licenses issued before this existed: the 17 October Habit Tracker test purchase (qaadmin) was backfilled under its payment id.
 
 ## Verification
 

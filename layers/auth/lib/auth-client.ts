@@ -26,9 +26,6 @@ import {
 import {
   oauthProviderClient
 } from "@better-auth/oauth-provider/client"
-import {
-  stripeClient
-} from "@better-auth/stripe/client"
 // Client halves of better-auth plugins from packages
 // (packages/plugins/Authentication/auth-*), collected at build time by
 // modules/auth-plugins.ts.
@@ -43,9 +40,6 @@ export const authClient = createAuthClient({
         const redirect = new URLSearchParams(window.location.search).get("redirect")
         window.location.href = redirect ? `/2fa?redirect=${encodeURIComponent(redirect)}` : "/2fa"
       }
-    }),
-    stripeClient({
-      subscription: true //if you want to enable subscription management
     }),
     usernameClient(),
     magicLinkClient(),

@@ -5,7 +5,7 @@ import {
   reactivatePayPalSubscription,
   cancelPayPalSubscription,
 } from '../../../utils/paypal'
-import { requireAuth } from '#auth/server/utils/sessions'
+import { requireAdmin } from '#auth/server/utils/sessions'
 
 const createSchema = Joi.object({
   planId: Joi.string().required(),
@@ -20,7 +20,9 @@ const manageSchema = Joi.object({
 })
 
 export default defineEventHandler(async (event) => {
-  await requireAuth(event)
+  // Admin only: it acts on the shop's whole PayPal account (any
+  // customer's transactions, subscriptions or saved payment methods).
+  await requireAdmin(event)
 
   try {
     const method = event.node.req.method

@@ -6,7 +6,7 @@ namespace Meeovi\MarketplaceApi\Model\Payment;
 use Magento\Payment\Model\Method\AbstractMethod;
 
 /**
- * "Paid on Meeovi": the payment was taken by the Meeovi app's Stripe
+ * "Paid on Meeovi": the payment was taken by the Meeovi app's PayPal
  * checkout before the order reached Magento. Internal only — never offered
  * at the storefront checkout (a shopper could otherwise place unpaid
  * orders with it); ExternalOrderManagement is the only thing that uses it.

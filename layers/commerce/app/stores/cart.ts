@@ -140,8 +140,8 @@ export const useCartStore = defineStore('cart', () => {
 
   // Every "go to checkout" trigger in the app should call this rather than
   // hitting the payment API directly — it hands off to the single routed
-  // checkout page, which creates the session and mounts Stripe's embedded
-  // checkout. The server re-prices every item from the catalog itself, so
+  // checkout page, which takes the address and shipping rate and then the
+  // PayPal payment. The server re-prices every item from the catalog itself, so
   // nothing here needs (or should send) a price.
   async function createCheckoutSession() {
     if (items.value.length === 0) {

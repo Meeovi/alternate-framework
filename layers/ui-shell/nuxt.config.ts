@@ -185,10 +185,12 @@ export default defineNuxtConfig({
           // The top-level `vue.compilerOptions` Nuxt config below isn't
           // forwarded to @vitejs/plugin-vue in this Nuxt version, so the
           // video-player/media-* custom elements never resolved without
-          // this duplicate, Vite-level passthrough.
+          // this duplicate, Vite-level passthrough. paypal-* are the PayPal
+          // v6 SDK's buttons (checkout.vue).
           isCustomElement: (tag: string) =>
             tag.startsWith('video-') ||
             tag.startsWith('media-') ||
+            tag.startsWith('paypal-') ||
             tag.endsWith('-video')
         }
       }

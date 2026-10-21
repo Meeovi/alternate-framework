@@ -3,7 +3,7 @@
  *
  * Many routes wrap an upstream failure as
  *   createError({ statusCode: e.statusCode || 500, statusMessage: e.message, data: e.details })
- * which hands the browser whatever Stripe / PayPal / Shippo / Directus /
+ * which hands the browser whatever PayPal / Shippo / Directus /
  * Postgres said — SQL, hostnames, config hints, ids. Rather than trusting
  * every route to get that right, server errors are rewritten here to a
  * generic message (the full error is logged server-side). 4xx messages are

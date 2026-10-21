@@ -266,15 +266,15 @@ plain `10` if unset).
 ## Orders paid in the Meeovi app (integrations)
 
 The app sells integrations (and any other virtual/downloadable product it
-lists from Magento) through its own Stripe checkout; once Stripe confirms
-payment, the webhook records the order here so the order history and each
+lists from Magento) through its own PayPal checkout; once the payment is
+captured, the app records the order here so the order history and each
 seller's sale stay in Magento. Server-to-server, Integration token with
 the **`Meeovi_MarketplaceApi::external_orders`** ACL resource (grant it on
 the Integration in Magento admin → System → Integrations).
 
 ```
 POST /rest/V1/meeovi-marketplace/orders
-{ "customerId": 42, "reference": "pi_…", "items": [{ "sku": "ACME-KANBAN", "qty": 1 }],
+{ "customerId": 42, "reference": "<PayPal capture id>", "items": [{ "sku": "ACME-KANBAN", "qty": 1 }],
   "amountPaid": 9.99, "currency": "USD", "billingAddress": { … optional … } }
 ```
 → `{order_id, increment_id, created}`. Built as a normal customer quote and
@@ -283,7 +283,7 @@ placed the way `CartManagement::placeOrder()` places one (`submit()` between
 object) — Webkul's `SalesOrderPlaceAfterObserver` records
 the seller's sale — then invoiced offline (Webkul's invoice observer runs
 too; a virtual order completes). Paid with **`meeovi_external`** ("Paid on
-Meeovi (Stripe)"), an offline method that is never offered at the
+Meeovi (PayPal)"), an offline method that is never offered at the
 storefront checkout. Idempotent on `reference` (stored as `ext_order_id`,
 with a lock against concurrent webhook retries). Refused if Magento's total
 differs from `amountPaid`, if the currency isn't the store's, or if an item

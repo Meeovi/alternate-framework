@@ -1,7 +1,7 @@
 <template>
   <section class="pt-4 pb-16">
     <div class="container mx-auto px-4 text-center">
-      <div v-if="checkout && product" class="max-w-2xl mx-auto">
+      <div v-if="checkout" class="max-w-2xl mx-auto">
         <!-- Success Icon -->
         <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-6">
           <svg class="w-8 h-8 text-accent-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -10,9 +10,10 @@
         </div>
         <h1 class="text-4xl font-heading font-bold text-primary mb-4">Thank you for your purchase!</h1>
         <p class="text-xl font-bold text-muted-foreground mb-8">Your order # is: {{ checkout?.id }}</p>
-        <p class="mb-8">We'll email you an order confirmation with details and tracking info.</p>
+        <p v-if="checkout.status === 'pending'" class="mb-8">PayPal is still clearing your payment. We'll email you as soon as it's done.</p>
+        <p v-else class="mb-8">We'll email you an order confirmation with details and tracking info.</p>
         <!-- Product Details -->
-        <div class="bg-card border border-border rounded-lg p-6 mb-8">
+        <div v-if="product" class="bg-card border border-border rounded-lg p-6 mb-8">
           <h2 class="text-2xl font-heading font-semibold text-card-foreground mb-2">
             {{ product?.name }}
           </h2>
@@ -39,7 +40,8 @@ import { onMounted } from 'vue'
 import { useCartStore } from '../stores/cart'
 
 const route = useRoute()
-const sessionId = route.query.session_id
+// The PayPal order id checkout.vue sends the buyer here with.
+const orderId = String(route.query.order ?? '')
 const cartStore = useCartStore()
 
 type CheckoutDetails = {
@@ -56,7 +58,7 @@ type CheckoutDetails = {
 // This needs to be fetched on the client
 const { data } = await useAsyncData<CheckoutDetails>(
   'checkout-details',
-  () => $fetch<CheckoutDetails>(`/api/payment/stripe/done?session_id=${sessionId}`),
+  () => $fetch<CheckoutDetails>('/api/payment/paypal/done', { query: { order: orderId } }),
   {
     server: false,
   },

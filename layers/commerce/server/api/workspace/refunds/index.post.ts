@@ -1,24 +1,26 @@
 import { createError, defineEventHandler, getHeader, readBody, setResponseStatus } from 'h3'
 import { requireAdmin } from '#auth/server/utils/sessions'
 import { logAuditEvent } from '#auth/server/utils/audits'
-import { stripe } from '../../../utils/stripe'
+import { PayPalError, refundPayPalCapture } from '../../../utils/paypal'
+import { isPayPalCapture, paypalPaymentSummary } from '../../../utils/paypalCheckout'
 import { refundBackend, storeError } from '../../../utils/storeAdmin'
 
 /**
  * POST /api/workspace/refunds `{ store, orderId, items?: [{ key, qty }], reason? }`
  * with an `Idempotency-Key` header — refunds a store order an admin picked:
  *
- *  1. the money, through Stripe (the order's payment reference), for the
- *     chosen lines (all that's left without `items`);
+ *  1. the money, through PayPal (the order's payment reference is the
+ *     capture), for the chosen lines (all that's left without `items`);
  *  2. then an offline credit memo in the store for the same lines, so the
  *     store's books, seller commission and purchase history match.
  *
- * Stripe's charge.refunded webhook then does the rest (a full refund of the
- * payment revokes the licenses it bought). A retry with the same key never
- * refunds twice: Stripe returns the same refund, and the credit memo id is
- * kept on it, so a retry only records what's missing. If the credit memo
- * fails after the money went back, the answer is 207 with the reason —
- * retrying with the same key records it.
+ * PayPal's PAYMENT.CAPTURE.REFUNDED webhook then does the rest (a full
+ * refund of the payment revokes the licenses it bought). A retry with the
+ * same key never refunds twice: PayPal returns the same refund for the same
+ * request id. Once the credit memo is recorded the lines are no longer
+ * refundable, so a later retry is refused before reaching PayPal. If the
+ * credit memo fails after the money went back, the answer is 207 with the
+ * reason — retrying with the same key records it.
  */
 export default defineEventHandler(async (event) => {
   const admin = await requireAdmin(event)
@@ -37,11 +39,12 @@ export default defineEventHandler(async (event) => {
   const backend = refundBackend(String(body?.store || 'magento'))
   const order = await backend.adminOrder(orderId).catch((e) => storeError(e, 'find the order'))
   if (!order) throw createError({ statusCode: 404, statusMessage: 'No such order' })
-  if (!order.reference?.startsWith('pi_')) {
-    throw createError({ statusCode: 409, statusMessage: 'This order wasn\'t paid through the app\'s Stripe checkout — refund it in the store itself' })
+  if (!isPayPalCapture(order.reference)) {
+    throw createError({ statusCode: 409, statusMessage: 'This order wasn\'t paid through the app\'s PayPal checkout — refund it where it was paid' })
   }
+  const captureId = order.reference
 
-  // The lines and amount (store prices are in currency units, Stripe in cents).
+  // The lines and amount (store prices are in currency units, here in cents).
   const lines = items.length ? items : order.refundable.map((l) => ({ key: l.key, qty: l.qty }))
   if (!lines.length) throw createError({ statusCode: 409, statusMessage: 'Nothing left to refund on this order' })
   let cents = 0
@@ -51,52 +54,43 @@ export default defineEventHandler(async (event) => {
     cents += Math.round(line.unit_amount * item.qty * 100)
   }
 
-  const pi = await stripe.paymentIntents.retrieve(order.reference, { expand: ['latest_charge'] })
-  const charge = typeof pi.latest_charge === 'object' ? pi.latest_charge : null
-  if (pi.currency.toUpperCase() !== order.order_currency_code.toUpperCase()) {
-    throw createError({ statusCode: 409, statusMessage: `The payment is in ${pi.currency.toUpperCase()}, the order in ${order.order_currency_code}` })
+  const payment = await paypalPaymentSummary(captureId).catch(() => null)
+  if (!payment) throw createError({ statusCode: 502, statusMessage: 'PayPal could not find the payment for this order' })
+  if (payment.currency.toUpperCase() !== order.order_currency_code.toUpperCase()) {
+    throw createError({ statusCode: 409, statusMessage: `The payment is in ${payment.currency.toUpperCase()}, the order in ${order.order_currency_code}` })
   }
-  const remaining = (charge?.amount ?? pi.amount) - (charge?.amount_refunded ?? 0)
+  const remaining = payment.amount - payment.refunded
 
   let refund
   try {
-    refund = await stripe.refunds.create({
-      payment_intent: pi.id,
-      // Never more than is left on the payment (a retry after a partial
-      // failure asks for the same amount and gets the same refund back).
-      amount: remaining > 0 ? Math.min(cents, remaining) : cents,
-      reason: 'requested_by_customer',
-      metadata: {
-        store: backend.id,
-        order_id: order.id,
-        order_number: order.number,
-        lines: JSON.stringify(lines).slice(0, 450),
-        refunded_by: String(admin.id),
-      },
-    }, { idempotencyKey: `workspace-refund:${key}` })
+    refund = await refundPayPalCapture(captureId, {
+      // Never more than is left on the payment.
+      amount: (remaining > 0 ? Math.min(cents, remaining) : cents) / 100,
+      currency: payment.currency,
+      note: reason || `Refund for order ${order.number}`,
+      requestId: `workspace-refund:${key}`,
+    })
   } catch (error) {
-    throw createError({ statusCode: 402, statusMessage: `Stripe refused the refund: ${(error as Error).message}`.slice(0, 300) })
+    const message = error instanceof PayPalError ? error.message : (error as Error).message
+    throw createError({ statusCode: 402, statusMessage: `PayPal refused the refund: ${message}`.slice(0, 300) })
   }
-  if (refund.status === 'failed' || refund.status === 'canceled') {
-    throw createError({ statusCode: 402, statusMessage: `Stripe refund ${refund.id} ${refund.status}` })
+  if (refund.status === 'FAILED' || refund.status === 'CANCELLED') {
+    throw createError({ statusCode: 402, statusMessage: `PayPal refund ${refund.id} ${refund.status.toLowerCase()}` })
   }
+  const refundCents = Math.round(Number(refund.amount?.value ?? 0) * 100) || cents
 
   const audit = (status: string, details: Record<string, unknown>) => logAuditEvent({
     id: '', userId: String(admin.id), category: 'store-admin', action: 'order_refund', targetType: `${backend.id}_order`,
-    targetId: order.number, status, details: JSON.stringify({ refund: refund.id, amount: refund.amount, lines, reason, ...details }),
+    targetId: order.number, status, details: JSON.stringify({ refund: refund.id, amount: refundCents, lines, reason, ...details }),
   })
-  const result = { refundId: refund.id, amount: refund.amount, currency: refund.currency, refundStatus: refund.status }
-
-  // A retry after everything went through: already recorded.
-  if (refund.metadata?.credit_memo) return { ...result, creditMemoId: refund.metadata.credit_memo }
+  const result = { refundId: refund.id, amount: refundCents, currency: payment.currency, refundStatus: refund.status.toLowerCase() }
 
   try {
     const { creditMemoId } = await backend.refundOrder({
       orderId: order.id,
       items: lines,
-      comment: [`Refunded in Stripe (${refund.id}) from Meeovi Workspace.`, reason].filter(Boolean).join(' '),
+      comment: [`Refunded in PayPal (${refund.id}) from Meeovi Workspace.`, reason].filter(Boolean).join(' '),
     })
-    await stripe.refunds.update(refund.id, { metadata: { credit_memo: creditMemoId } })
     await audit('success', { creditMemoId })
     return { ...result, creditMemoId }
   } catch (error) {

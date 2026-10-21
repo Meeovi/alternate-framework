@@ -97,7 +97,7 @@
         </v-btn>
       </v-card-actions>
 
-      <!-- Checkout handled via Stripe Checkout (server-created session) -->
+      <!-- Checkout is the /checkout page (PayPal) -->
     </v-navigation-drawer>
     </Teleport>
 

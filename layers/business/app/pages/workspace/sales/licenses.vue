@@ -112,7 +112,7 @@
             Runs the license step of a paid checkout again — for when the payment webhook failed, or a paid product
             didn't have licensing yet. Licenses that exist are kept as they are; missing ones are issued.
           </p>
-          <v-text-field v-model="reissuePayment" label="Stripe payment (pi_…)" :error-messages="reissueError ? [reissueError] : []" />
+          <v-text-field v-model="reissuePayment" label="PayPal payment (capture id)" :error-messages="reissueError ? [reissueError] : []" />
           <div v-if="reissued" class="text-body-2">
             {{ reissued.length ? reissued.map((l) => `${l.productId}: ${l.status}`).join(', ') : 'That payment bought nothing that comes with a license.' }}
           </div>
@@ -120,7 +120,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn text="Close" @click="reissueOpen = false" />
-          <v-btn color="primary" variant="flat" text="Re-issue" :loading="reissuing" :disabled="!/^pi_\w+$/.test(reissuePayment.trim())"
+          <v-btn color="primary" variant="flat" text="Re-issue" :loading="reissuing" :disabled="!/^[A-Za-z0-9]{12,40}$/.test(reissuePayment.trim())"
             @click="reissue" />
         </v-card-actions>
       </v-card>
@@ -205,7 +205,7 @@ async function reissue() {
   reissued.value = null
   try {
     const result = await $fetch<{ licenses: { productId: string, status: string }[] }>('/api/workspace/licenses/reissue', {
-      method: 'POST', body: { paymentIntentId: reissuePayment.value.trim() },
+      method: 'POST', body: { paymentId: reissuePayment.value.trim() },
     })
     reissued.value = result.licenses
     await refresh()

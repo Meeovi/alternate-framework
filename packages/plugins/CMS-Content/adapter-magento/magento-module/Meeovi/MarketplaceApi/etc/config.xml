@@ -7,7 +7,7 @@
                 <active>1</active>
                 <model>Meeovi\MarketplaceApi\Model\Payment\External</model>
                 <order_status>pending</order_status>
-                <title>Paid on Meeovi (Stripe)</title>
+                <title>Paid on Meeovi (PayPal)</title>
                 <allowspecific>0</allowspecific>
                 <group>offline</group>
             </meeovi_external>

@@ -11,7 +11,6 @@ import {
   betterAuth
 } from 'better-auth'
 import {
-  APIError,
   createAuthMiddleware
 } from 'better-auth/api'
 import {
@@ -28,7 +27,6 @@ import {
 import {
   waitUntil
 } from "@vercel/functions";
-import { stripeClient } from "./stripe";
 import { eraseUserContent } from "./eraseUserContent";
 
 import {
@@ -176,41 +174,14 @@ export const auth = betterAuth({
   user: {
     deleteUser: {
       enabled: true,
-      beforeDelete: async (user: User) => {
-        if (!user.stripeCustomerId) return;
-        for await (const sub of stripeClient.subscriptions.list({
-          customer: user.stripeCustomerId,
-          status: "all",
-        })) {
-          if (["canceled", "incomplete", "incomplete_expired"].includes(sub.status)) continue;
-          throw new APIError("BAD_REQUEST", {
-            message: "Cancel your active subscription before deleting your account",
-          });
-        }
-      },
       afterDelete: async (user: User) => {
         await eraseUserContent(String(user.id));
       },
     },
     additionalFields: {
-      // Referenced by deleteUser.beforeDelete above and needed by the
-      // stripe() plugin's createCustomerOnSignUp. The backing columns are
-      // added by migration 20260905120000_add_stripe_polar_customer_ids;
-      // apply migrations before relying on billing flows.
-      // input: false on all three ids below — these are trust anchors for
-      // billing-portal access and subscription-gated account deletion, and
-      // must only ever be written server-side (webhook/registry hooks), never
-      // accepted from a signup/update-user request body. Without input:
-      // false, better-auth's default field parsing writes whatever value a
-      // caller supplies, which previously let anyone set their own
-      // stripeCustomerId to a victim's id and get that victim's Stripe
-      // billing-portal link back.
-      stripeCustomerId: {
-        type: 'string',
-        required: false,
-        defaultValue: null,
-        input: false
-      },
+      // input: false on the ids below — they're trust anchors for
+      // billing and must only ever be written server-side (webhook/registry
+      // hooks), never accepted from a signup/update-user request body.
       polarCustomerId: {
         type: 'string',
         required: false,

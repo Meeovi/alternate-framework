@@ -281,7 +281,7 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         ]);
         $quote->collectTotals();
 
-        // Stripe charged what the app priced from this catalogue; if
+        // PayPal charged what the app priced from this catalogue; if
         // Magento now says otherwise (price or tax changed), don't record
         // a sale at a price nobody paid.
         $total = (float) $quote->getBaseGrandTotal();
@@ -306,7 +306,7 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         /** @var Order $order */
         $order = $this->orderRepository->get((int) $placed->getId());
         $order->setExtOrderId($reference);
-        $order->addCommentToStatusHistory(__('Paid with Stripe in the Meeovi app (%1).', $reference));
+        $order->addCommentToStatusHistory(__('Paid with PayPal in the Meeovi app (%1).', $reference));
         $this->orderRepository->save($order);
         $this->invoice($order, $reference);
 

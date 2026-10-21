@@ -303,8 +303,8 @@
         title: order?.value?.id ? `Order ${order.value.number ?? order.value.id}` : 'Order Page',
     })
 
-    // Fallback to the confirmation email's download link (server/api/
-    // payment/stripe/webhooks.post.ts) — surfaced here too since that email
+    // Fallback to the confirmation email's download link (layers/commerce
+    // server/utils/paidCheckout.ts) — surfaced here too since that email
     // can fail to send or land in spam, and previously there was no other
     // way for a buyer to ever reach their digital purchase.
     const downloadExpired = computed(() => {

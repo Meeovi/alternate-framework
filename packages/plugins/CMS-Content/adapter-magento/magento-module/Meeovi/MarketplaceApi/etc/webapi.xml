@@ -121,7 +121,7 @@
         </resources>
     </route>
     <!--
-      Below: orders paid with Stripe in the Meeovi app and recorded here
+      Below: orders paid with PayPal in the Meeovi app and recorded here
       (ExternalOrderManagementInterface), and the seller behind a product
       (ProductSellerManagementInterface) — server-to-server with the
       Integration token. Own ACL resource, so the Integration needs no

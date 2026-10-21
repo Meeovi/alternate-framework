@@ -3,7 +3,7 @@
 // views, notify-followers and the social driver. See lib.mjs.
 import { readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot, signInJar } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
 const accounts = loadAccounts()
 if (!accounts.user || !accounts.seller) throw new Error('QA accounts missing — run auth.mjs first')
@@ -68,7 +68,8 @@ await test('A1', 'signed-in-only endpoints refuse a signed-out caller', async ()
   const open = []
   for (const [m, p] of AUTHED) {
     const r = await req(m, p, m === 'GET' ? {} : { json: {} })
-    if (r.status !== 401) open.push(`${m} ${p} → ${r.status}`)
+    // Form routes answer the Turnstile gate first (403) — also a refusal.
+    if (r.status !== 401 && !isTurnstileRefusal(r)) open.push(`${m} ${p} → ${r.status}`)
   }
   expect(!open.length, open.join('; '))
 })
@@ -106,6 +107,7 @@ section('Lists (ownership)')
 let listId = null
 await test('L1', 'create a list', async () => {
   const r = await req('POST', '/api/social/lists', { jar: jars.user, json: { name: 'QA list (auto-deleted)', status: 'draft' } })
+  turnstileGate(r)
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 140)}`)
   listId = r.body?.id ?? r.body?.data?.id
   expect(listId, `no id in ${r.text.slice(0, 120)}`)

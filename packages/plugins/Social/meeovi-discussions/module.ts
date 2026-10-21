@@ -54,6 +54,9 @@ export default defineNuxtModule<MeeoviDiscussionsModuleOptions>({
       sessionEndpoint: options.sessionEndpoint || '/api/auth/get-session',
       membersEndpoint: options.membersEndpoint || '/api/social/members',
       admin: { ...options.admin },
+      // Shared secret Rocket.Chat's spam-check webhook sends (the outgoing
+      // integration's token); NUXT_MEEOVI_DISCUSSIONS_MODERATION_TOKEN.
+      moderationToken: env.ROCKETCHAT_MODERATION_TOKEN || '',
     }
     nuxt.options.runtimeConfig.public.meeoviDiscussions = {
       ...(nuxt.options.runtimeConfig.public.meeoviDiscussions as Record<string, unknown> || {}),

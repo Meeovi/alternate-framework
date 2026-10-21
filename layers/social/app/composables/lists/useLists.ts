@@ -121,6 +121,10 @@ export function useLists() {
     type?: ListType
     color?: string
     icon?: string
+    description?: string
+    status?: 'Private' | 'Public'
+    // A Directus lists_type by name, e.g. 'Wishlist'.
+    listsType?: string
     userId?: string | number
   }) => {
     const type = payload.type || 'basic'
@@ -133,6 +137,9 @@ export function useLists() {
         type,
         color: payload.color || config?.color,
         icon: payload.icon || config?.icon,
+        description: payload.description,
+        status: payload.status,
+        listsType: payload.listsType,
       },
     }) || null
   }
