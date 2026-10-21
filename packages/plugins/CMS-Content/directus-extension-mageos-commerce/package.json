@@ -1,0 +1,40 @@
+{
+  "name": "directus-extension-mageos-commerce",
+  "version": "0.1.0",
+  "description": "Directus endpoint that exposes a Mage-OS / Magento 2 catalog through a normalized, backend-agnostic commerce contract (/commerce/*), with Redis-backed stale-while-revalidate caching.",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-extension-endpoint",
+    "mage-os",
+    "magento"
+  ],
+  "directus:extension": {
+    "type": "endpoint",
+    "path": "dist/index.js",
+    "source": "src/index.ts",
+    "host": "^12.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "ioredis": "5.11.1"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "18.0.5",
+    "@types/express": "4.17.21",
+    "@types/node": "^22.10.0",
+    "typescript": "6.0.3",
+    "vitest": "^4.1.8"
+  }
+}
