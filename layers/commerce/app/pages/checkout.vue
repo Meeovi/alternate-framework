@@ -123,14 +123,22 @@
   // Items added before the cart recorded this flag count as shippable.
   const needsShipping = computed(() => cartStore.items.some((item) => item.requiresShipping !== false))
 
-  // PayPal's v6 SDK, loaded only once the buyer reaches payment. The
-  // instance authenticates with a short-lived client token from the server;
-  // clientId only satisfies the script registry's options.
-  const { onLoaded, load: loadPayPal } = useScriptPayPal({
-    clientId: config.public.scripts?.paypal?.clientId || 'unused',
-    sandbox: config.public.paypalMode !== 'live',
-    scriptOptions: { trigger: 'manual' },
-  })
+  // PayPal's v6 SDK, loaded only once the buyer reaches payment (sandbox or
+  // live, the same mode as the server). The instance authenticates with a
+  // short-lived client token from the server, so no client id is needed here.
+  let paypalSdk = null
+  const loadPayPal = () => (paypalSdk ??= new Promise((resolve, reject) => {
+    const fail = (message) => { paypalSdk = null; reject(new Error(message)) }
+    const timer = setTimeout(() => fail('PayPal SDK did not load'), 20000)
+    const script = document.createElement('script')
+    script.src = config.public.paypalMode === 'live'
+      ? 'https://www.paypal.com/web-sdk/v6/core'
+      : 'https://www.sandbox.paypal.com/web-sdk/v6/core'
+    script.async = true
+    script.onload = () => { clearTimeout(timer); window.paypal ? resolve(window.paypal) : fail('PayPal SDK did not load') }
+    script.onerror = () => { clearTimeout(timer); script.remove(); fail('PayPal SDK did not load') }
+    document.head.appendChild(script)
+  }))
   const paypalReady = ref(false)
   const paying = ref(false)
   let paymentSession = null
@@ -214,11 +222,7 @@
 
     try {
       const { clientToken } = await $fetch('/api/payment/paypal/client')
-      loadPayPal()
-      const paypal = await new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error('PayPal SDK did not load')), 20000)
-        onLoaded(({ paypal }) => { clearTimeout(timer); resolve(paypal) })
-      })
+      const paypal = await loadPayPal()
       const sdk = await paypal.createInstance({ clientToken, components: ['paypal-payments'], pageType: 'checkout' })
       const methods = await sdk.findEligibleMethods({ currencyCode: 'USD' })
       if (!methods.isEligible('paypal')) throw new Error('PayPal is not available here')

@@ -1,4 +1,5 @@
 import { AUTH_CAPTCHA_HEADER, needsAuthCaptcha, needsTurnstile, TURNSTILE_HEADER } from '../../shared/formProtection'
+import { loadTurnstile as loadApi, type TurnstileApi } from '../utils/turnstile'
 
 /**
  * Turnstile on every form, without wiring it into each one: form
@@ -11,13 +12,6 @@ import { AUTH_CAPTCHA_HEADER, needsAuthCaptcha, needsTurnstile, TURNSTILE_HEADER
  * stays hidden unless Cloudflare wants the visitor to click, then shows
  * in the corner until they do.
  */
-type TurnstileApi = {
-  render: (el: HTMLElement, options: Record<string, unknown>) => string
-  execute: (id: string) => void
-  reset: (id: string) => void
-}
-
-const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
 const TOKEN_TIMEOUT_MS = 120_000
 
 export default defineNuxtPlugin(() => {
@@ -25,18 +19,6 @@ export default defineNuxtPlugin(() => {
   // Already installed (Sentry wraps fetch afterwards, keeping ours as __sentry_original__).
   const installed = (f: unknown): boolean => !!f && (!!(f as { __turnstileForms?: boolean }).__turnstileForms || installed((f as { __sentry_original__?: unknown }).__sentry_original__))
   if (!siteKey || typeof window === 'undefined' || installed(window.fetch)) return
-
-  let api: Promise<TurnstileApi> | null = null
-  const loadApi = () => (api ??= new Promise<TurnstileApi>((resolve, reject) => {
-    const ready = () => (window as unknown as { turnstile?: TurnstileApi }).turnstile
-    if (ready()) return resolve(ready()!)
-    const script = document.createElement('script')
-    script.src = SCRIPT_SRC
-    script.async = true
-    script.onload = () => (ready() ? resolve(ready()!) : reject(new Error('Turnstile did not load')))
-    script.onerror = () => { api = null; reject(new Error('Turnstile did not load')) }
-    document.head.appendChild(script)
-  }))
 
   let widgetId: string | null = null
   let container: HTMLElement | null = null

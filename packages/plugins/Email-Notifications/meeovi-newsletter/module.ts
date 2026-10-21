@@ -47,7 +47,7 @@ export default defineNuxtModule<MeeoviNewsletterModuleOptions>({
     ui: {},
     turnstile: {
       // Auto-enable when the app already has a Turnstile site key
-      // configured (e.g. via @nuxtjs/turnstile in layers/shared); stays
+      // configured (layers/shared provides <NuxtTurnstile>); stays
       // off otherwise so the module works standalone without it.
       enabled: Boolean(env.NUXT_PUBLIC_TURNSTILE_SITE_KEY),
     },

@@ -166,7 +166,7 @@ export interface MeeoviNewsletterModuleOptions {
   ui?: NewsletterUiOptions
   /**
    * Bot mitigation. Defaults to enabled when `NUXT_PUBLIC_TURNSTILE_SITE_KEY` is
-   * set (the app already has @nuxtjs/turnstile configured) and disabled
+   * set (the app provides <NuxtTurnstile>, e.g. via layers/shared) and disabled
    * otherwise, so the module works standalone without it. A honeypot field
    * is always active regardless of this setting.
    */

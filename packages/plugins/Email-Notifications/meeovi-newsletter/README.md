@@ -65,9 +65,10 @@ export default defineNuxtConfig({
 | `directus.consentAtField` / `consentIpField` | — | `consent_at` / `consent_ip` (set `null` to skip) |
 | `turnstile.enabled` | auto: `NUXT_PUBLIC_TURNSTILE_SITE_KEY` set | `false` |
 
-Turnstile verification reuses whatever `@nuxtjs/turnstile` itself is configured
-with (`runtimeConfig.turnstile.secretKey` / `NUXT_TURNSTILE_SECRET_KEY`) — no
-separate credential to set up. The honeypot field needs no configuration and
+Turnstile verification reuses the app's Turnstile secret
+(`runtimeConfig.turnstile.secretKey` / `NUXT_TURNSTILE_SECRET_KEY`) — no
+separate credential to set up. The widget is the app's `<NuxtTurnstile>`
+(provided by layers/shared). The honeypot field needs no configuration and
 is always active.
 
 ### Mautic

@@ -115,11 +115,9 @@ export default defineNuxtConfig({
     // vars only override keys that exist — the server then had no creds.
     paypalClientSecret: process.env.PAYPAL_CLIENT_SECRET || '',
     // server/utils/paypal.ts reads these two as top-level config as well
-    // (config.paypalClientId / config.paypalMode, not config.public.*) —
-    // there's already a separate, genuinely-public
-    // public.scripts.paypal.clientId (a different env var) for the
-    // client-side PayPal SDK script, so these don't need to be public at
-    // all; they were just as unreachable as the two secrets above.
+    // (config.paypalClientId / config.paypalMode, not config.public.*). The
+    // browser's PayPal SDK authenticates with a server-issued client token
+    // (/api/payment/paypal/client), so the client id never needs to be public.
     paypalClientId: process.env.PAYPAL_CLIENT_ID || '',
     paypalMode: process.env.PAYPAL_MODE || 'sandbox',
     // The id of the webhook registered for this app in the PayPal
@@ -144,11 +142,6 @@ export default defineNuxtConfig({
       // through to the real Directus client, unmodified.
       commerceBackend: process.env.NUXT_PUBLIC_COMMERCE_BACKEND || 'directus',
       currencies: process.env.NUXT_PUBLIC_CURRENCIES || 'USD,EUR,GBP',
-      scripts: {
-        paypal: {
-          clientId: `${process.env.NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID}`, // NUXT_PUBLIC_SCRIPTS_PAYPAL_CLIENT_ID
-        },
-      },
       // Directus — URL only. This object is serialized into the client
       // payload, so it must never carry credentials. The static token now
       // lives in the server-only `runtimeConfig.directus.token` above and

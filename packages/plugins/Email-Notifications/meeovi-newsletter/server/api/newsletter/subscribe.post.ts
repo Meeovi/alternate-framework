@@ -47,13 +47,10 @@ export default defineEventHandler(async (event): Promise<NewsletterSubscribeResp
     if (!turnstileToken) {
       throw createError({ statusCode: 422, statusMessage: 'Verification required' })
     }
-    // Calls Cloudflare's siteverify endpoint directly rather than depending
-    // on @nuxtjs/turnstile's server auto-import (that module's auto-imports
-    // only exist when it is itself registered — the module.ts option that
-    // turns this on is meant to auto-detect that case via its site key, but
-    // verification shouldn't hard-depend on the other module's internals).
-    // Reuses the same `runtimeConfig.turnstile.secretKey` @nuxtjs/turnstile
-    // itself populates, so no separate credential needs configuring.
+    // Calls Cloudflare's siteverify endpoint directly so this module works
+    // without the host app's helpers. Reuses the app's
+    // `runtimeConfig.turnstile.secretKey` (NUXT_TURNSTILE_SECRET_KEY), so no
+    // separate credential needs configuring.
     const secretKey = (runtimeConfig as any).turnstile?.secretKey
     if (!secretKey) {
       throw createError({ statusCode: 500, statusMessage: 'Turnstile is enabled but not configured' })

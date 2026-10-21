@@ -66,9 +66,9 @@ function buildContentSecurityPolicy(): string {
 
   // Analytics / marketing tag endpoints. Google Tag Manager (configured
   // with a real container id) can itself load any of these downstream, and
-  // the @nuxt/scripts registry entries below (Bing UET, and the pixel
-  // stubs) beacon to them directly — without these, every one was blocked
-  // with a console CSP violation on every page.
+  // the consent-gated trackers (app/plugins/cookie-consent.client.ts: GA,
+  // Bing UET) beacon to them directly — without these, every one was
+  // blocked with a console CSP violation on every page.
   const analyticsHosts = [
     'https://www.googletagmanager.com',
     'https://*.google-analytics.com',
@@ -202,9 +202,7 @@ export default defineNuxtConfig({
     '@vueuse/motion/nuxt',
     '@nuxtjs/seo',
     '@nuxtjs/i18n',
-    '@nuxtjs/turnstile',
     '@nuxtjs/leaflet',
-    '@nuxt/scripts',
     '@nuxtjs/mcp-toolkit',
     'nuxt-skill-hub'
   ],
@@ -357,61 +355,6 @@ export default defineNuxtConfig({
     ],
   },
 
-  scripts: {
-    // Third-party scripts are downloaded and bundled at build time. Under
-    // build load the default fetch timed out on bat.bing.com and failed the
-    // whole build (2026-10-21): allow longer + retry, and if a download still
-    // fails, load that script from its own URL (allowed by the CSP above).
-    assets: {
-      fallbackOnSrcOnBundleFail: true,
-      fetchOptions: { timeout: 30_000, retry: 2 },
-    },
-    registry: {
-      // Analytics, advertising and pixels are 'manual': they load only once
-      // the visitor consents (app/plugins/cookie-consent.client.ts), never
-      // on page load — UK/EU PECR + GDPR.
-      googleAnalytics: {
-        trigger: 'manual'
-      },
-      googleAdsense: {
-        trigger: 'manual'
-      },
-      // Tracking pixels — registered only when their id env var is set, so
-      // an unconfigured pixel neither warns at build time nor ships an
-      // inert <script>. Google Tag Manager (below) can also fire these
-      // downstream from its own container config.
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_META_PIXEL_ID ? { metaPixel: { trigger: 'manual' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_REDDIT_PIXEL_ID ? { redditPixel: { trigger: 'manual' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_SNAPCHAT_PIXEL_ID ? { snapchatPixel: { trigger: 'manual' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_TIKTOK_PIXEL_ID ? { tiktokPixel: { trigger: 'manual' } } : {}),
-      ...(process.env.NUXT_PUBLIC_SCRIPTS_X_PIXEL_ID ? { xPixel: { trigger: 'manual' } } : {}),
-      bingUet: {
-        trigger: 'manual'
-      },
-      carbonAds: {
-        trigger: 'manual',
-      },
-      googleTagManager: {
-        trigger: 'manual'
-      },
-      blueskyEmbed: {},
-      googleRecaptcha: {
-        trigger: 'manual'
-      },
-      gravatar: {
-        trigger: 'onNuxtReady',
-      },
-      // Loaded only on /checkout's payment step (checkout.vue), not on
-      // every page.
-      paypal: {
-        trigger: 'manual',
-      },
-      lemonSqueezy: {
-        trigger: 'onNuxtReady',
-      },
-    }
-  },
-
   leaflet: {
     markerCluster: true
   },
@@ -524,8 +467,8 @@ export default defineNuxtConfig({
       user: '~/auth/currentUser'
     },
     turnstile: {
-      // This can be overridden at runtime via the NUXT_TURNSTILE_SECRET_KEY
-      // environment variable.
+      // Server-only; read by server/utils/turnstile.ts (verifyTurnstileToken).
+      // Overridden at runtime by NUXT_TURNSTILE_SECRET_KEY.
       secretKey: `${process.env.NUXT_TURNSTILE_SECRET_KEY || ''}`,
     },
     notify: {
@@ -572,6 +515,20 @@ export default defineNuxtConfig({
       // socket.io path when Novu is proxied under a prefix (see novuApi above).
       novuSocketPath: process.env.NOVU_WEBSOCKET_PATH || '',
       segmentWriteKey: process.env.NUXT_PUBLIC_SEGMENT_WRITE_KEY || '',
+      // Cloudflare Turnstile site key (<NuxtTurnstile>, the forms plugin);
+      // NUXT_PUBLIC_TURNSTILE_SITE_KEY.
+      turnstile: {
+        siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '',
+      },
+      // Consent-gated trackers, loaded by app/plugins/cookie-consent.client.ts.
+      // Kept under `scripts` so the existing env vars still apply
+      // (NUXT_PUBLIC_SCRIPTS_GOOGLE_TAG_MANAGER_ID, _GOOGLE_ANALYTICS_ID,
+      // _BING_UET_ID); '' keeps each key in the build so those overrides work.
+      scripts: {
+        googleTagManager: { id: '' },
+        googleAnalytics: { id: '' },
+        bingUet: { id: '' },
+      },
       googleAdsense: {
         id: process.env.GOOGLE_ADSENSE_ID,
         test: process.env.GOOGLE_ADSENSE_TEST_MODE === 'true',

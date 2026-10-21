@@ -1,43 +1,54 @@
 import { createVNode, render, watch } from 'vue'
-import {
-  useHead,
-  useRuntimeConfig,
-  useScriptBingUet,
-  useScriptGoogleAdsense,
-  useScriptGoogleAnalytics,
-  useScriptGoogleTagManager,
-  useScriptMetaPixel,
-  useScriptRedditPixel,
-  useScriptSnapchatPixel,
-  useScriptTikTokPixel,
-  useScriptXPixel,
-} from '#imports'
+import { useHead, useRuntimeConfig } from '#imports'
 import CookieConsentBanner from '../components/consent/CookieConsentBanner.vue'
 import { useCookieConsent } from '../composables/useCookieConsent'
 
 /**
  * Loads analytics / advertising scripts only after consent (see
- * useCookieConsent). They're registered in nuxt.config with
- * `trigger: 'manual'`; this plugin calls `.load()` on the ones that are
- * configured once their category is accepted, and mounts the banner.
- * Withdrawing consent deletes their first-party cookies and reloads, since
- * a loaded third-party script can't be unloaded.
+ * useCookieConsent) and mounts the banner. Each tracker loads once its
+ * category is accepted and its id is configured (runtimeConfig.public.scripts,
+ * NUXT_PUBLIC_SCRIPTS_*_ID). Withdrawing consent deletes their first-party
+ * cookies and reloads, since a loaded third-party script can't be unloaded.
+ * Ad pixels (Meta, TikTok, …) aren't loaded here — fire them from the GTM
+ * container if needed.
  */
-const CATEGORIES = {
+
+type Gtag = (...args: unknown[]) => void
+type TrackerWindow = Window & { dataLayer?: unknown[], gtag?: Gtag, uetq?: unknown[] | { push: (...args: unknown[]) => void }, UET?: new (opts: Record<string, unknown>) => { push: (...args: unknown[]) => void } }
+
+function loadScript(src: string, onload?: () => void) {
+  const script = document.createElement('script')
+  script.src = src
+  script.async = true
+  if (onload) script.onload = onload
+  script.onerror = () => console.warn(`[consent] could not load ${src}`)
+  document.head.appendChild(script)
+}
+
+// Each loader mirrors the vendor's standard snippet. `gtag`/`dataLayer` are
+// already set up below (Consent Mode defaults go in before anything loads).
+const TRACKERS: Record<'analytics' | 'ads', Record<string, (id: string, w: TrackerWindow) => void>> = {
   analytics: {
-    googleTagManager: useScriptGoogleTagManager,
-    googleAnalytics: useScriptGoogleAnalytics,
-    bingUet: useScriptBingUet,
+    googleTagManager: (id, w) => {
+      w.dataLayer!.push({ 'gtm.start': Date.now(), event: 'gtm.js' })
+      loadScript(`https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(id)}`)
+    },
+    googleAnalytics: (id, w) => {
+      w.gtag!('js', new Date())
+      w.gtag!('config', id)
+      loadScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`)
+    },
+    bingUet: (id, w) => {
+      w.uetq = (w.uetq as unknown[]) || []
+      loadScript('https://bat.bing.com/bat.js', () => {
+        if (typeof w.UET !== 'function') return
+        w.uetq = new w.UET({ ti: id, enableAutoSpaTracking: true, q: w.uetq })
+        w.uetq.push('pageLoad')
+      })
+    },
   },
-  ads: {
-    googleAdsense: useScriptGoogleAdsense,
-    metaPixel: useScriptMetaPixel,
-    redditPixel: useScriptRedditPixel,
-    snapchatPixel: useScriptSnapchatPixel,
-    tiktokPixel: useScriptTikTokPixel,
-    xPixel: useScriptXPixel,
-  },
-} as const
+  ads: {},
+}
 
 // The AdSense account's loader (was an unconditional <head> script).
 const ADSENSE_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3854548303717312'
@@ -45,17 +56,12 @@ const ADSENSE_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle
 // First-party cookies those vendors set.
 const TRACKING_COOKIE = /^(_ga|_gid|_gat|_gcl|_uet|_fbp|_fbc|_ttp|_scid|_sctr|_rdt|__gads|__gpi|__gsas|_clck|_clsk|muc_ads|personalization_id)/
 
-type Gtag = (...args: unknown[]) => void
-
 export default defineNuxtPlugin((nuxtApp) => {
   const { consent } = useCookieConsent()
-  const scripts = (useRuntimeConfig().public as { scripts?: Record<string, Record<string, unknown> | undefined> }).scripts ?? {}
-  // Configured = the registry entry has an id/client/etc., not just options.
-  const configured = (key: string) =>
-    Object.entries(scripts[key] ?? {}).some(([k, v]) => k !== 'scriptOptions' && typeof v === 'string' && v.length > 0)
+  const ids = (useRuntimeConfig().public as { scripts?: Record<string, { id?: string } | undefined> }).scripts ?? {}
 
   // Google Consent Mode v2: everything denied until the visitor decides.
-  const w = window as unknown as { dataLayer?: unknown[], gtag?: Gtag }
+  const w = window as TrackerWindow
   w.dataLayer = w.dataLayer || []
   w.gtag = w.gtag || function gtag() { w.dataLayer!.push(arguments) }
   w.gtag('consent', 'default', {
@@ -63,15 +69,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
 
   const loaded = new Set<string>()
-  const grant = (category: keyof typeof CATEGORIES) => {
-    for (const [key, use] of Object.entries(CATEGORIES[category])) {
-      if (loaded.has(key) || !configured(key)) continue
+  const grant = (category: keyof typeof TRACKERS) => {
+    for (const [key, load] of Object.entries(TRACKERS[category])) {
+      const id = ids[key]?.id
+      if (loaded.has(key) || !id) continue
       loaded.add(key)
-      try {
-        nuxtApp.runWithContext(() => (use as () => { load: () => unknown })().load())
-      } catch (error) {
-        console.warn(`[consent] could not load ${key}`, error)
-      }
+      load(id, w)
     }
     if (category === 'ads' && !loaded.has('adsenseLoader')) {
       loaded.add('adsenseLoader')

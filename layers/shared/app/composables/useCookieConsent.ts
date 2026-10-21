@@ -5,8 +5,7 @@ import { useCookie, useState } from '#imports'
  * Cookie consent (UK/EU PECR + GDPR): nothing non-essential — analytics,
  * advertising, tracking pixels — loads until the visitor opts in. The
  * choice lives in a first-party cookie for 6 months; plugins/cookie-consent
- * loads the matching @nuxt/scripts entries (registered with
- * `trigger: 'manual'` in nuxt.config) once it's given.
+ * loads the matching trackers once it's given.
  *
  * Bump CONSENT_VERSION when the categories or vendors change materially, so
  * everyone is asked again.
