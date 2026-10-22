@@ -3,6 +3,7 @@ import type { NormalizedCategory, NormalizedProduct, Paginated, ProductQueryOpti
 import { CommerceError, fromFetchError } from '../errors'
 import { categoryTreeQuery, PRODUCT_BY_SLUG_QUERY, PRODUCTS_QUERY, ROOT_CATEGORY_QUERY } from './mage-os.queries'
 import { oauth1Header } from './oauth1'
+import { createMageOsServices } from './mage-os.services'
 
 export interface MageOsOptions {
   /** Store base URL without trailing slash. */
@@ -258,11 +259,38 @@ export class MageOsAdapter implements ICommerceAdapter {
   private readonly timeoutMs: number
   private readonly categoryDepth: number
 
+  // Beyond the catalog (src/adapters/mage-os.services.ts).
+  readonly search: NonNullable<ICommerceAdapter['search']>
+  readonly suggest: NonNullable<ICommerceAdapter['suggest']>
+  readonly getStoreConfig: NonNullable<ICommerceAdapter['getStoreConfig']>
+  readonly resolveCategoryId: NonNullable<ICommerceAdapter['resolveCategoryId']>
+  readonly reviews: NonNullable<ICommerceAdapter['reviews']>
+  readonly customers: NonNullable<ICommerceAdapter['customers']>
+  readonly orders: NonNullable<ICommerceAdapter['orders']>
+  readonly giftCards: NonNullable<ICommerceAdapter['giftCards']>
+  readonly sellers: NonNullable<ICommerceAdapter['sellers']>
+  readonly catalogSync: NonNullable<ICommerceAdapter['catalogSync']>
+  readonly admin: NonNullable<ICommerceAdapter['admin']>
+
   constructor(private readonly options: MageOsOptions) {
     if (!options.url) throw new CommerceError('NOT_CONFIGURED', 'MAGEOS_URL is not set')
     this.fetch = options.fetch ?? globalThis.fetch
     this.timeoutMs = options.timeoutMs ?? 8000
     this.categoryDepth = options.categoryDepth ?? 6
+
+    const services = createMageOsServices(this, normalizeProduct, productVariables,
+      (skus) => this.getProducts({ skus, pageSize: Math.min(skus.length, 100) }))
+    this.search = services.search
+    this.suggest = services.suggest
+    this.getStoreConfig = services.getStoreConfig
+    this.resolveCategoryId = services.resolveCategoryId
+    this.reviews = services.reviews
+    this.customers = services.customers
+    this.orders = services.orders
+    this.giftCards = services.giftCards
+    this.sellers = services.sellers
+    this.catalogSync = services.catalogSync
+    this.admin = services.admin
   }
 
   async getProducts(params: ProductQueryOptions): Promise<NormalizedProduct[]> {
@@ -305,12 +333,11 @@ export class MageOsAdapter implements ICommerceAdapter {
    * Catalog › Inventory resource. GraphQL only exposes IN_STOCK/OUT_OF_STOCK.
    */
   async getInventory(skus: string[]): Promise<Record<string, number>> {
-    if (!this.options.token) throw new CommerceError('NOT_CONFIGURED', 'MAGEOS_TOKEN is not set, so live stock is unavailable')
     const result: Record<string, number> = {}
     const queue = [...new Set(skus)]
     const worker = async () => {
       for (let sku = queue.shift(); sku !== undefined; sku = queue.shift()) {
-        const item = await this.rest<{ qty?: number | null, is_in_stock?: boolean } | null>(`/V1/stockItems/${encodeURIComponent(sku)}`, { allowNotFound: true })
+        const item = await this.rest<{ qty?: number | null, is_in_stock?: boolean } | null>('GET', `/V1/stockItems/${encodeURIComponent(sku)}`, { allowNotFound: true })
         if (item) result[sku] = item.is_in_stock === false ? 0 : Math.max(0, num(item.qty))
       }
     }
@@ -330,21 +357,23 @@ export class MageOsAdapter implements ICommerceAdapter {
     }
   }
 
-  private async request(url: string, init: Omit<RequestInit, 'headers'> & { headers: Record<string, string> | (() => Record<string, string>) }): Promise<Response> {
+  private async request(url: string, init: Omit<RequestInit, 'headers'> & { headers: Record<string, string> | (() => Record<string, string>), retry?: boolean }): Promise<Response> {
     // One retry for network failures and 502/503/504, which are often a
-    // momentary restart or cache flush on the Magento side.
+    // momentary restart or cache flush on the Magento side — reads only:
+    // repeating a write (a refund, a new customer) could apply it twice.
+    const retries = init.retry === false ? 0 : 1
     for (let attempt = 0; ; attempt++) {
       try {
         const headers = typeof init.headers === 'function' ? init.headers() : init.headers
         const response = await this.fetch(url, { ...init, headers, signal: AbortSignal.timeout(this.timeoutMs) })
-        if (attempt === 0 && [502, 503, 504].includes(response.status)) {
+        if (attempt < retries && [502, 503, 504].includes(response.status)) {
           await new Promise((resolve) => setTimeout(resolve, 250))
           continue
         }
         return response
       } catch (error) {
         const mapped = fromFetchError(error, BACKEND)
-        if (attempt === 0 && mapped.code === 'UPSTREAM_OFFLINE') {
+        if (attempt < retries && mapped.code === 'UPSTREAM_OFFLINE') {
           await new Promise((resolve) => setTimeout(resolve, 250))
           continue
         }
@@ -370,9 +399,11 @@ export class MageOsAdapter implements ICommerceAdapter {
     const endpoint = `${this.options.url}/graphql`
     const compact = query.replace(/\s+/g, ' ').trim()
     const getUrl = `${endpoint}?${new URLSearchParams({ query: compact, variables: JSON.stringify(variables) })}`
-    const response = getUrl.length <= MAX_GET_URL
+    // Mutations always POST (Magento refuses them over GET) and are never retried.
+    const mutation = /^mutation\b/.test(compact)
+    const response = !mutation && getUrl.length <= MAX_GET_URL
       ? await this.request(getUrl, { method: 'GET', headers: this.headers() })
-      : await this.request(endpoint, { method: 'POST', headers: this.headers({ 'Content-Type': 'application/json' }), body: JSON.stringify({ query: compact, variables }) })
+      : await this.request(endpoint, { method: 'POST', retry: !mutation, headers: this.headers({ 'Content-Type': 'application/json' }), body: JSON.stringify({ query: compact, variables }) })
 
     type GraphQLBody = { data?: T | null, errors?: { message: string, extensions?: { category?: string } }[] }
     let body: GraphQLBody | null = null
@@ -387,6 +418,10 @@ export class MageOsAdapter implements ICommerceAdapter {
       if (first.extensions?.category === 'graphql-authorization') {
         throw new CommerceError('UPSTREAM_AUTH', `${BACKEND} GraphQL: ${first.message}`)
       }
+      // A refused mutation input (duplicate email, bad rating, …) is the caller's problem.
+      if (mutation && /^graphql-(input|already-exists|no-such-entity)$/.test(first.extensions?.category ?? '')) {
+        throw new CommerceError('REJECTED', first.message)
+      }
       // Partial data (e.g. one product type can't resolve) still beats an error.
       if (!body.data) throw new CommerceError('UPSTREAM_ERROR', `${BACKEND} GraphQL: ${first.message}`)
     }
@@ -394,21 +429,62 @@ export class MageOsAdapter implements ICommerceAdapter {
     return body.data
   }
 
-  async rest<T>(path: string, options: { allowNotFound?: boolean } = {}): Promise<T> {
+  /**
+   * Magento REST (`/rest[/<store>]/V1…`). `auth: 'integration'` (default)
+   * signs with the integration (OAuth 1.0a, or Bearer when only the token is
+   * set); `{ bearer }` sends a customer's own token, for self-scoped routes.
+   * Some Meeovi_MarketplaceApi routes return JSON *as a string*; those are
+   * decoded here.
+   */
+  async rest<T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, options: { body?: unknown, allowNotFound?: boolean, auth?: 'integration' | { bearer: string } } = {}): Promise<T> {
     const url = `${this.options.url}/rest${this.options.storeCode ? `/${encodeURIComponent(this.options.storeCode)}` : ''}${path}`
+    const auth = options.auth ?? 'integration'
     const { token, consumerKey, consumerSecret, tokenSecret } = this.options
+    if (auth === 'integration' && !token) {
+      throw new CommerceError('NOT_CONFIGURED', 'MAGEOS_TOKEN (and the integration\'s other credentials) are not set')
+    }
     // Signed per request: the nonce and timestamp must be fresh on a retry too.
-    const authorization = () => (consumerKey && consumerSecret && tokenSecret
-      ? oauth1Header('GET', url, { consumerKey, consumerSecret, accessToken: token!, accessTokenSecret: tokenSecret })
-      : `Bearer ${token}`)
-    const response = await this.request(url, { method: 'GET', headers: () => this.headers({ Authorization: authorization() }) })
-    if (response.status === 404 && options.allowNotFound) return null as T
+    const authorization = () => (auth !== 'integration'
+      ? `Bearer ${auth.bearer}`
+      : consumerKey && consumerSecret && tokenSecret
+        ? oauth1Header(method, url, { consumerKey, consumerSecret, accessToken: token!, accessTokenSecret: tokenSecret })
+        : `Bearer ${token}`)
+    const response = await this.request(url, {
+      method,
+      retry: method === 'GET',
+      headers: () => this.headers({
+        Authorization: authorization(),
+        ...(options.body === undefined ? {} : { 'Content-Type': 'application/json' }),
+      }),
+      ...(options.body === undefined ? {} : { body: JSON.stringify(options.body) }),
+    })
+    const data = await response.json().catch(() => null) as unknown
     if (!response.ok) {
-      const body = await response.json().catch(() => null) as { message?: string, parameters?: Record<string, string> } | null
-      // Magento's message templates use %name placeholders.
-      const detail = body?.message?.replace(/%(\w+)/g, (_, key: string) => body.parameters?.[key] ?? key)
+      const body = data as { message?: string, parameters?: Record<string, string> | string[] } | null
+      // Magento's message templates use %name / %1 placeholders.
+      const detail = body?.message?.replace(/%(\w+)/g, (_, key: string) => {
+        const params = body.parameters
+        const value = Array.isArray(params) ? params[Number(key) - 1] : params?.[key]
+        return value ?? key
+      })
+      if (response.status === 404) {
+        if (options.allowNotFound) return null as T
+        // "Request does not match any route" = the module providing it isn't installed.
+        if (detail && /does not match any route/i.test(detail)) {
+          throw new CommerceError('UPSTREAM_ERROR', `${BACKEND} has no ${method} ${path.split('?')[0]} route (is the Mage-OS module installed?)`)
+        }
+        throw new CommerceError('NOT_FOUND', detail || 'Not found')
+      }
+      if ([400, 409, 422].includes(response.status)) throw new CommerceError('REJECTED', detail || `${BACKEND} rejected the request`)
       throw this.statusError(response, 'REST', detail)
     }
-    return await response.json() as T
+    if (typeof data === 'string' && /^\s*[[{]/.test(data)) {
+      try {
+        return JSON.parse(data) as T
+      } catch {
+        // A plain string that happens to start with a bracket.
+      }
+    }
+    return data as T
   }
 }

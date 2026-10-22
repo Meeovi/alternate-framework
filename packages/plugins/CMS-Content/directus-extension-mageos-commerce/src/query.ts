@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { CommerceError } from './errors'
-import type { ProductQueryOptions, ProductSort } from './types'
+import type { ProductQueryOptions, ProductSort, SearchOptions } from './types'
 
 export const MAX_PAGE_SIZE = 100
 export const MAX_STOCK_SKUS = 50
@@ -45,6 +45,7 @@ export function parseSkus(value: unknown, max: number): string[] {
 /**
  * GET /commerce/products query string → ProductQueryOptions.
  * page, limit (or pageSize), search, category (id), category_path,
+ * category_slug (resolved to an id by the route),
  * sku (comma list), price_min, price_max,
  * sort: relevance | position | name | -name | price | -price
  */
@@ -55,7 +56,9 @@ export function parseProductQuery(query: Query): ProductQueryOptions {
   }
   const categoryId = first(query.category)
   const categoryPath = first(query.category_path)
-  if (sort === 'position' && !categoryId && !categoryPath) {
+  const categorySlug = first(query.category_slug)
+  if (categorySlug !== undefined && !SLUG_RE.test(categorySlug)) throw new CommerceError('INVALID_QUERY', 'Invalid category_slug')
+  if (sort === 'position' && !categoryId && !categoryPath && !categorySlug) {
     throw new CommerceError('INVALID_QUERY', 'sort=position needs a category or category_path')
   }
   if (categoryPath !== undefined && !SLUG_RE.test(categoryPath)) throw new CommerceError('INVALID_QUERY', 'Invalid category_path')
@@ -97,3 +100,28 @@ export function optionsKey(options: object): string {
       : value)
   return createHash('sha1').update(stable).digest('hex').slice(0, 20)
 }
+
+/**
+ * GET /commerce/search query string → SearchOptions.
+ * q (required), page, limit, category (id), sort, facets=true
+ */
+export function parseSearchQuery(query: Query): SearchOptions {
+  const q = first(query.q)
+  if (!q) throw new CommerceError('INVALID_QUERY', 'q is required')
+  if (q.length > 200) throw new CommerceError('INVALID_QUERY', 'q is too long')
+  const sort = first(query.sort)
+  if (sort !== undefined && !SORTS.has(sort as ProductSort)) throw new CommerceError('INVALID_QUERY', `sort must be one of: ${[...SORTS].join(', ')}`)
+  const categoryId = first(query.category)
+  if (categoryId !== undefined && categoryId.length > 128) throw new CommerceError('INVALID_QUERY', 'Invalid category')
+  return {
+    query: q,
+    page: positiveInt(query, ['page'], 1, 10_000),
+    pageSize: positiveInt(query, ['limit', 'pageSize'], 20, MAX_PAGE_SIZE),
+    ...(categoryId ? { categoryId } : {}),
+    ...(sort ? { sort: sort as ProductSort } : {}),
+    facets: first(query.facets) === 'true' || first(query.facets) === '1',
+  }
+}
+
+/** ?category_slug=… from a products query, if any. */
+export const categorySlugOf = (query: Query) => first(query.category_slug)

@@ -8,11 +8,16 @@ export type CommerceErrorCode =
   | 'UPSTREAM_AUTH'
   | 'UPSTREAM_ERROR'
   | 'NOT_CONFIGURED'
+  | 'REJECTED'
+  | 'NOT_SUPPORTED'
 
 const STATUS: Record<CommerceErrorCode, number> = {
   INVALID_QUERY: 400,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  // The backend refused a write (validation, nothing left to refund, …).
+  REJECTED: 422,
+  NOT_SUPPORTED: 501,
   UPSTREAM_AUTH: 502,
   UPSTREAM_ERROR: 502,
   UPSTREAM_OFFLINE: 503,

@@ -99,3 +99,69 @@ export function categoryTreeQuery(depth: number): string {
     }
   `
 }
+
+export const SEARCH_QUERY = `
+  query Search($search: String!, $filter: ProductAttributeFilterInput, $sort: ProductAttributeSortInput, $pageSize: Int, $currentPage: Int, $facets: Boolean!) {
+    products(search: $search, filter: $filter, sort: $sort, pageSize: $pageSize, currentPage: $currentPage) {
+      total_count
+      page_info { current_page page_size total_pages }
+      items { ${PRODUCT_CARD_FIELDS} }
+      aggregations @include(if: $facets) { attribute_code label options { label value count } }
+    }
+  }
+`
+
+export const SUGGEST_QUERY = `
+  query Suggest($search: String!) {
+    products(search: $search, pageSize: 10) { items { name } }
+  }
+`
+
+export const STORE_CONFIG_QUERY = `
+  query StoreConfig {
+    storeConfig {
+      store_code store_name base_currency_code default_display_currency_code locale
+      base_media_url copyright product_reviews_enabled allow_guests_to_write_product_reviews
+    }
+  }
+`
+
+const REVIEW_FIELDS = 'nickname summary text created_at average_rating ratings_breakdown { name value }'
+
+export const PRODUCT_REVIEWS_QUERY = `
+  query ProductReviews($sku: String!, $pageSize: Int) {
+    products(filter: { sku: { eq: $sku } }, pageSize: 1) {
+      items { sku reviews(pageSize: $pageSize) { items { ${REVIEW_FIELDS} } } }
+    }
+  }
+`
+
+export const REVIEW_RATINGS_QUERY = `
+  query ReviewRatings {
+    productReviewRatingsMetadata { items { id name values { value_id value } } }
+  }
+`
+
+export const CREATE_REVIEW_MUTATION = `
+  mutation CreateReview($input: CreateProductReviewInput!) {
+    createProductReview(input: $input) { review { ${REVIEW_FIELDS} } }
+  }
+`
+
+export const CATEGORY_BY_SLUG_QUERY = `
+  query CategoryBySlug($slug: String!) {
+    categories(filters: { url_key: { eq: $slug } }, pageSize: 1) { items { uid } }
+  }
+`
+
+export const CREATE_CUSTOMER_MUTATION = `
+  mutation CreateCustomer($input: CustomerCreateInput!) {
+    createCustomerV2(input: $input) { customer { email firstname lastname } }
+  }
+`
+
+export const CUSTOMER_TOKEN_MUTATION = `
+  mutation CustomerToken($email: String!, $password: String!) {
+    generateCustomerToken(email: $email, password: $password) { token }
+  }
+`

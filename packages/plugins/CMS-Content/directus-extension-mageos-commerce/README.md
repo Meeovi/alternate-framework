@@ -1,119 +1,191 @@
 # directus-extension-mageos-commerce
 
-A Directus **endpoint extension** that puts a Mage-OS / Magento 2 catalog behind a small,
-backend-agnostic API at `/commerce/*`. Directus acts as the gateway: it calls Mage-OS
-(GraphQL for the catalog, REST for live stock), flattens the responses into one
-normalized contract, and caches catalog reads (Redis, stale-while-revalidate).
+A Directus **endpoint extension** that puts a Mage-OS / Magento 2 store behind one
+backend-agnostic API at `/commerce/*`, callable with the **Directus SDK**. It covers the
+working functionality of `adapter-magento`: the storefront catalog, search, reviews, store
+settings, customers, paid orders, gift cards, Webkul marketplace sellers, catalogue sync and
+store administration — normalized into the same shapes the app's commerce contract
+(`alternate-sdk`'s `BackendOrder`, `BackendAdminOrder`, `BackendGiftCard`, …) already uses.
 
-The frontend only ever sees the normalized shapes in [`src/types.ts`](src/types.ts). To move
-to another commerce backend, add an adapter that implements `ICommerceAdapter` and return
-it from `createAdapter()` in `src/index.ts` — the `/commerce/*` API doesn't change.
+Catalog reads are cached (Redis, stale-while-revalidate). Everything that touches a customer,
+an order, a seller or the store's admin data is only for **trusted Directus callers** (see
+[Access](#access)).
+
+To move to another commerce backend, add an adapter that implements `ICommerceAdapter`
+([`src/adapters/base.adapter.ts`](src/adapters/base.adapter.ts)) and return it from
+`createAdapter()` in `src/index.ts` — the API doesn't change. Beyond the catalog, capabilities
+are optional: a backend without one answers those routes with `501 NOT_SUPPORTED`.
 
 ## Files
 
 ```
 directus-extension-mageos-commerce/
-├── package.json              # "directus:extension": endpoint, host ^12
-├── tsconfig.json
+├── package.json                  # "directus:extension": endpoint (host ^12); exports ./sdk, ./types
+├── sdk/index.ts                  # typed Directus SDK commands: commerce.products(), …
 ├── src/
-│   ├── index.ts              # defineEndpoint: routes, caching headers, errors, createAdapter()
-│   ├── types.ts              # NormalizedProduct, NormalizedCategory, ProductQueryOptions
-│   ├── config.ts             # env → settings (MAGEOS_*, reuse of Directus REDIS_*)
-│   ├── errors.ts             # CommerceError + fetch-failure mapping
-│   ├── query.ts              # query-string parsing/validation, cache keys
+│   ├── index.ts                  # defineEndpoint: adapter, cache, route modules
+│   ├── http.ts                   # errors, cache headers, trusted-caller check, body validation
+│   ├── routes/
+│   │   ├── catalog.ts            # public storefront routes
+│   │   ├── account.ts            # customers, orders, gift cards (trusted)
+│   │   ├── sellers.ts            # marketplace sellers + catalogue sync (trusted)
+│   │   └── admin.ts              # store administration (trusted)
+│   ├── types.ts                  # the API's types (normalized catalog + commerce contract)
+│   ├── config.ts                 # env → settings
+│   ├── errors.ts                 # CommerceError codes → HTTP statuses
+│   ├── query.ts                  # query-string parsing/validation, cache keys
 │   ├── adapters/
-│   │   ├── base.adapter.ts   # ICommerceAdapter
-│   │   ├── mage-os.adapter.ts# Mage-OS implementation + normalizeProduct/normalizeCategory
-│   │   ├── mage-os.queries.ts# GraphQL documents
-│   │   └── oauth1.ts         # OAuth 1.0a (HMAC-SHA256) signing for REST
-│   └── cache/
-│       └── swr-cache.ts      # SWR cache over Redis (memory fallback) or memory
-└── test/                     # vitest: normalizers, adapter transport/errors, cache, query
+│   │   ├── base.adapter.ts       # ICommerceAdapter (+ optional capabilities)
+│   │   ├── mage-os.adapter.ts    # Mage-OS: catalog, transport (GraphQL/REST), normalizers
+│   │   ├── mage-os.services.ts   # Mage-OS: everything beyond the catalog
+│   │   ├── mage-os.mappers.ts    # REST rows → commerce contract (ported from adapter-magento)
+│   │   ├── mage-os.queries.ts    # GraphQL documents
+│   │   └── oauth1.ts             # OAuth 1.0a (HMAC-SHA256) request signing
+│   └── cache/swr-cache.ts        # SWR cache over Redis (memory fallback) or memory
+└── test/                         # vitest
 ```
+
+## Using it with the Directus SDK
+
+`sdk/index.ts` has one typed command per route, built on the SDK's `customEndpoint`:
+
+```ts
+import { createDirectus, rest, staticToken } from '@directus/sdk'
+import { commerce } from 'directus-extension-mageos-commerce/sdk'
+
+// Public storefront: any client, no token.
+const directus = createDirectus(useRuntimeConfig().public.directusUrl).with(rest())
+
+const page = await directus.request(commerce.products({ category_slug: 'books', sort: 'price', limit: 24 }))
+page.items          // NormalizedProduct[]
+page.total          // and page, pageSize, totalPages
+
+const results = await directus.request(commerce.search({ q: 'jacket', facets: true }))
+const stock = await directus.request(commerce.stock(page.items.map((p) => p.sku)))
+
+// Trusted routes: server-side only, with the app server's Directus token.
+const server = createDirectus(process.env.DIRECTUS_URL!).with(staticToken(process.env.DIRECTUS_TOKEN!)).with(rest())
+const orders = await server.request(commerce.customerOrders(magentoCustomerId))
+await server.request(commerce.placePaidOrder({ reference: captureId, customerId, items, amountPaid, currency: 'USD' }))
+```
+
+Listings and search put their paging inside `data` (`{ items, page, pageSize, total,
+totalPages }`) because the SDK returns only a response's `data`. Errors reject with the SDK's
+error (`error.errors[0].extensions.code`, `error.response.status`).
+
+The package isn't an npm workspace of this repo; import it by path
+(`packages/plugins/CMS-Content/directus-extension-mageos-commerce/sdk`) or add it to the
+workspaces. `@directus/sdk` is a peer dependency.
 
 ## API
 
-All responses are JSON. Errors use Directus's shape:
+All responses are JSON `{ "data": … }`. Errors use Directus's shape:
 `{ "errors": [{ "message": "…", "extensions": { "code": "UPSTREAM_TIMEOUT" } }] }`.
 
-| Route | |
-|---|---|
-| `GET /commerce/products` | Paginated listing → `{ data: NormalizedProduct[], meta: { page, pageSize, total, totalPages } }` |
-| `GET /commerce/products/:slug` | One product (by `url_key`) → `{ data: NormalizedProduct }`, 404 if unknown |
-| `GET /commerce/categories` | The category tree below the store's root → `{ data: NormalizedCategory[] }` |
-| `POST /commerce/realtime/stock` | Body `{ "skus": ["SKU-1", …] }` (max 50) → `{ data: { "SKU-1": 7, "UNKNOWN": null }, meta: { checkedAt } }` |
+### Public (no authentication)
 
-`GET /commerce/products` query parameters:
+| Route | SDK | Returns |
+|---|---|---|
+| `GET /commerce/products` | `products(params)` | `Paginated<NormalizedProduct>` |
+| `GET /commerce/products/:slug` | `product(slug)` | `NormalizedProduct` (404 if unknown) |
+| `GET /commerce/products/:slug/reviews?limit=` | `productReviews(slug)` | `ProductReview[]` |
+| `POST /commerce/products/:slug/reviews` | `createReview(slug, review)` | `ProductReview` — `{ nickname, summary, text, ratings: [{ id, valueId }] }` |
+| `GET /commerce/reviews/ratings` | `reviewRatings()` | rating ids/value ids for writing reviews |
+| `GET /commerce/categories` | `categories()` | the category tree (`NormalizedCategory[]`) |
+| `GET /commerce/categories/:idOrPath` | `category(idOrPath)` | one category with its subtree |
+| `GET /commerce/search?q=` | `search(params)` | `Paginated<NormalizedProduct> & { facets }` |
+| `GET /commerce/search/suggest?q=` | `suggest(q)` | product-name suggestions |
+| `GET /commerce/store` | `store()` | store name, currencies, locale, review settings |
+| `GET /commerce/gift-cards/products` | `giftCardProducts()` | gift card products |
+| `GET /commerce/sellers?sku=A,B` | `sellers(skus)` | `{ [sku]: { customerId, name, shopUrl } }` (store-owned SKUs absent) |
+| `POST /commerce/realtime/stock` | `stock(skus)` | `{ [sku]: qty \| null }` — live, `{ "skus": [...] }`, max 50 |
 
-| Param | |
-|---|---|
-| `page` | 1-based, default 1 |
-| `limit` (or `pageSize`) | default 20, max 100 |
-| `search` | full-text search |
-| `category` | category id (`NormalizedCategory.id`) |
-| `category_path` | category path instead of id, e.g. `apparel/women/tops-women` |
-| `sku` | comma-separated SKUs |
-| `price_min`, `price_max` | price range |
-| `sort` | `relevance` · `position` (order within the category; needs a category) · `name` · `-name` · `price` · `-price`. Default: relevance when searching, position in a category, else name |
+`GET /commerce/products` parameters: `page`, `limit` (≤ 100), `search`, `category` (id),
+`category_path`, `category_slug` (an unknown slug gives an empty page), `sku` (comma list),
+`price_min`, `price_max`, `sort` (`relevance` · `position` · `name` · `-name` · `price` ·
+`-price`; `position` needs a category). `GET /commerce/search`: `q` (required), `page`,
+`limit`, `category`, `sort`, `facets=true`.
 
-### Normalized product
+### Trusted: customers, orders, gift cards
 
-```ts
-interface NormalizedProduct {
-  id: string          // Magento uid
-  sku: string
-  name: string
-  slug: string        // url_key
-  price: { regular: number; final: number; currency: string }   // minimum price (configurables: cheapest variant)
-  inStock: boolean
-  images: string[]    // enabled gallery images by position; Magento placeholder images are dropped
-  categories: { id: string; name: string; slug: string }[]
-  attributes: Record<string, any>
-  updatedAt: string   // ISO 8601
-}
-```
+| Route | SDK | |
+|---|---|---|
+| `POST /commerce/customers` | `createCustomer(input)` | `{ firstname, lastname, email, wantsToSell? }` → the backend customer (`id` from the customer token; optional seller registration) |
+| `GET /commerce/customers/:id/orders?page=&limit=` | `customerOrders(id)` | `BackendOrder[]`, newest first |
+| `GET /commerce/customers/:id/orders/:orderId` | `customerOrder(id, orderId)` | `BackendOrder`; 404 when not theirs |
+| `GET /commerce/customers/:id/purchased-skus` | `purchasedSkus(id)` | SKUs invoiced and not refunded |
+| `GET /commerce/customers/:id/gift-cards` | `customerGiftCards(id)` | `BackendGiftCard[]` on their orders |
+| `GET /commerce/gift-cards/received?email=` | `receivedGiftCards(email)` | `BackendGiftCard[]` sent to that email |
+| `POST /commerce/orders` | `placePaidOrder(order)` | records an order paid outside the store (`PaidOrder`); idempotent on `reference` (`201` new, `200` repeat) |
 
-`attributes` always has `type` (`simple`, `configurable`, `virtual`, …). Listings add
-`options` for configurable products (`[{ code, label, values: [{ id, label, swatch? }] }]`).
-The single-product route also adds the store's own attributes (from `custom_attributesV2`,
-minus Magento's system attributes), `variants`
-(`[{ id, sku, inStock, price, options: { color: 58 } }]`), `description`,
-`shortDescription`, `metaTitle`, `metaDescription` and `onlyLeftInStock` when Magento shows it.
+### Trusted: marketplace sellers and catalogue sync
+
+| Route | SDK | |
+|---|---|---|
+| `POST /commerce/sellers/register` | `registerSeller(input)` | `{ customerId, customerToken, shopUrl? }` — self-scoped, with the customer's own token |
+| `POST /commerce/sellers/:id/products` | `createSellerProduct(id, token, product)` | self-scoped like register |
+| `GET` / `PATCH /commerce/sellers/:id/shop` | `sellerShop(id)`, `updateSellerShop(id, updates)` | shop profile |
+| `GET /commerce/sellers/:id/products` · `/orders` · `/transactions` · `/low-stock` | `sellerProducts(id)`, … | seller dashboard data |
+| `POST /commerce/sync/products` · `/sync/stock` · `/sync/images` | `syncProduct`, `syncStock`, `syncImage` | keep a seller's catalogue in sync (e.g. dropshipping) |
+| `GET /commerce/sync/orders?filters=&limit=` | `syncOrders(filters)` | core orders; `filters` = JSON `[{ field, value, condition? }]` |
+| `POST /commerce/sync/orders/:orderId/ship` | `shipOrder(orderId, shipment)` | ship items with tracking → `{ shipmentId }` |
+
+### Trusted: store administration
+
+| Route | SDK | |
+|---|---|---|
+| `GET /commerce/admin/:collection` | `adminList(c)` | flat rows; `customers` · `orders` · `creditmemos` |
+| `GET /commerce/admin/:collection/schema` | `adminSchema(c)` | column definitions (`BackendField[]`) |
+| `POST /commerce/admin/customers` | `adminCreateCustomer(data)` | `email`, `firstname`, `lastname`, `group_id` |
+| `PATCH` / `DELETE /commerce/admin/customers/:id` | `adminUpdateCustomer`, `adminDeleteCustomer` | edits merge onto the current record |
+| `GET /commerce/admin/orders/:orderId` | `adminOrder(id)` | `BackendAdminOrder`, with what's still refundable per line |
+| `GET /commerce/admin/orders/by-reference/:ref` | `adminOrderByReference(ref)` | the order with that payment reference |
+| `POST /commerce/admin/orders/:orderId/refund` | `refundOrder({ orderId, items?, comment? })` | an offline credit memo (the app refunds the payment itself); no `items` = everything left |
+
+## Access
+
+- **Public routes** need no token, like the store's own storefront. Mage-OS still applies its
+  own rules (guest reviews, review moderation). Directus's rate limiter (`RATE_LIMITER_*`)
+  bounds abuse of the public `POST`s.
+- **Trusted routes** need a Directus **admin**, or a Directus user or role listed in
+  `MAGEOS_TRUSTED_USERS` / `MAGEOS_TRUSTED_ROLES`. Otherwise they answer `403 FORBIDDEN`. The
+  intended caller is the app's server, with its static token (e.g. the "Meeovi app server"
+  user): it has already authenticated its own user and passes their backend customer id. Never
+  call these from the browser. Their responses are `Cache-Control: private, no-store`.
+- Writes are never retried (a repeated refund would refund twice). `placePaidOrder` is safe to
+  repeat because Mage-OS dedupes it on `reference`.
 
 ## Caching and failure handling
 
-- **Catalog reads** (products, product, categories) go through a stale-while-revalidate cache:
-  fresh for `MAGEOS_CACHE_TTL` seconds; then served stale for `MAGEOS_CACHE_SWR` seconds while
-  one background request refreshes it; after that, fetched again. Concurrent requests for the
-  same key share one Mage-OS call. Unknown slugs are cached too, so they can't be used to
-  hammer Mage-OS.
+- **Public reads** (products, product, reviews, ratings, categories, search, suggest, store,
+  gift-card products, sellers) go through a stale-while-revalidate cache: fresh for
+  `MAGEOS_CACHE_TTL` seconds; then served stale for `MAGEOS_CACHE_SWR` seconds while one
+  background request refreshes it. Concurrent requests for the same key share one Mage-OS
+  call, and unknown slugs are cached too. Headers:
+  `Cache-Control: public, s-maxage=<TTL>, stale-while-revalidate=<SWR>` (default
+  `s-maxage=300, stale-while-revalidate=60`), `X-Commerce-Cache` (`HIT`, `MISS`, `STALE`,
+  `STALE-IF-ERROR`), `Age`.
 - **When Mage-OS fails** (timeout, unreachable, maintenance mode, 5xx), a cached copy up to
-  `MAGEOS_CACHE_STALE_IF_ERROR` seconds old is served with `X-Commerce-Cache: STALE-IF-ERROR`
-  and a short `Cache-Control: public, s-maxage=30`, so a CDN retries soon. With no copy, the
-  answer is 503/504 with a specific code and `Cache-Control: no-store`. Network failures and
-  502/503/504 are retried once before that.
-- **Headers**: catalog responses send
-  `Cache-Control: public, s-maxage=<TTL>, stale-while-revalidate=<SWR>` (by default
-  `s-maxage=300, stale-while-revalidate=60`), plus `X-Commerce-Cache` (`HIT`, `MISS`, `STALE`,
-  `STALE-IF-ERROR`) and `Age`.
-- **Live stock** never uses the catalog cache and sends `Cache-Control: no-store`. Answers are
-  reused in memory for `MAGEOS_STOCK_CACHE_SECONDS` (5 s) so a burst of identical checks
-  makes one Mage-OS call; set it to `0` to always ask Mage-OS.
-- **Redis**: by default the extension uses Directus's own Redis settings (`REDIS` or
-  `REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`/…), with keys under `MAGEOS_CACHE_NAMESPACE`. If
-  Redis is down, each Directus process caches in memory instead and logs one warning; requests
-  never fail because of the cache.
+  `MAGEOS_CACHE_STALE_IF_ERROR` seconds old is served (`STALE-IF-ERROR`,
+  `Cache-Control: public, s-maxage=30`). With no copy, the answer is a 503/504 with a specific
+  code. Reads are retried once on a network failure or 502/503/504.
+- **Live stock** skips the catalog cache (`no-store`); answers are reused in memory for
+  `MAGEOS_STOCK_CACHE_SECONDS` (5 s) so a burst of identical checks makes one Mage-OS call.
+- **Redis**: Directus's own Redis settings by default, keys under `MAGEOS_CACHE_NAMESPACE`. If
+  Redis is down, each Directus process caches in memory and logs one warning.
 
 | Error code | Status | When |
 |---|---|---|
 | `INVALID_QUERY` | 400 | bad parameter or body |
-| `FORBIDDEN` | 403 | stock check without a session while `MAGEOS_STOCK_REQUIRE_AUTH=true` |
-| `NOT_FOUND` | 404 | unknown product slug |
-| `UPSTREAM_AUTH` | 502 | Mage-OS rejected the token, or the integration lacks a permission (the message names it) |
-| `UPSTREAM_ERROR` | 502 | GraphQL error or unexpected response |
+| `FORBIDDEN` | 403 | a trusted route without a trusted caller (or stock while `MAGEOS_STOCK_REQUIRE_AUTH`) |
+| `NOT_FOUND` | 404 | unknown product, category, order, customer, … |
+| `REJECTED` | 422 | Mage-OS refused a write (duplicate email, nothing to refund, SKU not the seller's, …) — its message is passed on |
+| `NOT_SUPPORTED` | 501 | the backend lacks that capability |
+| `UPSTREAM_AUTH` | 502 | Mage-OS refused the integration — the message names the missing ACL resource |
+| `UPSTREAM_ERROR` | 502 | GraphQL error, unexpected response, or a Mage-OS module that isn't installed (named) |
 | `UPSTREAM_OFFLINE` | 503 | Mage-OS unreachable (connection refused, DNS, …) |
 | `UPSTREAM_UNAVAILABLE` | 503 | Mage-OS answered 503 (maintenance mode) or another 5xx |
-| `NOT_CONFIGURED` | 503 | `MAGEOS_URL` (or, for stock, `MAGEOS_TOKEN`) isn't set |
+| `NOT_CONFIGURED` | 503 | `MAGEOS_URL` (or, for REST routes, the integration credentials) isn't set |
 | `UPSTREAM_TIMEOUT` | 504 | no answer within `MAGEOS_TIMEOUT_MS` |
 
 ## Configuration
@@ -123,15 +195,17 @@ Set these in Directus's environment (its `.env`, or the container's environment)
 | Variable | Default | |
 |---|---|---|
 | `MAGEOS_URL` | — (required) | Store base URL, e.g. `https://commerce.example.com` |
-| `MAGEOS_TOKEN` | — | Integration **Access Token**; needed for `/commerce/realtime/stock` only |
+| `MAGEOS_TOKEN` | — | Integration **Access Token** — needed by every REST route (stock, sellers, gift cards, orders, customers' orders, sync, admin) |
 | `MAGEOS_TOKEN_SECRET` | — | Integration **Access Token Secret** |
 | `MAGEOS_CONSUMER_KEY` | — | Integration **Consumer Key** |
 | `MAGEOS_CONSUMER_SECRET` | — | Integration **Consumer Secret** — with the three above, REST calls are OAuth 1.0a-signed |
-| `MAGEOS_STORE_CODE` | default store | Store view code, sent as the `Store` header |
+| `MAGEOS_TRUSTED_USERS` | — | Directus user ids allowed on trusted routes (comma-separated); admins always are |
+| `MAGEOS_TRUSTED_ROLES` | — | Directus role ids allowed on trusted routes |
+| `MAGEOS_STORE_CODE` | default store | Store view code (`Store` header, `/rest/<code>/V1`) |
 | `MAGEOS_TIMEOUT_MS` | `8000` | Per-request timeout |
 | `MAGEOS_CATEGORY_DEPTH` | `6` | Levels of the category tree fetched (max 10) |
 | `MAGEOS_CACHE_STORE` | `redis` | `redis` or `memory` |
-| `MAGEOS_CACHE_REDIS_URL` | Directus's `REDIS_*` | Separate Redis for this cache, e.g. `redis://:pass@host:6379/2` |
+| `MAGEOS_CACHE_REDIS_URL` | Directus's `REDIS_*` | Separate Redis for this cache |
 | `MAGEOS_CACHE_NAMESPACE` | `mageos-commerce` | Redis key prefix |
 | `MAGEOS_CACHE_TTL` | `300` | Seconds fresh (also the CDN `s-maxage`); `0` disables the cache |
 | `MAGEOS_CACHE_SWR` | `60` | Seconds served stale while refreshing |
@@ -141,26 +215,31 @@ Set these in Directus's environment (its `.env`, or the container's environment)
 
 ### Mage-OS side
 
-- The catalog uses the public storefront GraphQL API (`/graphql`); no token is sent there.
-  `custom_attributesV2` needs Mage-OS 1.0+ / Magento 2.4.7+.
-- Live stock uses REST `GET /rest/V1/stockItems/:sku` (the default stock, which MSI keeps in
-  sync), authenticated as a Magento Integration:
-  1. **System › Extensions › Integrations**: create or edit the integration, and on **API**
-     tick **Catalog › Inventory** (`Magento_Catalog::catalog_inventory`). Save and
-     (re)activate it.
-  2. From its **Integration Details**, copy the Consumer Key, Consumer Secret, Access Token and
-     Access Token Secret into `MAGEOS_CONSUMER_KEY`, `MAGEOS_CONSUMER_SECRET`, `MAGEOS_TOKEN`
-     and `MAGEOS_TOKEN_SECRET`. Requests are then signed with OAuth 1.0a (HMAC-SHA256), which
-     works with Magento's default settings.
-  - Alternatively set only `MAGEOS_TOKEN`, which is sent as a Bearer token. That works only if
-    the store allows it (**Stores › Configuration › Services › OAuth › Consumer Settings ›
-    Allow OAuth Access Tokens to be used as standalone Bearer tokens**,
-    `oauth/consumer/enable_integration_as_bearer`, off by default since Magento 2.4.4). When
-    it's off, Magento doesn't reject the token: it treats the call as a guest, and the answer
-    is a 401 naming a permission, which looks like a missing ACL resource but isn't.
-- If a gift-card extension adds product types without GraphQL support, any `products` query
-  that returns one fails. Install a GraphQL type for it (this repo's
-  `adapter-magento/magento-module/Meeovi/GiftCards` does that for Ecomteck gift cards).
+The catalog, search, reviews and customer creation use the public storefront GraphQL API (no
+token). Everything else is REST, as a Magento **Integration**:
+
+1. **System › Extensions › Integrations**: create or edit the integration and, on **API**, tick
+   the resources for the routes you use (below). Save and (re)activate it.
+2. Copy its Consumer Key, Consumer Secret, Access Token and Access Token Secret into the four
+   `MAGEOS_*` credentials. Requests are then OAuth 1.0a-signed, which works with Magento's
+   default settings. (With only `MAGEOS_TOKEN`, it's sent as a Bearer token, which works only
+   when **Stores › Configuration › Services › OAuth › Consumer Settings › Allow OAuth Access
+   Tokens to be used as standalone Bearer tokens** is on; when it's off, Magento treats the call
+   as a guest and answers 401 naming a resource, which looks like a missing ACL but isn't.)
+
+| Routes | Mage-OS module | Integration ACL resources |
+|---|---|---|
+| live stock | core | Catalog › Inventory (`Magento_Catalog::catalog_inventory`) |
+| sellers by SKU, seller dashboard/register/products, catalogue sync, paid orders, customer orders, purchased SKUs | `Meeovi_MarketplaceApi` (+ Webkul Marketplace) | the module's resources, incl. `Meeovi_MarketplaceApi::external_orders` |
+| gift cards | `Meeovi_GiftCards` (+ Ecomteck GiftCard) | `Meeovi_GiftCards::read` |
+| admin customers | core | `Magento_Customer::customer`, `::manage`, `::delete` |
+| admin orders, order lookup, refunds, sync orders/ship | core | `Magento_Sales::actions_view`, `Magento_Sales::sales_creditmemo`, `Magento_Sales::creditmemo`, `Magento_Sales::ship` |
+
+A missing resource answers `502 UPSTREAM_AUTH` naming it; a missing module answers `502
+UPSTREAM_ERROR` naming the route. `custom_attributesV2` (product attributes) needs Mage-OS
+1.0+ / Magento 2.4.7+. If a gift-card extension adds product types without GraphQL support,
+any `products` query that returns one fails — `Meeovi_GiftCards` adds that GraphQL type for
+Ecomteck gift cards.
 
 ## Build and install
 
@@ -184,43 +263,14 @@ mkdir -p "$EXT"
 cp -r package.json dist "$EXT"/
 ```
 
-For Docker, copy into the volume or bind mount behind `/directus/extensions`, for example:
+For Docker, copy into the volume or bind mount behind `/directus/extensions`. Then add the
+`MAGEOS_*` variables to Directus's environment and restart Directus (extensions and env are read
+at start-up, unless `EXTENSIONS_AUTO_RELOAD=true`). Check it's loaded:
 
 ```bash
-docker cp package.json <container>:/directus/extensions/directus-extension-mageos-commerce/package.json
-docker cp dist        <container>:/directus/extensions/directus-extension-mageos-commerce/dist
-```
-
-Then add the `MAGEOS_*` variables to Directus's environment and restart Directus (extensions
-and env are read at start-up, unless `EXTENSIONS_AUTO_RELOAD=true`). Check it's loaded:
-
-```bash
-curl -s https://<directus>/commerce/categories | head -c 300
+curl -s https://<directus>/commerce/store
 curl -sI 'https://<directus>/commerce/products?limit=1' | grep -i -E 'x-commerce-cache|cache-control'
 ```
 
 During development, `npm run dev` rebuilds on change; with `EXTENSIONS_AUTO_RELOAD=true`
 Directus picks up the new build without a restart.
-
-## Using it from Nuxt (Directus SDK)
-
-```ts
-import { createDirectus, rest, customEndpoint } from '@directus/sdk'
-import type { NormalizedProduct } from 'directus-extension-mageos-commerce/src/types'
-
-const directus = createDirectus(useRuntimeConfig().public.directusUrl).with(rest())
-
-const { data, meta } = await directus.request(customEndpoint<{ data: NormalizedProduct[], meta: { total: number } }>({
-  path: '/commerce/products',
-  params: { category_path: 'apparel/women', sort: 'price', limit: 24 },
-}))
-
-const stock = await directus.request(customEndpoint<{ data: Record<string, number | null> }>({
-  path: '/commerce/realtime/stock',
-  method: 'POST',
-  body: JSON.stringify({ skus: data.map((p) => p.sku) }),
-}))
-```
-
-All routes are public (like Mage-OS's storefront catalog) unless `MAGEOS_STOCK_REQUIRE_AUTH`
-is on, so they work with the SDK's default, unauthenticated client.

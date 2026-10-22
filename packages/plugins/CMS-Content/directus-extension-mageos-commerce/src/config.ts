@@ -35,6 +35,12 @@ export interface CommerceConfig {
     stockTtl: number
   }
   stockRequiresAuth: boolean
+  /**
+   * Who may call the privileged routes (customers, orders, sellers, sync,
+   * admin): Directus admins, plus these Directus user / role ids — e.g. the
+   * user behind the app server's static token.
+   */
+  trusted: { users: string[], roles: string[] }
 }
 
 type Env = Record<string, unknown>
@@ -46,6 +52,11 @@ const str = (env: Env, key: string, fallback = '') => {
 const int = (env: Env, key: string, fallback: number, min = 0) => {
   const value = Number.parseInt(str(env, key), 10)
   return Number.isFinite(value) && value >= min ? value : fallback
+}
+const list = (env: Env, key: string) => {
+  const value = env[key] ?? process.env[key]
+  const items = Array.isArray(value) ? value.map(String) : str(env, key).split(',')
+  return items.map((item) => item.trim()).filter(Boolean)
 }
 const bool = (env: Env, key: string, fallback: boolean) => {
   const value = str(env, key).toLowerCase()
@@ -74,6 +85,7 @@ export function readConfig(env: Env = {}): CommerceConfig {
       stockTtl: int(env, 'MAGEOS_STOCK_CACHE_SECONDS', 5),
     },
     stockRequiresAuth: bool(env, 'MAGEOS_STOCK_REQUIRE_AUTH', false),
+    trusted: { users: list(env, 'MAGEOS_TRUSTED_USERS'), roles: list(env, 'MAGEOS_TRUSTED_ROLES') },
   }
 }
 
