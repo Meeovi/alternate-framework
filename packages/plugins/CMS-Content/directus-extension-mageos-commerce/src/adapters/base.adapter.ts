@@ -105,4 +105,19 @@ export interface ICommerceAdapter {
     orderByReference(reference: string): Promise<BackendAdminOrder | null>
     refund(refund: BackendRefund): Promise<{ creditMemoId: string }>
   }
+
+  /**
+   * Raw store records for mirroring into Directus (src/mirror): one page,
+   * changed at or after `since` (the store's "YYYY-MM-DD HH:MM:SS" UTC),
+   * oldest change first.
+   */
+  mirror?: {
+    orders(since: string | null, page: number, pageSize: number): Promise<MirrorPage>
+    customers(since: string | null, page: number, pageSize: number): Promise<MirrorPage>
+  }
+}
+
+export interface MirrorPage {
+  items: Record<string, any>[]
+  total: number
 }

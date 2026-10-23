@@ -2,7 +2,7 @@ import { defineEndpoint } from '@directus/extensions-sdk'
 import { Redis } from 'ioredis'
 import type { Router } from 'express'
 import type { ICommerceAdapter } from './adapters/base.adapter'
-import { MageOsAdapter } from './adapters/mage-os.adapter'
+import { createAdapter } from './backend'
 import { MemoryStore, RedisStore, SwrCache, type CacheStore } from './cache/swr-cache'
 import { type CommerceConfig, directusRedisOptions, readConfig } from './config'
 import { CommerceError } from './errors'
@@ -19,20 +19,6 @@ import { sellerRoutes } from './routes/sellers'
  * seller, sync and admin routes (routes/account, sellers, admin) need a
  * trusted Directus caller.
  */
-
-/** The one place that knows which backend is in use. */
-export function createAdapter(config: CommerceConfig): ICommerceAdapter {
-  return new MageOsAdapter({
-    url: config.mageos.url,
-    token: config.mageos.token,
-    consumerKey: config.mageos.consumerKey,
-    consumerSecret: config.mageos.consumerSecret,
-    tokenSecret: config.mageos.tokenSecret,
-    storeCode: config.mageos.storeCode,
-    timeoutMs: config.mageos.timeoutMs,
-    categoryDepth: config.mageos.categoryDepth,
-  })
-}
 
 function createStore(config: CommerceConfig, env: Record<string, unknown>, logger: Logger): CacheStore {
   if (config.cache.store === 'memory') return new MemoryStore()

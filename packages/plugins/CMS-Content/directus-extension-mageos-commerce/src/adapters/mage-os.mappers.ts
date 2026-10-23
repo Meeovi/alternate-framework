@@ -175,7 +175,13 @@ export const pickCustomer = (data: Record<string, unknown>) =>
   Object.fromEntries(CUSTOMER_FIELDS.filter((k) => data[k] !== undefined).map((k) => [k, k === 'group_id' ? Number(data[k]) : data[k]]))
 
 /** Core REST searchCriteria: AND-ed filters, newest first. */
-export function searchCriteria(filters: { field: string, value: string, condition?: string }[], pageSize: number, sortField = 'entity_id'): string {
+export function searchCriteria(
+  filters: { field: string, value: string, condition?: string }[],
+  pageSize: number,
+  sortField = 'entity_id',
+  page = 1,
+  direction: 'ASC' | 'DESC' = 'DESC',
+): string {
   const query = new URLSearchParams()
   filters.forEach((filter, i) => {
     query.set(`searchCriteria[filterGroups][${i}][filters][0][field]`, filter.field)
@@ -183,8 +189,10 @@ export function searchCriteria(filters: { field: string, value: string, conditio
     query.set(`searchCriteria[filterGroups][${i}][filters][0][conditionType]`, filter.condition ?? 'eq')
   })
   query.set('searchCriteria[pageSize]', String(pageSize))
-  query.set('searchCriteria[currentPage]', '1')
+  query.set('searchCriteria[currentPage]', String(page))
   query.set('searchCriteria[sortOrders][0][field]', sortField)
-  query.set('searchCriteria[sortOrders][0][direction]', 'DESC')
-  return query.toString()
+  query.set('searchCriteria[sortOrders][0][direction]', direction)
+  // OAuth 1.0a signs spaces as %20; Magento checks the raw query, so a
+  // form-encoded '+' (URLSearchParams) fails with "The signature is invalid".
+  return query.toString().replace(/\+/g, '%20')
 }

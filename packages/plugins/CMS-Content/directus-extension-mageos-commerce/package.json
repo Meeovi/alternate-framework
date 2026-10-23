@@ -7,14 +7,31 @@
   "keywords": [
     "directus",
     "directus-extension",
-    "directus-extension-endpoint",
+    "directus-extension-bundle",
     "mage-os",
     "magento"
   ],
   "directus:extension": {
-    "type": "endpoint",
-    "path": "dist/index.js",
-    "source": "src/index.ts",
+    "type": "bundle",
+    "path": {
+      "app": "dist/app.js",
+      "api": "dist/api.js"
+    },
+    "entries": [
+      {
+        "type": "endpoint",
+        "name": "commerce",
+        "source": "src/index.ts"
+      },
+      {
+        "type": "operation",
+        "name": "mageos-sync",
+        "source": {
+          "app": "src/operations/mageos-sync/app.ts",
+          "api": "src/operations/mageos-sync/api.ts"
+        }
+      }
+    ],
     "host": "^12.0.0"
   },
   "exports": {

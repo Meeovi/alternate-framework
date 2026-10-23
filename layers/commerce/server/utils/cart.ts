@@ -157,10 +157,16 @@ export async function resolveProductForCart(productId: string): Promise<Resolved
   const product = await directus
     .request(
       readItem('products', productId, {
-        fields: ['id', 'name', 'price', 'image.filename_disk'],
+        fields: ['id', 'name', 'price', 'image.filename_disk', 'source', 'mageos_sku'],
       }),
     )
-    .catch(() => null) as { id: string; name?: string; price?: number | string; image?: { filename_disk?: string } } | null
+    .catch(() => null) as { id: string; name?: string; price?: number | string; image?: { filename_disk?: string }; source?: string | null; mageos_sku?: string | null } | null
+
+  // A row the Mage-OS sync Flow mirrored from the store: the store sells it
+  // (its live price, and the order is recorded there), whatever key the page used.
+  if (product?.source === 'magento' && product.mageos_sku) {
+    return resolveProductForCart(`magento:${product.mageos_sku}`)
+  }
 
   // Directus serializes decimal columns as strings, so this must be
   // coerced rather than checked with typeof.

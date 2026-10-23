@@ -51,7 +51,7 @@ directus-extension-mageos-commerce/
 
 ```ts
 import { createDirectus, rest, staticToken } from '@directus/sdk'
-import { commerce } from 'directus-extension-mageos-commerce/sdk'
+import { commerce } from '@mframework/mageos-commerce-sdk'
 
 // Public storefront: any client, no token.
 const directus = createDirectus(useRuntimeConfig().public.directusUrl).with(rest())
@@ -73,9 +73,47 @@ Listings and search put their paging inside `data` (`{ items, page, pageSize, to
 totalPages }`) because the SDK returns only a response's `data`. Errors reject with the SDK's
 error (`error.errors[0].extensions.code`, `error.response.status`).
 
-The package isn't an npm workspace of this repo; import it by path
-(`packages/plugins/CMS-Content/directus-extension-mageos-commerce/sdk`) or add it to the
-workspaces. `@directus/sdk` is a peer dependency.
+`sdk/` is its own package, `@mframework/mageos-commerce-sdk`, so apps can depend on the
+commands without the extension's build toolchain:
+`"@mframework/mageos-commerce-sdk": "file:<path>/directus-extension-mageos-commerce/sdk"`.
+`@directus/sdk` is a peer dependency.
+
+### How the Meeovi app uses it
+
+With `public.magento.via: 'directus'` (adapter-magento's default; `NUXT_PUBLIC_MAGENTO_VIA`),
+the app reaches the store only through this extension:
+
+- `layers/commerce/shared/mageosViaDirectus.ts` registers `CommerceBackendRegistry`
+  `'magento'` (product pages, departments, gift cards, orders, sellers, checkout, store
+  admin and refunds), the signup customer link and the integrations store, with the app's
+  static token on the server. Output shapes are adapter-magento's, and product keys stay
+  `magento:<sku>`.
+- In the browser the same backend has only the catalogue methods and calls the public
+  routes through the app's `/api/cms` proxy, which forwards them without a token.
+- The workspace seller dashboard (`layers/business`) and dropshipping's catalogue sync
+  use the seller and `/sync/*` routes.
+- `via: 'magento'` puts adapter-magento back in charge of all of that.
+
+## Mage-OS → Directus sync (Flows)
+
+The package is a Directus **bundle**: the `/commerce` endpoint plus a **"Mage-OS sync"** Flow
+operation (`src/operations/mageos-sync`, logic in `src/mirror`). Mage-OS is the source of
+truth; the operation copies it into Directus's own collections:
+
+| Section | Directus collection | Matched on | Each run |
+|---|---|---|---|
+| products | `products` (`source = 'magento'`) | `mageos_id` | whole catalogue; rows the store dropped are archived, never deleted |
+| categories | `categories` | `uid` | whole tree; an existing CMS category with the same slug is linked and keeps its name/position (only `mageos_owned` rows take the store's) |
+| orders | `orders` | `entity_id` | changed since the newest mirrored `date_updated`; `buyer_id` stays empty (the app reads store orders live) |
+| customers | `customers` (admin-only) | `id` (store id) | changed since the newest mirrored `updated_at`; `user_id` = the app account with that `magento_customer_id` |
+
+Writes skip the collections' own event Flows and hooks (`emitEvents: false`), record no
+activity/revisions, and leave rows whose synced fields are unchanged alone. A section that is
+still running is skipped. Store SKUs go in `products.mageos_sku` (`products.sku` is numeric).
+
+Flows (created in the meeDirectus instance): **Mage-OS sync: orders** (every 5 min),
+**: catalogue** (every 15 min, categories then products), **: customers** (hourly), and
+**Mage-OS sync now** — a button on those four collections that syncs the collection it's run from.
 
 ## API
 

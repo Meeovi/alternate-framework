@@ -271,6 +271,7 @@ export class MageOsAdapter implements ICommerceAdapter {
   readonly sellers: NonNullable<ICommerceAdapter['sellers']>
   readonly catalogSync: NonNullable<ICommerceAdapter['catalogSync']>
   readonly admin: NonNullable<ICommerceAdapter['admin']>
+  readonly mirror: NonNullable<ICommerceAdapter['mirror']>
 
   constructor(private readonly options: MageOsOptions) {
     if (!options.url) throw new CommerceError('NOT_CONFIGURED', 'MAGEOS_URL is not set')
@@ -291,6 +292,7 @@ export class MageOsAdapter implements ICommerceAdapter {
     this.sellers = services.sellers
     this.catalogSync = services.catalogSync
     this.admin = services.admin
+    this.mirror = services.mirror
   }
 
   async getProducts(params: ProductQueryOptions): Promise<NormalizedProduct[]> {

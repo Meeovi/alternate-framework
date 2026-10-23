@@ -274,5 +274,16 @@ export function createMageOsServices(api: MageOsTransport, normalize: Normalize,
     },
   }
 
-  return { search, suggest, getStoreConfig, resolveCategoryId, reviews, customers, orders, giftCards, sellers, catalogSync, admin }
+  // Core REST, same ACL as admin above; sorted by updated_at so a page cursor survives new changes.
+  const changedPage = async (path: string, since: string | null, page: number, pageSize: number) => {
+    const filters = since ? [{ field: 'updated_at', value: since, condition: 'gteq' }] : []
+    const result = await api.rest<{ items?: any[], total_count?: number }>('GET', `${path}?${searchCriteria(filters, pageSize, 'updated_at', page, 'ASC')}`)
+    return { items: result?.items ?? [], total: Number(result?.total_count ?? 0) }
+  }
+  const mirror: NonNullable<ICommerceAdapter['mirror']> = {
+    orders: (since, page, pageSize) => changedPage('/V1/orders', since, page, pageSize),
+    customers: (since, page, pageSize) => changedPage('/V1/customers/search', since, page, pageSize),
+  }
+
+  return { search, suggest, getStoreConfig, resolveCategoryId, reviews, customers, orders, giftCards, sellers, catalogSync, admin, mirror }
 }
