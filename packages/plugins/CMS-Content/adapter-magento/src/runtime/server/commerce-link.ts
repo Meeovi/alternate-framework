@@ -36,7 +36,9 @@ function integrationCredentials() {
 // real Directus regardless of the active commerce backend.
 export default defineNitroPlugin(() => {
   const options = (useRuntimeConfig().public as any)?.magento || {}
-  if (!options.endpoint) return
+  // With via: 'directus' the commerce layer registers the backend, the
+  // integration store and the customer link through the Directus SDK.
+  if (!options.endpoint || options.via === 'directus') return
 
   // Confirmed live: `options.token` (GQL_KEY) is not a valid Magento
   // customer JWT — attaching it as the constructor's customerToken makes

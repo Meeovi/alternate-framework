@@ -1,4 +1,4 @@
-import { customEndpoint } from '@directus/sdk'
+import type { RestCommand } from '@directus/sdk'
 import type {
   AdminCollection, BackendAdminOrder, BackendField, BackendGiftCard, BackendOrder, BackendRefund, BackendSeller,
   CreatedCustomer, CustomerInput, NormalizedCategory, NormalizedProduct, OrderFilter, Paginated, PaidOrder, PlacedOrder,
@@ -10,7 +10,7 @@ import type {
  * Typed Directus SDK commands for the /commerce/* endpoint extension:
  *
  *   import { createDirectus, rest, staticToken } from '@directus/sdk'
- *   import { commerce } from 'directus-extension-mageos-commerce/sdk'
+ *   import { commerce } from '@mframework/mageos-commerce-sdk'
  *
  *   const directus = createDirectus(url).with(rest())
  *   const page = await directus.request(commerce.products({ category_slug: 'books', sort: 'price', limit: 24 }))
@@ -44,6 +44,14 @@ export interface SearchParams {
   sort?: ProductSort
   facets?: boolean
 }
+
+/**
+ * The SDK's own customEndpoint is just `() => options`; defined here so this
+ * package needs @directus/sdk for types only. An app bundling it never gets
+ * a second copy of the SDK (the extension's own node_modules has one).
+ */
+type CommandOptions = { path: string, method: 'GET' | 'POST' | 'PATCH' | 'DELETE', params?: Record<string, string>, body?: string }
+const customEndpoint = <Output>(options: CommandOptions): RestCommand<Output, never> => () => options
 
 const BASE = '/commerce'
 const seg = (value: string | number) => encodeURIComponent(String(value))

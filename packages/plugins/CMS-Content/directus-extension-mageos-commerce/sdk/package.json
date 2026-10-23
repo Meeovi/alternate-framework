@@ -1,0 +1,13 @@
+{
+  "name": "@mframework/mageos-commerce-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed Directus SDK commands for the directus-extension-mageos-commerce /commerce/* endpoint.",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "peerDependencies": {
+    "@directus/sdk": ">=21.0.0"
+  }
+}

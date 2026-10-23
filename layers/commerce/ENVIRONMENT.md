@@ -2,6 +2,21 @@
 
 This document specifies the environment variables required to configure the Magento adapter for the mesh gateway and commerce layer.
 
+### How the app reaches the store: `NUXT_PUBLIC_MAGENTO_VIA`
+
+- `directus` (default): through Directus's `/commerce/*` endpoint extension
+  (`packages/plugins/CMS-Content/directus-extension-mageos-commerce`) with the
+  Directus SDK. The app needs only `DIRECTUS_URL` and
+  `NUXTUS_DIRECTUS_STATIC_TOKEN`; that token's Directus user must be in the
+  extension's `MAGEOS_TRUSTED_USERS`. The Magento Integration keys live in
+  Directus (`MAGEOS_*`), not in the app. See `shared/mageosViaDirectus.ts`.
+- `magento`: adapter-magento calls Magento itself with the settings below
+  (GraphQL endpoint plus the `MAGENTO_CONSUMER_*` / `MAGENTO_ACCESS_TOKEN*`
+  Integration).
+
+Federated search (`/api/search`) still queries the storefront GraphQL
+endpoint directly in both modes.
+
 ### GraphQL Endpoint Configuration
 
 The Magento GraphQL endpoint is resolved with fallback priority:

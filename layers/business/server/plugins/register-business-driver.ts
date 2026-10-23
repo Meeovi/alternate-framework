@@ -1,7 +1,7 @@
 import { setDefaultBusinessDriver } from 'alternate-sdk'
 import type { BusinessDriverContract } from 'alternate-sdk/contracts'
 import { DefaultBusinessAdapter } from '../utils/defaultBusinessAdapter'
-import { MagentoBusinessAdapter } from '../utils/magentoBusinessAdapter'
+import { MagentoBusinessAdapter, directusSellerSource, magentoSellerSource } from '../utils/magentoBusinessAdapter'
 
 /**
  * Registers the business/seller driver once at Nitro startup, the same way
@@ -44,21 +44,37 @@ type BackendFactory = {
   create: (fallback: BusinessDriverContract) => BusinessDriverContract
 }
 
+/** With public.magento.via 'directus' (adapter-magento's default), the
+ *  seller dashboard reads the store through Directus's /commerce/sellers/*
+ *  routes with the app's static token instead of the Integration. */
+function viaDirectus() {
+  const config = useRuntimeConfig() as Record<string, any>
+  if (config.public?.magento?.via !== 'directus') return null
+  const url = String(config.public?.directus?.url || '').replace(/\/+$/, '')
+  const token = String(config.directus?.token || '')
+  return url && token ? { url, token } : null
+}
+
 const BACKENDS: Record<string, BackendFactory> = {
   magento: {
-    configured: () => Boolean(
+    configured: () => Boolean(viaDirectus()) || Boolean(
       process.env.MAGENTO_GRAPHQL_URL
       && process.env.MAGENTO_CONSUMER_KEY
       && process.env.MAGENTO_CONSUMER_SECRET
       && process.env.MAGENTO_ACCESS_TOKEN
       && process.env.MAGENTO_ACCESS_TOKEN_SECRET
     ),
-    create: (fallback) => new MagentoBusinessAdapter(fallback, process.env.MAGENTO_GRAPHQL_URL as string, {
-      consumerKey: process.env.MAGENTO_CONSUMER_KEY as string,
-      consumerSecret: process.env.MAGENTO_CONSUMER_SECRET as string,
-      accessToken: process.env.MAGENTO_ACCESS_TOKEN as string,
-      accessTokenSecret: process.env.MAGENTO_ACCESS_TOKEN_SECRET as string,
-    }),
+    create: (fallback) => {
+      const directus = viaDirectus()
+      return new MagentoBusinessAdapter(fallback, directus
+        ? directusSellerSource(directus.url, directus.token)
+        : magentoSellerSource(process.env.MAGENTO_GRAPHQL_URL as string, {
+          consumerKey: process.env.MAGENTO_CONSUMER_KEY as string,
+          consumerSecret: process.env.MAGENTO_CONSUMER_SECRET as string,
+          accessToken: process.env.MAGENTO_ACCESS_TOKEN as string,
+          accessTokenSecret: process.env.MAGENTO_ACCESS_TOKEN_SECRET as string,
+        }))
+    },
   },
 }
 

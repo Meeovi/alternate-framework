@@ -32,6 +32,7 @@
     "@vue/apollo-composable": "^4.2.2",
     "@vueuse/shared": "^14.3.0",
     "adapter-magento": "file:../../packages/plugins/CMS-Content/adapter-magento",
+    "@mframework/mageos-commerce-sdk": "file:../../packages/plugins/CMS-Content/directus-extension-mageos-commerce/sdk",
     "alternate-sdk": "file:../../packages/plugins/Admin/alternate-sdk",
     "drizzle-orm": "1.0.0-rc.4",
     "graphql": "^16.10.0",

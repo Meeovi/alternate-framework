@@ -44,6 +44,15 @@ const BLOCKED_PREFIX =
 // The only Directus endpoints the app's SDK client uses.
 const PROXIED_PREFIX = /^\/(items|fields|files|assets)(\/|$)/
 
+// The commerce extension's public routes (see its src/routes/catalog.ts).
+const SEGMENT = '[A-Za-z0-9_~=+-]+(?:%[0-9A-Fa-f]{2}[A-Za-z0-9_~=+-]*)*'
+const PUBLIC_COMMERCE: [string, RegExp][] = [
+  ['GET', new RegExp(`^/commerce/(products|categories|search|search/suggest|store|gift-cards/products|sellers|reviews/ratings)$`)],
+  ['GET', new RegExp(`^/commerce/products/${SEGMENT}(/reviews)?$`)],
+  ['GET', new RegExp(`^/commerce/categories/${SEGMENT}$`)],
+  ['POST', /^\/commerce\/realtime\/stock$/],
+]
+
 // SEARCH (query-in-body) and anything exotic would skip the query checks.
 const ALLOWED_METHODS = new Set(['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'])
 
@@ -109,7 +118,8 @@ const AUTH_TABLES = /^(sessions|users|accounts|verification|two_factor|apikey|ap
 const SYSTEM_TABLES = /^directus_(?!files$|folders$)/i
 
 // Personal / billing data the app never reads from the browser: admins only.
-const PRIVATE_COLLECTIONS = /^(address|addresses|os_[a-z_]+|subscriptions[a-z_]*|help_feedback)$/i
+// `customers` is the Mage-OS store's customers, mirrored into Directus.
+const PRIVATE_COLLECTIONS = /^(address|addresses|customers|os_[a-z_]+|subscriptions[a-z_]*|help_feedback)$/i
 
 // Customer billing records. The app reads them client-side (order /
 // invoice / transaction pages), so instead of being admin-only, a
@@ -152,9 +162,26 @@ export default defineEventHandler(async (event) => {
   if (/(^|\/)\.{1,2}(\/|$)|%2e|%2f|%5c|\\/i.test(pathOnly)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid CMS path' })
   }
+  const method = (event.method || 'GET').toUpperCase()
+
+  // The store's public catalogue (directus-extension-mageos-commerce), for
+  // the browser's CommerceBackendRegistry 'magento' adapter. Forwarded
+  // WITHOUT the static token: Directus trusts that token with customers,
+  // orders and refunds on /commerce/*, so the browser only ever reaches
+  // these routes anonymously.
+  if (PUBLIC_COMMERCE.some(([m, path]) => m === method && path.test(pathOnly))) {
+    return proxyRequest(event, joinURL(directusUrl, rest), {
+      headers: { authorization: '', cookie: '' },
+      onResponse: (ev: typeof event, response: Response) => {
+        for (const name of [...response.headers.keys()]) {
+          if (name.startsWith('access-control-')) ev.node.res.removeHeader(name)
+        }
+      },
+    })
+  }
+
   if (BLOCKED_PREFIX.test(rest) || !PROXIED_PREFIX.test(pathOnly)) throw denied()
 
-  const method = (event.method || 'GET').toUpperCase()
   if (!ALLOWED_METHODS.has(method)) {
     throw createError({ statusCode: 405, statusMessage: 'Method not allowed' })
   }

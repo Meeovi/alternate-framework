@@ -2,6 +2,8 @@ import { sql } from 'drizzle-orm'
 import { db } from '#auth/server/utils/drizzle'
 import { MagentoAdapter } from 'adapter-magento'
 import type { MagentoOAuth1Credentials } from 'adapter-magento'
+import { createDirectus, rest, staticToken } from '@directus/sdk'
+import { commerce } from '@mframework/mageos-commerce-sdk'
 import type {
   BusinessDriverContract,
   SellerListParams,
@@ -33,8 +35,46 @@ import type {
  * id these routes need goes through `users.magentoCustomerId`, populated
  * at signup by `commerce-link.ts`'s `CommerceCustomerLinkRegistry` hook.
  */
+/** The Webkul seller-dashboard reads/writes, from wherever the store is reached. */
+export interface SellerDashboardSource {
+  products(customerId: number): Promise<unknown[]>
+  orders(customerId: number): Promise<unknown[]>
+  transactions(customerId: number): Promise<unknown[]>
+  lowStock(customerId: number): Promise<unknown[]>
+  shop(customerId: number): Promise<unknown>
+  updateShop(customerId: number, updates: Record<string, unknown>): Promise<unknown>
+}
+
+/** Straight to Magento, signed with the Integration. */
+export function magentoSellerSource(endpoint: string, credentials: MagentoOAuth1Credentials): SellerDashboardSource {
+  const magento = new MagentoAdapter(endpoint)
+  return {
+    products: (id) => magento.seller.getSellerProducts(id, credentials),
+    orders: (id) => magento.seller.getSellerOrders(id, credentials),
+    transactions: (id) => magento.seller.getSellerTransactions(id, credentials),
+    lowStock: (id) => magento.seller.getLowStockProducts(id, credentials),
+    shop: (id) => magento.seller.getShopProfile(id, credentials),
+    updateShop: (id, updates) => magento.seller.updateShopProfile(id, credentials, updates),
+  }
+}
+
+/**
+ * Through Directus's /commerce/sellers/* extension routes with the app's
+ * static token (a MAGEOS_TRUSTED_USERS user) — same data, same shapes.
+ */
+export function directusSellerSource(url: string, token: string): SellerDashboardSource {
+  const directus = createDirectus(url).with(staticToken(token)).with(rest())
+  return {
+    products: (id) => directus.request(commerce.sellerProducts(String(id))),
+    orders: (id) => directus.request(commerce.sellerOrders(String(id))),
+    transactions: (id) => directus.request(commerce.sellerTransactions(String(id))),
+    lowStock: (id) => directus.request(commerce.sellerLowStock(String(id))),
+    shop: (id) => directus.request(commerce.sellerShop(String(id))),
+    updateShop: (id, updates) => directus.request(commerce.updateSellerShop(String(id), updates)),
+  }
+}
+
 export class MagentoBusinessAdapter implements BusinessDriverContract {
-  private magento: MagentoAdapter
 
   products: BusinessDriverContract['products']
   orders: BusinessDriverContract['orders']
@@ -54,10 +94,8 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
 
   constructor(
     private fallback: BusinessDriverContract,
-    endpoint: string,
-    private credentials: MagentoOAuth1Credentials
+    private source: SellerDashboardSource
   ) {
-    this.magento = new MagentoAdapter(endpoint)
 
     // Delegate everything not implemented for real below, unchanged.
     this.invoices = fallback.invoices
@@ -75,7 +113,7 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
       list: async (params) => {
         const customerId = await this.resolveMagentoCustomerId(params?.sellerId)
         if (!customerId) return fallback.products.list(params)
-        const rows = await this.magento.seller.getSellerProducts(customerId, this.credentials)
+        const rows = await this.source.products(customerId)
         return rows as SellerProduct[]
       }
     }
@@ -84,7 +122,7 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
       list: async (params) => {
         const customerId = await this.resolveMagentoCustomerId(params?.sellerId)
         if (!customerId) return fallback.orders.list(params)
-        const rows = await this.magento.seller.getSellerOrders(customerId, this.credentials)
+        const rows = await this.source.orders(customerId)
         return rows as SellerOrder[]
       }
     }
@@ -93,7 +131,7 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
       list: async (params) => {
         const customerId = await this.resolveMagentoCustomerId(params?.sellerId)
         if (!customerId) return fallback.transactions.list(params)
-        const rows = await this.magento.seller.getSellerTransactions(customerId, this.credentials)
+        const rows = await this.source.transactions(customerId)
         return rows as SellerTransaction[]
       }
     }
@@ -102,7 +140,7 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
       list: async (params) => {
         const customerId = await this.resolveMagentoCustomerId(params?.sellerId)
         if (!customerId) return fallback.lowStock.list(params)
-        const rows = await this.magento.seller.getLowStockProducts(customerId, this.credentials)
+        const rows = await this.source.lowStock(customerId)
         return rows as SellerLowStockItem[]
       }
     }
@@ -111,14 +149,14 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
       get: async (params) => {
         const customerId = await this.resolveMagentoCustomerId(params?.sellerId)
         if (!customerId) return fallback.shop.get(params)
-        const profile = await this.magento.seller.getShopProfile(customerId, this.credentials)
+        const profile = await this.source.shop(customerId)
         return (profile as SellerShopProfile) ?? fallback.shop.get(params)
       },
       update: async (params) => {
         const { sellerId, limit, offset, ...updates } = params
         const customerId = await this.resolveMagentoCustomerId(sellerId)
         if (!customerId) return fallback.shop.update(params)
-        const profile = await this.magento.seller.updateShopProfile(customerId, this.credentials, updates)
+        const profile = await this.source.updateShop(customerId, updates)
         return (profile as SellerShopProfile) ?? fallback.shop.update(params)
       }
     }
@@ -135,8 +173,8 @@ export class MagentoBusinessAdapter implements BusinessDriverContract {
     if (!customerId) return base
 
     const [orders, products] = await Promise.all([
-      this.magento.seller.getSellerOrders(customerId, this.credentials) as Promise<SellerOrder[]>,
-      this.magento.seller.getSellerProducts(customerId, this.credentials) as Promise<SellerProduct[]>,
+      this.source.orders(customerId) as Promise<SellerOrder[]>,
+      this.source.products(customerId) as Promise<SellerProduct[]>,
     ])
 
     const recentOrders = [...(orders ?? [])].sort((a, b) => String(b.placed).localeCompare(String(a.placed)))

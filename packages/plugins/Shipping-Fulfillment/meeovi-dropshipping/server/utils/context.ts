@@ -3,6 +3,8 @@ import { createError, getRequestHeader } from 'h3'
 import type { H3Event } from 'h3'
 import { MagentoAdapter } from 'adapter-magento'
 import type { MagentoOAuth1Credentials } from 'adapter-magento'
+import { createDirectus, rest, staticToken } from '@directus/sdk'
+import { commerce } from '@mframework/mageos-commerce-sdk'
 import type { Credentials } from '../providers/types'
 
 /**
@@ -157,9 +159,42 @@ export function openCredentials(sealed: string, event?: H3Event): Credentials {
 // Magento (Integration token, OAuth 1.0a)
 
 let adapter: MagentoAdapter | null = null
+let viaDirectus: ReturnType<typeof directusSync> | null = null
 
+type CatalogSync = MagentoAdapter['catalogSync']
+
+/**
+ * The catalogue-sync calls through Directus's /commerce/sync/* extension
+ * routes with the static token (a MAGEOS_TRUSTED_USERS user), in the same
+ * shape as MagentoAdapter.catalogSync. The credentials argument is ignored.
+ */
+function directusSync(url: string, token: string) {
+  const directus = createDirectus(url).with(staticToken(token)).with(rest())
+  return {
+    upsertProduct: (_: MagentoOAuth1Credentials, product: Parameters<CatalogSync['upsertProduct']>[1]) => directus.request(commerce.syncProduct(product)),
+    updateStock: (_: MagentoOAuth1Credentials, update: Parameters<CatalogSync['updateStock']>[1]) => directus.request(commerce.syncStock(update)),
+    addImage: (_: MagentoOAuth1Credentials, image: Parameters<CatalogSync['addImage']>[1]) => directus.request(commerce.syncImage(image)),
+    listOrders: (_: MagentoOAuth1Credentials, filters: Parameters<CatalogSync['listOrders']>[1], pageSize = 50) => directus.request(commerce.syncOrders(filters, pageSize)),
+    shipOrder: (_: MagentoOAuth1Credentials, orderId: number, shipment: Parameters<CatalogSync['shipOrder']>[2]) => directus.request(commerce.shipOrder(String(orderId), shipment)),
+  }
+}
+
+/**
+ * The store's catalogue sync. With public.magento.via 'directus'
+ * (adapter-magento's default) it goes through Directus; otherwise straight
+ * to Magento with the Integration.
+ */
 export function magento(event?: H3Event) {
-  const { magento: m } = dropshipConfig(event)
+  const config = dropshipConfig(event)
+  const via = (useRuntimeConfig(event) as Record<string, any>).public?.magento?.via
+  if (via === 'directus') {
+    if (!config.directus.url || !config.directus.token) {
+      throw createError({ statusCode: 503, statusMessage: 'Directus is not configured for dropshipping' })
+    }
+    viaDirectus ??= directusSync(config.directus.url, config.directus.token)
+    return { sync: viaDirectus, credentials: config.magento.credentials }
+  }
+  const { magento: m } = config
   const c = m.credentials
   if (!m.graphqlUrl || !c.consumerKey || !c.consumerSecret || !c.accessToken || !c.accessTokenSecret) {
     throw createError({ statusCode: 503, statusMessage: 'Magento is not configured for dropshipping' })

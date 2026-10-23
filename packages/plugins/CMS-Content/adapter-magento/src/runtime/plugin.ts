@@ -27,7 +27,9 @@ export default defineNuxtPlugin(() => {
   // During SSR this runs in the same process as the Nitro plugin
   // (runtime/server/commerce-link.ts), whose registration carries the
   // server-only Integration (placePaidOrder) — don't replace it.
-  if (!CommerceBackendRegistry.get('magento')) {
+  // With via: 'directus' the commerce layer registers 'magento' itself,
+  // through the Directus SDK (layers/commerce/shared/mageosViaDirectus.ts).
+  if (options.via !== 'directus' && !CommerceBackendRegistry.get('magento')) {
     CommerceBackendRegistry.register(createMagentoCommerceBackendAdapter(adapterInstance))
   }
 

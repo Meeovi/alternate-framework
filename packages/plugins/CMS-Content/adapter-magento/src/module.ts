@@ -8,6 +8,13 @@ export interface ModuleOptions {
   storeCode?: string
   /** Optional customer/admin token for authenticated graph requests */
   token?: string
+  /**
+   * How the app reaches the store for commerce data: 'directus' (through the
+   * Directus `/commerce/*` endpoint extension, directus-extension-mageos-commerce,
+   * with the Directus SDK) or 'magento' (this adapter calls Magento itself).
+   * Overridable at run time with NUXT_PUBLIC_MAGENTO_VIA.
+   */
+  via?: 'directus' | 'magento'
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -18,7 +25,8 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     endpoint: '',
     storeCode: undefined,
-    token: undefined
+    token: undefined,
+    via: undefined
   },
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -44,6 +52,7 @@ export default defineNuxtModule<ModuleOptions>({
       ...existingPublic,
       endpoint: options.endpoint ?? existingPublic.endpoint ?? '',
       storeCode: options.storeCode ?? existingPublic.storeCode,
+      via: options.via ?? existingPublic.via ?? 'directus',
     }
 
     // A token, if ever configured, lives in private runtime config only.
