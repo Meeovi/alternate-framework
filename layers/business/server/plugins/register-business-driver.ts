@@ -1,6 +1,7 @@
 import { setDefaultBusinessDriver } from 'alternate-sdk'
 import type { BusinessDriverContract } from 'alternate-sdk/contracts'
 import { DefaultBusinessAdapter } from '../utils/defaultBusinessAdapter'
+import { EmptyBusinessAdapter } from '../utils/emptyBusinessAdapter'
 import { MagentoBusinessAdapter, directusSellerSource, magentoSellerSource } from '../utils/magentoBusinessAdapter'
 
 /**
@@ -30,7 +31,13 @@ import { MagentoBusinessAdapter, directusSellerSource, magentoSellerSource } fro
  * 2026-09-15 — a bad import elsewhere in this same startup path turned
  * into a site-wide 500). A misconfigured Magento env (malformed URL,
  * whatever else `MagentoBusinessAdapter`'s constructor might reject)
- * should degrade to mock data, not take the whole app down with it.
+ * should degrade to an empty dashboard, not take the whole app down.
+ *
+ * Sample data (`DefaultBusinessAdapter`) only answers with
+ * `BUSINESS_BACKEND=mock` or when no backend is configured at all (local
+ * dev). Behind a real backend, and when one was asked for but can't start,
+ * the fallback is `EmptyBusinessAdapter`: sellers must never see made-up
+ * orders, payouts or reviews as theirs.
  *
  * `BUSINESS_BACKEND` picks the backend explicitly (`magento`, `mock`).
  * Unset, the first configured backend in `BACKENDS` wins, which keeps the
@@ -79,29 +86,35 @@ const BACKENDS: Record<string, BackendFactory> = {
 }
 
 export default defineNitroPlugin(() => {
-  const fallback = new DefaultBusinessAdapter()
   const requested = process.env.BUSINESS_BACKEND?.trim().toLowerCase()
 
   if (requested === 'mock') {
-    setDefaultBusinessDriver(fallback)
+    setDefaultBusinessDriver(new DefaultBusinessAdapter())
     return
   }
 
   const name = requested || Object.keys(BACKENDS).find((key) => BACKENDS[key]!.configured())
   const backend = name ? BACKENDS[name] : undefined
+  const empty = new EmptyBusinessAdapter()
 
-  if (requested && !backend) {
-    console.error(`[business] Unknown BUSINESS_BACKEND "${requested}" (known: mock, ${Object.keys(BACKENDS).join(', ')}); using mock data`)
-  } else if (backend && !backend.configured()) {
-    console.error(`[business] BUSINESS_BACKEND "${name}" is missing its environment variables; using mock data`)
-  } else if (backend) {
+  if (!name) {
+    // Nothing configured: local dev, where sample data keeps the dashboard usable.
+    setDefaultBusinessDriver(new DefaultBusinessAdapter())
+    return
+  }
+
+  if (!backend) {
+    console.error(`[business] Unknown BUSINESS_BACKEND "${requested}" (known: mock, ${Object.keys(BACKENDS).join(', ')}); the dashboard stays empty`)
+  } else if (!backend.configured()) {
+    console.error(`[business] BUSINESS_BACKEND "${name}" is missing its environment variables; the dashboard stays empty`)
+  } else {
     try {
-      setDefaultBusinessDriver(backend.create(fallback))
+      setDefaultBusinessDriver(backend.create(empty))
       return
     } catch (error) {
-      console.error(`[business] Failed to initialize the "${name}" business backend, falling back to mock data:`, error)
+      console.error(`[business] Failed to initialize the "${name}" business backend; the dashboard stays empty:`, error)
     }
   }
 
-  setDefaultBusinessDriver(fallback)
+  setDefaultBusinessDriver(empty)
 })

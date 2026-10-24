@@ -308,7 +308,6 @@
     computed
   } from 'vue';
   import radioCard from '#social/app/components/related/radio.vue'
-  import { useCatalogFallback } from '../../composables/catalog/useCatalog'
   import productDetails from '../../components/catalog/product/productDetails.vue'
   import productSpecs from '../../components/catalog/product/productSpecs.vue'
   import productCard from '../../components/catalog/product/productCard.vue'
@@ -417,23 +416,14 @@
       })
     } catch (directusError) {
       // Directus doesn't have this id — either the record was removed, or
-      // this deployment's active catalog is a commerce backend (Magento,
-      // ...) rather than the Directus `products` collection. Route the
-      // lookup through the configured commerce client, whose adapters
-      // return a Directus-shaped product, so a search hit from any
-      // federated backend still resolves here. The lookup is by id/sku
-      // (never slug) — commerce backends don't all expose a slug.
-      try {
-        const key = String(productId.value)
-        const catalog = useCatalogFallback()
-        const viaBackend =
-          (await catalog.getProductById(key).catch(() => null)) ||
-          (typeof catalog.adapter?.getProductBySku === 'function'
-            ? await catalog.adapter.getProductBySku(key).catch(() => null)
-            : null)
-        if (viaBackend) return viaBackend
-      } catch {
-        // commerce backend not configured / product genuinely absent
+      // it's a bare key from a commerce backend (a search hit by sku). Ask
+      // each enabled backend, which return Directus-shaped products. The
+      // lookup is by id/sku (never slug) — backends don't all expose one.
+      const key = String(productId.value)
+      for (const backend of CommerceBackendRegistry.list()) {
+        if (backend.id === 'directus' || !backend.isEnabled()) continue
+        const found = await backend.request({ method: 'GET', collection: 'products', key }).catch(() => null)
+        if (found) return found
       }
       throw directusError
     }

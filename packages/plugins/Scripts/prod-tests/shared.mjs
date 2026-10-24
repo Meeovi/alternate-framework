@@ -147,6 +147,9 @@ await test('W0', 'nested writes into another collection are refused', async () =
 })
 await test('W1', 'signed-out writes are refused', async () => {
   const r = await req('PATCH', '/api/cms/items/navigation/36', { json: {} })
+  // The form gate (Turnstile) answers before the session check; either way
+  // the write is refused.
+  if (isTurnstileRefusal(r)) return 'refused by the form gate (Turnstile) before the session check'
   expect(r.status === 401, `HTTP ${r.status}`)
 })
 await test('W2', 'an ordinary user cannot change site content (empty PATCH probe)', async () => {
@@ -166,6 +169,7 @@ await test('W3', 'an ordinary user cannot create site content', async () => {
 })
 await test('W4', 'an admin can still change site content', async () => {
   const r = await req('PATCH', '/api/cms/items/navigation/36', { jar: jars.admin, json: {} })
+  turnstileGate(r)
   expect(r.status === 200, `HTTP ${r.status}`)
 })
 await test('W5', "a user cannot change someone else's profile", async () => {

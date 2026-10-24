@@ -108,6 +108,12 @@ function buildContentSecurityPolicy(): string {
     ? new URL(httpsOrigin(process.env.MAGENTO_GRAPHQL_URL)).origin
     : ''
 
+  // Better Auth's sentinel client (layers/auth/lib/auth-client.ts) reports
+  // to its identify endpoint from the browser on every page.
+  const betterAuthIdentify = httpsOrigin(process.env.BETTER_AUTH_IDENTIFY_URL)
+    ? new URL(httpsOrigin(process.env.BETTER_AUTH_IDENTIFY_URL)).origin
+    : 'https://kv.better-auth.com'
+
   const connectSrc = [
     "'self'",
     'https://*.mux.com',
@@ -120,6 +126,7 @@ function buildContentSecurityPolicy(): string {
     novuApi,
     novuWs,
     novuWss,
+    betterAuthIdentify,
     ...analyticsHosts,
     ...adHosts,
     ...paymentHosts,

@@ -40,8 +40,11 @@ await test('S1', 'storefront pages render for a signed-out visitor', async () =>
 })
 
 section('Account pages (orders, invoices, transactions…)')
-const ACCOUNT_PAGES = ['/orders', '/order/1', '/invoice/1', '/transactions', '/transaction/1', '/shipment/1',
-  '/wishlist', '/promotions']
+// The account pages moved into the workspace on 21 October (the old paths
+// are now ordinary CMS pages); /wishlist became a tab of /lists.
+const ACCOUNT_PAGES = ['/workspace/sales/orders', '/workspace/sales/order/1', '/workspace/sales/invoice/1',
+  '/workspace/sales/transactions', '/workspace/sales/transaction/1', '/workspace/sales/shipment/1',
+  '/workspace/marketing/promotions']
 
 await test('S2', 'account pages send a signed-out visitor to /login', async () => {
   const open = []
@@ -107,19 +110,12 @@ await test('K5', 'the guest can update, remove and clear', async () => {
 })
 
 // ---------------------------------------------------------------------------
-section('Commerce driver (POST /api/commerce/driver)')
-const driver = (jar, method, args) => req('POST', '/api/commerce/driver', { jar, json: { method, ...(args ? { args } : {}) } })
-await test('D2', 'customer methods need a session', async () => {
-  for (const m of ['getCustomer', 'getCustomerAddresses', 'getOrders']) {
-    const r = await driver(null, m)
-    expect(r.status === 401 || r.status === 403, `${m} → HTTP ${r.status}`)
-  }
-})
-await test('D3', 'methods outside the allow-list are refused', async () => {
-  for (const m of ['constructor', '__proto__', 'deleteAllOrders', 'adminUpdateProduct', '']) {
-    const r = await driver(jars.user, m)
-    expect(r.status === 403 || r.status === 400, `"${m}" → HTTP ${r.status}`)
-  }
+section('Commerce driver (removed)')
+// CommerceClient and POST /api/commerce/driver never had a driver (always
+// 503); pages use the commerce backends directly. Make sure it stays gone.
+await test('D1', 'the old /api/commerce/driver route is gone', async () => {
+  const r = await req('POST', '/api/commerce/driver', { jar: jars.user, json: { method: 'getCustomer' } })
+  expect(r.status === 404 || r.status === 405, `HTTP ${r.status}`)
 })
 
 // ---------------------------------------------------------------------------

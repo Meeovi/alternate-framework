@@ -139,6 +139,7 @@ await test('E1', 'create an event (owner forced from the session)', async () => 
   const start = new Date(Date.now() + 86400000)
   const r = await req('POST', '/api/social/calendar/events', { jar: jars.user, json: {
     text: 'QA event (auto-deleted)', start_date: start.toISOString(), end_date: new Date(+start + 3600000).toISOString(), user: S.id } })
+  turnstileGate(r)
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 140)}`)
   eventId = r.body?.id ?? r.body?.data?.id
   expect(eventId, 'no id returned')

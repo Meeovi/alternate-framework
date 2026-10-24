@@ -19,8 +19,8 @@ import type {
  * cleanly onto Webkul's own tables (see
  * packages/plugins/CMS-Content/adapter-magento/magento-module/Meeovi/MarketplaceApi's
  * `SellerDashboardManagementInterface` for the PHP side). Every other
- * `BusinessDriverContract` method delegates to `fallback` (normally
- * `DefaultBusinessAdapter`'s mock data) unchanged — reviews, shipments,
+ * `BusinessDriverContract` method delegates to `fallback` (the
+ * `EmptyBusinessAdapter`: empty lists, writes refused) unchanged — reviews, shipments,
  * invoices, spaces, attributes, integrations, coupons, payouts,
  * featuredProducts, announcements, and getStats aren't in scope for this
  * adapter (no confirmed Webkul-native data source, or not yet built).
@@ -62,6 +62,14 @@ export function magentoSellerSource(endpoint: string, credentials: MagentoOAuth1
  * Through Directus's /commerce/sellers/* extension routes with the app's
  * static token (a MAGEOS_TRUSTED_USERS user) — same data, same shapes.
  */
+/** The SDK throws on a 404 ("Not a seller": a store customer with no Webkul
+ *  shop); the adapter treats null as "no shop" and uses its fallback. */
+const nullIfNotFound = <T>(request: Promise<T>): Promise<T | null> =>
+  request.catch((error: { response?: { status?: number } }) => {
+    if (error?.response?.status === 404) return null
+    throw error
+  })
+
 export function directusSellerSource(url: string, token: string): SellerDashboardSource {
   const directus = createDirectus(url).with(staticToken(token)).with(rest())
   return {
@@ -69,8 +77,8 @@ export function directusSellerSource(url: string, token: string): SellerDashboar
     orders: (id) => directus.request(commerce.sellerOrders(String(id))),
     transactions: (id) => directus.request(commerce.sellerTransactions(String(id))),
     lowStock: (id) => directus.request(commerce.sellerLowStock(String(id))),
-    shop: (id) => directus.request(commerce.sellerShop(String(id))),
-    updateShop: (id, updates) => directus.request(commerce.updateSellerShop(String(id), updates)),
+    shop: (id) => nullIfNotFound(directus.request(commerce.sellerShop(String(id)))),
+    updateShop: (id, updates) => nullIfNotFound(directus.request(commerce.updateSellerShop(String(id), updates))),
   }
 }
 

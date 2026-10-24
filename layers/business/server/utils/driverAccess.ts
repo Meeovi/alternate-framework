@@ -1,7 +1,6 @@
 /**
  * Access-control manifest for the `POST /api/business/driver` RPC proxy —
- * same rationale as `layers/commerce/server/utils/driverAccess.ts` and
- * `layers/social/server/utils/driverAccess.ts`: the proxy forwards a
+ * same rationale as `layers/social/server/utils/driverAccess.ts`: the proxy forwards a
  * method name from an untrusted request body straight to the server-side
  * business driver, so every reachable method has to be listed explicitly
  * (fail closed).

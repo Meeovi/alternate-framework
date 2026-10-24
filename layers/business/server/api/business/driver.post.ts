@@ -8,7 +8,6 @@ import { requireSeller } from '#auth/server/utils/sessions'
  *
  * A typed proxy endpoint that forwards method calls to the server-side
  * business driver (see `alternate-sdk/contracts/business.ts`). Mirrors
- * `layers/commerce/server/api/commerce/driver.post.ts` and
  * `layers/social/server/api/social/driver.post.ts` — the Vue layer only
  * ever talks HTTP + the `BusinessDriverContract` method names, never a
  * concrete backend SDK, which is what keeps `layers/business` backend

@@ -7,6 +7,11 @@
         <!-- Gift Card Products Section (commerce) -->
         <v-sheet style="background-color: transparent; box-shadow: none;" v-if="giftCards.length">
             <v-toolbar title="Gift Cards" color="transparent"></v-toolbar>
+            <!-- The cart refuses gift cards (server/utils/cart.ts) until
+                 checkout can take the amount and recipient. -->
+            <v-alert type="info" variant="tonal" class="mx-4" density="compact">
+                Gift cards can't be bought here yet. You can still see and use the ones you've received.
+            </v-alert>
 
             <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                 <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in giftCards"

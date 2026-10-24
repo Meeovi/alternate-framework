@@ -8,6 +8,15 @@ export default defineNuxtConfig({
 
   modules: [],
 
+  // lib/auth-client.ts reads this in browser code too, where process.env is
+  // empty: without it the sentinel client fell back to Better Auth's global
+  // identify endpoint. Inlined at build time; it's a public ingest URL.
+  vite: {
+    define: {
+      'process.env.BETTER_AUTH_IDENTIFY_URL': JSON.stringify(process.env.BETTER_AUTH_IDENTIFY_URL || ''),
+    },
+  },
+
   hooks: {
     // Keep Nitro's auto-imports out of alternate-sdk's compiled output. The
     // SDK is symlinked from packages/ (not under node_modules, which unimport

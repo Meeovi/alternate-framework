@@ -6,7 +6,11 @@
 //
 // Env: PROD_TEST_BASE_URL (default https://demo.meeovicms.com),
 //      PROD_TEST_ACCOUNTS (default /home/meebuzo/.meeovi-demo/qa-accounts.json),
-//      NUXT_DATABASE_URL / BETTER_AUTH_SECRET (from the app .env) for DB checks.
+//      NUXT_DATABASE_URL / BETTER_AUTH_SECRET (from the app .env) for DB checks,
+//      PROD_TEST_REPORT_DIR to write reports somewhere other than the demo's,
+//      PROD_TEST_SECURE_COOKIE=1 for a production build served over plain
+//      http (a private copy on localhost): it still names its session cookie
+//      __Secure-.
 import { createRequire } from 'node:module'
 import { readFileSync, writeFileSync, existsSync, chmodSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -156,7 +160,8 @@ export async function signInJar(account) {
     [randomUUID(), account.id, token],
   ))
   const signature = createHmac('sha256', secret).update(token).digest('base64')
-  const name = `${BASE.startsWith('https://') ? '__Secure-' : ''}custom_session_token`
+  const secure = BASE.startsWith('https://') || process.env.PROD_TEST_SECURE_COOKIE === '1'
+  const name = `${secure ? '__Secure-' : ''}custom_session_token`
   const jar = new Jar()
   jar.cookies.set(name, encodeURIComponent(`${token}.${signature}`))
   return jar
@@ -205,6 +210,9 @@ export function section(title) { console.log(`\n${title}`) }
 export function finish(reportPath) {
   const count = (s) => results.filter(r => r.status === s).length
   console.log(`\n${count('pass')} passed, ${count('fail')} failed, ${count('blocked')} blocked (of ${results.length})${networkRetries ? ` — ${networkRetries} GET(s) retried after a network error` : ''}`)
+  // PROD_TEST_REPORT_DIR keeps a run against another copy (e.g. localhost)
+  // from overwriting the demo's own reports.
+  if (reportPath && process.env.PROD_TEST_REPORT_DIR) reportPath = `${process.env.PROD_TEST_REPORT_DIR.replace(/\/$/, '')}/${reportPath.split('/').pop()}`
   if (reportPath) writeFileSync(reportPath, JSON.stringify({ base: BASE, at: new Date().toISOString(), results }, null, 2))
   process.exitCode = count('fail') ? 1 : 0
 }

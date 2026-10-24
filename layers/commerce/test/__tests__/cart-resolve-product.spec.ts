@@ -15,6 +15,7 @@ const products: Record<string, Record<string, unknown>> = {
   'habit-tracker': { sku: 'habit-tracker', name: 'Habit Tracker', price: 4.99, requires_shipping: false, status: 'published' },
   'mug': { sku: 'mug', name: 'Mug', price: 12, requires_shipping: true, status: 'published' },
   'legacy': { sku: 'legacy', name: 'Legacy', price: 3, status: 'published' },
+  'gift-50': { sku: 'gift-50', name: 'Gift card', price: 50, requires_shipping: false, status: 'published' },
 }
 const magentoProducts: Record<string, Record<string, unknown>> = {
   HABIT: { sku: 'HABIT', name: 'Habit Tracker', price: 4.99, requires_shipping: false, status: 'published' },
@@ -30,6 +31,7 @@ registerCommerceBackendAdapter({
   collections: ['products'],
   isEnabled: () => true,
   request: vi.fn(async ({ key }: { key: string }) => products[key] ?? null),
+  giftCardProducts: vi.fn(async () => [{ sku: 'gift-50' }]),
 } as any)
 
 describe('resolveProductForCart: requiresShipping', () => {
@@ -63,5 +65,15 @@ describe('resolveProductForCart: Directus rows mirrored from Mage-OS', () => {
 
   it('leave Directus-native products alone', async () => {
     expect(await resolveProductForCart('9')).toMatchObject({ id: '9', backend: null, price: 15, directusId: 9 })
+  })
+})
+
+describe('resolveProductForCart: gift cards', () => {
+  it("are refused: this checkout can't collect the card's recipient", async () => {
+    await expect(resolveProductForCart('testshop:gift-50')).rejects.toMatchObject({ statusCode: 409 })
+  })
+
+  it('leave the backend\'s other products alone', async () => {
+    expect(await resolveProductForCart('testshop:mug')).toMatchObject({ id: 'testshop:mug' })
   })
 })

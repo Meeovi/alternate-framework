@@ -1,11 +1,12 @@
 import { and, eq } from 'drizzle-orm'
 import { readItem } from '@directus/sdk'
 import type { H3Event } from 'h3'
-import { getCookie, setCookie } from 'h3'
+import { createError, getCookie, setCookie } from 'h3'
 import { db } from '#auth/server/utils/drizzle'
 import { cart, cartItems } from '#auth/server/database/migrations/schema'
 import { getAuthSession } from '#auth/server/utils/sessions'
 import { getDirectusFacade } from './directusClient'
+import type { CommerceBackendAdapter } from 'alternate-sdk'
 import { parseProductRef } from './productRef'
 
 // The `cart`/`cart_items` Directus collections exist with a full schema
@@ -107,6 +108,26 @@ export async function resolveCartContext(event: H3Event): Promise<ResolvedCartCo
   return { cartId: created!.id }
 }
 
+// Gift card SKUs per backend, cached briefly: checked on every cart add.
+const GIFT_CARD_TTL_MS = 5 * 60 * 1000
+const giftCardSkus = new Map<string, { at: number, skus: Promise<Set<string>> }>()
+
+function isGiftCard(backend: CommerceBackendAdapter, key: string): Promise<boolean> {
+  if (typeof backend.giftCardProducts !== 'function') return Promise.resolve(false)
+  let entry = giftCardSkus.get(backend.id)
+  if (!entry || Date.now() - entry.at > GIFT_CARD_TTL_MS) {
+    const skus = backend.giftCardProducts()
+      .then((products) => new Set(products.map((p: { sku?: string | null }) => String(p?.sku ?? '')).filter(Boolean)))
+      .catch(() => {
+        giftCardSkus.delete(backend.id)
+        return new Set<string>()
+      })
+    entry = { at: Date.now(), skus }
+    giftCardSkus.set(backend.id, entry)
+  }
+  return entry.skus.then((skus) => skus.has(key))
+}
+
 export interface ResolvedProduct {
   /** The cart/checkout key: the Directus id, or `<backend>:<key>`. */
   id: string
@@ -135,6 +156,11 @@ export async function resolveProductForCart(productId: string): Promise<Resolved
   const ref = parseProductRef(productId)
   if (!ref) return null
   if (ref.kind === 'backend') {
+    // A gift card needs an amount and a recipient that this checkout doesn't
+    // collect; the store couldn't issue the card after PayPal took the money.
+    if (await isGiftCard(ref.backend, ref.key)) {
+      throw createError({ statusCode: 409, statusMessage: "Gift cards can't be bought here yet" })
+    }
     const product = await ref.backend
       .request({ method: 'GET', collection: 'products', key: ref.key })
       .catch(() => null) as { sku?: string, name?: string, price?: number | string, image?: string | null, status?: string, requires_shipping?: boolean } | null
