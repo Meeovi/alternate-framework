@@ -41,6 +41,11 @@ export interface CommerceConfig {
    * user behind the app server's static token.
    */
   trusted: { users: string[], roles: string[] }
+  /**
+   * POST /commerce/mirror/notify — the store's "something changed" ping.
+   * With a secret, the ping must send it (X-Mageos-Notify-Secret).
+   */
+  notify: { secret: string, debounceMs: number, minIntervalMs: number }
 }
 
 type Env = Record<string, unknown>
@@ -86,6 +91,11 @@ export function readConfig(env: Env = {}): CommerceConfig {
     },
     stockRequiresAuth: bool(env, 'MAGEOS_STOCK_REQUIRE_AUTH', false),
     trusted: { users: list(env, 'MAGEOS_TRUSTED_USERS'), roles: list(env, 'MAGEOS_TRUSTED_ROLES') },
+    notify: {
+      secret: str(env, 'MAGEOS_NOTIFY_SECRET'),
+      debounceMs: Number(str(env, 'MAGEOS_NOTIFY_DEBOUNCE_MS', '3000')) || 3000,
+      minIntervalMs: Number(str(env, 'MAGEOS_NOTIFY_MIN_INTERVAL_MS', '10000')) || 10000,
+    },
   }
 }
 

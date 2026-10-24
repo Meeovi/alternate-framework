@@ -104,7 +104,7 @@ truth; the operation copies it into Directus's own collections:
 |---|---|---|---|
 | products | `products` (`source = 'magento'`) | `mageos_id` | whole catalogue; rows the store dropped are archived, never deleted |
 | categories | `categories` | `uid` | whole tree; an existing CMS category with the same slug is linked and keeps its name/position (only `mageos_owned` rows take the store's) |
-| orders | `orders` | `entity_id` | changed since the newest mirrored `date_updated`; `buyer_id` stays empty (the app reads store orders live) |
+| orders | `orders` | `entity_id` | changed since the newest mirrored `mageos_updated_at` (the store's time; Directus stamps `date_created`/`date_updated` itself); `buyer_id` stays empty (the app reads store orders live) |
 | customers | `customers` (admin-only) | `id` (store id) | changed since the newest mirrored `updated_at`; `user_id` = the app account with that `magento_customer_id` |
 
 Writes skip the collections' own event Flows and hooks (`emitEvents: false`), record no
@@ -114,6 +114,20 @@ still running is skipped. Store SKUs go in `products.mageos_sku` (`products.sku`
 Flows (created in the meeDirectus instance): **Mage-OS sync: orders** (every 5 min),
 **: catalogue** (every 15 min, categories then products), **: customers** (hourly), and
 **Mage-OS sync now** — a button on those four collections that syncs the collection it's run from.
+
+### Within seconds: the store's change pings
+
+`POST /commerce/mirror/notify` `{"sections": ["orders"]}` runs the sync for those sections
+shortly after (answers 202 at once). The Mage-OS module **Meeovi_DirectusSync**
+(`adapter-magento/magento-module/Meeovi/DirectusSync`) sends it after an order, customer,
+product or category is saved, so changes reach Directus in a few seconds; the Flows above
+remain the safety net.
+
+The route is public, like a webhook: a ping carries no data (the sync reads the store
+itself, signed), so a forged one can only cause an early sync. Pings are debounced
+(`MAGEOS_NOTIFY_DEBOUNCE_MS`, default 3000), a ping during a run queues one follow-up, and
+a section runs at most once per `MAGEOS_NOTIFY_MIN_INTERVAL_MS` (default 10000). Set
+`MAGEOS_NOTIFY_SECRET` to also require it as `X-Mageos-Notify-Secret`.
 
 ## API
 

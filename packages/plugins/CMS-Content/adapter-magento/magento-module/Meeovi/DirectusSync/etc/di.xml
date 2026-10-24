@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="Meeovi\DirectusSync\Observer\QueueOrders" type="Meeovi\DirectusSync\Observer\QueueSection">
+        <arguments><argument name="section" xsi:type="string">orders</argument></arguments>
+    </virtualType>
+    <virtualType name="Meeovi\DirectusSync\Observer\QueueCustomers" type="Meeovi\DirectusSync\Observer\QueueSection">
+        <arguments><argument name="section" xsi:type="string">customers</argument></arguments>
+    </virtualType>
+    <virtualType name="Meeovi\DirectusSync\Observer\QueueProducts" type="Meeovi\DirectusSync\Observer\QueueSection">
+        <arguments><argument name="section" xsi:type="string">products</argument></arguments>
+    </virtualType>
+    <virtualType name="Meeovi\DirectusSync\Observer\QueueCategories" type="Meeovi\DirectusSync\Observer\QueueSection">
+        <arguments><argument name="section" xsi:type="string">categories</argument></arguments>
+    </virtualType>
+</config>

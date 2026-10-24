@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="meeovi_directus_sync" translate="label" sortOrder="900" showInDefault="1">
+            <label>Meeovi Directus Sync</label>
+            <tab>service</tab>
+            <resource>Meeovi_DirectusSync::config</resource>
+            <group id="general" translate="label comment" sortOrder="10" showInDefault="1">
+                <label>Change notifications</label>
+                <comment>After an order, customer, product or category is saved, tell Directus to run its Mage-OS sync now. The notification carries no store data; Directus reads the changes from this store. Directus's scheduled sync Flows still run either way.</comment>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="url" translate="label comment" type="text" sortOrder="20" showInDefault="1">
+                    <label>Directus URL</label>
+                    <comment>Base URL of the Directus instance with the commerce extension, e.g. http://127.0.0.1:8011. Pings go to /commerce/mirror/notify.</comment>
+                    <validate>validate-url</validate>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="secret" translate="label comment" type="obscure" sortOrder="30" showInDefault="1">
+                    <label>Shared secret</label>
+                    <comment>Only if Directus has MAGEOS_NOTIFY_SECRET set; sent as X-Mageos-Notify-Secret.</comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+                <field id="timeout" translate="label comment" type="text" sortOrder="40" showInDefault="1">
+                    <label>Timeout (seconds)</label>
+                    <comment>How long a save may wait for Directus to answer. A slow or failed ping is only logged; it never fails the save.</comment>
+                    <validate>validate-digits validate-digits-range digits-range-1-10</validate>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

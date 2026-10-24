@@ -2,7 +2,8 @@ import { defineOperationApi } from '@directus/extensions-sdk'
 import type { ICommerceAdapter } from '../../adapters/base.adapter'
 import { createAdapter } from '../../backend'
 import { readConfig } from '../../config'
-import { MIRROR_SECTIONS, mirror, type MirrorSection, type MirrorStats, type MirrorStore } from '../../mirror/sync'
+import { directusStore } from '../../mirror/directus-store'
+import { MIRROR_SECTIONS, mirror, type MirrorSection, type MirrorStats } from '../../mirror/sync'
 
 /**
  * Flow operation "Mage-OS sync": copies the store's products, categories,
@@ -22,16 +23,7 @@ export default defineOperationApi<Options>({
     if (!sections.every((s) => MIRROR_SECTIONS.includes(s))) throw new Error(`Unknown section "${section}"`)
 
     adapter ??= createAdapter(readConfig(env))
-    const schema = await getSchema()
-    const items = (collection: string) => new services.ItemsService(collection, { schema, knex: database })
-    const quiet = { emitEvents: false }
-    const store: MirrorStore = {
-      read: (collection, filter, fields, options = {}) =>
-        // Plain Directus filter objects; the SDK's Filter type is a strict union.
-        items(collection).readByQuery({ filter: filter as never, fields, sort: options.sort, limit: options.limit ?? -1 }),
-      create: async (collection, rows) => { await items(collection).createMany(rows, quiet) },
-      update: async (collection, key, row) => { await items(collection).updateOne(key, row, quiet) },
-    }
+    const store = await directusStore({ services, database, getSchema })
 
     // One section failing doesn't stop the others; the run still fails so the Flow log shows it.
     const results: MirrorStats[] = []

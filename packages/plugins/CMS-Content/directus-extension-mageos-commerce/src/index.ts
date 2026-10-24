@@ -10,6 +10,8 @@ import type { Logger, RouteContext } from './http'
 import { accountRoutes } from './routes/account'
 import { adminRoutes } from './routes/admin'
 import { catalogRoutes } from './routes/catalog'
+import { mirrorRoutes } from './routes/mirror'
+import type { DirectusServicesContext } from './mirror/directus-store'
 import { sellerRoutes } from './routes/sellers'
 
 /**
@@ -17,7 +19,7 @@ import { sellerRoutes } from './routes/sellers'
  * normalized API, callable with the Directus SDK's customEndpoint (see
  * sdk/). Public storefront routes are in routes/catalog.ts; customer,
  * seller, sync and admin routes (routes/account, sellers, admin) need a
- * trusted Directus caller.
+ * trusted Directus caller. routes/mirror.ts takes the store's change pings.
  */
 
 function createStore(config: CommerceConfig, env: Record<string, unknown>, logger: Logger): CacheStore {
@@ -37,7 +39,7 @@ function createStore(config: CommerceConfig, env: Record<string, unknown>, logge
 
 export default defineEndpoint({
   id: 'commerce',
-  handler: (router: Router, { env, logger }: { env: Record<string, unknown>, logger: Logger }) => {
+  handler: (router: Router, { env, logger, services, database, getSchema }: { env: Record<string, unknown>, logger: Logger } & DirectusServicesContext) => {
     const config = readConfig(env)
     let adapter: ICommerceAdapter | null = null
     let configError: CommerceError | null = null
@@ -70,5 +72,6 @@ export default defineEndpoint({
     accountRoutes(context)
     sellerRoutes(context)
     adminRoutes(context)
+    mirrorRoutes(context, { services, database, getSchema })
   },
 })

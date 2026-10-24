@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+  Global area: storefront, admin, REST/GraphQL and CLI saves all count.
+  *_commit_after fires once the database transaction is committed, so when
+  Directus reads the store a moment later, the change is there.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_order_save_commit_after">
+        <observer name="meeovi_directus_sync_orders" instance="Meeovi\DirectusSync\Observer\QueueOrders"/>
+    </event>
+    <event name="customer_save_commit_after">
+        <observer name="meeovi_directus_sync_customers" instance="Meeovi\DirectusSync\Observer\QueueCustomers"/>
+    </event>
+    <event name="catalog_product_save_commit_after">
+        <observer name="meeovi_directus_sync_products" instance="Meeovi\DirectusSync\Observer\QueueProducts"/>
+    </event>
+    <event name="catalog_product_delete_commit_after">
+        <observer name="meeovi_directus_sync_products_delete" instance="Meeovi\DirectusSync\Observer\QueueProducts"/>
+    </event>
+    <event name="catalog_category_save_commit_after">
+        <observer name="meeovi_directus_sync_categories" instance="Meeovi\DirectusSync\Observer\QueueCategories"/>
+    </event>
+    <event name="catalog_category_delete_commit_after">
+        <observer name="meeovi_directus_sync_categories_delete" instance="Meeovi\DirectusSync\Observer\QueueCategories"/>
+    </event>
+</config>

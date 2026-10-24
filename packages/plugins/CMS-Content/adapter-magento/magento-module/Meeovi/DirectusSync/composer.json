@@ -1,0 +1,21 @@
+{
+    "name": "meeovi/module-directus-sync",
+    "description": "Pings Directus's Mage-OS sync when orders, customers, products or categories change, so the Meeovi Directus mirror updates within seconds.",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0||~8.4.0",
+        "magento/framework": "*",
+        "magento/module-catalog": "*",
+        "magento/module-customer": "*",
+        "magento/module-sales": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Meeovi\\DirectusSync\\": ""
+        }
+    }
+}
