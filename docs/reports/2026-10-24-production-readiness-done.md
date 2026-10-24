@@ -104,6 +104,21 @@
 - A stopgap `.htaccess` rule blocks the payloads on meeovi.com and commerce.
 - The evidence is in `/root/incident-2026-10-20/`.
 
+## Production tests against the demo, 24 October (after the deploy)
+
+| Suite | Pass | Not passed |
+| --- | --- | --- |
+| auth | 34 | 22 blocked by Turnstile |
+| business | 16 | 1 skipped on purpose |
+| commerce | 20 | — |
+| search | 10 | — |
+| security | 14 | K1 blocked (browser check) |
+| shared | 31 | U5 (the `app.pixanomy.com` DNS record is missing); 5 blocked by Turnstile |
+| social | 15 | 7 blocked by Turnstile |
+| ui-shell | 9 | — |
+
+The live `/results` page was also checked in a fresh browser: 5 search requests with no loop, no hydration or CSP errors, and a four-column grid of spaces and Bluesky posts and profiles.
+
 ## Production tests against the private build, 24 October
 
 Run against a private copy of the build on localhost, before the deploy. Remaining failures are from that setup, or from the missing `app.pixanomy.com` DNS record:
