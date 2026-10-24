@@ -77,7 +77,7 @@
                 <!--Product Description-->
                 <v-window-item :value="productbar?.menus?.[0]?.value">
                   <v-card variant="text">
-                    <v-card-text style="font-size: 20px;" v-dompurify-html="product?.content"></v-card-text>
+                    <v-card-text style="font-size: 20px;" v-dompurify-html="product?.content || product?.description"></v-card-text>
                   </v-card>
                 </v-window-item>
 
