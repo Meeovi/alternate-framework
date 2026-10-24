@@ -89,8 +89,10 @@ export function orderRow(order: Record<string, any>, syncedAt: string) {
     fulfillment_status: app.fulfillment_status,
     payment_provider: order.payment?.method ?? null,
     line_items_snapshot: app.line_items_snapshot,
-    date_created: magentoDate(order.created_at),
-    date_updated: magentoDate(order.updated_at),
+    // The store's own times: Directus stamps date_created/date_updated itself
+    // (special date-created/date-updated), so those record the mirror's writes.
+    mageos_created_at: magentoDate(order.created_at),
+    mageos_updated_at: magentoDate(order.updated_at),
     mageos_synced_at: syncedAt,
   }
 }

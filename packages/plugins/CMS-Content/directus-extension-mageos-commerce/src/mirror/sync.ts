@@ -13,7 +13,8 @@ import { categoryRow, customerRow, flattenCategories, orderRow, productRow, stor
  *  - categories: the whole tree; an existing CMS category with the same slug
  *    and no uid yet is linked rather than duplicated, and keeps its own name
  *    and position (only rows the sync created, mageos_owned, take the store's).
- *  - orders, customers: what changed since the newest mirrored change.
+ *  - orders, customers: what changed since the newest mirrored change
+ *    (orders.mageos_updated_at / customers.updated_at — the store's times).
  */
 
 export type MirrorSection = 'products' | 'categories' | 'orders' | 'customers'
@@ -181,7 +182,7 @@ async function changed(section: 'orders' | 'customers', adapter: ICommerceAdapte
   if (!adapter.mirror) throw new CommerceError('NOT_SUPPORTED', `This backend can't mirror ${section}`)
   const pageSize = options.pageSize ?? DEFAULT_PAGE
   const maxPages = options.maxPages ?? DEFAULT_MAX_PAGES
-  const changedField = section === 'orders' ? 'date_updated' : 'updated_at'
+  const changedField = section === 'orders' ? 'mageos_updated_at' : 'updated_at'
 
   // Resume from the newest change already mirrored (inclusive: re-reading it is harmless).
   const [newest] = await store.read(section, { mageos_synced_at: { _nnull: true } }, [changedField], { sort: [`-${changedField}`], limit: 1 })
@@ -194,12 +195,12 @@ async function changed(section: 'orders' | 'customers', adapter: ICommerceAdapte
 
     if (section === 'orders') {
       const ids = items.map((o) => Number(o.entity_id))
-      const known = new Map((await store.read('orders', { entity_id: { _in: ids } }, ['id', 'entity_id', 'date_updated'], { limit: -1 })).map((r) => [Number(r.entity_id), r]))
+      const known = new Map((await store.read('orders', { entity_id: { _in: ids } }, ['id', 'entity_id', 'mageos_updated_at'], { limit: -1 })).map((r) => [Number(r.entity_id), r]))
       const fresh: Row[] = []
       for (const order of items) {
         const current = known.get(Number(order.entity_id))
         const row = orderRow(order, syncedAt)
-        if (current && same(current.date_updated, row.date_updated)) {
+        if (current && same(current.mageos_updated_at, row.mageos_updated_at)) {
           stats.unchanged!++
         } else if (current) {
           await store.update('orders', current.id, row)

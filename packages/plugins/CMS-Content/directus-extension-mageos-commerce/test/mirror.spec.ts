@@ -147,7 +147,7 @@ describe('mirror orders', () => {
   it('continues from the newest mirrored change and pages until done', async () => {
     const { store, tables } = memoryStore({
       orders: [
-        { id: 1, entity_id: 3, date_updated: '2026-10-18T00:00:00.000Z', mageos_synced_at: '2026-10-18T00:00:00.000Z' },
+        { id: 1, entity_id: 3, date_updated: '2026-10-23T09:00:00.000Z', mageos_updated_at: '2026-10-18T00:00:00.000Z', mageos_synced_at: '2026-10-18T00:00:00.000Z' },
         { id: 2, entity_id: null, buyer_id: 'app-user', date_updated: '2026-10-22T00:00:00.000Z', mageos_synced_at: null },
       ],
     })
@@ -160,7 +160,10 @@ describe('mirror orders', () => {
     expect(orders).toHaveBeenNthCalledWith(1, '2026-10-18 00:00:00', 1, 2)
     expect(stats).toEqual({ section: 'orders', created: 2, updated: 1, unchanged: 0 })
     expect(tables.orders!.map((o) => o.entity_id)).toEqual([3, null, 4, 5])
-    expect(tables.orders![0]).toMatchObject({ grand_total: 499, payment_status: 'completed', date_updated: '2026-10-19T08:00:00.000Z' })
+    expect(tables.orders![0]).toMatchObject({ grand_total: 499, payment_status: 'completed', mageos_updated_at: '2026-10-19T08:00:00.000Z' })
+    // Directus's own auto-stamped date fields are never written by the mirror.
+    expect(tables.orders![2]).not.toHaveProperty('date_created')
+    expect(tables.orders![2]).not.toHaveProperty('date_updated')
     expect(tables.orders![2]).not.toHaveProperty('buyer_id')
   })
 
