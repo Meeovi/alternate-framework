@@ -3,8 +3,8 @@
        or let parent unmount and rely on preserveSharedStateOnUnmount on ais-instant-search -->
   <aside v-show="visible" class="search-filters" :class="{ closed: !visible }">
     <!-- Current refinements + clear -->
-    <ais-current-refinements :excluded-attributes="[]"/>
-    <ais-clear-refinements :excluded-attributes="[]">
+    <ais-current-refinements :excluded-attributes="EXCLUDED_ATTRIBUTES"/>
+    <ais-clear-refinements :excluded-attributes="EXCLUDED_ATTRIBUTES">
       <template #resetLabel>Clear all</template>
     </ais-clear-refinements>
 
@@ -49,6 +49,11 @@ withDefaults(defineProps<{
   showTypeFilter: true,
 })
 
+// A constant, not an inline array: a new array on a re-render makes the
+// widget rebuild itself and search again (see resultsComponent.vue). The
+// query isn't a filter to clear here; the header's search box owns it.
+const EXCLUDED_ATTRIBUTES = ['query']
+
 const priceRanges = [
   { label: 'All prices', value: {} },
   { label: 'Under $25', value: { end: 25 } },
@@ -81,5 +86,28 @@ const priceRanges = [
 
 :deep(.ais-RatingMenu-label) {
   margin-right: 6px;
+}
+
+/* The app's search.css hides every SVG inside .ais-InstantSearch (to drop
+   InstantSearch's own icons), stars included, so each option read "& Up"
+   with nothing before it. */
+/* Scoped under .search-filters and qualified with `svg` so it outranks
+   that rule (0,3,1 against its 0,2,1). */
+.search-filters :deep(svg.ais-RatingMenu-starIcon) {
+  display: inline-block !important;
+  width: 1em;
+  height: 1em;
+  fill: rgb(var(--v-theme-warning));
+  vertical-align: -0.125em;
+}
+
+:deep(.ais-RatingMenu-starIcon--empty) {
+  fill: rgba(var(--v-theme-on-surface), 0.25);
+}
+
+:deep(.ais-RatingMenu-link) {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
 </style>

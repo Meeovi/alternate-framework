@@ -39,6 +39,49 @@ function getConfig(): MagentoConfig {
   return (config.searchProviders as { magento: MagentoConfig }).magento
 }
 
+/** With public.magento.via 'directus' (the default), the store is searched
+ *  through Directus's /commerce/search like the rest of the store data, not
+ *  over GraphQL. Returns the Directus URL then, otherwise null. */
+function viaDirectus(): string | null {
+  const config = useRuntimeConfig() as { public?: { magento?: { via?: string }, directus?: { url?: string } } }
+  if (config.public?.magento?.via !== 'directus') return null
+  const url = String(config.public?.directus?.url || '').replace(/\/+$/, '')
+  return url || null
+}
+
+type DirectusProduct = {
+  sku: string
+  name: string
+  price?: { final?: number | null } | null
+  images?: string[]
+}
+
+type DirectusSearchPage = {
+  items: DirectusProduct[]
+  total: number
+  facets?: Array<{ code: string, options?: Array<{ value: string, count?: number }> }>
+}
+
+const DIRECTUS_SORTS: Record<string, string> = {
+  'name:asc': 'name', 'name:desc': '-name', 'price:asc': 'price', 'price:desc': '-price',
+}
+
+/** /commerce/search needs a query; an empty one lists the catalogue instead. */
+export async function searchViaDirectus(url: string, options: SearchProviderOptions): Promise<DirectusSearchPage> {
+  const params = new URLSearchParams({ page: String(Math.max(1, options.page)), limit: String(Math.min(50, options.pageSize)) })
+  const sort = options.sort ? DIRECTUS_SORTS[`${options.sort.field}:${options.sort.direction}`] : undefined
+  if (sort) params.set('sort', sort)
+  const query = options.query.trim()
+  if (query) {
+    params.set('q', query)
+    if (options.facets?.length) params.set('facets', '1')
+  }
+  const response = await fetch(`${url}/commerce/${query ? 'search' : 'products'}?${params}`, { signal: options.signal, headers: { accept: 'application/json' } })
+  if (!response.ok) throw new Error(`Directus /commerce/${query ? 'search' : 'products'} answered ${response.status}`)
+  const body = await response.json() as { data?: DirectusSearchPage }
+  return { items: body.data?.items ?? [], total: Number(body.data?.total) || 0, facets: body.data?.facets ?? [] }
+}
+
 let _adapter: MagentoAdapter | null = null
 
 function getAdapter(config: MagentoConfig): MagentoAdapter {
@@ -131,6 +174,31 @@ export const magentoProvider: SearchProvider = {
 
   async search(options: SearchProviderOptions): Promise<ProviderSearchResult> {
     const start = Date.now()
+    const directus = viaDirectus()
+    if (directus) {
+      const page = await searchViaDirectus(directus, options)
+      return {
+        provider: this.id,
+        items: page.items.map((item) => ({
+          id: item.sku,
+          score: 1,
+          source: {
+            // The cart/product key for a store product (see productRef.ts).
+            id: `magento:${item.sku}`,
+            sku: item.sku,
+            name: item.name,
+            price: item.price?.final ?? null,
+            image: item.images?.[0] ?? null,
+          },
+        })),
+        total: page.total,
+        facets: options.facets?.length
+          ? aggregationsToFacets((page.facets ?? []).map((f) => ({ attribute_code: f.code, options: f.options })), options.facets)
+          : {},
+        tookMs: Date.now() - start,
+      }
+    }
+
     const config = getConfig()
     const magento = getAdapter(config)
 

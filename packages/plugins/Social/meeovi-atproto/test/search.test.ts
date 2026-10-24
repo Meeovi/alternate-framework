@@ -38,6 +38,28 @@ describe('atproto search provider', () => {
     expect(createAtprotoSearchProvider(() => undefined).isEnabled()).toBe(false)
   })
 
+  it('leaves out adult, taken-down and logged-in-only content', async () => {
+    vi.spyOn(AtprotoClient.prototype, 'searchPosts').mockResolvedValue({
+      posts: [
+        post,
+        { ...post, uri: 'at://did:plc:x/app.bsky.feed.post/porn', labels: ['porn'] },
+        { ...post, uri: 'at://did:plc:x/app.bsky.feed.post/hidden-author', authorLabels: ['!no-unauthenticated'] },
+        { ...post, uri: 'at://did:plc:x/app.bsky.feed.post/bot', authorLabels: ['bot'] },
+      ],
+    })
+    vi.spyOn(AtprotoClient.prototype, 'searchActors').mockResolvedValue({
+      actors: [actor, { ...actor, did: 'did:plc:nsfw', labels: ['sexual'] }],
+    })
+
+    const result = await createAtprotoSearchProvider(() => config()).search(options)
+
+    expect(result.items.map((hit) => hit.id)).toEqual([
+      post.uri,
+      'at://did:plc:x/app.bsky.feed.post/bot',
+      actor.did,
+    ])
+  })
+
   it('answers an empty query with an empty page, without calling the PDS', async () => {
     const searchPosts = vi.spyOn(AtprotoClient.prototype, 'searchPosts')
     const result = await createAtprotoSearchProvider(() => config()).search({ ...options, query: '  ' })

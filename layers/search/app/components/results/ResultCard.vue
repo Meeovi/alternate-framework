@@ -17,8 +17,10 @@
       <strong v-if="formattedPrice" class="result-card__price">{{ formattedPrice }}</strong>
     </v-card-text>
 
+    <!-- The card itself is the link: a second <a> inside it is invalid HTML,
+         which the browser re-parses, breaking hydration. -->
     <v-card-actions v-if="link">
-      <v-btn variant="text" color="primary" v-bind="linkBinding">View details</v-btn>
+      <v-btn variant="text" color="primary" tag="span" tabindex="-1">View details</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -54,24 +56,38 @@ const type = computed(() => {
 
 const NON_PRODUCT_TYPES = new Set([
   'space', 'post', 'hashtag', 'shop', 'brand', 'category', 'department',
-  'coupon', 'profile', 'user', 'article',
+  'coupon', 'profile', 'user', 'article', 'list',
+  // meeovi-atproto's search provider
+  'atproto_post', 'atproto_actor',
 ])
 
 const isProduct = computed(() => !NON_PRODUCT_TYPES.has(type.value ?? ''))
 
+const TYPE_LABELS: Record<string, string> = {
+  atproto_post: 'Bluesky post',
+  atproto_actor: 'Bluesky profile',
+}
+
 const typeLabel = computed(() => {
   if (!type.value) return null
-  return type.value.charAt(0).toUpperCase() + type.value.slice(1)
+  return TYPE_LABELS[type.value] ?? type.value.charAt(0).toUpperCase() + type.value.slice(1)
 })
 
 const title = computed(() => String(firstValue(['title', 'name', 'label', 'product_name']) || 'Untitled'))
 const subtitle = computed(() => {
   const value = firstValue(['brand', 'category', 'author', 'seller'])
-  return value ? String(value) : null
+  if (value) return String(value)
+  const handle = firstValue(['authorHandle'])
+  return handle ? `@${handle}` : null
 })
+// Rich-text fields (posts' `content`, ...) arrive as HTML; the card shows
+// plain text.
 const description = computed(() => {
   const value = firstValue(['description', 'body', 'summary', 'excerpt', 'content'])
-  return value ? String(value) : 'No description available.'
+  const text = value
+    ? String(value).replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
+    : ''
+  return text || 'No description available.'
 })
 
 function resolveImageUrl(raw: unknown): string | null {
@@ -92,6 +108,8 @@ const { src: imageSrc, onError: onImageError } = useImageFallback(image)
 
 const price = computed(() => {
   const value = firstValue(['price', 'amount', 'final_price'])
+  // No price at all (posts, spaces, Bluesky…) isn't $0.00.
+  if (value === null || typeof value === 'object') return null
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : null
 })

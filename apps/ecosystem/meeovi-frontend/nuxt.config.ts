@@ -223,6 +223,31 @@ export default defineNuxtConfig({
     directus: {
       token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN,
     },
+    // Site search (layers/search /api/search): the store's products come
+    // from adapter-magento's provider (through Directus's /commerce/search),
+    // everything else from Directus itself, queried live. Private and
+    // unpublished rows are left out (layers/shared/server/utils/privateContent.ts).
+    searchProviders: {
+      // Off: OpenSearch holds no site content (ALTERNATE_SEARCH_INDEX names
+      // an index that doesn't exist, and Mage-OS's own index would repeat
+      // the store's products), and Postgres read Directus's products table
+      // raw — drafts included, store products twice, ~1.5 s a search.
+      opensearch: { enabled: false },
+      postgres: { enabled: false },
+      directus: {
+        enabled: true,
+        collections: [
+          // Directus's own products; rows the Mage-OS sync mirrored are the
+          // store's, found through the store.
+          { collection: 'products', type: 'product', titleField: 'name', descriptionField: 'content', imageField: 'image', slugField: null, extraFields: ['price'], filter: { _or: [{ source: { _null: true } }, { source: { _neq: 'magento' } }] } },
+          { collection: 'spaces', type: 'space', titleField: 'name', descriptionField: 'description', imageField: 'image' },
+          { collection: 'posts', type: 'post', titleField: 'title', descriptionField: 'content', imageField: 'image' },
+          { collection: 'shops', type: 'shop', titleField: 'name', descriptionField: 'description', imageField: 'image' },
+          { collection: 'lists', type: 'list', titleField: 'name', descriptionField: 'description', imageField: 'image', path: '/lists/list/{slug}' },
+          { collection: 'brands', type: 'brand', titleField: 'name', descriptionField: 'description', imageField: 'image', statusField: null },
+        ],
+      },
+    },
     public: {
       // Directus URL only. Client code talks to Directus through the
       // same-origin /api/cms proxy; the token is never serialized here.

@@ -11,6 +11,7 @@
 // sync/indexing pipeline is needed.
 import { createDirectus, readItems, rest, staticToken } from '@directus/sdk'
 import { useRuntimeConfig } from '#imports'
+import { privateContentFilter } from '#shared/server/utils/privateContent'
 import type { NormalizedHit, ProviderSearchResult, SearchProvider, SearchProviderOptions } from './types'
 
 // One searchable Directus collection and how a row becomes a hit. `type` is
@@ -29,6 +30,10 @@ export type DirectusSearchCollection = {
   statusField?: string | null
   /** link template — {slug} and {id} are replaced from the row */
   path?: string
+  /** an extra Directus filter every hit must match */
+  filter?: Record<string, unknown>
+  /** more fields copied onto the hit as they are (e.g. a product's price) */
+  extraFields?: string[]
 }
 
 type DirectusProviderConfig = {
@@ -154,12 +159,21 @@ export const directusProvider: SearchProvider = {
         // approximate federated totals being the standard tradeoff here).
         const slugField = entry.slugField === undefined ? 'slug' : entry.slugField
         const statusField = entry.statusField === undefined ? 'status' : entry.statusField
-        const fields = ['id', slugField, entry.titleField, entry.descriptionField, entry.imageField]
+        const fields = ['id', slugField, entry.titleField, entry.descriptionField, entry.imageField, ...(entry.extraFields ?? [])]
           .filter((field): field is string => Boolean(field))
+        // Search is public: the server token can read private rows (private
+        // lists, draft posts, hidden spaces…), so apply the same rules the
+        // /api/cms proxy applies to a signed-out reader (privateContent.ts)
+        // on top of the status deny-list.
+        const filters = [
+          statusField ? { _or: [{ [statusField]: { _nin: HIDDEN_STATUSES } }, { [statusField]: { _null: true } }] } : null,
+          privateContentFilter(entry.collection, null) ?? null,
+          entry.filter ?? null,
+        ].filter((filter): filter is Record<string, unknown> => Boolean(filter))
         const items = await client.request<any[]>(
           readItems(entry.collection as any, {
             search: options.query || undefined,
-            ...(statusField ? { filter: { [statusField]: { _nin: HIDDEN_STATUSES } } } : {}),
+            ...(filters.length ? { filter: filters.length > 1 ? { _and: filters } : filters[0] } : {}),
             fields,
             limit: perCollectionLimit,
             offset,
@@ -185,6 +199,8 @@ export const directusProvider: SearchProvider = {
           id: `${entry.collection}:${row.id}`,
           score: titleScore(row[entry.titleField], options.query),
           source: {
+            ...Object.fromEntries((entry.extraFields ?? []).map((field) => [field, row[field] ?? null])),
+            id: row.id,
             type: entry.type,
             title: row[entry.titleField] ?? null,
             name: row[entry.titleField] ?? null,

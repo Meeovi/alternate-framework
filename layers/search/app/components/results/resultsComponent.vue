@@ -56,8 +56,16 @@
           :search-client="searchClient"
           :index-name="activeIndex"
           :initial-ui-state="initialUiState"
-          :future="{ preserveSharedStateOnUnmount: true }"
+          :future="instantSearchFuture"
         >
+          <!-- No visible box here (the header has one), but InstantSearch
+               only applies initialUiState's query when a search-box widget
+               is mounted to own it; without this every search went out
+               with an empty query. -->
+          <ais-search-box>
+            <template #default><span hidden /></template>
+          </ais-search-box>
+
           <header class="results-toolbar">
             <v-btn
               class="results-toolbar__filters-btn d-md-none"
@@ -114,7 +122,7 @@
             </div>
           </header>
 
-          <ais-current-refinements v-slot="{ items, refine }" :excluded-attributes="[]">
+          <ais-current-refinements v-slot="{ items, refine }" :excluded-attributes="EXCLUDED_ATTRIBUTES">
             <div v-if="items.length" class="results-toolbar__refinements">
               <template v-for="entry in items" :key="entry.attribute">
                 <v-chip
@@ -128,7 +136,7 @@
                   {{ entry.label }}: {{ refinement.label }}
                 </v-chip>
               </template>
-              <ais-clear-refinements v-slot="{ refine: clearAll, canRefine }" :excluded-attributes="[]">
+              <ais-clear-refinements v-slot="{ refine: clearAll, canRefine }" :excluded-attributes="EXCLUDED_ATTRIBUTES">
                 <v-btn v-if="canRefine" size="small" variant="text" @click="clearAll">Clear all</v-btn>
               </ais-clear-refinements>
             </div>
@@ -175,7 +183,7 @@
                    .results-grid never matched anything, so every result
                    list rendered as a plain block <ol>, one item per row,
                    full page height. Wrapping in a real element instead. -->
-              <div class="results-grid">
+              <div class="results-hits">
                 <ais-hits v-if="viewMode === 'paged'">
                   <template #item="{ item }">
                     <ResultCard :item="item" />
@@ -209,15 +217,21 @@
               </ais-state-results>
 
               <div v-if="viewMode === 'paged'" class="results-layout__pagination">
+                <!-- Wrapped in a real element: with a single page the v-if
+                     leaves the slot empty, and Vue then falls back to the
+                     widget's own unstyled <ul> (same issue as the
+                     ais-state-results slots above). -->
                 <ais-pagination v-slot="{ currentRefinement, nbPages, refine }">
-                  <v-pagination
-                    v-if="nbPages > 1"
-                    :model-value="currentRefinement + 1"
-                    :length="nbPages"
-                    :total-visible="7"
-                    rounded="circle"
-                    @update:model-value="refine($event - 1)"
-                  />
+                  <div>
+                    <v-pagination
+                      v-if="nbPages > 1"
+                      :model-value="currentRefinement + 1"
+                      :length="nbPages"
+                      :total-visible="7"
+                      rounded="circle"
+                      @update:model-value="refine($event - 1)"
+                    />
+                  </div>
                 </ais-pagination>
               </div>
             </main>
@@ -295,6 +309,14 @@ const hasLiveResults = ref(false)
 watch(isLoading, (loading: boolean) => {
   if (!loading) hasLiveResults.value = true
 })
+
+// Constants, not inline literals: a widget rebuilds itself (and searches
+// again) whenever a prop gets a new object, and this component re-renders
+// on every search (isLoading) — an inline `[]` made that an endless loop of
+// /api/search requests.
+// The query isn't a filter to clear here; the header's search box owns it.
+const EXCLUDED_ATTRIBUTES = ['query']
+const instantSearchFuture = { preserveSharedStateOnUnmount: true }
 
 const mobileFiltersOpen = ref(false)
 const viewMode = ref<'paged' | 'infinite'>('paged')
@@ -408,9 +430,11 @@ const hitsPerPageItems = [
   grid-column: 1 / -1;
 }
 
+/* The snapshot's cells sit straight in .results-grid; the live widgets put
+   their own list inside .results-hits, so that list is the grid. */
 .results-grid,
-.results-grid :deep(.ais-Hits-list),
-.results-grid :deep(.ais-InfiniteHits-list) {
+.results-hits :deep(.ais-Hits-list),
+.results-hits :deep(.ais-InfiniteHits-list) {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
@@ -419,9 +443,24 @@ const hitsPerPageItems = [
   margin: 0;
 }
 
-.results-grid :deep(.ais-Hits-item),
-.results-grid :deep(.ais-InfiniteHits-item) {
+/* The app's styles.css makes .ais-Hits `position: absolute; width: 100%`,
+   which pulled the grid out of this column and over the page. */
+.results-hits :deep(.ais-Hits),
+.results-hits :deep(.ais-InfiniteHits) {
+  position: static;
+  width: auto;
+}
+
+.results-hits :deep(.ais-Hits-item),
+.results-hits :deep(.ais-InfiniteHits-item) {
   display: flex;
+  min-width: 0;
+}
+
+.results-hits :deep(.ais-Hits-item > *),
+.results-hits :deep(.ais-InfiniteHits-item > *),
+.results-grid__cell > * {
+  width: 100%;
 }
 
 @media (max-width: 960px) {

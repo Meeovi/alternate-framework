@@ -94,7 +94,8 @@ function extractFilters(params: SearchRefinements | undefined) {
 async function runSingleSearch(req: SearchRequest): Promise<AlgoliaShapedResult> {
   const params = req.params || {}
   const query = String(params.query || '')
-  const page = Math.max(1, Number(params.page || 1))
+  // InstantSearch's page is 0-based, /api/search's is 1-based.
+  const page = Math.max(0, Number(params.page) || 0) + 1
   const hitsPerPage = Math.max(1, Number(params.hitsPerPage || 12))
   const { sort } = parseSortIndexName(String(req.indexName || ''))
   const filters = extractFilters(params)

@@ -52,6 +52,30 @@ async function getClient(config: AtprotoSearchConfig): Promise<AtprotoClient> {
   return _clientPromise
 }
 
+// Site search is public and shown signed out, so leave out what Bluesky's
+// own app hides or blurs by default: adult and graphic content labels,
+// moderation takedowns, and accounts that ask not to be shown to
+// logged-out viewers. Unlabelled posts can still be explicit; this only
+// covers what the network has labelled.
+const HIDDEN_LABELS = new Set([
+  'porn', 'sexual', 'nudity', 'graphic-media', 'gore', 'nsfl',
+  '!hide', '!takedown', '!no-unauthenticated',
+])
+
+function isHidden(labels: string[] | undefined): boolean {
+  return (labels ?? []).some((label) => HIDDEN_LABELS.has(label))
+}
+
+/** Whether a post may appear in public search results. */
+export function isSearchablePost(post: AtprotoPostRecord): boolean {
+  return !isHidden(post.labels) && !isHidden(post.authorLabels)
+}
+
+/** Whether a profile may appear in public search results. */
+export function isSearchableActor(actor: AtprotoActorRecord): boolean {
+  return !isHidden(actor.labels)
+}
+
 function postToHit(post: AtprotoPostRecord): NormalizedHit {
   return {
     id: post.uri,
@@ -151,12 +175,12 @@ export function createAtprotoSearchProvider(getConfig: () => AtprotoSearchConfig
 
       const items: NormalizedHit[] = []
       if (postsResult.status === 'fulfilled') {
-        items.push(...postsResult.value.posts.map(postToHit))
+        items.push(...postsResult.value.posts.filter(isSearchablePost).map(postToHit))
       } else {
         console.error('[atprotoProvider] searchPosts failed:', postsResult.reason)
       }
       if (actorsResult.status === 'fulfilled') {
-        items.push(...actorsResult.value.actors.map(actorToHit))
+        items.push(...actorsResult.value.actors.filter(isSearchableActor).map(actorToHit))
       } else {
         console.error('[atprotoProvider] searchActors failed:', actorsResult.reason)
       }

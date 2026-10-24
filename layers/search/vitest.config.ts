@@ -18,6 +18,12 @@ export default defineConfig({
   test: {
     projects: [
       {
+        // Projects don't inherit the root `resolve`.
+        resolve: {
+          alias: {
+            '#shared': path.resolve(__dirname, '../shared'),
+          },
+        },
         test: {
           name: 'unit',
           include: ['test/__tests__/**/*.spec.ts'],

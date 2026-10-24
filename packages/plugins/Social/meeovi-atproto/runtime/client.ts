@@ -72,6 +72,10 @@ export interface AtprotoPostRecord {
   /** Populated only when this post is the viewer's own — the record's own
    *  like/repost URIs, needed to unlike/unrepost. */
   viewer?: { likeUri?: string, repostUri?: string }
+  /** Moderation and self-labels on the post (`porn`, `nudity`, `!hide`…). */
+  labels?: string[]
+  /** Labels on the post's author (`!no-unauthenticated`, `porn`…). */
+  authorLabels?: string[]
   poll?: {
     options: string[]
     expiresAt: string
@@ -90,6 +94,8 @@ export interface AtprotoActorRecord {
   followersCount?: number
   followsCount?: number
   postsCount?: number
+  /** Moderation and self-labels on the account. */
+  labels?: string[]
   /** Present only when the current session's viewer relationship to this
    *  actor was resolved (profile/search responses, not author-feed items). */
   viewer?: { following?: string | null, followedBy?: string | null, muted?: boolean, blocking?: string | null }
@@ -698,6 +704,8 @@ export class AtprotoClient {
       replyCount: post.replyCount,
       quoteCount: post.quoteCount,
       viewer: post.viewer ? { likeUri: post.viewer.like, repostUri: post.viewer.repost } : undefined,
+      labels: labelValues(post.labels),
+      authorLabels: labelValues(post.author.labels),
       poll: null,
     }
   }
@@ -714,11 +722,16 @@ export class AtprotoClient {
       followersCount: detailed.followersCount,
       followsCount: detailed.followsCount,
       postsCount: detailed.postsCount,
+      labels: labelValues(actor.labels),
       viewer: actor.viewer
         ? { following: actor.viewer.following, followedBy: actor.viewer.followedBy, muted: actor.viewer.muted, blocking: actor.viewer.blocking }
         : undefined,
     }
   }
+}
+
+function labelValues(labels: Array<{ val: string, neg?: boolean }> | undefined): string[] {
+  return (labels ?? []).filter((label) => !label.neg).map((label) => label.val)
 }
 
 function parseAtUri(uri: string): { did: string, collection: string, rkey: string } {
