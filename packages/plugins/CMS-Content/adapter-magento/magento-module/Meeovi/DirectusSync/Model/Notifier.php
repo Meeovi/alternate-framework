@@ -54,6 +54,20 @@ class Notifier
     }
 
     /**
+     * The shared secret. Saved in the admin or with config:set it's encrypted
+     * ("<key>:<version>:…"); set in app/etc/env.php (config:sensitive:set,
+     * --lock-env) it's plain text, which decrypt() would turn into garbage.
+     */
+    private function secret(): string
+    {
+        $stored = trim((string)$this->config->getValue(self::XML_SECRET));
+        if ($stored === '') {
+            return '';
+        }
+        return preg_match('/^\d+:\d+:/', $stored) ? trim((string)$this->encryptor->decrypt($stored)) : $stored;
+    }
+
+    /**
      * Sends the pending ping. Public for register_shutdown_function.
      */
     public function flush(): void
@@ -74,7 +88,7 @@ class Notifier
             $curl = $this->curlFactory->create();
             $curl->setTimeout(max(1, min(10, $timeout ?: 2)));
             $curl->addHeader('Content-Type', 'application/json');
-            $secret = (string)$this->encryptor->decrypt((string)$this->config->getValue(self::XML_SECRET));
+            $secret = $this->secret();
             if ($secret !== '') {
                 $curl->addHeader('X-Mageos-Notify-Secret', $secret);
             }

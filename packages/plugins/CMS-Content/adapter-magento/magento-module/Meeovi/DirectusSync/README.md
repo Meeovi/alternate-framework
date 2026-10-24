@@ -31,7 +31,7 @@ customers hourly) still catch everything.
 
 - **Enabled** — off by default.
 - **Directus URL** — e.g. `http://127.0.0.1:8011` when Directus runs on the same server.
-- **Shared secret** — only if Directus has `MAGEOS_NOTIFY_SECRET` set (sent as `X-Mageos-Notify-Secret`).
+- **Shared secret** — only if Directus has `MAGEOS_NOTIFY_SECRET` set (sent as `X-Mageos-Notify-Secret`). Saved here or with `config:set` it's stored encrypted; set in `app/etc/env.php` (`config:sensitive:set`, `--lock-env`) it's plain text — both work.
 - **Timeout (seconds)** — 1–10, default 2.
 
 Or from the command line:
