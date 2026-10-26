@@ -1,0 +1,53 @@
+{
+  "name": "@mframework/bookmarkit",
+  "version": "0.1.0",
+  "description": "Bookmarks for M Framework: a signed-in user's bookmarks and folders in a responsive grid, stored in Directus lists, as a Nuxt module.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/module.ts",
+  "module": "./src/module.ts",
+  "types": "./src/module.ts",
+  "exports": {
+    ".": "./src/module.ts",
+    "./module": "./src/module.ts",
+    "./types": "./src/runtime/types.ts",
+    "./composables/*": "./src/runtime/composables/*",
+    "./server": "./src/runtime/server/utils/bookmarks.ts"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'bookmarkit is consumed from source (src/module.ts); no build step' && exit 0",
+    "dev": "nuxt dev playground",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "bookmarks",
+    "directus",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0",
+    "vue": "^3.4.0",
+    "vuetify": "^3.0.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "h3": "^1.15.0",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.0",
+    "vue": "^3.5.41"
+  }
+}

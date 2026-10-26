@@ -38,6 +38,7 @@
   "dependencies": {
     "@mframework/meeovi-player": "file:../../../packages/plugins/Media/meeovi-player",
     "@mframework/meeovi-ratings": "file:../../../packages/plugins/Social/meeovi-ratings",
+    "@mframework/bookmarkit": "file:../../../packages/plugins/Social/bookmarkit",
     "@mframework/meeovi-discussions": "file:../../../packages/plugins/Social/meeovi-discussions",
     "@directus/sdk": "^23.0.0",
     "@graphql-typed-document-node/core": "^3.2.0",
@@ -66,6 +67,7 @@
     "@mframework/list-type-kanban": "file:../../../packages/plugins/CMS-Content/list-type-kanban",
     "@mframework/list-type-tasklist": "file:../../../packages/plugins/CMS-Content/list-type-tasklist",
     "@mframework/meeovi-newsletter": "file:../../../packages/plugins/Email-Notifications/meeovi-newsletter",
+    "@mframework/meeovi-polar": "file:../../../packages/plugins/Payments/meeovi-polar",
     "@mframework/search-algolia": "file:../../../packages/plugins/Search/search-algolia",
     "@mframework/search-meilisearch": "file:../../../packages/plugins/Search/search-meilisearch",
     "@mframework/search-typesense": "file:../../../packages/plugins/Search/search-typesense",

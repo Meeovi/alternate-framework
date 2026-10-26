@@ -159,10 +159,14 @@ export default defineNuxtConfig({
     '@mframework/meeovi-player',
     // 1–5 star ratings on everything (replaces likes) — <MeeoviRating>
     '@mframework/meeovi-ratings',
+    // Bookmarks and folders in a responsive grid — /bookmarks, <Bookmarkit>, /api/bookmarks
+    '@mframework/bookmarkit',
     '@pinia/nuxt',
     '@sentry/nuxt/module',
     'adapter-magento/module',
     '@mframework/meeovi-newsletter',
+    // Polar (polar.sh): hosted checkout, customer portal, signed webhooks — /api/polar/*
+    '@mframework/meeovi-polar',
     // Per-user integrations (installed from Meeovi Workspace): list types
     // below only render for users who installed them.
     '@mframework/meeovi-integrations',

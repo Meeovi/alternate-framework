@@ -48,15 +48,10 @@
                 </v-row>
             </v-tabs-window-item>
 
-            <!-- Bookmarks -->
+            <!-- Bookmarks: the @mframework/bookmarkit module, when the app has it -->
             <v-tabs-window-item :value="listBar?.menus?.[2]?.value">
-                <v-row>
-                    <v-col cols="3" v-if="bookmarks?.length" v-for="bookmark in bookmarks" :key="bookmark.id">
-                        <ListCard :list="bookmark" />
-                    </v-col>
-
-                    <div class="center-text" v-else>No Bookmarks yet</div>
-                </v-row>
+                <component :is="bookmarkit" v-if="bookmarkit" />
+                <div class="center-text" v-else>Bookmarks aren't available on this site.</div>
             </v-tabs-window-item>
 
             <!-- Public Lists -->
@@ -196,22 +191,9 @@
         return resp?.data || resp || []
     })
 
-    const {
-        data: bookmarks
-    } = await useAsyncData('bookmarks', async () => {
-        const resp = await $directus.request($readItems('lists', {
-            filter: {
-                lists_type: {
-                    lists_type_id: {
-                        name: {
-                            _eq: 'Bookmarks'
-                        }
-                    }
-                }
-            }
-        }))
-        return resp?.data || resp || []
-    })
+    // Bookmarks belong to the bookmarkit module (packages/plugins/Social/bookmarkit),
+    // which registers <Bookmarkit> globally; apps without it show a note instead.
+    const bookmarkit = useRuntimeConfig().public.bookmarkit ? resolveComponent('Bookmarkit') : null
 
     const {
         data: collectionLists
