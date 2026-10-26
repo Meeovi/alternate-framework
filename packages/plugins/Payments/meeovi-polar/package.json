@@ -1,0 +1,57 @@
+{
+  "name": "@mframework/meeovi-polar",
+  "version": "0.1.0",
+  "description": "Polar (polar.sh) payments for M Framework: hosted checkout, customer portal, product list and signed webhooks, as a Nuxt module.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./types": "./runtime/types.ts",
+    "./composables/*": "./runtime/composables/*",
+    "./server": "./server/utils/polar.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "server",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'meeovi-polar is consumed from source (module.ts); no build step' && exit 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt-module",
+    "polar",
+    "polar.sh",
+    "payments",
+    "subscriptions",
+    "checkout",
+    "webhooks",
+    "mframework",
+    "meeovi"
+  ],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1",
+    "@polar-sh/sdk": "^0.47.0"
+  },
+  "peerDependencies": {
+    "nuxt": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "h3": "^1.15.0",
+    "nitropack": "^2.13.0",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.0"
+  }
+}

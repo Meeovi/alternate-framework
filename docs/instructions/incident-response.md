@@ -102,7 +102,7 @@ layers/auth/server/utils/auth.ts and redeploy, or block `/api/auth/sign-up` in C
 | `SUPABASE_KEY` (+ service role) | Supabase → API settings → roll JWT secret | All Supabase keys change |
 | `NUXT_STRIPE_SECRET_KEY`, `NUXT_STRIPE_WEBHOOK_SECRET` | Stripe dashboard → Developers | — |
 | PayPal client secret | PayPal developer dashboard | — |
-| `NUXT_POLAR_ACCESS_TOKEN`, `NUXT_POLAR_WEBHOOK_SECRET` | Polar dashboard | — |
+| `NUXT_MEEOVI_POLAR_ACCESS_TOKEN`, `NUXT_MEEOVI_POLAR_WEBHOOK_SECRET` (or the older `NUXT_POLAR_*` names) | Polar dashboard | — |
 | `MAGENTO_*` (Integration OAuth) | Magento admin → System → Integrations → reauthorize | — |
 | `SHIPPO_API_KEY`, `SHIPPO_WEBHOOK_TOKEN` | Shippo dashboard | — |
 | `NUXT_RESEND_API_KEY` / `RESEND_API_KEY` | Resend dashboard | — |

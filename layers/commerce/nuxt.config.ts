@@ -45,7 +45,6 @@ export default defineNuxtConfig({
 
   modules: [
     'adapter-magento/module',
-    "@polar-sh/nuxt",
     '@storefront-ui/nuxt',
     'notivue/nuxt'
   ],
@@ -92,14 +91,7 @@ export default defineNuxtConfig({
       auth: '~/auth/commerceAuth',
       user: '~/auth/currentUser'
     },
-    mode: process.env.POLAR_MODE,
-    // Polar
-    polarServer: process.env.NUXT_POLAR_SERVER,
-    polarAccessToken: process.env.NUXT_POLAR_ACCESS_TOKEN,
-    polarSuccessUrl: process.env.POLAR_SUCCESS_URL,
-    polarWebhookSecret: process.env.NUXT_POLAR_WEBHOOK_SECRET,
-    polarProductIdProMonth: process.env.NUXT_POLAR_PRODUCT_ID_PRO_MONTH,
-    polarProductIdProYear: process.env.NUXT_POLAR_PRODUCT_ID_PRO_YEAR,
+    // Polar lives in its own module, @mframework/meeovi-polar.
     // Shippo and PayPal secrets must stay out of `public` — anything under
     // `runtimeConfig.public` is serialized into the client bundle/initial
     // HTML payload and is visible to every visitor regardless of whether
