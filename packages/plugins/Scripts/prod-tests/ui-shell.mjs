@@ -1,8 +1,8 @@
 // Production tests for the ui-shell layer (layers/ui-shell): app chrome,
 // layouts, PWA files and caching, error handling. See lib.mjs.
-import { Jar, req, test, section, finish, expect, loadAccounts, signInJar } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, createTestAccounts, deleteTestAccounts, signInJar } from './lib.mjs'
 
-const accounts = loadAccounts()
+const accounts = await createTestAccounts(['user'])
 const errorTitle = (r) => /^\s*(500|503)\b|Internal Server Error/i.test(r.text.match(/<title>([^<]*)/)?.[1] ?? '')
 
 section('Pages and layouts')
@@ -31,7 +31,6 @@ await test('UI3b', 'an unknown /api URL answers a JSON 404, not the HTML app', a
   }
 })
 await test('UI4', 'workspace layout renders for a signed-in user', async () => {
-  if (!accounts.user) return 'skipped (no QA accounts)'
   const jar = await signInJar(accounts.user)
   const r = await req('GET', '/workspace', { jar })
   expect(r.status === 200 && !errorTitle(r), `HTTP ${r.status}`)
@@ -66,4 +65,5 @@ await test('PWA4', 'hashed assets are cacheable long-term', async () => {
   expect(r.status === 200 && /max-age=\d{6,}|immutable/.test(r.headers.get('cache-control') || ''), `cache-control: ${r.headers.get('cache-control')}`)
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-ui-shell.json')

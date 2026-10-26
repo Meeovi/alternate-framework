@@ -2,11 +2,10 @@
 // pages, the legacy redirects and POST /api/business/driver. See lib.mjs.
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot, signInJar } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, createTestAccounts, deleteTestAccounts, repoRoot, signInJar } from './lib.mjs'
 
 const layer = join(repoRoot, 'layers/business')
-const accounts = loadAccounts()
-if (!accounts.user || !accounts.seller) throw new Error('QA accounts missing — run auth.mjs first')
+const accounts = await createTestAccounts(['user', 'seller'])
 
 // ---- page list, straight from the layer so it stays in sync --------------
 function walk(dir) {
@@ -190,4 +189,5 @@ await test('D7', 'write methods are not exercised for sellers', async () => {
   blocked('shop.update / payouts.request change real shop data / request a real payout — only the non-seller refusal (D2) is tested')
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-business.json')

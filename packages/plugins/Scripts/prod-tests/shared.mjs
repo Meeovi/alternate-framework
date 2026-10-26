@@ -1,10 +1,9 @@
 // Production tests for the shared layer (layers/shared): the CMS proxy
 // (/api/cms), the generic Directus proxy (/api/proxy), uploads/assets, the
 // Novu session, security headers, sitemap/robots. See lib.mjs.
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, createTestAccounts, deleteTestAccounts, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
-const accounts = loadAccounts()
-if (!accounts.user || !accounts.admin) throw new Error('QA accounts missing — run auth.mjs first')
+const accounts = await createTestAccounts(['user', 'admin'])
 
 // Password sign-in is behind Turnstile: open the session directly (lib.mjs).
 const signIn = (account) => signInJar(account)
@@ -344,4 +343,5 @@ await test('H3', 'sitemap.xml is served and lists pages', async () => {
   return `${locs.length} entries` + (foreign.length ? ` — note: points at another host (${new URL(foreign[0]).host}); the sitemap uses the build-time site URL` : '')
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-shared.json')

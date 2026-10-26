@@ -3,10 +3,9 @@
 // views, notify-followers and the social driver. See lib.mjs.
 import { readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, repoRoot, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, createTestAccounts, deleteTestAccounts, repoRoot, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
-const accounts = loadAccounts()
-if (!accounts.user || !accounts.seller) throw new Error('QA accounts missing — run auth.mjs first')
+const accounts = await createTestAccounts(['user', 'seller'])
 const U = accounts.user, S = accounts.seller
 
 // Password sign-in is behind Turnstile: open the session directly (lib.mjs).
@@ -90,10 +89,10 @@ await test('A3', 'avatars returns only images', async () => {
 
 // ---------------------------------------------------------------------------
 section('Members (privacy)')
-await test('M1', 'member search finds QA users without exposing emails', async () => {
-  const r = await req('GET', '/api/social/members?q=qa', { jar: jars.user })
+await test('M1', 'member search finds a member without exposing emails', async () => {
+  const r = await req('GET', `/api/social/members?q=${S.username}`, { jar: jars.user })
   expect(r.status === 200, `HTTP ${r.status}`)
-  expect(/qauser|qaseller/.test(r.text), 'QA users not found by "qa"')
+  expect(r.text.includes(S.username), `${S.username} not found by username`)
   expect(!/@resend\.dev|"email"/i.test(r.text), 'emails exposed in member search')
 })
 await test('M2', 'member lookup returns public fields only', async () => {
@@ -224,4 +223,5 @@ await test('D1', 'methods outside the allow-list are refused', async () => {
   }
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-social.json')

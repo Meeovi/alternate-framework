@@ -14,12 +14,12 @@
  *
  *   node auth-plugins.mjs                 (against PROD_TEST_BASE_URL)
  */
-import { BASE, blocked, expect, finish, loadAccounts, req, section, signInJar, test, withDb } from './lib.mjs'
+import { BASE, blocked, createTestAccounts, deleteTestAccounts, expect, finish, req, section, signInJar, test, withDb } from './lib.mjs'
 
 const PLUGIN = '@mframework/auth-email-domains'
 const SLUG = 'auth-email-domains'
 const DOMAIN = 'meeovi-plugin-test.invalid'
-const accounts = loadAccounts()
+const accounts = await createTestAccounts(['user', 'admin'])
 let admin
 let user
 
@@ -130,4 +130,5 @@ await test('AP9', 'every change is in the audit log', async () => {
 
 for (const jar of [admin, user]) if (jar) await req('POST', '/api/auth/sign-out', { jar, json: {} }).catch(() => {})
 await cleanup()
+await deleteTestAccounts()
 finish()

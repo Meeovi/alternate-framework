@@ -1,8 +1,9 @@
 // Production tests for the search layer (layers/search): /api/search,
 // facet values, OpenSearch description, the /search and /results pages.
-import { Jar, req, test, section, finish, expect, loadAccounts } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, createTestAccounts, deleteTestAccounts } from './lib.mjs'
 
-const accounts = loadAccounts()
+// A test user, so the leak checks have a private email to find.
+await createTestAccounts(['user'])
 // Things that must never come back from a public search.
 const LEAKS = [/resend\.dev/i, /\$2[aby]\$\d\d\$/, /\$argon2/i, /"encrypted_password"\s*:\s*"[^"]/i, /"password"\s*:\s*"[^"]/i]
 const leaked = (text) => LEAKS.filter(re => re.test(text)).map(String)
@@ -76,4 +77,5 @@ await test('SP4', 'the old search notifications route stays removed', async () =
   expect(r.status === 404 || r.status === 405, `HTTP ${r.status}`)
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-search.json')

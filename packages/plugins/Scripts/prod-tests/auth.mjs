@@ -1,18 +1,11 @@
 // Production tests for the auth layer (layers/auth). See lib.mjs for usage.
-// Uses a fixed set of QA accounts (qauser / qaseller / qaadmin) on
-// @resend.dev test addresses, created on first run and kept between runs.
+// Makes its own test accounts (user / seller / admin) and deletes them at
+// the end (lib.mjs createTestAccounts).
 import { randomBytes, createHmac } from 'node:crypto'
 import {
-  BASE, Jar, req, test, section, finish, expect, blocked, withDb, sleep,
-  loadAccounts, saveAccounts, requireFromRepo, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
+  BASE, Jar, req, test, section, finish, expect, blocked, withDb, sleep, emailFor,
+  createTestAccounts, deleteTestAccounts, requireFromRepo, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
-const QA = [
-  { key: 'user', username: 'qauser', name: 'QA User', role: null },
-  { key: 'seller', username: 'qaseller', name: 'QA Seller', role: 'user,seller' },
-  { key: 'admin', username: 'qaadmin', name: 'QA Admin', role: 'admin' },
-]
-// Resend's test inbox: accepted and never delivered, so no bounces.
-const emailFor = (username) => `delivered+${username}@resend.dev`
 const newPassword = () => `Qa!${randomBytes(15).toString('base64url')}9a`
 
 const signIn = (jar, account) =>
@@ -36,38 +29,9 @@ const captchaGate = (r) => {
   if (r.status === 429) blocked('rate-limited by earlier checks in this run — rerun later or verify in a browser')
 }
 
-section(`Setup — QA accounts on ${BASE}`)
-const accounts = loadAccounts()
+section(`Setup — test accounts on ${BASE}`)
+const accounts = await createTestAccounts()
 const jars = {}
-
-for (const qa of QA) {
-  await test(`SETUP-${qa.key}`, `account ${qa.username} exists`, async () => {
-    const existing = await withDb(async (db) => (await db.query(
-      `select id from public.users where lower(username) = $1`, [qa.username])).rows[0])
-    if (!existing) {
-      const password = newPassword()
-      const r = await req('POST', '/api/auth/sign-up/email', {
-        json: { email: emailFor(qa.username), password, name: qa.name, username: qa.username, callbackURL: '/login?verified=1' },
-      })
-      captchaGate(r)
-      const created = await withDb(async (db) => (await db.query(
-        `select id from public.users where lower(username) = $1`, [qa.username])).rows[0])
-      expect(created, `sign-up did not create the user (HTTP ${r.status}: ${r.text.slice(0, 160)})`)
-      accounts[qa.key] = { id: created.id, username: qa.username, email: emailFor(qa.username), password, signUpStatus: r.status }
-      saveAccounts(accounts)
-    }
-    expect(accounts[qa.key]?.password, `no stored password for ${qa.username} in the accounts file`)
-    // Fixture state: roles, and verified so they keep working once
-    // requireEmailVerification is switched on at launch. better-auth's role
-    // lives in users.auth_role (admin plugin field mapping) — users.role is
-    // Supabase's own column (used by RLS) and must not be touched.
-    await withDb((db) => db.query(
-      `update public.users set auth_role = coalesce($2, auth_role), email_verified = true where lower(username) = $1`,
-      [qa.username, qa.role]))
-    accounts[qa.key].id = accounts[qa.key].id || existing?.id
-    return existing ? 'reused' : `created (sign-up HTTP ${accounts[qa.key].signUpStatus})`
-  })
-}
 const U = accounts.user, S = accounts.seller, A = accounts.admin
 
 // ---------------------------------------------------------------------------
@@ -99,11 +63,11 @@ await test('R5', 'duplicate email (different case) does not create a second acco
   const rows = await withDb(async (db) => (await db.query(
     `select name, username from public.users where lower(email) = lower($1)`, [U.email])).rows)
   expect(rows.length === 1, `${rows.length} accounts with that email`)
-  expect(rows[0].username === 'qauser' && rows[0].name === 'QA User', `existing account changed: ${JSON.stringify(rows[0])}`)
+  expect(rows[0].username === U.username && rows[0].name === U.name, `existing account changed: ${JSON.stringify(rows[0])}`)
   return `HTTP ${r.status} (no second account)`
 })
 await test('R6', 'duplicate username (different case) is rejected', () =>
-  rejected({ email: emailFor('qareject6'), password: newPassword(), username: 'QAUser' }, /USERNAME|taken|exist/i))
+  rejected({ email: emailFor('qareject6'), password: newPassword(), username: U.username.toUpperCase() }, /USERNAME|taken|exist/i))
 await test('R7', 'known-breached password is rejected (haveIBeenPwned)', () =>
   rejected({ email: emailFor('qareject7'), password: 'password123', username: 'qareject7' }, /PASSWORD_COMPROMISED|compromised|breach|pwned/i))
 await test('R8', 'none of the rejected sign-ups created a user', async () => {
@@ -149,7 +113,7 @@ await test('S4', 'unknown email gives the same answer as a wrong password', asyn
     `differs (${unknown.status} "${unknown.body?.message}" vs ${wrong.status} "${wrong.body?.message}") — reveals which emails exist`)
 })
 await test('S5', 'sign-in by username works, case-insensitively', async () => {
-  const r = await req('POST', '/api/auth/sign-in/username', { jar: new Jar(), json: { username: 'QAUser', password: U.password } })
+  const r = await req('POST', '/api/auth/sign-in/username', { jar: new Jar(), json: { username: U.username.toUpperCase(), password: U.password } })
   captchaGate(r)
   expect(r.status === 200 && r.body?.user?.id === U.id, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
 })
@@ -201,21 +165,21 @@ for (const [id, path, marker] of [
 // ---------------------------------------------------------------------------
 section('Profile page (/u/:slug, /api/profiles/:slug)')
 await test('F1', 'profile API resolves a username and never returns the email', async () => {
-  const r = await req('GET', '/api/profiles/qauser')
+  const r = await req('GET', `/api/profiles/${U.username}`)
   expect(r.status === 200 && r.body?.id === U.id, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
   expect(!/@resend\.dev|"email"/i.test(r.text), 'response contains an email address')
 })
 await test('F2', 'profile API resolves a user id', async () => {
   const r = await req('GET', `/api/profiles/${U.id}`)
-  expect(r.status === 200 && r.body?.username === 'qauser', `HTTP ${r.status}`)
+  expect(r.status === 200 && r.body?.username === U.username, `HTTP ${r.status}`)
 })
 await test('F3', 'unknown profile is a 404', async () => {
   const r = await req('GET', '/api/profiles/qa-nobody-here')
   expect(r.status === 404, `HTTP ${r.status}`)
 })
-await test('F4', '/u/qauser renders the profile', async () => {
-  const r = await req('GET', '/u/qauser')
-  expect(r.status === 200 && /QA User/.test(r.text) && /@qauser/.test(r.text), `HTTP ${r.status}, name/@username not in page`)
+await test('F4', '/u/<username> renders the profile', async () => {
+  const r = await req('GET', `/u/${U.username}`)
+  expect(r.status === 200 && r.text.includes(U.name) && r.text.includes(`@${U.username}`), `HTTP ${r.status}, name/@username not in page`)
 })
 
 // ---------------------------------------------------------------------------
@@ -281,7 +245,7 @@ await test('C2', 'change-password works and the new password signs in', async ()
   const r = await req('POST', '/api/auth/change-password', { jar: jars.user, json: { currentPassword: U.password, newPassword: next } })
   captchaGate(r)
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 160)}`)
-  U.password = next; saveAccounts(accounts)
+  U.password = next
   const check = await signIn(new Jar(), U)
   captchaGate(check)
   expect(check.status === 200, `new password rejected: HTTP ${check.status}`)
@@ -291,7 +255,7 @@ await test('C2', 'change-password works and the new password signs in', async ()
 section('Email-based flows (Resend)')
 await test('E1', 'sign-up verification email was sent', async () => {
   const audit = await lastEmailAudit(U.email)
-  if (!audit) blocked('no email audit entry for qauser (account created before auditing?)')
+  if (!audit) blocked('no email audit entry for the test user')
   if (audit.status !== 'success') blocked(`send failed: ${String(audit.details).slice(0, 90)}`)
 })
 await test('E2', 'verify-email accepts a valid token and marks the user verified', async () => {
@@ -347,7 +311,7 @@ await test('CAP1', 'sign-in, account creation and email-sending endpoints demand
 })
 
 // ---------------------------------------------------------------------------
-section('Two-factor authentication (TOTP) — on qaadmin, disabled again afterwards')
+section('Two-factor authentication (TOTP) — on the test admin')
 function totp(secretBase32, step = 30, digits = 6) {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
   let bits = ''
@@ -424,4 +388,5 @@ await test('L2', 'password-reset requests are rate limited', async () => {
   return `429 on attempt ${hit}`
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-auth.json')

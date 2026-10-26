@@ -1,10 +1,9 @@
 // Production tests for the commerce layer (layers/commerce): storefront and
 // account pages, the guest/user cart, the commerce driver, payments and
 // shipping endpoints. Nothing here buys, refunds or ships. See lib.mjs.
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, createTestAccounts, deleteTestAccounts, signInJar, isTurnstileRefusal, turnstileGate } from './lib.mjs'
 
-const accounts = loadAccounts()
-if (!accounts.user) throw new Error('QA accounts missing — run auth.mjs first')
+const accounts = await createTestAccounts(['user'])
 const location = (r) => (r.headers.get('location') || '').replace(/^https?:\/\/[^/]+/, '')
 const errorTitle = (r) => {
   const title = r.text.match(/<title>([^<]*)/)?.[1] ?? ''
@@ -184,4 +183,5 @@ await test('SH3', 'rate quotes are open (informational)', async () => {
   return `signed-out POST {} → HTTP ${r.status} (open to guests, behind Turnstile)`
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-commerce.json')

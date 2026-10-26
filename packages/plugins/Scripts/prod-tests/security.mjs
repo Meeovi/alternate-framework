@@ -5,10 +5,10 @@
 // See lib.mjs; docs/instructions/web-app-security.md §9/§11.
 import tls from 'node:tls'
 import https from 'node:https'
-import { Jar, req, test, section, finish, expect, blocked, loadAccounts, BASE, signInJar } from './lib.mjs'
+import { Jar, req, test, section, finish, expect, blocked, createTestAccounts, deleteTestAccounts, BASE, signInJar } from './lib.mjs'
 
 const host = new URL(BASE).hostname
-const accounts = loadAccounts()
+const accounts = await createTestAccounts(['user'])
 
 section('Transport')
 await test('T1', 'plain HTTP redirects to HTTPS', async () => {
@@ -105,7 +105,6 @@ await test('C3', 'auth refuses a state-changing request from a foreign Origin', 
 
 section('Session cookies')
 await test('K1', 'login cookies are Secure, HttpOnly, SameSite', async () => {
-  if (!accounts.user) blocked('QA accounts missing — run auth.mjs first')
   const r = await req('POST', '/api/auth/sign-in/email', { jar: new Jar(), json: { email: accounts.user.email, password: accounts.user.password } })
   if (r.status === 400 && /captcha/i.test(r.text)) blocked('sign-in is behind Turnstile — check the cookie flags in a browser')
   expect(r.status === 200, `sign-in HTTP ${r.status}`)
@@ -122,7 +121,6 @@ await test('P1', 'data export needs a session', async () => {
   expect(r.status === 401, `HTTP ${r.status}`)
 })
 await test('P2', "data export returns the caller's own data and no secrets", async () => {
-  if (!accounts.user) blocked('QA accounts missing — run auth.mjs first')
   const jar = await signInJar(accounts.user)
   const r = await req('GET', '/api/account/export', { jar })
   expect(r.status === 200, `HTTP ${r.status}: ${r.text.slice(0, 120)}`)
@@ -161,4 +159,5 @@ await test('D1', 'the public schema is closed to the anon key', async () => {
   expect(!open.length, `readable with the anon key: ${open.join(', ')}`)
 })
 
+await deleteTestAccounts()
 finish('/home/meebuzo/.meeovi-demo/test-results-security.json')
