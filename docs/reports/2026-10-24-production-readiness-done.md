@@ -50,6 +50,15 @@
 - **Gift cards are kept out of the cart** (409) until checkout can take the amount and recipient; the gift-cards page says so. Before, PayPal could take the money for a card the store couldn't issue.
 - **`CommerceClient` and `/api/commerce/driver` are removed** (they never had a driver; test D1). The product page's last lookup asks the commerce backends directly.
 - **Staging purchase** passed end to end on 17 October (with Stripe, before the switch): Magento order 000000005, invoiced, with the seller credited.
+- **Tax comes from the store** (25 October; built and tested, deploy pending). The app works out no tax itself:
+  - `Meeovi_MarketplaceApi` has a tax quote (`POST /V1/meeovi-marketplace/tax/quote`), served by the Directus extension at `/commerce/tax/quote` and `quoteTax()` in the commerce SDK.
+  - Store products are quoted in the same quote the paid order is placed from, so the payment always matches the recorded order. Directus products and shipping use the store's default tax classes.
+  - The address is the one the buyer enters, then their billing address in the store, then the store's default. A state typed as a name ("Michigan") works as well as a code.
+  - Checkout shows items, shipping, tax and total before PayPal opens (`POST /api/payment/quote`, behind Turnstile). It refuses to take payment if the store can't quote, or its price has changed.
+  - Tested against the real store with nothing saved: Michigan 8.25% on $14.97 is $1.24, matching Magento's own total.
+- **Shipping checkouts were refused** because the address form sends `email`, which the order request didn't allow (400). Fixed with the shared checkout schema.
+- **Test data is gone** (25 October): orders #000000005–#000000008 and their Webkul sales (seller 97's totals reset), the five QA customers on the store, the three QA app accounts with their sessions, carts, licences and list memberships, the mirrored orders in Directus, and the QA user's uploads (in Nextcloud's trash). Backups: `/root/backups/qa-accounts-app-db-20261025.json` and `qa-accounts-magento-20261025.json`. Later the same day: the QA accounts' Rocket.Chat users and Novu subscribers, one more orphaned subscriber, and the accounts file that held their passwords.
+- **No test account stays anywhere.** The production tests make their own accounts at the start of each run and delete them at the end, along with the Rocket.Chat user, Novu subscriber and upload folder the app creates for them. An account left by a crashed run is removed at the start of the next run.
 
 ## shared
 
@@ -64,6 +73,7 @@
 - Directus is a federation network ("Meeovi": members and their public posts). Federation routes stop waiting for a network after 8 s.
 - Bluesky works: the service account is `meeovi.sky.meeovicms.com`, and site search returns Bluesky posts.
 - meeovi-atproto and meeovi-activitypub live in `packages/plugins/Social`.
+- Nothing under `/connect` opens for a signed-out visitor: every `/connect` URL goes to the login page, whichever layer or app provides the page, and so does an address that matches no page.
 
 ## ui-shell
 
@@ -91,6 +101,8 @@
 - The Bss "Also Bought" PHP 8.4 error that failed every order is fixed.
 - Commission: 15% Meeovi, 85% sellers.
 - Installed modules: `Meeovi_MarketplaceApi`, `Meeovi_GiftCards`, `Meeovi_DirectusSync`.
+- The current `Meeovi_MarketplaceApi` is deployed (25 October): seller products stay off until approved, and orders say PayPal. The previous copy is in `/root/backups/commerce-marketplaceapi-20261025`.
+- The live Stripe account has no webhook endpoints (checked 25 October), so no live events reach the test store.
 
 **Directus (meeDirectus)**
 - Extensions live on their own volume (`directus_extensions`).
@@ -102,7 +114,31 @@
 - Live meeovi.com's Magento was exploited on 18 October through a GraphQL template-injection chain, and a crypto miner was installed.
 - The miner was removed on 20 October, and no persistence was found.
 - A stopgap `.htaccess` rule blocks the payloads on meeovi.com and commerce.
+- The old meeovi.com Magento has been taken down (25 October). meeovi.com becomes the production app, with commerce.meeovicms.com behind it.
 - The evidence is in `/root/incident-2026-10-20/`.
+
+**app.pixanomy.com (Nextcloud)**
+- Outages on 20 and 24 October traced to Softaculous auto-upgrade stopping halfway at root-owned add-on apps.
+- Fixed 25 October: the 12 add-on apps now live in `/home/meebuzo/nextcloud-apps` (Nextcloud `apps_paths`, served at `/custom_apps` through Webuzo's per-domain include), owned by `meebuzo`; the stray `node_modules` is in `/root/backups/nextcloud-extras-20261025`. The install folder holds only the release's files (`occ integrity:check-core` lists only `error_log`), so the next auto-upgrade can finish. Status, login, add-on assets and the uploads account (WebDAV 207) all checked.
+- This server resolves app.pixanomy.com through Cloudflare again; the temporary `/etc/hosts` entry was removed on 25 October.
+
+## Production tests against the demo, 25 October
+
+Rerun after the `Meeovi_MarketplaceApi` deploy. No failures. "Blocked" means the check needs a Turnstile tick or a PayPal buyer.
+
+| Suite | Passed | Failed | Blocked |
+| --- | --- | --- | --- |
+| commerce | 20 | 0 | 0 |
+| auth | 34 | 0 | 22 |
+| shared | 32 | 0 | 5 |
+| social | 15 | 0 | 7 |
+| search | 10 | 0 | 0 |
+| security | 14 | 0 | 1 |
+| business | 15 | 0 | 2 |
+| ui-shell | 9 | 0 | 0 |
+| auth-plugins | 9 | 0 | 0 |
+
+Business D5 failed once, a few minutes after the store's cache was flushed (four seller reads got a Mage-OS error page while the cache rebuilt), and passed on both reruns.
 
 ## Production tests against the demo, 24 October (after the deploy)
 
