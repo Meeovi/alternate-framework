@@ -50,6 +50,8 @@ export interface ProductQueryOptions {
   priceMin?: number
   priceMax?: number
   sort?: ProductSort
+  /** Every field the product page has (descriptions, options, variants, attributes), not just a card's. Slower; the mirror uses it. */
+  detail?: boolean
 }
 
 export interface Paginated<T> {

@@ -7,17 +7,39 @@ import type { NormalizedCategory, NormalizedProduct } from '../types'
  * (images, relations, CMS copy…) is left as the editors set it.
  */
 
-/** products: matched on mageos_id. `stock` only when the live quantity is known. */
+// Attributes that get a field of their own; the rest go in mageos_attributes.
+const PRODUCT_ATTRIBUTE_FIELDS = new Set(['type', 'description', 'shortDescription', 'metaTitle', 'metaDescription', 'options', 'variants', 'onlyLeftInStock'])
+
+/**
+ * products: matched on mageos_id, with everything the product page shows, so
+ * readItems('products') needs nothing else. `stock` only when the live
+ * quantity is known. Images stay the store's URLs (image_url, gallery).
+ */
 export function productRow(product: NormalizedProduct, qty: number | undefined, syncedAt: string) {
+  const attributes = product.attributes ?? {}
+  const extra = Object.fromEntries(Object.entries(attributes).filter(([code]) => !PRODUCT_ATTRIBUTE_FIELDS.has(code)))
   return {
     source: 'magento',
     mageos_id: product.id,
     mageos_sku: product.sku,
     name: product.name,
+    slug: product.slug || null,
+    type: attributes.type ?? null,
     price: product.price?.final ?? 0,
+    regular_price: product.price?.regular ?? null,
+    currency_code: product.price?.currency || null,
+    in_stock: product.inStock,
     status: 'published',
     visibility: true,
-    content: product.attributes?.description ?? null,
+    content: attributes.description ?? null,
+    short_description: attributes.shortDescription ?? null,
+    meta_title: attributes.metaTitle ?? null,
+    meta_description: attributes.metaDescription ?? null,
+    image_url: product.images?.[0] ?? null,
+    gallery: product.images ?? [],
+    options: attributes.options ?? null,
+    variants: attributes.variants ?? null,
+    mageos_attributes: Object.keys(extra).length ? extra : null,
     ...(qty === undefined ? {} : { stock: Math.trunc(qty), salable_quantity: Math.trunc(qty) }),
     updated_at: product.updatedAt || null,
     mageos_synced_at: syncedAt,

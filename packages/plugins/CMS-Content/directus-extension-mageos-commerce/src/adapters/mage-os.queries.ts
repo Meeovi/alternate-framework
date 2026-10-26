@@ -61,15 +61,20 @@ export const PRODUCT_DETAIL_FIELDS = `
   }
 `
 
-export const PRODUCTS_QUERY = `
+const productsQuery = (fields: string) => `
   query Products($search: String, $filter: ProductAttributeFilterInput, $sort: ProductAttributeSortInput, $pageSize: Int, $currentPage: Int) {
     products(search: $search, filter: $filter, sort: $sort, pageSize: $pageSize, currentPage: $currentPage) {
       total_count
       page_info { current_page page_size total_pages }
-      items { ${PRODUCT_CARD_FIELDS} }
+      items { ${fields} }
     }
   }
 `
+
+export const PRODUCTS_QUERY = productsQuery(PRODUCT_CARD_FIELDS)
+
+/** A page of products with everything the product page has (the mirror's full copy). */
+export const PRODUCTS_DETAIL_QUERY = productsQuery(PRODUCT_DETAIL_FIELDS)
 
 export const PRODUCT_BY_SLUG_QUERY = `
   query ProductBySlug($slug: String!) {

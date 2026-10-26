@@ -8,8 +8,10 @@ import { categoryRow, customerRow, flattenCategories, orderRow, productRow, stor
  * customers collections in step with the store, which stays the source of
  * truth. Run by the "Mage-OS sync" Flow operation (src/operations).
  *
- *  - products: the whole catalogue each run; rows the store no longer sells
- *    are archived (never deleted — lists and pages may reference them).
+ *  - products: the whole catalogue each run, with everything the product
+ *    page has, and linked to their categories (products_categories); rows
+ *    the store no longer sells are archived (never deleted — lists and pages
+ *    may reference them).
  *  - categories: the whole tree; an existing CMS category with the same slug
  *    and no uid yet is linked rather than duplicated, and keeps its own name
  *    and position (only rows the sync created, mageos_owned, take the store's).
@@ -28,6 +30,7 @@ export interface MirrorStore {
   read(collection: string, filter: Filter, fields: string[], options?: { sort?: string[], limit?: number }): Promise<Row[]>
   create(collection: string, rows: Row[]): Promise<void>
   update(collection: string, key: string | number, row: Row): Promise<void>
+  remove(collection: string, keys: (string | number)[]): Promise<void>
 }
 
 export interface MirrorStats {
@@ -38,6 +41,8 @@ export interface MirrorStats {
   unchanged?: number
   archived?: number
   linked?: number
+  /** products_categories rows added or removed. */
+  links?: number
   /** More changes are waiting than one run takes; the next run continues. */
   more?: boolean
   skipped?: 'already running'
@@ -70,7 +75,9 @@ function changes(current: Row, row: Row): Row | null {
   return Object.keys(diff).length ? { ...diff, mageos_synced_at: row.mageos_synced_at } : null
 }
 
-const PRODUCT_FIELDS = ['id', 'mageos_id', 'status', 'source', 'mageos_sku', 'name', 'price', 'visibility', 'content', 'stock', 'salable_quantity', 'updated_at']
+const PRODUCT_FIELDS = ['id', 'mageos_id', 'status', 'source', 'mageos_sku', 'name', 'slug', 'type', 'price', 'regular_price', 'currency_code', 'in_stock',
+  'visibility', 'content', 'short_description', 'meta_title', 'meta_description', 'image_url', 'gallery', 'options', 'variants', 'mageos_attributes',
+  'stock', 'salable_quantity', 'updated_at']
 const CATEGORY_FIELDS = ['id', 'uid', 'slug', 'name', 'sort', 'mageos_path', 'mageos_parent_uid', 'mageos_level', 'mageos_owned']
 
 export async function mirror(section: MirrorSection, adapter: ICommerceAdapter, store: MirrorStore, options: MirrorOptions = {}): Promise<MirrorStats> {
@@ -89,13 +96,14 @@ export async function mirror(section: MirrorSection, adapter: ICommerceAdapter, 
   }
 }
 
-const PRODUCT_PAGE = 100
+// Full product detail (variants included) per page, so smaller pages than a listing.
+const PRODUCT_PAGE = 50
 const STOCK_BATCH = 50
 
 async function products(adapter: ICommerceAdapter, store: MirrorStore, syncedAt: string): Promise<MirrorStats> {
   const all: NormalizedProduct[] = []
   for (let page = 1; ; page++) {
-    const result = await adapter.getProductPage({ page, pageSize: PRODUCT_PAGE, sort: 'name' })
+    const result = await adapter.getProductPage({ page, pageSize: PRODUCT_PAGE, sort: 'name', detail: true })
     all.push(...result.items)
     if (page >= result.totalPages || !result.items.length) break
   }
@@ -135,7 +143,50 @@ async function products(adapter: ICommerceAdapter, store: MirrorStore, syncedAt:
     await store.update('products', gone.id, { status: 'archived', mageos_synced_at: syncedAt })
     stats.archived!++
   }
+  stats.links = await linkCategories(store, all)
   return stats
+}
+
+/**
+ * products_categories as the store has them. Only links to the store's
+ * categories (categories.uid set) are managed; links an editor made to a
+ * CMS-only category are left alone. Categories mirror first, so their rows
+ * exist by now.
+ */
+async function linkCategories(store: MirrorStore, all: NormalizedProduct[]): Promise<number> {
+  const storeCategories = await store.read('categories', { uid: { _nnull: true } }, ['id', 'uid'], { limit: -1 })
+  const categoryByUid = new Map(storeCategories.map((r) => [String(r.uid), r.id]))
+  const storeCategoryIds = new Set(storeCategories.map((r) => String(r.id)))
+  const rows = await store.read('products', { source: { _eq: 'magento' }, mageos_id: { _nnull: true } }, ['id', 'mageos_id'], { limit: -1 })
+  const productByUid = new Map(rows.map((r) => [String(r.mageos_id), r.id]))
+  if (!productByUid.size) return 0
+
+  const links = await store.read('products_categories', { products_id: { _in: [...productByUid.values()] } }, ['id', 'products_id', 'categories_id'], { limit: -1 })
+  const linksOf = new Map<string, Row[]>()
+  for (const link of links) {
+    if (link.categories_id == null || !storeCategoryIds.has(String(link.categories_id))) continue
+    linksOf.set(String(link.products_id), [...(linksOf.get(String(link.products_id)) ?? []), link])
+  }
+
+  const add: Row[] = []
+  const remove: (string | number)[] = []
+  for (const product of all) {
+    const productId = productByUid.get(product.id)
+    if (productId === undefined) continue
+    const wanted = new Map(product.categories
+      .map((c) => categoryByUid.get(c.id))
+      .filter((id) => id !== undefined)
+      .map((id) => [String(id), id]))
+    for (const link of linksOf.get(String(productId)) ?? []) {
+      // Kept once; a duplicate or a category the store dropped goes.
+      if (wanted.delete(String(link.categories_id))) continue
+      remove.push(link.id)
+    }
+    for (const categoryId of wanted.values()) add.push({ products_id: productId, categories_id: categoryId })
+  }
+  if (remove.length) await store.remove('products_categories', remove)
+  if (add.length) await store.create('products_categories', add)
+  return add.length + remove.length
 }
 
 async function categories(adapter: ICommerceAdapter, store: MirrorStore, syncedAt: string): Promise<MirrorStats> {

@@ -1,7 +1,7 @@
 import type { ICommerceAdapter } from './base.adapter'
 import type { NormalizedCategory, NormalizedProduct, Paginated, ProductQueryOptions, ProductSort } from '../types'
 import { CommerceError, fromFetchError } from '../errors'
-import { categoryTreeQuery, PRODUCT_BY_SLUG_QUERY, PRODUCTS_QUERY, ROOT_CATEGORY_QUERY } from './mage-os.queries'
+import { categoryTreeQuery, PRODUCT_BY_SLUG_QUERY, PRODUCTS_DETAIL_QUERY, PRODUCTS_QUERY, ROOT_CATEGORY_QUERY } from './mage-os.queries'
 import { oauth1Header } from './oauth1'
 import { createMageOsServices } from './mage-os.services'
 
@@ -301,7 +301,7 @@ export class MageOsAdapter implements ICommerceAdapter {
 
   async getProductPage(params: ProductQueryOptions): Promise<Paginated<NormalizedProduct>> {
     const variables = productVariables(params)
-    const data = await this.graphql<{ products: { total_count: number, page_info: { current_page: number, page_size: number, total_pages: number }, items: RawProduct[] } }>(PRODUCTS_QUERY, variables)
+    const data = await this.graphql<{ products: { total_count: number, page_info: { current_page: number, page_size: number, total_pages: number }, items: RawProduct[] } }>(params.detail ? PRODUCTS_DETAIL_QUERY : PRODUCTS_QUERY, variables)
     const products = data.products
     return {
       items: (products.items ?? []).filter(Boolean).map(normalizeProduct),

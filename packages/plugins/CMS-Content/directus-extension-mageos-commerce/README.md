@@ -102,7 +102,7 @@ truth; the operation copies it into Directus's own collections:
 
 | Section | Directus collection | Matched on | Each run |
 |---|---|---|---|
-| products | `products` (`source = 'magento'`) | `mageos_id` | whole catalogue; rows the store dropped are archived, never deleted |
+| products | `products` (`source = 'magento'`) | `mageos_id` | whole catalogue with full product detail, linked to their categories; rows the store dropped are archived, never deleted |
 | categories | `categories` | `uid` | whole tree; an existing CMS category with the same slug is linked and keeps its name/position (only `mageos_owned` rows take the store's) |
 | orders | `orders` | `entity_id` | changed since the newest mirrored `mageos_updated_at` (the store's time; Directus stamps `date_created`/`date_updated` itself); `buyer_id` stays empty (the app reads store orders live) |
 | customers | `customers` (admin-only) | `id` (store id) | changed since the newest mirrored `updated_at`; `user_id` = the app account with that `magento_customer_id` |
@@ -110,6 +110,38 @@ truth; the operation copies it into Directus's own collections:
 Writes skip the collections' own event Flows and hooks (`emitEvents: false`), record no
 activity/revisions, and leave rows whose synced fields are unchanged alone. A section that is
 still running is skipped. Store SKUs go in `products.mageos_sku` (`products.sku` is numeric).
+
+### Store products in readItems
+
+A store product's row has everything its product page shows, so the app queries store and
+CMS products the same way:
+
+```ts
+const { data } = await useAsyncData('tees', () => $directus.request($readItems('products', {
+  filter: { source: { _eq: 'magento' }, status: { _eq: 'published' }, categories: { categories_id: { slug: { _eq: 'tops' } } } },
+  fields: ['id', 'name', 'slug', 'price', 'regular_price', 'image_url', 'in_stock', { categories: [{ categories_id: ['name', 'slug'] }] }],
+  sort: ['name'],
+})))
+```
+
+| Field | From the store |
+|---|---|
+| `name`, `slug`, `type` | name, URL key, product type (`simple`, `configurable`, `virtual`, …) |
+| `price`, `regular_price`, `currency_code` | final price (what the buyer pays), price before a special price, currency |
+| `in_stock`, `stock`, `salable_quantity` | sellable now; live quantity (only when the store reports one) |
+| `content`, `short_description`, `meta_title`, `meta_description` | descriptions (HTML) and SEO fields |
+| `image_url`, `gallery` | main image URL, every image URL in order — the store's URLs, not Directus files |
+| `options`, `variants` | configurable options and variants (JSON) |
+| `mageos_attributes` | the store's other attributes, by code (JSON) |
+| `categories` | the store's categories, through `products_categories` (links an editor adds to a CMS-only category are kept) |
+| `mageos_id`, `mageos_sku`, `updated_at`, `mageos_synced_at` | store uid, SKU, store change time, last sync |
+
+The rows are a copy, at most one catalogue run (15 minutes) old, or seconds with the store's
+change pings below. For a live price at checkout the app still asks the store.
+
+Create these fields once per Directus instance (idempotent, needs an admin token):
+`DIRECTUS_URL=… DIRECTUS_ADMIN_TOKEN=… node scripts/mirror-schema.mjs [--dry-run]`. Run it
+**before** deploying a build of this extension that writes them.
 
 Flows (created in the meeDirectus instance): **Mage-OS sync: orders** (every 5 min),
 **: catalogue** (every 15 min, categories then products), **: customers** (hourly), and

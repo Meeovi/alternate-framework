@@ -23,5 +23,6 @@ export async function directusStore({ services, database, getSchema }: DirectusS
       items(collection).readByQuery({ filter: filter as never, fields, sort: options.sort, limit: options.limit ?? -1 }),
     create: async (collection, rows) => { await items(collection).createMany(rows, quiet) },
     update: async (collection, key, row) => { await items(collection).updateOne(key, row, quiet) },
+    remove: async (collection, keys) => { await items(collection).deleteMany(keys, quiet) },
   }
 }

@@ -36,6 +36,9 @@ function memoryStore(seed: Record<string, Row[]> = {}) {
       if (!target) throw new Error(`no ${collection} ${key}`)
       Object.assign(target, row)
     },
+    async remove(collection, keys) {
+      tables[collection] = (tables[collection] ?? []).filter((r) => !keys.includes(r.id))
+    },
   }
   return { store, tables }
 }
@@ -68,7 +71,7 @@ describe('mirror products', () => {
       : { items: [product('B')], page: 2, pageSize: 1, total: 2, totalPages: 2 })
     const stats = await mirror('products', adapter({ getProductPage, getInventory: async () => ({ A: 7 }) }), store, { now })
 
-    expect(stats).toEqual({ section: 'products', created: 1, updated: 1, unchanged: 0, archived: 1 })
+    expect(stats).toEqual({ section: 'products', created: 1, updated: 1, unchanged: 0, archived: 1, links: 0 })
     const [native, a, gone, b] = tables.products!
     expect(native).toEqual({ id: 1, source: null, name: 'Directus-only', status: 'published' })
     expect(a).toMatchObject({ name: 'New A', mageos_sku: 'A', price: 8, stock: 7, content: '<p>New A</p>', mageos_synced_at: '2026-10-23T12:00:00.000Z' })
@@ -103,12 +106,71 @@ describe('a second run over unchanged store data', () => {
     const { store, tables } = memoryStore({ products: [{
       id: 5, source: 'magento', mageos_id: 'uid-A', mageos_sku: 'A', name: 'A', price: '8.00', status: 'published', visibility: true,
       content: '<p>A</p>', updated_at: '2026-10-20T10:00:00+00:00',
+      slug: 'a', type: null, regular_price: '10.0000', currency_code: 'USD', in_stock: true, short_description: null, meta_title: null,
+      meta_description: null, image_url: null, gallery: [], options: null, variants: null, mageos_attributes: null,
     }] })
     const update = vi.spyOn(store, 'update')
     const shop = adapter({ getProductPage: async () => ({ items: [product('A')], page: 1, pageSize: 1, total: 1, totalPages: 1 }) })
     expect(await mirror('products', shop, store, { now })).toMatchObject({ unchanged: 1, updated: 0 })
     expect(update).not.toHaveBeenCalled()
     expect(tables.products![0]!.price).toBe('8.00')
+  })
+})
+
+describe('a full product copy', () => {
+  it('has everything the product page shows, in plain fields', async () => {
+    const { store, tables } = memoryStore({ products: [] })
+    const full: NormalizedProduct = {
+      ...product('T', 'Tee'),
+      images: ['https://shop.test/media/tee.jpg', 'https://shop.test/media/tee-back.jpg'],
+      attributes: {
+        type: 'configurable', description: '<p>Soft.</p>', shortDescription: '<p>A tee.</p>', metaTitle: 'Tee', metaDescription: 'A soft tee',
+        options: [{ code: 'size', label: 'Size', values: [{ id: 1, label: 'S' }] }],
+        variants: [{ id: 'v1', sku: 'T-S', inStock: true, price: { regular: 10, final: 8, currency: 'USD' }, options: { size: 1 } }],
+        material: 'Cotton', onlyLeftInStock: 2,
+      },
+    }
+    await mirror('products', adapter({ getProductPage: async () => ({ items: [full], page: 1, pageSize: 1, total: 1, totalPages: 1 }) }), store, { now })
+    expect(tables.products![0]).toMatchObject({
+      slug: 't', type: 'configurable', price: 8, regular_price: 10, currency_code: 'USD', in_stock: true,
+      content: '<p>Soft.</p>', short_description: '<p>A tee.</p>', meta_title: 'Tee', meta_description: 'A soft tee',
+      image_url: 'https://shop.test/media/tee.jpg', gallery: full.images,
+      options: full.attributes.options, variants: full.attributes.variants, mageos_attributes: { material: 'Cotton' },
+    })
+  })
+
+  it('asks the backend for full product detail', async () => {
+    const getProductPage = vi.fn(async () => ({ items: [], page: 1, pageSize: 50, total: 0, totalPages: 0 }))
+    await mirror('products', adapter({ getProductPage }), memoryStore({ products: [] }).store, { now })
+    expect(getProductPage).toHaveBeenCalledWith(expect.objectContaining({ detail: true, page: 1 }))
+  })
+})
+
+describe('product categories', () => {
+  const tagged = (sku: string, ...uids: string[]): NormalizedProduct => ({ ...product(sku), categories: uids.map((id) => ({ id, name: id, slug: id })) })
+  const seed = () => memoryStore({
+    categories: [{ id: 10, uid: 'cat-tops' }, { id: 11, uid: 'cat-sale' }, { id: 12, uid: null, name: 'Editors pick' }],
+    products: [{ id: 2, source: 'magento', mageos_id: 'uid-A', name: 'A', status: 'published' }],
+    products_categories: [
+      { id: 90, products_id: 2, categories_id: 11 }, // the store dropped "sale"
+      { id: 91, products_id: 2, categories_id: 12 }, // an editor's CMS-only category
+      { id: 92, products_id: 2, categories_id: 10 }, // still right
+      { id: 93, products_id: 2, categories_id: 10 }, // duplicate
+    ],
+  })
+
+  it("links products to the store's categories and leaves CMS-only links alone", async () => {
+    const { store, tables } = seed()
+    const shop = adapter({ getProductPage: async () => ({ items: [tagged('A', 'cat-tops'), tagged('B', 'cat-sale', 'cat-unknown')], page: 1, pageSize: 2, total: 2, totalPages: 1 }) })
+    const stats = await mirror('products', shop, store, { now })
+    const b = tables.products!.find((r) => r.mageos_id === 'uid-B')!
+    expect(tables.products_categories!.map((l) => [l.products_id, l.categories_id]).sort()).toEqual([[2, 10], [2, 12], [b.id, 11]].sort())
+    expect(stats.links).toBe(3) // two removed, one added
+
+    // A second run changes nothing.
+    const remove = vi.spyOn(store, 'remove')
+    expect((await mirror('products', shop, store, { now })).links).toBe(0)
+    expect(remove).not.toHaveBeenCalled()
   })
 })
 
