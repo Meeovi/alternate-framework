@@ -10,11 +10,13 @@
     <div>{{ short?.description }}</div>
 
     <v-btn color="orange" text="View" :href="`/connect/vibe/${short?.id}`"></v-btn>
+    <watchLaterBtn :short-id="short?.id" />
   </v-card>
 </template>
 
 <script setup>
 import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import watchLaterBtn from '../features/watchLater/watchLaterBtn.vue'
 
 const { short } = defineProps({
   short: {

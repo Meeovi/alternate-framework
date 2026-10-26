@@ -17,6 +17,7 @@
           <v-card-actions>
             <MeeoviRating v-if="short?.id" type="shorts" :id="short.id" />
             <v-spacer />
+            <watchLaterBtn v-if="short?.id" :short-id="short.id" />
             <createListBtn v-if="short" :item="listItem" kind="vibe" />
           </v-card-actions>
         </v-card>
@@ -44,6 +45,7 @@
     useRoute
   } from 'vue-router'
   import createListBtn from '../../../components/blocks/partials/createListBtn.vue'
+  import watchLaterBtn from '../../../components/features/watchLater/watchLaterBtn.vue'
   import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import {
     ref,
