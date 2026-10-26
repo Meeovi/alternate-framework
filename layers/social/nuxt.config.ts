@@ -7,16 +7,17 @@ const isProd = process.env.NODE_ENV === 'production'
 
 // Every page this layer provides needs a signed-in user: mark them here and
 // app/middleware/require-login.global.ts enforces it, so a new social page
-// is covered without remembering `middleware: 'auth'`. Pages an app overrides
-// with its own file aren't marked.
+// is covered without remembering `middleware: 'auth'`. Everything under
+// /connect is marked too, whichever layer or app provides the page.
 const pagesDir = fileURLToPath(new URL('./app/pages/', import.meta.url))
 const pagesDirs = new Set([pagesDir, (() => { try { return realpathSync(pagesDir) + '/' } catch { return pagesDir } })()])
-function markSocialPages(pages: NuxtPage[]) {
+function markSocialPages(pages: NuxtPage[], parentPath = '') {
   for (const page of pages) {
-    if (page.file && [...pagesDirs].some((dir) => page.file!.startsWith(dir))) {
+    const path = page.path.startsWith('/') ? page.path : `${parentPath}/${page.path}`
+    if (/^\/connect(\/|$)/.test(path) || (page.file && [...pagesDirs].some((dir) => page.file!.startsWith(dir)))) {
       page.meta = { ...page.meta, requiresLogin: true }
     }
-    if (page.children?.length) markSocialPages(page.children)
+    if (page.children?.length) markSocialPages(page.children, path)
   }
 }
 

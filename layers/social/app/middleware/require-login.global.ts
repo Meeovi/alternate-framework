@@ -1,8 +1,10 @@
 // Social pages need a signed-in user (nuxt.config.ts marks every page this
-// layer provides with `requiresLogin`). Same session check as the auth
-// layer's `auth` middleware, which pages that declare it already run.
+// layer provides, and every page under /connect, with `requiresLogin`). The
+// path check also covers /connect URLs that match no page, so a guest gets
+// the login page, not a 404. Same session check as the auth layer's `auth`
+// middleware, which pages that declare it already run.
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (!to.meta.requiresLogin) return
+  if (!to.meta.requiresLogin && !/^\/connect(\/|$)/.test(to.path)) return
   const declared = ([] as unknown[]).concat(to.meta.middleware ?? [])
   if (declared.includes('auth')) return
 
