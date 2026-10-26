@@ -2,22 +2,35 @@ import { dollarsToCents } from './currency'
 import { getPayPalOrder, paypalRequest, PayPalError, type PayPalOrder } from './paypal'
 import { fulfilPaidCheckout, type PaidCheckout } from './paidCheckout'
 
+type CheckoutRef = { buyerId: string | null, shippoRateId: string | null, backendTaxCents: Record<string, number> }
+
 /**
  * What a PayPal order carries for fulfilment in its purchase unit's
- * custom_id (max 127 chars): the buyer and the Shippo rate charged for.
+ * custom_id (max 127 chars): the buyer, the Shippo rate charged for, and
+ * the tax charged on each commerce backend's lines (`t=magento:124`).
  * Set server-side when the order is created, never by the client.
  */
-export function encodeCheckoutRef(ref: { buyerId: string | null, shippoRateId: string | null }): string | undefined {
-  const parts = [ref.buyerId && `b=${ref.buyerId}`, ref.shippoRateId && `r=${ref.shippoRateId}`].filter(Boolean)
-  return parts.length ? parts.join(';').slice(0, 127) : undefined
+export function encodeCheckoutRef(ref: { buyerId: string | null, shippoRateId: string | null, backendTaxCents?: Record<string, number> }): string | undefined {
+  const tax = Object.entries(ref.backendTaxCents ?? {}).filter(([, cents]) => cents > 0).map(([id, cents]) => `${id}:${cents}`).join(',')
+  const parts = [ref.buyerId && `b=${ref.buyerId}`, ref.shippoRateId && `r=${ref.shippoRateId}`, tax && `t=${tax}`].filter(Boolean) as string[]
+  const encoded = parts.join(';')
+  // Truncating would lose what fulfilment needs to record the order.
+  if (encoded.length > 127) throw new Error(`Checkout reference too long (${encoded.length} chars)`)
+  return encoded || undefined
 }
 
-export function decodeCheckoutRef(customId: string | undefined | null): { buyerId: string | null, shippoRateId: string | null } {
-  const out = { buyerId: null as string | null, shippoRateId: null as string | null }
+export function decodeCheckoutRef(customId: string | undefined | null): CheckoutRef {
+  const out: CheckoutRef = { buyerId: null, shippoRateId: null, backendTaxCents: {} }
   for (const part of (customId ?? '').split(';')) {
     const [key, value] = [part.slice(0, 2), part.slice(2)]
     if (key === 'b=' && value) out.buyerId = value
     if (key === 'r=' && value) out.shippoRateId = value
+    if (key === 't=' && value) {
+      for (const entry of value.split(',')) {
+        const [id, cents] = [entry.slice(0, entry.lastIndexOf(':')), Number(entry.slice(entry.lastIndexOf(':') + 1))]
+        if (id && Number.isInteger(cents) && cents > 0) out.backendTaxCents[id] = cents
+      }
+    }
   }
   return out
 }
@@ -43,6 +56,7 @@ export function paidCheckoutFromPayPal(order: PayPalOrder): PaidCheckout | null 
     shippingCents: cents(breakdown?.shipping),
     taxCents: cents(breakdown?.tax_total),
     buyerId: ref.buyerId,
+    backendTaxCents: ref.backendTaxCents,
     email: order.payer?.email_address ?? null,
     name: unit.shipping?.name?.full_name || payerName || null,
     phone: order.payer?.phone?.phone_number?.national_number ?? null,

@@ -24,6 +24,8 @@ export interface PaidCheckout {
   itemCents: number
   shippingCents: number
   taxCents: number
+  /** The part of taxCents on each commerce backend's own lines, by backend id. */
+  backendTaxCents?: Record<string, number>
   buyerId?: string | null
   email?: string | null
   name?: string | null

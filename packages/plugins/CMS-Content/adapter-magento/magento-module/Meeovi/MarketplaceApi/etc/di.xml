@@ -19,6 +19,10 @@
                 type="Meeovi\MarketplaceApi\Model\Data\ExternalOrderItem"/>
     <preference for="Meeovi\MarketplaceApi\Api\Data\ExternalOrderResultInterface"
                 type="Meeovi\MarketplaceApi\Model\Data\ExternalOrderResult"/>
+    <preference for="Meeovi\MarketplaceApi\Api\TaxQuoteManagementInterface"
+                type="Meeovi\MarketplaceApi\Model\TaxQuoteManagement"/>
+    <preference for="Meeovi\MarketplaceApi\Api\Data\ExternalTaxLineInterface"
+                type="Meeovi\MarketplaceApi\Model\Data\ExternalTaxLine"/>
     <preference for="Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface"
                 type="Meeovi\MarketplaceApi\Model\ProductSellerManagement"/>
     <preference for="Meeovi\MarketplaceApi\Api\Data\ProductSellerInterface"

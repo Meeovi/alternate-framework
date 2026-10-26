@@ -2,7 +2,7 @@ import type {
   AdminCollection, BackendAdminOrder, BackendField, BackendGiftCard, BackendOrder, BackendRefund, BackendSeller,
   CreatedCustomer, CustomerInput, NormalizedCategory, NormalizedProduct, OrderFilter, Paginated, PaidOrder,
   PlacedOrder, ProductQueryOptions, ProductReview, ReviewInput, ReviewRatingMetadata, SearchOptions, SearchResult,
-  SellerProductInput, ShipmentInput, StoreConfig, SyncImageInput, SyncProductInput, SyncStockInput,
+  SellerProductInput, ShipmentInput, StoreConfig, SyncImageInput, SyncProductInput, SyncStockInput, TaxQuote, TaxQuoteInput,
 } from '../types'
 
 /**
@@ -58,6 +58,8 @@ export interface ICommerceAdapter {
   orders?: {
     /** Record an order already paid outside the backend; idempotent on `reference`. */
     placePaid(order: PaidOrder): Promise<PlacedOrder>
+    /** Tax for a checkout before payment; the backend is the only place tax is worked out. */
+    quoteTax(input: TaxQuoteInput): Promise<TaxQuote>
     forCustomer(customerId: string, page: number, pageSize: number): Promise<BackendOrder[]>
     /** null when the order doesn't exist or isn't this customer's. */
     oneForCustomer(customerId: string, orderId: string): Promise<BackendOrder | null>

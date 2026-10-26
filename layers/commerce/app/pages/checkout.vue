@@ -85,10 +85,16 @@
       <!-- Step 3: payment (PayPal) -->
       <div v-else class="checkoutStep">
         <h2>Payment</h2>
+        <dl v-if="summary" class="orderSummary">
+          <div><dt>Items</dt><dd>{{ money(summary.itemCents) }}</dd></div>
+          <div v-if="needsShipping"><dt>Shipping</dt><dd>{{ money(summary.shippingCents) }}</dd></div>
+          <div><dt>Tax</dt><dd>{{ money(summary.taxCents) }}</dd></div>
+          <div class="orderTotal"><dt>Total</dt><dd>{{ money(summary.totalCents) }}</dd></div>
+        </dl>
         <div v-if="loading" class="loading">Setting up payment…</div>
         <div v-if="error" class="error">{{ error }}</div>
         <div v-if="paying" class="loading">Completing your payment…</div>
-        <paypal-button v-show="paypalReady && !paying" type="pay" @click="pay"></paypal-button>
+        <paypal-button v-show="paypalReady && summary && !paying" type="pay" @click="pay"></paypal-button>
         <div class="checkoutActions">
           <button type="button" class="secondary" :disabled="paying" @click="step = needsShipping ? 'rates' : 'address'">Back</button>
         </div>
@@ -210,15 +216,32 @@
     }
   }
 
+  // What the buyer pays, from the server (tax from the commerce backend).
+  const summary = ref(null)
+  const money = (cents) => new Intl.NumberFormat(undefined, { style: 'currency', currency: (summary.value?.currency || 'usd').toUpperCase() }).format(cents / 100)
+
   const startPayment = async () => {
     startingPayment.value = true
     error.value = ''
     step.value = 'payment'
-    if (paymentSession) {
+    loading.value = true
+
+    // Re-quoted each time: the address or shipping rate may have changed.
+    summary.value = null
+    try {
+      summary.value = await $fetch('/api/payment/quote', { method: 'POST', body: checkoutBody() })
+    } catch (err) {
+      error.value = err?.data?.statusMessage || "We couldn't price your order. Please try again."
+      loading.value = false
       startingPayment.value = false
       return
     }
-    loading.value = true
+
+    if (paymentSession) {
+      loading.value = false
+      startingPayment.value = false
+      return
+    }
 
     try {
       const { clientToken } = await $fetch('/api/payment/paypal/client')
@@ -240,20 +263,26 @@
     }
   }
 
-  // The server prices each item from the catalogue by id and re-fetches the
-  // shipping rate's amount from Shippo by id — nothing here sets a price.
+  // The server prices each item from the catalogue by id, re-fetches the
+  // shipping rate's amount from Shippo by id and gets the tax from the
+  // commerce backend — nothing here sets a price.
+  const checkoutBody = () => ({
+    items: cartStore.items.map((item) => ({
+      id: String(item.productId ?? item.id),
+      quantity: Number(item.quantity ?? item.qty ?? 1)
+    })),
+    ...(needsShipping.value && {
+      shippoRateId: selectedRateId.value,
+      // The address the rate was quoted for; PayPal ships to it and the
+      // tax is worked out from it.
+      shippingAddress: { ...address.value, country: address.value.country.toUpperCase() },
+    }),
+  })
+
   const createOrder = () => $fetch('/api/payment/paypal/orders', {
     method: 'POST',
     body: {
-      items: cartStore.items.map((item) => ({
-        id: String(item.productId ?? item.id),
-        quantity: Number(item.quantity ?? item.qty ?? 1)
-      })),
-      ...(needsShipping.value && {
-        shippoRateId: selectedRateId.value,
-        // The address the rate was quoted for; PayPal ships to it.
-        shippingAddress: { ...address.value, country: address.value.country.toUpperCase() },
-      }),
+      ...checkoutBody(),
       // One PayPal order per click, even if the request is retried.
       idempotencyKey: crypto.randomUUID(),
     }
@@ -375,5 +404,26 @@
   .error {
     color: #df1b41;
     margin-bottom: 12px;
+  }
+
+  .orderSummary {
+    margin: 0 0 16px;
+  }
+
+  .orderSummary div {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+
+  .orderSummary dd {
+    margin: 0;
+  }
+
+  .orderSummary .orderTotal {
+    border-top: 1px solid currentColor;
+    margin-top: 6px;
+    padding-top: 10px;
+    font-weight: 600;
   }
 </style>

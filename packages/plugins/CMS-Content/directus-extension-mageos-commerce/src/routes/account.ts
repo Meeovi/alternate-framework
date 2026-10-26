@@ -12,6 +12,7 @@ import { body, capability, email, idParam, list, number, privateHeaders, require
  *   GET  /commerce/customers/:customerId/gift-cards           gift cards on their orders
  *   GET  /commerce/gift-cards/received?email=                 gift cards sent to an email
  *   POST /commerce/orders                                     record an order paid outside the backend
+ *   POST /commerce/tax/quote                                  tax for a checkout, before payment
  */
 export function accountRoutes({ router, config, logger, backend }: RouteContext) {
   const trusted = (handler: Parameters<typeof route>[1]) => route(logger, async (req, res) => {
@@ -79,4 +80,39 @@ export function accountRoutes({ router, config, logger, backend }: RouteContext)
     })
     res.status(placed.created ? 201 : 200).json({ data: placed })
   }))
+
+  // The backend's own tax rules; the app adds what this returns and works out no tax itself.
+  router.post('/tax/quote', trusted(async (req, res) => {
+    const orders = capability(backend().orders, 'orders')
+    const input = body(req)
+    const address = input.address
+    if (address !== undefined && (typeof address !== 'object' || address === null || Array.isArray(address))) {
+      throw new CommerceError('INVALID_QUERY', 'address must be an object')
+    }
+    const items = list(input, 'items', 50, (item) => ({ key: text(item, 'key', { max: 64 }), qty: number(item, 'qty', { min: 1, integer: true })! }), { required: false })
+    res.json({
+      data: await orders.quoteTax({
+        currency: text(input, 'currency', { max: 3 }),
+        ...(items.length ? { customerId: idParam(String(input.customerId ?? ''), 'customerId') } : {}),
+        items,
+        otherLines: list(input, 'otherLines', 100, (line) => ({
+          reference: text(line, 'reference', { max: 128 }),
+          price: number(line, 'price', { min: 0 })!,
+          qty: number(line, 'qty', { min: 1, integer: true })!,
+        }), { required: false }),
+        shippingAmount: number(input, 'shippingAmount', { min: 0, required: false }) ?? 0,
+        ...(address ? { address: taxAddress(address as Record<string, unknown>) } : {}),
+      }),
+    })
+  }))
+}
+
+/** The address fields Magento's quote address accepts; anything else would make it refuse the call. */
+function taxAddress(address: Record<string, unknown>) {
+  const field = (key: string, max: number) => (typeof address[key] === 'string' && address[key] ? { [key]: (address[key] as string).slice(0, max) } : {})
+  const street = Array.isArray(address.street) ? address.street.filter((line): line is string => typeof line === 'string' && !!line).slice(0, 4) : []
+  return {
+    ...field('country_id', 2), ...field('region_code', 64), ...field('postcode', 20), ...field('city', 120),
+    ...(street.length ? { street: street.map((line) => line.slice(0, 255)) } : {}),
+  }
 }

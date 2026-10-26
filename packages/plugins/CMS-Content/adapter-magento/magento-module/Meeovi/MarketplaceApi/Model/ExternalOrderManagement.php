@@ -3,32 +3,22 @@ declare(strict_types=1);
 
 namespace Meeovi\MarketplaceApi\Model;
 
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Customer\Api\AddressRepositoryInterface;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\DB\TransactionFactory;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Lock\LockManagerInterface;
-use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\Data\AddressInterface;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Model\QuoteFactory;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Sales\Model\Service\InvoiceService;
-use Magento\Store\Model\StoreManagerInterface;
 use Meeovi\MarketplaceApi\Api\Data\ExternalOrderItemInterface;
 use Meeovi\MarketplaceApi\Api\Data\ExternalOrderResultInterface;
 use Meeovi\MarketplaceApi\Api\Data\ExternalOrderResultInterfaceFactory;
 use Meeovi\MarketplaceApi\Api\ExternalOrderManagementInterface;
-use Meeovi\MarketplaceApi\Model\Payment\External;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -45,17 +35,10 @@ use Psr\Log\LoggerInterface;
  */
 class ExternalOrderManagement implements ExternalOrderManagementInterface
 {
-    private const MAX_ITEMS = 50;
-    private const MAX_QTY = 999.0;
     private const LOCK_TIMEOUT = 30;
-    private const ORDERABLE_TYPES = ['virtual', 'downloadable'];
 
     public function __construct(
-        private CustomerRepositoryInterface $customerRepository,
-        private AddressRepositoryInterface $addressRepository,
-        private ProductRepositoryInterface $productRepository,
-        private StoreManagerInterface $storeManager,
-        private QuoteFactory $quoteFactory,
+        private ExternalQuoteBuilder $quoteBuilder,
         private CartRepositoryInterface $cartRepository,
         private QuoteManagement $quoteManagement,
         private EventManager $eventManager,
@@ -84,8 +67,8 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         if ($reference === '' || strlen($reference) > 100) {
             throw new LocalizedException(__('A payment reference (up to 100 characters) is required.'));
         }
-        if (!$items || count($items) > self::MAX_ITEMS) {
-            throw new LocalizedException(__('Send between 1 and %1 items.', self::MAX_ITEMS));
+        if (!$items || count($items) > ExternalQuoteBuilder::MAX_ITEMS) {
+            throw new LocalizedException(__('Send between 1 and %1 items.', ExternalQuoteBuilder::MAX_ITEMS));
         }
         if ($amountPaid <= 0) {
             throw new LocalizedException(__('Only paid orders are recorded here.'));
@@ -236,54 +219,13 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         string $currency,
         ?AddressInterface $billingAddress
     ): Order {
-        try {
-            $customer = $this->customerRepository->getById($customerId);
-        } catch (NoSuchEntityException $e) {
-            throw new LocalizedException(__('Customer %1 doesn\'t exist.', $customerId));
-        }
-        $store = $this->storeManager->getStore((int) $customer->getStoreId() ?: null);
-        if (strtoupper(trim($currency)) !== strtoupper((string) $store->getBaseCurrencyCode())) {
-            throw new LocalizedException(__('Paid in %1, but the store sells in %2.', $currency, $store->getBaseCurrencyCode()));
-        }
+        $customer = $this->quoteBuilder->customer($customerId);
+        $store = $this->quoteBuilder->store($customer, $currency);
+        $quote = $this->quoteBuilder->build($customer, $store, $items, $billingAddress);
 
-        /** @var Quote $quote */
-        $quote = $this->quoteFactory->create();
-        $quote->setStore($store);
-        $quote->setCurrency();
-        $quote->assignCustomer($customer);
-
-        foreach ($items as $item) {
-            $sku = trim($item->getSku());
-            $qty = $item->getQty();
-            if ($sku === '' || $qty <= 0 || $qty > self::MAX_QTY) {
-                throw new LocalizedException(__('Each item needs a SKU and a quantity between 1 and %1.', self::MAX_QTY));
-            }
-            try {
-                $product = $this->productRepository->get($sku, false, (int) $store->getId(), true);
-            } catch (NoSuchEntityException $e) {
-                throw new LocalizedException(__('Product "%1" doesn\'t exist.', $sku));
-            }
-            if (!in_array($product->getTypeId(), self::ORDERABLE_TYPES, true)) {
-                throw new LocalizedException(__('"%1" needs shipping; only virtual and downloadable products can be ordered this way.', $sku));
-            }
-            $added = $quote->addProduct($product, $qty);
-            if (is_string($added)) {
-                throw new LocalizedException(__('"%1": %2', $sku, $added));
-            }
-        }
-
-        $this->setBillingAddress($quote, $customer, $billingAddress);
-
-        $quote->getPayment()->setQuote($quote);
-        $quote->getPayment()->importData([
-            'method' => External::CODE,
-            'checks' => [AbstractMethod::CHECK_USE_INTERNAL, AbstractMethod::CHECK_USE_FOR_CURRENCY],
-        ]);
-        $quote->collectTotals();
-
-        // PayPal charged what the app priced from this catalogue; if
-        // Magento now says otherwise (price or tax changed), don't record
-        // a sale at a price nobody paid.
+        // PayPal charged this quote's total, quoted before payment by
+        // TaxQuoteManagement; if Magento now says otherwise (price or tax
+        // changed since), don't record a sale at a price nobody paid.
         $total = (float) $quote->getBaseGrandTotal();
         if (abs($total - $amountPaid) > 0.009) {
             throw new LocalizedException(__('Magento\'s total %1 doesn\'t match the %2 paid.', $total, $amountPaid));
@@ -311,37 +253,6 @@ class ExternalOrderManagement implements ExternalOrderManagementInterface
         $this->invoice($order, $reference);
 
         return $order;
-    }
-
-    /**
-     * The customer's default billing address, or the one sent with the order.
-     * Not validated: the app's payment provider has already taken the
-     * payment, and for a card it only collects country and postcode, which
-     * Magento's address rules (street, city, phone) would otherwise refuse.
-     */
-    private function setBillingAddress(Quote $quote, CustomerInterface $customer, ?AddressInterface $sent): void
-    {
-        $billing = $quote->getBillingAddress();
-        $billing->setShouldIgnoreValidation(true);
-        $defaultId = $customer->getDefaultBilling();
-        if ($defaultId) {
-            try {
-                $billing->importCustomerAddressData($this->addressRepository->getById((int) $defaultId));
-                return;
-            } catch (NoSuchEntityException $e) {
-                // fall through to the address sent with the order
-            }
-        }
-        if ($sent === null) {
-            throw new LocalizedException(__('Customer %1 has no billing address; send one with the order.', $customer->getId()));
-        }
-        $billing->addData(array_intersect_key($sent->getData(), array_flip([
-            'firstname', 'lastname', 'company', 'street', 'city', 'region', 'region_id', 'region_code',
-            'postcode', 'country_id', 'telephone',
-        ])));
-        $billing->setFirstname($billing->getFirstname() ?: $customer->getFirstname());
-        $billing->setLastname($billing->getLastname() ?: $customer->getLastname());
-        $billing->setEmail($customer->getEmail());
     }
 
     private function invoice(Order $order, string $reference): void

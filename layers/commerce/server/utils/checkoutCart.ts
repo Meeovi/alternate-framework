@@ -3,6 +3,7 @@ import { resolveProductForCart } from './cart'
 import { backendCustomerId } from './productRef'
 import { getRate } from './shippo'
 import { dollarsToCents } from './currency'
+import { quoteCartTax, type CheckoutAddress } from './checkoutTax'
 
 export interface PricedLine {
   /** The product key the webhook/fulfilment links back to: the Directus id
@@ -21,14 +22,19 @@ export interface PricedCart {
   shipping: { rateId: string, cents: number, name: string, days: number | null } | null
   currency: string
   /** Lines another commerce backend owns are recorded there at its own
-   *  price, so the payment must match it exactly (no discounts or tax). */
+   *  price plus its own tax, so the payment must match it exactly. */
   hasBackendLines: boolean
+  /** Tax, quoted by the commerce backend (checkoutTax.ts). */
+  taxCents: number
+  /** The part of taxCents on each backend's own lines, by backend id. */
+  backendTaxCents: Record<string, number>
 }
 
 /**
  * Prices a checkout from the server's own sources — every product from the
- * catalogue it lives in, the shipping rate re-fetched from Shippo by id —
- * so nothing the client sends can change what is charged.
+ * catalogue it lives in, the shipping rate re-fetched from Shippo by id, the
+ * tax from the commerce backend — so nothing the client sends can change
+ * what is charged.
  *
  * Refuses (HTTP errors) carts that couldn't be fulfilled once paid: an
  * unknown product, or a commerce-backend line the buyer can't be recorded
@@ -39,6 +45,8 @@ export async function priceCart(input: {
   shippoRateId?: string
   currency?: string
   buyer?: Record<string, any> | null
+  /** Where the goods go; tax is worked out from it. */
+  address?: CheckoutAddress | null
 }): Promise<PricedCart> {
   const currency = (input.currency || 'usd').toLowerCase()
   let hasBackendLines = false
@@ -95,11 +103,15 @@ export async function priceCart(input: {
     throw createError({ statusCode: 400, statusMessage: 'Choose a shipping method first' })
   }
 
+  const tax = await quoteCartTax({ lines, shippingCents: shipping?.cents ?? 0, currency, buyer: input.buyer, address: input.address })
+
   return {
     lines,
     itemCents: lines.reduce((sum, line) => sum + line.unitCents * line.quantity, 0),
     shipping,
     currency,
     hasBackendLines,
+    taxCents: tax.taxCents,
+    backendTaxCents: tax.backendTaxCents,
   }
 }

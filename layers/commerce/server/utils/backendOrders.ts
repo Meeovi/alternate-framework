@@ -49,7 +49,8 @@ export async function placeBackendOrders(paid: PaidCheckout): Promise<void> {
       reference: byBackend.size > 1 ? `${paid.paymentId}:${backendId}` : paid.paymentId,
       customerId,
       items: group.items,
-      amountPaid: centsToDollars(group.cents),
+      // Its lines plus the tax it quoted on them before payment (checkoutTax.ts).
+      amountPaid: centsToDollars(group.cents + (paid.backendTaxCents?.[backendId] ?? 0)),
       currency: paid.currency,
       ...(address ? {
         billingAddress: {

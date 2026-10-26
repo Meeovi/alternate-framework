@@ -3,28 +3,11 @@ import { getAuthSession } from '#auth/server/utils/sessions'
 import { paypalRequest, PayPalError } from '../../../utils/paypal'
 import { priceCart } from '../../../utils/checkoutCart'
 import { encodeCheckoutRef } from '../../../utils/paypalCheckout'
+import { checkoutSchema, validateCheckout } from '../../../utils/checkoutRequest'
 
 const money = (cents: number, currency: string) => ({ currency_code: currency.toUpperCase(), value: (cents / 100).toFixed(2) })
 
-const schema = Joi.object({
-  items: Joi.array().items(Joi.object({
-    id: Joi.string().required(),
-    quantity: Joi.number().integer().min(1).max(100).required(),
-  }).unknown(true)).min(1).max(100).required(),
-  currency: Joi.string().length(3).lowercase().default('usd'),
-  // An opaque Shippo rate id chosen on /checkout; its amount is re-fetched.
-  shippoRateId: Joi.string().max(64).optional(),
-  // The address the rate was quoted for; PayPal ships to it.
-  shippingAddress: Joi.object({
-    name: Joi.string().allow('').max(300).optional(),
-    street1: Joi.string().allow('').max(300).optional(),
-    street2: Joi.string().allow('').max(300).optional(),
-    city: Joi.string().allow('').max(120).optional(),
-    state: Joi.string().allow('').max(300).optional(),
-    zip: Joi.string().allow('').max(60).optional(),
-    country: Joi.string().allow('').max(2).optional(),
-    phone: Joi.string().allow('').max(30).optional(),
-  }).optional(),
+const schema = checkoutSchema.keys({
   // Reused across retries of one checkout attempt, so a double-click
   // creates one PayPal order (PayPal-Request-Id).
   idempotencyKey: Joi.string().max(108).optional(),
@@ -36,25 +19,24 @@ const schema = Joi.object({
  * linked buyer; see priceCart). Returns { orderId } for the v6 SDK.
  */
 export default defineEventHandler(async (event) => {
-  const { error, value } = schema.validate(await readBody(event), { abortEarly: false })
-  if (error) {
-    throw createError({ statusCode: 400, statusMessage: `Validation error: ${error.details.map((d) => d.message).join(', ')}` })
-  }
+  const value = validateCheckout<Record<string, any>>(schema, await readBody(event))
 
   const session = await getAuthSession(event).catch(() => null)
   const buyer = (session?.user ?? null) as Record<string, any> | null
-  const cart = await priceCart({ items: value.items, shippoRateId: value.shippoRateId, currency: value.currency, buyer })
-  const { currency } = cart
   const address = value.shippingAddress
+  const cart = await priceCart({ items: value.items, shippoRateId: value.shippoRateId, currency: value.currency, buyer, address })
+  const { currency } = cart
 
   const purchaseUnit = {
     // Read back on capture: who bought it and which label to buy.
-    custom_id: encodeCheckoutRef({ buyerId: buyer?.id ?? null, shippoRateId: cart.shipping?.rateId ?? null }),
+    custom_id: encodeCheckoutRef({ buyerId: buyer?.id ?? null, shippoRateId: cart.shipping?.rateId ?? null, backendTaxCents: cart.backendTaxCents }),
     amount: {
-      ...money(cart.itemCents + (cart.shipping?.cents ?? 0), currency),
+      ...money(cart.itemCents + (cart.shipping?.cents ?? 0) + cart.taxCents, currency),
       breakdown: {
         item_total: money(cart.itemCents, currency),
         ...(cart.shipping && { shipping: money(cart.shipping.cents, currency) }),
+        // Quoted by the commerce backend (checkoutTax.ts).
+        ...(cart.taxCents > 0 && { tax_total: money(cart.taxCents, currency) }),
       },
     },
     items: cart.lines.map((line) => ({

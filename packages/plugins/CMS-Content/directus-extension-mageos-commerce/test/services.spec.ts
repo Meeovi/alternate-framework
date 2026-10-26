@@ -68,6 +68,27 @@ describe('MageOsAdapter services', () => {
     expect((calls[0]!.init.headers as Record<string, string>).Authorization).toMatch(/^OAuth /)
   })
 
+  it('asks Meeovi_MarketplaceApi for tax and decodes its JSON-string answer', async () => {
+    const quote = { currency: 'USD', items: { subtotal: 14.97, discount: 0, tax: 1.24, grandTotal: 16.21 }, otherLines: [{ reference: 'p1', tax: 0.83 }], otherTax: 0.83, shippingTax: 0, pricesIncludeTax: false, shippingIncludesTax: false }
+    const { adapter, calls } = fakeMagento({ 'POST /rest/V1/meeovi-marketplace/tax/quote': () => json(JSON.stringify(quote)) })
+    const result = await adapter.orders.quoteTax({
+      currency: 'usd', customerId: '42', items: [{ key: 'A', qty: 3 }], otherLines: [{ reference: 'p1', price: 10, qty: 1 }],
+      shippingAmount: 5, address: { country_id: 'US', region_code: 'MI' },
+    })
+    expect(result).toEqual(quote)
+    expect(JSON.parse(String(calls[0]!.init.body))).toEqual({
+      customerId: 42, items: [{ sku: 'A', qty: 3 }], otherLines: [{ reference: 'p1', price: 10, qty: 1 }], shippingAmount: 5, currency: 'USD',
+      address: { country_id: 'US', region_code: 'MI' },
+    })
+  })
+
+  it('quotes tax without a customer when there are no store products', async () => {
+    const { adapter, calls } = fakeMagento({ 'POST /rest/V1/meeovi-marketplace/tax/quote': () => json(JSON.stringify({ items: null })) })
+    await adapter.orders.quoteTax({ currency: 'USD', items: [], otherLines: [{ reference: 'p1', price: 10, qty: 1 }] })
+    expect(JSON.parse(String(calls[0]!.init.body))).toMatchObject({ customerId: 0, items: [], shippingAmount: 0 })
+    expect(JSON.parse(String(calls[0]!.init.body))).not.toHaveProperty('address')
+  })
+
   it('never retries a write, even on 503', async () => {
     const { adapter, calls } = fakeMagento({ 'POST /rest/V1/meeovi-marketplace/orders': () => new Response('', { status: 503 }) })
     await expect(adapter.orders.placePaid({ reference: 'R', customerId: '1', items: [], amountPaid: 1, currency: 'USD' })).rejects.toMatchObject({ code: 'UPSTREAM_UNAVAILABLE' })

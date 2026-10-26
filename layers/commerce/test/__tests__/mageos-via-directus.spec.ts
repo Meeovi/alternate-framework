@@ -62,7 +62,7 @@ describe('public (browser) backend', () => {
     expect(listings()[2]!.params).toMatchObject({ category_slug: 'books' })
 
     expect(await backend.request({ method: 'GET', collection: 'orders' })).toEqual([])
-    for (const method of ['placePaidOrder', 'customerOrders', 'refundOrder', 'adminOrder', 'create', 'schema'] as const) {
+    for (const method of ['placePaidOrder', 'quoteTax', 'customerOrders', 'refundOrder', 'adminOrder', 'create', 'schema'] as const) {
       expect(backend[method], method).toBeUndefined()
     }
   })
@@ -130,6 +130,14 @@ describe('trusted (server) backend', () => {
     await expect(backend.refundOrder!({ orderId: '9', items: [{ key: '99', qty: 1 }] }))
       .rejects.toMatchObject({ message: 'Line 99 can\'t be refunded 1×', status: 400, code: 'INVALID_QUERY' })
     expect(calls.filter((c) => c.path.endsWith('/refund'))).toHaveLength(1)
+  })
+
+  it('asks the store for tax through /commerce/tax/quote', async () => {
+    const quote = { currency: 'USD', items: null, otherLines: [{ reference: '7', tax: 0.83 }], otherTax: 0.83, shippingTax: 0, pricesIncludeTax: false, shippingIncludesTax: false }
+    const { client, calls } = fakeDirectus({ 'POST /commerce/tax/quote': () => quote })
+    const request = { currency: 'usd', items: [], otherLines: [{ reference: '7', price: 10, qty: 1 }], address: { country_id: 'US', region_code: 'MI' } }
+    expect(await createMageosDirectusBackend(client, { trusted: true }).quoteTax!(request)).toEqual(quote)
+    expect(JSON.parse(calls[0]!.body!)).toEqual(request)
   })
 
   it('only edits customers', async () => {

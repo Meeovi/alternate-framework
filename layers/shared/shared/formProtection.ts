@@ -65,9 +65,11 @@ const RULES: Rule[] = [
   // Calendar events (create / edit form)
   { methods: ['POST'], path: /^\/api\/social\/calendar\/events\/?$/ },
   { methods: ['PATCH'], path: /^\/api\/social\/calendar\/events\/[^/]+\/?$/ },
-  // Checkout: shipping quotes (paid Shippo calls) and starting a payment
+  // Checkout: shipping quotes (paid Shippo calls), tax quotes (the commerce
+  // backend) and starting a payment
   { methods: ['POST'], path: /^\/api\/shipment\/rates\/?$/ },
   { methods: ['POST'], path: /^\/api\/payment\/paypal\/orders\/?$/ },
+  { methods: ['POST'], path: /^\/api\/payment\/quote\/?$/ },
   // Newsletter sign-up
   { methods: ['POST'], path: /^\/api\/newsletter\/subscribe\/?$/ },
   // Products: dropshipping imports and supplier connections

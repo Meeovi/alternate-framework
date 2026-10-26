@@ -7,13 +7,14 @@ import { MagentoAdapter } from 'adapter-magento'
 // consuming app (apps/ecosystem/meeovi-frontend) had this wired, so the
 // commerce layer itself had no way to exercise the connection on its own.
 //
-// Read-only: there is no staging Magento instance, only the production
-// store, so only side-effect-free queries run here. Mocked write-path
+// Read-only: it runs against the store the app uses (commerce.meeovicms.com;
+// the old meeovi.com Magento was retired 25 October 2026), so only
+// side-effect-free queries run here. Mocked write-path
 // coverage (seller registration, product/review create) lives in
 // packages/plugins/CMS-Content/adapter-magento/test/seller.spec.ts and reviews.spec.ts
 // — that package owns MagentoAdapter, this layer only needs to prove it's
 // reachable from here. Set MAGENTO_SKIP_LIVE_TESTS=1 to skip.
-const ENDPOINT = process.env.MAGENTO_GRAPHQL_URL || 'https://meeovi.com/graphql'
+const ENDPOINT = process.env.MAGENTO_GRAPHQL_URL || 'https://commerce.meeovicms.com/graphql'
 
 describe.skipIf(process.env.MAGENTO_SKIP_LIVE_TESTS === '1')('layers/commerce -> adapter-magento live connection', () => {
   it('reaches the real Magento storefront for shop config', async () => {

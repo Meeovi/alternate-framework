@@ -54,6 +54,33 @@ export type PaidOrder = {
   }
 }
 
+/** A checkout to work out tax for, before the buyer pays (quoteTax). */
+export type TaxQuoteRequest = {
+  currency: string
+  /** The buyer's customer id in this backend; required with `items`. */
+  customerId?: string
+  /** This backend's products, by product key: taxed exactly as placePaidOrder will tax them. */
+  items: { key: string, qty: number }[]
+  /** Lines priced elsewhere (Directus products): unit price in `currency`. */
+  otherLines: { reference: string, price: number, qty: number }[]
+  shippingAmount?: number
+  /** Where the goods go; without it the backend uses the buyer's billing address or its own default. */
+  address?: { street?: string[], city?: string, region_code?: string, postcode?: string, country_id?: string }
+}
+
+/** The backend's answer; amounts in `currency` units. */
+export type TaxQuote = {
+  currency: string
+  /** Totals for `items`. Charge `grandTotal` for them: it's what placePaidOrder expects to have been paid. */
+  items: { subtotal: number, discount: number, tax: number, grandTotal: number } | null
+  otherLines: { reference: string, tax: number }[]
+  otherTax: number
+  shippingTax: number
+  /** True when catalogue prices already include tax (nothing is added for other lines). */
+  pricesIncludeTax: boolean
+  shippingIncludesTax: boolean
+}
+
 /**
  * An order as the app's order pages show it — the same shape the app's
  * own (Directus) orders have, so pages don't care which backend it came
@@ -167,6 +194,12 @@ export interface CommerceBackendAdapter {
    * Optional: feature-detect with `typeof adapter.placePaidOrder === 'function'`.
    */
   placePaidOrder?(order: PaidOrder): Promise<{ id: string, number: string, created: boolean }>
+  /**
+   * Tax for a checkout, from the backend's own tax rules: the app adds what
+   * this returns and works out no tax itself. Optional: feature-detect with
+   * `typeof adapter.quoteTax === 'function'`.
+   */
+  quoteTax?(request: TaxQuoteRequest): Promise<TaxQuote>
   /**
    * A customer's order history in this backend, newest first. Optional:
    * feature-detect with `typeof adapter.customerOrders === 'function'`.

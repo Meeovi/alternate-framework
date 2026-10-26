@@ -133,6 +133,13 @@
             <resource ref="Meeovi_MarketplaceApi::external_orders"/>
         </resources>
     </route>
+    <!-- Tax for a checkout, before the buyer pays (TaxQuoteManagementInterface). -->
+    <route url="/V1/meeovi-marketplace/tax/quote" method="POST">
+        <service class="Meeovi\MarketplaceApi\Api\TaxQuoteManagementInterface" method="quote"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::external_orders"/>
+        </resources>
+    </route>
     <route url="/V1/meeovi-marketplace/customers/:customerId/purchased-skus" method="GET">
         <service class="Meeovi\MarketplaceApi\Api\ExternalOrderManagementInterface" method="getPurchasedSkus"/>
         <resources>

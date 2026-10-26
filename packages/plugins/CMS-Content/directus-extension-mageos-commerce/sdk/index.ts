@@ -3,7 +3,7 @@ import type {
   AdminCollection, BackendAdminOrder, BackendField, BackendGiftCard, BackendOrder, BackendRefund, BackendSeller,
   CreatedCustomer, CustomerInput, NormalizedCategory, NormalizedProduct, OrderFilter, Paginated, PaidOrder, PlacedOrder,
   ProductReview, ProductSort, ReviewInput, ReviewRatingMetadata, SearchResult, SellerProductInput, ShipmentInput,
-  StoreConfig, SyncImageInput, SyncProductInput, SyncStockInput,
+  StoreConfig, SyncImageInput, SyncProductInput, SyncStockInput, TaxQuote, TaxQuoteInput,
 } from '../src/types'
 
 /**
@@ -99,6 +99,8 @@ export const commerce = {
   receivedGiftCards: (email: string) => get<BackendGiftCard[]>('/gift-cards/received', { email }),
   /** Idempotent on `reference`: a repeat returns the same order with created: false. */
   placePaidOrder: (order: PaidOrder) => send<PlacedOrder>('POST', '/orders', order),
+  /** Tax for a checkout before payment, from the store's own tax rules. */
+  quoteTax: (input: TaxQuoteInput) => send<TaxQuote>('POST', '/tax/quote', input),
 
   // ---- Trusted: marketplace sellers -----------------------------------------
   registerSeller: (input: { customerId: string, customerToken: string, shopUrl?: string }) =>

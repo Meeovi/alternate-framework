@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto'
 import type { ICommerceAdapter } from './base.adapter'
 import type {
   AdminCollection, BackendSeller, NormalizedProduct, ProductQueryOptions, ProductReview, ReviewRatingMetadata, SearchOptions,
-  SearchResult, StoreConfig,
+  SearchResult, StoreConfig, TaxQuote,
 } from '../types'
 import { CommerceError } from '../errors'
 import {
@@ -187,6 +187,19 @@ export function createMageOsServices(api: MageOsTransport, normalize: Normalize,
         },
       })
       return { id: String(placed.order_id), number: placed.increment_id, created: !!placed.created }
+    },
+    // Meeovi_MarketplaceApi TaxQuoteManagement: Magento's own tax rules.
+    async quoteTax(input) {
+      return api.rest<TaxQuote>('POST', '/V1/meeovi-marketplace/tax/quote', {
+        body: {
+          customerId: input.items.length ? id(input.customerId ?? '', 'customerId') : 0,
+          items: input.items.map((item) => ({ sku: String(item.key), qty: item.qty })),
+          otherLines: input.otherLines.map((line) => ({ reference: line.reference, price: line.price, qty: line.qty })),
+          shippingAmount: input.shippingAmount ?? 0,
+          currency: input.currency.toUpperCase(),
+          ...(input.address?.country_id ? { address: input.address } : {}),
+        },
+      })
     },
     async forCustomer(customerId, page, pageSize) {
       const rows = await api.rest<MagentoCustomerOrder[]>('GET', `/V1/meeovi-marketplace/customers/${id(customerId, 'customerId')}/orders?pageSize=${pageSize}&currentPage=${page}`)

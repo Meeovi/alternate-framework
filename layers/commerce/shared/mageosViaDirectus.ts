@@ -1,7 +1,7 @@
 import { createDirectus, rest, staticToken } from '@directus/sdk'
 import type { RestCommand } from '@directus/sdk'
 import { commerce, type BackendSeller, type NormalizedProduct } from '@mframework/mageos-commerce-sdk'
-import type { BackendRefund, CategoryProductsRef, CommerceBackendAdapter, CommerceCustomerLinker, DirectusRequestDescriptor, PaidOrder } from 'alternate-sdk'
+import type { BackendRefund, CategoryProductsRef, CommerceBackendAdapter, CommerceCustomerLinker, DirectusRequestDescriptor, PaidOrder, TaxQuoteRequest } from 'alternate-sdk'
 
 /**
  * The Mage-OS store through Directus: the `/commerce/*` endpoint extension
@@ -185,6 +185,7 @@ export function createMageosDirectusBackend(client: Client, options: { trusted: 
     },
 
     placePaidOrder: (order: PaidOrder) => call(client, commerce.placePaidOrder(order)),
+    quoteTax: (request: TaxQuoteRequest) => call(client, commerce.quoteTax(request)),
     customerOrders: (customerId: string, paging?: { page?: number, pageSize?: number }) =>
       call(client, commerce.customerOrders(customerId, { page: paging?.page ?? 1, limit: paging?.pageSize ?? 50 })),
     async customerOrder(customerId: string, orderId: string) {

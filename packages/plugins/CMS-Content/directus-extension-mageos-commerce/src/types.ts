@@ -160,6 +160,31 @@ export type PaidOrder = {
 
 export type PlacedOrder = { id: string, number: string, created: boolean }
 
+/** A checkout to work out tax for, before the buyer pays. */
+export type TaxQuoteInput = {
+  currency: string
+  /** The buyer's customer id here; required with `items`. */
+  customerId?: string
+  /** This store's products, taxed exactly as placePaid will tax them. */
+  items: { key: string, qty: number }[]
+  /** Lines priced elsewhere (the app's own catalogue), at the default product tax class. */
+  otherLines: { reference: string, price: number, qty: number }[]
+  shippingAmount?: number
+  /** Where the goods go; else the customer's billing address, else the store's default. */
+  address?: { street?: string[], city?: string, region_code?: string, postcode?: string, country_id?: string }
+}
+
+export type TaxQuote = {
+  currency: string
+  /** Totals for `items`: charge `grandTotal` for them (tax included) and placePaid will match it. */
+  items: { subtotal: number, discount: number, tax: number, grandTotal: number } | null
+  otherLines: { reference: string, tax: number }[]
+  otherTax: number
+  shippingTax: number
+  pricesIncludeTax: boolean
+  shippingIncludesTax: boolean
+}
+
 export type BackendOrder = {
   id: string
   number: string
