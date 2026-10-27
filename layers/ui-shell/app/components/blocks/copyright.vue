@@ -47,3 +47,10 @@
         return result?.data || result || {}
     }, { getCachedData: reuseServerData, lazy: true })
 </script>
+<style scoped>
+  /* Same light blue as the footer above (FooterNav.vue): the theme's link
+     blue is 3.3:1 on this near-black background, this is 8.2:1. */
+  .footer7 a {
+    color: #9dbcf5;
+  }
+</style>
