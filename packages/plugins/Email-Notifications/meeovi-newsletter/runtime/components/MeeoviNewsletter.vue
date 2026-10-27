@@ -150,6 +150,12 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <style scoped>
+/* Vuetify's medium-emphasis label is 4.2:1 on the filled field; high
+   emphasis passes in both themes. */
+.meeovi-newsletter__input :deep(.v-field-label) {
+  opacity: var(--v-high-emphasis-opacity, 0.87);
+}
+
 .meeovi-newsletter__inner {
   display: flex;
   flex-direction: column;

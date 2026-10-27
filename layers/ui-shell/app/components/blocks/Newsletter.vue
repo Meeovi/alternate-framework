@@ -12,10 +12,10 @@
                         >
                             <template #description>
                                 <strong>
-                                    <h5
+                                    <div
                                         class="mbr-section-title mbr-fonts-style mb-5 display-7"
                                         v-dompurify-html="blocksNewsletter?.description"
-                                    ></h5>
+                                    ></div>
                                 </strong>
                             </template>
                         </MeeoviNewsletter>

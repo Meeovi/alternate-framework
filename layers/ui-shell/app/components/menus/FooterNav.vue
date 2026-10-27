@@ -33,7 +33,7 @@
               <a href="#cookie-consent" @click.prevent="openSettings">Cookie settings</a>
             </h3>
             <h3 class="mbr-section-subtitle mbr-fonts-style mbr-lighter display-4">
-              <a href="#accessibility" @click.prevent="openAccessibilityMenu">Accessibility</a>
+              <a href="#accessibility" @click.prevent="openAccessibilityMenu">Accessibility tools</a>
             </h3>
           </v-col>
           <v-col cols="4" class="md-pb">
@@ -106,6 +106,12 @@
 </script>
 
 <style scoped>
+  /* The theme's link blue is too dark on the footer's near-black background
+     (3.3:1); this one is 8.2:1. */
+  .footer3 a {
+    color: #9dbcf5;
+  }
+
   /* Small screens get the bottom tab bar (mobile/mobileNav.vue) instead. */
   @media (max-width: 1100px) {
     .footerNav {
