@@ -1,16 +1,16 @@
 /**
- * Lifts the CookieYes accessibility button (loaded by layers/shared) above
- * the mobile bottom tab bar (components/menus/mobile/mobileNav.vue), which
- * it otherwise covers: the widget pins itself 20px from the bottom right.
+ * Hides the CookieYes accessibility widget's floating button (loaded by
+ * layers/shared): the menu opens from an "Accessibility" link instead — in
+ * the footer (FooterNav.vue) and on the mobile Browse page (menu-page.vue),
+ * through useAccessibilityWidget().
  *
  * The button lives in the widget's own (open) shadow root, out of reach of
  * page CSS, so the rule is adopted into that root once the widget mounts.
- * A constructed stylesheet also sidesteps the CSP's style-src. The 1100px
- * breakpoint matches mobileNav.vue's.
+ * A constructed stylesheet also sidesteps the CSP's style-src. Hiding it
+ * with display:none leaves the button clickable from script, and the menu
+ * it opens is outside it.
  */
-const RULE = `@media (max-width: 1100px) {
-  .cya11y-widget-icon { bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important; }
-}`
+const RULE = `.cya11y-widget-icon { display: none !important; }`
 
 export default defineNuxtPlugin(() => {
   if (typeof CSSStyleSheet === 'undefined' || !('adoptedStyleSheets' in Document.prototype)) return

@@ -32,6 +32,9 @@
             <h3 class="mbr-section-subtitle mbr-fonts-style mbr-lighter display-4">
               <a href="#cookie-consent" @click.prevent="openSettings">Cookie settings</a>
             </h3>
+            <h3 class="mbr-section-subtitle mbr-fonts-style mbr-lighter display-4">
+              <a href="#accessibility" @click.prevent="openAccessibilityMenu">Accessibility</a>
+            </h3>
           </v-col>
           <v-col cols="4" class="md-pb">
             <h2 class="mbr-section-title pb-2 mbr-fonts-style display-7">
@@ -61,10 +64,12 @@
   import BottomFooter from '#social/app/components/menus/BottomFooter.vue'
   import adBlock from '#shared/app/components/blocks/adBlock.vue'
   import { useCookieConsent } from '#shared/app/composables/useCookieConsent'
+  import { useAccessibilityWidget } from '#ui/app/composables/useAccessibilityWidget'
 
   // Ads only render with advertising consent; the footer link reopens the
   // cookie banner (mounted by #shared/app/plugins/cookie-consent.client.ts).
   const { consent, openSettings } = useCookieConsent()
+  const { openAccessibilityMenu } = useAccessibilityWidget()
 
   const {
     $directus,

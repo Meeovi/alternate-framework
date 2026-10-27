@@ -10,15 +10,15 @@
 
                     <div class="col-12 col-md-12 col-lg-5">
                         <div class="mbr-section-head">
-                            <h4 class="mbr-section-title mbr-fonts-style mb-0 display-7">
+                            <h2 class="mbr-section-title mbr-fonts-style mb-0 display-7">
                                 <strong>Your Pixanomy</strong>
-                            </h4>
-                            <h5 class="mbr-section-subtitle mbr-fonts-style mb-0 display-2">
+                            </h2>
+                            <h3 class="mbr-section-subtitle mbr-fonts-style mb-0 display-2">
                                 <strong>Your Media</strong>
-                            </h5>
-                            <h5 class="main-text mbr-fonts-style mb-0 display-7">
+                            </h3>
+                            <h3 class="main-text mbr-fonts-style mb-0 display-7">
                                 Your latest photos and videos, stored on Pixanomy.
-                            </h5>
+                            </h3>
                             <div class="mbr-section-btn item-footer">
                                 <a href="https://app.pixanomy.com" class="btn btn-danger item-btn display-7"
                                     target="_blank" rel="noopener">

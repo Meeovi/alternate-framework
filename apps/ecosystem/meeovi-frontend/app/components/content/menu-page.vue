@@ -35,7 +35,8 @@
           </v-btn>
         </v-col>
         <v-col cols="3">
-          <!--<logout />-->
+          <v-btn variant="text" stacked title="Accessibility" prepend-icon="fas fa-universal-access" size="x-small"
+            @click="openAccessibilityMenu">Accessibility</v-btn>
         </v-col>
       </v-row>
     </v-list>
@@ -49,6 +50,9 @@
   import outlets from '#commerce/app/components/menus/outletsmenu.vue'
   import socialmenu from '#social/app/components/menus/socialmenu.vue'
   import bottomsidebarmenu from '#ui/app/components/menus/sidebar/bottomsidebarMenu.vue'
+  import { useAccessibilityWidget } from '#ui/app/composables/useAccessibilityWidget'
+
+  const { openAccessibilityMenu } = useAccessibilityWidget()
 
   // Drawer state is now controlled by the layout
   let theme = null

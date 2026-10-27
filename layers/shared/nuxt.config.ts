@@ -387,6 +387,9 @@ export default defineNuxtConfig({
     // rule above (it warns at build time that this breaks them).
     '/__og-image__/**': { isr: false },
     '/__nuxt_og_image__/**': { isr: false },
+    // Static pictures from public/images (placeholders, icons): a week in
+    // the browser instead of the 4-hour default.
+    '/images/**': { headers: { 'cache-control': 'public, max-age=604800' } },
 
     // --- ISR exclusions -------------------------------------------------
     // The wildcard `isr: 60` above caches the *rendered SSR response* and

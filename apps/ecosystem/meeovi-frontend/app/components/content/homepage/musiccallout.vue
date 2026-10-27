@@ -25,9 +25,9 @@
             </div>
             <div class="col-12 col-lg">
               <div class="text-wrapper">
-                <h6 class="card-title mbr-fonts-style display-5">
+                <h2 class="card-title mbr-fonts-style display-5">
                   <strong>{{ departmentMusic?.name }}</strong>
-                </h6>
+                </h2>
                 <p class="mbr-text mbr-fonts-style mb-4 display-4" v-dompurify-html="departmentMusic?.description"></p>
                 <div class="mbr-section-btn mt-3"><NuxtLink class="btn btn-primary display-4"
                   :to="toDepartmentPath(departmentMusic?.slug)">

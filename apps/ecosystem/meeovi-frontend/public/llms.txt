@@ -1,0 +1,25 @@
+# Meeovi
+
+> Meeovi is a decentralized social shopping network: people, communities and independent shops in one place, with Bluesky (AT Protocol) sign-in built in. Connect, shop, watch, listen and sell.
+
+## Shop
+
+- [Departments](/departments): browse products by department and category
+- [Search](/search): search products, people, spaces and posts
+- [Gift cards](/product/gift-cards): buy a Meeovi gift card
+
+## Connect
+
+- [Spaces](/connect/spaces): communities around a shared interest (members only)
+- [Feeds](/connect/feeds): posts from the people and spaces you follow (members only)
+- [Radio stations](/departments/categories/stations/): live and curated stations
+
+## Account
+
+- [Sign in](/login): email and password, passkey, email sign-in link, or Bluesky
+- [Create an account](/register)
+- [Workspace](/workspace): orders, lists, settings and seller tools for signed-in members
+
+## About
+
+- [Blog](/blog): news and stories from Meeovi

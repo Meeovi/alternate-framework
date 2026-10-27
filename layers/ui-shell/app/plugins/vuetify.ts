@@ -6,6 +6,7 @@ import 'vuetify/styles'
 // packs (fas + far + fab, ~2,000 icons) were bundled into the entry chunk
 // that every page loads.
 import '@fortawesome/fontawesome-free/css/all.min.css'
+import '../assets/fontawesome-swap.css'
 import { createVuetify } from 'vuetify'
 import { aliases, fa } from 'vuetify/iconsets/fa'
 import { faIconAliases } from '@mframework/meeovi-forms/icons'

@@ -9,8 +9,8 @@
 
             <div class="container text-content">
 
-                <h4 class="mbr-section-subtitle mbr-fonts-style align-center mbr-white display-5">Social Marketplace
-                </h4>
+                <p class="mbr-section-subtitle mbr-fonts-style align-center mbr-white display-5">Social Marketplace
+                </p>
 
                 <h1 class="mbr-section-title pb-3 mbr-fonts-style mbr-white align-center display-1">Meeovi</h1>
                 <p class="mbr-text pb-3 mbr-fonts-style mbr-white align-center display-7">If you have products to sell,
@@ -27,7 +27,7 @@
                         <div class="icon-block-top pb-4 align-center">
                             <span class="mbr-iconfont mobi-mbri-cart-full mobi-mbri display-2"></span>
                         </div>
-                        <h4 class="box-item-title pb-3 mbr-fonts-style align-center display-5">The Products</h4>
+                        <h2 class="box-item-title pb-3 mbr-fonts-style align-center display-5">The Products</h2>
                         <p class="box-item-text mbr-fonts-style align-center display-7">There are millions of unique
                             products found on Meeovi. Digital, handmade, physical, services, and more. You are sure to
                             find what you truely want. </p>
@@ -36,7 +36,7 @@
                         <div class="icon-block-top pb-4 align-center">
                             <span class="mbr-iconfont mobi-mbri-cursor-click mobi-mbri display-2"></span>
                         </div>
-                        <h4 class="box-item-title pb-3 mbr-fonts-style align-center display-5">The Engagements</h4>
+                        <h2 class="box-item-title pb-3 mbr-fonts-style align-center display-5">The Engagements</h2>
                         <p class="box-item-text mbr-fonts-style align-center display-7">As a social marketplace, we
                             pride ourselves on connecting customers with sellers. With sharing tools, product videos,
                             chat system, messages, and activity feed. </p>
@@ -45,7 +45,7 @@
                         <div class="icon-block-top pb-4 align-center">
                             <span class="mbr-iconfont mobi-mbri-lock mobi-mbri display-2"></span>
                         </div>
-                        <h4 class="box-item-title pb-3 mbr-fonts-style align-center display-5">The Security</h4>
+                        <h2 class="box-item-title pb-3 mbr-fonts-style align-center display-5">The Security</h2>
                         <p class="box-item-text mbr-fonts-style align-center display-7">We use the best safety and
                             security practices with SSL enabled, hotlink protection, spam and scam protection. You are
                             safe while browsing, shopping, and selling with us. </p>

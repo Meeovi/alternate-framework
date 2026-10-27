@@ -10,9 +10,9 @@
           <div class="col-12 col-lg">
             <div class="card-wrapper">
               <div class="card-box">
-                <h4 class="card-title mbr-fonts-style mb-4 display-2">
+                <h2 class="card-title mbr-fonts-style mb-4 display-2">
                   <strong>{{ departmentBook?.name }}</strong>
-                </h4>
+                </h2>
                 <p class="mbr-text mbr-fonts-style mb-4 display-7" v-dompurify-html="departmentBook?.description"></p>
                 <div class="mbr-section-btn mb-4"><NuxtLink class="btn btn-secondary display-4"
                     :to="toDepartmentPath(departmentBook?.slug)">Visit the Bookstore</NuxtLink></div>

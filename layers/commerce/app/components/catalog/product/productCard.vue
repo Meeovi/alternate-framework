@@ -12,11 +12,11 @@
             @error="onImageError" class="block object-cover w-full h-auto rounded-md aspect-square" width="300"
             height="300" />
         </NuxtLink>
-        <v-btn variant="flat" size="sm" square color="surface"
+        <v-btn variant="flat" size="small" icon color="surface"
           class="product-card__wishlist"
           :aria-label="inWishlist ? 'Remove from wishlist' : 'Add to wishlist'"
           @click="wishlistStore.toggleItem(wishlistKey)">
-          <v-icon icon="fas fa-heart" size="sm" :color="inWishlist ? 'red' : undefined"></v-icon>
+          <v-icon icon="fas fa-heart" size="small" :color="inWishlist ? 'red' : undefined"></v-icon>
         </v-btn>
       </div>
 
@@ -136,6 +136,9 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   z-index: 1;
   border-radius: 9999px;
   border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  /* Big enough to tap (Lighthouse: at least 24px; 32px here). */
+  min-width: 32px;
+  min-height: 32px;
 }
 
 .product-card__muted {

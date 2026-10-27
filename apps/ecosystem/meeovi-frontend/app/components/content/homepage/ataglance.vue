@@ -17,11 +17,11 @@
                                 <NuxtImg provider="cloudinary" loading="lazy" src="/images/display-1.png" :alt="blocks?.name" />
                             </div>                            
                             <div class="item-content">
-                                <h5 class="item-title mbr-fonts-style display-5">
-                                    <NuxtLink to="#top" class="text-primary"></NuxtLink>{{ blocks?.content?.[0]?.name }}
-                                </h5>
-                                <h6 class="item-subtitle mbr-fonts-style mt-1 display-7">
-                                    <strong>{{ blocks?.content?.[0]?.subtitle }}</strong></h6>
+                                <h3 class="item-title mbr-fonts-style display-5">
+                                    {{ blocks?.content?.[0]?.name }}
+                                </h3>
+                                <h4 class="item-subtitle mbr-fonts-style mt-1 display-7">
+                                    <strong>{{ blocks?.content?.[0]?.subtitle }}</strong></h4>
                                 <div class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="blocks?.content?.[0]?.content">
                                 </div>
                             </div>
@@ -43,11 +43,11 @@
                                 <NuxtImg provider="cloudinary" loading="lazy" src="/images/display-2.png" :alt="blocks?.name" />
                             </div> 
                             <div class="item-content">
-                                <h5 class="item-title mbr-fonts-style display-5">
-                                    <NuxtLink to="#top" class="text-primary"></NuxtLink>{{ blocks?.content?.[1]?.name }}
-                                </h5>
-                                <h6 class="item-subtitle mbr-fonts-style mt-1 display-7">
-                                    <strong>{{ blocks?.content?.[1]?.subtitle }}&nbsp;</strong></h6>
+                                <h3 class="item-title mbr-fonts-style display-5">
+                                    {{ blocks?.content?.[1]?.name }}
+                                </h3>
+                                <h4 class="item-subtitle mbr-fonts-style mt-1 display-7">
+                                    <strong>{{ blocks?.content?.[1]?.subtitle }}&nbsp;</strong></h4>
                                 <div class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="blocks?.content?.[1]?.content">
                                 </div>
                             </div>
@@ -69,11 +69,11 @@
                                 <NuxtImg provider="cloudinary" loading="lazy" src="/images/display-3.png" :alt="blocks?.name" />
                             </div>
                             <div class="item-content">
-                                <h5 class="item-title mbr-fonts-style display-5">
-                                    <NuxtLink to="#top" class="text-primary"></NuxtLink>{{ blocks?.content?.[2]?.name }}
-                                </h5>
-                                <h6 class="item-subtitle mbr-fonts-style mt-1 display-7">
-                                    <strong>{{ blocks?.content?.[2]?.subtitle }}</strong></h6>
+                                <h3 class="item-title mbr-fonts-style display-5">
+                                    {{ blocks?.content?.[2]?.name }}
+                                </h3>
+                                <h4 class="item-subtitle mbr-fonts-style mt-1 display-7">
+                                    <strong>{{ blocks?.content?.[2]?.subtitle }}</strong></h4>
                                 <div class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="blocks?.content?.[2]?.content">
                                 </div>
                             </div>

@@ -10,9 +10,9 @@
           <div class="row align-items-center">
             <div class="col-12 col-lg">
               <div class="text-wrapper">
-                <h6 class="card-title mbr-fonts-style display-2">
+                <h2 class="card-title mbr-fonts-style display-2">
                   <strong>{{ departmentTheater?.name }}</strong>
-                </h6>
+                </h2>
                 <p class="mbr-text mbr-fonts-style mb-4 display-4" v-dompurify-html="departmentTheater?.description"></p>
                 <div class="mbr-section-btn mt-3"><NuxtLink class="btn btn-warning display-4"
                     :to="toDepartmentPath(departmentTheater?.slug)">Start Watching</NuxtLink></div>

@@ -17,7 +17,12 @@ let cached: Promise<NovuSession | null> | undefined
  */
 export function useNovuSession(): Promise<NovuSession | null> {
   if (cached === undefined) {
-    cached = $fetch<NovuSession>('/api/novu/session').catch((error) => {
+    // Ask better-auth first: it answers a signed-out visitor with 200 and
+    // null, where /api/novu/session's 401 would be logged as a browser error
+    // on every page a guest opens.
+    cached = $fetch<{ user?: unknown } | null>('/api/auth/get-session').then((auth) => auth?.user
+      ? $fetch<NovuSession>('/api/novu/session')
+      : null).catch((error) => {
       if (error?.statusCode !== 401) {
         console.error('[notifications] failed to load Novu session', error)
       }

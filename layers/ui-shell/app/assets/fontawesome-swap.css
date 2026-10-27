@@ -1,0 +1,25 @@
+/* Font Awesome's stylesheet declares its faces with `font-display: block`,
+   which hides every icon (and holds up the first paint) until the font file
+   arrives. The same faces again, later in the cascade, with `swap`: same
+   files, so nothing extra downloads. */
+@font-face {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../../../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Font Awesome 7 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2") format("woff2");
+}
