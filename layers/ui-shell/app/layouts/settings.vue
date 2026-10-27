@@ -118,7 +118,8 @@
     description,
     ogTitle: title,
     ogDescription: description,
-    ogImage: process.env.NUXT_PUBLIC_APP_OG_IMAGE || 'https://ui.nuxt.com/assets/templates/nuxt/chat-light.png',
+    // process.env isn't populated in app code at runtime; read the public runtime config.
+    ogImage: useRuntimeConfig().public.appOgImage || `${useRuntimeConfig().public.siteUrl}/og-image.png`,
     twitterCard: 'summary_large_image'
   })
 </script>

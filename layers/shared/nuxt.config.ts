@@ -244,7 +244,7 @@ export default defineNuxtConfig({
       ogSiteName: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'}`,
       ogLocale: 'en_US',
       ogType: 'website',
-      ogUrl: 'https://example.com',
+      // og:url is set per page by Nuxt SEO from site.url + the route.
       ogTitle: `${process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template'} - ${process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!'}`,
 
       // Other Nuxt SEO modules handle these
@@ -545,6 +545,8 @@ export default defineNuxtConfig({
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://example.com',
       siteName: process.env.NUXT_PUBLIC_SITE_NAME || 'M Framework Starter Template',
       siteDescription: process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Welcome to my awesome site!',
+      // Share image for og:image/twitter:image; empty = `${siteUrl}/og-image.png`.
+      appOgImage: process.env.NUXT_PUBLIC_APP_OG_IMAGE || '',
       apiEndpoint: process.env.NUXT_PUBLIC_API_ENDPOINT || 'https://api.example.com',
       i18n: {
         locales: [{
