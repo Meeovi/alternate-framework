@@ -8,50 +8,62 @@
   }
 }
 
-/* Was min-width: 1471px, leaving a 1101-1470px gap (ordinary laptop/
-   desktop widths) where neither this rule nor the max-width: 1100px rule
-   below applied, so the mobile tab bar rendered on regular desktop
-   viewports. Mirrors that rule's threshold so exactly one always applies. */
-@media only screen and (min-width: 1101px) {
-  #mobileNav {
-    display: none;
-  }
-}
-
+/* The bottom tab bar (#mobileNav) and the footer show/hide themselves at
+   1100px in layers/ui-shell; the rules below match that breakpoint. */
 @media only screen and (max-width: 1100px) {
-  #mobileNav {
-    display: block !important;
-    bottom: 0;
-    position: fixed;
-    width: 100%;
-  }
-
   .logobrand {
     display: none;
   }
 
   .searchField {
-    display: block;
-    position: fixed;
-    left: 15px !important;
-    right: 15px !important;
+    position: static;
+    left: auto !important;
+    right: auto !important;
   }
 
   .searchField .sf-search-input {
     border-radius: 135px !important;
   }
 
+  /* Mobile top bar: search field, then the cart at the far right. */
+  .topnavLogoCol,
   .ecosystemMenuIcon,
   .notificationsHeader,
-  .shoppingCart,
   .myaccounttopmenu,
   .mainMenu {
     display: none;
   }
 
-  #topnav {
+  .topnavSearchCol {
+    flex: 1 1 auto;
+    max-width: none;
+    min-width: 0;
+  }
+
+  /* searchBar.vue caps its form at 70% (!important, scoped); on mobile
+     the search field is the whole bar, so the id here outranks that. */
+  #topnav .topnavSearchCol .searchForm {
+    width: 100% !important;
+    padding-left: 4px;
+    padding-right: 0;
+  }
+
+  .topnavActionsCol {
+    flex: 0 0 auto;
+    max-width: none;
+  }
+
+  .rightTopNav {
+    padding-right: 4px;
+  }
+
+  /* .v-toolbar outranks styles.css's solid `#topnav` background-color,
+     which loads later with the same specificity and !important. */
+  #topnav.v-toolbar {
     position: relative !important;
     background-color: transparent !important;
+    background-image: linear-gradient(to bottom, rgba(17, 56, 155, 0.85), rgba(17, 56, 155, 0)) !important;
+    box-shadow: none !important;
   }
 
   #minSearch {
@@ -71,8 +83,9 @@
     display: none;
   }
 
+  /* Room for the fixed bottom tab bar. */
   main.v-main {
-    padding: 0px;
+    padding: 0 0 calc(64px + env(safe-area-inset-bottom, 0px));
   }
 }
 

@@ -7,19 +7,19 @@
                 </v-btn>
             </template>
             <v-row>
-                <v-col cols="2">
+                <v-col cols="2" class="topnavLogoCol">
                     <div class="d-flex align-center flex-column flex-sm-row fill-height leftTopNav">
                         <logo />
                     </div>
                 </v-col>
 
-                <v-col cols="8">
+                <v-col cols="8" class="topnavSearchCol">
                     <ClientOnly>
                         <Search :placeholder="placeholder" />
                     </ClientOnly>
                 </v-col>
 
-                <v-col cols="2">
+                <v-col cols="2" class="topnavActionsCol">
                     <div class="d-flex align-center flex-column flex-sm-row fill-height rightTopNav">
                         <v-col class="notificationsHeader">
                             <LayoutNotifications />

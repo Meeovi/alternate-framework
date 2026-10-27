@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="footerNav">
     <BottomFooter />
 
     <adBlock v-if="consent?.ads" />
@@ -99,3 +99,12 @@
     return resp?.data || resp || {}
   }, { getCachedData: reuseServerData, lazy: true })
 </script>
+
+<style scoped>
+  /* Small screens get the bottom tab bar (mobile/mobileNav.vue) instead. */
+  @media (max-width: 1100px) {
+    .footerNav {
+      display: none;
+    }
+  }
+</style>

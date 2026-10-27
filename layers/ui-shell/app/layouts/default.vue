@@ -11,7 +11,7 @@
         <v-alert v-if="pwa?.offlineReady" type="success" density="compact" class="mb-2">
           App ready to work offline
         </v-alert>
-        <LowerBar />
+        <HashtagBar />
 
         <v-main>
           <div class="page-wrapper">
@@ -62,7 +62,7 @@
 <script setup lang="ts">
   import Header from '../components/menus/Header.vue'
   import sidebarnav from '../components/menus/sidebar/sidebarnav.vue'
-  import LowerBar from '../components/menus/LowerBar.vue'
+  import HashtagBar from '../components/menus/HashtagBar.vue'
   // Below the fold on every page: hydrates when scrolled into view.
   const FooterNav = defineLazyHydrationComponent('visible', () => import('../components/menus/FooterNav.vue'))
   import live from '#social/app/components/menus/livebar/live.vue'
