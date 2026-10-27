@@ -32,7 +32,7 @@
 
         <div v-if="item" class="product-preview d-flex align-center pa-4">
           <v-img
-            :src="item.image || '/images/placeholder.png'"
+            :src="item.image || PLACEHOLDER_IMAGE_URL"
             width="56"
             height="56"
             cover
@@ -112,6 +112,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useLists, listTypeRegistry, type SavedListItemKind } from '../../../composables/lists/useLists'
+import { PLACEHOLDER_IMAGE_URL } from '#shared/app/utils/get-asset-url'
 
 type SavableListItem = {
   id: string | number

@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@mframework/meeovi-player": "file:../../../packages/plugins/Media/meeovi-player",
+    "@mframework/meeovi-gallery": "file:../../../packages/plugins/Media/meeovi-gallery",
     "@mframework/meeovi-ratings": "file:../../../packages/plugins/Social/meeovi-ratings",
     "@mframework/bookmarkit": "file:../../../packages/plugins/Social/bookmarkit",
     "@mframework/meeovi-discussions": "file:../../../packages/plugins/Social/meeovi-discussions",

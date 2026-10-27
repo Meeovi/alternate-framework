@@ -4,7 +4,7 @@
             <NuxtImg provider="cloudinary" v-if="hasAsset(space?.image_url || space?.image)" class="align-end text-white" height="200"
                 :src="getAssetURL(space?.image_url || space?.image)" :alt="space?.name" />
 
-            <NuxtImg provider="cloudinary" class="align-end text-white" height="200" v-else src="https://via.placeholder.com/800x200" :alt="space?.name" />
+            <NuxtImg provider="cloudinary" class="align-end text-white" height="200" v-else :src="PLACEHOLDER_IMAGE_URL" :alt="space?.name" />
 
             <v-card-title>{{ space?.name }}</v-card-title>
 
@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
+import { getAssetURL, hasAsset, PLACEHOLDER_IMAGE_URL } from '#shared/app/utils/get-asset-url'
     import { ref } from '#imports'
 
     import share from '../blocks/share.vue'

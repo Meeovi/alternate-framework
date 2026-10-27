@@ -31,7 +31,7 @@
             <v-list-item v-for="item in cartStore.items" :key="item.key" class="cart-item">
               <v-row align="center">
                 <v-col cols="3">
-                  <v-img :src="item.image || '/images/placeholder.png'" height="60" width="60" contain></v-img>
+                  <v-img :src="item.image || PLACEHOLDER_IMAGE_URL" height="60" width="60" contain></v-img>
                 </v-col>
                 <v-col cols="6">
                   <div class="text-subtitle-1">{{ item.name }}</div>
@@ -121,6 +121,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useCartStore } from '../../stores/cart'
+import { PLACEHOLDER_IMAGE_URL } from '#shared/app/utils/get-asset-url'
 
 const cartNotification = ref(false)
 const notificationMessage = ref('')

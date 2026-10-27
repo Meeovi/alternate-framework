@@ -5,7 +5,7 @@
                 <div class="row main justify-content-center">
                     <div class="col-lg-12 p-4">
                         <div class="image-element card-wrapper">
-                            <NuxtImg class="brandLogo" :src="getAssetURL(shop?.image)" :alt="shop?.name" />
+                            <NuxtImg class="brandLogo" :src="getImageURL(shop?.image)" :alt="shop?.name" />
                             <div class="wrapper">
                                 <h5 class="card-title mbr-fonts-style align-left display-2" style="color: black;">
                                     {{ shop?.name }}</h5>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getImageURL } from '#shared/app/utils/get-asset-url'
 
     const props = defineProps({
         shop: {

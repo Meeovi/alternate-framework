@@ -20,7 +20,7 @@
                 </div>
 
                 <v-avatar class="ma-3" rounded="0" size="125">
-                    <NuxtImg :src="getAssetURL(radio?.image)" />
+                    <NuxtImg :src="getImageURL(radio?.image)" />
                 </v-avatar>
             </div>
         </v-card>
@@ -29,7 +29,7 @@
 
 <script setup>
     import {
-        getAssetURL
+        getImageURL
     } from '#shared/app/utils/get-asset-url'
     const {
         radio

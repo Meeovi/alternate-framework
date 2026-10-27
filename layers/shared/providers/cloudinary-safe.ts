@@ -31,8 +31,9 @@ export default defineProvider(() => {
   const stock = cloudinaryProvider() as any
   return {
     ...stock,
+    // The app's own /images/* (the missing-image placeholder) likewise.
     getImage: (src: string, options: any, ctx: any) =>
-      /^(https?:)?\/\//.test(src) && !src.includes('res.cloudinary.com')
+      src.startsWith('/images/') || (/^(https?:)?\/\//.test(src) && !src.includes('res.cloudinary.com'))
         ? { url: src }
         : stock.getImage(src, options, ctx),
   }

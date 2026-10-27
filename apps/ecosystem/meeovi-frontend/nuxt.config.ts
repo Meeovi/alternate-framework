@@ -157,6 +157,8 @@ export default defineNuxtConfig({
     '@mframework/meeovi-discussions',
     // Video / audio / radio player on Video.js 10 — <MeeoviPlayer>
     '@mframework/meeovi-player',
+    // The user's uploads (Pixanomy) in SVAR File Manager — /connect/media, <MeeoviGallery>, <MeeoviRelatedMedia>
+    '@mframework/meeovi-gallery',
     // 1–5 star ratings on everything (replaces likes) — <MeeoviRating>
     '@mframework/meeovi-ratings',
     // Bookmarks and folders in a responsive grid — /bookmarks, <Bookmarkit>, /api/bookmarks

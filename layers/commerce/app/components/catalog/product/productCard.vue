@@ -3,9 +3,9 @@
     <div class="product-card rounded-md hover:shadow-lg">
       <div class="product-card__media">
         <NuxtLink :to="productPath" class="block">
-          <!-- The placeholder is an external absolute URL that isn't in
-               image.domains, so NuxtImg/IPX would blank it — render it as a
-               plain <img>; only real provider-backed images go through NuxtImg. -->
+          <!-- The placeholder is a static file that needs no transform —
+               render it as a plain <img>; only real provider-backed images
+               go through NuxtImg. -->
           <img v-if="isPlaceholder" :src="imageSrc" :alt="product?.name"
             class="block object-cover w-full h-auto rounded-md aspect-square" width="300" height="300" >
           <NuxtImg v-else provider="cloudinary" :src="imageSrc" :alt="product?.name"
@@ -100,8 +100,7 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   // product images 404 until CLOUDINARY_CLOUD_NAME is set for real);
   // failsafe to a generic placeholder rather than a broken-image icon.
   // isPlaceholder also drives swapping NuxtImg for a plain <img> below once
-  // showing it — the placeholder is a complete, absolute URL that needs no
-  // transform, and isn't in `image.domains`, so NuxtImg/IPX would blank it.
+  // showing it — the placeholder is a static file that needs no transform.
   const { src: imageSrc, isPlaceholder, onError: onImageError } = useImageFallback(computed(() => getAssetURL(props.product?.image)))
 </script>
 

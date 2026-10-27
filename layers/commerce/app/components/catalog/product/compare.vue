@@ -6,7 +6,7 @@
         <th class="text-left" v-for="product in products" :key="`header-${product?.id}`">
           <v-card class="mx-auto" max-width="280" elevation="0">
             <v-img class="align-end text-white" height="160"
-              :src="getAssetURL(product?.image) || 'https://cdn.vuetifyjs.com/images/cards/docks.jpg'" cover>
+              :src="getImageURL(product?.image)" cover>
             </v-img>
             <v-card-title>{{ product?.name }}</v-card-title>
           </v-card>
@@ -82,7 +82,7 @@
   import colorOptions from './colorOptions.vue'
   import sizeOptions from './sizeOptions.vue'
   import addToCartBtn from '../../blocks/addToCartBtn.vue'
-  import { getAssetURL } from '#shared/app/utils/get-asset-url'
+  import { getImageURL } from '#shared/app/utils/get-asset-url'
   import { usePrice } from '../../../composables/catalog/price/price'
 
   const props = defineProps({

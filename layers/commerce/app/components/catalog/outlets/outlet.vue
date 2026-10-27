@@ -5,7 +5,7 @@
                 <v-card-title>{{ store?.name }}</v-card-title>
             </v-img>
 
-             <v-img v-else class="align-end" height="200" src="https://placehold.net/product-600x400.png" :alt="store?.name || 'Store Name'" cover>
+             <v-img v-else class="align-end" height="200" :src="PLACEHOLDER_IMAGE_URL" :alt="store?.name || 'Store Name'" cover>
                 <v-card-title>{{ store?.name }}</v-card-title>
             </v-img>           
 
@@ -29,7 +29,8 @@
 
 <script setup>
     import {
-        getAssetURL
+        getAssetURL,
+        PLACEHOLDER_IMAGE_URL
     } from '#shared/app/utils/get-asset-url'
     import share from '#social/app/components/blocks/share.vue'
 

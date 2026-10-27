@@ -270,6 +270,10 @@ async function purgeAccounts(ids) {
         ['public.posts', 'creator_id']]) {
         await db.query(`delete from ${table} where ${column}::text = any($1)`, [ids])
       }
+      // Per-account play history (layers/social), once its collection exists.
+      if ((await db.query("select to_regclass('public.play_history') as t")).rows[0].t) {
+        await db.query('delete from public.play_history where user_id = any($1)', [ids])
+      }
       // accounts, sessions and profiles go with the user.
       await db.query('delete from public.users where id = any($1)', [ids])
       await db.query('commit')

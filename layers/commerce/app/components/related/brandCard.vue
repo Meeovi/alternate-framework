@@ -5,7 +5,7 @@
                 <div class="row main justify-content-center">
                     <div class="col-lg-12 p-4">
                         <div class="image-element card-wrapper">
-                            <NuxtImg class="brandLogo" :src="getAssetURL(brand?.image)" :alt="brand.name" />
+                            <NuxtImg class="brandLogo" :src="getImageURL(brand?.image)" :alt="brand.name" />
                             <!--<div class="mbr-overlay card-overlay"></div>-->
                             <div class="wrapper">
                                 <h5 class="card-title mbr-fonts-style align-left display-2" style="color: black;">
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getImageURL } from '#shared/app/utils/get-asset-url'
     import {
         ref,
         onMounted

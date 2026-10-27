@@ -6,7 +6,7 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
                         <div v-if="post?.file_url || post?.file">
-                            <MeeoviPlayer :src="getAssetURL(post?.file_url || post?.file)" :poster="getAssetURL(post?.image_url || post?.image)" :title="post?.title" />
+                            <MeeoviPlayer :src="getAssetURL(post?.file_url || post?.file)" :poster="getImageURL(post?.image_url || post?.image)" :title="post?.title" />
                         </div>
 
                         <div v-else-if="post?.audio_url || post?.audio">
@@ -19,7 +19,7 @@
                         </div>
 
                         <div v-else>
-                            <NuxtImg provider="cloudinary" class="w-100" src="../../../assets/images/image3.jpg"
+                            <NuxtImg provider="cloudinary" class="w-100" :src="PLACEHOLDER_IMAGE_URL"
                                 :alt="post?.title || 'No Title'" />
                         </div>
 
@@ -160,7 +160,7 @@
 </template>
 
 <script setup>
-    import { getAssetURL, hasAsset } from '#shared/app/utils/get-asset-url'
+    import { getAssetURL, getImageURL, hasAsset, PLACEHOLDER_IMAGE_URL } from '#shared/app/utils/get-asset-url'
     import tagCard from '#social/app/components/related/tag.vue';
     import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';

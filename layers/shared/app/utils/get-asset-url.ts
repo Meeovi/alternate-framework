@@ -5,8 +5,15 @@
 // CLOUDINARY_CLOUD_NAME isn't set, so every image routed through
 // provider="cloudinary" 404s until that env var is set for real), a broken
 // remote URL, etc. Use with useImageFallback() below rather than wiring
-// @error handlers ad hoc at every call site.
-export const PLACEHOLDER_IMAGE_URL = 'https://placehold.net/product-600x600.png'
+// @error handlers ad hoc at every call site. It's also what every piece of
+// content or product without an image of its own shows (getImageURL below);
+// served from layers/shared/public, so every app has it.
+export const PLACEHOLDER_IMAGE_URL = '/images/mbr-502x335.png'
+
+/** getAssetURL for a picture: the placeholder when there's no image. */
+export function getImageURL(id: string | undefined | unknown): string {
+  return getAssetURL(id) ?? PLACEHOLDER_IMAGE_URL
+}
 
 export function getAssetURL(id: string | undefined | unknown): string | null {
   if (!id) return null

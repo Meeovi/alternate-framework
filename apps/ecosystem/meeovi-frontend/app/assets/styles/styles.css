@@ -151,7 +151,9 @@ svg.nt-size-4 {
     width: 100%;
     position: relative;
     padding-top: 0px;
-    top: 50px;
+    /* margin, not `top`: clears the category bar AND pushes the page
+       content down with it (a `top` offset overlapped the next section). */
+    margin-top: 50px;
     display: inline-flex;
 }
 
@@ -166,7 +168,7 @@ svg.nt-size-4 {
 .logobrand {
     text-decoration: none;
     position: relative;
-    top: 5px;
+    top: 3px;
 }
 
 .v-divider {

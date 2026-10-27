@@ -119,7 +119,7 @@ const SYSTEM_TABLES = /^directus_(?!files$|folders$)/i
 
 // Personal / billing data the app never reads from the browser: admins only.
 // `customers` is the Mage-OS store's customers, mirrored into Directus.
-const PRIVATE_COLLECTIONS = /^(address|addresses|customers|os_[a-z_]+|subscriptions[a-z_]*|help_feedback)$/i
+const PRIVATE_COLLECTIONS = /^(address|addresses|customers|os_[a-z_]+|subscriptions[a-z_]*|help_feedback|play_history)$/i
 
 // Customer billing records. The app reads them client-side (order /
 // invoice / transaction pages), so instead of being admin-only, a

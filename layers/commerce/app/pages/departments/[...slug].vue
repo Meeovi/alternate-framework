@@ -10,64 +10,68 @@
                 :title="department?.name" />
             <events :category="department?.slug" />
         </div>
-        
+
         <div v-else>
             <v-card variant="text">
                 <v-toolbar :style="`background-color: ${department?.color}; color: ${department?.colortext}`"
                     :title="department?.name">
-                        <v-menu v-if="department?.categories?.length">
-                            <template v-slot:activator="{ props }">
-                                <v-btn class="deptCatBtn ma-2" v-bind="props" append-icon="fas:fa fa-caret-down"
-                                    variant="text">
-                                    Categories
-                                </v-btn>
-                            </template>
-                            <v-list class="departmentMenu">
-                                <v-row>
-                                    <v-col cols="3" v-for="categories in department?.categories"
-                                        :key="categories?.categories_id?.id">
-                                        <v-list-item>
-                                            <v-chip>
-                                                <NuxtLink
-                                                    :to="`/departments/category/${categories?.categories_id?.id}`">
-                                                    {{ categories?.categories_id?.name }}
-                                                </NuxtLink>
-                                            </v-chip>
-                                        </v-list-item>
-                                    </v-col>
-                                </v-row>
-                            </v-list>
-                        </v-menu>
+                    <v-menu v-if="department?.categories?.length">
+                        <template v-slot:activator="{ props }">
+                            <v-btn class="deptCatBtn ma-2" v-bind="props" append-icon="fas:fa fa-caret-down"
+                                variant="text">
+                                Categories
+                            </v-btn>
+                        </template>
+                        <v-list class="departmentMenu">
+                            <v-row>
+                                <v-col cols="3" v-for="categories in department?.categories"
+                                    :key="categories?.categories_id?.id">
+                                    <v-list-item>
+                                        <v-chip>
+                                            <NuxtLink :to="`/departments/category/${categories?.categories_id?.id}`">
+                                                {{ categories?.categories_id?.name }}
+                                            </NuxtLink>
+                                        </v-chip>
+                                    </v-list-item>
+                                </v-col>
+                            </v-row>
+                        </v-list>
+                    </v-menu>
 
-                        <v-slide-group>
-                            <v-slide-group-item v-if="department?.menus?.length" v-for="menu in department?.menus"
-                                :key="menu" v-slot="{ isSelected, toggle }">
-                                <v-chip :color="`${department?.colortext}`" class="ma-2" @click="toggle"
-                                    :href="`${menu?.url}`">
-                                    {{ menu?.name }}
-                                </v-chip>
-                            </v-slide-group-item>
-                        </v-slide-group>
+                    <v-slide-group>
+                        <v-slide-group-item v-if="department?.menus?.length" v-for="menu in department?.menus"
+                            :key="menu" v-slot="{ isSelected, toggle }">
+                            <v-chip :color="`${department?.colortext}`" class="ma-2" @click="toggle"
+                                :href="`${menu?.url}`">
+                                {{ menu?.name }}
+                            </v-chip>
+                        </v-slide-group-item>
+                    </v-slide-group>
                 </v-toolbar>
                 <!-- Category Top Banner Section -->
                 <section data-bs-version="5.1" class="pricing6 shopm5 cid-tZY31Y2JxZ" id="apricing6-6g">
                     <div class="mbr-overlay"></div>
                     <div class="container-fluid">
-                        <weather v-if="department?.slug === 'weather' "/>
+                        <v-container v-if="department?.slug === 'photography'" fluid class="py-4">
+                            <MeeoviRelatedMedia title="Your media" type="image" :limit="20" :show-empty="false" />
+                        </v-container>
 
-                        <travel v-if="department?.slug === 'travel' "/>
+                        <v-container v-if="department?.slug === 'art'" fluid class="py-4">
+                            <MeeoviRelatedMedia title="Your media" type="image" :limit="20" :show-empty="false" />
+                        </v-container>
 
-                        <timeComponent v-if="department?.slug === 'time' "/>
+                        <weather v-if="department?.slug === 'weather' " />
 
-                        <adultstore v-if="department?.slug === 'adult' "/>
+                        <travel v-if="department?.slug === 'travel' " />
 
-                        <pantry v-if="department?.slug === 'pantry' "/>
+                        <timeComponent v-if="department?.slug === 'time' " />
 
-                        <pay v-if="department?.slug === 'pay' "/>
+                        <adultstore v-if="department?.slug === 'adult' " />
 
-                        <finance v-if="department?.slug === 'finance' "/>
+                        <pantry v-if="department?.slug === 'pantry' " />
 
-                        <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center" v-if="department?.shorts?.length">
+                        <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center"
+                            v-if="department?.shorts?.length">
                             <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
                                 <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
                                     v-for="shorts in department?.shorts" :key="shorts">
@@ -89,13 +93,13 @@
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar title="Products" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in latestProducts"
-                            :key="product.id">
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
+                            v-for="product in latestProducts" :key="product.id">
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
-                                        size="48"></v-icon>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
+                                    </v-icon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -103,7 +107,8 @@
                 </v-sheet>
 
                 <!-- Elite Novels Stories Cards -->
-                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.name === 'Elite Novels'">
+                <v-sheet style="background-color: transparent; box-shadow: none;"
+                    v-if="department?.name === 'Elite Novels'">
                     <v-toolbar title="Stories from Elite Novels" color="transparent">
 
                         <v-toolbar-items>
@@ -113,13 +118,13 @@
                         </v-toolbar-items>
                     </v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                            v-for="story in stories" :key="story.id">
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="story in stories"
+                            :key="story.id">
                             <storyCard :story="story" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
-                                        size="48"></v-icon>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
+                                    </v-icon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -135,8 +140,8 @@
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
-                                        size="48"></v-icon>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
+                                    </v-icon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -147,13 +152,13 @@
                 <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.posts?.length">
                     <v-toolbar title="Posts" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="post in department?.posts"
-                            :key="post.id">
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
+                            v-for="post in department?.posts" :key="post.id">
                             <postCard :post="post" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
-                                        size="48"></v-icon>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
+                                    </v-icon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -164,13 +169,13 @@
                 <v-sheet style="background-color: transparent; box-shadow: none;" v-if="events?.length">
                     <v-toolbar title="Events" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                            v-for="product in events" :key="product.id">
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in events"
+                            :key="product.id">
                             <productCard :product="product" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
-                                        size="48"></v-icon>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
+                                    </v-icon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -179,7 +184,8 @@
 
                 <!-- Category Products Section (commerce) -->
                 <v-row style="padding: 10px;" v-if="department?.products?.length">
-                    <v-col cols="3" v-for="product in department?.products" :key="product?.products_id?.id ?? product.id">
+                    <v-col cols="3" v-for="product in department?.products"
+                        :key="product?.products_id?.id ?? product.id">
                         <productCard :product="product?.products_id" />
                     </v-col>
                 </v-row>
@@ -193,8 +199,8 @@
                             <spaceCard :space="space" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
-                                        size="48"></v-icon>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
+                                    </v-icon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -202,7 +208,8 @@
                 </v-sheet>
 
                 <!-- Elite Novels Characters Cards -->
-                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.name === 'Elite Novels'">
+                <v-sheet style="background-color: transparent; box-shadow: none;"
+                    v-if="department?.name === 'Elite Novels'">
                     <v-toolbar title="Characters from Elite Novels" color="transparent">
 
                         <v-toolbar-items>
@@ -217,8 +224,8 @@
                             <novelsCard :character="character" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
                                 <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark"
-                                        size="48"></v-icon>
+                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
+                                    </v-icon>
                                 </v-scale-transition>
                             </div>
                         </v-slide-group-item>
@@ -235,22 +242,22 @@
     import deals from '#commerce/app/components/catalog/categories/deals.vue'
     import timeComponent from '#commerce/app/components/catalog/categories/time/time.vue'
     import weather from '#commerce/app/components/catalog/categories/weather/weather.vue'
-    import pay from '#commerce/app/components/catalog/categories/pay/pay.vue'
     import adultstore from '#commerce/app/components/catalog/categories/adultstore.vue'
     import pantry from '#commerce/app/components/catalog/categories/pantry/pantry.vue'
-    import finance from '#commerce/app/components/catalog/categories/finance.vue'
     import spaceCard from '#social/app/components/related/space.vue'
     import novelsCard from '#commerce/app/components/related/novelsCard.vue'
     import storyCard from '#commerce/app/components/related/storyCard.vue'
     import postCard from '#social/app/components/related/post.vue'
-    import shortsCard from '#social/app/components/related/short.vue' 
+    import shortsCard from '#social/app/components/related/short.vue'
 
     import {
         ref,
         computed,
         watch
     } from '#imports'
-    import { CommerceBackendRegistry } from 'alternate-sdk'
+    import {
+        CommerceBackendRegistry
+    } from 'alternate-sdk'
 
     const route = useRoute()
     const model = ref(null)
@@ -319,9 +326,13 @@
 
     watch(backendCategoryProducts, (products) => {
         if (products && department.value) {
-            department.value.products = products.map((product) => ({ products_id: product }))
+            department.value.products = products.map((product) => ({
+                products_id: product
+            }))
         }
-    }, { immediate: true })
+    }, {
+        immediate: true
+    })
 
     // These department-scoped queries filter the `departments` collection
     // itself (to match slug + the relevant products/showcases condition)
@@ -329,9 +340,9 @@
     // products.products_id relation is extracted out here.
     const extractProducts = (departments) =>
         (Array.isArray(departments) ? departments : [])
-            .flatMap((dept) => dept?.products || [])
-            .map((p) => p?.products_id)
-            .filter(Boolean)
+        .flatMap((dept) => dept?.products || [])
+        .map((p) => p?.products_id)
+        .filter(Boolean)
 
     // "Best Sellers" and "latest" are Directus merchandising concepts
     // (a showcase tag, a status flag) with no equivalent ranking/filter in
@@ -351,7 +362,9 @@
             ],
             limit: 10,
             filter: {
-                slug: { _eq: departmentSlug.value },
+                slug: {
+                    _eq: departmentSlug.value
+                },
                 showcases: {
                     showcases_id: {
                         name: {
@@ -378,7 +391,9 @@
             ],
             limit: 10,
             filter: {
-                slug: { _eq: departmentSlug.value },
+                slug: {
+                    _eq: departmentSlug.value
+                },
                 products: {
                     products_id: {
                         status: {
@@ -412,7 +427,9 @@
             ],
             limit: 10,
             filter: {
-                slug: { _eq: departmentSlug.value },
+                slug: {
+                    _eq: departmentSlug.value
+                },
                 products: {
                     products_id: {
                         product_types: {
@@ -437,17 +454,17 @@
         return $directus.request($readItem('callouts', '2'))
     })
 
-      const {
+    const {
         data: characters
-      } = useLazyAsyncData('characters', () => {
+    } = useLazyAsyncData('characters', () => {
         return $directus.request($readItems('characters'))
-      })
+    })
 
-      const {
+    const {
         data: stories
-      } = useLazyAsyncData('stories', () => {
+    } = useLazyAsyncData('stories', () => {
         return $directus.request($readItems('stories'))
-      })
+    })
 
     useHead({
         title: computed(() => department?.value?.name || 'Department Page')

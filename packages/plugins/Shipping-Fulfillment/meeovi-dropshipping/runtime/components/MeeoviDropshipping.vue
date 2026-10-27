@@ -51,7 +51,7 @@
           <v-row>
             <v-col v-for="item in catalog" :key="item.id" cols="6" sm="4" md="3" lg="2">
               <v-card :variant="selected.includes(item.id) ? 'tonal' : 'outlined'" :color="selected.includes(item.id) ? 'primary' : undefined" @click="toggle(item.id)">
-                <v-img :src="item.image || undefined" aspect-ratio="1" cover />
+                <v-img :src="item.image || '/images/mbr-502x335.png'" aspect-ratio="1" cover />
                 <v-card-text class="pa-2">
                   <div class="text-body-2 text-truncate" :title="item.name">{{ item.name }}</div>
                   <div class="text-caption text-medium-emphasis">

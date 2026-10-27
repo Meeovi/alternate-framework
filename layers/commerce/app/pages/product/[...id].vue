@@ -13,7 +13,7 @@
                 v-if="productTypeNames.includes('Audio') || productTypeNames.includes('Video') || productTypeNames.includes('Course')">
                 <MeeoviPlayer :src="getAssetURL(product?.file)" :type="product?.file?.type"
                   :kind="productTypeNames.includes('Audio') ? 'audio' : undefined"
-                  :poster="getAssetURL(product?.image)" :title="product?.name" />
+                  :poster="getImageURL(product?.image)" :title="product?.name" />
               </div>
 
               <!--If the Product is a Gift Card-->
@@ -315,7 +315,7 @@
   import subscriptionCard from '../../components/catalog/product/subscriptionCard.vue'
   import short from '#social/app/components/related/short.vue'
   import spacesCard from '#social/app/components/related/space.vue'
-  import { getAssetURL } from '#shared/app/utils/get-asset-url'
+  import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
   import shop from '../../components/catalog/shops/stores.vue'
   import productCompare from '../../components/catalog/product/compare.vue'
   import { CommerceBackendRegistry } from 'alternate-sdk'

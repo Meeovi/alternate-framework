@@ -76,15 +76,7 @@
                     <!--Media Tab-->
                     <v-tabs-window-item :value="spaceTabs?.menus[3]?.value">
 
-                        <v-row v-if="space?.media?.length">
-                            <v-col cols="3" v-for="media in space?.media" :key="media.id">
-                                <MediaTab :media="media?.media_id" />
-                            </v-col>
-                        </v-row>
-
-                        <div class="center-text" v-else>
-                            <p>No Media yet</p>
-                        </div>
+                        <MediaTab :space="space" />
                     </v-tabs-window-item>
 
                     <!--Products Tab-->
@@ -178,7 +170,10 @@
                 'members.*',
                 'products.products_id.*',
                 'lists.lists_id.*',
-                'media.*',
+                'media.directus_files_id.id',
+                'media.directus_files_id.type',
+                'media.directus_files_id.title',
+                'media.directus_files_id.filename_download',
                 'space_type.space_types_id.name'
             ],
             limit: 1

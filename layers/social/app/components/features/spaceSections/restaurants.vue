@@ -30,7 +30,7 @@
     import {
         ref
     } from 'vue'
-    import restaurantCard from '../../related/restaurantCard.vue'
+    import restaurantCard from '#commerce/app/components/related/restaurantCard.vue'
 
     const {
         $directus,

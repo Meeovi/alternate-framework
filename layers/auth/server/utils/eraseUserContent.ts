@@ -19,6 +19,7 @@ const OWNED: Record<string, string> = {
   radios: 'creator_id',
   reactions: 'user_id',
   content_ratings: 'user_id',
+  play_history: 'user_id',
   media_folders: 'user',
   spaces: 'owner',
   websites: 'creator',

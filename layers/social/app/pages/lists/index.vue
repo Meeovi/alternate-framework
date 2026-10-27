@@ -94,7 +94,7 @@
                         <v-slide-group-item v-for="video in watchLater.videos" :key="video.id">
                             <v-card class="ma-4 watch-later-card">
                                 <MeeoviPlayer :src="getAssetURL(video.video_url || video.video)"
-                                    :poster="getAssetURL(video.thumbnail_url || video.thumbnail)" :title="video.name" />
+                                    :poster="getImageURL(video.thumbnail_url || video.thumbnail)" :title="video.name" />
                                 <v-card-title class="text-subtitle-1">{{ video.name }}</v-card-title>
                                 <v-card-actions>
                                     <v-btn variant="text" :to="`/connect/vibe/${video.id}`" text="Open" />
@@ -199,7 +199,7 @@
 
 <script setup>
     import ListCard from '../../components/related/list.vue'
-    import { getAssetURL } from '#shared/app/utils/get-asset-url'
+    import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
     import {
         useLists
     } from '../../composables/lists/useLists'

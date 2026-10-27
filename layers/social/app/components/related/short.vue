@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto" max-width="400">
     <MeeoviPlayer :src="getAssetURL(short?.video_url || short?.video)"
-      :poster="getAssetURL(short?.thumbnail_url || short?.thumbnail)" :title="short?.name" loop />
+      :poster="getImageURL(short?.thumbnail_url || short?.thumbnail)" :title="short?.name" loop />
 
     {{ short?.name }}
 
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
 import watchLaterBtn from '../features/watchLater/watchLaterBtn.vue'
 
 const { short } = defineProps({

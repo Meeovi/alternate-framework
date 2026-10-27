@@ -11,9 +11,19 @@
             <SkyscannerWidget widget="FlightSearchWidget" locale="en-US" market="US" currency="USD" />
 
             <v-card width="100%" class="mt-4">
-                <v-card-text class="center-text">The above widget is provided by Skyscanner and allows you to search for flights and compare prices. Meeovi is not responsible for the data shown above or the website the links direct you to.</v-card-text>
+                <v-card-text class="center-text">The above widget is provided by Skyscanner and allows you to search for
+                    flights and compare prices. Meeovi is not responsible for the data shown above or the website the
+                    links direct you to.</v-card-text>
             </v-card>
         </template>
+
+        <v-row v-if="products.length">
+            <v-col v-for="p in products" :key="p.id" cols="12" sm="6" md="4" lg="3">
+                <nearbyProductCard :product="p" />
+            </v-col>
+        </v-row>
+
+        <p v-else-if="status === 'success'">Nothing near you yet.</p>
     </div>
 </template>
 
@@ -23,6 +33,19 @@
         ref
     } from 'vue';
     import SkyscannerWidget from '../../blocks/travelWidget.vue';
+    import nearbyProductCard from '../product/nearbyProductCard.vue'
+    import {
+        useNearbyProducts
+    } from '../../../composables/catalog/products/useNearbyProducts'
+
+    const {
+        products,
+        status
+    } = useNearbyProducts({
+        department: 'travel',
+        radiusKm: 100,
+        limit: 24
+    })
 
     const props = defineProps({
         category: {

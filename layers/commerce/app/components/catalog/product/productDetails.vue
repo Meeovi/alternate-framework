@@ -4,10 +4,8 @@
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div class="image-container">
-                        <div v-if="hasAsset(productDetails?.image)">
-                            <NuxtImg provider="cloudinary" :src="getAssetURL(productDetails?.image) ?? undefined"
-                                :alt="productDetails?.name" class="w-full rounded-md" />
-                        </div>
+                        <NuxtImg provider="cloudinary" :src="getImageURL(productDetails?.image)"
+                            :alt="productDetails?.name" class="w-full rounded-md" />
                     </div>
                 </div>
 
@@ -160,6 +158,7 @@
     import { parseProductKey, productKey } from '../../../utils/productKey';
     import {
         getAssetURL,
+        getImageURL,
         hasAsset
     } from '#shared/app/utils/get-asset-url'
     import sizeOptions from './sizeOptions.vue'

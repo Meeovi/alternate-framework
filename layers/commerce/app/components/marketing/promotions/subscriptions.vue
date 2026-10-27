@@ -7,7 +7,7 @@
                     <v-col cols="3" v-for="(subscriptions, index) in allSubscriptions" :key="index">
                         <v-card class="mx-auto" max-width="400">
                             <NuxtImg provider="cloudinary" loading="lazy" class="align-end text-white" height="200"
-                            :src="getAssetURL(subscriptions?.image) ?? undefined" :alt="subscriptions?.name" cover />
+                            :src="getImageURL(subscriptions?.image)" :alt="subscriptions?.name" cover />
                                 <template>{{subscriptions?.name}}</template>
                             <v-card class="pt-4">
                                 Status: {{ subscriptions?.status }}
@@ -35,7 +35,7 @@
                     <v-col cols="3" v-for="(subscriptions, index) in allSubscriptions" :key="index">
                         <v-card class="mx-auto" max-width="400">
                             <NuxtImg loading="lazy" class="align-end text-white" height="200"
-                            :src="getAssetURL(subscriptions?.image) ?? undefined" :alt="subscriptions?.name" cover />
+                            :src="getImageURL(subscriptions?.image)" :alt="subscriptions?.name" cover />
                                 <template>{{subscriptions?.name}}</template>
 
                             <v-card class="pt-4">
@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 import { ref } from '#imports'
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getImageURL } from '#shared/app/utils/get-asset-url'
 
   const {
     $directus,

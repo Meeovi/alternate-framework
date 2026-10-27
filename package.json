@@ -46,6 +46,7 @@
     "packages/plugins/Social/meeovi-ratings",
     "packages/plugins/Shipping-Fulfillment/meeovi-dropshipping",
     "packages/plugins/Media/meeovi-player",
+    "packages/plugins/Media/meeovi-gallery",
     "packages/plugins/Themes/starter-template",
     "layers/*",
     "apps/ecosystem/*",

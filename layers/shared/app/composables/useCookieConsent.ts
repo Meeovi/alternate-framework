@@ -23,7 +23,11 @@ export function useCookieConsent() {
   const cookie = useCookie<CookieConsent | null>('meeovi_consent', {
     maxAge: 60 * 60 * 24 * 182,
     sameSite: 'lax',
-    secure: true,
+    // Secure only over https: a browser drops a Secure cookie set on an
+    // http page (a dev server, a copy reached by IP), so the choice was
+    // never saved there and the banner came back on every page. Only the
+    // browser writes this cookie.
+    secure: import.meta.server || location.protocol === 'https:',
     default: () => null,
   })
   // One shared copy for the banner and the loader plugin (separate

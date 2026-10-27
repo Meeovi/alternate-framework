@@ -35,7 +35,7 @@
                             :alt="post?.title || 'No Title'" />
                     </div>
                     <NuxtImg v-else class="align-end text-white" max-height="200px"
-                        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" :alt="post?.title || 'No Title'" cover />
+                        :src="PLACEHOLDER_IMAGE_URL" :alt="post?.title || 'No Title'" cover />
 
                     <v-card-title>{{ post?.title }}</v-card-title>
 
@@ -72,7 +72,8 @@
 
 <script setup>
     import {
-        getAssetURL
+        getAssetURL,
+        PLACEHOLDER_IMAGE_URL
     } from '#shared/app/utils/get-asset-url'
     import editMenu from '#social/app/components/blocks/postEditMenu.vue';
     import share from '#social/app/components/blocks/share.vue';

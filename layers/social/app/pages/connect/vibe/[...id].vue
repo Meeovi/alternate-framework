@@ -46,7 +46,8 @@
   } from 'vue-router'
   import createListBtn from '../../../components/blocks/partials/createListBtn.vue'
   import watchLaterBtn from '../../../components/features/watchLater/watchLaterBtn.vue'
-  import { getAssetURL } from '#shared/app/utils/get-asset-url'
+  import { recordPlay } from '../../../composables/media/usePlayHistory'
+  import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
   import {
     ref,
     computed,
@@ -71,7 +72,7 @@
 
   const playerData = computed(() => ({
     src: getAssetURL(short.value?.video_url || short.value?.video),
-    poster: getAssetURL(short.value?.thumbnail_url || short.value?.thumbnail),
+    poster: getImageURL(short.value?.thumbnail_url || short.value?.thumbnail),
   }))
 
   // createListBtn's panel needs a resolved thumbnail URL, not the raw
@@ -104,6 +105,8 @@
 
   onMounted(async () => {
     await fetchShort()
+    // The account's "Watch again" row (features/playHistory/watchAgain.vue).
+    recordPlay('watch', short.value?.id)
     await trackView()
   })
       

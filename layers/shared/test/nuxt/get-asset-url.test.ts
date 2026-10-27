@@ -58,4 +58,13 @@ describe('hasAsset', () => {
     expect(hasAsset('abc')).toBe(true)
     expect(hasAsset(undefined)).toBe(false)
   })
+
+  it('getImageURL falls back to the placeholder when there is no image', async () => {
+    const { getImageURL, PLACEHOLDER_IMAGE_URL } = await import('../../app/utils/get-asset-url')
+    const config = useRuntimeConfig()
+    expect(PLACEHOLDER_IMAGE_URL).toBe('/images/mbr-502x335.png')
+    expect(getImageURL(undefined)).toBe(PLACEHOLDER_IMAGE_URL)
+    expect(getImageURL(null)).toBe(PLACEHOLDER_IMAGE_URL)
+    expect(getImageURL('abc')).toBe(`${config.public.directusUrl}/assets/abc`)
+  })
 })

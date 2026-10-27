@@ -78,7 +78,7 @@
     useRuntimeConfig
   } from '#imports'
   import { CommerceBackendRegistry } from 'alternate-sdk'
-  import Restaurants from '../../../components/catalog/categories/restaurants.vue'
+  import Restaurants from '#social/app/components/features/spaceSections/restaurants.vue'
 
   const route = useRoute()
   const {

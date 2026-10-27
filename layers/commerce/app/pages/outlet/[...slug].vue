@@ -6,7 +6,7 @@
         <v-card-title style="text-align: center;">{{ shop?.name }}</v-card-title>
       </v-img>
 
-      <v-img class="align-end text-white" height="300" v-else src="https://placehold.net/6-800x600.png"
+      <v-img class="align-end text-white" height="300" v-else :src="PLACEHOLDER_IMAGE_URL"
         :alt="shop?.name" cover>
         <v-card-title style="text-align: center;">{{ shop?.name }}</v-card-title>
       </v-img>
@@ -142,7 +142,8 @@
 
 <script setup>
   import {
-    getAssetURL
+    getAssetURL,
+    PLACEHOLDER_IMAGE_URL
   } from '#shared/app/utils/get-asset-url'
   import {
     ref

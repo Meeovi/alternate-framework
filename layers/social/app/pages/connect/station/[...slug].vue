@@ -31,7 +31,7 @@
                                         </div>
 
                                         <v-avatar class="ma-3" rounded="0" size="125">
-                                            <v-img :src="getAssetURL(station?.file?.image)"></v-img>
+                                            <v-img :src="getImageURL(station?.file?.image)"></v-img>
                                         </v-avatar>
                                     </div>
                                 </v-card>
@@ -47,8 +47,9 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
 import { useRoute } from 'vue-router'
+import { recordPlay } from '../../../composables/media/usePlayHistory'
 
     const {
         $directus,
@@ -75,6 +76,10 @@ import { useRoute } from 'vue-router'
     }, {
         watch: [() => route.params.slug]
     })
+
+    // The account's "Listen again" row (features/playHistory/listenAgain.vue).
+    onMounted(() => recordPlay('listen', station.value?.id))
+    watch(() => station.value?.id, (id) => { if (import.meta.client) recordPlay('listen', id) })
 
     useHead({
         title: computed(() => station.value?.name || 'Station Page')

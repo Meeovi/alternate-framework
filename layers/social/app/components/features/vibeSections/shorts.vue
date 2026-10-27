@@ -27,7 +27,7 @@
     <MeeoviPlayer
       class="vibe-video"
       :src="getAssetURL(short?.video_url || short?.video)"
-      :poster="getAssetURL(short?.thumbnail_url || short?.thumbnail)"
+      :poster="getImageURL(short?.thumbnail_url || short?.thumbnail)"
       :title="short?.name"
     />
 
@@ -76,7 +76,7 @@
 
 <script setup>
 import { ref, computed } from '#imports'
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
 
 const { short } = defineProps({
   short: {

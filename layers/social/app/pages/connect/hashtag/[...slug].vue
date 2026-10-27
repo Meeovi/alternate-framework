@@ -9,7 +9,7 @@
                                 <NuxtImg provider="cloudinary" :alt="tag?.name" :src="getAssetURL(tag?.image)" cover />
                             </div>
 
-                            <div v-else><NuxtImg provider="cloudinary" src="https://media.istockphoto.com/id/1444833918/photo/3d-megaphone-with-hashtags-and-bell-notification-loudspeaker-for-announce-promotion-in-social.jpg?s=2048x2048&w=is&k=20&c=qqD2LRmjXMMzQmiITcZ78tCudX9SQIoehV3EXprfBrY=" :alt="tag?.name" /></div>
+                            <div v-else><NuxtImg provider="cloudinary" :src="PLACEHOLDER_IMAGE_URL" :alt="tag?.name" /></div>
                         </div>
                         <div class="left-side col-12 col-md">
                             <h3 class="mbr-section-title mbr-fonts-style l1 display-5">{{ tag?.name }}
@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import { getAssetURL } from '#shared/app/utils/get-asset-url'
+import { getAssetURL, PLACEHOLDER_IMAGE_URL } from '#shared/app/utils/get-asset-url'
     //import Hashtags from '~/components/features/hashtags.vue'
     import postCard from '../../../components/related/post.vue'
     import spaceCard from '../../../components/related/space.vue'
