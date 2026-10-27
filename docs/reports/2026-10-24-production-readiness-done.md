@@ -1,6 +1,6 @@
 # Production readiness: what's done
 
-**Date:** 16 to 24 October 2026
+**Date:** 16 to 27 October 2026
 **Companion to:** [Production readiness: what's open](2026-10-16-production-readiness.md), which lists only what's still to do.
 **Scope:** `layers/*` and `apps/ecosystem/meeovi-frontend`. The app is tested at demo.meeovicms.com and moves to meeovi.com when it's finished, with commerce data from commerce.meeovicms.com (Mage-OS 3.6.0) through Directus.
 
@@ -71,7 +71,11 @@
 ## social
 
 - Directus is a federation network ("Meeovi": members and their public posts). Federation routes stop waiting for a network after 8 s.
-- Bluesky works: the service account is `meeovi.sky.meeovicms.com`, and site search returns Bluesky posts.
+- Bluesky works: site search returns Bluesky posts. The service account's handle is now `meeovi.com` (DID `did:plc:uxc3jbzceyy2arpvdzl7xg2y`); the app signs in with the DID, so handle changes can't break it.
+- **The PDS at sky.meeovicms.com (26 October):**
+  - Apache now passes the PDS's live update stream (WebSocket) and its `/.well-known` handle and sign-in endpoints. Bluesky's relay had marked the PDS offline, so handle changes and posts never reached bsky.app; it now lists the PDS as active.
+  - The PDS container was recreated with its data in `/opt/pds/data`. Misnamed settings had left every account inside the container, where recreating it would have deleted them. Port 3099 now listens on this server only.
+  - Verification emails go through this server's mail server as `no-reply@meeovicms.com`. The server now introduces itself as `mail.meeovicms.com` (it used its bare IP, which got it on Spamhaus's XBL list), with matching reverse DNS, SPF and DKIM. Spamhaus delisted the IP; Outlook still refused mail on the 26th while its copy of the list caught up.
 - meeovi-atproto and meeovi-activitypub live in `packages/plugins/Social`.
 - Nothing under `/connect` opens for a signed-out visitor: every `/connect` URL goes to the login page, whichever layer or app provides the page, and so does an address that matches no page.
 
