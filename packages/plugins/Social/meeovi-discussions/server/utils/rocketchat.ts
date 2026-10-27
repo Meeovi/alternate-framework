@@ -277,6 +277,60 @@ export async function recentMessages(
   return messages.sort((a, b) => String(b.date).localeCompare(String(a.date)))
 }
 
+export type MemberComment = {
+  id: string
+  /** Discussion type and item id, parsed from the room name (`${prefix}-${type}-${id}`). */
+  type: string
+  itemId: string
+  /** The room topic: the item's title, when the room was opened with one. */
+  title: string | null
+  text: string
+  date: string | null
+}
+
+/**
+ * The member's own comments in discussions they've joined, newest first.
+ * Rocket.Chat can't filter a room's messages by author, so this reads the
+ * recent history of the member's most recently active discussion rooms and
+ * keeps their messages.
+ */
+export async function memberComments(
+  event: H3Event,
+  user: DiscussionUser,
+  { maxRooms = 15, perRoom = 100, limit = 30 } = {},
+): Promise<MemberComment[]> {
+  const { roomPrefix, types } = discussionsConfig(event)
+  const me = await ensureRcUser(event, user)
+  const token = await loginToken(event, me)
+  const subs = await rcAs<{ update: any[] }>(event, me, token, 'subscriptions.get')
+  const rooms = (subs.update ?? [])
+    .filter((s: any) => s.t === 'c' && String(s.name ?? '').startsWith(`${roomPrefix}-`))
+    .sort((a: any, b: any) => String(b.ls ?? b._updatedAt ?? '').localeCompare(String(a.ls ?? a._updatedAt ?? '')))
+    .slice(0, maxRooms)
+
+  const comments: MemberComment[] = []
+  for (const sub of rooms) {
+    const rest = String(sub.name).slice(roomPrefix.length + 1)
+    const type = types.find((t) => rest.startsWith(`${t}-`))
+    if (!type) continue
+    const res = await rcAs<{ messages: any[] }>(event, me, token, 'channels.messages', {
+      query: { roomId: sub.rid, count: perRoom, sort: JSON.stringify({ ts: -1 }) },
+    }).catch(() => ({ messages: [] }))
+    for (const m of res.messages ?? []) {
+      if (m.t || !m.msg || m.u?._id !== me._id) continue
+      comments.push({
+        id: m._id,
+        type,
+        itemId: rest.slice(type.length + 1),
+        title: sub.topic || null,
+        text: String(m.msg),
+        date: m.ts ?? null,
+      })
+    }
+  }
+  return comments.sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, limit)
+}
+
 // ---------------------------------------------------------------------------
 // Private messages (Rocket.Chat direct messages between Meeovi members)
 
@@ -343,6 +397,15 @@ export async function openDirectConversation(event: H3Event, user: DiscussionUse
   const res = await rcAs<{ room: { rid?: string, _id?: string } }>(event, me, token, 'im.create', { method: 'POST', body: { username: them.username } })
   const rid = res.room?.rid || res.room?._id
   if (!rid) throw createError({ statusCode: 502, statusMessage: 'Could not start the conversation' })
+  return { rid }
+}
+
+/** Open (or reuse) the direct-message room with `other` and post `text` in it as `user`. */
+export async function sendDirectMessage(event: H3Event, user: DiscussionUser, other: DiscussionUser, text: string): Promise<{ rid: string }> {
+  const { rid } = await openDirectConversation(event, user, other)
+  const me = await ensureRcUser(event, user)
+  const token = await loginToken(event, me)
+  await rcAs(event, me, token, 'chat.sendMessage', { method: 'POST', body: { message: { rid, msg: text } } })
   return { rid }
 }
 

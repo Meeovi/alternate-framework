@@ -10,6 +10,8 @@
         <v-spacer />
       </v-toolbar>
 
+      <RecentSearches :query="searchQuery" />
+
       <div class="pt-4">
         <ResultsComponent />
       </div>
@@ -20,6 +22,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import ResultsComponent from '../components/results/resultsComponent.vue'
+import RecentSearches from '../components/results/RecentSearches.vue'
 
 const route = useRoute()
 

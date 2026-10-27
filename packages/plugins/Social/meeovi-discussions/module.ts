@@ -39,6 +39,7 @@ export default defineNuxtModule<MeeoviDiscussionsModuleOptions>({
     addComponentsDir({ path: resolver.resolve('runtime/components'), pathPrefix: false })
 
     // Private messages (registered before the :type/:id routes).
+    addServerHandler({ route: `${apiBase}/comments`, method: 'get', handler: resolver.resolve('server/api/comments.get') })
     addServerHandler({ route: `${apiBase}/messages`, method: 'get', handler: resolver.resolve('server/api/messages.get') })
     addServerHandler({ route: `${apiBase}/messages`, method: 'post', handler: resolver.resolve('server/api/messages.post') })
     addServerHandler({ route: `${apiBase}/messages/session`, method: 'post', handler: resolver.resolve('server/api/messages-session.post') })

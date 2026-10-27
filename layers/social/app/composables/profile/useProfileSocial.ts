@@ -63,7 +63,14 @@ export function useProfileSocial() {
 
   const matchCurrentUser = (entry: any) => {
     const mine = identityValues()
+    // target_audience "user:<id>" = a post addressed to that member (a
+    // birthday greeting), which belongs on their profile too.
+    const recipient = typeof entry?.target_audience === 'string' && entry.target_audience.startsWith('user:')
+      ? entry.target_audience.slice(5)
+      : null
     const candidates = [
+      entry?.creator_id,
+      recipient,
       entry?.user,
       entry?.user_id,
       entry?.author,

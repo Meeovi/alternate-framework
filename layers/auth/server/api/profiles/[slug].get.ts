@@ -104,7 +104,8 @@ export default defineEventHandler(async (event) => {
         fields: ['id', 'slug', 'title', 'summary', 'content', 'image', 'image_url', 'date_created', 'date_published'],
         filter: {
           _and: [
-            { creator_id: { _eq: user.id } },
+            // Their own notes, and ones addressed to them (birthday greetings).
+            { _or: [{ creator_id: { _eq: user.id } }, { target_audience: { _eq: `user:${user.id}` } }] },
             { status: { _in: PUBLISHED } },
             { _or: [{ visibility_scope: { _null: true } }, { visibility_scope: { _eq: 'public' } }] },
           ],

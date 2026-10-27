@@ -40,10 +40,22 @@
           </v-btn>
         </v-form>
 
-        <div v-if="socialProviders.length > 0" class="d-flex align-center my-4">
+        <div class="d-flex align-center my-4">
           <v-divider />
           <span class="mx-3 text-medium-emphasis">OR</span>
           <v-divider />
+        </div>
+
+        <div class="auth-buttons mb-2">
+          <v-btn block variant="outlined" prepend-icon="fas fa-fingerprint" class="mb-3"
+            :disabled="loading || !!passwordless" :loading="passwordless === 'passkey'" @click="signInWithPasskey">
+            Sign in with a passkey
+          </v-btn>
+          <!-- Uses the email above; behind the same Turnstile check as the password sign-in. -->
+          <v-btn block variant="outlined" prepend-icon="fas fa-envelope" class="mb-3"
+            :disabled="loading || !!passwordless || captchaMissing" :loading="passwordless === 'link'" @click="sendSignInLink">
+            Email me a sign-in link
+          </v-btn>
         </div>
 
         <div v-if="socialProviders.length > 0" class="auth-buttons">
@@ -139,7 +151,81 @@
       alertType.value = 'success';
       alertMessage.value = 'Your email address is verified. Sign in to continue.';
     }
+    // A magic link that failed (expired, already used) lands back here.
+    if (route.query.error === 'magic-link') {
+      alertType.value = 'error';
+      alertMessage.value = 'That sign-in link has expired or was already used. Send yourself a new one.';
+    }
   });
+
+  // Password-free sign-in in progress: 'passkey' | 'link' | ''.
+  const passwordless = ref('');
+
+  async function signInWithPasskey() {
+    if (loading.value || passwordless.value) return;
+    alertMessage.value = '';
+    passwordless.value = 'passkey';
+    try {
+      const { data, error } = await authClient.signIn.passkey();
+      if (error) {
+        // The passkey client reports every failure (a cancelled prompt, no
+        // passkey for this site, …) as "auth cancelled", so the message
+        // covers both.
+        alertType.value = 'info';
+        alertMessage.value = "Passkey sign-in didn't finish. If you haven't added a passkey yet, sign in another way, then add one under Workspace → Settings → Accounts.";
+        return;
+      }
+      alertType.value = 'success';
+      alertMessage.value = "You're signed in — redirecting you now…";
+      redirecting.value = true;
+      if (data?.redirect && data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      await navigateTo(redirectTarget.value);
+    } catch (err) {
+      alertType.value = 'error';
+      alertMessage.value = 'Passkey sign-in failed. Please try again.';
+      console.error('Passkey sign in error:', err);
+    } finally {
+      passwordless.value = '';
+      redirecting.value = false;
+    }
+  }
+
+  async function sendSignInLink() {
+    if (loading.value || passwordless.value) return;
+    alertMessage.value = '';
+    if (!/.+@.+\..+/.test(email.value)) {
+      alertType.value = 'info';
+      alertMessage.value = 'Enter your email address above, then choose "Email me a sign-in link".';
+      return;
+    }
+    passwordless.value = 'link';
+    try {
+      const { error } = await authClient.signIn.magicLink({
+        email: email.value,
+        callbackURL: redirectTarget.value,
+        errorCallbackURL: '/login?error=magic-link',
+      }, captchaFetchOptions());
+      if (error) {
+        alertType.value = 'error';
+        alertMessage.value = error.message || "We couldn't send a sign-in link. Please try again.";
+      } else {
+        // The same answer whether or not the address has an account.
+        alertType.value = 'success';
+        alertMessage.value = `If ${email.value} has a Meeovi account, a sign-in link is on its way. It works once and expires soon.`;
+      }
+    } catch (err) {
+      alertType.value = 'error';
+      alertMessage.value = "We couldn't send a sign-in link. Please try again.";
+      console.error('Magic link error:', err);
+    } finally {
+      passwordless.value = '';
+      // Turnstile tokens are single-use.
+      resetCaptcha();
+    }
+  }
 
   async function signIn() {
     if (loading.value) return;

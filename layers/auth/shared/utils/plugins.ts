@@ -124,6 +124,9 @@ export const plugins = [
   }),
 
   magicLink({
+    // Sign-in only: a link mustn't create an account and skip registration
+    // (username rules, seller sign-up, terms).
+    disableSignUp: true,
     sendMagicLink: async ({ email, url }) => {
       const { error } = await sendAuthEmail({
         to: email,
