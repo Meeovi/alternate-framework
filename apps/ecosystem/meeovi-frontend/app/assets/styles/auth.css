@@ -72,9 +72,11 @@
     background: white;
 }
 
-.text-medium-emphasis {
-    color: black;
-    display: inline-block;
+/* The "OR" between the dividers on the sign-in form: kept on one line (it
+   was squeezed to a letter per line). A global .text-medium-emphasis
+   override used to do this, and forced black text in dark mode too. */
+.login-form .d-flex > span.text-medium-emphasis {
+    white-space: nowrap;
 }
 
 /*************** Register CSS *****************/

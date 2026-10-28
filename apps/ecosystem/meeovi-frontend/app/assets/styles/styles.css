@@ -171,9 +171,6 @@ svg.nt-size-4 {
     top: 3px;
 }
 
-.v-divider {
-    border: black;
-}
 
 .section-content,
 .section-name,
@@ -1484,4 +1481,19 @@ footer a:hover {
 
 .cid-uHg1k6KLf8 img {
     border-radius: 0px !important;
+}
+
+/* Bootstrap's reboot styles every <hr> (no border, a 1px coloured block),
+   and being unlayered it beats Vuetify's layered .v-divider, so dividers
+   vanished. Vuetify's own borders, back on top. */
+hr.v-divider {
+    background-color: transparent;
+    height: 0;
+    border-style: solid;
+    border-width: thin 0 0 0;
+}
+
+hr.v-divider.v-divider--vertical {
+    height: auto;
+    border-width: 0 thin 0 0;
 }
