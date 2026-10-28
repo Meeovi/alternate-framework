@@ -127,6 +127,11 @@ export const plugins = [
     // Sign-in only: a link mustn't create an account and skip registration
     // (username rules, seller sign-up, terms).
     disableSignUp: true,
+    // GHSA-965c-763c-88jm (fixed in 1.7.7): with plain tokens, an OAuth
+    // state value could be redeemed as a magic link. Hashed tokens plus
+    // plain verification identifiers (auth.ts) is the advisory's workaround
+    // until the 1.7 upgrade.
+    storeToken: 'hashed',
     sendMagicLink: async ({ email, url }) => {
       const { error } = await sendAuthEmail({
         to: email,
@@ -281,8 +286,8 @@ export const plugins = [
   // Cloudflare Turnstile on the auth forms: signing in (password
   // guessing), creating accounts (spam), sending email (inbox bombing) and
   // the account forms. The forms send the token as `x-captcha-response`
-  // (app/composables/useAuthCaptcha.ts). Endpoints match by substring, so
-  // /sign-in/email also covers /sign-in/email-otp. Off when no secret is
+  // (app/composables/useAuthCaptcha.ts). Each endpoint is listed in full:
+  // better-auth 1.7 matches exactly, not by substring. Off when no secret is
   // configured (local dev). Scripts and the production tests can't pass
   // it; the tests open sessions directly instead.
   ...(process.env.NUXT_TURNSTILE_SECRET_KEY

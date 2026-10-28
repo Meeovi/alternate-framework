@@ -26,7 +26,8 @@ export const AUTH_CAPTCHA_HEADER = 'x-captcha-response'
  */
 export const AUTH_CAPTCHA_ENDPOINTS = [
   // sign-in (password guessing)
-  '/sign-in/email', '/sign-in/username', '/sign-in/magic-link', '/sign-in/atproto',
+  // better-auth matches these exactly (1.7+), so list every variant.
+  '/sign-in/email', '/sign-in/email-otp', '/sign-in/username', '/sign-in/magic-link', '/sign-in/atproto',
   // accounts (spam)
   '/sign-up/email', '/sign-up/atproto',
   // only exists when an app registers @mframework/auth-anonymous

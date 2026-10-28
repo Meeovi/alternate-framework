@@ -332,7 +332,9 @@ export const auth = betterAuth({
   },
   verification: {
     disableCleanup: false,
-    storeIdentifier: "hashed",
+    // Must stay "plain" while magic links store hashed tokens: hashing both
+    // re-opens GHSA-965c-763c-88jm (see magicLink in plugins.ts).
+    storeIdentifier: "plain",
     storeInDatabase: false
   },
   rateLimit: {
