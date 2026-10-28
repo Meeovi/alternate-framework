@@ -376,8 +376,11 @@ svg.nt-size-4 {
     margin-left: 30%;
 }
 
+/* Theme ink, not black: these include common utility classes (.pb-2,
+   .py-2, .display-4), so a fixed black hid text across the site in dark
+   mode. */
 .content2 .item-content, .features16 .display-5, .display-4, .features15 .display-2, .pb-2, .py-2 {
-    color: black;
+    color: rgb(var(--v-theme-on-surface));
 }
 
 /******************* Main Section CSS *********/
@@ -623,7 +626,7 @@ svg.nt-size-4 {
 }
 
 .v-text-field {
-    color: black;
+    color: rgb(var(--v-theme-on-surface));
 }
 
 /******************** Meeovi Time CSS ************/
@@ -1496,4 +1499,23 @@ hr.v-divider {
 hr.v-divider.v-divider--vertical {
     height: auto;
     border-width: 0 thin 0 0;
+}
+
+/* Text follows the theme: white in dark mode, black in light mode, unless
+   a rule gives it a colour of its own. Plain form controls otherwise keep
+   the browser's black text even on a dark page (the checkout address form),
+   and `color-scheme` makes their dropdowns, autofill and date pickers dark
+   too. */
+input,
+textarea,
+select {
+    color: inherit;
+}
+
+.v-theme--dark {
+    color-scheme: dark;
+}
+
+.v-theme--light {
+    color-scheme: light;
 }

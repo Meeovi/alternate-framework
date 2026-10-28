@@ -54,7 +54,8 @@ export default defineEventHandler(async (event) => {
           address_line_1: address.street1,
           ...(address.street2 && { address_line_2: address.street2 }),
           admin_area_2: address.city,
-          admin_area_1: address.state,
+          // Optional: many countries have no state or region.
+          ...(address.state && { admin_area_1: address.state }),
           postal_code: address.zip,
           country_code: String(address.country || '').toUpperCase(),
         },

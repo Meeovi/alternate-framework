@@ -18,7 +18,8 @@ const addressSchema = Joi.object({
   street1: Joi.string().required(),
   street2: Joi.string().optional(),
   city: Joi.string().required(),
-  state: Joi.string().required(),
+  // Many countries have no state or region (the UK, for one).
+  state: Joi.string().allow('').optional(),
   zip: Joi.string().required(),
   country: Joi.string().length(2).required(),
   email: Joi.string().email().optional(),

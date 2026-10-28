@@ -64,11 +64,13 @@
     font-weight: 500;
 }
 
-.v-text-field .v-field {
+/* Light theme only: in dark mode a light field held white text (the
+   newsletter box, checkout and every other form). */
+.v-theme--light .v-text-field .v-field {
     background: #f5f5f5;
 }
 
-.v-text-field .v-field--focused .v-field__input {
+.v-theme--light .v-text-field .v-field--focused .v-field__input {
     background: white;
 }
 

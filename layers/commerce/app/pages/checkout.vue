@@ -34,16 +34,18 @@
           <label>City
             <input v-model="address.city" required autocomplete="address-level2" />
           </label>
-          <label>State / region
-            <input v-model="address.state" required autocomplete="address-level1" />
+          <label>State / region{{ stateRequired ? '' : ' (if any)' }}
+            <input v-model="address.state" :required="stateRequired" autocomplete="address-level1" />
           </label>
         </div>
         <div class="row">
           <label>ZIP / postal code
             <input v-model="address.zip" required autocomplete="postal-code" />
           </label>
-          <label>Country (2-letter code)
-            <input v-model="address.country" required maxlength="2" autocomplete="country" />
+          <label>Country
+            <select v-model="address.country" required autocomplete="country">
+              <option v-for="country in countries" :key="country.code" :value="country.code">{{ country.name }}</option>
+            </select>
           </label>
         </div>
         <label>Phone
@@ -108,6 +110,7 @@
     useRuntimeConfig
   } from '#app'
   import { useCartStore } from '../stores/cart'
+  import { countryOptions } from '../utils/countries'
 
   const loading = ref(false)
   const error = ref('')
@@ -162,6 +165,14 @@
     phone: '',
     email: ''
   })
+  // Any country; the shipping rates and PayPal take it from here. Named in
+  // the visitor's language, worked out once on the server and reused in the
+  // browser so the list (and its order) hydrates unchanged.
+  const acceptLanguage = useRequestHeaders(['accept-language'])['accept-language']?.split(',')[0]?.split(';')[0]
+  const countries = useState('checkout:countries', () => countryOptions(acceptLanguage || 'en'))
+  // Where addresses need one for delivery; elsewhere it's optional.
+  const STATE_COUNTRIES = ['US', 'CA', 'AU', 'MX', 'BR', 'IN', 'JP', 'CN']
+  const stateRequired = computed(() => STATE_COUNTRIES.includes(address.value.country))
   const addressError = ref('')
   const fetchingRates = ref(false)
 
@@ -343,7 +354,8 @@
     gap: 12px;
   }
 
-  .checkoutStep input {
+  .checkoutStep input,
+  .checkoutStep select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
