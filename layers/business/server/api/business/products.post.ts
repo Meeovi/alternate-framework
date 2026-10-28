@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import { createError, defineEventHandler, readMultipartFormData } from 'h3'
 import { eq } from 'drizzle-orm'
-import { createDirectus, rest, staticToken, uploadFiles } from '@directus/sdk'
+import { createDirectus, createItem, createItems, readItem, readItems, rest, staticToken, uploadFiles } from '@directus/sdk'
 import { commerce } from '@mframework/mageos-commerce-sdk'
 import { db } from '#auth/server/utils/drizzle'
 import { users } from '#auth/server/database/migrations/schema'
@@ -16,12 +16,24 @@ import { sniffMedia } from '#shared/server/utils/mediaSniff'
  * products wait for the store's approval.
  *
  * Fields: name, price, description?, qty?, allowFreeDownload ("true"),
- * image (JPEG/PNG/GIF), download (the file buyers get).
+ * departmentId, categoryId (one of that department's categories),
+ * tags (JSON list of up to 5 extra tags), image (JPEG/PNG/GIF),
+ * download (the file buyers get).
  * With price 0 and allowFreeDownload, anyone may download it without
  * checking out.
+ *
+ * Department, category and tags are the CMS's (Directus). The product's
+ * Directus row is written straight away, as the store mirror will see it
+ * (source 'magento', mageos_id = the store's uid), carrying those links;
+ * the mirror adopts it once the store approves the product. Tags: the
+ * department's and category's names, plus the seller's own.
  */
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024
+const MAX_EXTRA_TAGS = 5
+
+/** A tag's slug: lowercase letters and digits, as hashtags are written. */
+const tagSlug = (name: string) => name.toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]+/gu, '')
 const MAX_DOWNLOAD_BYTES = 200 * 1024 * 1024
 
 function imageType(b: Uint8Array): 'image/jpeg' | 'image/png' | 'image/gif' | null {
@@ -75,6 +87,38 @@ export default defineEventHandler(async (event) => {
   if (description.length > 20_000) throw createError({ statusCode: 400, statusMessage: 'The description is too long.' })
   const allowFreeDownload = field('allowFreeDownload') === 'true'
 
+  const departmentId = Number(field('departmentId'))
+  const categoryId = Number(field('categoryId'))
+  if (!Number.isInteger(departmentId) || departmentId <= 0 || !Number.isInteger(categoryId) || categoryId <= 0) {
+    throw createError({ statusCode: 400, statusMessage: 'Choose a department and a category.' })
+  }
+  const department = await directus.request(readItem('departments', departmentId, {
+    fields: ['id', 'name', 'type', { categories: [{ categories_id: ['id', 'name', 'uid'] }] }] as any,
+  })).catch(() => null) as { name?: string, type?: string, categories?: { categories_id?: { id: number, name?: string, uid?: string | null } | null }[] } | null
+  const category = department?.type === 'department'
+    ? department.categories?.map((c) => c.categories_id).find((c) => Number(c?.id) === categoryId)
+    : undefined
+  if (!department?.name || !category?.name) throw createError({ statusCode: 400, statusMessage: 'That category isn\'t in that department.' })
+
+  let extraTags: unknown = []
+  try {
+    extraTags = JSON.parse(field('tags') || '[]')
+  } catch {
+    throw createError({ statusCode: 400, statusMessage: 'Tags must be a list.' })
+  }
+  if (!Array.isArray(extraTags) || extraTags.length > MAX_EXTRA_TAGS
+    || extraTags.some((t) => typeof t !== 'string' || !tagSlug(t) || t.trim().length > 30)) {
+    throw createError({ statusCode: 400, statusMessage: `Add up to ${MAX_EXTRA_TAGS} tags of up to 30 letters or numbers each.` })
+  }
+  // Department and category first; duplicates (by slug) dropped.
+  const tagNames = new Map<string, string>()
+  for (const name of [department.name, category.name, ...(extraTags as string[])]) {
+    const clean = name.trim().replace(/\s+/g, ' ')
+    if (!tagNames.has(tagSlug(clean))) tagNames.set(tagSlug(clean), clean)
+  }
+  // A store category (mirrored, uid = base64 of its id) is set in the store too.
+  const storeCategoryId = category.uid ? Number(Buffer.from(category.uid, 'base64').toString('utf8')) : NaN
+
   const image = file('image')
   const imageMime = image ? imageType(image.data) : null
   if (image && (!imageMime || image.data.length > MAX_IMAGE_BYTES)) {
@@ -96,7 +140,8 @@ export default defineEventHandler(async (event) => {
   let product: { product_id: number, sku: string }
   try {
     product = await directus.request(commerce.syncProduct({
-      customerId, sku, name, price, description: paragraphs(description), shortDescription: '', qty, weight: null, categoryIds: [], enabled: true,
+      customerId, sku, name, price, description: paragraphs(description), shortDescription: '', qty, weight: null,
+      categoryIds: Number.isInteger(storeCategoryId) && storeCategoryId > 0 ? [storeCategoryId] : [], enabled: true,
     }))
   } catch (error: any) {
     console.error('[business] seller product create failed', sku, error?.message)
@@ -127,5 +172,32 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  return { sku, productId: product.product_id, pendingApproval: true, problems }
+  // The CMS links, on the row the mirror will adopt.
+  try {
+    const slugs = [...tagNames.keys()]
+    const existing = await directus.request(readItems('tags', { filter: { slug: { _in: slugs } }, fields: ['id', 'slug'], limit: -1 })) as { id: number, slug: string }[]
+    const missing = slugs.filter((slug) => !existing.some((t) => t.slug === slug))
+    const created = missing.length
+      ? await directus.request(createItems('tags', missing.map((slug) => ({ name: tagNames.get(slug), slug, status: 'published' })))) as { id: number, slug: string }[]
+      : []
+    const tagIds = [...existing, ...created].map((t) => t.id)
+    await directus.request(createItem('products', {
+      source: 'magento',
+      mageos_id: Buffer.from(String(product.product_id)).toString('base64'),
+      mageos_sku: sku,
+      name,
+      price,
+      // The mirror publishes it once the store has approved it.
+      status: 'draft',
+      seller_username: (user as { username?: string }).username ?? null,
+      departments: [{ departments_id: departmentId }],
+      categories: [{ categories_id: categoryId }],
+      tags: tagIds.map((id) => ({ tags_id: id })),
+    } as any))
+  } catch (error: any) {
+    console.error('[business] seller product CMS links failed', sku, error?.message)
+    problems.push('department, category and tags')
+  }
+
+  return { sku, productId: product.product_id, pendingApproval: true, problems, tags: [...tagNames.values()] }
 })

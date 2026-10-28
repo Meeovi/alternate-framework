@@ -73,6 +73,8 @@ const RULES: Rule[] = [
   { methods: ['POST'], path: /^\/api\/payment\/quote\/?$/ },
   // Newsletter sign-up
   { methods: ['POST'], path: /^\/api\/newsletter\/subscribe\/?$/ },
+  // Products: a seller adding one (workspace My products)
+  { methods: ['POST'], path: /^\/api\/business\/products\/?$/ },
   // Products: dropshipping imports and supplier connections
   { methods: ['POST'], path: /^\/api\/dropshipping\/(import|connections)\/?$/ },
   { methods: ['PATCH'], path: /^\/api\/dropshipping\/connection\/?$/ },

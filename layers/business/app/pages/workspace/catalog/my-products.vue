@@ -26,6 +26,24 @@
             <v-text-field v-model="form.name" label="Name" :rules="[required]" maxlength="255" />
             <v-text-field v-model="form.price" label="Price (USD)" type="number" min="0" step="0.01" :rules="[nonNegative]" hint="0 makes it free" persistent-hint />
             <v-textarea v-model="form.description" label="Description" rows="4" auto-grow maxlength="20000" class="mt-2" />
+            <v-row dense>
+              <v-col cols="12" sm="6">
+                <v-select v-model="form.departmentId" :items="departments" item-title="name" item-value="id" label="Department"
+                  :rules="[required]" :loading="departmentsPending" />
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-select v-model="form.categoryId" :items="categories" item-title="name" item-value="id" label="Category"
+                  :rules="[required]" :disabled="!form.departmentId" no-data-text="Choose a department first" />
+              </v-col>
+            </v-row>
+            <!-- The department's and category's tags are added for the seller; they add up to 5 more. -->
+            <div v-if="autoTags.length" class="mb-1">
+              <span class="text-caption text-medium-emphasis mr-1">Tags:</span>
+              <v-chip v-for="tag in autoTags" :key="tag" size="small" class="ma-1" prepend-icon="fas fa-hashtag">{{ tag }}</v-chip>
+            </div>
+            <v-combobox v-model="form.tags" label="More tags (optional)" multiple chips closable-chips
+              :hint="`Up to ${MAX_EXTRA_TAGS} more. Press Enter after each one.`" persistent-hint
+              :rules="[maxTags]" :delimiters="[',']" />
             <v-file-input v-model="form.image" label="Image (JPEG, PNG or GIF, up to 8 MB)" accept="image/jpeg,image/png,image/gif" prepend-icon="fas fa-image" show-size />
             <v-file-input v-model="form.download" label="Download file (optional, up to 200 MB)" prepend-icon="fas fa-file-arrow-down" show-size
               hint="What buyers get: an image, PDF, ZIP, audio or video file" persistent-hint />
@@ -68,17 +86,47 @@ const statusLabel = (status: string) => ({ active: 'Live', draft: 'Waiting for a
 const statusColor = (status: string) => ({ active: 'success', draft: 'warning' } as Record<string, string>)[status] || 'default'
 const money = (value: unknown) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value) || 0)
 
-const blank = () => ({ name: '', price: '0', description: '', qty: '0', image: null as File | null, download: null as File | null, allowFreeDownload: false })
+const blank = () => ({
+  name: '', price: '0', description: '', qty: '0', image: null as File | null, download: null as File | null, allowFreeDownload: false,
+  departmentId: null as number | null, categoryId: null as number | null, tags: [] as string[],
+})
 const form = reactive(blank())
 const formOpen = ref(false)
 const formRef = ref()
 const saving = ref(false)
 const formError = ref('')
 
+// Departments and their categories, as the store front shows them.
+const { $directus, $readItems } = useNuxtApp()
+const { data: departmentRows, pending: departmentsPending } = useAsyncData('workspace-product-departments', () => $directus.request($readItems('departments', {
+  filter: { type: { _eq: 'department' } },
+  fields: ['id', 'name', { categories: [{ categories_id: ['id', 'name'] }] }],
+  sort: ['name'],
+  limit: -1,
+})).catch(() => []), { default: () => [] })
+const departments = computed(() => (departmentRows.value || []) as { id: number, name: string, categories?: { categories_id?: { id: number, name: string } | null }[] }[])
+const categories = computed(() => {
+  const department = departments.value.find((d) => d.id === form.departmentId)
+  const seen = new Set<number>()
+  return (department?.categories || [])
+    .map((c) => c.categories_id)
+    .filter((c): c is { id: number, name: string } => !!c?.name && !seen.has(c.id) && !!seen.add(c.id))
+    .sort((a, b) => a.name.localeCompare(b.name))
+})
+watch(() => form.departmentId, () => { form.categoryId = null })
+
+const MAX_EXTRA_TAGS = 5
+const autoTags = computed(() => {
+  const department = departments.value.find((d) => d.id === form.departmentId)?.name
+  const category = categories.value.find((c) => c.id === form.categoryId)?.name
+  return [...new Set([department, category].filter(Boolean) as string[])]
+})
+const maxTags = (tags: string[]) => (tags?.length ?? 0) <= MAX_EXTRA_TAGS || `Up to ${MAX_EXTRA_TAGS} more tags`
+
 const canBeFree = computed(() => Number(form.price) === 0 && !!form.download)
 watch(canBeFree, (ok) => { if (!ok) form.allowFreeDownload = false })
 
-const required = (v: string) => !!String(v || '').trim() || 'Required'
+const required = (v: unknown) => !!String(v ?? '').trim() || 'Required'
 const nonNegative = (v: string) => (Number(v) >= 0 && Number.isFinite(Number(v))) || 'Must be 0 or more'
 
 function openForm() {
@@ -102,6 +150,9 @@ async function submit() {
     body.append('description', form.description)
     body.append('qty', String(Math.max(0, Math.trunc(Number(form.qty) || 0))))
     body.append('allowFreeDownload', String(form.allowFreeDownload && canBeFree.value))
+    body.append('departmentId', String(form.departmentId ?? ''))
+    body.append('categoryId', String(form.categoryId ?? ''))
+    body.append('tags', JSON.stringify(form.tags.map((t) => String(t).trim()).filter(Boolean)))
     const image = single(form.image)
     const download = single(form.download)
     if (image) body.append('image', image, image.name)
