@@ -54,12 +54,48 @@ function safeUrl(raw: unknown): string | null {
   }
 }
 
+const columns = {
+  id: users.id, name: users.name, username: users.username, image: users.image, createdAt: users.createdAt,
+  atprotoHandle: users.atprotoHandle, atprotoDid: users.atprotoDid,
+}
+const visible = and(isNull(users.deletedAt), or(isNull(users.authBanned), eq(users.authBanned, false)))
+
 async function findUser(slug: string) {
-  const columns = { id: users.id, name: users.name, username: users.username, image: users.image, createdAt: users.createdAt }
-  const visible = and(isNull(users.deletedAt), or(isNull(users.authBanned), eq(users.authBanned, false)))
   const match = UUID.test(slug) ? eq(users.id, slug) : eq(users.username, slug.toLowerCase())
   const [user] = await db.select(columns).from(users).where(and(match, visible)).limit(1)
   return user
+}
+
+// --- Bluesky -------------------------------------------------------------
+// Meeovi is a Bluesky client: /u/<handle> (alice.bsky.social) or /u/<did>
+// shows that account here. A member who signed in with Bluesky (the atproto
+// better-auth plugin stores users.atproto_did / atproto_handle) shows as
+// themselves, with their Bluesky notes among their notes; anyone else gets
+// a profile built from Bluesky (name, avatar, bio, notes).
+// The network comes from the social layer's federation registry (filled by
+// @mframework/meeovi-atproto) — read through its global key, as this layer
+// can't import the social layer.
+type FederatedActor = { id: string, handle: string, displayName?: string, avatar?: string, bio?: string, followers?: number, following?: number, posts?: number }
+type FederationNetwork = {
+  profile?(handle: string): Promise<FederatedActor | null>
+  feed?(actor: string, options?: { limit?: number }): Promise<Array<Record<string, any>>>
+}
+const blueskyNetwork = () =>
+  ((globalThis as Record<symbol, unknown>)[Symbol.for('meeovi.federation.networks')] as Map<string, FederationNetwork> | undefined)?.get('atproto')
+
+/** A Bluesky handle (has a dot: alice.bsky.social) or DID. */
+const BLUESKY_ID = /^(did:[a-z]+:[A-Za-z0-9._:%-]+|([a-z0-9-]+\.)+[a-z0-9-]+)$/i
+
+async function findBlueskyMember(id: string) {
+  const match = id.startsWith('did:') ? eq(users.atprotoDid, id) : eq(users.atprotoHandle, id.toLowerCase())
+  const [user] = await db.select(columns).from(users).where(and(match, visible)).limit(1)
+  return user
+}
+
+async function blueskyNotes(actor: string | null | undefined, limit = 24): Promise<Array<Record<string, any>>> {
+  const network = blueskyNetwork()
+  if (!actor || !network?.feed) return []
+  return network.feed(actor, { limit }).catch(() => [])
 }
 
 /**
@@ -87,11 +123,36 @@ export default defineEventHandler(async (event) => {
       .catch(() => []) as Array<{ id: string }>
     if (row?.id) user = await findUser(row.id)
   }
+  if (!user && BLUESKY_ID.test(slug)) user = await findBlueskyMember(slug)
+
+  if (!user && BLUESKY_ID.test(slug)) {
+    const network = blueskyNetwork()
+    const actor = network?.profile ? await network.profile(slug).catch(() => null) : null
+    if (!actor) throw createError({ statusCode: 404, statusMessage: 'Profile not found' })
+    return {
+      id: actor.id,
+      name: actor.displayName || actor.handle,
+      username: actor.handle,
+      image: actor.avatar || null,
+      memberSince: null,
+      profession: null,
+      company: null,
+      description: actor.bio || '',
+      links: [],
+      // Notes from the network, in the federation API's shape (network:
+      // 'atproto'); the profile page shows them with the same note card.
+      notes: await blueskyNotes(actor.handle),
+      vibez: [],
+      bluesky: { handle: actor.handle, followers: actor.followers ?? 0, following: actor.following ?? 0, notes: actor.posts ?? 0 },
+    }
+  }
   if (!user) throw createError({ statusCode: 404, statusMessage: 'Profile not found' })
 
   let profile: Record<string, any> | null = null
   let notes: Array<Record<string, any>> = []
   let vibez: Array<Record<string, any>> = []
+  // A member who signed in with Bluesky: their Bluesky notes too.
+  const blueskyNotesOfMember = blueskyNotes(user.atprotoHandle || user.atprotoDid, 12)
 
   if (directus) {
     // Each source fails independently — an app whose Directus lacks a
@@ -147,14 +208,18 @@ export default defineEventHandler(async (event) => {
     company: profile?.company || null,
     description: toText(profile?.description),
     links,
-    notes: notes.map(note => ({
-      id: note.id,
-      slug: note.slug,
-      title: note.title || null,
-      excerpt: toText(note.summary || note.content).slice(0, 280),
-      image: note.image_url || note.image || null,
-      date: note.date_published || note.date_created,
-    })),
+    notes: [
+      ...notes.map(note => ({
+        id: note.id,
+        slug: note.slug,
+        title: note.title || null,
+        excerpt: toText(note.summary || note.content).slice(0, 280),
+        image: note.image_url || note.image || null,
+        date: note.date_published || note.date_created,
+      })),
+      ...await blueskyNotesOfMember,
+    ].sort((a, b) => Date.parse(String(b.date || b.createdAt || 0)) - Date.parse(String(a.date || a.createdAt || 0))),
+    bluesky: user.atprotoHandle ? { handle: user.atprotoHandle } : null,
     vibez: vibez.map(vibe => ({
       id: vibe.id,
       name: vibe.name,

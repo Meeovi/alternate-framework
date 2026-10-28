@@ -6,9 +6,9 @@
                     <v-toolbar color="transparent" flat>
                         <v-toolbar-title>
                             <v-list style="position: relative; left: -16px;">
+                                <!-- The author's profile on Meeovi (a Bluesky author's too: /u/<handle>) -->
                                 <v-list-item :title="authorName" :prepend-avatar="getAssetURL(post?.author?.avatar) || undefined"
-                                    :href="federated ? post.author?.url : undefined" :target="federated ? '_blank' : undefined"
-                                    :rel="federated ? 'noopener' : undefined">
+                                    :to="authorLink || undefined">
                                     <template #subtitle>
                                         <span v-if="federated">@{{ post.author.handle }} · </span>
                                         <TimeAgo v-if="createdAt" :time="createdAt" :label="null" size="small" />
@@ -18,12 +18,13 @@
                             </v-list>
                         </v-toolbar-title>
 
-
                         <editMenu v-if="!federated" :post="post" />
                     </v-toolbar>
 
                     <div class="align-end text-white" max-height="200px" v-if="federated && federatedImage">
-                        <img :src="federatedImage.preview || federatedImage.url" :alt="federatedImage.alt || ''" loading="lazy" class="federatedImage" />
+                        <NuxtLink :to="noteLink || undefined">
+                            <img :src="federatedImage.preview || federatedImage.url" :alt="federatedImage.alt || ''" loading="lazy" class="federatedImage" />
+                        </NuxtLink>
                     </div>
 
                     <div class="align-end text-white" max-height="200px" v-else-if="post?.file_url || post?.file">
@@ -35,16 +36,21 @@
                             :title="post?.title" />
                     </div>
 
-                    <div class="align-end text-white" max-height="200px" v-else-if="post?.image_url || post?.image">
+                    <NuxtLink v-else-if="post?.image_url || post?.image" :to="noteLink || undefined" class="align-end text-white d-block">
                         <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(post?.image_url || post?.image)"
                             :alt="post?.title || 'No Title'" />
-                    </div>
-                    <NuxtImg v-else class="align-end text-white" max-height="200px"
-                        :src="PLACEHOLDER_IMAGE_URL" :alt="post?.title || 'No Title'" cover />
+                    </NuxtLink>
+                    <NuxtLink v-else :to="noteLink || undefined" class="d-block">
+                        <NuxtImg class="align-end text-white" max-height="200px"
+                            :src="PLACEHOLDER_IMAGE_URL" :alt="post?.title || 'No Title'" cover />
+                    </NuxtLink>
 
-                    <v-card-title>{{ post?.title }}</v-card-title>
+                    <v-card-title v-if="post?.title">
+                        <NuxtLink :to="noteLink || undefined" class="noteTitle">{{ post.title }}</NuxtLink>
+                    </v-card-title>
 
-                    <v-card-text>
+                    <!-- Clicking the text opens the note (links inside it still go where they point) -->
+                    <v-card-text :class="{ noteText: !!noteLink }" @click="openNote">
                         <!-- Plain text from the network, split so hashtags link to their page; no v-html. -->
                         <p v-if="federated" class="postText">
                             <template v-for="(part, i) in withHashtags(post.text)" :key="i">
@@ -55,36 +61,33 @@
                         <p v-else v-dompurify-html="post?.content" class="postContent"></p>
                     </v-card-text>
 
-                    <v-card-actions v-if="federated">
-                        <span class="text-caption text-medium-emphasis">
-                            <v-icon icon="fas fa-reply" size="x-small" /> {{ post.replies ?? 0 }}
-                            &nbsp;<v-icon icon="fas fa-retweet" size="x-small" /> {{ post.reposts ?? 0 }}
-                            &nbsp;<v-icon icon="fas fa-heart" size="x-small" /> {{ post.likes ?? 0 }}
-                        </span>
-                        <v-spacer />
-                        <v-btn v-if="post.url" :href="post.url" target="_blank" rel="noopener" size="small" variant="text">{{ originalLabel }}</v-btn>
-                    </v-card-actions>
+                    <v-card-actions>
+                        <template v-if="federated">
+                            <!-- Replies open on the note's page; likes and reposts are counts only -->
+                            <v-btn variant="text" size="small" prepend-icon="fas fa-reply" :to="noteLink || undefined"
+                                :title="`Replies to this note`">{{ post.replies ?? 0 }}</v-btn>
+                            <span class="text-caption text-medium-emphasis noteCount" title="Reposts">
+                                <v-icon icon="fas fa-retweet" size="x-small" /> {{ post.reposts ?? 0 }}
+                            </span>
+                            <span class="text-caption text-medium-emphasis noteCount" title="Likes">
+                                <v-icon icon="fas fa-heart" size="x-small" /> {{ post.likes ?? 0 }}
+                            </span>
+                        </template>
 
-                    <v-card-actions v-else>
-                        <!--Rating (rate on the post page)-->
-                        <MeeoviRating v-if="post?.id" type="post" :id="post.id" summary />
+                        <template v-else>
+                            <!--Rating (rate on the note page)-->
+                            <MeeoviRating v-if="post?.id" type="post" :id="post.id" summary />
 
-                        <!--Comments-->
-                        <v-btn variant="text" class="mbr-section-btn">
-                            <v-btn prepend-icon="fas fa-comment" title="Comment on this post" text="Comment"
-                                variant="text" :to="noteLink" :disabled="!noteLink"></v-btn>
-                        </v-btn>
-
-                        <!--<v-btn variant="text" class="mbr-section-btn">
-                            <repost :post="post" />
-                        </v-btn>-->
+                            <!--Comments, on the note page-->
+                            <v-btn prepend-icon="fas fa-comment" title="Comment on this note" text="Comment"
+                                variant="text" class="mbr-section-btn" :to="noteLink ? `${noteLink}#postComments` : undefined"
+                                :disabled="!noteLink"></v-btn>
+                        </template>
 
                         <v-spacer></v-spacer>
 
-                        <!--Share-->
-                        <v-btn variant="text">
-                            <share />
-                        </v-btn>
+                        <!--Share the note's page-->
+                        <share v-if="noteLink" :url="noteLink" :title="post?.title || `Note by ${authorName}`" />
                     </v-card-actions>
                 </div>
             </v-card>
@@ -101,7 +104,7 @@
     import share from '#social/app/components/blocks/share.vue';
     //import repost from '#social/app/components/blocks/repost/repost.vue';
     import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
-    import { postPath } from '#social/app/utils/postPath';
+    import { federatedProfilePath, postPath } from '#social/app/utils/postPath';
     import {
         computed,
         toRef
@@ -118,18 +121,28 @@
         },
     });
     const post = toRef(props, 'post');
-    // The post's page (slug, or id for posts saved without one).
+    // The note's page on Meeovi (slug, or id for notes saved without one;
+    // /connect/note/@<handle>/<key> for a Bluesky note).
     const noteLink = computed(() => postPath(post.value));
 
-    // A post from another network (Bluesky, the Fediverse) as the social
-    // layer's federation API returns it: { id, url, text, createdAt,
-    // author: { handle, displayName, avatar, url }, media, replies, reposts,
-    // likes }. Shown read-only — no rating, comments or edit menu here.
+    // A note from Bluesky as the social layer's federation API returns it:
+    // { id, network, text, createdAt, author: { handle, displayName,
+    // avatar }, media, replies, reposts, likes }. Meeovi is its client: the
+    // card links to the note and author on Meeovi, never to bsky.app. No
+    // rating, comments or edit menu (those are for Meeovi notes).
     const federated = computed(() => !!post.value?.author?.handle && typeof post.value?.text === 'string')
     const authorName = computed(() => post.value?.author?.name || post.value?.author?.displayName || post.value?.author?.handle || '')
+    // A Meeovi note's author is its creator (app user id → /u/<id>).
+    const authorLink = computed(() => federated.value
+        ? federatedProfilePath(post.value.author)
+        : (post.value?.creator_id ? `/u/${encodeURIComponent(post.value.creator_id)}` : null))
     const createdAt = computed(() => post.value?.date_created || post.value?.createdAt || null)
     const federatedImage = computed(() => (post.value?.media || []).find((m) => m.type === 'image') || null)
-    const originalLabel = computed(() => /bsky\.app/.test(post.value?.url || '') ? 'View on Bluesky' : 'View original')
+
+    function openNote(event) {
+        if (!noteLink.value || event.target?.closest?.('a, button')) return
+        navigateTo(noteLink.value)
+    }
 
     /** "Fly #Travel now" → [{ text: 'Fly ' }, { tag: 'Travel' }, { text: ' now' }] */
     function withHashtags(text) {
@@ -169,6 +182,19 @@
         width: 100%;
         height: 200px;
         object-fit: cover;
+    }
+
+    .noteTitle {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .noteText {
+        cursor: pointer;
+    }
+
+    .noteCount {
+        margin-inline: 6px;
     }
 
     .postText {

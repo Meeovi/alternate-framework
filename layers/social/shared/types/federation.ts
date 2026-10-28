@@ -67,7 +67,7 @@ export type FederationStatus = {
   detail?: string
 }
 
-export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'publish'
+export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'thread' | 'publish'
 
 export interface FederationNetwork {
   /** 'atproto', 'activitypub', … — used in /api/social/federation/:network. */
@@ -78,6 +78,10 @@ export interface FederationNetwork {
   profile?(handle: string): Promise<FederatedActor | null>
   feed?(actor: string, options?: { limit?: number }): Promise<FederatedPost[]>
   searchPosts?(query: string, options?: { limit?: number }): Promise<FederatedPost[]>
+  /** One post (a note, as Meeovi calls them) by `author` (handle or
+   *  network id) and its network key, with its direct replies; null when
+   *  it doesn't exist. */
+  thread?(author: string, key: string, options?: { limit?: number }): Promise<{ post: FederatedPost, replies: FederatedPost[] } | null>
   /** Post as the network's service account. */
   publish?(input: { text: string, [key: string]: unknown }): Promise<FederatedPost>
 }

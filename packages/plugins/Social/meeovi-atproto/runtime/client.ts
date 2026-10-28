@@ -330,6 +330,19 @@ export class AtprotoClient {
     return res.data.thread
   }
 
+  /** One post and its direct replies (newest first), normalized like feeds.
+   *  Null when the post doesn't exist or was deleted / blocked. */
+  async getPostWithReplies(uri: string, opts: { limit?: number } = {}): Promise<{ post: AtprotoPostRecord, replies: AtprotoPostRecord[] } | null> {
+    const thread = await this.getPostThread(uri, { depth: 1, parentHeight: 0 }) as any
+    if (thread?.$type !== 'app.bsky.feed.defs#threadViewPost' || !thread.post) return null
+    const replies = (Array.isArray(thread.replies) ? thread.replies : [])
+      .filter((r: any) => r?.$type === 'app.bsky.feed.defs#threadViewPost' && r.post)
+      .map((r: any) => this.normalizePostView(r.post))
+      .sort((a: AtprotoPostRecord, b: AtprotoPostRecord) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+      .slice(0, opts.limit ?? 50)
+    return { post: this.normalizePostView(thread.post), replies }
+  }
+
   async getPost(uri: string): Promise<AtprotoPostRecord | null> {
     const res = await this.agent.getPosts({ uris: [uri] })
     const post = res.data.posts[0]

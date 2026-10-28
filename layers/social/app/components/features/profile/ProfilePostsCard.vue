@@ -25,7 +25,7 @@ import ProfileEntityList from './ProfileEntityList.vue'
 import { postPath } from '../../../utils/postPath'
 
 defineProps({
-  title: { type: String, default: 'Recent Posts' },
+  title: { type: String, default: 'Recent Notes' },
   posts: { type: Array, default: () => [] },
   available: { type: Boolean, default: false },
   message: { type: String, default: '' },

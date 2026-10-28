@@ -26,16 +26,16 @@
         </v-container>
 
         <v-container class="hashtag-posts">
-            <h2 v-if="products.length && posts.length" class="text-h6 mb-2">Posts on Bluesky</h2>
+            <h2 v-if="products.length && posts.length" class="text-h6 mb-2">Notes tagged #{{ tag }}</h2>
             <div v-if="pending && !posts.length" class="d-flex justify-center pa-8">
                 <v-progress-circular indeterminate />
             </div>
 
             <v-alert v-else-if="error" type="warning" variant="tonal">
-                Posts from Bluesky aren't available right now. Please try again later.
+                Notes aren't available right now. Please try again later.
             </v-alert>
 
-            <h2 v-else-if="!posts.length" class="text-center text-h6 pa-8">No posts on Bluesky with <b>#{{ tag }}</b> yet.</h2>
+            <h2 v-else-if="!posts.length" class="text-center text-h6 pa-8">No notes with <b>#{{ tag }}</b> yet.</h2>
 
             <v-row v-else>
                 <v-col v-for="post in posts" :key="post.id" cols="12" sm="6" md="4" lg="3">
@@ -64,8 +64,9 @@ import postCard from '#social/app/components/related/post.vue'
  * calls its searchPosts(), which runs app.bsky.feed.searchPosts with the
  * plugin's service account (client.ts). A "#tag" query matches that hashtag.
  * The same call works for any registered network (e.g. 'activitypub').
- * Each post is shown with the social layer's post card (related/post.vue),
- * which knows these network posts: author, hashtag links, counts.
+ * Each one is shown as a note with the social layer's note card
+ * (related/post.vue), which links it and its author to their pages on
+ * Meeovi (Meeovi is a Bluesky client — nothing links out to bsky.app).
  *
  * Server code can use the plugin's client directly instead:
  *   import { useAtprotoClient } from '@mframework/meeovi-atproto/client'

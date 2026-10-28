@@ -1,11 +1,31 @@
+type NoteLike = {
+  slug?: string | null
+  id?: string | number | null
+  network?: string
+  author?: { handle?: string } | null
+}
+
 /**
- * Link to a post's page, /connect/note/<slug>, falling back to the post's
- * id: posts made from the composer before 19 October 2026 (or straight in
- * Directus) can have no slug, and the note page accepts either.
+ * Link to a note's page on Meeovi:
+ *  - a Meeovi note: /connect/note/<slug>, falling back to its id (notes made
+ *    from the composer before 19 October 2026, or straight in Directus, can
+ *    have no slug, and the note page accepts either);
+ *  - a Bluesky note (from the federation API): /connect/note/@<handle>/<key>,
+ *    key being the last part of its at:// URI.
  */
-export function postPath(post?: { slug?: string | null, id?: string | number | null } | null): string | null {
+export function postPath(post?: NoteLike | null): string | null {
+  if (post?.network === 'atproto') {
+    const handle = post.author?.handle
+    const key = String(post.id ?? '').split('/').pop()
+    return handle && key ? `/connect/note/@${encodeURIComponent(handle)}/${encodeURIComponent(key)}` : null
+  }
   const key = post?.slug || post?.id
   return key === undefined || key === null || key === '' ? null : `/connect/note/${encodeURIComponent(String(key))}`
+}
+
+/** A Bluesky account's profile on Meeovi (/u/<handle>; a Meeovi member with that account shows as themselves). */
+export function federatedProfilePath(author?: { handle?: string } | null): string | null {
+  return author?.handle ? `/u/${encodeURIComponent(author.handle)}` : null
 }
 
 /**

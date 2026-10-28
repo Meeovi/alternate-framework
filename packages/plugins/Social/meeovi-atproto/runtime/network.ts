@@ -104,6 +104,21 @@ export function createAtprotoNetwork(options: { service?: string, configured?: b
       const { posts } = await read((c) => c.getAuthorFeed({ handle: actor, limit }))
       return posts.map(toFederatedPost)
     },
+    async thread(author, key, { limit = 50 } = {}) {
+      // at://<did>/app.bsky.feed.post/<rkey>; a handle is turned into its
+      // DID first (through its profile: AppViews only accept DIDs in post
+      // URIs, and don't all answer resolveHandle).
+      if (!/^[A-Za-z0-9._:~-]{1,512}$/.test(key)) return null
+      try {
+        const did = author.startsWith('did:') ? author : (await read((c) => c.getProfile(author))).did
+        const found = await read((c) => c.getPostWithReplies(`at://${did}/app.bsky.feed.post/${key}`, { limit }))
+        return found ? { post: toFederatedPost(found.post), replies: found.replies.map(toFederatedPost) } : null
+      } catch (e: any) {
+        if (e?.statusCode === 503) throw e
+        if (e?.status === 400 || /not found|could not find|resolve/i.test(e?.message || '')) return null
+        throw e
+      }
+    },
     async searchPosts(query, { limit = 20 } = {}) {
       const { posts } = await read((c) => c.searchPosts({ query, limit, sort: 'latest' }))
       return posts.map(toFederatedPost)

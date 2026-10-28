@@ -30,7 +30,7 @@
 
               <ProfilePostsCard
                 mt
-                title="Recent Posts"
+                title="Recent Notes"
                 :posts="socialPosts"
                 :available="socialPostsAvailable"
                 :message="socialPostsMessage"
@@ -103,7 +103,7 @@
               <ProfilePostsCard
                 status
                 show-actions
-                title="My Posts"
+                title="My Notes"
                 :posts="socialPosts"
                 :available="socialPostsAvailable"
                 :message="socialPostsMessage"

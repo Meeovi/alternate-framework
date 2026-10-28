@@ -112,6 +112,14 @@
                                 <p v-if="profile?.memberSince" class="text-medium-emphasis mt-4">
                                     Member since {{ formatDate(profile.memberSince) }}
                                 </p>
+                                <p v-if="profile?.bluesky" class="text-medium-emphasis mt-2">
+                                    <v-icon icon="fab fa-bluesky" size="small" /> @{{ profile.bluesky.handle }} on Bluesky
+                                    <template v-if="profile.bluesky.followers !== undefined">
+                                        · {{ profile.bluesky.followers.toLocaleString() }} followers
+                                        · {{ profile.bluesky.following.toLocaleString() }} following
+                                        · {{ profile.bluesky.notes.toLocaleString() }} notes
+                                    </template>
+                                </p>
                             </v-card-text>
                         </v-card>
                     </v-tabs-window-item>
@@ -186,7 +194,8 @@
     })
 
     // related/post.vue expects a full post (author, date_created, image_url…).
-    const toPost = (note) => ({
+    // Bluesky notes (network: 'atproto') already come in the shape it knows.
+    const toPost = (note) => note?.network ? note : ({
         ...note,
         description: note.excerpt,
         date_created: note.date,
