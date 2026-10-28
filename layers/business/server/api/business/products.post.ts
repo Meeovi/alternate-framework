@@ -17,7 +17,7 @@ import { sniffMedia } from '#shared/server/utils/mediaSniff'
  *
  * Fields: name, price, description?, qty?, allowFreeDownload ("true"),
  * departmentId, categoryId (one of that department's categories),
- * tags (JSON list of up to 5 extra tags), image (JPEG/PNG/GIF),
+ * tags (JSON list, up to 5 in all), image (JPEG/PNG/GIF),
  * download (the file buyers get).
  * With price 0 and allowFreeDownload, anyone may download it without
  * checking out.
@@ -25,12 +25,13 @@ import { sniffMedia } from '#shared/server/utils/mediaSniff'
  * Department, category and tags are the CMS's (Directus). The product's
  * Directus row is written straight away, as the store mirror will see it
  * (source 'magento', mageos_id = the store's uid), carrying those links;
- * the mirror adopts it once the store approves the product. Tags: the
- * department's and category's names, plus the seller's own.
+ * the mirror adopts it once the store approves the product. Tags: what
+ * the seller kept of the form's suggestions (the department's and
+ * category's names) plus their own.
  */
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024
-const MAX_EXTRA_TAGS = 5
+const MAX_TAGS = 5
 
 /** A tag's slug: lowercase letters and digits, as hashtags are written. */
 const tagSlug = (name: string) => name.toLowerCase().normalize('NFKD').replace(/[^\p{L}\p{N}]+/gu, '')
@@ -100,19 +101,19 @@ export default defineEventHandler(async (event) => {
     : undefined
   if (!department?.name || !category?.name) throw createError({ statusCode: 400, statusMessage: 'That category isn\'t in that department.' })
 
-  let extraTags: unknown = []
+  let requestedTags: unknown = []
   try {
-    extraTags = JSON.parse(field('tags') || '[]')
+    requestedTags = JSON.parse(field('tags') || '[]')
   } catch {
     throw createError({ statusCode: 400, statusMessage: 'Tags must be a list.' })
   }
-  if (!Array.isArray(extraTags) || extraTags.length > MAX_EXTRA_TAGS
-    || extraTags.some((t) => typeof t !== 'string' || !tagSlug(t) || t.trim().length > 30)) {
-    throw createError({ statusCode: 400, statusMessage: `Add up to ${MAX_EXTRA_TAGS} tags of up to 30 letters or numbers each.` })
+  if (!Array.isArray(requestedTags) || requestedTags.length > MAX_TAGS
+    || requestedTags.some((t) => typeof t !== 'string' || !tagSlug(t) || t.trim().length > 30)) {
+    throw createError({ statusCode: 400, statusMessage: `Add up to ${MAX_TAGS} tags of up to 30 letters or numbers each.` })
   }
-  // Department and category first; duplicates (by slug) dropped.
+  // Duplicates (by slug) dropped.
   const tagNames = new Map<string, string>()
-  for (const name of [department.name, category.name, ...(extraTags as string[])]) {
+  for (const name of requestedTags as string[]) {
     const clean = name.trim().replace(/\s+/g, ' ')
     if (!tagNames.has(tagSlug(clean))) tagNames.set(tagSlug(clean), clean)
   }

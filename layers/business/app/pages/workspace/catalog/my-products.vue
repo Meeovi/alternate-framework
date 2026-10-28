@@ -36,13 +36,9 @@
                   :rules="[required]" :disabled="!form.departmentId" no-data-text="Choose a department first" />
               </v-col>
             </v-row>
-            <!-- The department's and category's tags are added for the seller; they add up to 5 more. -->
-            <div v-if="autoTags.length" class="mb-1">
-              <span class="text-caption text-medium-emphasis mr-1">Tags:</span>
-              <v-chip v-for="tag in autoTags" :key="tag" size="small" class="ma-1" prepend-icon="fas fa-hashtag">{{ tag }}</v-chip>
-            </div>
-            <v-combobox v-model="form.tags" label="More tags (optional)" multiple chips closable-chips
-              :hint="`Up to ${MAX_EXTRA_TAGS} more. Press Enter after each one.`" persistent-hint
+            <!-- Filled in from the department and category; the seller can remove any and add their own, 5 in all. -->
+            <v-combobox v-model="form.tags" label="Tags" multiple chips closable-chips
+              :hint="`Up to ${MAX_TAGS}. Press Enter after each one.`" persistent-hint
               :rules="[maxTags]" :delimiters="[',']" />
             <v-file-input v-model="form.image" label="Image (JPEG, PNG or GIF, up to 8 MB)" accept="image/jpeg,image/png,image/gif" prepend-icon="fas fa-image" show-size />
             <v-file-input v-model="form.download" label="Download file (optional, up to 200 MB)" prepend-icon="fas fa-file-arrow-down" show-size
@@ -115,13 +111,23 @@ const categories = computed(() => {
 })
 watch(() => form.departmentId, () => { form.categoryId = null })
 
-const MAX_EXTRA_TAGS = 5
-const autoTags = computed(() => {
+const MAX_TAGS = 5
+// The department's and category's names, suggested as tags: when they
+// change, the old suggestions the seller kept are swapped for the new ones
+// (while there's room), and tags the seller typed are left alone.
+const suggestedTags = computed(() => {
   const department = departments.value.find((d) => d.id === form.departmentId)?.name
   const category = categories.value.find((c) => c.id === form.categoryId)?.name
   return [...new Set([department, category].filter(Boolean) as string[])]
 })
-const maxTags = (tags: string[]) => (tags?.length ?? 0) <= MAX_EXTRA_TAGS || `Up to ${MAX_EXTRA_TAGS} more tags`
+let lastSuggested: string[] = []
+watch(suggestedTags, (next) => {
+  const kept = form.tags.filter((tag) => !lastSuggested.includes(tag))
+  const added = next.filter((tag) => !kept.some((t) => t.toLowerCase() === tag.toLowerCase()))
+  form.tags = [...added, ...kept].slice(0, MAX_TAGS)
+  lastSuggested = next
+})
+const maxTags = (tags: string[]) => (tags?.length ?? 0) <= MAX_TAGS || `Up to ${MAX_TAGS} tags`
 
 const canBeFree = computed(() => Number(form.price) === 0 && !!form.download)
 watch(canBeFree, (ok) => { if (!ok) form.allowFreeDownload = false })
@@ -131,6 +137,7 @@ const nonNegative = (v: string) => (Number(v) >= 0 && Number.isFinite(Number(v))
 
 function openForm() {
   Object.assign(form, blank())
+  lastSuggested = []
   formError.value = ''
   formOpen.value = true
 }
