@@ -39,11 +39,13 @@
     // lazy: true on every call — see LowerBar.vue: this renders in the
     // default layout on nearly every page, so a blocking fetch here would
     // hold up navigation to any page using it.
-    const auth = useAuth()
-    const { data: session } = useAsyncData('hashtagBarSession', async () => {
-        const { data } = await auth.getSession()
-        return data
-    }, { lazy: true })
+    // The session through useRequestFetch, which forwards the visitor's
+    // cookie during SSR. The better-auth client's getSession() didn't, so
+    // the server rendered no name and the browser reused that empty result.
+    const requestFetch = useRequestFetch()
+    const { data: session } = useAsyncData('hashtagBarSession',
+        () => requestFetch('/api/auth/get-session').catch(() => null),
+        { lazy: true })
 
     const firstName = computed(() => String(session.value?.user?.name || '').trim().split(/\s+/)[0])
 

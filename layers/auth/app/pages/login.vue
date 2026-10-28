@@ -51,7 +51,7 @@
             :disabled="loading || !!passwordless" :loading="passwordless === 'passkey'" @click="signInWithPasskey">
             Sign in with a passkey
           </v-btn>
-          <!-- Uses the email above; behind the same Turnstile check as the password sign-in. -->
+          <!-- Uses the Email field; behind the same Turnstile check as the password sign-in. -->
           <v-btn block variant="outlined" prepend-icon="fas fa-envelope" class="mb-3"
             :disabled="loading || !!passwordless || captchaMissing" :loading="passwordless === 'link'" @click="sendSignInLink">
             Email me a sign-in link
@@ -198,7 +198,7 @@
     alertMessage.value = '';
     if (!/.+@.+\..+/.test(email.value)) {
       alertType.value = 'info';
-      alertMessage.value = 'Enter your email address above, then choose "Email me a sign-in link".';
+      alertMessage.value = 'Enter your email address in the Email field, then choose "Email me a sign-in link".';
       return;
     }
     passwordless.value = 'link';

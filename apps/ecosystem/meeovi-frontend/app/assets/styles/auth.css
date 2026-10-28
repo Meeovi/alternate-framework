@@ -291,6 +291,13 @@
     flex-shrink: 0;
 }
 
+/* The sign-in panel stays light in both themes, so its titles stay dark
+   (the theme-ink rule for .pb-2 in styles.css would make them white). */
+.login-card .v-card-title,
+.register-card .v-card-title {
+    color: black;
+}
+
 /* Right section */
 .auth-right {
     padding: 60px 40px;
