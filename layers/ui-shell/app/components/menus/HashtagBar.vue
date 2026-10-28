@@ -55,11 +55,12 @@
         $readItems,
     } = useNuxtApp()
 
+    // Newest hashtags first (id breaks ties for rows without a date).
     const { data: tagRows } = useAsyncData('hashtagBarTags', () => {
         return $directus.request($readItems('tags', {
             fields: ['id', 'name', 'slug'],
             filter: { status: { _eq: 'published' } },
-            sort: ['sort', 'name'],
+            sort: ['-date_created', '-id'],
             limit: 100,
         }))
     }, { lazy: true, default: () => [] })

@@ -27,6 +27,19 @@ Where to start
 
 If you need help running the starter theme or debugging installs, open an issue or ask in the project chat — common troubleshooting steps are documented in package-level READMEs where applicable.
 
+How to rebuild the demo (demo.meeovicms.com)
+
+The demo runs the production build of `apps/ecosystem/meeovi-frontend` (systemd service `meeovi-demo` on port 3011, behind Apache). It is built from this checkout, so commit what you want on it first.
+
+1. On the server, as root: `/home/meebuzo/.meeovi-demo/deploy.sh`
+   - It runs `nuxt build` memory-capped at 12 GB (unbounded builds have run the server out of memory). The build takes about 30 minutes.
+   - It then copies `.output` to `/home/meebuzo/public_html/demo`, copies the app's `.env` to `/home/meebuzo/.meeovi-demo/base.env`, and restarts `meeovi-demo`.
+   - To redeploy the last build without rebuilding: `deploy.sh --no-build`.
+2. Run it in the background or in `tmux`, so the build survives a dropped SSH session, e.g. `/home/meebuzo/.meeovi-demo/deploy.sh > /tmp/demo-deploy.log 2>&1 &`
+3. When it prints `Deployed.`, check https://demo.meeovicms.com, and the logs with `journalctl -u meeovi-demo -f`.
+
+Settings the server reads at start-up (`NUXT_*` overrides) can be changed in `/home/meebuzo/.meeovi-demo/demo.env` and applied with `systemctl restart meeovi-demo`, without a rebuild. Anything else in `runtimeConfig` is fixed at build time and needs a rebuild.
+
 License: see repository root or individual package manifests for license information.
 
 --
