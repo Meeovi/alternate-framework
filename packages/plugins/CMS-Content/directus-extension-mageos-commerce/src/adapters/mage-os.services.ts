@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import type { ICommerceAdapter } from './base.adapter'
 import type {
-  AdminCollection, BackendSeller, NormalizedProduct, ProductQueryOptions, ProductReview, ReviewRatingMetadata, SearchOptions,
+  AdminCollection, BackendSeller, FreeDownload, NormalizedProduct, ProductQueryOptions, ProductReview, ReviewRatingMetadata, SearchOptions,
   SearchResult, StoreConfig, TaxQuote,
 } from '../types'
 import { CommerceError } from '../errors'
@@ -104,16 +104,28 @@ export function createMageOsServices(api: MageOsTransport, normalize: Normalize,
     },
   }
 
+  // skus[0]=…&skus[1]=… with spaces as %20 (URLSearchParams writes "+").
+  const skuQuery = (skus: string[]) => skus.map((sku, i) => `${encodeURIComponent(`skus[${i}]`)}=${encodeURIComponent(sku)}`).join('&')
+  // At most 10 per request: from skus[10] on, Magento orders the indexed
+  // parameters differently from OAuth's sorted base string, and every
+  // request with 11+ SKUs fails "The signature is invalid".
+  async function bySkuChunks<T>(skus: string[], fetchChunk: (chunk: string[]) => Promise<Record<string, T>>): Promise<Record<string, T>> {
+    const wanted = [...new Set(skus.filter(Boolean))].slice(0, 100)
+    const out: Record<string, T> = {}
+    for (let i = 0; i < wanted.length; i += 10) Object.assign(out, await fetchChunk(wanted.slice(i, i + 10)))
+    return out
+  }
+
   const sellers: NonNullable<ICommerceAdapter['sellers']> = {
     // Needs Meeovi_MarketplaceApi. Store-owned SKUs are left out.
-    async forSkus(skus) {
-      const wanted = [...new Set(skus.filter(Boolean))].slice(0, 100)
-      if (!wanted.length) return {}
-      const query = new URLSearchParams()
-      wanted.forEach((sku, i) => query.set(`skus[${i}]`, sku))
-      const rows = await api.rest<{ sku: string, seller_id: number, shop_title: string | null, shop_url: string | null }[]>('GET', `/V1/meeovi-marketplace/products/sellers?${query}`)
+    forSkus: (skus) => bySkuChunks(skus, async (chunk) => {
+      const rows = await api.rest<{ sku: string, seller_id: number, shop_title: string | null, shop_url: string | null }[]>('GET', `/V1/meeovi-marketplace/products/sellers?${skuQuery(chunk)}`)
       return Object.fromEntries((rows ?? []).map((row): [string, BackendSeller] => [row.sku, { customerId: String(row.seller_id), name: row.shop_title?.trim() || null, shopUrl: row.shop_url || null }]))
-    },
+    }),
+    freeDownloads: (skus) => bySkuChunks(skus, async (chunk) => {
+      const rows = await api.rest<{ sku: string, title: string, url: string }[]>('GET', `/V1/meeovi-marketplace/products/free-downloads?${skuQuery(chunk)}`)
+      return Object.fromEntries((rows ?? []).map((row): [string, FreeDownload] => [row.sku, { title: row.title, url: row.url }]))
+    }),
     async register(customerId, customerToken, shopUrl) {
       return await api.rest('POST', '/V1/meeovi-marketplace/seller/register', {
         auth: { bearer: customerToken },
@@ -228,6 +240,7 @@ export function createMageOsServices(api: MageOsTransport, normalize: Normalize,
     upsertProduct: (input) => api.rest('POST', '/V1/meeovi-marketplace/sync/products', { body: input }),
     updateStock: (input) => api.rest('POST', '/V1/meeovi-marketplace/sync/stock', { body: input }),
     addImage: (input) => api.rest('POST', '/V1/meeovi-marketplace/sync/images', { body: input }),
+    setDownload: (input) => api.rest('POST', '/V1/meeovi-marketplace/sync/download', { body: input }),
     listOrders: (filters, pageSize) => api.rest('GET', `/V1/orders?${searchCriteria(filters, pageSize)}`),
     shipOrder: (orderId, shipment) => api.rest('POST', `/V1/order/${id(orderId, 'orderId')}/ship`, { body: shipment }),
   }

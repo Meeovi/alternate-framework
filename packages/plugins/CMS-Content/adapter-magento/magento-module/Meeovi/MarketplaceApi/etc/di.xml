@@ -25,6 +25,8 @@
                 type="Meeovi\MarketplaceApi\Model\Data\ExternalTaxLine"/>
     <preference for="Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface"
                 type="Meeovi\MarketplaceApi\Model\ProductSellerManagement"/>
+    <preference for="Meeovi\MarketplaceApi\Api\Data\FreeDownloadInterface"
+                type="Meeovi\MarketplaceApi\Model\Data\FreeDownload"/>
     <preference for="Meeovi\MarketplaceApi\Api\Data\ProductSellerInterface"
                 type="Meeovi\MarketplaceApi\Model\Data\ProductSeller"/>
 </config>

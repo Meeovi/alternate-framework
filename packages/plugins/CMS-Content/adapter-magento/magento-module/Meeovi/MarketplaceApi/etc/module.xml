@@ -13,6 +13,7 @@
         <sequence>
             <module name="Magento_Catalog"/>
             <module name="Magento_CatalogInventory"/>
+            <module name="Magento_Downloadable"/>
             <module name="Magento_Customer"/>
             <module name="Magento_Webapi"/>
             <module name="Magento_Quote"/>

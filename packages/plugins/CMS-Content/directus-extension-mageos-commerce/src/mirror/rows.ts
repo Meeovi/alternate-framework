@@ -14,8 +14,18 @@ const PRODUCT_ATTRIBUTE_FIELDS = new Set(['type', 'description', 'shortDescripti
  * products: matched on mageos_id, with everything the product page shows, so
  * readItems('products') needs nothing else. `stock` only when the live
  * quantity is known. Images stay the store's URLs (image_url, gallery).
+ * `download_url` is the file anyone may download free (priced 0, the
+ * seller's link set to Shareable), else null; left as it was when the
+ * store couldn't say (`undefined`). `seller` likewise: the marketplace
+ * seller's member username and display name, null for the store's own.
  */
-export function productRow(product: NormalizedProduct, qty: number | undefined, syncedAt: string) {
+export function productRow(
+  product: NormalizedProduct,
+  qty: number | undefined,
+  syncedAt: string,
+  downloadUrl?: string | null,
+  seller?: { username: string | null, name: string | null } | null,
+) {
   const attributes = product.attributes ?? {}
   const extra = Object.fromEntries(Object.entries(attributes).filter(([code]) => !PRODUCT_ATTRIBUTE_FIELDS.has(code)))
   return {
@@ -41,6 +51,8 @@ export function productRow(product: NormalizedProduct, qty: number | undefined, 
     variants: attributes.variants ?? null,
     mageos_attributes: Object.keys(extra).length ? extra : null,
     ...(qty === undefined ? {} : { stock: Math.trunc(qty), salable_quantity: Math.trunc(qty) }),
+    ...(downloadUrl === undefined ? {} : { download_url: downloadUrl }),
+    ...(seller === undefined ? {} : { seller_username: seller?.username ?? null, seller_name: seller?.name ?? null }),
     updated_at: product.updatedAt || null,
     mageos_synced_at: syncedAt,
   }

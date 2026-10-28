@@ -1,8 +1,8 @@
 import type {
-  AdminCollection, BackendAdminOrder, BackendField, BackendGiftCard, BackendOrder, BackendRefund, BackendSeller,
+  AdminCollection, BackendAdminOrder, BackendField, BackendGiftCard, BackendOrder, BackendRefund, BackendSeller, FreeDownload,
   CreatedCustomer, CustomerInput, NormalizedCategory, NormalizedProduct, OrderFilter, Paginated, PaidOrder,
   PlacedOrder, ProductQueryOptions, ProductReview, ReviewInput, ReviewRatingMetadata, SearchOptions, SearchResult,
-  SellerProductInput, ShipmentInput, StoreConfig, SyncImageInput, SyncProductInput, SyncStockInput, TaxQuote, TaxQuoteInput,
+  SellerProductInput, ShipmentInput, StoreConfig, SyncDownloadInput, SyncImageInput, SyncProductInput, SyncStockInput, TaxQuote, TaxQuoteInput,
 } from '../types'
 
 /**
@@ -75,6 +75,8 @@ export interface ICommerceAdapter {
   /** Marketplace sellers (the seller of each SKU, and sellers' own shops). */
   sellers?: {
     forSkus(skus: string[]): Promise<Record<string, BackendSeller>>
+    /** SKU → file, for the products anyone may download free (priced 0, Shareable). */
+    freeDownloads(skus: string[]): Promise<Record<string, FreeDownload>>
     /** Self-scoped: `customerToken` must belong to `customerId`. */
     register(customerId: string, customerToken: string, shopUrl?: string): Promise<{ sellerRecordId: number, isApproved: boolean, shopUrl: string }>
     /** Self-scoped like register(). */
@@ -92,6 +94,8 @@ export interface ICommerceAdapter {
     upsertProduct(input: SyncProductInput): Promise<{ product_id: number, sku: string, marketplace_product_id: number | null }>
     updateStock(input: SyncStockInput): Promise<boolean>
     addImage(input: SyncImageInput): Promise<boolean>
+    /** Make the product a downloadable with this one file (replaces its links). */
+    setDownload(input: SyncDownloadInput): Promise<boolean>
     listOrders(filters: OrderFilter[], pageSize: number): Promise<{ items: unknown[], total_count: number }>
     shipOrder(orderId: string, shipment: ShipmentInput): Promise<number>
   }

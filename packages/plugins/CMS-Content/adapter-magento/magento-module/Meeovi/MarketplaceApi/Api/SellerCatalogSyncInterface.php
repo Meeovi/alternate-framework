@@ -81,4 +81,21 @@ interface SellerCatalogSyncInterface
         string $fileName,
         bool $isMain = false
     ): bool;
+
+    /**
+     * Make a seller's product a downloadable with this one file link
+     * (replacing any links it had). `shareable` is the seller's "allow free
+     * download" choice: with a price of 0, anyone may download it without
+     * checking out. The URL's host must be in the store's downloadable
+     * domains (bin/magento downloadable:domains:add).
+     *
+     * @param int $customerId
+     * @param string $sku
+     * @param string $title
+     * @param string $url
+     * @param bool $shareable
+     * @return bool
+     * @throws LocalizedException
+     */
+    public function setDownload(int $customerId, string $sku, string $title, string $url, bool $shareable = false): bool;
 }

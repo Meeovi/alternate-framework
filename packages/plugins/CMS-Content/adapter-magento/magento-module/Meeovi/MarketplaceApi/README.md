@@ -302,3 +302,22 @@ GET /rest/V1/meeovi-marketplace/products/sellers?skus[0]=ACME-KANBAN
 ```
 → `[{sku, seller_id, shop_title, shop_url}]` for approved Webkul seller
 products (store-owned SKUs are left out).
+
+```
+GET /rest/V1/meeovi-marketplace/products/free-downloads?skus[0]=photo-adelin-preda-217165
+```
+→ `[{sku, title, url}]` for products anyone may download without buying:
+enabled, downloadable, priced 0, with a link the seller set to Shareable.
+
+```
+POST /rest/V1/meeovi-marketplace/sync/download
+{ "customerId": 123, "sku": "…", "title": "…", "url": "https://…", "shareable": true }
+```
+Makes the seller's product a downloadable with this one URL link (replacing
+its links). `shareable` is the seller's "allow free download". The URL's host
+must be whitelisted: `bin/magento downloadable:domains:add <host>` (the store
+has `meeovi.ams3.digitaloceanspaces.com` and `cms.meeovicms.com`).
+
+Both SKU lists: send at most 10 SKUs per request. From `skus[10]` on, Magento
+orders the indexed parameters differently from the OAuth base string and
+answers "The signature is invalid".

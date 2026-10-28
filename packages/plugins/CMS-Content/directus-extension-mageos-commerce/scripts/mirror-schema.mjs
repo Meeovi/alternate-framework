@@ -35,6 +35,10 @@ const PRODUCT_FIELDS = [
   json('options', 'Configurable options: [{ code, label, values: [{ id, label, swatch? }] }].'),
   json('variants', 'Configurable variants: [{ id, sku, inStock, price, options: { code: valueId } }].'),
   json('mageos_attributes', 'The store\'s other product attributes, by attribute code.'),
+  longText('download_url', 'The file anyone may download free (priced 0, its link set to Shareable in the store), else empty.'),
+  string('seller_username', 'The seller\'s Meeovi username (/u/<username>). On a new product: the seller to create it under in the store.'),
+  string('seller_name', 'The seller\'s shop title, else member name.'),
+  { field: 'allow_free_download', type: 'boolean', meta: { interface: 'boolean', special: ['cast-boolean'], width: 'half', note: 'New products: with a price of 0 and a File, anyone may download it without checking out.' }, schema: { default_value: false, is_nullable: true } },
 ]
 
 async function api(path, init = {}) {

@@ -20,7 +20,7 @@ function integers(source: Body, key: string): number[] | undefined {
  *   GET   /commerce/sellers/:customerId/shop               shop profile
  *   PATCH /commerce/sellers/:customerId/shop               update shop profile
  *   GET   /commerce/sellers/:customerId/products|orders|transactions|low-stock
- *   POST  /commerce/sync/products | /sync/stock | /sync/images
+ *   POST  /commerce/sync/products | /sync/stock | /sync/images | /sync/download
  *   GET   /commerce/sync/orders?filters=[{field,value,condition}]&limit=
  *   POST  /commerce/sync/orders/:orderId/ship
  *
@@ -120,6 +120,21 @@ export function sellerRoutes({ router, config, logger, backend }: RouteContext) 
         mimeType: mimeType as 'image/jpeg',
         fileName: text(input, 'fileName', { max: 255 }),
         ...(typeof input.isMain === 'boolean' ? { isMain: input.isMain } : {}),
+      }),
+    })
+  }))
+
+  router.post('/sync/download', trusted(async (req, res) => {
+    const input = body(req)
+    const url = text(input, 'url', { max: 2000 })
+    if (!/^https:\/\/[^/\s]+\/\S+$/.test(url)) throw new CommerceError('INVALID_QUERY', 'url must be an https file URL')
+    res.json({
+      data: await sync().setDownload({
+        customerId: number(input, 'customerId', { min: 1, integer: true })!,
+        sku: text(input, 'sku', { max: 64 }),
+        title: text(input, 'title', { max: 255, required: false }) ?? '',
+        url,
+        shareable: input.shareable === true,
       }),
     })
   }))

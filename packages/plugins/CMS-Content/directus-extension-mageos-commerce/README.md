@@ -134,6 +134,8 @@ const { data } = await useAsyncData('tees', () => $directus.request($readItems('
 | `options`, `variants` | configurable options and variants (JSON) |
 | `mageos_attributes` | the store's other attributes, by code (JSON) |
 | `categories` | the store's categories, through `products_categories` (links an editor adds to a CMS-only category are kept) |
+| `download_url` | the file anyone may download free: priced 0, its download link set to Shareable by the seller (else empty) |
+| `seller_username`, `seller_name` | the marketplace seller's Meeovi username (for `/u/<username>`) and shop title or name; empty for the store's own products |
 | `mageos_id`, `mageos_sku`, `updated_at`, `mageos_synced_at` | store uid, SKU, store change time, last sync |
 
 The rows are a copy, at most one catalogue run (15 minutes) old, or seconds with the store's
@@ -146,6 +148,18 @@ Create these fields once per Directus instance (idempotent, needs an admin token
 Flows (created in the meeDirectus instance): **Mage-OS sync: orders** (every 5 min),
 **: catalogue** (every 15 min, categories then products), **: customers** (hourly), and
 **Mage-OS sync now** — a button on those four collections that syncs the collection it's run from.
+
+### New products are created in the store
+
+Products live in the store. A product an editor creates in Directus (`products`, no `source`)
+is created in Mage-OS first by the `mageos-push-products` hook, under the seller named in
+`seller_username` (or `MAGEOS_DEFAULT_SELLER_USERNAME`): its `image` becomes the store image,
+and its `file` the download (free to anyone when `allow_free_download` is on and the price is
+0). The row is saved as that product's mirror row (`source: 'magento'`, `mageos_id`,
+`mageos_sku`), so the next sync fills it in without a duplicate. Mirror writes don't emit
+events and never come through the hook. Sellers add products from the app instead
+(`POST /api/business/products`, the workspace's "My products"), which uses the same
+`/commerce/sync/*` routes.
 
 ### Within seconds: the store's change pings
 
@@ -211,6 +225,7 @@ All responses are JSON `{ "data": … }`. Errors use Directus's shape:
 | `GET` / `PATCH /commerce/sellers/:id/shop` | `sellerShop(id)`, `updateSellerShop(id, updates)` | shop profile |
 | `GET /commerce/sellers/:id/products` · `/orders` · `/transactions` · `/low-stock` | `sellerProducts(id)`, … | seller dashboard data |
 | `POST /commerce/sync/products` · `/sync/stock` · `/sync/images` | `syncProduct`, `syncStock`, `syncImage` | keep a seller's catalogue in sync (e.g. dropshipping) |
+| `POST /commerce/sync/download` | `syncDownload` | `{ customerId, sku, title?, url, shareable? }`: the product's one download; `shareable` + price 0 = free download |
 | `GET /commerce/sync/orders?filters=&limit=` | `syncOrders(filters)` | core orders; `filters` = JSON `[{ field, value, condition? }]` |
 | `POST /commerce/sync/orders/:orderId/ship` | `shipOrder(orderId, shipment)` | ship items with tracking → `{ shipmentId }` |
 

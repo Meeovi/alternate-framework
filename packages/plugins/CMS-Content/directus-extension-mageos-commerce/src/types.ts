@@ -291,6 +291,19 @@ export interface SyncImageInput {
   isMain?: boolean
 }
 
+/** A seller product's one download file (Meeovi_MarketplaceApi sync/download). */
+export interface SyncDownloadInput {
+  customerId: number
+  sku: string
+  title: string
+  url: string
+  /** The seller's "allow free download": with a price of 0, no checkout needed. */
+  shareable?: boolean
+}
+
+/** A product anyone may download without buying (priced 0, Shareable link). */
+export type FreeDownload = { title: string, url: string }
+
 export interface ShipmentInput {
   items: { order_item_id: number, qty: number }[]
   tracks: { track_number: string, title: string, carrier_code: string }[]

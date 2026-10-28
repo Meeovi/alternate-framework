@@ -30,6 +30,11 @@
           "app": "src/operations/mageos-sync/app.ts",
           "api": "src/operations/mageos-sync/api.ts"
         }
+      },
+      {
+        "type": "hook",
+        "name": "mageos-push-products",
+        "source": "src/hooks/push-products.ts"
       }
     ],
     "host": "^12.0.0"

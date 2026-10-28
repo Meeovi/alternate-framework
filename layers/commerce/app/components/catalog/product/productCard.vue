@@ -26,8 +26,8 @@
         <div class="flex items-center pt-1">
           <MeeoviRating type="product" :id="product?.id" summary />
         </div>
-        <p class="product-card__muted block py-2 font-normal leading-5 typography-text-sm">
-          By: {{ product?.shops?.[0]?.shops_id?.name }}
+        <p v-if="seller" class="product-card__muted block py-2 font-normal leading-5 typography-text-sm">
+          By: <NuxtLink v-if="seller.to" :to="seller.to">{{ seller.name }}</NuxtLink><template v-else>{{ seller.name }}</template>
         </p>
         <span class="block pb-1 font-bold typography-text-lg">
           {{ displayPrice }}
@@ -52,6 +52,7 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   import { useWishlistStore } from '../../../stores/wishlist/useWishlistStore'
   import AddToCartBtn from '../../blocks/addToCartBtn.vue'
   import { productKey } from '../../../utils/productKey'
+  import { productSeller } from '../../../utils/productSeller'
 
   const { getProductPrice } = usePrice()
   const wishlistStore = useWishlistStore()
@@ -64,6 +65,8 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   });
 
   const pricing = computed(() => getProductPrice(props.product || {}))
+  // Linked to the seller's profile, or the shop's page.
+  const seller = computed(() => productSeller(props.product))
   // Directus id, or `magento:<sku>` for a commerce backend's product.
   const productPath = computed(() => `/product/${encodeURIComponent(productKey(props.product))}`)
   // The heart saves to the user's Wishlist list (stores/wishlist), by the
@@ -101,7 +104,7 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   // failsafe to a generic placeholder rather than a broken-image icon.
   // isPlaceholder also drives swapping NuxtImg for a plain <img> below once
   // showing it — the placeholder is a static file that needs no transform.
-  const { src: imageSrc, isPlaceholder, onError: onImageError } = useImageFallback(computed(() => getAssetURL(props.product?.image)))
+  const { src: imageSrc, isPlaceholder, onError: onImageError } = useImageFallback(computed(() => getAssetURL(props.product?.image || props.product?.image_url)))
 </script>
 
 <style scoped>

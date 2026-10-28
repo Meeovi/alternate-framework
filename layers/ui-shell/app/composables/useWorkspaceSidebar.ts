@@ -76,6 +76,7 @@ export const WORKSPACE_FALLBACK_MENU: WorkspaceMenu[] = [
     icon: 'fas fa-boxes-stacked',
     children: [
       { title: 'Products', to: '/workspace/catalog/products' },
+      { title: 'My products', to: '/workspace/catalog/my-products' },
       { title: 'Gift Cards', to: '/workspace/catalog/gift-cards' }
     ]
   },

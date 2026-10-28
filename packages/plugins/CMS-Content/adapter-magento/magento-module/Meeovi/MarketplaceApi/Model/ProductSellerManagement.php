@@ -3,7 +3,12 @@ declare(strict_types=1);
 
 namespace Meeovi\MarketplaceApi\Model;
 
+use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magento\Downloadable\Api\LinkRepositoryInterface;
+use Magento\Downloadable\Model\Link;
+use Magento\Downloadable\Model\Product\Type as DownloadableType;
+use Meeovi\MarketplaceApi\Api\Data\FreeDownloadInterfaceFactory;
 use Meeovi\MarketplaceApi\Api\Data\ProductSellerInterfaceFactory;
 use Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface;
 use Webkul\Marketplace\Model\ResourceModel\Product\CollectionFactory as MarketplaceProductCollectionFactory;
@@ -22,7 +27,9 @@ class ProductSellerManagement implements ProductSellerManagementInterface
         private ProductCollectionFactory $productCollectionFactory,
         private MarketplaceProductCollectionFactory $marketplaceProducts,
         private SellerCollectionFactory $sellers,
-        private ProductSellerInterfaceFactory $productSellerFactory
+        private ProductSellerInterfaceFactory $productSellerFactory,
+        private LinkRepositoryInterface $links,
+        private FreeDownloadInterfaceFactory $freeDownloadFactory
     ) {
     }
 
@@ -31,10 +38,7 @@ class ProductSellerManagement implements ProductSellerManagementInterface
      */
     public function getProductSellers(array $skus): array
     {
-        $skus = array_slice(array_values(array_unique(array_filter(array_map(
-            static fn ($sku) => trim((string) $sku),
-            $skus
-        )))), 0, self::MAX_SKUS);
+        $skus = $this->cleanSkus($skus);
         if (!$skus) {
             return [];
         }
@@ -82,5 +86,55 @@ class ProductSellerManagement implements ProductSellerManagementInterface
                 ->setShopUrl($shops[$sellerId]->getShopUrl() ?: null);
         }
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFreeDownloads(array $skus): array
+    {
+        $skus = $this->cleanSkus($skus);
+        if (!$skus) {
+            return [];
+        }
+
+        $products = $this->productCollectionFactory->create();
+        $products->addAttributeToSelect('price');
+        $products->addAttributeToFilter('sku', ['in' => $skus]);
+        $products->addAttributeToFilter('type_id', DownloadableType::TYPE_DOWNLOADABLE);
+        $products->addAttributeToFilter('status', ProductStatus::STATUS_ENABLED);
+
+        $result = [];
+        foreach ($products as $product) {
+            if ((float) $product->getPrice() > 0) {
+                continue;
+            }
+            // The seller's explicit choice: a link set to Shareable (not
+            // "use config"). A free downloadable that isn't shareable still
+            // goes through checkout.
+            foreach ($this->links->getLinksByProduct($product) as $link) {
+                if ((int) $link->getIsShareable() !== Link::LINK_SHAREABLE_YES || $link->getLinkType() !== 'url' || !$link->getLinkUrl()) {
+                    continue;
+                }
+                $result[] = $this->freeDownloadFactory->create()
+                    ->setSku((string) $product->getSku())
+                    ->setTitle((string) ($link->getTitle() ?: $product->getName()))
+                    ->setUrl((string) $link->getLinkUrl());
+                break;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param array $skus
+     * @return string[]
+     */
+    private function cleanSkus(array $skus): array
+    {
+        return array_slice(array_values(array_unique(array_filter(array_map(
+            static fn ($sku) => trim((string) $sku),
+            $skus
+        )))), 0, self::MAX_SKUS);
     }
 }

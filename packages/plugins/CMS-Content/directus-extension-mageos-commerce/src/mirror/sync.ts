@@ -77,7 +77,7 @@ function changes(current: Row, row: Row): Row | null {
 
 const PRODUCT_FIELDS = ['id', 'mageos_id', 'status', 'source', 'mageos_sku', 'name', 'slug', 'type', 'price', 'regular_price', 'currency_code', 'in_stock',
   'visibility', 'content', 'short_description', 'meta_title', 'meta_description', 'image_url', 'gallery', 'options', 'variants', 'mageos_attributes',
-  'stock', 'salable_quantity', 'updated_at']
+  'stock', 'salable_quantity', 'download_url', 'seller_username', 'seller_name', 'updated_at']
 const CATEGORY_FIELDS = ['id', 'uid', 'slug', 'name', 'sort', 'mageos_path', 'mageos_parent_uid', 'mageos_level', 'mageos_owned']
 
 export async function mirror(section: MirrorSection, adapter: ICommerceAdapter, store: MirrorStore, options: MirrorOptions = {}): Promise<MirrorStats> {
@@ -114,13 +114,20 @@ async function products(adapter: ICommerceAdapter, store: MirrorStore, syncedAt:
     Object.assign(qty, await adapter.getInventory(all.slice(i, i + STOCK_BATCH).map((p) => p.sku)).catch(() => ({})))
   }
 
+  // Free downloads; for products the store won't answer about, download_url is left as it was.
+  const downloads = await bySkuBatches(all, adapter.sellers?.freeDownloads)
+
+  const sellers = await sellersOf(adapter, store, all)
+
   const existing = await store.read('products', { source: { _eq: 'magento' } }, PRODUCT_FIELDS, { limit: -1 })
   const byId = new Map(existing.filter((r) => r.mageos_id).map((r) => [String(r.mageos_id), r]))
   const stats: MirrorStats = { section: 'products', created: 0, updated: 0, unchanged: 0, archived: 0 }
 
   const fresh: Row[] = []
   for (const product of all) {
-    const row = productRow(product, qty[product.sku], syncedAt)
+    const row = productRow(product, qty[product.sku], syncedAt,
+      downloads.known.has(product.sku) ? downloads.found[product.sku]?.url ?? null : undefined,
+      sellers.known.has(product.sku) ? sellers.found[product.sku] ?? null : undefined)
     const current = byId.get(product.id)
     byId.delete(product.id)
     if (current) {
@@ -145,6 +152,51 @@ async function products(adapter: ICommerceAdapter, store: MirrorStore, syncedAt:
   }
   stats.links = await linkCategories(store, all)
   return stats
+}
+
+/**
+ * Asks the store about the products 100 SKUs at a time. `known` holds the
+ * SKUs whose batch was answered, so a failed batch leaves its rows as they
+ * were instead of clearing them.
+ */
+async function bySkuBatches<T>(all: NormalizedProduct[], lookup: ((skus: string[]) => Promise<Record<string, T>>) | undefined) {
+  const found: Record<string, T> = {}
+  const known = new Set<string>()
+  if (!lookup) return { found, known }
+  for (let i = 0; i < all.length; i += 100) {
+    const skus = all.slice(i, i + 100).map((p) => p.sku)
+    try {
+      Object.assign(found, await lookup(skus))
+      skus.forEach((sku) => known.add(sku))
+    } catch {
+      // left as they were
+    }
+  }
+  return { found, known }
+}
+
+/**
+ * Each product's marketplace seller, as the product card and page show it:
+ * their member username (for /u/<username>) and their shop title, else
+ * member name. Products whose lookup failed are left out of `known`.
+ */
+async function sellersOf(adapter: ICommerceAdapter, store: MirrorStore, all: NormalizedProduct[]) {
+  const sellers = await bySkuBatches(all, adapter.sellers?.forSkus)
+  const found: Record<string, { username: string | null, name: string | null }> = {}
+  const ids = [...new Set(Object.values(sellers.found).map((s) => s.customerId))]
+  let members: Record<string, any>[] = []
+  try {
+    members = ids.length ? await store.read('users', { magento_customer_id: { _in: ids } }, ['magento_customer_id', 'username', 'name'], { limit: -1 }) : []
+  } catch {
+    return { found, known: new Set<string>() }
+  }
+  const memberOf = new Map(members.map((m) => [String(m.magento_customer_id), m]))
+  for (const [sku, seller] of Object.entries(sellers.found)) {
+    const member = memberOf.get(seller.customerId)
+    const username = member?.username ? String(member.username) : null
+    found[sku] = { username, name: seller.name || (member?.name ? String(member.name).trim() : null) || username }
+  }
+  return { found, known: sellers.known }
 }
 
 /**

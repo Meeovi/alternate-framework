@@ -3,7 +3,7 @@ import type {
   AdminCollection, BackendAdminOrder, BackendField, BackendGiftCard, BackendOrder, BackendRefund, BackendSeller,
   CreatedCustomer, CustomerInput, NormalizedCategory, NormalizedProduct, OrderFilter, Paginated, PaidOrder, PlacedOrder,
   ProductReview, ProductSort, ReviewInput, ReviewRatingMetadata, SearchResult, SellerProductInput, ShipmentInput,
-  StoreConfig, SyncImageInput, SyncProductInput, SyncStockInput, TaxQuote, TaxQuoteInput,
+  StoreConfig, SyncDownloadInput, SyncImageInput, SyncProductInput, SyncStockInput, TaxQuote, TaxQuoteInput,
 } from '../src/types'
 
 /**
@@ -118,6 +118,8 @@ export const commerce = {
   syncProduct: (input: SyncProductInput) => send<{ product_id: number, sku: string, marketplace_product_id: number | null }>('POST', '/sync/products', input),
   syncStock: (input: SyncStockInput) => send<boolean>('POST', '/sync/stock', input),
   syncImage: (input: SyncImageInput) => send<boolean>('POST', '/sync/images', input),
+  /** Make a seller product a downloadable with this one file; `shareable` + price 0 = free download. */
+  syncDownload: (input: SyncDownloadInput) => send<boolean>('POST', '/sync/download', input),
   syncOrders: (filters: OrderFilter[] = [], limit?: number) => get<{ items: unknown[], total_count: number }>('/sync/orders', { filters: JSON.stringify(filters), limit }),
   shipOrder: (orderId: string, shipment: ShipmentInput) => send<{ shipmentId: string }>('POST', `/sync/orders/${seg(orderId)}/ship`, shipment),
 

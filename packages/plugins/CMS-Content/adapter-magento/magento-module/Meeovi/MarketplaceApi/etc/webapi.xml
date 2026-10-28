@@ -114,6 +114,12 @@
             <resource ref="Meeovi_MarketplaceApi::catalog_sync"/>
         </resources>
     </route>
+    <route url="/V1/meeovi-marketplace/sync/download" method="POST">
+        <service class="Meeovi\MarketplaceApi\Api\SellerCatalogSyncInterface" method="setDownload"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::catalog_sync"/>
+        </resources>
+    </route>
     <route url="/V1/meeovi-marketplace/sync/images" method="POST">
         <service class="Meeovi\MarketplaceApi\Api\SellerCatalogSyncInterface" method="addImage"/>
         <resources>
@@ -160,6 +166,12 @@
     </route>
     <route url="/V1/meeovi-marketplace/products/sellers" method="GET">
         <service class="Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface" method="getProductSellers"/>
+        <resources>
+            <resource ref="Meeovi_MarketplaceApi::external_orders"/>
+        </resources>
+    </route>
+    <route url="/V1/meeovi-marketplace/products/free-downloads" method="GET">
+        <service class="Meeovi\MarketplaceApi\Api\ProductSellerManagementInterface" method="getFreeDownloads"/>
         <resources>
             <resource ref="Meeovi_MarketplaceApi::external_orders"/>
         </resources>

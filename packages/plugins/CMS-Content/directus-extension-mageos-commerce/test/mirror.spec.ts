@@ -146,6 +146,48 @@ describe('a full product copy', () => {
   })
 })
 
+describe('free downloads', () => {
+  const page = (...items: NormalizedProduct[]) => async () => ({ items, page: 1, pageSize: items.length, total: items.length, totalPages: 1 })
+
+  it('sets download_url for the products the store says are free, null for the rest', async () => {
+    const { store, tables } = memoryStore({ products: [] })
+    const freeDownloads = vi.fn(async () => ({ A: { title: 'A', url: 'https://files.test/a.jpg' } }))
+    await mirror('products', adapter({ getProductPage: page(product('A'), product('B')), sellers: { freeDownloads } as any }), store, { now })
+    expect(freeDownloads).toHaveBeenCalledWith(['A', 'B'])
+    expect(tables.products!.find((r) => r.mageos_sku === 'A')!.download_url).toBe('https://files.test/a.jpg')
+    expect(tables.products!.find((r) => r.mageos_sku === 'B')!.download_url).toBeNull()
+  })
+
+  it('clears it when the seller stops allowing it', async () => {
+    const { store, tables } = memoryStore({ products: [{ id: 1, source: 'magento', mageos_id: 'uid-A', mageos_sku: 'A', download_url: 'https://files.test/a.jpg' }] })
+    await mirror('products', adapter({ getProductPage: page(product('A')), sellers: { freeDownloads: async () => ({}) } as any }), store, { now })
+    expect(tables.products![0]!.download_url).toBeNull()
+  })
+
+  it('leaves it alone when the store can\'t say', async () => {
+    const { store, tables } = memoryStore({ products: [{ id: 1, source: 'magento', mageos_id: 'uid-A', mageos_sku: 'A', download_url: 'https://files.test/a.jpg' }] })
+    const down = async () => { throw new Error('store down') }
+    await mirror('products', adapter({ getProductPage: page(product('A')), sellers: { freeDownloads: down } as any }), store, { now })
+    expect(tables.products![0]!.download_url).toBe('https://files.test/a.jpg')
+  })
+})
+
+describe('product sellers', () => {
+  it('names each marketplace product\'s seller by member username, shop title first', async () => {
+    const { store, tables } = memoryStore({
+      products: [],
+      users: [{ id: 'u1', magento_customer_id: '123', username: 'bastianhilton', name: 'Sebastian Hilton' }, { id: 'u2', magento_customer_id: '97', username: 'maxdoe', name: 'Max Doe' }],
+    })
+    const forSkus = async () => ({ A: { customerId: '123', name: null, shopUrl: null }, B: { customerId: '97', name: 'Max Shop', shopUrl: 'max' } })
+    const page = async () => ({ items: [product('A'), product('B'), product('C')], page: 1, pageSize: 3, total: 3, totalPages: 1 })
+    await mirror('products', adapter({ getProductPage: page, sellers: { forSkus } as any }), store, { now })
+    const row = (sku: string) => tables.products!.find((r) => r.mageos_sku === sku)!
+    expect(row('A')).toMatchObject({ seller_username: 'bastianhilton', seller_name: 'Sebastian Hilton' })
+    expect(row('B')).toMatchObject({ seller_username: 'maxdoe', seller_name: 'Max Shop' })
+    expect(row('C')).toMatchObject({ seller_username: null, seller_name: null })
+  })
+})
+
 describe('product categories', () => {
   const tagged = (sku: string, ...uids: string[]): NormalizedProduct => ({ ...product(sku), categories: uids.map((id) => ({ id, name: id, slug: id })) })
   const seed = () => memoryStore({

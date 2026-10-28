@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div class="image-container">
-                        <NuxtImg provider="cloudinary" :src="getImageURL(productDetails?.image)"
+                        <NuxtImg provider="cloudinary" :src="getImageURL(productDetails?.image || productDetails?.image_url)"
                             :alt="productDetails?.name" class="w-full rounded-md" />
                     </div>
                 </div>
@@ -156,6 +156,7 @@
     import compareBtn from '../../blocks/compareBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
     import { parseProductKey, productKey } from '../../../utils/productKey';
+    import { productSeller } from '../../../utils/productSeller';
     import {
         getAssetURL,
         getImageURL,
@@ -212,9 +213,13 @@
         .map((row: any) => row?.tags_id)
         .filter((tag: any) => tag && typeof tag === 'object' && (tag.name || tag.slug)));
 
-    // A commerce backend's product (`magento:<sku>`) has its seller in that
-    // backend; Directus products name their shop on the product.
+    // The seller and the page their name links to: what the product row
+    // carries (a mirrored store product's seller, or a Directus product's
+    // shop), else — for a product read straight from a commerce backend
+    // (`magento:<sku>`) — that backend's seller lookup.
+    const rowSeller = computed(() => productSeller(props.productDetails))
     const backendKey = computed(() => {
+        if (rowSeller.value) return null
         const key = productKey(props.productDetails)
         return parseProductKey(key) ? key : null
     })
@@ -223,10 +228,11 @@
         immediate: !!backendKey.value,
         watch: [backendKey],
     })
-    const sellerName = computed(() => (backendKey.value
-        ? (backendSeller.value as { seller?: { name?: string } } | null)?.seller?.name
-        : props.productDetails?.shops?.[0]?.shops_id?.name) || 'Unknown')
+    const sellerName = computed(() => rowSeller.value?.name
+        || (backendSeller.value as { seller?: { name?: string } } | null)?.seller?.name
+        || 'Unknown')
     const sellerProfile = computed(() => {
+        if (rowSeller.value) return rowSeller.value.to
         const username = (backendSeller.value as { seller?: { username?: string | null } } | null)?.seller?.username
         return backendKey.value && username ? `/u/${encodeURIComponent(username)}` : null
     })

@@ -47,7 +47,8 @@
    *    may use it (free, bought, or theirs to sell), Add to Cart while it's
    *    paid and not bought
    *  - priced above 0      → Add to Cart
-   *  - free with a file    → Download
+   *  - free with a file    → Download (a Directus file, or a store
+   *                          product its seller allows downloading free)
    *  - anything else free  → nothing
    */
   const props = defineProps({
@@ -85,7 +86,14 @@
     return Number.isFinite(price) ? price : 0
   })
 
-  const downloadUrl = computed(() => getAssetURL(productObject.value?.file) ?? undefined)
+  // A Directus file, or the commerce backend's free download (the store sync
+  // only sets download_url when the product is free and its seller allowed
+  // downloading it without checkout).
+  const downloadUrl = computed(() => {
+    const backendFile = productObject.value?.download_url
+    return getAssetURL(productObject.value?.file)
+      ?? (typeof backendFile === 'string' && /^https:\/\//.test(backendFile) ? backendFile : undefined)
+  })
 
   // ---- Integration products (@mframework/meeovi-integrations)
 

@@ -111,6 +111,32 @@ describe('MageOsAdapter services', () => {
     expect(calls[0]!.url.searchParams.getAll('skus[0]').concat(calls[0]!.url.searchParams.getAll('skus[1]'))).toEqual(['A', 'B'])
   })
 
+  it('asks about at most 10 SKUs per request (the store refuses the signature from skus[10] on)', async () => {
+    const { adapter, calls } = fakeMagento({ 'GET /rest/V1/meeovi-marketplace/products/sellers': () => json([]) })
+    await adapter.sellers.forSkus(Array.from({ length: 23 }, (_, i) => `S${i}`))
+    expect(calls).toHaveLength(3)
+    expect(calls.every((c) => !c.url.searchParams.has('skus[10]'))).toBe(true)
+  })
+
+  it('sends SKUs with spaces as %20, which the store\'s OAuth signature accepts', async () => {
+    const { adapter, calls } = fakeMagento({ 'GET /rest/V1/meeovi-marketplace/products/sellers': () => json([]) })
+    await adapter.sellers.forSkus(['Tee Shirt'])
+    expect(calls[0]!.url.search).toContain('=Tee%20Shirt')
+    expect(calls[0]!.url.search).not.toContain('+')
+  })
+
+  it('maps free downloads by SKU', async () => {
+    const { adapter, calls } = fakeMagento({ 'GET /rest/V1/meeovi-marketplace/products/free-downloads': () => json([{ sku: 'P', title: 'Photo', url: 'https://files.test/p.jpg' }]) })
+    expect(await adapter.sellers.freeDownloads(['P', 'Q'])).toEqual({ P: { title: 'Photo', url: 'https://files.test/p.jpg' } })
+    expect([calls[0]!.url.searchParams.get('skus[0]'), calls[0]!.url.searchParams.get('skus[1]')]).toEqual(['P', 'Q'])
+  })
+
+  it('sets a seller product\'s download through the sync route', async () => {
+    const { adapter, calls } = fakeMagento({ 'POST /rest/V1/meeovi-marketplace/sync/download': () => json(true) })
+    await adapter.catalogSync.setDownload({ customerId: 5, sku: 'P', title: 'Photo', url: 'https://files.test/p.jpg', shareable: true })
+    expect(JSON.parse(String(calls[0]!.init.body))).toEqual({ customerId: 5, sku: 'P', title: 'Photo', url: 'https://files.test/p.jpg', shareable: true })
+  })
+
   it('registers sellers with the customer\'s own token (self-scoped)', async () => {
     const { adapter, calls } = fakeMagento({ 'POST /rest/V1/meeovi-marketplace/seller/register': () => json({ sellerRecordId: 3, isApproved: false, shopUrl: 'ann' }) })
     await adapter.sellers.register('42', 'customer-jwt')

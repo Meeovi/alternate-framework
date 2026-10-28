@@ -8,10 +8,11 @@
                             <NuxtImg class="brandLogo" :src="getImageURL(shop?.image)" :alt="shop?.name" />
                             <div class="wrapper">
                                 <h5 class="card-title mbr-fonts-style align-left display-2" style="color: black;">
-                                    {{ shop?.name }}</h5>
+                                    <NuxtLink v-if="shop?.slug" :to="`/outlet/${shop.slug}`">{{ shop?.name }}</NuxtLink>
+                                    <template v-else>{{ shop?.name }}</template></h5>
                                 <div class="collapsed-content">
-                                    <div class="mbr-section-btn"><a class="btn btn-md btn-info display-4"
-                                            :href="`/outlet/${shop?.slug}`">Visit Shop</a></div>
+                                    <div v-if="shop?.slug" class="mbr-section-btn"><NuxtLink class="btn btn-md btn-info display-4"
+                                            :to="`/outlet/${shop.slug}`">Visit Shop</NuxtLink></div>
                                 </div>
                             </div>
                         </div>

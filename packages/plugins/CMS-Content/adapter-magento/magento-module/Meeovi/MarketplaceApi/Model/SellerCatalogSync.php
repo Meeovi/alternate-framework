@@ -9,6 +9,10 @@ use Magento\Catalog\Api\ProductAttributeMediaGalleryManagementInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
+use Magento\Downloadable\Api\Data\LinkInterfaceFactory;
+use Magento\Downloadable\Api\LinkRepositoryInterface;
+use Magento\Downloadable\Model\Link;
+use Magento\Downloadable\Model\Product\Type as DownloadableType;
 use Magento\Framework\Api\Data\ImageContentInterfaceFactory;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
@@ -42,7 +46,9 @@ class SellerCatalogSync implements SellerCatalogSyncInterface
         private ProductAttributeMediaGalleryEntryInterfaceFactory $galleryEntryFactory,
         private ImageContentInterfaceFactory $imageContentFactory,
         private SellerProductResultInterfaceFactory $resultFactory,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private LinkRepositoryInterface $links,
+        private LinkInterfaceFactory $linkFactory
     ) {
     }
 
@@ -179,6 +185,58 @@ class SellerCatalogSync implements SellerCatalogSyncInterface
         } catch (\Exception $e) {
             $this->logger->warning('[Meeovi_MarketplaceApi] Image upload failed', ['sku' => $sku, 'error' => $e->getMessage()]);
             throw new CouldNotSaveException(__('Could not add the image: %1', $e->getMessage()), $e);
+        }
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setDownload(int $customerId, string $sku, string $title, string $url, bool $shareable = false): bool
+    {
+        $product = $this->findProduct($sku);
+        if ($product === null) {
+            throw new NoSuchEntityException(__('No product with SKU "%1".', $sku));
+        }
+        $this->assertOwnedBy($product, $customerId);
+
+        $url = trim($url);
+        if (strlen($url) > 2000 || parse_url($url, PHP_URL_SCHEME) !== 'https' || !parse_url($url, PHP_URL_HOST)) {
+            throw new LocalizedException(__('The download must be an https URL.'));
+        }
+        $title = trim($title) !== '' ? trim($title) : (string) $product->getName();
+
+        if ($product->getTypeId() !== DownloadableType::TYPE_DOWNLOADABLE) {
+            $product->setTypeId(DownloadableType::TYPE_DOWNLOADABLE);
+            $product->setData('links_purchased_separately', 0);
+            $product->setData('links_title', __('Download')->render());
+            $product->setData('product_has_weight', 0);
+            $product->setWeight(null);
+            try {
+                $product = $this->productRepository->save($product);
+            } catch (\Exception $e) {
+                throw new CouldNotSaveException(__('Could not make the product downloadable: %1', $e->getMessage()), $e);
+            }
+        }
+
+        foreach ($this->links->getList($sku) as $existing) {
+            $this->links->delete((int) $existing->getId());
+        }
+
+        $link = $this->linkFactory->create();
+        $link->setTitle(mb_substr($title, 0, 255));
+        $link->setPrice(0);
+        $link->setNumberOfDownloads(0);
+        $link->setIsShareable($shareable ? Link::LINK_SHAREABLE_YES : Link::LINK_SHAREABLE_NO);
+        $link->setLinkType('url');
+        $link->setLinkUrl($url);
+        $link->setSortOrder(1);
+        try {
+            // Rejects hosts outside the store's downloadable domains.
+            $this->links->save($sku, $link);
+        } catch (\Exception $e) {
+            $this->logger->warning('[Meeovi_MarketplaceApi] Download link failed', ['sku' => $sku, 'error' => $e->getMessage()]);
+            throw new CouldNotSaveException(__('Could not add the download: %1', $e->getMessage()), $e);
         }
         return true;
     }
