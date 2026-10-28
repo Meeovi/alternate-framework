@@ -16,7 +16,17 @@
             </div>
         </section>
 
+        <v-container v-if="products.length" class="hashtag-products">
+            <h2 class="text-h6 mb-2">Products tagged #{{ tag }}</h2>
+            <v-row>
+                <v-col v-for="product in products" :key="product.id" cols="12" sm="6" md="4" lg="3">
+                    <productCard :product="product" />
+                </v-col>
+            </v-row>
+        </v-container>
+
         <v-container class="hashtag-posts">
+            <h2 v-if="products.length && posts.length" class="text-h6 mb-2">Posts on Bluesky</h2>
             <div v-if="pending && !posts.length" class="d-flex justify-center pa-8">
                 <v-progress-circular indeterminate />
             </div>
@@ -25,7 +35,7 @@
                 Posts from Bluesky aren't available right now. Please try again later.
             </v-alert>
 
-            <h2 v-else-if="!posts.length" class="text-center text-h6 pa-8">No posts with the hashtag <b>#{{ tag }}</b> yet.</h2>
+            <h2 v-else-if="!posts.length" class="text-center text-h6 pa-8">No posts on Bluesky with <b>#{{ tag }}</b> yet.</h2>
 
             <v-row v-else>
                 <v-col v-for="post in posts" :key="post.id" cols="12" md="6" lg="4">
@@ -75,6 +85,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 
 /**
  * Posts with this hashtag from atproto (Bluesky), through the social layer's
@@ -92,6 +103,9 @@ import { useRoute } from 'vue-router'
  * Server code can use the plugin's client directly instead:
  *   import { useAtprotoClient } from '@mframework/meeovi-atproto/client'
  *   const { posts } = await useAtprotoClient().searchPosts({ query: '#travel', limit: 25 })
+ *
+ * Products come from Directus: published products linked to the tag
+ * (products.tags → products_tags), matched on the tag's slug or name.
  */
 
 type FederatedPost = {
@@ -121,6 +135,25 @@ const { data, pending, error } = await useFetch<{ posts: FederatedPost[] }>('/ap
     default: () => ({ posts: [] }),
 })
 const posts = computed(() => data.value?.posts ?? [])
+
+const { $directus, $readItems } = useNuxtApp()
+const { data: productRows } = await useAsyncData(
+    () => `hashtag:products:${tag.value.toLowerCase()}`,
+    () => $directus.request($readItems('products', {
+        filter: {
+            status: { _eq: 'published' },
+            _or: [
+                { tags: { tags_id: { slug: { _eq: tag.value.toLowerCase() } } } },
+                { tags: { tags_id: { name: { _eq: tag.value } } } },
+            ],
+        },
+        fields: ['*', 'image.*', 'shops.shops_id.name', 'shops.shops_id.slug'],
+        sort: ['-id'],
+        limit: 24,
+    })).catch(() => []),
+    { default: () => [], watch: [tag] },
+)
+const products = computed(() => (productRows.value || []) as Record<string, any>[])
 
 const images = (post: FederatedPost) => (post.media || []).filter((m) => m.type === 'image')
 const initial = (author: FederatedPost['author']) => (author.displayName || author.handle || '?').charAt(0).toUpperCase()
