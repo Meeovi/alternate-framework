@@ -11,7 +11,7 @@
         <v-alert v-if="pwa?.offlineReady" type="success" density="compact" class="mb-2">
           App ready to work offline
         </v-alert>
-        <LowerBar />
+        <HashtagBar />
         
         <v-main>
           <div class="page-wrapper">
@@ -50,7 +50,7 @@
 <script setup lang="ts">
   import Header from '../components/menus/Header.vue'
   import sidebarnav from '../components/menus/sidebar/sidebarnav.vue'
-  import LowerBar from '../components/menus/LowerBar.vue'
+  import HashtagBar from '../components/menus/HashtagBar.vue'
   import FooterNav from '../components/menus/FooterNav.vue'
   import OfflineAlert from '#shared/app/components/alerts/OfflineAlert.vue'
   import mobileNav from '../components/menus/mobile/mobileNav.vue'
