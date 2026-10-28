@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { sanitizeUserHtml } from '../../app/utils/sanitizeUserHtml'
+import { sanitizeCmsHtml, sanitizeUserHtml } from '../../app/utils/sanitizeUserHtml'
 
 const clean = (html: string) => sanitizeUserHtml(html)
 // No executable bit survives in any *real* tag (escaped text like
@@ -56,5 +56,37 @@ describe('sanitizeUserHtml', () => {
   test('handles empty values', () => {
     expect(clean(null as unknown as string)).toBe('')
     expect(sanitizeUserHtml(undefined)).toBe('')
+  })
+})
+
+describe('sanitizeUserHtml layout styles', () => {
+  test('keeps flex and grid layout, not positioning that escapes the post', () => {
+    const out = sanitizeUserHtml('<div style="display:flex;gap:10px;justify-content:center;position:fixed;transform:rotate(2deg)">x</div>')
+    expect(out).toContain('gap:10px')
+    expect(out).toContain('justify-content:center')
+    expect(out).not.toContain('position')
+    expect(out).not.toContain('transform')
+    expect(sanitizeUserHtml('<div style="position:relative">x</div>')).toContain('position:relative')
+  })
+})
+
+describe('sanitizeCmsHtml (Directus pages)', () => {
+  test('keeps any CSS property and <style> blocks', () => {
+    const out = sanitizeCmsHtml('<style>.hero{display:grid;gap:1rem}</style><section class="hero" style="position:absolute;transform:scale(1.1)">hi</section>')
+    expect(out).toContain('<style>.hero{display:grid;gap:1rem}</style>')
+    expect(out).toContain('position:absolute')
+    expect(out).toContain('transform:scale(1.1)')
+  })
+
+  test('drops style blocks and declarations the live CSS checks refuse', () => {
+    expect(sanitizeCmsHtml('<style>@import url(https://evil.example/x.css)</style><p>ok</p>')).toBe('<p>ok</p>')
+    expect(sanitizeCmsHtml('<div style="width:expression(alert(1))">a</div>')).not.toContain('expression')
+    expect(sanitizeCmsHtml('<div style="background:url(javascript:alert(1))">a</div>')).not.toContain('javascript')
+  })
+
+  test('still removes scripts and event handlers; allows video', () => {
+    const out = sanitizeCmsHtml('<script>alert(1)</script><video src="https://x.example/v.mp4" controls onplay="alert(1)"></video><img src=x onerror=alert(1)>')
+    expect(out).not.toContain('alert')
+    expect(out).toContain('<video src="https://x.example/v.mp4" controls>')
   })
 })

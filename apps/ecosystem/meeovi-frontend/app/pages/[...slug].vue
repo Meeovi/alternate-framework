@@ -6,7 +6,7 @@
 
     <div v-else class="contentSection">
       <v-card elevation="0">
-        <v-card-text v-dompurify-html="page?.content"></v-card-text>
+        <v-card-text v-dompurify-html:cms="page?.content"></v-card-text>
 
         <v-card-actions class="pt-4" style="width: 100% !important;">
           Published: {{ page?.date_created ? new Date(page.date_created).toLocaleDateString() : '' }} &middot;
