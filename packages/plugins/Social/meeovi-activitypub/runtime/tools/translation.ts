@@ -172,10 +172,10 @@ export function createTranslationTools(deps: TranslationToolsDeps) {
           let sourceLanguage = status.language
           if (!sourceLanguage) {
             const languageDetector = await (globalThis as any).LanguageDetector.create()
-            const div = document.createElement('div')
-            div.innerHTML = status.content
-            // eslint-disable-next-line unicorn/prefer-dom-node-text-content
-            const detectedLanguages = await languageDetector.detect(div.innerText)
+            // Remote HTML: parse it inert (a detached div would still load
+            // <img onerror=…> and run its handler).
+            const text = new DOMParser().parseFromString(status.content, 'text/html').body.textContent || ''
+            const detectedLanguages = await languageDetector.detect(text)
             sourceLanguage = detectedLanguages[0].detectedLanguage
             if (sourceLanguage === 'und')
               throw new Error('Could not detect source language.')

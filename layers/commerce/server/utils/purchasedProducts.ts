@@ -71,7 +71,9 @@ export async function productsForRefs(refs: string[], limit: number): Promise<Re
     const found = ref.startsWith('magento:') ? bySku.get(ref.slice('magento:'.length)) : byId.get(ref)
     if (!found || seen.has(String(found.id))) continue
     seen.add(String(found.id))
-    const { variants: _variants, ...product } = found
+    // `*` also returns the ids of every order, list, return… linked to the
+    // product: who bought or saved it is not for a public product card.
+    const { variants: _variants, orders: _o, order_items: _oi, returns: _r, subscriptions: _s, shipment: _sh, report: _rp, lists: _l, list_items: _li, user: _u, ...product } = found
     // A store product's image is the store's URL (image_url), not a Directus file.
     out.push(product.source === 'magento' ? { ...product, image: product.image || product.image_url || null } : product)
     if (out.length >= limit) break

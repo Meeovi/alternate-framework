@@ -11,6 +11,7 @@ Needs your access, a decision or your approval. Ordered by what blocks launch fi
 
 **Still to do**
 
+1. **Approve closing meeDirectus's Public policy (blocks launch):** anyone can read orders (names, emails, payment ids), Directus users and messages straight from cms.meeovicms.com, and create, edit or delete posts, products, profiles and files there without signing in. I'll remove the 688 anonymous write and private-read permissions; public content stays readable. Backup: `/root/backups/meedirectus-public-policy-permissions-20261028.json`.
 1. **Give production a live Shippo key:** the demo and production both use a Shippo test key (`shippo_test_…`), so no real shipping labels are bought. Put the live key in `SHIPPO_API_KEY` in `/home/meebuzo/.meeovi-prod/base.env` and tell me; I'll restart and check rates.
 2. **Rotate the provider secrets** exposed in the breach: see [rotation list](#rotation-list), step 3. Put the new values in the env files and I'll copy them everywhere else.
 3. **Try two sign-in buttons by hand on demo.meeovicms.com:** "Sign in with a passkey" and "Email me a sign-in link". Automated browsers can't get through the Turnstile check or the passkey prompt.
@@ -32,6 +33,7 @@ Needs your access, a decision or your approval. Ordered by what blocks launch fi
 - Novu on its Production environment (27 October): your new secret key and application identifier are in the app's `.env` and in production and the demo (with runtime overrides, so no rebuild was needed), and the `follow`, `new-content` and `purchase` workflows were synced from Development. Both sites checked with a throwaway account. Notifications sent before the switch stay in Development, so members' inboxes start empty.
 - Share image: `apps/ecosystem/meeovi-frontend/public/og-image.png`, the Meeovi logo (`logo512alpha.png`) centred on white at 1200×630 (27 October). It goes live with the next commit and deploy.
 - Polar live in production (27 October): the live token has the products, checkouts and customer-session permissions, and production reads it through the `NUXT_MEEOVI_POLAR_*` runtime overrides in `base.env` (the plain `NUXT_POLAR_*` values are baked in at build time). The live webhook secret is in too: a test event signed with it is accepted and a wrongly signed one refused. The demo stays on Polar sandbox.
+- Firewall extended (28 October): 16 more ports that answered from the internet directly are now closed: Portainer, Grafana, Budibase, MinIO, Mastodon, Remark42, a Swarm service on 5050, rpcbind, epmd and the Swarm ports. Their sites still work through Apache. Backup: `/root/bin/meeovi-firewall.sh.bak-20261028`.
 - Sandbox purchase on the demo (28 October): PayPal sandbox payment, order confirmation and the Novu "order placed" notification all worked. It showed that an international label needs a customs declaration; checkout now creates one.
 
 ## My side
