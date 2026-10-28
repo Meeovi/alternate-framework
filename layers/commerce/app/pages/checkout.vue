@@ -354,9 +354,17 @@
     gap: 12px;
   }
 
+  /* Grid items default to their content's width; the country list's
+     longest name pushed its column past the form. */
+  .checkoutStep .row > label {
+    min-width: 0;
+  }
+
   .checkoutStep input,
   .checkoutStep select {
     padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 15px;
