@@ -207,6 +207,11 @@
             phone: address.value.phone || undefined,
             email: address.value.email || undefined
           },
+          // For the customs declaration on an international parcel.
+          items: cartStore.items.map((item) => ({
+            id: String(item.productId ?? item.id),
+            quantity: Number(item.quantity ?? item.qty ?? 1)
+          })),
           parcels: [{
             length: '10',
             width: '10',

@@ -73,10 +73,15 @@ export async function findOrderForPayment(paymentId: string): Promise<{ id: numb
   return (Array.isArray(rows) ? rows[0] : null) as { id: number | string, grand_total: number } | null
 }
 
-async function notifyPurchase(recipientId: string, orderId: string | number | null, amountCents: number, currency: string) {
+/**
+ * `url` is where clicking the notification goes (the workflow's in-app
+ * redirect is `{{payload.url}}`): the order's page, or the buyer's recent
+ * purchases when only a commerce backend recorded the order.
+ */
+async function notifyPurchase(recipientId: string, orderId: string | number | null, amountCents: number, currency: string, url: string) {
   await triggerNovuWorkflow('purchase', {
     to: recipientId,
-    payload: { subject: 'Order confirmed', orderId, amount: centsToDollars(amountCents), currency },
+    payload: { subject: 'Order confirmed', orderId, amount: centsToDollars(amountCents), currency, url },
   })
 }
 
@@ -142,7 +147,7 @@ export async function fulfilPaidCheckout(paid: PaidCheckout): Promise<{ orderId:
   // its order history; a Directus order records only Directus lines.
   const directusLines = paid.lines.filter((line) => !line.ref || /^\d+$/.test(line.ref))
   if (!directusLines.length) {
-    if (paid.buyerId) await notifyPurchase(paid.buyerId, paid.paymentId, paid.totalCents, paid.currency)
+    if (paid.buyerId) await notifyPurchase(paid.buyerId, paid.paymentId, paid.totalCents, paid.currency, '/connect/memories')
     return { orderId: null }
   }
 
@@ -233,7 +238,10 @@ export async function fulfilPaidCheckout(paid: PaidCheckout): Promise<{ orderId:
   })) as { id?: string | number }
   const orderId = created?.id ?? null
 
-  if (paid.buyerId) await notifyPurchase(paid.buyerId, orderId, paid.totalCents, paid.currency)
+  if (paid.buyerId) {
+    await notifyPurchase(paid.buyerId, orderId, paid.totalCents, paid.currency,
+      orderId ? `/workspace/sales/order/${orderId}` : '/connect/memories')
+  }
 
   if (digitalFileId && downloadToken && paid.email) {
     const url = `${process.env.NUXT_PUBLIC_SITE_URL}/api/download/${orderId}?token=${downloadToken}`

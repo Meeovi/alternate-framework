@@ -11,12 +11,11 @@ Needs your access, a decision or your approval. Ordered by what blocks launch fi
 
 **Still to do**
 
-1. **Rotate the provider secrets** exposed in the breach: see [rotation list](#rotation-list), step 3. Put the new values in the env files and I'll copy them everywhere else.
-2. **Push the commits:** `main` is ahead of the remote by 5 commits.
+1. **Give production a live Shippo key:** the demo and production both use a Shippo test key (`shippo_test_…`), so no real shipping labels are bought. Put the live key in `SHIPPO_API_KEY` in `/home/meebuzo/.meeovi-prod/base.env` and tell me; I'll restart and check rates.
+2. **Rotate the provider secrets** exposed in the breach: see [rotation list](#rotation-list), step 3. Put the new values in the env files and I'll copy them everywhere else.
 3. **Try two sign-in buttons by hand on demo.meeovicms.com:** "Sign in with a passkey" and "Email me a sign-in link". Automated browsers can't get through the Turnstile check or the passkey prompt.
-4. **Make one sandbox purchase on demo.meeovicms.com:** sign in, add a product to the cart, and pay with the sandbox buyer `bastianh86-buyer@outlook.com` (created 27 October). Cloudflare's Turnstile and PayPal's approval page both refuse automated browsers, so this click-through has to be yours. Tell me when it's done and I'll check the rest of the chain (my item 3).
-5. **Redeploy elitenovels and officiallyjust3** wherever they're hosted. Rocket.Chat's token secret changed.
-6. *Optional:* an ActivityPub (Mastodon) access token, so ActivityPub can search more than public hashtags.
+4. **Redeploy elitenovels and officiallyjust3** wherever they're hosted. Rocket.Chat's token secret changed.
+5. *Optional:* an ActivityPub (Mastodon) access token, so ActivityPub can search more than public hashtags.
 
 **Done**
 
@@ -33,6 +32,7 @@ Needs your access, a decision or your approval. Ordered by what blocks launch fi
 - Novu on its Production environment (27 October): your new secret key and application identifier are in the app's `.env` and in production and the demo (with runtime overrides, so no rebuild was needed), and the `follow`, `new-content` and `purchase` workflows were synced from Development. Both sites checked with a throwaway account. Notifications sent before the switch stay in Development, so members' inboxes start empty.
 - Share image: `apps/ecosystem/meeovi-frontend/public/og-image.png`, the Meeovi logo (`logo512alpha.png`) centred on white at 1200×630 (27 October). It goes live with the next commit and deploy.
 - Polar live in production (27 October): the live token has the products, checkouts and customer-session permissions, and production reads it through the `NUXT_MEEOVI_POLAR_*` runtime overrides in `base.env` (the plain `NUXT_POLAR_*` values are baked in at build time). The live webhook secret is in too: a test event signed with it is accepted and a wrongly signed one refused. The demo stays on Polar sandbox.
+- Sandbox purchase on the demo (28 October): PayPal sandbox payment, order confirmation and the Novu "order placed" notification all worked. It showed that an international label needs a customs declaration; checkout now creates one.
 
 ## My side
 
@@ -47,9 +47,9 @@ I can do these without further input, unless a step depends on one of your items
 
    The full steps are in [launch plan](#launch-plan).
 2. **Rerun the HTTPS-redirect and TLS checks** against https://meeovi.com. They can't pass on the local port.
-3. **Run a full PayPal sandbox purchase on the demo**, after your item 4. It covers the capture, the webhook, the Magento order, the Webkul credit, and the order showing in Directus and on the Orders page.
+3. **Check an international label is bought** on the next sandbox order to a non-US address (the order should show a tracking number).
 4. **Improve mobile performance.** Lighthouse scores about 25 because of home-page hydration and the CookieYes, Google search and Turnstile widgets.
-5. **Copy rotated secrets everywhere they're used, then restart**, after your item 1.
+5. **Copy rotated secrets everywhere they're used, then restart**, after your item 2.
 6. **Rotate the OpenSearch admin password.** This is low risk: it only listens on this server.
 7. **Fix Rocket.Chat's `Site_Url`.** It still points to `https://collaborrate.com`.
 8. **Free disk space.** The disk is 96% full; the `/root/.npm` cache holds 7.6 GB. I'll clear it once you say yes.

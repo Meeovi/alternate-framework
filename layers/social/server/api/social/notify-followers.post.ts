@@ -86,6 +86,8 @@ export default defineEventHandler(async (event) => {
       contentType,
       itemId: itemId ?? null,
       label,
+      // Where clicking the notification goes.
+      url: contentType === 'short' ? `/connect/vibe/${itemId}` : `/connect/note/${itemId}`,
     },
   })
 

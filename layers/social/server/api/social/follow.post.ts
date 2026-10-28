@@ -78,6 +78,8 @@ async function notifyNewFollower(recipientId: string, follower: FollowActor): Pr
       subject: 'New follower',
       actorId: follower.id,
       actorName: followerName,
+      // Where clicking the notification goes: the follower's profile.
+      url: `/u/${follower.id}`,
     },
   })
 }

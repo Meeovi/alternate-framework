@@ -305,7 +305,7 @@ export async function createRefund(transactionId: string) {
 export async function createCustomsDeclaration(delaration: {
   contents_type: 'MERCHANDISE' | 'GIFT' | 'SAMPLE' | 'DOCUMENTS' | 'RETURN_MERCHANDISE' | 'HUMANITARIAN_DONATION' | 'OTHER'
   contents_explanation?: string
-  non_delivery_option: 'return' | 'abandon'
+  non_delivery_option: 'RETURN' | 'ABANDON'
   certify: boolean
   certify_signer: string
   eel_pfc?: string

@@ -88,6 +88,9 @@ onMounted(async () => {
         socketUrl: (config.public as { novuSocketUrl?: string }).novuSocketUrl,
         ...(novuSocketPath && { socketOptions: { socketType: 'self-hosted', path: novuSocketPath } }),
       },
+      // A notification's link (its workflow's redirect, e.g. the order page)
+      // opens inside the app instead of reloading the page.
+      routerPush: (path: string) => navigateTo(path),
     })
     novu.mountComponent({ name: 'Inbox', props: {}, element: containerEl.value })
   } catch (error) {
