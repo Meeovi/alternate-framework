@@ -34,6 +34,8 @@ Needs your access, a decision or your approval. Ordered by what blocks launch fi
 - Share image: `apps/ecosystem/meeovi-frontend/public/og-image.png`, the Meeovi logo (`logo512alpha.png`) centred on white at 1200×630 (27 October). It goes live with the next commit and deploy.
 - Polar live in production (27 October): the live token has the products, checkouts and customer-session permissions, and production reads it through the `NUXT_MEEOVI_POLAR_*` runtime overrides in `base.env` (the plain `NUXT_POLAR_*` values are baked in at build time). The live webhook secret is in too: a test event signed with it is accepted and a wrongly signed one refused. The demo stays on Polar sandbox.
 - Firewall extended (28 October): 16 more ports that answered from the internet directly are now closed: Portainer, Grafana, Budibase, MinIO, Mastodon, Remark42, a Swarm service on 5050, rpcbind, epmd and the Swarm ports. Their sites still work through Apache. Backup: `/root/bin/meeovi-firewall.sh.bak-20261028`.
+- Directus private content (28 October): Directus's Public read rules now hide private posts, spaces, websites, showcases and videos, and private lists' links, the same way the app does. 2 private websites and 3 private showcases had been readable by anyone.
+- Nuxt 4.6.3 and Vue 3.5.44 (28 October), which fix advisories about route rules and server-rendered attribute names. better-auth stays on 1.6.23 with the vendor's workaround for the magic-link account takeover (GHSA-965c-763c-88jm); 1.7 is after launch.
 - Sandbox purchase on the demo (28 October): PayPal sandbox payment, order confirmation and the Novu "order placed" notification all worked. It showed that an international label needs a customs declaration; checkout now creates one.
 
 ## My side
@@ -56,6 +58,7 @@ I can do these without further input, unless a step depends on one of your items
 7. **Fix Rocket.Chat's `Site_Url`.** It still points to `https://collaborrate.com`.
 8. **Free disk space.** The disk is 96% full; the `/root/.npm` cache holds 7.6 GB. I'll clear it once you say yes.
 9. **After launch:**
+   - Upgrade better-auth to 1.7: it needs hand-written migrations (new OAuth provider tables for Pixanomy sign-in, `account.issuer` backfill, JWKS columns), then a manual test of every sign-in method. Then remove the magic-link workaround (`storeToken: 'hashed'`, `storeIdentifier: "plain"`).
    - PayPal membership subscriptions.
    - Mage-OS customer reCAPTCHA.
    - Drop the old Stripe database columns.
