@@ -5,6 +5,7 @@
 // service when no service account is configured.
 import { AtprotoClient, getAtprotoServiceUrl, type AtprotoActorRecord, type AtprotoPostRecord } from './client'
 import { type FederatedActor, type FederatedPost, type FederationNetwork } from './federation'
+import { atprotoMemberSession } from './member'
 
 const NETWORK = 'atproto'
 
@@ -119,6 +120,9 @@ export function createAtprotoNetwork(options: { service?: string, configured?: b
         throw e
       }
     },
+    // A member's own Bluesky session (stored by the atproto sign-in;
+    // handed over by the social layer).
+    forMember: atprotoMemberSession,
     async searchPosts(query, { limit = 20 } = {}) {
       const { posts } = await read((c) => c.searchPosts({ query, limit, sort: 'latest' }))
       return posts.map(toFederatedPost)

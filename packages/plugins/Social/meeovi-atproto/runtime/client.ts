@@ -108,6 +108,14 @@ export interface AtprotoListRecord {
   purpose: string
   description?: string
   avatar?: string
+  /** How many accounts it holds, when the AppView says. */
+  itemCount?: number
+}
+
+/** An account in a list, with the list-item record that holds it. */
+export interface AtprotoListItemRecord {
+  uri: string
+  subject: AtprotoActorRecord
 }
 
 export interface AtprotoTrendingTopic {
@@ -546,6 +554,66 @@ export class AtprotoClient {
       { name: opts.name, purpose: opts.purpose, description: opts.description, createdAt: new Date().toISOString() },
     )
     return { listUri: res.uri }
+  }
+
+  /** A list and its accounts. Null when it doesn't exist. */
+  async getList(uri: string, opts: { limit?: number, cursor?: string } = {}): Promise<{ list: AtprotoListRecord, items: AtprotoListItemRecord[], cursor?: string } | null> {
+    try {
+      const res = await this.agent.app.bsky.graph.getList({ list: uri, limit: opts.limit ?? 100, cursor: opts.cursor })
+      const l = res.data.list
+      return {
+        list: { uri: l.uri, cid: l.cid, name: l.name, purpose: l.purpose, description: l.description, avatar: l.avatar, itemCount: (l as any).listItemCount },
+        items: res.data.items.map((i) => ({ uri: i.uri, subject: this.normalizeActor(i.subject) })),
+        cursor: res.data.cursor,
+      }
+    } catch (e: any) {
+      if (e?.status === 400 || /not found/i.test(e?.message || '')) return null
+      throw e
+    }
+  }
+
+  /** Rename or re-describe one of the signed-in account's lists. */
+  async updateList(uri: string, update: { name?: string, description?: string }): Promise<void> {
+    const rkey = this.ownRkey(uri, 'app.bsky.graph.list')
+    const current = await this.agent.app.bsky.graph.list.get({ repo: this.assertDid(), rkey })
+    await this.agent.com.atproto.repo.putRecord({
+      repo: this.assertDid(),
+      collection: 'app.bsky.graph.list',
+      rkey,
+      record: {
+        ...current.value,
+        ...(update.name !== undefined ? { name: update.name } : {}),
+        ...(update.description !== undefined ? { description: update.description } : {}),
+      },
+    })
+  }
+
+  async deleteList(uri: string): Promise<void> {
+    await this.agent.app.bsky.graph.list.delete({ repo: this.assertDid(), rkey: this.ownRkey(uri, 'app.bsky.graph.list') })
+  }
+
+  /** Add an account (DID) to one of the signed-in account's lists. */
+  async addListItem(listUri: string, subjectDid: string): Promise<{ itemUri: string }> {
+    this.ownRkey(listUri, 'app.bsky.graph.list')
+    const res = await this.agent.app.bsky.graph.listitem.create(
+      { repo: this.assertDid() },
+      { subject: subjectDid, list: listUri, createdAt: new Date().toISOString() },
+    )
+    return { itemUri: res.uri }
+  }
+
+  async removeListItem(itemUri: string): Promise<void> {
+    await this.agent.app.bsky.graph.listitem.delete({ repo: this.assertDid(), rkey: this.ownRkey(itemUri, 'app.bsky.graph.listitem') })
+  }
+
+  /** The record key of a record in the signed-in account's own repo; throws
+   *  for anyone else's (a list can only be changed by its owner). */
+  private ownRkey(uri: string, collection: string): string {
+    const match = /^at:\/\/([^/]+)\/([^/]+)\/([^/]+)$/.exec(uri)
+    if (!match || match[1] !== this.assertDid() || match[2] !== collection) {
+      throw Object.assign(new Error('Not your record'), { statusCode: 403, statusMessage: 'You can only change your own lists' })
+    }
+    return match[3]!
   }
 
   // -- notifications -------------------------------------------------------------

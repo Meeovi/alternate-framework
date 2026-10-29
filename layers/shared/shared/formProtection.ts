@@ -60,6 +60,9 @@ const RULES: Rule[] = [
   // Lists (create / edit form)
   { methods: ['POST'], path: /^\/api\/social\/lists\/?$/ },
   { methods: ['PATCH'], path: /^\/api\/social\/lists\/[^/]+\/?$/ },
+  // Lists and notes through the federation client (any network)
+  { methods: ['POST'], path: /^\/api\/social\/client\/(lists|notes)\/?$/ },
+  { methods: ['PATCH'], path: /^\/api\/social\/client\/list\/?$/ },
   // Notifying every follower; posting to Bluesky / the Fediverse
   { methods: ['POST'], path: /^\/api\/social\/notify-followers\/?$/ },
   { methods: ['POST'], path: /^\/api\/social\/(atproto\/post|publish)\/?$/ },
