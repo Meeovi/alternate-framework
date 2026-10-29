@@ -83,10 +83,13 @@ const tableCollections: Record<string, { roles?: string[], [key: string]: unknow
   }
 })()
 
-// /workspace/** pages render in ui-shell's `workspace` layout (the admin
-// sidebar) in every app that uses this layer, unless the page picks its own
-// layout with definePageMeta. (Meta set here would override definePageMeta,
-// so pages that name a layout are left alone.)
+// Every /workspace/** page renders in ui-shell's `workspace` layout (the
+// admin sidebar) in every app that uses this layer, so the whole workspace
+// looks the same. Pages that don't name a layout get it here. A layout a
+// page names in definePageMeta wins over meta set here (see the precedence
+// note below), so a page naming any other layout is reported at build time
+// (account, security and find-my-device used `settings` until 29 October
+// 2026).
 //
 // Likewise every /workspace/** page requires a signed-in user: pages that
 // don't declare middleware get the auth layer's `auth` middleware (several —
@@ -111,7 +114,9 @@ function useWorkspaceLayout(pages: NuxtPage[]) {
     if (page.file?.startsWith(workspacePages)) {
       let source = ''
       try { source = readFileSync(page.file, 'utf8') } catch {}
-      if (!page.meta?.layout && !/\blayout\s*:/.test(source)) page.meta = { ...page.meta, layout: 'workspace' }
+      const named = /\blayout\s*:\s*['"]([\w-]+)['"]/.exec(source)?.[1]
+      if (named && named !== 'workspace') console.warn(`[business] ${page.file} uses the "${named}" layout; every /workspace page should use "workspace"`)
+      if (!named && !page.meta?.layout) page.meta = { ...page.meta, layout: 'workspace' }
       const roles = pageTableRoles(source)
       if (roles) page.meta = { ...page.meta, middleware: ['auth'], roles }
       else if (!page.meta?.middleware && !/\bmiddleware\s*:/.test(source)) page.meta = { ...page.meta, middleware: ['auth'] }
