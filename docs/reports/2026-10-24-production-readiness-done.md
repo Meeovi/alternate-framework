@@ -1,8 +1,103 @@
 # Production readiness: what's done
 
-**Date:** 16 to 27 October 2026
+**Date:** 16 to 29 October 2026
 **Companion to:** [Production readiness: what's open](2026-10-16-production-readiness.md), which lists only what's still to do.
 **Scope:** `layers/*` and `apps/ecosystem/meeovi-frontend`. The app is tested at demo.meeovicms.com and moves to meeovi.com when it's finished, with commerce data from commerce.meeovicms.com (Mage-OS 3.6.0) through Directus.
+
+## Launch preparation, 27 to 29 October
+
+### Accounts, providers and the servers
+
+- Live PayPal webhook: the id is in `prod.env`, and production was restarted on 27 October to load it.
+- Cloudflare: `meeovi.com` added to the Turnstile widget, and Speed Brain turned off.
+- The store's 20 test customers deleted on 27 October. The backup is `/root/backups/test-customers-backup-20261025.json`, and the admin customer list was rebuilt. The script needed PHP 8.4 (`/usr/local/apps/php84/bin/php`) and Magento's "secure area" flag; both are fixed in it.
+- Directus admin passwords changed on both servers (checked 27 October: the old one is refused).
+- Google sign-in accepts the meeovi.com callback (checked 27 October). GitHub updated by you; it only checks the callback after someone logs in, so the first real GitHub sign-in confirms it.
+- Firewall: `meeovi-firewall` is installed, enabled at boot and active (27 October). The script needed to be made executable.
+- meeovi.com's origin certificate: the Cloudflare Origin certificate (meeovi.com and *.meeovi.com, valid until 2041) is installed through Webuzo and served for meeovi.com and www (checked 27 October).
+- Store tax: the rule now covers Michigan 8.25%, California 8.25% and New York 8.375% for Taxable Goods / Retail Customer, and every product has a tax class (checked 27 October).
+- Cloudflare SSL/TLS encryption mode set to Automatic, which picks Full (strict) now that the server's certificate is valid.
+- Shipping tax: shipping uses the Taxable Goods class, so it's taxed under the same rule (MI, CA, NY).
+- Novu on its Production environment (27 October): your new secret key and application identifier are in the app's `.env` and in production and the demo (with runtime overrides, so no rebuild was needed), and the `follow`, `new-content` and `purchase` workflows were synced from Development. Both sites checked with a throwaway account. Notifications sent before the switch stay in Development, so members' inboxes start empty.
+- Share image: `apps/ecosystem/meeovi-frontend/public/og-image.png`, the Meeovi logo (`logo512alpha.png`) centred on white at 1200×630 (27 October). It goes live with the next commit and deploy.
+- Polar live in production (27 October): the live token has the products, checkouts and customer-session permissions, and production reads it through the `NUXT_MEEOVI_POLAR_*` runtime overrides in `base.env` (the plain `NUXT_POLAR_*` values are baked in at build time). The live webhook secret is in too: a test event signed with it is accepted and a wrongly signed one refused. The demo stays on Polar sandbox.
+- Firewall extended (28 October): 16 more ports that answered from the internet directly are now closed: Portainer, Grafana, Budibase, MinIO, Mastodon, Remark42, a Swarm service on 5050, rpcbind, epmd and the Swarm ports. Their sites still work through Apache. Backup: `/root/bin/meeovi-firewall.sh.bak-20261028`.
+- Live Shippo key in production (28 October): `SHIPPO_API_KEY` plus a `NUXT_SHIPPO_API_KEY` runtime override, because `shippoApiKey` is baked in at build time. Production restarted. Shippo accepts the key: 14 carrier accounts, and a quote returns live (non-test) USPS rates. The demo stays on the test key. Backup: `base.env.bak-20261028-shippo`. You added the live `track_updated` webhook, which is active, in live mode, with the correct URL and token (checked 28 October). Shippo can't reach it until meeovi.com goes live on launch night.
+- ActivityPub token (28 October): a read-only mastodon.social app token (`read:search`, `read:statuses`, `read:accounts`) is in production as `ACTIVITYPUB_ACCESS_TOKEN`, plus the `NUXT_MEEOVI_ACTIVITYPUB_ACCESS_TOKEN` runtime override. Production restarted. A full-text phrase search through the app now returns matching posts, not only hashtags. The demo doesn't have it yet. Backup: `base.env.bak-20261028-activitypub`.
+- meeDirectus Public policy closed (28 October): Anonymous visitors can no longer read orders, invoices, payments, addresses, messages, notifications, contacts or Directus users at cms.meeovicms.com. They also can't create, edit or delete anything there. 688 permissions removed, 2,382 public content reads kept. Checked as an anonymous visitor, and both sites still load content. Backup: `/root/backups/meedirectus-public-policy-permissions-20261028.json`.
+- Directus private content (28 October): Directus's Public read rules now hide private posts, spaces, websites, showcases and videos, and private lists' links, the same way the app does. 2 private websites and 3 private showcases had been readable by anyone.
+- Nuxt 4.6.3 and Vue 3.5.44 (28 October), which fix advisories about route rules and server-rendered attribute names. better-auth stays on 1.6.23 with the vendor's workaround for the magic-link account takeover (GHSA-965c-763c-88jm); 1.7 is after launch.
+- Sandbox purchase on the demo (28 October): PayPal sandbox payment, order confirmation and the Novu "order placed" notification all worked. It showed that an international label needs a customs declaration; checkout now creates one.
+
+### Products, sellers and free downloads (28 October)
+
+- **Every product lives in the store.** Products made by a seller in the app or by an editor in Directus are created in Mage-OS under a real seller first; the store mirror then brings them into Directus. A Directus hook (`mageos-push-products`) does this for editor-made products.
+- **Free downloads:** a product with price 0 and "Allow anyone to download it for free" gets a shareable download link in the store. Its page shows a Download button instead of checkout.
+- **Seller and shop names link** to the seller's profile (`/u/<username>`) or the shop's page (`/outlet/<slug>`) on product cards, product pages and the stores list.
+- **Seller form:** Workspace → Catalog → My products lists the seller's store products and adds new ones (name, price, description, department, category, up to 5 tags, image, download file). The department's and category's names are suggested as tags and can be removed. New products wait for the store's approval.
+- **80 travel photos** are free products in the store under @bastianhilton (Photography → Travel, tagged #travel and #photography). The earlier Directus-only copies were removed (backup `/root/backups/directus-photo-products-directus-only-20261028.json`).
+- The store's cron had been running under PHP 8.2 and doing nothing, so its indexes were stale since 26 October. It now runs under PHP 8.4, and the indexes were rebuilt.
+- Store lookups of 11 or more products at once had been failing silently (OAuth signature error). They now go in batches of 10.
+
+### Social (28 to 29 October)
+
+- **Meeovi is a Bluesky client.** Nothing links out to bsky.app:
+  - Bluesky notes open on the note page (`/connect/note/@<handle>/<id>`), with their replies shown as notes.
+  - Bluesky accounts open on the profile page (`/u/<handle>`). A member who signed in with that Bluesky account shows as themselves, with their Bluesky notes among their notes.
+  - Checked on the demo on 29 October: hashtag page, a note with a reply, a profile, and a missing note (404).
+- **Hashtag pages** (`/connect/hashtag/<tag>`) show the store's products with that tag, then the tag's notes from Bluesky, in the social layer's note card.
+- **Note cards:** every link works. The author opens their profile, the note opens its page, Comment opens the comments, and Share shares the note's own link. The note page's author link had pointed to a page that doesn't exist.
+- **Wording:** posts are called notes.
+- **The hashtag bar** greets signed-in members ("Hello, name"; the server hadn't been sending the session cookie) and lists the newest hashtags first.
+
+### Site content and login (28 October)
+
+- **Live CSS shows on the next page load.** Directus → Globals → Theming → Custom CSS is linked with a version taken from its content, so a change gets a new address and skips Cloudflare's 4-hour cache for .css files.
+- **Directus pages keep their styling.** HTML written in Directus pages keeps any CSS property and `<style>` blocks (checked like the live CSS), plus video and audio. Scripts and event handlers are still removed. Members' notes and comments get flex and grid layout styles, but nothing that can cover the page.
+- **Login page:** the title is dark on the light panel, and the sign-in-link prompt points to the Email field.
+- **How to rebuild the demo** is in the repo's README.
+
+### How the live PayPal webhook was made
+
+Run as root. It reads the live credentials from the env file and prints only the new webhook's id:
+
+```
+set -a; . <(grep -E '^NUXT_PAYPAL_(CLIENT_ID|CLIENT_SECRET)=' /home/meebuzo/.meeovi-prod/prod.env); set +a
+T=$(curl -s -u "$NUXT_PAYPAL_CLIENT_ID:$NUXT_PAYPAL_CLIENT_SECRET" -d grant_type=client_credentials https://api-m.paypal.com/v1/oauth2/token | python3 -c 'import json,sys;print(json.load(sys.stdin)["access_token"])')
+curl -s -H "Authorization: Bearer $T" -H 'Content-Type: application/json' \
+  -d '{"url":"https://meeovi.com/api/payment/paypal/webhooks","event_types":[{"name":"PAYMENT.CAPTURE.COMPLETED"},{"name":"PAYMENT.CAPTURE.REFUNDED"},{"name":"PAYMENT.CAPTURE.REVERSED"},{"name":"CUSTOMER.DISPUTE.CREATED"}]}' \
+  https://api-m.paypal.com/v1/notifications/webhooks | python3 -c 'import json,sys;print(json.load(sys.stdin).get("id"))'
+```
+
+### How the firewall is installed
+
+`/root/bin/meeovi-firewall.sh` drops new connections to the internal ports unless they come from:
+- loopback,
+- the Docker or private ranges,
+- the server's own IP.
+
+Apache, the containers and the apps on this server keep working. To install it so it survives reboots:
+
+```
+cat > /etc/systemd/system/meeovi-firewall.service <<'EOF'
+[Unit]
+Description=Keep internal service ports off the internet
+After=docker.service network-online.target
+Wants=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/root/bin/meeovi-firewall.sh
+ExecStop=/root/bin/meeovi-firewall.sh stop
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload && systemctl enable --now meeovi-firewall
+```
+
+`systemctl stop meeovi-firewall` removes the rules again.
 
 ## auth
 
