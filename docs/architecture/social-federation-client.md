@@ -1,6 +1,6 @@
 # The social layer as a federation client
 
-**Started:** 29 October 2026, on branch `feature/federation-client` (not in the 31 October launch).
+**Started:** 29 October 2026, on the **`post-launch`** branch, which holds all after-launch work. It's not in the 31 October soft launch; it must be ready to merge by **30 November**, before the hard launch on 1 December 2026.
 **Goal:** the social layer is a client over federation networks. Every social feature — notes, timelines, likes, reposts, follows, profiles, hashtags and lists — goes through one contract. The networks are:
 
 | Network | Plugin | What it is |
