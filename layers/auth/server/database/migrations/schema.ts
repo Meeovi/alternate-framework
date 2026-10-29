@@ -1546,8 +1546,6 @@ export const authSubscriptions = pgTable("auth_subscriptions", {
 	id: uuid().defaultRandom().primaryKey(),
 	plan: text().notNull(),
 	referenceId: text("reference_id").notNull(),
-	stripeCustomerId: text("stripe_customer_id"),
-	stripeSubscriptionId: text("stripe_subscription_id"),
 	status: text().default("incomplete"),
 	periodStart: timestamp("period_start", { withTimezone: true }),
 	periodEnd: timestamp("period_end", { withTimezone: true }),
@@ -1557,13 +1555,12 @@ export const authSubscriptions = pgTable("auth_subscriptions", {
 	seats: integer(),
 });
 
-// Plan catalog for the Stripe subscription plugin's plans() lookup (see
-// plugins.ts) — starts empty; insert real pricing plans before checkout
-// has anything to offer.
+// Plan catalog, left from the Stripe subscription plugin (Stripe was removed
+// on 20 October 2026; its columns were dropped by
+// 20261029120000_drop_stripe_columns). Empty.
 export const authSubscriptionPlans = pgTable("auth_subscription_plans", {
 	id: uuid().defaultRandom().primaryKey(),
 	name: text().notNull(),
-	stripePriceId: text("stripe_price_id").notNull(),
 	limits: text(),
 });
 
@@ -4393,7 +4390,6 @@ export const organizations = pgTable("organizations", {
 	owner: uuid().references(() => directusUsers.id, { onDelete: "set null" } ),
 	phone: varchar({ length: 255 }).default(sql`NULL`),
 	folder: uuid().references(() => directusFolders.id, { onDelete: "set null" } ),
-	stripeCustomerId: varchar("stripe_customer_id", { length: 255 }).default(sql`NULL`),
 });
 
 export const organizationsContacts = pgTable("organizations_contacts", {
@@ -4577,7 +4573,6 @@ export const osPayments = pgTable("os_payments", {
 	dateUpdated: timestamp("date_updated", { withTimezone: true }),
 	paymentDate: timestamp("payment_date", { withTimezone: true }),
 	amount: numeric({ mode: 'number', precision: 10, scale: 2 }).default(sql`NULL`),
-	stripePaymentId: varchar("stripe_payment_id", { length: 255 }).default(sql`NULL`),
 	organization: uuid().references(() => organizations.id, { onDelete: "set null" } ),
 	contact: uuid().references(() => contacts.id, { onDelete: "set null" } ),
 	invoice: uuid().references(() => osInvoices.id, { onDelete: "set null" } ),
@@ -6409,9 +6404,9 @@ export const users = pgTable.withRLS("users", {
 	name: text().notNull(),
 	emailVerified: boolean("email_verified").default(false).notNull(),
 	// Added to the live table by migration
-	// 20260905120000_add_stripe_polar_customer_ids. Written server-side only
-	// (input:false in auth.ts) by the stripe()/polar() better-auth plugins.
-	stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+	// 20260905120000_add_stripe_polar_customer_ids (its Stripe column was
+	// dropped by 20261029120000_drop_stripe_columns). Written server-side
+	// only (input:false in auth.ts) by the polar() better-auth plugin.
 	polarCustomerId: varchar("polar_customer_id", { length: 255 }),
 	// bigint, not varchar — matches the live column (added directly via
 	// Supabase, mirrors Magento's own numeric customer entity_id). .unique()
