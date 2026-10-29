@@ -10,11 +10,8 @@
 Needs your access, a decision or your approval. Ordered by what blocks launch first. Last checked **29 October**.
 
 1. **Rotate the provider secrets** exposed in the breach: see [rotation list](#rotation-list), step 3. Put the new values in the env files and I'll copy them everywhere else.
-2. **Try these by hand on demo.meeovicms.com.** Automated browsers can't get through the Turnstile check or the passkey prompt.
-   - "Sign in with a passkey" and "Email me a sign-in link".
-   - Adding a product as a seller: **Workspace → Catalog → My products → Add product**. It's created in the store under your seller account and waits for approval.
+2. **Add a product as a seller by hand on demo.meeovicms.com:** **Workspace → Catalog → My products → Add product**. It's created in the store under your seller account and waits for approval. Automated browsers can't get through the Turnstile check.
 3. **Redeploy elitenovels and officiallyjust3** wherever they're hosted. Rocket.Chat's token secret changed.
-4. **Say yes to clearing the npm cache** (my item 8). The disk is 97% full.
 
 ## Still to do: my side
 
@@ -34,11 +31,11 @@ I can do these without further input, unless a step depends on one of your items
 5. **Copy rotated secrets everywhere they're used, then restart**, after your item 1.
 6. **Rotate the OpenSearch admin password.** This is low risk: it only listens on this server.
 7. **Fix Rocket.Chat's `Site_Url`.** It still points to `https://collaborrate.com` (checked 29 October).
-8. **Free disk space.** The disk is 97% full (12 GB free); the `/root/.npm` cache holds 8.2 GB. I'll clear it once you say yes.
 
 ## After launch
 
 - Upgrade better-auth to 1.7: it needs hand-written migrations (new OAuth provider tables for Pixanomy sign-in, `account.issuer` backfill, JWKS columns), then a manual test of every sign-in method. Then remove the magic-link workaround (`storeToken: 'hashed'`, `storeIdentifier: "plain"`).
+- Faster passkey sign-in: offer passkeys in the email field's autofill (conditional mediation), so the challenge is fetched when the page opens instead of when the button is pressed. Preparing the challenge takes about 0.6 s today, mostly round trips to the Supabase database (about 90 ms each).
 - Liking, reposting and replying to Bluesky notes from Meeovi, as the member's own Bluesky account. Today those show as counts only.
 - PayPal membership subscriptions.
 - Mage-OS customer reCAPTCHA.

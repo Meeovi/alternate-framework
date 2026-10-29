@@ -28,6 +28,8 @@
 - Directus private content (28 October): Directus's Public read rules now hide private posts, spaces, websites, showcases and videos, and private lists' links, the same way the app does. 2 private websites and 3 private showcases had been readable by anyone.
 - Nuxt 4.6.3 and Vue 3.5.44 (28 October), which fix advisories about route rules and server-rendered attribute names. better-auth stays on 1.6.23 with the vendor's workaround for the magic-link account takeover (GHSA-965c-763c-88jm); 1.7 is after launch.
 - Sandbox purchase on the demo (28 October): PayPal sandbox payment, order confirmation and the Novu "order placed" notification all worked. It showed that an international label needs a customs declaration; checkout now creates one.
+- Passwordless sign-in tested by hand on the demo (29 October): "Sign in with a passkey" and "Email me a sign-in link" both work. The passkey prompt is a little slow to appear; see the after-launch list.
+- Disk space (29 October): you cleared the npm cache and old logs. The disk went from 97% to 93% full (22 GB free).
 
 ### Products, sellers and free downloads (28 October)
 
