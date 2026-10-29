@@ -1,7 +1,7 @@
 # Production readiness: what's open
 
 **Updated:** 29 October 2026
-**Launch:** soft launch on **meeovi.com** at **00:00 UK time, Saturday 31 October** (Friday night).
+**Launch:** soft launch on **meeovi.com** at **00:00 UK time, Saturday 31 October** (Friday night). **Hard launch: Tuesday 1 December 2026.**
 **Scope:** meeovi-frontend, with commerce.meeovicms.com (Mage-OS 3.6.0) behind it through Directus. Releases move through three stages: local builds are alpha or beta, demo.meeovicms.com is the preview, and meeovi.com is production for users and the public.
 **Finished work** is in [what's done](2026-10-24-production-readiness-done.md). This page lists only what's still to do, before and after launch.
 
@@ -34,12 +34,14 @@ I can do these without further input, unless a step depends on one of your items
 
 ## After launch
 
+All of this is built on one branch, **`post-launch`**, kept up to date with `main` and ready to merge **by Monday 30 November**, before the hard launch on 1 December. Nothing on it reaches meeovi.com until it's merged.
+
 - Upgrade better-auth to 1.7: it needs hand-written migrations (new OAuth provider tables for Pixanomy sign-in, `account.issuer` backfill, JWKS columns), then a manual test of every sign-in method. Then remove the magic-link workaround (`storeToken: 'hashed'`, `storeIdentifier: "plain"`).
 - Faster passkey sign-in: offer passkeys in the email field's autofill (conditional mediation), so the challenge is fetched when the page opens instead of when the button is pressed. Preparing the challenge takes about 0.6 s today, mostly round trips to the Supabase database (about 90 ms each).
 - Liking, reposting and replying to Bluesky notes from Meeovi, as the member's own Bluesky account. Today those show as counts only.
 - PayPal membership subscriptions.
 - Mage-OS customer reCAPTCHA.
-- Social as a federation client: phase 1 is on branch `feature/federation-client` (see `docs/architecture/social-federation-client.md` there); phases 2 to 5 follow.
+- Social as a federation client: phase 1 (member sessions and the lists API) is done on `post-launch`; the plan and phases 2 to 5 are in `docs/architecture/social-federation-client.md` there.
 - Tests for business and ui-shell.
 - Deploy dropshipping.
 
