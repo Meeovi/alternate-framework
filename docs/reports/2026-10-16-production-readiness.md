@@ -21,8 +21,9 @@ I can do these without further input, unless a step depends on one of your items
    1. `deploy.sh` for the final `main`.
    2. Switch meeovi.com from the static pre-launch page to the app (Apache config swap).
    3. Set Novu to production.
-   4. Run the production tests against https://meeovi.com.
-   5. Make one real purchase with live PayPal.
+   4. Lock demo.meeovicms.com behind a login. It becomes the private beta site.
+   5. Run the production tests against https://meeovi.com.
+   6. Make one real purchase with live PayPal.
 
    The full steps are in [launch plan](#launch-plan).
 2. **Rerun the HTTPS-redirect and TLS checks** against https://meeovi.com. They can't pass on the local port.
@@ -59,6 +60,15 @@ Production runs as `meeovi-prod` (systemd, 127.0.0.1:3012) from `/home/meebuzo/p
 - Set Novu to production:
   1. Set `NODE_ENV=production` in `/root/novu-3.19/api.env`.
   2. Run `docker compose up -d api` in that folder.
+- Lock the demo (the code is in `layers/auth/server/middleware/site-lock.ts`):
+  1. In `/home/meebuzo/.meeovi-demo/demo.env`, set:
+     - `NUXT_SITE_LOCK_ENABLED=true`;
+     - `NUXT_SITE_LOCK_BYPASS_TOKEN` to a new random value;
+     - `NUXT_SITE_INDEXABLE=false`, so every page says `noindex` and `robots.txt` disallows everything.
+  2. Run `systemctl restart meeovi-demo`. No rebuild is needed.
+  3. Signed-out visitors now go to `/login`, and APIs answer 401. Still open: the sign-in pages, `/api/auth/*` (including passkeys, magic links and Pixanomy's sign-in), static files, and the PayPal, Shippo, Polar and Rocket.Chat webhooks. Files in `public/` (images, `llms.txt`) also stay readable: they're served before the lock runs. Tested 29 October on a private copy of the demo build.
+  4. Run the production tests against the demo with `PROD_TEST_SITE_LOCK_BYPASS` set to that token.
+  5. To unlock, set `NUXT_SITE_LOCK_ENABLED=false` and restart.
 - **Rollback:** restore `meeovi.com.conf.bak`, then reload Apache.
 
 ### Rotation list
