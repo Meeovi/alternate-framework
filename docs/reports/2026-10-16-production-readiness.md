@@ -39,8 +39,7 @@ I can do these without further input, unless a step depends on one of your items
 - Liking, reposting and replying to Bluesky notes from Meeovi, as the member's own Bluesky account. Today those show as counts only.
 - PayPal membership subscriptions.
 - Mage-OS customer reCAPTCHA.
-- Drop the old Stripe database columns.
-- Move social onto the federation API.
+- Social as a federation client: phase 1 is on branch `feature/federation-client` (see `docs/architecture/social-federation-client.md` there); phases 2 to 5 follow.
 - Tests for business and ui-shell.
 - Deploy dropshipping.
 
@@ -48,7 +47,7 @@ I can do these without further input, unless a step depends on one of your items
 
 ### Launch plan
 
-Production runs as `meeovi-prod` (systemd, 127.0.0.1:3012) from `/home/meebuzo/public_html/meeovi-app`. It's built from **committed `main`** in a separate worktree, so uncommitted work never ships. The last deploy was `97d3e07b` on 27 October; smoke tests passed 21/21 there and on the demo. Its env is `/home/meebuzo/.meeovi-prod/base.env` plus `prod.env`. meeovi.com still serves the static pre-launch page.
+Production runs as `meeovi-prod` (systemd, 127.0.0.1:3012) from `/home/meebuzo/public_html/meeovi-app`. It's built from **committed `main`** in a separate worktree, so uncommitted work never ships. The last deploy was `88e41504` on 29 October (sign-in and profiles checked on both sites after the Stripe columns were dropped). Its env is `/home/meebuzo/.meeovi-prod/base.env` plus `prod.env`. meeovi.com still serves the static pre-launch page.
 
 - Redeploy with `/home/meebuzo/.meeovi-prod/deploy.sh`. `--rollback` puts the previous build back.
 - Switch meeovi.com over:

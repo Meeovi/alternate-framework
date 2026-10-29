@@ -30,6 +30,7 @@
 - Sandbox purchase on the demo (28 October): PayPal sandbox payment, order confirmation and the Novu "order placed" notification all worked. It showed that an international label needs a customs declaration; checkout now creates one.
 - Passwordless sign-in tested by hand on the demo (29 October): "Sign in with a passkey" and "Email me a sign-in link" both work. The passkey prompt is a little slow to appear; see the after-launch list.
 - Disk space (29 October): you cleared the npm cache and old logs. The disk went from 97% to 93% full (22 GB free).
+- Old Stripe columns dropped (29 October): `users` and `organizations.stripe_customer_id`, `os_payments` and `orders.stripe_payment_id`, and the Stripe columns of `auth_subscriptions` and `auth_subscription_plans`, plus 3 Directus field records for them (migration `20261029120000_drop_stripe_columns`). The schema change was deployed to the demo and production first (`88e41504`), because the sign-in library reads every column the schema lists. Sign-in and profiles were checked on both sites afterwards. The 4 values they held are backed up in `/root/backups/stripe-columns-20261029.json`.
 
 ### Products, sellers and free downloads (28 October)
 
