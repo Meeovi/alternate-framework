@@ -11,6 +11,10 @@ import { siteLockAccess } from '../utils/siteLock'
  *
  * NUXT_SITE_LOCK_BYPASS_TOKEN lets the production tests through: they send it
  * as the `x-site-lock-bypass` header.
+ *
+ * Also set NUXT_SITE_INDEXABLE=false: Nuxt SEO writes its own X-Robots-Tag on
+ * pages (over the one below) and serves robots.txt. Files in public/ are
+ * served before any middleware, so they stay readable.
  */
 const BYPASS_HEADER = 'x-site-lock-bypass'
 const digest = (s: string) => createHash('sha256').update(s).digest()
@@ -19,7 +23,8 @@ export default defineEventHandler(async (event) => {
   const lock = (useRuntimeConfig(event) as { siteLock?: { enabled?: boolean | string, bypassToken?: string } }).siteLock
   if (lock?.enabled !== true && lock?.enabled !== 'true') return
 
-  // Search engines shouldn't list anything here, the login page included.
+  // Search engines shouldn't list anything here (APIs and redirects; pages
+  // get theirs from NUXT_SITE_INDEXABLE=false).
   setHeader(event, 'X-Robots-Tag', 'noindex, nofollow')
 
   const { pathname, search } = getRequestURL(event)
