@@ -12,6 +12,9 @@
 //      PROD_TEST_SECURE_COOKIE=1 for a production build served over plain
 //      http (a private copy on localhost): it still names its session cookie
 //      __Secure-.
+//      PROD_TEST_SITE_LOCK_BYPASS for a site locked behind a login
+//      (NUXT_SITE_LOCK_ENABLED, the demo after launch): the site's
+//      NUXT_SITE_LOCK_BYPASS_TOKEN, so signed-out checks still reach it.
 import { createRequire } from 'node:module'
 import { writeFileSync } from 'node:fs'
 import { createHmac, randomBytes, randomUUID } from 'node:crypto'
@@ -88,6 +91,9 @@ async function paceGlobal() {
   }
 }
 
+const SITE_LOCK_BYPASS = process.env.PROD_TEST_SITE_LOCK_BYPASS || ''
+const withSiteLockBypass = (headers) => SITE_LOCK_BYPASS ? { 'x-site-lock-bypass': SITE_LOCK_BYPASS, ...headers } : headers
+
 export async function req(method, path, { json, form, jar, headers = {}, redirect = 'manual', pace = true } = {}) {
   if (pace) await paceRequest(path.split('?')[0])
   await paceGlobal()
@@ -98,7 +104,7 @@ export async function req(method, path, { json, form, jar, headers = {}, redirec
   let res
   for (let attempt = 1; ; attempt++) {
     try {
-      res = await doFetch(method, path, { json, form, jar, headers, redirect })
+      res = await doFetch(method, path, { json, form, jar, headers: withSiteLockBypass(headers), redirect })
       break
     } catch (e) {
       if (attempt >= attempts) throw e

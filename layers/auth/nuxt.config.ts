@@ -48,6 +48,12 @@ export default defineNuxtConfig({
         home: '/'
       }
     },
+    // Whole site behind a login (server/middleware/site-lock.ts). Set at
+    // run time: NUXT_SITE_LOCK_ENABLED, NUXT_SITE_LOCK_BYPASS_TOKEN.
+    siteLock: {
+      enabled: false,
+      bypassToken: '',
+    },
     public: {
       auth: {
         backend: process.env.NUXT_PUBLIC_AUTH_BACKEND || process.env.AUTH_ADAPTER || 'better-auth',
