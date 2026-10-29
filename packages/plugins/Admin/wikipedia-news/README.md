@@ -9,7 +9,9 @@ News for a Meeovi space, taken from Wikipedia's [Current events portal](https://
 - **Picture:** the lead image of the topic's Wikipedia article, when it has one.
 - **Tags:** its section ("Disasters and accidents", "Sports"…) and #news.
 
-Running the import again adds only events it hasn't added before. Each note's slug comes from the day, the topic and the first source.
+Running the import again adds only events it hasn't added before. An event is recognised by its day, topic and first source, which every imported note keeps in `link_preview`.
+
+Each note gets a unique slug, `news-<day>-<hash>`. The Directus flow "[Website] Slugify" replaces new notes' slugs with one made from the title, and news titles repeat (the same topic on two days). So at the end of a run, the importer puts back any slug the flow changed. If the flow is changed to keep slugs it's given, that step does nothing.
 
 Wikinews was the first choice, but the Wikimedia Foundation closed it in spring 2026. Its archive still exists, but nothing new is published there.
 

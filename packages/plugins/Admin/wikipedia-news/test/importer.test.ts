@@ -25,13 +25,27 @@ function setup() {
     },
     async readItems(collection, query: any) {
       const f = query.filter
-      return (tables[collection] ?? []).filter((r) => !f || Object.entries(f).every(([k, c]: [string, any]) => (c._in ? c._in.includes(r[k]) : r[k] === c._eq)))
+      const test = (r: Record<string, any>, k: string, c: any) => {
+        if (k === 'spaces') return (r.spaces?.create ?? []).some((j: any) => j.spaces_id === c.spaces_id._eq)
+        if (c._in) return c._in.map(String).includes(String(r[k]))
+        if (c._gte) return String(r[k]) >= c._gte
+        return r[k] === c._eq
+      }
+      return (tables[collection] ?? []).filter((r) => !f || Object.entries(f).every(([k, c]) => test(r, k, c)))
     },
     async createItem(collection, item) {
-      const row = { id: next++, ...item }
+      const row: Record<string, any> = { id: next++, ...item }
+      // Like the "[Website] Slugify" flow: the slug becomes the title's.
+      if (collection === 'posts') row.slug = String(item.title).toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-')
       ;(tables[collection] ??= []).push(row)
       return row
     },
+    async updateItem(collection, id, item) {
+      const row = tables[collection]!.find((r) => r.id === id)!
+      Object.assign(row, item)
+      return row
+    },
+    settle: async () => {},
   }
   return { tables, deps, requests }
 }
@@ -56,6 +70,14 @@ describe('news import', () => {
     expect(tables.tags!.filter((t) => t.slug === 'disastersandaccidents')).toHaveLength(1)
   })
 
+  it('gives back unique slugs a flow replaced with the title\'s', async () => {
+    const { tables, deps } = setup()
+    await importNews(deps, { space: 'meeovi-news', days: 1, today: new Date('2026-10-28T12:00:00Z') })
+    const slugs = tables.posts!.map((p) => p.slug)
+    expect(slugs.every((s) => /^news-2026-10-28-[0-9a-f]{10}$/.test(s))).toBe(true)
+    expect(new Set(slugs).size).toBe(slugs.length)
+  })
+
   it('adds only what is new on the next run', async () => {
     const { deps } = setup()
     await importNews(deps, { space: 'meeovi-news', days: 1, today: new Date('2026-10-28T20:00:00Z') })
@@ -67,6 +89,14 @@ describe('news import', () => {
     const { deps } = setup()
     expect((await importNews(deps, { space: 'meeovi-news', days: 1, limit: 3, today: new Date('2026-10-28T12:00:00Z') })).added).toBe(3)
     await expect(importNews(deps, { space: 'nope' })).rejects.toThrow(/No space/)
+  })
+
+  it('knows notes saved before keys were stored, from their title, day and source', async () => {
+    const { tables, deps } = setup()
+    await importNews(deps, { space: 'meeovi-news', days: 1, today: new Date('2026-10-28T12:00:00Z') })
+    for (const p of tables.posts!) delete p.link_preview.key
+    const again = await importNews(deps, { space: 'meeovi-news', days: 1, today: new Date('2026-10-28T13:00:00Z') })
+    expect(again).toMatchObject({ added: 0, skipped: 14 })
   })
 
   it('gives each note a stable slug', () => {

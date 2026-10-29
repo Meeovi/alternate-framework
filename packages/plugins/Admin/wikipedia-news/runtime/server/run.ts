@@ -1,5 +1,5 @@
 // One import run with this site's settings and Directus (server only).
-import { createDirectus, createItem, readItems, rest, staticToken } from '@directus/sdk'
+import { createDirectus, createItem, readItems, rest, staticToken, updateItem } from '@directus/sdk'
 import { useRuntimeConfig } from '#imports'
 import { importNews, type ImportResult } from '../importer'
 
@@ -19,6 +19,7 @@ export function runImport(overrides: { days?: number, limit?: number } = {}): Pr
     source: { api: settings.api, userAgent: settings.userAgent },
     readItems: (collection, query) => directus.request(readItems(collection as any, query as any)) as Promise<Record<string, any>[]>,
     createItem: (collection, item) => directus.request(createItem(collection as any, item as any)) as Promise<Record<string, any>>,
+    updateItem: (collection, id, item) => directus.request(updateItem(collection as any, id as any, item as any)) as Promise<Record<string, any>>,
     log: (message) => console.log(message),
   }, {
     space: settings.space,
