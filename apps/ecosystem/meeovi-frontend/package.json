@@ -40,6 +40,7 @@
     "@mframework/meeovi-gallery": "file:../../../packages/plugins/Media/meeovi-gallery",
     "@mframework/meeovi-ratings": "file:../../../packages/plugins/Social/meeovi-ratings",
     "@mframework/bookmarkit": "file:../../../packages/plugins/Social/bookmarkit",
+    "@mframework/wikipedia-news": "file:../../../packages/plugins/Admin/wikipedia-news",
     "@mframework/meeovi-discussions": "file:../../../packages/plugins/Social/meeovi-discussions",
     "@directus/sdk": "^23.0.0",
     "@graphql-typed-document-node/core": "^3.2.0",

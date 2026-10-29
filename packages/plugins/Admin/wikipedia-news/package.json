@@ -1,0 +1,30 @@
+{
+  "name": "@mframework/wikipedia-news",
+  "version": "0.1.0",
+  "description": "News for a Meeovi space from Wikipedia's Current events portal: each event becomes a note, credited (CC BY-SA 4.0) with its news sources. Admin import route and an optional schedule.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./parse": "./runtime/parse.ts",
+    "./importer": "./runtime/importer.ts"
+  },
+  "files": [
+    "module.ts",
+    "runtime",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'wikipedia-news is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "@directus/sdk": "*",
+    "@nuxt/kit": "^4.0.0"
+  }
+}

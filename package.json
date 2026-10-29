@@ -33,6 +33,7 @@
   },
   "workspaces": [
     "packages/plugins/Admin/alternate-sdk",
+    "packages/plugins/Admin/wikipedia-news",
     "packages/plugins/CMS-Content/experience-builder",
     "packages/plugins/Social/meeovi-atproto",
     "packages/plugins/Social/meeovi-activitypub",
