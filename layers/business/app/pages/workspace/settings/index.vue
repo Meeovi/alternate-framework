@@ -1,15 +1,11 @@
 <template>
     <v-card height="200" class="contentPage">
-        <v-toolbar extended
-            :style="`background-color: ${settingsBar?.color}; color: ${settingsBar?.colortext} !important`">
+        <v-toolbar color="primary" extended>
             <v-toolbar-title>{{ settingsBar?.name }}</v-toolbar-title>
 
             <v-tabs v-model="tab" align-tabs="center">
                 <div v-for="(menu, index) in settingsBar?.menus" :key="index">
-                    <v-tab :value="menu?.value">
-                        <v-btn variant="text"
-                            :style="`color: ${settingsBar?.colortext} !important`">{{ menu?.name }}</v-btn>
-                    </v-tab>
+                    <v-tab :value="menu?.value">{{ menu?.name }}</v-tab>
                 </div>
             </v-tabs>
         </v-toolbar>

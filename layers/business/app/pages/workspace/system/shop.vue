@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="contentPage">
-    <v-toolbar color="white">
+    <v-toolbar color="primary">
       <v-toolbar-title>Shop Profile</v-toolbar-title>
 
       <v-toolbar-items class="d-flex align-center pr-4">

@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar style="background-color: gray;">
+        <v-toolbar color="primary">
             <v-toolbar-title>{{ accountPrivacy?.name }}</v-toolbar-title>
         </v-toolbar>
 

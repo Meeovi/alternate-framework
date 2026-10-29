@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar flat color="white">
+        <v-toolbar color="primary">
             <v-toolbar-title>Digital Content and Devices</v-toolbar-title>
         </v-toolbar>
 

@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar style="background-color: brown; color: white;">
+        <v-toolbar color="primary">
             <v-toolbar-title>{{ langPage?.name }}</v-toolbar-title>
         </v-toolbar>
 

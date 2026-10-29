@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage max-w-3xl mx-auto p-6">
-        <v-toolbar flat class="mb-4">
+        <v-toolbar color="primary" class="mb-4">
             <v-toolbar-title>Business Account Settings</v-toolbar-title>
         </v-toolbar>
 

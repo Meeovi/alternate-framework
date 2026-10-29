@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar>
+        <v-toolbar color="primary">
             <v-toolbar-title>Security</v-toolbar-title>
         </v-toolbar>
 

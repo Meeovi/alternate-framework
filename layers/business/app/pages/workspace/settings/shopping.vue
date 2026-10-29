@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar style="background-color: orange;">
+        <v-toolbar color="primary">
             <v-toolbar-title>{{ accountShopping?.name }}</v-toolbar-title>
         </v-toolbar>
 

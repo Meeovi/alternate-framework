@@ -3,7 +3,7 @@
   <div class="contentPage">
     <v-container class="max-width-600 my-8">
       <v-card elevation="2" rounded="lg">
-        <v-toolbar color="primary" class="text-white" flat>
+        <v-toolbar color="primary">
           <v-icon start class="ml-4">fas fa-mobile-screen-button</v-icon>
           <v-toolbar-title>Device Authorization</v-toolbar-title>
         </v-toolbar>

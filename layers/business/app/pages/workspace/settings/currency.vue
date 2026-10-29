@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar style="background-color: limegreen;">
+        <v-toolbar color="primary">
             <v-toolbar-title>Currency Converter</v-toolbar-title>
         </v-toolbar>
 

@@ -1,9 +1,9 @@
 <template>
     <div class="contentPage">
-        <v-toolbar flat color="white">
+        <v-toolbar color="primary">
             <v-toolbar-title>Speed Dial</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn color="primary" variant="flat" to="/workspace/settings/dial/new">
+            <v-btn color="white" variant="flat" to="/workspace/settings/dial/new">
                 Add New
             </v-btn>
         </v-toolbar>
