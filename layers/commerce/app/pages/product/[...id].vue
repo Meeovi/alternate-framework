@@ -398,6 +398,18 @@
       const backend = CommerceBackendRegistry.get(backendKey.backend)
       const found = backend ? await backend.request({ method: 'GET', collection: 'products', key: backendKey.key }).catch(() => null) : null
       if (!found) throw createError({ statusCode: 404, statusMessage: 'Product not found' })
+      // The store adapter doesn't return a free product's download; the
+      // Directus mirror keeps it (download_url, set only when the product is
+      // free and the seller allows it), so the Download button can show.
+      if (!found.download_url) {
+        const mirrored = await $directus.request($readItems('products', {
+          filter: { mageos_sku: { _eq: backendKey.key } },
+          fields: ['download_url'],
+          limit: 1,
+        })).catch(() => null)
+        const downloadUrl = (mirrored?.data ?? mirrored)?.[0]?.download_url
+        if (downloadUrl) return { ...found, download_url: downloadUrl }
+      }
       return found
     }
 
