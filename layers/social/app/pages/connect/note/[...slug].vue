@@ -52,8 +52,8 @@
                                     <template v-else>{{ part.text }}</template>
                                 </template>
                             </p>
-                            <p v-else class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text">{{ post?.content }}
-                            </p>
+                            <!-- A Meeovi note's content is HTML (composer, Directus editor, imported news): rendered through the shared sanitizer, never as raw text. -->
+                            <div v-else class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text noteContent" v-dompurify-html="post?.content"></div>
                         </div>
                     </div>
                 </div>
@@ -310,6 +310,10 @@
 <style scoped>
     .noteText {
         white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .noteContent {
         overflow-wrap: anywhere;
     }
 
