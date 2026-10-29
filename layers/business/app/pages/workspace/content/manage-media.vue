@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar :style="`background-color: ${mediabar?.color}; color: ${mediabar?.colortext} !important`">
+        <v-toolbar color="primary">
             <v-toolbar-title>
                 <div class="listsToolbarTitle">
                     {{ mediabar?.name }}

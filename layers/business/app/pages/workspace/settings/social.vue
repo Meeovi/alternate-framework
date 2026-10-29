@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar style="background-color: powderblue;">
+        <v-toolbar color="primary">
             <v-toolbar-title>{{ accountSocial?.name }}</v-toolbar-title>
         </v-toolbar>
 

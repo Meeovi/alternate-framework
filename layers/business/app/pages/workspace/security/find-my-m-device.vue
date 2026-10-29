@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar>
+        <v-toolbar color="primary">
             <v-toolbar-title>Find my M device</v-toolbar-title>
         </v-toolbar>
 

@@ -2,7 +2,7 @@
   <div class="contentPage">
     <v-container class="max-width-800 my-8">
       <v-card elevation="2" rounded="lg">
-        <v-toolbar color="primary" class="text-white" flat>
+        <v-toolbar color="primary">
           <v-icon start class="ml-4">fas fa-universal-access</v-icon>
           <v-toolbar-title>{{ accountAccessibility?.name }}</v-toolbar-title>
         </v-toolbar>

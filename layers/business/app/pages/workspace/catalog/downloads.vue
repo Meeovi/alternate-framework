@@ -1,6 +1,6 @@
 <template>
     <div class="contentPage">
-        <v-toolbar flat color="white">
+        <v-toolbar color="primary">
             <v-toolbar-title>Your Downloads</v-toolbar-title>
         </v-toolbar>
 
