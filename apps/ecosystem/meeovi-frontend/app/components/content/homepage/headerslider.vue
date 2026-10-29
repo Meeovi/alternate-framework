@@ -45,8 +45,13 @@
             const block = resp?.data || resp || null
             const urls = (block?.media || []).map(slideURL).filter(Boolean)
             if (!import.meta.server) return urls
+            // Only an answer from Directus that the file is broken drops a
+            // slide. A slow answer doesn't: while the home page renders,
+            // Directus is busy with its other requests and resizing a slide
+            // took over 4 s, which dropped every slide (29 October). A slide
+            // that really fails in the browser is still removed by @error.
             const loads = await Promise.all(urls.map((url) =>
-                $fetch.raw(url, { method: 'HEAD', timeout: 4000 }).then(() => true, () => false)))
+                $fetch.raw(url, { method: 'HEAD', timeout: 4000 }).then(() => true, (e) => !(e?.response?.status >= 400))))
             return urls.filter((_, i) => loads[i])
         } catch {
             return []
