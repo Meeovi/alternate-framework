@@ -13,13 +13,13 @@
                     </div>
                 </v-col>
 
-                <v-col cols="8" class="topnavSearchCol">
+                <v-col class="topnavSearchCol">
                     <ClientOnly>
                         <Search :placeholder="placeholder" />
                     </ClientOnly>
                 </v-col>
 
-                <v-col cols="2" class="topnavActionsCol">
+                <v-col cols="auto" class="topnavActionsCol">
                     <div class="d-flex align-center flex-column flex-sm-row fill-height rightTopNav">
                         <v-col class="notificationsHeader">
                             <LayoutNotifications />
@@ -113,3 +113,12 @@
         }
     )
 </script>
+
+<style scoped>
+    /* Each icon takes its own width; equal shares let the wider ones
+       overlap and push the cart off the bar. */
+    .rightTopNav > .v-col {
+        flex: 0 0 auto;
+        max-width: none;
+    }
+</style>

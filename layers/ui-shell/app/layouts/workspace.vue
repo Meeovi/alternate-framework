@@ -41,6 +41,8 @@
           <!---->
         </v-main>
       </v-app>
+
+      <mobileNav />
     </v-responsive>
   </div>
 </template>
@@ -50,6 +52,7 @@
   import sidebarnav from '../components/menus/sidebar/sidebarnav.vue'
   import LowerHeader from '../components/menus/workspace/LowerHeader.vue'
   import FooterNav from '../components/menus/FooterNav.vue'
+  import mobileNav from '../components/menus/mobile/mobileNav.vue'
   import OfflineAlert from '#shared/app/components/alerts/OfflineAlert.vue'
 
   import {

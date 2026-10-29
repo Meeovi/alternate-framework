@@ -1,7 +1,7 @@
 <template>
-  <div class="lowerBar d-flex justify-space-around">
+  <div class="lowerBar workspaceBar d-flex justify-space-around">
     <v-toolbar color="white">
-        <v-toolbar-title>
+        <v-toolbar-title class="workspaceBar__title">
           Meeovi Workspace
         </v-toolbar-title>
 
@@ -220,3 +220,33 @@
         return $directus.request($readItem('navigation', '145'))
     }, { lazy: true })
 </script>
+
+<style>
+    /* Small screens (the 1100px breakpoint of the mobile top bar and the
+       bottom tab bar). The top bar is in the page flow there, not fixed,
+       so the apps' 63px offset for .lowerBar would leave a gap above this
+       bar and push it over the page. The menus scroll sideways instead of
+       running off the screen. */
+    @media only screen and (max-width: 1100px) {
+        .lowerBar.workspaceBar {
+            top: 0;
+        }
+
+        .workspaceBar .workspaceBar__title {
+            display: none;
+        }
+
+        .workspaceBar .v-toolbar__content {
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .workspaceBar .v-toolbar__content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .workspaceBar .v-toolbar-items {
+            flex-wrap: nowrap;
+        }
+    }
+</style>

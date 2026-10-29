@@ -46,6 +46,12 @@ let novu: InstanceType<typeof NovuUI> | null = null
 function syncPosition() {
   if (!anchorEl.value) return
   const rect = anchorEl.value.getBoundingClientRect()
+  // A hidden header slot (the mobile top bar hides it) has no box: hide
+  // the bell too, or it would sit at the page's top-left corner.
+  if (!rect.width && !rect.height) {
+    positionStyle.value = { position: 'fixed', visibility: 'hidden' }
+    return
+  }
   positionStyle.value = {
     position: 'fixed',
     top: `${rect.top}px`,
