@@ -53,7 +53,9 @@ export default defineNuxtConfig({
     // keys the cache on the request's cookies and passes them into the
     // render: anonymous visitors share one entry, a logged-in user only
     // ever gets the page rendered with their own session.
-    '/': {
+    // Off in development (the preview site), where an edit must show at
+    // once. A `cache` key on its own turns caching on, so it goes too.
+    '/': process.env.NODE_ENV === 'development' ? {} : {
       swr: 60,
       cache: { varies: ['cookie'] }
     },
