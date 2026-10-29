@@ -12,7 +12,7 @@ defineProps<{ activeProducts?: number, totalProducts?: number, unfulfilled?: num
             <v-icon icon="fas fa-boxes-stacked" size="18" />
           </v-btn>
           <div>
-            <h4 class="text-h4 font-weight-medium">{{ activeProducts ?? 0 }} / {{ totalProducts ?? 0 }}</h4>
+            <h4 class="text-h4 font-weight-medium text-white">{{ activeProducts ?? 0 }} / {{ totalProducts ?? 0 }}</h4>
             <span class="text-subtitle-2 text-medium-emphasis text-white">Active Products</span>
           </div>
         </div>
