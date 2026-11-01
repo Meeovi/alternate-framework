@@ -1,21 +1,18 @@
 <template>
     <div>
-        <div class="indexHeaderSlider" v-if="slides.length">
+        <div class="indexHeaderSlider">
             <v-carousel hide-delimiters show-arrows="hover" :continuous="true">
-                <v-carousel-item v-for="(slide, index) in slides" :key="slide" :src="slide" cover
+                <v-carousel-item v-for="(slide, index) in slides" :key="slide" :src="slide" contain
                     :eager="index === 0" alt="" @error="failed.push(slide)"></v-carousel-item>
             </v-carousel>
-        </div>
-
-        <div v-else>
-            <intro />
         </div>
     </div>
 </template>
 
 <script setup>
     import intro from './intro.vue'
-    const { $directus, $readItem, $readItems } = useNuxtApp()
+    const nuxtApp = useNuxtApp()
+    const { $directus, $readItem, $readItems } = nuxtApp
 
     import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
@@ -43,7 +40,11 @@
                 fields: ['*', 'media.*.*'],
             }))
             const block = resp?.data || resp || null
-            const urls = (block?.media || []).map(slideURL).filter(Boolean)
+            // getAssetURL reads the runtime config, and on the server the Nuxt
+            // context is often gone after the await above: it threw, the catch
+            // returned no slides, and the page rendered with an empty slider
+            // (most full page loads; client-side navigations were fine).
+            const urls = await nuxtApp.runWithContext(() => (block?.media || []).map(slideURL).filter(Boolean))
             if (!import.meta.server) return urls
             // Only an answer from Directus that the file is broken drops a
             // slide. A slow answer doesn't: while the home page renders,
@@ -63,3 +64,9 @@
     const failed = ref([])
     const slides = computed(() => (blocksSlider.value || []).filter((url) => !failed.value.includes(url)))
 </script>
+
+<style scoped>
+.indexHeaderSlider > .v-carousel {
+    height: 100%;
+}
+</style>

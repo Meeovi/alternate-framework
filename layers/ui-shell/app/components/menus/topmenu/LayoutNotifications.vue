@@ -42,6 +42,10 @@ const anchorEl = ref<HTMLElement | null>(null)
 const containerEl = ref<HTMLElement | null>(null)
 const positionStyle = ref<Record<string, string>>({ position: 'fixed', visibility: 'hidden' })
 let novu: InstanceType<typeof NovuUI> | null = null
+// The header's icons appear at different times (the account button and the
+// ecosystem menu load their own data), shifting this slot after mount; the
+// bell then stayed at the old spot, over another icon. Follow the row.
+let rowObserver: ResizeObserver | null = null
 
 function syncPosition() {
   if (!anchorEl.value) return
@@ -65,6 +69,12 @@ function syncPosition() {
 onMounted(async () => {
   syncPosition()
   window.addEventListener('resize', syncPosition)
+  const row = anchorEl.value?.closest('.rightTopNav') ?? anchorEl.value?.parentElement
+  if (row && typeof ResizeObserver !== 'undefined') {
+    rowObserver = new ResizeObserver(() => syncPosition())
+    rowObserver.observe(row)
+    for (const child of Array.from(row.children)) rowObserver.observe(child)
+  }
 
   const session = await useNovuSession()
   // Logged-out visitor (session.get.ts 401s via requireAuth), or the
@@ -106,6 +116,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', syncPosition)
+  rowObserver?.disconnect()
 })
 
 onBeforeUnmount(() => {

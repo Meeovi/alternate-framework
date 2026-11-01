@@ -247,12 +247,12 @@ export default defineNuxtConfig({
         collections: [
           // Directus's own products; rows the Mage-OS sync mirrored are the
           // store's, found through the store.
-          { collection: 'products', type: 'product', titleField: 'name', descriptionField: 'content', imageField: 'image', slugField: null, extraFields: ['price'], filter: { _or: [{ source: { _null: true } }, { source: { _neq: 'magento' } }] } },
+          { collection: 'products', type: 'product', titleField: 'name', descriptionField: 'content', imageField: 'image', slugField: null, extraFields: ['price'], categoryField: 'categories.categories_id.name', filter: { _or: [{ source: { _null: true } }, { source: { _neq: 'magento' } }] } },
           { collection: 'spaces', type: 'space', titleField: 'name', descriptionField: 'description', imageField: 'image' },
           { collection: 'posts', type: 'post', titleField: 'title', descriptionField: 'content', imageField: 'image' },
-          { collection: 'shops', type: 'shop', titleField: 'name', descriptionField: 'description', imageField: 'image' },
-          { collection: 'lists', type: 'list', titleField: 'name', descriptionField: 'description', imageField: 'image', path: '/lists/list/{slug}' },
-          { collection: 'brands', type: 'brand', titleField: 'name', descriptionField: 'description', imageField: 'image', statusField: null },
+          { collection: 'shops', type: 'shop', titleField: 'name', descriptionField: 'description', imageField: 'image', categoryField: 'categories.categories_id.name' },
+          { collection: 'lists', type: 'list', titleField: 'name', descriptionField: 'description', imageField: 'image', path: '/lists/list/{slug}', categoryField: 'category.categories_id.name' },
+          { collection: 'brands', type: 'brand', titleField: 'name', descriptionField: 'description', imageField: 'image', statusField: null, categoryField: 'categories.categories_id.name' },
         ],
       },
     },

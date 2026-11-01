@@ -3,12 +3,13 @@
 // Fans a single query out to every enabled backend (OpenSearch,
 // Postgres/Supabase, MySQL) via federatedSearch and returns one merged
 // response. See server/search/federate.ts for the merge strategy.
-import { federatedSearch, getEnabledProviders } from '../search/federate'
-import type { SearchProviderOptions, SearchProviderSort } from '../providers/types'
+import { federatedSearch, getEnabledProviders, type FederatedSearchOptions } from '../search/federate'
+import { filtersFromBody } from '../search/filters'
+import type { SearchProviderSort } from '../providers/types'
 
 const MAX_PAGE_SIZE = 96
 const MAX_QUERY_LENGTH = 512
-const DEFAULT_FACET_FIELDS = ['category', 'brand', 'type']
+const DEFAULT_FACET_FIELDS = ['category', 'brand', 'resultType']
 const DEFAULT_TEXT_FIELDS = ['title^3', 'name^3', 'description', 'brand^2', 'category']
 
 function parseSort(raw: unknown): SearchProviderSort | null {
@@ -47,15 +48,13 @@ export default defineEventHandler(async (event) => {
   const facetFields = parseStringArray(body.facets ?? query.facets, DEFAULT_FACET_FIELDS)
   const textFields = parseStringArray(body.fields ?? query.fields, DEFAULT_TEXT_FIELDS)
   const sort = parseSort(body.sort ?? query.sort)
-  const filters = body.instantsearchFilters || body.filters || undefined
-
-  const options: SearchProviderOptions = {
+  const options: FederatedSearchOptions = {
     query: searchString,
     fields: textFields,
     page,
     pageSize,
     facets: facetFields,
-    filters,
+    searchFilters: filtersFromBody(body),
     sort,
   }
 

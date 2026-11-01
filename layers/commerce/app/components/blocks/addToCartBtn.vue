@@ -6,7 +6,7 @@
     </v-btn>
 
     <v-btn v-else-if="mode === 'download'" color="orange" variant="outlined" prepend-icon="fas fa-download"
-      :href="downloadUrl" download>
+      :href="downloadHref" download>
       Download
     </v-btn>
 
@@ -94,6 +94,14 @@
     return getAssetURL(productObject.value?.file)
       ?? (typeof backendFile === 'string' && /^https:\/\//.test(backendFile) ? backendFile : undefined)
   })
+
+  // The button goes through this site (/api/commerce/products/download),
+  // which sends the file as an attachment: a link straight to the storage
+  // URL showed that URL and only opened the file (browsers ignore
+  // `download` on another origin's link).
+  const downloadHref = computed(() => (productId.value
+    ? `/api/commerce/products/download?key=${encodeURIComponent(productId.value)}`
+    : undefined))
 
   // ---- Integration products (@mframework/meeovi-integrations)
 

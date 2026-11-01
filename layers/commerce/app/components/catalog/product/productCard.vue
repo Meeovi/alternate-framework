@@ -24,7 +24,7 @@
         <NuxtLink :to="productPath" class="no-underline"> {{ product?.name }}
         </NuxtLink>
         <div class="flex items-center pt-1">
-          <MeeoviRating type="product" :id="product?.id" summary />
+          <MeeoviRating type="product" :id="canonicalProductKey(product)" summary />
         </div>
         <p v-if="seller" class="product-card__muted block py-2 font-normal leading-5 typography-text-sm">
           By: <NuxtLink v-if="seller.to" :to="seller.to">{{ seller.name }}</NuxtLink><template v-else>{{ seller.name }}</template>
@@ -51,7 +51,7 @@ import { useImageFallback } from '#shared/app/composables/media/useImageFallback
   import { usePrice } from '../../../composables/catalog/price/price'
   import { useWishlistStore } from '../../../stores/wishlist/useWishlistStore'
   import AddToCartBtn from '../../blocks/addToCartBtn.vue'
-  import { productKey } from '../../../utils/productKey'
+  import { canonicalProductKey, productKey } from '../../../utils/productKey'
   import { productSeller } from '../../../utils/productSeller'
 
   const { getProductPrice } = usePrice()

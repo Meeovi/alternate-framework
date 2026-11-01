@@ -34,17 +34,26 @@ interface DirectusRelation {
 
 const TTL_MS = 5 * 60_000
 let cached: { at: number; graph: Promise<RelationGraph> } | null = null
+// The last graph that loaded: served while a refresh is under way or after
+// one fails, so one slow or failed /relations call no longer turns every CMS
+// request into a 503 each time the cache expires.
+let lastGood: RelationGraph | null = null
 
 export function loadRelationGraph(directusUrl: string, token: string | undefined): Promise<RelationGraph> {
-  if (cached && Date.now() - cached.at < TTL_MS) return cached.graph
+  if (cached && Date.now() - cached.at < TTL_MS) return lastGood ? Promise.resolve(lastGood) : cached.graph
   const graph = $fetch<{ data: DirectusRelation[] }>(`${directusUrl.replace(/\/$/, '')}/relations`, {
     headers: { authorization: token ? `Bearer ${token}` : '' },
     query: { limit: -1 },
-  }).then(({ data }) => buildRelationGraph(data))
+    timeout: 15_000,
+  }).then(({ data }) => {
+    lastGood = buildRelationGraph(data)
+    return lastGood
+  })
   cached = { at: Date.now(), graph }
-  // Don't keep a failed load around — fail closed now, retry next request.
+  // Don't keep a failed load around: retry on the next request. With no
+  // graph ever loaded, fail closed.
   graph.catch(() => { if (cached?.graph === graph) cached = null })
-  return graph
+  return lastGood ? Promise.resolve(lastGood) : graph
 }
 
 export function buildRelationGraph(relations: DirectusRelation[]): RelationGraph {

@@ -23,7 +23,8 @@ vi.mock('../../server/providers/directus', () => ({
 import { openSearchProvider } from '../../server/providers/opensearch'
 import { postgresProvider } from '../../server/providers/postgres'
 import { mysqlProvider } from '../../server/providers/mysql'
-import { federatedSearch, federatedSearchFacetValues, getEnabledProviders } from '../../server/search/federate'
+import { clearSearchCache, federatedSearch, federatedSearchFacetValues, getEnabledProviders } from '../../server/search/federate'
+import { parseAlgoliaFilters } from '../../server/search/filters'
 import { SEARCH_PROVIDER_REGISTRY_KEY } from '../../server/search/registry'
 
 const baseOptions: SearchProviderOptions = { query: 'shirt', page: 1, pageSize: 10 }
@@ -39,6 +40,7 @@ function result(provider: string, items: NormalizedHit[], overrides: Partial<Pro
 describe('federatedSearch', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    clearSearchCache()
     vi.mocked(openSearchProvider.isEnabled).mockReturnValue(true)
     vi.mocked(postgresProvider.isEnabled).mockReturnValue(true)
     vi.mocked(mysqlProvider.isEnabled).mockReturnValue(false)
@@ -171,6 +173,7 @@ describe('federatedSearch', () => {
 describe('provider timeouts', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    clearSearchCache()
     vi.useFakeTimers()
     vi.mocked(openSearchProvider.isEnabled).mockReturnValue(true)
     vi.mocked(postgresProvider.isEnabled).mockReturnValue(true)
@@ -231,9 +234,13 @@ describe('provider timeouts', () => {
 describe('federatedSearchFacetValues', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    clearSearchCache()
     vi.mocked(openSearchProvider.isEnabled).mockReturnValue(true)
     vi.mocked(postgresProvider.isEnabled).mockReturnValue(true)
     vi.mocked(mysqlProvider.isEnabled).mockReturnValue(false)
+    // Values are also counted from the hits; none here.
+    vi.mocked(openSearchProvider.search).mockResolvedValue(result('opensearch', []))
+    vi.mocked(postgresProvider.search).mockResolvedValue(result('postgres', []))
   })
 
   it('merges facet-value counts across providers that implement searchFacetValues, skipping those that don\'t', async () => {
@@ -250,5 +257,115 @@ describe('federatedSearchFacetValues', () => {
         { value: 'blue', count: 1 },
       ]),
     )
+  })
+})
+
+describe('filters, facets and paging across providers', () => {
+  // Store products carry category names; Bluesky posts carry none.
+  const loops = [
+    hit('loop-1', 1, { name: 'Loop 1', price: 0, category: ['Music', 'Music Bytes'] }),
+    hit('loop-2', 1, { name: 'Loop 2', price: 30, category: ['Music', 'Music Bytes'] }),
+    hit('beat', 1, { name: 'Beat', price: 60, category: ['Music'] }),
+  ]
+  const posts = [
+    hit('p1', 1, { type: 'atproto_post', name: 'feedback loops' }),
+    hit('p2', 1, { type: 'atproto_post', name: 'game loops' }),
+  ]
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    clearSearchCache()
+    vi.mocked(openSearchProvider.isEnabled).mockReturnValue(true)
+    vi.mocked(postgresProvider.isEnabled).mockReturnValue(true)
+    vi.mocked(mysqlProvider.isEnabled).mockReturnValue(false)
+    vi.mocked(openSearchProvider.search).mockResolvedValue(result('opensearch', loops, { total: 79 }))
+    vi.mocked(postgresProvider.search).mockResolvedValue(result('postgres', posts))
+    vi.mocked(openSearchProvider.searchFacetValues!).mockResolvedValue([])
+    vi.mocked(postgresProvider.searchFacetValues!).mockResolvedValue([])
+  })
+
+  it('a category filter (as InstantSearch sends it) keeps only hits in that category, and the total is what passed', async () => {
+    const response = await federatedSearch({
+      ...baseOptions,
+      searchFilters: parseAlgoliaFilters({ facetFilters: [['category:Music Bytes']] }),
+    })
+
+    expect(response.items.map((i) => i.objectID).sort()).toEqual(['opensearch:loop-1', 'opensearch:loop-2'])
+    expect(response.total).toBe(2)
+  })
+
+  it('OR within a list, AND across lists, and numeric ranges', async () => {
+    const response = await federatedSearch({
+      ...baseOptions,
+      searchFilters: parseAlgoliaFilters({
+        facetFilters: [['resultType:Products', 'resultType:Bluesky posts'], 'category:Music'],
+        numericFilters: ['price>=25', 'price<=50'],
+      }),
+    })
+
+    expect(response.items.map((i) => i.objectID)).toEqual(['opensearch:loop-2'])
+  })
+
+  it('counts each requested facet over the filtered hits, with a readable result type', async () => {
+    const response = await federatedSearch({ ...baseOptions, facets: ['category', 'resultType'] })
+
+    expect(response.facets.category).toEqual({ 'Music': 3, 'Music Bytes': 2 })
+    expect(response.facets.resultType).toEqual({ 'Products': 3, 'Bluesky posts': 2 })
+    expect(response.items.find((i) => i.objectID === 'postgres:p1')?.resultType).toBe('Bluesky posts')
+  })
+
+  it('unfiltered, the total is each provider\'s own total', async () => {
+    const response = await federatedSearch(baseOptions)
+    expect(response.total).toBe(79 + 2)
+  })
+
+  it('asks every provider for enough hits to filter and count beyond one page', async () => {
+    await federatedSearch({ ...baseOptions, pageSize: 6 })
+    expect(vi.mocked(openSearchProvider.search).mock.calls[0]![0]).toMatchObject({ page: 1, pageSize: 100 })
+    expect(vi.mocked(openSearchProvider.search).mock.calls[0]![0].filters).toBeUndefined()
+  })
+
+  it('requests with the same query share one provider fetch', async () => {
+    await Promise.all([
+      federatedSearch(baseOptions),
+      federatedSearch({ ...baseOptions, searchFilters: parseAlgoliaFilters({ facetFilters: ['category:Music'] }) }),
+      federatedSearchFacetValues('category', 'mus', baseOptions),
+    ])
+    expect(openSearchProvider.search).toHaveBeenCalledTimes(1)
+  })
+
+  it('sorts across providers even when only one answers', async () => {
+    vi.mocked(postgresProvider.isEnabled).mockReturnValue(false)
+    const response = await federatedSearch({ ...baseOptions, sort: { field: 'price', direction: 'desc' } })
+    expect(response.items.map((i) => i.objectID)).toEqual(['opensearch:beat', 'opensearch:loop-2', 'opensearch:loop-1'])
+  })
+
+  it('facet search finds values among the hits and highlights the match', async () => {
+    const buckets = await federatedSearchFacetValues('category', 'music bytes', baseOptions, { pre: '<em>', post: '</em>' })
+    expect(buckets).toEqual([{ value: 'Music Bytes', count: 2, highlighted: '<em>Music Bytes</em>' }])
+  })
+
+  it('facet search ignores the list\'s own selection but keeps the other filters', async () => {
+    const buckets = await federatedSearchFacetValues('category', '', {
+      ...baseOptions,
+      searchFilters: parseAlgoliaFilters({ facetFilters: [['category:Music Bytes']], numericFilters: ['price>=50'] }),
+    })
+    expect(buckets).toEqual([{ value: 'Music', count: 1 }])
+  })
+})
+
+describe('parseAlgoliaFilters', () => {
+  it('reads negation, quoted and escaped values, and ignores junk', () => {
+    expect(parseAlgoliaFilters({
+      facetFilters: ['-brand:Acme', 'category:"Music Bytes"', 'category:\\-1', 'nonsense', 42],
+      numericFilters: ['rating>=4', 'price<abc'],
+    })).toEqual({
+      facets: [
+        [{ attribute: 'brand', value: 'Acme', negate: true }],
+        [{ attribute: 'category', value: 'Music Bytes', negate: false }],
+        [{ attribute: 'category', value: '-1', negate: false }],
+      ],
+      numeric: [[{ attribute: 'rating', operator: '>=', value: 4 }]],
+    })
   })
 })

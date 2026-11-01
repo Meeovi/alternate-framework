@@ -1,6 +1,6 @@
 <!-- pages/results.vue -->
 <template>
-  <div class="contentPage">
+  <div>
     <div class="results-page-shell">
       <v-toolbar class="results-heading" color="primary" density="comfortable" flat rounded="lg">
         <v-toolbar-title class="results-heading__title">
@@ -38,7 +38,9 @@ useHead({
   /* Keep the page chrome transparent so the app's own light/dark
      background shows through instead of a hard white slab. */
   background: transparent;
-  padding: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 16px;
 }
 
 .results-heading__title {

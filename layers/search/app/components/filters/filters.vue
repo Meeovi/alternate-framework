@@ -2,17 +2,13 @@
   <!-- Filters container: keep mounted and hide with v-show to preserve state easily
        or let parent unmount and rely on preserveSharedStateOnUnmount on ais-instant-search -->
   <aside v-show="visible" class="search-filters" :class="{ closed: !visible }">
-    <!-- Current refinements + clear -->
-    <ais-current-refinements :excluded-attributes="EXCLUDED_ATTRIBUTES"/>
-    <ais-clear-refinements :excluded-attributes="EXCLUDED_ATTRIBUTES">
-      <template #resetLabel>Clear all</template>
-    </ais-clear-refinements>
-
-    <!-- These map 1:1 onto the flat `category` / `brand` / `type` term
-         aggregations and the `price` / `rating` numeric fields produced by
-         layers/search/server/api/search.ts. Dynamic widgets aren't used
-         here because the OpenSearch-backed index has no hierarchical
-         (categories.lvlN) fields to introspect. -->
+    <!-- The chosen filters, and "Clear all", are the chips above the
+         results. -->
+    <!-- `category`, `brand`, `resultType` (Products, Spaces, Bluesky
+         posts, ...) and the `price` / `rating` numbers are worked out for
+         every hit in layers/search/server/search/federate.ts. A list with
+         nothing to offer for this search is hidden (ais-Panel--noRefinement
+         below), as on any shop's results page. -->
     <ais-panel>
       <template #header>Category</template>
       <ais-refinement-list attribute="category" :limit="10" searchable searchable-placeholder="Find categories" />
@@ -25,7 +21,7 @@
 
     <ais-panel v-if="showTypeFilter">
       <template #header>Type</template>
-      <ais-refinement-list attribute="type" :limit="8" />
+      <ais-refinement-list attribute="resultType" :limit="8" />
     </ais-panel>
 
     <ais-panel>
@@ -50,22 +46,37 @@ withDefaults(defineProps<{
 })
 
 // A constant, not an inline array: a new array on a re-render makes the
-// widget rebuild itself and search again (see resultsComponent.vue). The
-// query isn't a filter to clear here; the header's search box owns it.
-const EXCLUDED_ATTRIBUTES = ['query']
-
+// widget rebuild itself and search again (see resultsComponent.vue).
+// start/end sit on the item itself: nested under `value` they were
+// ignored, so every option meant "all prices" and the filter did nothing.
+// Under $25 includes free.
 const priceRanges = [
-  { label: 'All prices', value: {} },
-  { label: 'Under $25', value: { end: 25 } },
-  { label: '$25 to $50', value: { start: 25, end: 50 } },
-  { label: '$50 to $100', value: { start: 50, end: 100 } },
-  { label: '$100 & above', value: { start: 100 } },
+  { label: 'All prices' },
+  { label: 'Free', start: 0, end: 0 },
+  { label: 'Under $25', end: 25 },
+  { label: '$25 to $50', start: 25, end: 50 },
+  { label: '$50 to $100', start: 50, end: 100 },
+  { label: '$100 & above', start: 100 },
 ]
 </script>
 
 <style scoped>
-.search-filters { width: 280px; padding: 12px; border-right: 1px solid #eee; }
+.search-filters { width: 280px; padding: 12px; border-right: 1px solid rgba(var(--v-theme-on-surface), 0.08); }
 .search-filters.closed { display: none; }
+
+/* Nothing to choose for this search (e.g. no brands, nothing rated yet). */
+:deep(.ais-Panel--noRefinement) {
+  display: none;
+}
+
+:deep(.ais-Panel) {
+  margin-bottom: 16px;
+}
+
+:deep(.ais-Panel-header) {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
 
 /* vue-instantsearch's default widgets render the label and hit-count as
    adjacent sibling spans with no gap between them (e.g. "Accessories" +

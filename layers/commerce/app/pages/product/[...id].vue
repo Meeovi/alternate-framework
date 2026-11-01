@@ -28,7 +28,7 @@
 
               <!--If the Product is any other type-->
               <div v-else>
-                <productDetails :productDetails="product" />
+                <productDetails :productDetails="product" @discussion="openDiscussion" />
               </div>
             </v-col>
 
@@ -55,7 +55,8 @@
         </v-col>
 
         <v-col cols="12">
-          <v-card elevation="0">
+          <!-- scroll-margin clears the sticky header when Discussion scrolls here -->
+          <v-card id="discussion" elevation="0" style="scroll-margin-top: 80px;">
             <v-tabs v-model="tab" :bg-color="productbar?.color">
               <div v-for="(menu, index) in productbar?.menus" :key="index">
                 <v-tab v-if="menu?.active === 'Active'" :value="menu?.value">{{ menu?.name }}</v-tab>
@@ -564,6 +565,20 @@
     data: productbar
   } = await useAsyncData('productbar', () => {
     return $directus.request($readItem('navigation', '52'))
+  })
+
+  // "Discussion" beside the rating (and a link to /product/<key>#discussion):
+  // the comments are in the Reviews tab, so open it and scroll to the tabs.
+  const openDiscussion = async () => {
+    const reviews = productbar.value?.menus?.[1]?.value
+    if (reviews) tab.value = reviews
+    await nextTick()
+    document.getElementById('discussion')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+  // On a page opened at #discussion, after the router's own hash scroll
+  // (which ignores the header and ran last otherwise).
+  onMounted(() => {
+    if (route.hash === '#discussion') onNuxtReady(() => setTimeout(openDiscussion, 300))
   })
 
   useHead({

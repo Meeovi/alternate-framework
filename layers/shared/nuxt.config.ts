@@ -211,7 +211,21 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxtjs/leaflet',
     '@nuxtjs/mcp-toolkit',
-    'nuxt-skill-hub'
+    'nuxt-skill-hub',
+    // `nuxt dev` only: the real Turnstile key is limited to the live domains,
+    // so on localhost the widget fails (110200) and nobody can sign in. Use
+    // Cloudflare's always-pass test keys instead. Set in process.env (the dev
+    // server's env overrides, and better-auth's captcha plugin reads it
+    // directly) at `ready`, because c12 writes the .env values back on every
+    // later config load. NUXT_TURNSTILE_DEV_REAL_KEYS=true keeps the real keys.
+    (_options: unknown, nuxt: { options: { dev: boolean }, hook: (name: 'ready', fn: () => void) => void }) => {
+      if (!nuxt.options.dev || process.env.NUXT_TURNSTILE_DEV_REAL_KEYS === 'true') return
+      nuxt.hook('ready', () => {
+        if (!process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY) return
+        process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY = '1x00000000000000000000AA'
+        process.env.NUXT_TURNSTILE_SECRET_KEY = '1x0000000000000000000000000000000AA'
+      })
+    }
   ],
 
   // @ts-ignore - @nuxtjs/seo module augments this key at runtime
