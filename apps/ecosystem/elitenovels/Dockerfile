@@ -22,7 +22,11 @@ WORKDIR /app
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=3000
 COPY --from=build /repo/apps/ecosystem/elitenovels/.output ./.output
 EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-  CMD node -e "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"
+# Coolify's rolling update waits for "healthy" before moving traffic to a new container, and
+# Traefik stops routing to an unhealthy one. So the check asks for a static file: it proves the
+# server is up without depending on Directus (a slow Directus must not take the site offline).
+# --start-interval makes a fresh container healthy within seconds of booting.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --start-interval=2s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/manifest.webmanifest').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 # IPv4 first: IPv6 from this server to Cloudflare hangs.
 CMD ["node", "--dns-result-order=ipv4first", ".output/server/index.mjs"]
