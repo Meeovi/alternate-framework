@@ -24,7 +24,7 @@
 
     import { getAssetURL } from '#shared/app/utils/get-asset-url'
 
-    import { computed, ref } from 'vue'
+    import { computed, onMounted, ref } from 'vue'
 
     // Directus resizes and re-encodes on request (and caches the result), so
     // a 3000px PNG upload goes out as a ~1600px WebP.
@@ -39,13 +39,25 @@
     // answer 503) are dropped there too, instead of leaving a broken slide
     // until the image fails in the browser. The home page is cached (isr), so
     // these checks run once a minute at most.
+    // One retry: a single failed read used to leave the slider empty, and the
+    // cached home page then served that empty slider for up to a minute.
+    const readSliderBlock = async () => {
+        const query = () => $directus.request($readItem('page_blocks', '1', { fields: ['*', 'media.*.*'] }))
+        try {
+            return await query()
+        } catch (e) {
+            console.warn('[headerslider] reading page_blocks 1 failed, retrying:', e?.message || e)
+            return await query()
+        }
+    }
+
     const {
-        data: blocksSlider
+        data: blocksSlider,
+        status: slidesStatus,
+        refresh: refreshSlides
     } = useAsyncData('blocksSlider', async () => {
         try {
-            const resp = await $directus.request($readItem('page_blocks', '1', {
-                fields: ['*', 'media.*.*'],
-            }))
+            const resp = await readSliderBlock()
             const block = resp?.data || resp || null
             // getAssetURL reads the runtime config, and on the server the Nuxt
             // context is often gone after the await above: it threw, the catch
@@ -61,7 +73,8 @@
             const loads = await Promise.all(urls.map((url) =>
                 $fetch.raw(url, { method: 'HEAD', timeout: 4000 }).then(() => true, (e) => !(e?.response?.status >= 400))))
             return urls.filter((_, i) => loads[i])
-        } catch {
+        } catch (e) {
+            console.warn('[headerslider] no slides:', e?.message || e)
             return []
         }
     // lazy: true — a client-side navigation here (e.g. the post-login
@@ -70,6 +83,12 @@
 
     const failed = ref([])
     const slides = computed(() => (blocksSlider.value || []).filter((url) => !failed.value.includes(url)))
+
+    // A page rendered (and cached) while Directus was unreachable arrives with
+    // no slides: fetch them again in the browser rather than show an empty hero.
+    onMounted(() => {
+        if (slidesStatus.value === 'success' && !(blocksSlider.value || []).length) refreshSlides()
+    })
 </script>
 
 <style scoped>
