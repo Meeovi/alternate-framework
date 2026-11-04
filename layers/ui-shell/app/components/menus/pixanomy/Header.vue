@@ -12,8 +12,13 @@
                 <v-spacer></v-spacer>
 
                     <div class="d-flex align-center fill-height rightTopNav">
+                        <v-btn class="pixHeaderLink" variant="text" :href="mediaUrl" title="Your media library"
+                            :icon="smAndDown" aria-label="Media">
+                            <v-icon :start="!smAndDown" icon="fas fa-photo-film"></v-icon>
+                            <span v-if="!smAndDown">Media</span>
+                        </v-btn>
                         <div class="myaccounttopmenu">
-                            <v-btn title="Go to the Pixanomy App" text="Get Started" href="https://app.pixanomy.com"></v-btn>
+                            <v-btn title="Go to the Pixanomy App" text="Get Started" :href="appUrl"></v-btn>
                         </div>
 
                         <div class="ecosystemMenuIcon">
@@ -45,6 +50,11 @@
     })
 
     defineEmits(['toggleDrawer'])
+
+    // Set per app in appConfig.pixanomy (apps/ecosystem/pixanomy-frontend/nuxt.config.ts)
+    const pixanomyConfig = useAppConfig().pixanomy || {}
+    const mediaUrl = pixanomyConfig.mediaUrl || 'https://meeovi.com/workspace/content/manage-media'
+    const appUrl = pixanomyConfig.appUrl || 'https://app.pixanomy.com'
 
     const drawer = ref(null);
     const placeholder = 'Search your media, assets, templates, and more'

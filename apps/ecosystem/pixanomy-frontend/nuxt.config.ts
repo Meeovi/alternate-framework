@@ -60,6 +60,12 @@ export default defineNuxtConfig({
   appConfig: {
     // ui-shell renders layers/ui-shell/app/layouts/pixanomy.vue as this app's default layout
     uiShell: { layout: 'pixanomy', layouts: ['auth'] },
+    // Header "Media" link + homepage shortcuts: the media library in the Meeovi workspace
+    // (layers/business/app/pages/workspace/content/manage-media.vue; sign-in required).
+    pixanomy: {
+      mediaUrl: 'https://meeovi.com/workspace/content/manage-media',
+      appUrl: 'https://app.pixanomy.com',
+    },
     titleSuffix: `${process.env.NUXT_PUBLIC_SITE_NAME || ' - Pixanomy'}`
   },
 
@@ -143,25 +149,17 @@ export default defineNuxtConfig({
     },
 
   runtimeConfig: {
+    // Server-only — the Directus static token is injected by the
+    // /api/cms/** proxy (layers/shared) and never reaches the client.
+    // (Until 2026-11-04 an admin email/password/token sat under `public`
+    // here and was serialized into every page.)
+    directus: {
+      token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN || '',
+    },
     public: {
-      // Directus
+      // Directus URL only; the browser reads published content anonymously.
       directus: {
         url: process.env.DIRECTUS_URL,
-        auth: {
-          email: process.env.NUXTUS_DIRECTUS_ADMIN_EMAIL,
-          password: process.env.NUXTUS_DIRECTUS_ADMIN_PASSWORD,
-          token: process.env.NUXTUS_DIRECTUS_STATIC_TOKEN,
-          enabled: true,
-          enableGlobalAuthMiddleware: false, // Enable auth middleware on every page
-          userFields: ['*'], // Select user fields
-          redirect: {
-            login: '/auth/login', // Path to redirect when login is required
-            logout: '/', // Path to redirect after logout
-            home: '/', // Path to redirect after successful login
-            resetPassword: '/auth/reset-password', // Path to redirect for password reset
-            callback: '/auth/callback', // Path to redirect after login with provider
-          },
-        }
       },
       sentry: {
         dsn: process.env.SENTRY_DSN || process.env.NUXT_PUBLIC_SENTRY_DSN || ''
