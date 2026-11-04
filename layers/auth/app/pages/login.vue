@@ -34,6 +34,11 @@
           </div>
 
           <NuxtTurnstile v-if="captchaEnabled" ref="captchaWidget" v-model="captchaToken" class="mb-2" />
+          <v-alert v-if="captchaBlocked" type="warning" variant="tonal" density="compact" class="mb-3">
+            The security check didn't load, so Sign In stays off. If you use an ad or privacy blocker,
+            allow challenges.cloudflare.com for this site, then
+            <a href="#" class="font-weight-medium" @click.prevent="retryCaptcha">try again</a>.
+          </v-alert>
 
           <v-btn type="submit" block color="primary" :disabled="loading || captchaMissing" :loading="loading" size="large" class="mb-4">
             {{ redirecting ? 'Redirecting…' : (loading ? 'Signing in...' : 'Sign In') }}
@@ -119,7 +124,7 @@
   const redirecting = ref(false);
   // Password sign-in is behind Turnstile (server: captcha endpoints in
   // shared/utils/plugins.ts).
-  const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha } = useAuthCaptcha();
+  const { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha, captchaBlocked, retryCaptcha } = useAuthCaptcha();
   const rememberMe = ref(false);
 
   // Alert local states

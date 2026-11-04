@@ -18,22 +18,28 @@ export default defineNuxtPlugin(() => {
   const sheet = new CSSStyleSheet()
   sheet.replaceSync(RULE)
 
+  // Every copy of the widget, not just the first: Cloudflare Rocket Loader
+  // re-runs the page's scripts, so the CookieYes script can load twice and
+  // the second #cya11y-container's button stayed in the corner (4 Nov 2026).
   const adopt = (): boolean => {
-    const root = document.getElementById('cya11y-container')?.shadowRoot
-    if (!root) return false
-    if (!root.adoptedStyleSheets.includes(sheet)) {
-      root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet]
-    }
-    return true
+    const containers = document.querySelectorAll<HTMLElement>('#cya11y-container')
+    let found = false
+    containers.forEach((container) => {
+      const root = container.shadowRoot
+      if (!root) return
+      found = true
+      if (!root.adoptedStyleSheets.includes(sheet)) {
+        root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet]
+      }
+    })
+    return found
   }
 
-  if (adopt()) return
+  adopt()
 
-  // The widget script loads async; stop watching once it's in, or after a
-  // minute if it never arrives (blocked, consent declined, offline).
-  const observer = new MutationObserver(() => {
-    if (adopt()) observer.disconnect()
-  })
+  // The widget script loads async (and maybe more than once): keep watching
+  // for a minute, then stop (blocked, consent declined, offline).
+  const observer = new MutationObserver(() => { adopt() })
   observer.observe(document.body, { childList: true, subtree: true })
-  setTimeout(() => observer.disconnect(), 60_000)
+  setTimeout(() => { adopt(); observer.disconnect() }, 60_000)
 })
