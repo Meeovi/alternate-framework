@@ -2,15 +2,23 @@
     <div>
         <div class="indexHeaderSlider">
             <v-carousel hide-delimiters show-arrows="hover" :continuous="true">
-                <v-carousel-item v-for="(slide, index) in slides" :key="slide" :src="slide" contain
-                    :eager="index === 0" alt="" @error="failed.push(slide)"></v-carousel-item>
+                <!-- A plain <img>, not the item's :src (a v-img): v-img keeps its image at
+                     display:none until its own load handler fires, and the server-rendered
+                     first slide usually finishes loading before the page hydrates, so the
+                     handler never fired and the hero stayed blank (4 November). -->
+                <!-- eager: the first item renders its content on the server instead of after boot.
+                     The others render when first shown, so their images need no lazy-loading. -->
+                <v-carousel-item v-for="(slide, index) in slides" :key="slide" :eager="index === 0">
+                    <img class="indexHeaderSlide" :src="slide" alt=""
+                        :fetchpriority="index === 0 ? 'high' : 'auto'"
+                        @error="failed.push(slide)">
+                </v-carousel-item>
             </v-carousel>
         </div>
     </div>
 </template>
 
 <script setup>
-    import intro from './intro.vue'
     const nuxtApp = useNuxtApp()
     const { $directus, $readItem, $readItems } = nuxtApp
 
@@ -28,9 +36,8 @@
     // Asked for while the page renders on the server, so the first slide is
     // in the HTML instead of appearing after the page's JavaScript runs.
     // Slides Directus can't serve (files on a storage disk it can't read
-    // answer 503) are dropped there too: with none left the intro renders
-    // straight away, instead of an empty carousel that swaps to the intro
-    // once the images fail in the browser. The home page is cached (isr), so
+    // answer 503) are dropped there too, instead of leaving a broken slide
+    // until the image fails in the browser. The home page is cached (isr), so
     // these checks run once a minute at most.
     const {
         data: blocksSlider
@@ -68,5 +75,13 @@
 <style scoped>
 .indexHeaderSlider > .v-carousel {
     height: 100%;
+}
+
+/* Whole image visible, centred in the carousel (what `contain` did on the v-img). */
+.indexHeaderSlide {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 </style>
