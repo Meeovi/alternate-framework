@@ -73,14 +73,6 @@
           </v-btn>
         </div>
 
-        <v-expansion-panels class="mt-4" variant="accordion">
-          <v-expansion-panel title="Sign in with Bluesky / AT Protocol">
-            <v-expansion-panel-text>
-              <AtprotoAuth mode="sign-in" />
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-
         <div class="mt-6 text-center">
           <span class="text-caption">Don't have an account?</span>
           <NuxtLink to="/register" class="text-caption text-decoration-none text-primary font-weight-medium">
@@ -107,7 +99,6 @@
   } from '#imports';
   import { useSupportedSocialProviders } from '../composables/plugins/useSupportSocialProviders';
   import { authClient } from "../../lib/auth-client"
-  import AtprotoAuth from '../components/features/plugins/atproto.vue'
   import { safeRedirectPath } from '../utils/safeRedirectPath'
 
   const route = useRoute();
