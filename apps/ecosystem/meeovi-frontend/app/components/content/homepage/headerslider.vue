@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="indexHeaderSlider">
+        <div class="indexHeaderSlider" :style="{ '--slide-ratio': ratio }">
             <v-carousel hide-delimiters show-arrows="hover" :continuous="true">
                 <!-- A plain <img>, not the item's :src (a v-img): v-img keeps its image at
                      display:none until its own load handler fires, and the server-rendered
@@ -11,6 +11,7 @@
                 <v-carousel-item v-for="(slide, index) in slides" :key="slide" :eager="index === 0">
                     <img class="indexHeaderSlide" :src="slide" alt=""
                         :fetchpriority="index === 0 ? 'high' : 'auto'"
+                        @load="index === 0 && measure($event)"
                         @error="failed.push(slide)">
                 </v-carousel-item>
             </v-carousel>
@@ -81,6 +82,16 @@
     // redirect) isn't held up by this fetch; the server render still waits.
     }, { lazy: true })
 
+    // The slider takes the banners' own shape (they're 1600x592) instead of a
+    // fixed 500px: on phones a fixed height left a thin strip of image in a
+    // tall white box. The first slide's real size replaces the default once
+    // it has loaded, so differently shaped banners still fit.
+    const ratio = ref(1600 / 592)
+    const measure = (e) => {
+        const { naturalWidth: w, naturalHeight: h } = e.target
+        if (w && h) ratio.value = w / h
+    }
+
     const failed = ref([])
     const slides = computed(() => (blocksSlider.value || []).filter((url) => !failed.value.includes(url)))
 
@@ -92,15 +103,16 @@
 </script>
 
 <style scoped>
+/* !important: v-carousel puts its 500px default height inline. */
 .indexHeaderSlider > .v-carousel {
-    height: 100%;
+    height: auto !important;
+    aspect-ratio: var(--slide-ratio);
 }
 
-/* Whole image visible, centred in the carousel (what `contain` did on the v-img). */
 .indexHeaderSlide {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 </style>

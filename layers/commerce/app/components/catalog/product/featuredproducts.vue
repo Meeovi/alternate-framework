@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="featured.length">
     <section data-bs-version="5.1" class="mbr-section features20 cid-txNnCwzel4" id="features20-4t"
       data-sortbtn="btn-primary">
       <div class="container-fluid">
@@ -9,7 +9,7 @@
           <div class="line"></div>
         </div>
         <v-sheet class="mx-auto">
-          <v-slide-group v-model="model" class="pa-4" show-arrows>
+          <v-slide-group class="pa-4" show-arrows>
             <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
               v-for="(products, index) in featured" :key="index">
               <productCard :product="products" :class="['ma-4', selectedClass]" @click="toggle" />
@@ -28,39 +28,14 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue'
   import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import productCard from './productCard.vue'
 
-  const model = ref(null);
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
-
-  // lazy: true — see latestproducts.vue's comment on the same pattern.
-  const {
-    data: featured
-  } = useAsyncData('featured', async () => {
-    try {
-      return await $directus.request($readItems('products', {
-        fields: ['*',
-          'products.products_id.*',
-          'products.products_id.image.*',
-          'brands.brands_id.*',
-          'image.*',
-        ],
-        limit: 10,
-        filter: {
-          is_featured: {
-            _eq: true
-          },
-          status: {
-            _eq: "published"
-          }
-        }
-      }))
-    } catch {
-      return null
-    }
-  }, { getCachedData: reuseServerData, lazy: true })
+  // Featured Products: the highest rated, then the most commented.
+  // Worked out on the server (/api/commerce/home/featured, cached), the same
+  // whether the page renders on the server or the browser.
+  const { data } = useAsyncData('home-featured', () => $fetch('/api/commerce/home/featured'),
+    { getCachedData: reuseServerData, lazy: true, default: () => null })
+  const featured = computed(() => data.value?.products ?? [])
 </script>

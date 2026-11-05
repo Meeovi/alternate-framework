@@ -306,7 +306,8 @@
 <script setup>
   import {
     ref,
-    computed
+    computed,
+    watch
   } from 'vue';
   import radioCard from '#social/app/components/related/radio.vue'
   import productDetails from '../../components/catalog/product/productDetails.vue'
@@ -320,7 +321,8 @@
   import shop from '../../components/catalog/shops/stores.vue'
   import productCompare from '../../components/catalog/product/compare.vue'
   import { CommerceBackendRegistry } from 'alternate-sdk'
-  import { parseProductKey } from '../../utils/productKey'
+  import { canonicalProductKey, parseProductKey } from '../../utils/productKey'
+  import { authClient } from '#auth/lib/auth-client'
 
   const tab = ref(null);
   // Each v-slide-group needs its own model — they used to all share one
@@ -369,9 +371,12 @@
     $readItems
   } = useNuxtApp()
 
+  // Keyed by the product: with a fixed key, moving from one product to
+  // another inside the site (a similar or recently viewed product) reused
+  // the first product's data and the page never changed.
   const {
     data: product
-  } = await useAsyncData('product', async () => {
+  } = await useAsyncData(() => `product-${productId.value}`, async () => {
     const baseFields = ['*',
       'showcases.showcases_id.*',
       'comments.comments_id.*',
@@ -453,7 +458,7 @@
   // nonexistent field.
   const {
     data: groupedProducts
-  } = await useAsyncData('groupedProducts', async () => {
+  } = await useAsyncData(() => `groupedProducts-${productId.value}`, async () => {
     const results = await $directus.request($readItems('products', {
       fields: ['*', 'image.*'],
       filter: {
@@ -471,7 +476,7 @@
 
   const {
     data: bundledProducts
-  } = await useAsyncData('bundledProducts', async () => {
+  } = await useAsyncData(() => `bundledProducts-${productId.value}`, async () => {
     const results = await $directus.request($readItems('products', {
       fields: ['*', 'image.*'],
       filter: {
@@ -489,7 +494,7 @@
 
   const {
     data: configurableProducts
-  } = await useAsyncData('configurableProducts', async () => {
+  } = await useAsyncData(() => `configurableProducts-${productId.value}`, async () => {
     const results = await $directus.request($readItems('products', {
       fields: ['*', 'image.*'],
       filter: {
@@ -580,6 +585,18 @@
   onMounted(() => {
     if (route.hash === '#discussion') onNuxtReady(() => setTimeout(openDiscussion, 300))
   })
+
+  // "Recently Viewed" on the home page: a signed-in member's product views
+  // are kept with their account (play history, kind `view`).
+  const recordView = async (item) => {
+    const key = canonicalProductKey(item)
+    if (!key) return
+    const { data } = await authClient.getSession().catch(() => ({ data: null }))
+    if (!data?.user) return
+    $fetch('/api/social/play-history', { method: 'POST', body: { kind: 'view', id: key } }).catch(() => {})
+  }
+  onMounted(() => onNuxtReady(() => recordView(product.value)))
+  watch(() => product.value?.id, (id, previous) => { if (id && previous && id !== previous) recordView(product.value) })
 
   useHead({
     title: computed(() => product?.value?.name || 'Product Page')

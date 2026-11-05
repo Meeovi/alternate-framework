@@ -2,12 +2,13 @@ import { requireAuth } from '#auth/server/utils/sessions'
 import { readItemId, readKind, recordPlay } from '#social/server/utils/playHistory'
 
 // POST /api/social/play-history { kind, id } — records that the signed-in
-// user played a vibe (watch) or a radio station (listen).
+// user played a vibe (watch) or a radio station (listen), or opened a
+// product (view, for Recently Viewed: its Directus id or `magento:<sku>`).
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const body = await readBody(event)
   const kind = readKind(body?.kind)
-  const id = readItemId(body?.id)
+  const id = readItemId(body?.id, kind)
   try {
     await recordPlay(user.id, kind, id)
   } catch (error) {

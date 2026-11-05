@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="latest.length">
     <section data-bs-version="5.1" class="mbr-section features20 cid-txNnCwzel4" id="features20-4t"
       data-sortbtn="btn-primary">
       <div class="container-fluid">
@@ -9,7 +9,7 @@
           <div class="line"></div>
         </div>
         <v-sheet class="mx-auto">
-          <v-slide-group v-model="model" class="pa-4" show-arrows="always">
+          <v-slide-group class="pa-4" show-arrows="always">
             <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="(products, index) in latest" :key="index">
               <div class="d-flex align-items-stretch" :class="selectedClass" @click="toggle">
                 <productCard :product="products" class="ma-4" />
@@ -29,37 +29,14 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue'
   import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import productCard from './productCard.vue'
 
-  const model = ref(null);
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
-
-  // lazy: true — see headerslider.vue's comment on the same pattern.
-  const {
-    data: latest
-  } = useAsyncData('latest', async () => {
-    try {
-      return await $directus.request($readItems('products', {
-        fields: ['*',
-          'products.products_id.*',
-          'products.products_id.image.*',
-          'brands.brands_id.*',
-          'image.*',
-        ],
-        filter: {
-          status: {
-            _eq: 'published'
-          }
-        },
-        sort: '-created_at',
-        limit: 10,
-      }))
-    } catch {
-      return null
-    }
-  }, { getCachedData: reuseServerData, lazy: true })
+  // Latest Products: the newest published products.
+  // Worked out on the server (/api/commerce/home/latest, cached), the same
+  // whether the page renders on the server or the browser.
+  const { data } = useAsyncData('home-latest', () => $fetch('/api/commerce/home/latest'),
+    { getCachedData: reuseServerData, lazy: true, default: () => null })
+  const latest = computed(() => data.value?.products ?? [])
 </script>

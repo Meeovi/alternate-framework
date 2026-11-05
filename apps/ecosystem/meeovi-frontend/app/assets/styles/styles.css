@@ -312,8 +312,10 @@ svg.nt-size-4 {
     background: transparent !important;
 }
 
+/* Colour only: the `background` shorthand also wiped every section's
+   background picture (Intro, the callouts, About, error pages). */
 .v-sheet, section {
-    background: transparent !important;
+    background-color: transparent !important;
 }
 
 /* The bar is transparent over the page: its links take the theme's text

@@ -6,7 +6,7 @@ import { forgetPlay, readItemId, readKind } from '#social/server/utils/playHisto
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)
   const kind = readKind(getRouterParam(event, 'kind'))
-  const id = readItemId(getRouterParam(event, 'id'))
+  const id = readItemId(decodeURIComponent(getRouterParam(event, 'id') || ''), kind)
   try {
     await forgetPlay(user.id, kind, id)
   } catch (error) {

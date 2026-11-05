@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="deals.length">
     <section data-bs-version="5.1" class="mbr-section features20 cid-txNnCwzel4" id="features20-4t"
       data-sortbtn="btn-primary">
       <div class="container-fluid">
@@ -9,7 +9,7 @@
           <div class="line"></div>
         </div>
         <v-sheet class="mx-auto">
-          <v-slide-group v-model="model" class="pa-4" selected-class="bg-success" show-arrows>
+          <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
             <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
               v-for="(products, index) in deals" :key="index">
               <productCard :product="products" :class="['ma-4', selectedClass]" @click="toggle" />
@@ -28,36 +28,14 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue'
   import { reuseServerData } from '#shared/app/utils/reuseServerData'
   import productCard from './productCard.vue'
-  import { ref } from '#imports'
 
-  const model = ref(null)
-  const {
-    $directus,
-    $readItems
-  } = useNuxtApp()
-
-  // lazy: true — see headerslider.vue's comment on the same pattern.
-  const {
-    data: deals
-  } = useAsyncData('deals', () => {
-    return $directus.request($readItems('products', {
-      fields: ['*',
-        'products.products_id.*',
-        'products.products_id.image.*',
-        'brands.brands_id.*',
-        'image.*',
-      ],
-      limit: 10,
-      filter: {
-        price: {
-          _lte: "20.00"
-        },
-        status: {
-          _eq: "published"
-        }
-      }
-    }))
-  }, { getCachedData: reuseServerData, lazy: true })
+  // Deals: products under $20 (paid ones first).
+  // Worked out on the server (/api/commerce/home/deals, cached), the same
+  // whether the page renders on the server or the browser.
+  const { data } = useAsyncData('home-deals', () => $fetch('/api/commerce/home/deals'),
+    { getCachedData: reuseServerData, lazy: true, default: () => null })
+  const deals = computed(() => data.value?.products ?? [])
 </script>

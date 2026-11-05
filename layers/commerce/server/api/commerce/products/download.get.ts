@@ -2,6 +2,8 @@ import { createError, defineEventHandler, getQuery, sendStream, setResponseHeade
 import { Readable } from 'node:stream'
 import { useRuntimeConfig } from '#imports'
 import { parseProductKey } from '../../../../app/utils/productKey'
+import { redis } from '#shared/server/utils/redis'
+import { PRODUCT_DOWNLOADS_KEY } from '../../../utils/homeSections'
 
 // Where a free product's file may come from: the store's downloadable
 // domains (its `downloadable:domains` whitelist). Anything else is refused,
@@ -72,6 +74,11 @@ export default defineEventHandler(async (event) => {
 
   const upstream = await fetch(source.url, { headers: source.headers }).catch(() => null)
   if (!upstream?.ok || !upstream.body) throw createError({ statusCode: 502, statusMessage: 'The file could not be fetched' })
+
+  // Counted for Best Sellers (most downloaded and purchased), by the
+  // product's key. Never holds up or fails the download.
+  redis.hincrby(PRODUCT_DOWNLOADS_KEY, backend ? `${backend.backend}:${backend.key}` : key, 1)
+    .catch((error: unknown) => console.error('[download] count failed:', (error as Error)?.message || error))
 
   const filename = safeFilename(source.filename)
   setResponseHeaders(event, {

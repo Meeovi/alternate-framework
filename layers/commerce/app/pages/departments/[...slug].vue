@@ -169,8 +169,11 @@
                     </v-slide-group>
                 </v-sheet>
 
+                <!-- Exclusives: everything by Sebastian Hilton and Meeovi -->
+                <exclusives v-if="department?.slug === 'exclusives'" page />
+
                 <!-- Category Products Section (commerce) -->
-                <v-row style="padding: 10px;" v-if="department?.products?.length">
+                <v-row style="padding: 10px;" v-else-if="department?.products?.length">
                     <v-col cols="3" v-for="product in department?.products?.filter((p) => p?.products_id)"
                         :key="product?.products_id?.id ?? product.id">
                         <productCard :product="product?.products_id" />
@@ -214,6 +217,7 @@
 <script setup>
     import productCard from '../../components/catalog/product/productCard.vue'
     import EmptyCategory from '../../components/catalog/emptyCategory.vue'
+    import exclusives from '../../components/catalog/product/exclusives.vue'
     import travel from '#commerce/app/components/catalog/categories/travel.vue'
     import deals from '#commerce/app/components/catalog/categories/deals.vue'
     import timeComponent from '#commerce/app/components/catalog/categories/time/time.vue'

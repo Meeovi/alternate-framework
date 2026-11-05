@@ -7,10 +7,10 @@ import { createDirectus, rest, staticToken, readItems, createItem, updateItem, d
  * Only these server routes touch it; the /api/cms proxy keeps it private,
  * and account deletion erases it (layers/auth eraseUserContent).
  */
-export type PlayKind = 'watch' | 'listen'
+export type PlayKind = 'watch' | 'listen' | 'view'
 
-/** Where each kind's items live. */
-export const PLAY_KINDS: Record<PlayKind, string> = { watch: 'shorts', listen: 'radios' }
+/** Where each kind's items live ('view': products the member opened, for "Recently Viewed"). */
+export const PLAY_KINDS: Record<PlayKind, string> = { watch: 'shorts', listen: 'radios', view: 'products' }
 /** Rows kept per user and kind; older plays are dropped. */
 export const KEEP = 50
 /** How many the rows show. */
@@ -23,13 +23,16 @@ export const directus = createDirectus(process.env.DIRECTUS_URL!)
   .with(staticToken(process.env.NUXTUS_DIRECTUS_STATIC_TOKEN!))
 
 export function readKind(raw: unknown): PlayKind {
-  if (raw === 'watch' || raw === 'listen') return raw
-  throw createError({ statusCode: 400, statusMessage: 'kind must be watch or listen' })
+  if (raw === 'watch' || raw === 'listen' || raw === 'view') return raw
+  throw createError({ statusCode: 400, statusMessage: 'kind must be watch, listen or view' })
 }
 
-export function readItemId(raw: unknown): string {
+/** A viewed product is recorded by its Directus id or store key (`magento:<sku>`). */
+const PRODUCT_KEY = /^(\d{1,12}|[a-z][\w-]{0,30}:[\w.\-]{1,128})$/
+
+export function readItemId(raw: unknown, kind?: PlayKind): string {
   const id = String(raw ?? '')
-  if (!ITEM_ID.test(id)) throw createError({ statusCode: 400, statusMessage: 'Invalid item id' })
+  if (!(kind === 'view' ? PRODUCT_KEY : ITEM_ID).test(id)) throw createError({ statusCode: 400, statusMessage: 'Invalid item id' })
   return id
 }
 
@@ -45,7 +48,13 @@ export async function historyIds(userId: string, kind: PlayKind, limit = SHOW): 
 
 /** Records a play: the item moves to the front; only the newest KEEP are kept. Unknown items are refused. */
 export async function recordPlay(userId: string, kind: PlayKind, itemId: string): Promise<void> {
-  const [item] = await directus.request(readItems(PLAY_KINDS[kind] as any, { fields: ['id'], filter: { id: { _eq: itemId } }, limit: 1 })) as any[]
+  const [item] = await directus.request(readItems(PLAY_KINDS[kind] as any, {
+    fields: ['id'],
+    filter: kind === 'view' && itemId.includes(':')
+      ? { mageos_sku: { _eq: itemId.slice(itemId.indexOf(':') + 1) } }
+      : { id: { _eq: itemId } },
+    limit: 1,
+  })) as any[]
   if (!item) throw createError({ statusCode: 404, statusMessage: 'Not found' })
 
   const playedAt = new Date().toISOString()

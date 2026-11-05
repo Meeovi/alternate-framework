@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="bestsellers.length">
     <section data-bs-version="5.1" class="mbr-section features20 cid-txNnCwzel4" id="features20-4t"
       data-sortbtn="btn-primary">
       <div class="container-fluid">
@@ -9,7 +9,7 @@
           <div class="line"></div>
         </div>
         <v-sheet class="mx-auto">
-          <v-slide-group v-model="model" class="pa-4" show-arrows>
+          <v-slide-group class="pa-4" show-arrows>
             <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
               v-for="(products, index) in bestsellers" :key="index">
               <ProductCard :product="products" :class="['ma-4', selectedClass]" @click="toggle" />
@@ -28,47 +28,14 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue'
   import { reuseServerData } from '#shared/app/utils/reuseServerData'
-import { ref } from 'vue'
-import ProductCard from './productCard.vue'
+  import ProductCard from './productCard.vue'
 
-const model = ref(null)
-const {
-  $directus,
-  $readItems
-} = useNuxtApp()
-
-// useProducts()/getCommerceClient() routes through initGateway()'s
-// "commerce" domain, which nothing ever wires up (see
-// packages/plugins/Admin/alternate-sdk/index.ts) and CommerceDriverRegistry has
-// zero registered implementations anywhere in the repo — every call
-// silently resolved to null, so this section rendered nothing. Sibling
-// components (latestproducts.vue, featuredproducts.vue) query Directus
-// directly instead; do the same here rather than depend on a client that
-// can never return data. There's no real sales/order-volume signal in
-// Directus yet (salable_quantity is unset on every product), so this
-// sorts by rating as the best available proxy for "best sellers" until
-// real sales data exists.
-// lazy: true — see latestproducts.vue's comment on the same pattern.
-const {
-  data: bestsellers
-} = useAsyncData('bestsellers', async () => {
-  try {
-    return await $directus.request($readItems('products', {
-      fields: ['*',
-        'brands.brands_id.*',
-        'image.*',
-      ],
-      filter: {
-        status: {
-          _eq: 'published'
-        }
-      },
-      sort: '-rating',
-      limit: 10,
-    }))
-  } catch {
-    return null
-  }
-}, { getCachedData: reuseServerData, lazy: true })
+  // Best Sellers: the most downloaded and purchased products.
+  // Worked out on the server (/api/commerce/home/best-sellers, cached), the same
+  // whether the page renders on the server or the browser.
+  const { data } = useAsyncData('home-best-sellers', () => $fetch('/api/commerce/home/best-sellers'),
+    { getCachedData: reuseServerData, lazy: true, default: () => null })
+  const bestsellers = computed(() => data.value?.products ?? [])
 </script>
