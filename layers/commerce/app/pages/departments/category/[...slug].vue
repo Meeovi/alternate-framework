@@ -184,17 +184,22 @@
       .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''))))
 
   // The category's own products, then its subcategories' (so Photography
-  // shows its Travel photos), once each. A deleted product leaves its
-  // junction row behind with no product.
+  // shows its Travel photos), once each. When the products came from the
+  // store, its category already holds its subcategories' products. A store
+  // product and its Directus copy are the same product (same SKU). A
+  // deleted product leaves its junction row behind with no product.
   const products = computed(() => {
     const seen = new Set()
     const rels = [
       ...(category.value?.products || []),
-      ...subcategories.value.flatMap((c: any) => c.products || []),
+      ...(backendCategoryProducts.value ? [] : subcategories.value.flatMap((c: any) => c.products || [])),
     ]
     return rels
       .map((rel: any) => rel?.products_id)
-      .filter((p: any) => p?.id && !seen.has(p.id) && seen.add(p.id))
+      .filter((p: any) => {
+        const key = p?.mageos_sku || p?.sku || p?.id
+        return key && !seen.has(key) && seen.add(key)
+      })
   })
 
   useHead({
