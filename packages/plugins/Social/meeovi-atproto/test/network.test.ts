@@ -92,6 +92,22 @@ describe('atproto network over the service-account client', () => {
 })
 
 describe.runIf(LIVE)('atproto network (live)', { timeout: 30000 }, () => {
+  it('reads a public list of accounts, with its page here and its source on bsky.app', async () => {
+    const network = createAtprotoNetwork({ service: PUBLIC_APPVIEW })
+    const uri = 'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.graph.list/3lvpca43j5z26' // bsky.app's "Community Showcase"
+    const found = await network.list!(uri, { limit: 5 })
+    expect(found?.list).toMatchObject({
+      id: uri,
+      network: 'atproto',
+      kind: 'accounts',
+      path: `/lists/list/${encodeURIComponent(`atproto:${uri}`)}`,
+      url: 'https://bsky.app/profile/did:plc:z72i7hdynmk6r22z27h6tvur/lists/3lvpca43j5z26',
+    })
+    expect(found!.items.length).toBeGreaterThan(0)
+    expect(found!.items[0]).toMatchObject({ kind: 'account', actor: { network: 'atproto' } })
+    expect(await network.list!('at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.post/3lvpca43j5z26')).toBeNull()
+  })
+
   it('reads a profile and feed anonymously from the public AppView', async () => {
     const network = createAtprotoNetwork({ service: PUBLIC_APPVIEW })
     const profile = await network.profile!('bsky.app')
@@ -99,7 +115,8 @@ describe.runIf(LIVE)('atproto network (live)', { timeout: 30000 }, () => {
     expect(profile!.id).toMatch(/^did:/)
     const posts = await network.feed!('bsky.app', { limit: 3 })
     expect(posts.length).toBeGreaterThan(0)
-    expect(posts[0]!.url).toMatch(/^https:\/\/bsky\.app\/profile\/bsky\.app\/post\//)
+    // (a repost in the feed is someone else's post)
+    expect(posts[0]!.url).toMatch(/^https:\/\/bsky\.app\/profile\/[^/]+\/post\//)
   })
 
   it("reaches this deployment's PDS", async () => {

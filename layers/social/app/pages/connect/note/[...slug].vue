@@ -54,6 +54,10 @@
                             </p>
                             <!-- A Meeovi note's content is HTML (composer, Directus editor, imported news): rendered through the shared sanitizer, never as raw text. -->
                             <div v-else class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text noteContent" v-dompurify-html="post?.content"></div>
+
+                            <!-- A note from Bluesky or the Fediverse stays on Meeovi; its original is credited here. -->
+                            <sourceAttribution v-if="federated" class="mb-4" kind="note" :url="post.url"
+                                :network="post.network" :handle="post.author?.handle" />
                         </div>
                     </div>
                 </div>
@@ -100,7 +104,7 @@
                                     <strong>Type</strong>
                                 </h4>
                                 <h5 class="card-text mbr-fonts-style display-7">
-                                    {{ federated ? 'Bluesky note' : (post?.type || 'Notes') }}
+                                    {{ federated ? `${networkName} note` : (post?.type || 'Notes') }}
                                 </h5>
                             </div>
                         </div>
@@ -172,7 +176,7 @@
         <div class="col-sm-6 col-lg-12 feedPost">
             <v-divider></v-divider>
 
-            <!-- A Bluesky note's replies, as notes; a Meeovi note's comments -->
+            <!-- A Bluesky or Fediverse note's replies, as notes; a Meeovi note's comments -->
             <div v-if="federated" id="postComments" class="container py-6">
                 <h2 class="text-h6 mb-4">Replies</h2>
                 <v-row v-if="replies.length">
@@ -194,7 +198,8 @@
     import reactions from '#social/app/components/blocks/reactions.vue';
     import share from '#social/app/components/blocks/share.vue';
     import postCard from '#social/app/components/related/post.vue';
-    import { federatedProfilePath } from '#social/app/utils/postPath';
+    import sourceAttribution from '#social/app/components/blocks/sourceAttribution.vue';
+    import { federatedNoteRef, federatedProfilePath } from '#social/app/utils/postPath';
     import {
         computed,
         onMounted,
@@ -211,22 +216,22 @@
     } = useNuxtApp()
     const route = useRoute()
 
-    // /connect/note/@<handle>/<key> is a note from Bluesky: Meeovi shows it
-    // like its own notes (through the social layer's federation API), with
-    // its replies, and links its author to their profile here.
+    // /connect/note/@<handle>/<key> is a note from Bluesky (alice.bsky.social)
+    // or the Fediverse (alice@mastodon.social): Meeovi shows it like its own
+    // notes (through the social layer's federation API), with its replies,
+    // links its author to their profile here, and credits the original.
     const routeKey = computed(() => {
         const param = route.params.slug
         return String(Array.isArray(param) ? param.join('/') : param || '')
     })
-    const federatedRef = computed(() => {
-        const match = /^@([^/]+)\/([^/]+)$/.exec(routeKey.value)
-        return match ? { author: decodeURIComponent(match[1]), key: decodeURIComponent(match[2]) } : null
-    })
+    const federatedRef = computed(() => federatedNoteRef(routeKey.value))
 
     const {
         data: thread
     } = await useAsyncData(() => `note-thread:${routeKey.value}`, () => federatedRef.value
-        ? $fetch('/api/social/federation/atproto/thread', { query: federatedRef.value }).catch(() => null)
+        ? $fetch(`/api/social/federation/${federatedRef.value.network}/thread`, {
+            query: { author: federatedRef.value.author, key: federatedRef.value.key },
+        }).catch(() => null)
         : Promise.resolve(null), {
         watch: [routeKey]
     })
@@ -256,6 +261,7 @@
     })
     const replies = computed(() => thread.value?.replies || [])
     const federated = computed(() => !!thread.value?.post)
+    const networkName = computed(() => ({ atproto: 'Bluesky', activitypub: 'Fediverse' })[post.value?.network] || 'Federated')
     const federatedImage = computed(() => (federated.value ? post.value?.media || [] : []).find((m) => m.type === 'image') || null)
     const authorName = computed(() => post.value?.author?.displayName || post.value?.author?.name || post.value?.author?.handle || '')
     const createdAt = computed(() => post.value?.createdAt || post.value?.date_created || null)

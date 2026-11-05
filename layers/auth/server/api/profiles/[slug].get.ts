@@ -75,13 +75,17 @@ async function findUser(slug: string) {
 // The network comes from the social layer's federation registry (filled by
 // @mframework/meeovi-atproto) — read through its global key, as this layer
 // can't import the social layer.
-type FederatedActor = { id: string, handle: string, displayName?: string, avatar?: string, bio?: string, followers?: number, following?: number, posts?: number }
+type FederatedActor = { id: string, handle: string, displayName?: string, avatar?: string, bio?: string, url?: string, followers?: number, following?: number, posts?: number }
 type FederationNetwork = {
   profile?(handle: string): Promise<FederatedActor | null>
   feed?(actor: string, options?: { limit?: number }): Promise<Array<Record<string, any>>>
 }
-const blueskyNetwork = () =>
-  ((globalThis as Record<symbol, unknown>)[Symbol.for('meeovi.federation.networks')] as Map<string, FederationNetwork> | undefined)?.get('atproto')
+const federationNetwork = (id: string) =>
+  ((globalThis as Record<symbol, unknown>)[Symbol.for('meeovi.federation.networks')] as Map<string, FederationNetwork> | undefined)?.get(id)
+const blueskyNetwork = () => federationNetwork('atproto')
+
+/** A Fediverse handle: user@instance (alice@mastodon.social). */
+const FEDIVERSE_ID = /^[A-Za-z0-9_.-]{1,64}@([a-z0-9-]+\.)+[a-z0-9-]{2,}$/i
 
 /** A Bluesky handle (has a dot: alice.bsky.social) or DID. */
 const BLUESKY_ID = /^(did:[a-z]+:[A-Za-z0-9._:%-]+|([a-z0-9-]+\.)+[a-z0-9-]+)$/i
@@ -125,6 +129,31 @@ export default defineEventHandler(async (event) => {
   }
   if (!user && BLUESKY_ID.test(slug)) user = await findBlueskyMember(slug)
 
+  // Someone on the Fediverse (/u/alice@mastodon.social): their profile and
+  // notes from the network, shown here; the original profile is credited
+  // on the page (`source`).
+  if (!user && FEDIVERSE_ID.test(slug)) {
+    const network = federationNetwork('activitypub')
+    const actor = network?.profile ? await network.profile(slug).catch(() => null) : null
+    if (!actor) throw createError({ statusCode: 404, statusMessage: 'Profile not found' })
+    return {
+      id: actor.id,
+      name: actor.displayName || actor.handle,
+      username: actor.handle,
+      image: actor.avatar || null,
+      memberSince: null,
+      profession: null,
+      company: null,
+      description: actor.bio || '',
+      links: [],
+      notes: network?.feed ? await network.feed(actor.handle, { limit: 24 }).catch(() => []) : [],
+      vibez: [],
+      bluesky: null,
+      federated: { network: 'activitypub', label: 'the Fediverse', handle: actor.handle, followers: actor.followers ?? 0, following: actor.following ?? 0, notes: actor.posts ?? 0 },
+      source: actor.url ? { network: 'activitypub', url: actor.url } : null,
+    }
+  }
+
   if (!user && BLUESKY_ID.test(slug)) {
     const network = blueskyNetwork()
     const actor = network?.profile ? await network.profile(slug).catch(() => null) : null
@@ -144,6 +173,8 @@ export default defineEventHandler(async (event) => {
       notes: await blueskyNotes(actor.handle),
       vibez: [],
       bluesky: { handle: actor.handle, followers: actor.followers ?? 0, following: actor.following ?? 0, notes: actor.posts ?? 0 },
+      federated: { network: 'atproto', label: 'Bluesky', handle: actor.handle, followers: actor.followers ?? 0, following: actor.following ?? 0, notes: actor.posts ?? 0 },
+      source: { network: 'atproto', url: actor.url || `https://bsky.app/profile/${actor.handle}` },
     }
   }
   if (!user) throw createError({ statusCode: 404, statusMessage: 'Profile not found' })
@@ -220,6 +251,9 @@ export default defineEventHandler(async (event) => {
       ...await blueskyNotesOfMember,
     ].sort((a, b) => Date.parse(String(b.date || b.createdAt || 0)) - Date.parse(String(a.date || a.createdAt || 0))),
     bluesky: user.atprotoHandle ? { handle: user.atprotoHandle } : null,
+    federated: user.atprotoHandle ? { network: 'atproto', label: 'Bluesky', handle: user.atprotoHandle } : null,
+    // A Meeovi member's profile is their own: no source to credit.
+    source: null,
     vibez: vibez.map(vibe => ({
       id: vibe.id,
       name: vibe.name,

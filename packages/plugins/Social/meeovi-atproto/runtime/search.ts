@@ -99,10 +99,11 @@ function postToHit(post: AtprotoPostRecord): NormalizedHit {
       likeCount: post.likeCount ?? 0,
       repostCount: post.repostCount ?? 0,
       replyCount: post.replyCount ?? 0,
-      // Picked up automatically by the search layer's ResultCard.vue external-link fallback
-      // (no atproto_post entry needed in its ROUTE_BUILDERS map) — see
-      // layers/search/app/components/results/ResultCard.vue's `link` computed.
-      url: bskyPostUrl(post),
+      // The note's page on Meeovi (Meeovi is a Bluesky client): the search
+      // layer's ResultCard.vue links an in-app `path` first. The post on
+      // bsky.app is only kept as its source.
+      path: `/connect/note/@${encodeURIComponent(post.authorHandle)}/${encodeURIComponent(post.uri.split('/').pop() || '')}`,
+      sourceUrl: bskyPostUrl(post),
     },
   }
 }
@@ -119,7 +120,8 @@ function actorToHit(actor: AtprotoActorRecord): NormalizedHit {
       image: actor.avatar ?? null,
       authorHandle: actor.handle,
       followersCount: actor.followersCount ?? 0,
-      url: `https://bsky.app/profile/${actor.handle}`,
+      path: `/u/${encodeURIComponent(actor.handle)}`,
+      sourceUrl: `https://bsky.app/profile/${actor.handle}`,
     },
   }
 }

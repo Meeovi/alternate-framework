@@ -116,6 +116,29 @@ export function createActivitypubNetwork(options: { server?: string, accessToken
       const statuses = await client.v1.accounts.$select(account.id).statuses.list({ limit, excludeReplies: true })
       return statuses.map((s) => toFederatedPost(s, domain))
     },
+    // One post by its instance id, for its page on Meeovi
+    // (/connect/note/@<user@domain>/<id>), with its direct replies. The
+    // author in the address must be the post's author, so a page can't
+    // show someone's post under another name.
+    async thread(author, key, { limit = 50 } = {}) {
+      if (!/^[A-Za-z0-9_-]{1,64}$/.test(key)) return null
+      try {
+        const status = client.v1.statuses.$select(key)
+        const post = toFederatedPost(await status.fetch(), domain)
+        const wanted = author.replace(/^@/, '').toLowerCase()
+        const handle = post.author.handle.toLowerCase()
+        if (wanted !== handle && !(handle.endsWith(`@${domain}`) && wanted === handle.slice(0, -domain.length - 1))) return null
+        const context = await status.context.fetch().catch(() => null)
+        const replies = (context?.descendants ?? [])
+          .filter((s) => s.inReplyToId === post.id && (s.visibility === 'public' || s.visibility === 'unlisted'))
+          .slice(0, limit)
+          .map((s) => toFederatedPost(s, domain))
+        return { post, replies }
+      } catch (e) {
+        if (isMastoHttpErrorStatus(e, 404) || isMastoHttpErrorStatus(e, 401) || isMastoHttpErrorStatus(e, 403)) return null
+        throw e
+      }
+    },
     async searchPosts(query, { limit = 20 } = {}) {
       if (token) {
         const res = await client.v2.search.list({ q: query, type: 'statuses', limit, resolve: false })

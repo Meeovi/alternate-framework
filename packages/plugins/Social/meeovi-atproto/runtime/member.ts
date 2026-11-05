@@ -37,7 +37,15 @@ export function toFederatedList(list: AtprotoListRecord): FederatedList {
     avatar: list.avatar || undefined,
     itemCount: list.itemCount,
     path: `/lists/list/${encodeURIComponent(`atproto:${list.uri}`)}`,
+    url: blueskyListUrl(list.uri),
   }
+}
+
+/** at://<did>/app.bsky.graph.list/<rkey> → its page on bsky.app (shown on
+ *  Meeovi as the list's source). */
+export function blueskyListUrl(uri: string): string | undefined {
+  const match = /^at:\/\/([^/]+)\/app\.bsky\.graph\.list\/([^/]+)$/.exec(uri)
+  return match ? `https://bsky.app/profile/${match[1]}/lists/${match[2]}` : undefined
 }
 
 /** The member's session on Bluesky, or null when they have none. */

@@ -67,7 +67,7 @@ export type FederationStatus = {
   detail?: string
 }
 
-export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'thread' | 'publish' | 'forMember'
+export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'thread' | 'list' | 'publish' | 'forMember'
 
 export interface FederationNetwork {
   /** 'atproto', 'activitypub', … — used in /api/social/federation/:network. */
@@ -82,6 +82,9 @@ export interface FederationNetwork {
    *  network id) and its network key, with its direct replies; null when
    *  it doesn't exist. */
   thread?(author: string, key: string, options?: { limit?: number }): Promise<{ post: FederatedPost, replies: FederatedPost[] } | null>
+  /** A public list (of accounts) by its network id, with its items, for
+   *  its page on this site; null when it doesn't exist or isn't public. */
+  list?(id: string, options?: { limit?: number }): Promise<{ list: FederatedList, items: FederatedListItem[] } | null>
   /** Post as the network's service account. */
   publish?(input: { text: string, [key: string]: unknown }): Promise<FederatedPost>
   /**
@@ -127,6 +130,9 @@ export type FederatedList = {
   itemCount?: number
   /** Link to the list's page on this site. */
   path?: string
+  /** The list on its own network (bsky.app, the Mastodon instance), shown
+   *  as the source on Meeovi's page for it, never used as its link. */
+  url?: string
 }
 
 export type FederatedListItem = {

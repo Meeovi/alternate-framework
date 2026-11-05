@@ -31,7 +31,7 @@
                 <v-progress-circular indeterminate />
             </div>
 
-            <v-alert v-else-if="error" type="warning" variant="tonal">
+            <v-alert v-else-if="error && !posts.length" type="warning" variant="tonal">
                 Notes aren't available right now. Please try again later.
             </v-alert>
 
@@ -66,7 +66,8 @@ import postCard from '#social/app/components/related/post.vue'
  * The same call works for any registered network (e.g. 'activitypub').
  * Each one is shown as a note with the social layer's note card
  * (related/post.vue), which links it and its author to their pages on
- * Meeovi (Meeovi is a Bluesky client — nothing links out to bsky.app).
+ * Meeovi (Meeovi is a Bluesky client — nothing links out to bsky.app; the
+ * note's page credits the original). Fediverse notes are added the same way.
  *
  * Server code can use the plugin's client directly instead:
  *   import { useAtprotoClient } from '@mframework/meeovi-atproto/client'
@@ -78,6 +79,7 @@ import postCard from '#social/app/components/related/post.vue'
 
 type FederatedPost = {
     id: string
+    network?: string
     url?: string
     text: string
     createdAt: string
@@ -102,7 +104,17 @@ const { data, pending, error } = await useFetch<{ posts: FederatedPost[] }>('/ap
     key: computed(() => `hashtag:atproto:${tag.value.toLowerCase()}`),
     default: () => ({ posts: [] }),
 })
-const posts = computed(() => data.value?.posts ?? [])
+// The Fediverse too (a hashtag timeline on the configured instance). Not
+// awaited: a slow instance doesn't hold up the page. Both networks' notes
+// open on Meeovi and credit their original on the note's page.
+const { data: fediverse } = useFetch<{ posts: FederatedPost[] }>('/api/social/federation/activitypub/search', {
+    query: { q: computed(() => `#${tag.value}`), limit: 20 },
+    key: computed(() => `hashtag:activitypub:${tag.value.toLowerCase()}`),
+    default: () => ({ posts: [] }),
+    lazy: true,
+})
+const posts = computed(() => [...(data.value?.posts ?? []), ...(fediverse.value?.posts ?? [])]
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)))
 
 const { $directus, $readItems } = useNuxtApp()
 const { data: productRows } = await useAsyncData(

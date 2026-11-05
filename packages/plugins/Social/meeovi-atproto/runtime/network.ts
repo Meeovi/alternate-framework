@@ -4,8 +4,8 @@
 // session even for search — or an unauthenticated client against the same
 // service when no service account is configured.
 import { AtprotoClient, getAtprotoServiceUrl, type AtprotoActorRecord, type AtprotoPostRecord } from './client'
-import { type FederatedActor, type FederatedPost, type FederationNetwork } from './federation'
-import { atprotoMemberSession } from './member'
+import { type FederatedActor, type FederatedListItem, type FederatedPost, type FederationNetwork } from './federation'
+import { atprotoMemberSession, toFederatedList } from './member'
 
 const NETWORK = 'atproto'
 
@@ -118,6 +118,17 @@ export function createAtprotoNetwork(options: { service?: string, configured?: b
         if (e?.statusCode === 503) throw e
         if (e?.status === 400 || /not found|could not find|resolve/i.test(e?.message || '')) return null
         throw e
+      }
+    },
+    // A public Bluesky list of accounts (curate list) by its at:// URI, for
+    // its page on Meeovi (/lists/list/atproto:<uri>).
+    async list(id, { limit = 100 } = {}) {
+      if (!/^at:\/\/[^/]+\/app\.bsky\.graph\.list\/[A-Za-z0-9._:~-]+$/.test(id)) return null
+      const found = await read((c) => c.getList(id, { limit }))
+      if (!found || found.list.purpose !== 'app.bsky.graph.defs#curatelist') return null
+      return {
+        list: toFederatedList({ ...found.list, itemCount: found.list.itemCount ?? found.items.length }),
+        items: found.items.map((item): FederatedListItem => ({ id: item.uri, kind: 'account', actor: toFederatedActor(item.subject) })),
       }
     },
     // A member's own Bluesky session (stored by the atproto sign-in;

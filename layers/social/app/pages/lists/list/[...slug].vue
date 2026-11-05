@@ -1,5 +1,7 @@
 <template>
-  <div class="contentPage">
+  <!-- /lists/list/atproto:<at:// URI>: a public list from Bluesky, shown on Meeovi -->
+  <FederatedListView v-if="federatedList" :network="federatedList.network" :id="federatedList.id" />
+  <div v-else class="contentPage">
     <v-toolbar :color="list?.color || 'primary'" dark>
       <v-toolbar-title>{{ list?.name || 'List' }}</v-toolbar-title>
       <template #append>
@@ -75,6 +77,7 @@
   import productCard from '#commerce/app/components/catalog/product/productCard.vue'
   import { useWishlistStore } from '#commerce/app/stores/wishlist/useWishlistStore'
   import { productKey } from '#commerce/app/utils/productKey'
+  import FederatedListView from '#social/app/components/features/lists/FederatedListView.vue'
 
   const route = useRoute();
   const {
@@ -87,12 +90,21 @@
     return Array.isArray(s) ? s[0] : s
   })
 
+  // A list from another network: /lists/list/<network>:<its id>.
+  const FEDERATED_LIST = /^(atproto):(.+)$/
+  const federatedList = computed(() => {
+    const s = route.params.slug
+    const match = FEDERATED_LIST.exec(Array.isArray(s) ? s.join('/') : String(s || ''))
+    return match ? { network: match[1], id: match[2] } : null
+  })
+
   const {
     data: listRaw,
     pending,
     error,
     refresh: refreshList
   } = await useAsyncData('list', () => {
+    if (federatedList.value) return Promise.resolve([])
     return $directus.request($readItems('lists', {
       fields: [
         '*',

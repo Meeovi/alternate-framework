@@ -22,12 +22,9 @@ export function atprotoActorToSocialProfile(actor: AtprotoActorRecord) {
     name: actor.displayName || actor.handle,
     avatar: actor.avatar || null,
     title: actor.description || undefined,
-    // Deliberately no `username` — MemberCard builds its profile link from
-    // it (`/u/{username}`), a route that only understands local app
-    // usernames. Leaving it unset keeps the card non-broken-link rather
-    // than pointing "Visit Profile" at a page that can't resolve an
-    // atproto handle.
-    username: undefined,
+    // MemberCard links `/u/{username}`; /u/<handle> shows a Bluesky
+    // account on Meeovi (a member with that account as themselves).
+    username: actor.handle,
     roles: ['atproto'],
     // MemberCard reads member.follow?.length as a bare follower count
     // display — Array(n) fakes that without needing real follower rows.
@@ -51,15 +48,26 @@ export function atprotoPostToPostCard(post: AtprotoPostRecord) {
     description: post.text,
     content: post.text,
     date_created: post.createdAt,
-    // No local /connect/note/{slug} route exists for an atproto record —
-    // point the comment link at the real post on Bluesky instead of a
-    // slug that would 404.
+    // The federation API's note fields too (network, text, author.handle,
+    // counts), so the note card treats it as a Bluesky note: it opens at
+    // /connect/note/@<handle>/<key> on Meeovi (utils/postPath.ts), and the
+    // post on bsky.app is only shown there as its source (`url`).
+    network: 'atproto',
+    text: post.text,
+    createdAt: post.createdAt,
     slug: null,
     url: `https://bsky.app/profile/${post.authorHandle}/post/${post.uri.split('/').pop()}`,
     author: {
+      handle: post.authorHandle,
+      displayName: post.authorDisplayName || undefined,
       name: post.authorDisplayName || post.authorHandle,
       avatar: post.authorAvatar || null,
     },
+    media: (post.images ?? []).map((img) => ({ url: img.fullsize, preview: img.thumb, alt: img.alt, type: 'image' as const })),
+    hashtags: post.hashtags ?? [],
+    replies: post.replyCount ?? 0,
+    reposts: post.repostCount ?? 0,
+    likes: post.likeCount ?? 0,
     file: null,
     audio: null,
     image: post.images?.[0]?.fullsize || null,

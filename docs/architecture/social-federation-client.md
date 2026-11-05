@@ -92,3 +92,17 @@ An item's id is whatever its network uses to remove it. For Meeovi that's `<kind
 - `layers/social/test/__tests__/federation-directus-member.spec.ts`: Meeovi lists (ownership, create, rename, delete, items, duplicates, refusals).
 - `packages/plugins/Social/meeovi-atproto/test/member.test.ts`: Bluesky likes, follows and reposts (each done only once), reply threading, lists.
 - Live, read-only: the service account's Bluesky timeline and lists through the member session (29 October). Writing to Bluesky (lists, notes, likes) still needs a test with a throwaway Bluesky account, created and deleted for the test.
+
+### Content from other networks stays on Meeovi (5 November 2026)
+
+Everything from Bluesky and the Fediverse opens on Meeovi, never on its original site. The original is only credited, at the bottom of its page, by `blocks/sourceAttribution.vue`:
+
+| Content | Page on Meeovi | Credit |
+| --- | --- | --- |
+| Bluesky note | `/connect/note/@<handle>/<rkey>` | "Originally posted on Bluesky by @…", linking to bsky.app |
+| Fediverse note | `/connect/note/@<user@instance>/<status id>` (`thread` on `activitypub`) | the same, linking to the instance |
+| Profiles | `/u/<handle>` (Bluesky) and `/u/<user@instance>` (Fediverse); `/api/profiles` returns `source` | "This profile is from …" |
+| Bluesky lists | `/lists/list/atproto:<at:// URI>` (the network's public `list` capability) | "This list was made on Bluesky" |
+| Search hits | `path` to the page above; the original is kept as `sourceUrl` | — |
+
+`FederatedPost.url`, `FederatedActor.url` and `FederatedList.url` are the originals: use them for credit only, never as a link target. Hashtag pages show Fediverse notes as well as Bluesky ones.
