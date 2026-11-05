@@ -304,6 +304,42 @@ svg.nt-size-4 {
     padding: 20px;
 }
 
+.lowerBar {
+    position: relative;
+    top: 60px;
+    z-index: 999 !important;
+    margin: 0 !important;
+    background: transparent !important;
+}
+
+.v-sheet, section {
+    background: transparent !important;
+}
+
+.hashtagBar a {
+    color: white !important;
+}
+
+.header1 > .box-item-text {
+    color: black !important;
+}
+
+.footer3 a {
+    color: white !important;
+}
+
+.cid-tZRUOapGTD button {
+    left: 12px !important;
+}
+
+.v-toolbar-items > div {
+    padding: 15px;
+}
+
+.departmentPage {
+    top: 0px !important;
+}
+
 /******************* Authentication CSS ********/
 
 .loginForm,

@@ -3,7 +3,8 @@
   "version": "0.0.3-beta.3",
   "description": "Social Layer for the M Framework",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "echo 'social layer is consumed from source (Nuxt extends); no build step' && exit 0",
+    "build:dist": "tsc -p tsconfig.build.json",
     "test": "vitest run --passWithNoTests",
     "dev": "nuxt dev --port 5314",
     "typecheck": "nuxt typecheck",

@@ -15,7 +15,7 @@
   "scripts": {
     "test": "vitest",
     "dev": "nuxt dev",
-    "build": "tsc -p tsconfig.json",
+    "build": "echo 'commerce layer is consumed from source (Nuxt extends); no build step' && exit 0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"[lint] ESLint disabled repo-wide\"",
     "prepublishOnly": "npm run typecheck && npm run build",

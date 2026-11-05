@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run --project unit",
     "dev": "nuxt dev",
-    "build": "tsc -p tsconfig.json",
+    "build": "echo 'shared layer is consumed from source (Nuxt extends); no build step' && exit 0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint:i18n": "echo \"[lint] ESLint disabled repo-wide\""
   },
   "dependencies": {
