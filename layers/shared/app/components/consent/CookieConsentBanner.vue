@@ -64,7 +64,9 @@ watch(settingsOpen, (open) => {
   margin-inline: auto;
   padding: 16px 20px;
   border-radius: 12px;
-  background: rgb(var(--v-theme-surface, 255, 255, 255));
+  /* !important: meeovi-frontend's styles.css makes every <section>
+     transparent with !important, which left the banner's text over the page. */
+  background: rgb(var(--v-theme-surface, 255, 255, 255)) !important;
   color: rgb(var(--v-theme-on-surface, 33, 33, 33));
   box-shadow: 0 8px 32px rgb(0 0 0 / 0.25);
   font-size: 14px;
@@ -72,7 +74,7 @@ watch(settingsOpen, (open) => {
 }
 .cc__title { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
 .cc__text { margin: 0 0 12px; }
-.cc__text a { color: rgb(var(--v-theme-primary, 25, 118, 210)); text-decoration: underline; }
+.cc__text a { color: inherit; text-decoration: underline; }
 .cc__choices { border: 0; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
 .cc__choice { display: flex; gap: 8px; align-items: flex-start; }
 .cc__choice input { margin-top: 4px; }

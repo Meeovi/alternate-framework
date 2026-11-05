@@ -1,0 +1,28 @@
+/*
+ * Links take the text colour of whatever they sit on, which Vuetify sets
+ * for light and dark mode (and coloured toolbars/cards set themselves):
+ * black on light backgrounds, white on dark ones.
+ *
+ * The old theme stylesheets each app loads (Bootstrap's `a { color:
+ * #0d6efd }` and Mobirise's `a, a:hover { color: #3b6fd4 }`) made every
+ * link blue, unreadable on dark backgrounds. `body a` outranks those two
+ * whichever loads last; more specific theme rules still apply.
+ */
+body a:not([class*="text-"]),
+body a:not([class*="text-"]):hover,
+body a:not([class*="text-"]):focus {
+  color: inherit;
+}
+
+/*
+ * A link with a colour class of its own (`text-orange`, `text-primary`… —
+ * Vuetify's `color` prop adds them) shows that colour. Vuetify's styles sit
+ * in a cascade layer, so the unlayered theme rules above beat them and the
+ * link stayed blue; `revert-layer` drops the unlayered value and lets the
+ * layered class apply.
+ */
+body a[class*="text-"],
+body a[class*="text-"]:hover,
+body a[class*="text-"]:focus {
+  color: revert-layer;
+}

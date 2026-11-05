@@ -316,8 +316,10 @@ svg.nt-size-4 {
     background: transparent !important;
 }
 
+/* The bar is transparent over the page: its links take the theme's text
+   colour (white in dark mode, black in light), not always white. */
 .hashtagBar a {
-    color: white !important;
+    color: rgb(var(--v-theme-on-background)) !important;
 }
 
 .header1 > .box-item-text {

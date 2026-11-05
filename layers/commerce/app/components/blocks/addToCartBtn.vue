@@ -1,11 +1,11 @@
 <template>
   <div v-if="mode">
-    <v-btn v-if="mode === 'cart'" color="orange" variant="outlined" :disabled="loading" :loading="loading"
+    <v-btn v-if="mode === 'cart'" class="orangeBtn" color="orange" variant="flat" :disabled="loading" :loading="loading"
       @click="handleAddToCart" prepend-icon="fas fa-shopping-cart">
       {{ buttonLabel }}
     </v-btn>
 
-    <v-btn v-else-if="mode === 'download'" color="orange" variant="outlined" prepend-icon="fas fa-download"
+    <v-btn v-else-if="mode === 'download'" class="orangeBtn" color="orange" variant="flat" prepend-icon="fas fa-download"
       :href="downloadHref" download>
       Download
     </v-btn>
@@ -18,7 +18,7 @@
       <v-btn v-else-if="integration?.state === 'coming-soon'" variant="outlined" disabled>
         Coming soon
       </v-btn>
-      <v-btn v-else color="orange" variant="outlined" prepend-icon="fas fa-plus"
+      <v-btn v-else class="orangeBtn" color="orange" variant="flat" prepend-icon="fas fa-plus"
         :loading="loading" :disabled="loading" @click="handleInstall">
         Install
       </v-btn>
@@ -217,6 +217,12 @@
 </script>
 
 <style scoped>
+/* Solid orange with black text, readable on light and dark backgrounds
+   (orange text on white was 2.2:1). */
+.orangeBtn {
+  color: #000 !important;
+}
+
 .add-to-cart__error {
   margin-top: 4px;
   font-size: 0.8rem;

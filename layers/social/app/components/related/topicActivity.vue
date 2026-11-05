@@ -1,8 +1,8 @@
 <template>
   <!-- Notes, public lists, events and spaces about a department's or
        category's topic (/api/social/topic). Sections with nothing are left out. -->
-  <div v-if="data" class="topicActivity">
-    <v-sheet v-if="data.notes?.length" class="topicSection">
+  <div ref="root" class="topicActivity">
+    <v-sheet v-if="data?.notes?.length" class="topicSection">
       <v-toolbar :title="`Notes about ${data.topic.name}`" color="transparent" />
       <v-slide-group class="pa-4" show-arrows>
         <v-slide-group-item v-for="note in data.notes" :key="`${note.network || 'meeovi'}-${note.id}`">
@@ -11,7 +11,7 @@
       </v-slide-group>
     </v-sheet>
 
-    <v-sheet v-if="data.lists?.length" class="topicSection">
+    <v-sheet v-if="data?.lists?.length" class="topicSection">
       <v-toolbar :title="`Lists about ${data.topic.name}`" color="transparent" />
       <v-slide-group class="pa-4" show-arrows>
         <v-slide-group-item v-for="list in data.lists" :key="list.id">
@@ -20,7 +20,7 @@
       </v-slide-group>
     </v-sheet>
 
-    <v-sheet v-if="data.events?.length" class="topicSection">
+    <v-sheet v-if="data?.events?.length" class="topicSection">
       <v-toolbar :title="`${data.topic.name} events`" color="transparent" />
       <v-slide-group class="pa-4" show-arrows>
         <v-slide-group-item v-for="item in data.events" :key="item.id">
@@ -38,7 +38,7 @@
       </v-slide-group>
     </v-sheet>
 
-    <v-sheet v-if="data.spaces?.length" class="topicSection">
+    <v-sheet v-if="data?.spaces?.length" class="topicSection">
       <v-toolbar :title="`Spaces about ${data.topic.name}`" color="transparent" />
       <v-slide-group class="pa-4" show-arrows>
         <v-slide-group-item v-for="space in data.spaces" :key="space.id">
@@ -50,8 +50,9 @@
 </template>
 
 <script setup>
-  import { computed } from 'vue'
+  import { computed, ref, watch } from 'vue'
   import { useLazyFetch } from '#imports'
+  import { useNearViewport } from '#shared/app/composables/useNearViewport'
   import { getAssetURL } from '#shared/app/utils/get-asset-url'
   import postCard from './post.vue'
   import listCard from './list.vue'
@@ -64,13 +65,19 @@
 
   const query = computed(() => (props.departmentId ? { department: props.departmentId } : { category: props.categoryId }))
 
-  // Loaded in the browser, after the page: searching Bluesky and the
-  // Fediverse can take a few seconds.
-  const { data } = useLazyFetch('/api/social/topic', {
+  // Loaded in the browser once the visitor scrolls near it (it sits low on
+  // the page, and searching Bluesky and the Fediverse can take a few seconds).
+  const root = ref(null)
+  const near = useNearViewport(root)
+  const { data, execute } = useLazyFetch('/api/social/topic', {
     query,
     server: false,
-    immediate: !!(props.departmentId || props.categoryId),
+    immediate: false,
+    watch: false,
     key: computed(() => `topic-${props.departmentId ? 'd' : 'c'}-${props.departmentId || props.categoryId}`),
+  })
+  watch([near, query], ([isNear]) => {
+    if (isNear && (props.departmentId || props.categoryId)) execute()
   })
 
   const eventDate = (item) => {

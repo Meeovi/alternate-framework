@@ -131,8 +131,11 @@
                     </v-slide-group>
                 </v-sheet>
 
+                <!-- The rows from here down load when the visitor scrolls near them. -->
+                <div ref="lowerSections" />
+
                 <!-- Best Selling Products Section (commerce) -->
-                <v-sheet style="background-color: transparent; box-shadow: none;">
+                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="best?.length">
                     <v-toolbar title="Best Sellers" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                         <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="product in best"
@@ -174,7 +177,7 @@
                     </v-col>
                 </v-row>
                 <!-- Nothing to sell here yet -->
-                <EmptyCategory v-else-if="!latestProducts?.length" kind="department" :department-id="department?.id" />
+                <EmptyCategory v-else kind="department" :department-id="department?.id" />
 
                 <!-- Notes, public lists, events and spaces about this department -->
                 <TopicActivity v-if="department?.id" :department-id="department.id" />
@@ -220,6 +223,7 @@
     import novelsCard from '#commerce/app/components/related/novelsCard.vue'
     import storyCard from '#commerce/app/components/related/storyCard.vue'
     import TopicActivity from '#social/app/components/related/topicActivity.vue'
+    import { useNearViewport } from '#shared/app/composables/useNearViewport'
     import shortsCard from '#social/app/components/related/short.vue'
 
     import {
@@ -316,109 +320,36 @@
         .map((p) => p?.products_id)
         .filter(Boolean)
 
-    // "Best Sellers" and "latest" are Directus merchandising concepts
-    // (a showcase tag, a status flag) with no equivalent ranking/filter in
-    // most backends' product APIs — rather than fabricate a fake "best
-    // sellers" sort a backend doesn't actually support, both honestly
-    // degrade to the same set already fetched above for the main grid
-    // (backendCategoryProducts), sliced to match this section's own limit.
-    const bestRequest = useAsyncData('best', async () => {
-        if (usingBackendCatalog.value) return (backendCategoryProducts.value ?? []).slice(0, 10)
-        const result = await $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'showcases.showcases_id.*',
-                'images.*'
-            ],
-            limit: 10,
-            filter: {
-                slug: {
-                    _eq: departmentSlug.value
-                },
-                showcases: {
-                    showcases_id: {
-                        name: {
-                            _eq: "Best Sellers"
-                        }
-                    }
-                }
-            }
-        }))
-        return extractProducts(result)
-    }, {
-        watch: [departmentSlug, backendCategoryProducts]
-    })
+    // The "Products" row near the top: the department's published products
+    // (already loaded above), or the commerce backend's.
+    const latestProducts = computed(() => usingBackendCatalog.value
+        ? (backendCategoryProducts.value ?? []).slice(0, 10)
+        : extractProducts([department.value]).filter((p) => !p.status || p.status === 'published').slice(0, 10))
 
-    const latestProductsRequest = useAsyncData('latestProducts', async () => {
-        if (usingBackendCatalog.value) return (backendCategoryProducts.value ?? []).slice(0, 10)
-        const result = await $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'showcases.showcases_id.*',
-                'images.*'
-            ],
-            limit: 10,
-            filter: {
-                slug: {
-                    _eq: departmentSlug.value
-                },
-                products: {
-                    products_id: {
-                        status: {
-                            _eq: "published"
-                        }
-                    }
-                }
-            }
-        }))
-        return extractProducts(result)
-    }, {
-        watch: [departmentSlug, backendCategoryProducts]
+    // Best Sellers and Events load in the browser once the visitor scrolls
+    // near them (/api/commerce/department-sections, cached on the server),
+    // so the page renders without waiting for them. Best Sellers is a
+    // Directus showcase and Events a Directus product type, with no
+    // equivalent in other commerce backends: there, Best Sellers shows the
+    // backend's products and Events nothing.
+    const lowerSections = ref(null)
+    const nearLowerSections = useNearViewport(lowerSections)
+    const {
+        data: sections,
+        execute: loadSections
+    } = useLazyAsyncData(() => `department-sections-${departmentSlug.value}`,
+        () => $fetch('/api/commerce/department-sections', { query: { slug: departmentSlug.value } }).catch(() => null), {
+            server: false,
+            immediate: false,
+            default: () => null,
+        })
+    watch([nearLowerSections, departmentSlug], ([near]) => {
+        if (near && !usingBackendCatalog.value && departmentSlug.value) loadSections()
     })
-
-    // "Event"-type products are a Directus product_types attribute filter —
-    // an axis unrelated to category/department membership, so there's no
-    // honest way to approximate it from getProductsByCategory's result
-    // (unlike best/latest above, showing category products here would be
-    // actively misleading, not just an approximation). Degrades to empty
-    // — the template already guards this section with `v-if="events?.length"`,
-    // so it simply doesn't render rather than showing wrong data.
-    const eventsRequest = useAsyncData('events', async () => {
-        if (usingBackendCatalog.value) return []
-        const result = await $directus.request($readItems('departments', {
-            fields: ['*',
-                'products.products_id.*',
-                'showcases.showcases_id.*',
-                'images.*'
-            ],
-            limit: 10,
-            filter: {
-                slug: {
-                    _eq: departmentSlug.value
-                },
-                products: {
-                    products_id: {
-                        product_types: {
-                            product_types_id: {
-                                name: {
-                                    _eq: "Event"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }))
-        return extractProducts(result)
-    }, {
-        watch: [departmentSlug]
-    })
-
-    // Best Sellers, Latest and Events don't depend on each other: fetched together.
-    await Promise.all([bestRequest, latestProductsRequest, eventsRequest])
-    const { data: best } = bestRequest
-    const { data: latestProducts } = latestProductsRequest
-    const { data: events } = eventsRequest
+    const best = computed(() => usingBackendCatalog.value
+        ? (backendCategoryProducts.value ?? []).slice(0, 10)
+        : (sections.value?.best ?? []))
+    const events = computed(() => (usingBackendCatalog.value ? [] : (sections.value?.events ?? [])))
 
     // Elite Novels' characters and stories, from elitenovels.com's own Directus.
     const isEliteNovels = computed(() => department.value?.slug === 'elite-novels')

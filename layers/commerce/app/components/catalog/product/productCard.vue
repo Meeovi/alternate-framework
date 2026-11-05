@@ -5,10 +5,12 @@
         <NuxtLink :to="productPath" class="block">
           <!-- The placeholder is a static file that needs no transform —
                render it as a plain <img>; only real provider-backed images
-               go through NuxtImg. -->
+               go through NuxtImg. Both load as they come into view: a
+               department can list 80+ products. -->
           <img v-if="isPlaceholder" :src="imageSrc" :alt="product?.name"
-            class="block object-cover w-full h-auto rounded-md aspect-square" width="300" height="300" >
-          <NuxtImg v-else provider="cloudinary" :src="imageSrc" :alt="product?.name"
+            class="block object-cover w-full h-auto rounded-md aspect-square" width="300" height="300"
+            loading="lazy" decoding="async">
+          <NuxtImg v-else provider="cloudinary" :src="imageSrc" :alt="product?.name" loading="lazy" decoding="async"
             @error="onImageError" class="block object-cover w-full h-auto rounded-md aspect-square" width="300"
             height="300" />
         </NuxtLink>

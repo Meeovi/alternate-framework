@@ -106,10 +106,18 @@
 </script>
 
 <style scoped>
-  /* The theme's link blue is too dark on the footer's near-black background
-     (3.3:1); this one is 8.2:1. */
-  .footer3 a {
-    color: #9dbcf5;
+  /* The footer is dark in both themes (the copyright bar below it too), with
+     white text. Its background is the theme's #232323, which the app's
+     `section { background: transparent !important }` removed, leaving white
+     links on a white page. */
+  .footer3 {
+    background-color: #232323 !important;
+  }
+
+  /* Links are white on it, like the rest of its text. */
+  .footer3 a,
+  .footer3 a:hover {
+    color: #ffffff;
   }
 
   /* Small screens get the bottom tab bar (mobile/mobileNav.vue) instead. */
