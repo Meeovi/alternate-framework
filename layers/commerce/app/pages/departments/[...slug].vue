@@ -168,7 +168,7 @@
 
                 <!-- Category Products Section (commerce) -->
                 <v-row style="padding: 10px;" v-if="department?.products?.length">
-                    <v-col cols="3" v-for="product in department?.products"
+                    <v-col cols="3" v-for="product in department?.products?.filter((p) => p?.products_id)"
                         :key="product?.products_id?.id ?? product.id">
                         <productCard :product="product?.products_id" />
                     </v-col>
@@ -322,9 +322,7 @@
     // sellers" sort a backend doesn't actually support, both honestly
     // degrade to the same set already fetched above for the main grid
     // (backendCategoryProducts), sliced to match this section's own limit.
-    const {
-        data: best
-    } = await useAsyncData('best', async () => {
+    const bestRequest = useAsyncData('best', async () => {
         if (usingBackendCatalog.value) return (backendCategoryProducts.value ?? []).slice(0, 10)
         const result = await $directus.request($readItems('departments', {
             fields: ['*',
@@ -351,9 +349,7 @@
         watch: [departmentSlug, backendCategoryProducts]
     })
 
-    const {
-        data: latestProducts
-    } = await useAsyncData('latestProducts', async () => {
+    const latestProductsRequest = useAsyncData('latestProducts', async () => {
         if (usingBackendCatalog.value) return (backendCategoryProducts.value ?? []).slice(0, 10)
         const result = await $directus.request($readItems('departments', {
             fields: ['*',
@@ -387,9 +383,7 @@
     // actively misleading, not just an approximation). Degrades to empty
     // — the template already guards this section with `v-if="events?.length"`,
     // so it simply doesn't render rather than showing wrong data.
-    const {
-        data: events
-    } = await useAsyncData('events', async () => {
+    const eventsRequest = useAsyncData('events', async () => {
         if (usingBackendCatalog.value) return []
         const result = await $directus.request($readItems('departments', {
             fields: ['*',
@@ -420,11 +414,11 @@
         watch: [departmentSlug]
     })
 
-    const {
-        data: callouts
-    } = await useAsyncData('callouts', () => {
-        return $directus.request($readItem('callouts', '2'))
-    })
+    // Best Sellers, Latest and Events don't depend on each other: fetched together.
+    await Promise.all([bestRequest, latestProductsRequest, eventsRequest])
+    const { data: best } = bestRequest
+    const { data: latestProducts } = latestProductsRequest
+    const { data: events } = eventsRequest
 
     // Elite Novels' characters and stories, from elitenovels.com's own Directus.
     const isEliteNovels = computed(() => department.value?.slug === 'elite-novels')

@@ -115,7 +115,10 @@
     ? useAsyncData(
       'meeovi-integrations:store-catalog',
       () => request(integrationsApi).catch(() => ({ items: [] })),
-      { default: () => ({ items: [] }), getCachedData: reuseServerData },
+      // Every card on the page shares this one request: 'defer' makes the
+      // others wait for it (the default, 'cancel', restarted it once per
+      // card — 80 store lookups for a page of 80 products).
+      { default: () => ({ items: [] }), getCachedData: reuseServerData, dedupe: 'defer' },
     )
     : { data: ref({ items: [] }) }
   // The integration this product sells: its plugin names this SKU.

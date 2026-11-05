@@ -134,6 +134,8 @@ export function pluginOrThrow(event: H3Event, user: IntegrationsUser | null, slu
 
 const STORE_TTL_MS = 60 * 1000
 let storeCache: { at: number, key: string, products: Map<string, IntegrationStoreProduct> } | null = null
+// The lookup in progress: callers that arrive meanwhile share it.
+let storeLoading: { key: string, promise: Promise<Map<string, IntegrationStoreProduct>> } | null = null
 
 /** The registered store, if any. */
 export function integrationStore(): IntegrationStore | null {
@@ -149,13 +151,22 @@ export async function storeProducts(event?: H3Event, fresh = false): Promise<Map
   const key = skus.join('|')
   if (!store || !skus.length) return new Map()
   if (!fresh && storeCache?.key === key && Date.now() - storeCache.at < STORE_TTL_MS) return storeCache.products
+  if (storeLoading?.key === key) return storeLoading.promise
+  const promise = (async () => {
+    try {
+      const products = await store.products(skus)
+      storeCache = { at: Date.now(), key, products: new Map(products.map((p) => [p.sku, p])) }
+    } catch {
+      storeCache = { at: Date.now(), key, products: storeCache?.key === key ? storeCache.products : new Map() }
+    }
+    return storeCache.products
+  })()
+  storeLoading = { key, promise }
   try {
-    const products = await store.products(skus)
-    storeCache = { at: Date.now(), key, products: new Map(products.map((p) => [p.sku, p])) }
-  } catch {
-    storeCache = { at: Date.now(), key, products: storeCache?.key === key ? storeCache.products : new Map() }
+    return await promise
+  } finally {
+    if (storeLoading?.promise === promise) storeLoading = null
   }
-  return storeCache.products
 }
 
 const isPaid = (product: IntegrationStoreProduct | undefined) => !!product && product.price > 0
