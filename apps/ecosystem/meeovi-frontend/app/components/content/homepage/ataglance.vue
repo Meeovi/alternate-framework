@@ -1,85 +1,38 @@
 <template>
-    <div>
+    <div v-if="blocks && !blocks.hide_block && items.length">
         <section data-bs-version="5.1" class="content2 cid-skeBU2vAkT" id="content2-8">
-
-
             <div class="container">
-                <div class="row mt-4">
+                <h2 v-if="blocks.name" class="mbr-section-title mbr-fonts-style align-center mb-4 display-2">
+                    <strong>{{ blocks.name }}</strong>
+                </h2>
 
-                    <!-- Feature Item -->
-                    <div class="item features-image сol-12 col-md-6 col-lg-4">
+                <h4 v-if="blocks.description" class="mbr-section-subtitle mbr-fonts-style align-center mb-4 display-7">
+                    {{ blocks.description }}
+                </h4>
+
+                <!-- One card per item in the block's Content list, laid out by its
+                     Layout field: adding, removing or reordering items in
+                     Directus, or changing the layout, needs no rebuild. -->
+                <div class="row mt-4" :class="`ataglance--${layout}`">
+                    <div v-for="(item, i) in items" :key="i" class="item features-image" :class="columnClass">
                         <div class="item-wrapper">
-                            <div class="item-img" v-if="hasAsset(blocks?.media?.[0]?.file || blocks?.media?.[0])">
-                                <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(blocks?.media?.[0]?.file || blocks?.media?.[0])" :alt="blocks?.name" />
-                            </div>
-
-                            <div class="item-img" v-else>
-                                <NuxtImg provider="cloudinary" loading="lazy" src="/images/display-1.png" :alt="blocks?.name" />
-                            </div>                            
-                            <div class="item-content">
-                                <h3 class="item-title mbr-fonts-style display-5">
-                                    {{ blocks?.content?.[0]?.name }}
-                                </h3>
-                                <h4 class="item-subtitle mbr-fonts-style mt-1 display-7">
-                                    <strong>{{ blocks?.content?.[0]?.subtitle }}</strong></h4>
-                                <div class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="blocks?.content?.[0]?.content">
-                                </div>
-                            </div>
-                            <div class="mbr-section-btn item-footer mt-2">
-                                <NuxtLink :to="blocks?.content?.[0]?.url" class="btn item-btn btn-primary display-7"
-                                    target="_blank">{{blocks?.content?.[0]?.url_name}} &gt;</NuxtLink>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Feature Item 2 -->
-                    <div class="item features-image сol-12 col-md-6 col-lg-4">
-                        <div class="item-wrapper">
-                            <div class="item-img" v-if="hasAsset(blocks?.media?.[1]?.file || blocks?.media?.[1])">
-                                <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(blocks?.media?.[1]?.file || blocks?.media?.[1])" :alt="blocks?.name" />
-                            </div>
-
-                            <div class="item-img" v-else>
-                                <NuxtImg provider="cloudinary" loading="lazy" src="/images/display-2.png" :alt="blocks?.name" />
-                            </div> 
-                            <div class="item-content">
-                                <h3 class="item-title mbr-fonts-style display-5">
-                                    {{ blocks?.content?.[1]?.name }}
-                                </h3>
-                                <h4 class="item-subtitle mbr-fonts-style mt-1 display-7">
-                                    <strong>{{ blocks?.content?.[1]?.subtitle }}&nbsp;</strong></h4>
-                                <div class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="blocks?.content?.[1]?.content">
-                                </div>
-                            </div>
-                            <div class="mbr-section-btn item-footer mt-2">
-                                <NuxtLink :to="blocks?.content?.[1]?.url" class="btn btn-primary item-btn display-7"
-                                    target="_blank">{{blocks?.content?.[1]?.url_name}} &gt;</NuxtLink>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Feature Item 3-->
-                    <div class="item features-image сol-12 col-md-6 col-lg-4">
-                        <div class="item-wrapper">
-                            <div class="item-img" v-if="hasAsset(blocks?.media?.[2]?.file || blocks?.media?.[2])">
-                                <NuxtImg provider="cloudinary" loading="lazy" :src="getAssetURL(blocks?.media?.[2]?.file || blocks?.media?.[2])" :alt="blocks?.name" />
-                            </div>
-
-                            <div class="item-img" v-else>
-                                <NuxtImg provider="cloudinary" loading="lazy" src="/images/display-3.png" :alt="blocks?.name" />
+                            <div class="item-img">
+                                <NuxtImg provider="cloudinary" loading="lazy" :src="imageFor(i)" :alt="item.name || blocks.name" />
                             </div>
                             <div class="item-content">
-                                <h3 class="item-title mbr-fonts-style display-5">
-                                    {{ blocks?.content?.[2]?.name }}
+                                <h3 v-if="item.name" class="item-title mbr-fonts-style display-5">
+                                    {{ item.name }}
                                 </h3>
-                                <h4 class="item-subtitle mbr-fonts-style mt-1 display-7">
-                                    <strong>{{ blocks?.content?.[2]?.subtitle }}</strong></h4>
-                                <div class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="blocks?.content?.[2]?.content">
+                                <h4 v-if="item.subtitle" class="item-subtitle mbr-fonts-style mt-1 display-7">
+                                    <strong>{{ item.subtitle }}</strong>
+                                </h4>
+                                <div v-if="item.content" class="mbr-text mbr-fonts-style mt-3 display-7" v-dompurify-html="item.content">
                                 </div>
                             </div>
-                            <div class="mbr-section-btn item-footer mt-2">
-                                <NuxtLink :to="blocks?.content?.[2]?.url" class="btn btn-primary item-btn display-7"
-                                    target="_blank">{{blocks?.content?.[2]?.url_name}} &gt;</NuxtLink>
+                            <div v-if="item.url" class="mbr-section-btn item-footer mt-2">
+                                <NuxtLink :to="item.url" class="btn item-btn btn-primary display-7">
+                                    {{ item.url_name || 'Learn more' }} &gt;
+                                </NuxtLink>
                             </div>
                         </div>
                     </div>
@@ -91,11 +44,9 @@
 
 <script setup>
   import { reuseServerData } from '#shared/app/utils/reuseServerData'
-    const { $directus, $readItem, $readItems } = useNuxtApp()
+    const { $directus, $readItem } = useNuxtApp()
 
     import { getAssetURL } from '#shared/app/utils/get-asset-url'
-
-    const hasAsset = (file) => Boolean(getAssetURL(file))
 
     // lazy: true — see headerslider.vue's comment on the same pattern.
     const {
@@ -112,4 +63,39 @@
             return null
         }
     }, { getCachedData: reuseServerData, lazy: true })
+
+    const items = computed(() => (Array.isArray(blocks.value?.content) ? blocks.value.content : []).filter(Boolean))
+
+    // The block's `layout` field (a dropdown in Directus). Unknown or empty
+    // values fall back to three columns, the original design.
+    const LAYOUTS = {
+        'columns-3': 'col-12 col-md-6 col-lg-4',
+        'columns-2': 'col-12 col-md-6',
+        'columns-4': 'col-12 col-md-6 col-lg-3',
+        list: 'col-12',
+    }
+    const layout = computed(() => (LAYOUTS[blocks.value?.layout] ? blocks.value.layout : 'columns-3'))
+    const columnClass = computed(() => LAYOUTS[layout.value])
+
+    // Pictures come from the block's Media files, in order: the first item
+    // gets the first file. Items without one get the stock pictures.
+    function imageFor(i) {
+        return getAssetURL(blocks.value?.media?.[i]) || `/images/display-${(i % 3) + 1}.png`
+    }
 </script>
+
+<style scoped>
+    /* List layout: picture beside the text on wider screens. */
+    @media (min-width: 768px) {
+        .ataglance--list .item-wrapper {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+            grid-template-rows: 1fr auto;
+            column-gap: 1.5rem;
+        }
+
+        .ataglance--list .item-img {
+            grid-row: 1 / span 2;
+        }
+    }
+</style>

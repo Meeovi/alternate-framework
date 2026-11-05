@@ -47,6 +47,12 @@ const summaryTitle = computed(() => (count.value
   ? `Rated ${average.value.toFixed(1)} out of 5 by ${count.value.toLocaleString()} ${count.value === 1 ? 'person' : 'people'}`
   : 'No ratings yet'))
 
+// Vuetify shrinks each star's button with `size` (x-small + compact is
+// 12px) but not its Font Awesome icon (21px), so the stars overlapped into
+// a strip and were cut off. Size both from one value.
+const STAR_PX = { 'x-small': 14, small: 18, default: 22, large: 28 } as const
+const starPx = computed(() => `${STAR_PX[props.size] ?? 18}px`)
+
 const label = computed(() => (count.value ? `${average.value.toFixed(1)} (${count.value.toLocaleString()})` : 'No ratings yet'))
 
 async function onUpdate(v: number | string) {
@@ -63,8 +69,11 @@ async function onUpdate(v: number | string) {
     <span>{{ count ? average.toFixed(1) : '–' }}</span>
     <span v-if="showCount && count" class="meeovi-rating__count">({{ count.toLocaleString() }})</span>
   </span>
-  <span v-else class="meeovi-rating" :title="hint || undefined">
+  <span v-else class="meeovi-rating" :style="{ '--meeovi-star': starPx }" :title="hint || undefined">
+    <!-- No ratings and nothing to click: just the "No ratings yet" text.
+         Someone who can rate still gets the (empty) stars to rate with. -->
     <v-rating
+      v-if="count || interactive"
       :model-value="value"
       :readonly="!interactive"
       :half-increments="!interactive"
@@ -77,7 +86,7 @@ async function onUpdate(v: number | string) {
       :aria-label="hint || `Rated ${average} out of 5`"
       @update:model-value="onUpdate"
     />
-    <span v-if="showCount" class="meeovi-rating__count">{{ label }}</span>
+    <span v-if="showCount || !(count || interactive)" class="meeovi-rating__count">{{ label }}</span>
     <a v-if="!readonly && !signedIn && stats" :href="config?.loginPath || '/login'" class="meeovi-rating__signin">Sign in to rate</a>
   </span>
 </template>
@@ -88,6 +97,17 @@ async function onUpdate(v: number | string) {
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+.meeovi-rating :deep(.v-rating__item .v-btn) {
+  width: calc(var(--meeovi-star) + 2px);
+  height: calc(var(--meeovi-star) + 2px);
+}
+
+.meeovi-rating :deep(.v-rating__item .v-icon) {
+  font-size: var(--meeovi-star);
+  width: var(--meeovi-star);
+  height: var(--meeovi-star);
 }
 
 .meeovi-rating--summary {

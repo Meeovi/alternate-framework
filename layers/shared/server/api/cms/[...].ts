@@ -62,8 +62,6 @@ const PUBLIC_READ_COLLECTIONS = new Set<string>([
   'products', 'product_variants', 'attributes',
   'articles', 'coupons', 'incentives', 'callouts',
   'currencies', 'tags', 'websites', 'radios', 'videos', 'shorts',
-  // public job listings (/careers)
-  'careers',
 ])
 
 // The only collections a non-admin may write through this proxy (the proxy

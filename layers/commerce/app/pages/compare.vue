@@ -7,12 +7,25 @@
             </v-btn>
         </v-toolbar>
 
-        <compare v-if="comparedProducts?.length" :products="comparedProducts" />
+        <!-- The list is in this browser's storage, so it renders here only. -->
+        <ClientOnly>
+            <compare v-if="comparedProducts?.length" :products="comparedProducts" />
 
-        <div v-else class="pa-8 text-center">
-            <p>You haven't added any products to compare yet.</p>
-            <v-btn color="primary" to="/">Browse products</v-btn>
-        </div>
+            <div v-else-if="pending || !ready" class="pa-8 text-center">
+                <v-progress-circular indeterminate color="primary" />
+            </div>
+
+            <div v-else class="pa-8 text-center">
+                <p>You haven't added any products to compare yet.</p>
+                <v-btn color="primary" to="/">Browse products</v-btn>
+            </div>
+
+            <template #fallback>
+                <div class="pa-8 text-center">
+                    <v-progress-circular indeterminate color="primary" />
+                </div>
+            </template>
+        </ClientOnly>
     </div>
 </template>
 
@@ -31,17 +44,36 @@
     // stores/compare.ts) — fetch the real product records for whichever
     // SKUs are currently in it. Mirrors the fields the product detail
     // page's own comparison table already requests successfully.
-    const { data: comparedProducts, refresh } = await useAsyncData('comparedProducts', () => {
+    const { data: comparedProducts, pending, execute } = useAsyncData('comparedProducts', () => {
         const skus = compareStore.getComparedProductSkus
         if (!skus.length) return Promise.resolve([])
+        // products.sku is a number (bigint): a text SKU there fails the whole
+        // query. Store products mirrored from the commerce backend keep
+        // theirs in mageos_sku.
+        const numeric = skus.filter((sku) => /^\d{1,18}$/.test(sku))
+        const text = skus.filter((sku) => !numeric.includes(sku))
+        const anyOf = [
+            ...(numeric.length ? [{ sku: { _in: numeric } }] : []),
+            ...(text.length ? [{ mageos_sku: { _in: text } }] : []),
+        ]
         return $directus.request($readItems('products', {
             fields: ['*', 'image.*', 'categories.categories_id.*'],
-            filter: {
-                sku: { _in: skus }
-            }
+            filter: { _and: [{ status: { _eq: 'published' } }, { _or: anyOf }] }
         }))
     }, {
+        // The list is in localStorage: on the server it's always empty, and
+        // the browser would keep that empty result.
+        server: false,
+        immediate: false,
         watch: [() => compareStore.getComparedProductSkus.join(',')]
+    })
+
+    // The store reads the saved list once Nuxt is ready (stores/compare.ts),
+    // so fetch after that; until then "nothing to compare" is only a guess.
+    const ready = ref(false)
+    onNuxtReady(async () => {
+        await execute()
+        ready.value = true
     })
 
     useHead({

@@ -57,6 +57,7 @@
           :index-name="activeIndex"
           :initial-ui-state="initialUiState"
           :future="instantSearchFuture"
+          :on-state-change="onStateChange"
         >
           <!-- No visible box here (the header has one), but InstantSearch
                only applies initialUiState's query when a search-box widget
@@ -126,14 +127,14 @@
             <div v-if="items.length" class="results-toolbar__refinements">
               <template v-for="entry in items" :key="entry.attribute">
                 <v-chip
-                  v-for="refinement in entry.refinements"
-                  :key="`${refinement.attribute}-${refinement.label}`"
+                  v-for="chip in chipsFor(entry)"
+                  :key="chip.key"
                   closable
                   size="small"
                   class="mr-1 mb-1"
-                  @click:close="refine(refinement)"
+                  @click:close="chip.refinements.forEach((refinement) => refine(refinement))"
                 >
-                  {{ entry.label }}: {{ refinement.label }}
+                  {{ chip.label }}
                 </v-chip>
               </template>
               <ais-clear-refinements v-slot="{ refine: clearAll, canRefine }" :excluded-attributes="EXCLUDED_ATTRIBUTES">
@@ -143,12 +144,15 @@
           </ais-current-refinements>
 
           <div class="results-layout">
-            <aside class="results-layout__filters d-none d-md-block">
+            <!-- One copy of the filters at a time (sidebar, or the drawer
+                 while it's open): a second, hidden copy of every filter
+                 widget made each choice search twice. -->
+            <aside v-if="mdAndUp" class="results-layout__filters">
               <component :is="resolvedFiltersComponent" :visible="true" />
             </aside>
 
             <v-navigation-drawer v-model="mobileFiltersOpen" location="left" temporary width="320" class="d-md-none">
-              <component :is="resolvedFiltersComponent" :visible="true" />
+              <component :is="resolvedFiltersComponent" v-if="!mdAndUp && mobileFiltersOpen" :visible="true" />
             </v-navigation-drawer>
 
             <main class="results-layout__main" :class="{ 'is-loading': isLoading }">
@@ -204,8 +208,14 @@
 
               <ais-state-results v-slot="{ results }">
                 <v-alert v-if="results && results.nbHits === 0" type="info" variant="tonal" class="mt-4">
-                  <strong>No results found{{ searchQuery ? ` for "${searchQuery}"` : '' }}.</strong>
-                  <div>Try a different search term, check your spelling, or clear some filters.</div>
+                  <template v-if="hasFilters">
+                    <strong>Nothing matches the filters you chose{{ searchQuery ? ` for "${searchQuery}"` : '' }}.</strong>
+                    <div>Remove a filter above, or clear them all.</div>
+                  </template>
+                  <template v-else>
+                    <strong>No results found{{ searchQuery ? ` for "${searchQuery}"` : '' }}.</strong>
+                    <div>Try a different search term or check your spelling.</div>
+                  </template>
                 </v-alert>
                 <!-- Same unfilled-slot fallback-dump issue as the other
                      ais-state-results above: whenever there ARE results (the
@@ -248,7 +258,9 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { useDisplay } from 'vuetify'
 import { useSearchClient, buildSortIndexName, type SearchResponse } from '../../composables/useSearchClient'
+import { apiFiltersFromQuery, uiStateFromQuery, queryFromUiState, sameQuery, type ResultsUiState } from '../../utils/resultsUrl'
 import { formatNumber } from '../../utils/formatNumber'
 import FiltersDefault from '../filters/filters.vue'
 import ResultCard from './ResultCard.vue'
@@ -279,21 +291,31 @@ const routePage = computed(() => {
   return Number.isFinite(value) && value > 0 ? value : 1
 })
 
-const SNAPSHOT_PAGE_SIZE = 24
+const snapshotRequest = computed(() => apiFiltersFromQuery(route.query, activeIndex.value))
+const snapshotPageSize = computed(() => snapshotRequest.value.pageSize || 24)
 
+// The first view (server-rendered) for whatever the address asks for,
+// filters included. Only the search and index refetch it: after that the
+// live results below are on screen.
 const { data: snapshot } = await useAsyncData(
   'results-snapshot',
   () => $fetch<SearchResponse>('/api/search', {
     method: 'POST',
-    body: { q: searchQuery.value, page: routePage.value, pageSize: SNAPSHOT_PAGE_SIZE },
+    body: {
+      q: searchQuery.value,
+      page: routePage.value,
+      pageSize: snapshotPageSize.value,
+      ...(snapshotRequest.value.algoliaFilters ? { algoliaFilters: snapshotRequest.value.algoliaFilters } : {}),
+      ...(snapshotRequest.value.sort ? { sort: snapshotRequest.value.sort } : {}),
+    },
   }),
-  { watch: [searchQuery, activeIndex, routePage] },
+  { watch: [searchQuery, activeIndex] },
 )
 
 const snapshotItems = computed(() => Array.isArray(snapshot.value?.items) ? snapshot.value.items : [])
 const snapshotTotal = computed(() => typeof snapshot.value?.total === 'number' ? snapshot.value.total : null)
 const snapshotLoaded = computed(() => snapshot.value !== null && snapshot.value !== undefined)
-const snapshotPageCount = computed(() => snapshotTotal.value ? Math.max(1, Math.ceil(snapshotTotal.value / SNAPSHOT_PAGE_SIZE)) : 1)
+const snapshotPageCount = computed(() => snapshotTotal.value ? Math.max(1, Math.ceil(snapshotTotal.value / snapshotPageSize.value)) : 1)
 
 function buildPageLink(page: number) {
   return { path: route.path, query: { ...route.query, page: String(page) } }
@@ -316,22 +338,85 @@ watch(isLoading, (loading: boolean) => {
 // /api/search requests.
 // The query isn't a filter to clear here; the header's search box owns it.
 const EXCLUDED_ATTRIBUTES = ['query']
+const FILTER_LABELS: Record<string, string> = {
+  category: 'Category', brand: 'Brand', resultType: 'Type', price: 'Price', rating: 'Rating',
+}
+
+type Refinement = { attribute: string, label: string, value: unknown, operator?: string, type?: string }
+
+// One chip per chosen value; a number range (price ≥ 25 and ≤ 50, or = 0)
+// is one chip worded like the filter list ("Price: $25 to $50", "Free").
+function chipsFor(entry: { attribute: string, label: string, refinements: Refinement[] }) {
+  const name = FILTER_LABELS[entry.attribute] || entry.label
+  const numeric = entry.refinements.filter((refinement) => refinement.type === 'numeric')
+  const chips = entry.refinements
+    .filter((refinement) => refinement.type !== 'numeric')
+    .map((refinement) => ({ key: `${entry.attribute}-${refinement.label}`, label: `${name}: ${refinement.label}`, refinements: [refinement] }))
+  if (numeric.length) {
+    const value = (operator: string) => numeric.find((refinement) => refinement.operator === operator)?.value as number | undefined
+    const money = (amount: number) => (entry.attribute === 'price' ? `$${amount}` : String(amount))
+    const equal = value('=')
+    const min = value('>=')
+    const max = value('<=')
+    const range = equal !== undefined
+      ? (entry.attribute === 'price' && equal === 0 ? 'Free' : money(equal))
+      : min !== undefined && max !== undefined
+        ? `${money(min)} to ${money(max)}`
+        : max !== undefined
+          ? `Under ${money(max)}`
+          : min !== undefined
+            ? (entry.attribute === 'rating' ? `${min}★ & up` : `${money(min)} & above`)
+            : numeric.map((refinement) => refinement.label).join(', ')
+    chips.push({ key: `${entry.attribute}-range`, label: `${name}: ${range}`, refinements: numeric })
+  }
+  return chips
+}
+
+// Filters in the address = filters chosen (resultsUrl.ts keeps them there).
+const hasFilters = computed(() => ['category', 'type', 'brand', 'price', 'rating'].some((param) => route.query[param] !== undefined))
 const instantSearchFuture = { preserveSharedStateOnUnmount: true }
 
 const mobileFiltersOpen = ref(false)
+const { mdAndUp } = useDisplay()
 const viewMode = ref<'paged' | 'infinite'>('paged')
 
 // Remount InstantSearch whenever the query or the target index changes so
 // its internal helper state starts clean (mirrors the pattern already used
 // by pages/results.vue).
-const instantSearchKey = computed(() => `results-${searchQuery.value || 'all'}-${activeIndex.value}`)
+// `restored` is bumped when the address changes by itself (back/forward,
+// a link): the tree remounts from the new address.
+const restored = ref(0)
+const instantSearchKey = computed(() => `results-${searchQuery.value || 'all'}-${activeIndex.value}-${restored.value}`)
 
+// The page's state lives in the address — search, page, filters, sort and
+// page size — so a results page can be shared, bookmarked, reloaded and
+// gone back to, like any search results page.
 const initialUiState = computed(() => ({
-  [activeIndex.value]: {
-    query: searchQuery.value,
-    page: routePage.value,
-  },
+  [activeIndex.value]: uiStateFromQuery(route.query, activeIndex.value),
 }))
+
+let lastWrittenQuery: ReturnType<typeof queryFromUiState> | null = null
+const router = useRouter()
+
+function onStateChange({ uiState, setUiState }: { uiState: Record<string, ResultsUiState>, setUiState: (state: Record<string, ResultsUiState>) => void }) {
+  const before = uiStateFromQuery(route.query, activeIndex.value)
+  setUiState(uiState)
+  const state = uiState[activeIndex.value] || {}
+  // "Load more" grows the page as it goes: not an address of its own.
+  const next = queryFromUiState(viewMode.value === 'paged' ? state : { ...state, page: undefined }, activeIndex.value)
+  if (sameQuery(next, route.query)) return
+  lastWrittenQuery = next
+  router.push({ path: route.path, query: next })
+  if (viewMode.value === 'paged' && (state.page || 1) !== (before.page || 1)) {
+    document.querySelector('.results-page')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+watch(() => route.query, (query) => {
+  if (lastWrittenQuery && sameQuery(lastWrittenQuery, query)) return
+  lastWrittenQuery = null
+  restored.value++
+})
 
 // The federated backend has no Algolia-style replica indices to sort
 // against, so sort options are encoded as synthetic "index names" that

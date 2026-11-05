@@ -1,5 +1,6 @@
 <template>
-    <v-row justify="center">
+    <!-- A plain div: a v-row's negative margins shifted the header icons. -->
+    <div class="ecosystemmenu">
         <v-dialog v-model="dialog" :scrim="false" transition="dialog-bottom-transition">
             <template v-slot:activator="{ props }">
                 <v-btn v-bind="props" :title="eco?.description">
@@ -32,7 +33,7 @@
                 </v-row>
             </v-card>
         </v-dialog>
-    </v-row>
+    </div>
 </template>
 
 <script setup>
@@ -50,9 +51,11 @@
         $readItem,
     } = useNuxtApp()
 
+    // Not awaited: the icon renders straight away and the menu fills in
+    // when it arrives (awaiting kept the header icon blank until then).
     const {
         data: eco
-    } = await useAsyncData('eco', async () => {
+    } = useAsyncData('eco', async () => {
         const resp = await $directus.request($readItem('navigation', '12'))
         return resp?.data || resp || {}
     })

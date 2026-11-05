@@ -52,8 +52,10 @@ function viaDirectus(): string | null {
 type DirectusProduct = {
   sku: string
   name: string
+  slug?: string
   price?: { final?: number | null } | null
   images?: string[]
+  categories?: Array<{ name?: string }>
 }
 
 type DirectusSearchPage = {
@@ -66,9 +68,27 @@ const DIRECTUS_SORTS: Record<string, string> = {
   'name:asc': 'name', 'name:desc': '-name', 'price:asc': 'price', 'price:desc': '-price',
 }
 
-/** /commerce/search needs a query; an empty one lists the catalogue instead. */
+// /commerce/search answers up to 100 a page.
+const DIRECTUS_PAGE_LIMIT = 100
+
+/** /commerce/search needs a query; an empty one lists the catalogue instead.
+ *  A page size over DIRECTUS_PAGE_LIMIT is fetched as several pages. */
 export async function searchViaDirectus(url: string, options: SearchProviderOptions): Promise<DirectusSearchPage> {
-  const params = new URLSearchParams({ page: String(Math.max(1, options.page)), limit: String(Math.min(50, options.pageSize)) })
+  if (options.pageSize > DIRECTUS_PAGE_LIMIT && options.page === 1) {
+    const pages = Math.min(5, Math.ceil(options.pageSize / DIRECTUS_PAGE_LIMIT))
+    const results = await Promise.all(Array.from({ length: pages }, (_, index) =>
+      searchViaDirectusPage(url, { ...options, page: index + 1, pageSize: DIRECTUS_PAGE_LIMIT })))
+    return {
+      items: results.flatMap((result) => result.items).slice(0, options.pageSize),
+      total: results[0]?.total ?? 0,
+      facets: results[0]?.facets ?? [],
+    }
+  }
+  return searchViaDirectusPage(url, options)
+}
+
+async function searchViaDirectusPage(url: string, options: SearchProviderOptions): Promise<DirectusSearchPage> {
+  const params = new URLSearchParams({ page: String(Math.max(1, options.page)), limit: String(Math.min(DIRECTUS_PAGE_LIMIT, options.pageSize)) })
   const sort = options.sort ? DIRECTUS_SORTS[`${options.sort.field}:${options.sort.direction}`] : undefined
   if (sort) params.set('sort', sort)
   const query = options.query.trim()
@@ -167,6 +187,10 @@ export function aggregationsToFacets(
 
 export const magentoProvider: SearchProvider = {
   id: 'magento',
+  // Through Directus a store search takes 2.5-4.5 s while Directus also
+  // answers the CMS search; the search-wide 5 s limit dropped every store
+  // product from a results page whenever it ran over.
+  timeoutMs: 10_000,
 
   isEnabled() {
     return Boolean(getConfig()?.enabled)
@@ -189,6 +213,8 @@ export const magentoProvider: SearchProvider = {
             name: item.name,
             price: item.price?.final ?? null,
             image: item.images?.[0] ?? null,
+            // Names, for the results page's Category filter.
+            category: (item.categories ?? []).map((category) => category?.name).filter(Boolean),
           },
         })),
         total: page.total,
@@ -246,6 +272,9 @@ export const magentoProvider: SearchProvider = {
   // which is the only way to honor it without a differently-shaped backend
   // query the schema doesn't expose.
   async searchFacetValues(field: string, facetQuery: string, options: SearchProviderOptions): Promise<FacetBucket[]> {
+    // Through Directus the search layer counts these from the hits (each
+    // carries its category names); the GraphQL call below isn't reachable.
+    if (viaDirectus()) return []
     const config = getConfig()
     const magento = getAdapter(config)
 

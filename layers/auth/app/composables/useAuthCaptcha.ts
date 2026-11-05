@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRuntimeConfig } from '#imports'
 
 /**
@@ -25,5 +25,30 @@ export function useAuthCaptcha() {
     captchaToken.value = ''
   }
 
-  return { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha }
+  // The Turnstile script can be blocked (privacy/ad-block extensions, strict
+  // browsers) or never run, which used to leave a silently disabled Sign In
+  // button (4 November 2026). After 10 s without the script, say so.
+  const captchaBlocked = ref(false)
+  let blockedTimer: ReturnType<typeof setTimeout> | undefined
+  const checkCaptchaLoaded = () => {
+    clearTimeout(blockedTimer)
+    captchaBlocked.value = false
+    blockedTimer = setTimeout(() => {
+      captchaBlocked.value = captchaEnabled && !captchaToken.value
+        && !(window as { turnstile?: unknown }).turnstile
+    }, 10_000)
+  }
+  const retryCaptcha = () => {
+    // A fresh page load re-requests the blocked script once the visitor has
+    // allowed challenges.cloudflare.com.
+    if (!(window as { turnstile?: unknown }).turnstile) return window.location.reload()
+    resetCaptcha()
+    checkCaptchaLoaded()
+  }
+  if (captchaEnabled) {
+    onMounted(checkCaptchaLoaded)
+    onBeforeUnmount(() => clearTimeout(blockedTimer))
+  }
+
+  return { captchaEnabled, captchaToken, captchaWidget, captchaMissing, captchaFetchOptions, resetCaptcha, captchaBlocked, retryCaptcha }
 }

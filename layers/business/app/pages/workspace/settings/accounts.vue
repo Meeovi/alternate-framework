@@ -50,10 +50,14 @@
                     </v-expansion-panel-text>
                 </v-expansion-panel>
 
-                <v-expansion-panel title="AT Protocol (Bluesky)">
+                <!-- Fediverse accounts are connected here, after signing in (moved off the login page 2026-11-04). -->
+                <v-expansion-panel title="Connect fediverse accounts (Bluesky / AT Protocol)">
                     <v-expansion-panel-text>
                         <v-row>
                             <v-col>
+                                <p class="text-body-2 mb-4">
+                                    Connect your Bluesky or other AT Protocol account to post, follow and see your feed from Meeovi.
+                                </p>
                                 <AtprotoLink mode="link" />
                             </v-col>
                         </v-row>

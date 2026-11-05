@@ -4,8 +4,8 @@
          merged onto its rendered root), so the wrapper carries the class
          the styles below target. -->
     <div class="searchForm">
-    <ais-instant-search :key="activeIndex" :search-client="searchClient" :index-name="activeIndex">
-      <ais-configure :hits-per-page.camel="6" />
+    <ais-instant-search :key="`${activeIndex}-${routeQuery}`" :search-client="searchClient" :index-name="activeIndex"
+      :initial-ui-state="initialUiState">
 
       <ais-search-box v-slot="{ currentRefinement, refine }">
         <!-- Not relying on native form submission (@submit.prevent) to reach
@@ -32,12 +32,16 @@
               @keyup.enter="navigateToResults(currentRefinement)">
               <template #append-inner>
                 <div class="search-bar__actions">
-                  <ais-voice-search v-slot="{ isListening, toggleListening, isBrowserSupported }" search-as-you-speak>
-                    <v-btn type="button" class="voiceBtn" icon="fas fa-microphone" variant="text" size="small" :disabled="!isBrowserSupported"
-                      :color="isListening ? 'primary' : undefined"
-                      :title="isBrowserSupported ? 'Search by voice' : 'Voice search not supported on this browser'"
+                  <ais-voice-search v-slot="{ isListening, toggleListening, isBrowserSupported, voiceListeningState }"
+                    search-as-you-speak>
+                    <v-btn type="button" class="voiceBtn" :class="{ 'voiceBtn--listening': isListening }"
+                      icon="fas fa-microphone" variant="text" size="small" :disabled="!isBrowserSupported"
+                      :color="isListening ? 'error' : undefined"
+                      :title="isBrowserSupported ? (isListening ? 'Stop listening' : 'Search by voice') : 'Voice search not supported on this browser'"
+                      :aria-label="isListening ? 'Stop listening' : 'Search by voice'" :aria-pressed="isListening"
                       @click="toggleListening">
                     </v-btn>
+                    <voiceSearchStatus :state="voiceListeningState" @heard="navigateToResults" />
                   </ais-voice-search>
 
                   <v-btn type="button" color="primary" icon="fas fa-search" size="small" :loading="loading"
@@ -81,9 +85,7 @@
     ref,
     watch
   } from 'vue'
-  import {
-    useSearchClient
-  } from '../composables/useSearchClient'
+  import voiceSearchStatus from './voiceSearchStatus.vue'
 
   const route = useRoute()
   const config = useRuntimeConfig()
@@ -94,9 +96,17 @@
     }
   })
 
-  const {
-    searchClient
-  } = useSearchClient()
+  // This box only owns the text and the microphone; results are the
+  // results page's. It used to run a real search (6 hits nobody saw) on
+  // every page load and keystroke, so InstantSearch gets an empty answer.
+  const emptyResult = { hits: [], nbHits: 0, page: 0, nbPages: 0, hitsPerPage: 0, processingTimeMS: 0, query: '', params: '', exhaustiveNbHits: true }
+  const searchClient = {
+    search: (requests: unknown[]) => Promise.resolve({ results: requests.map(() => emptyResult) }),
+    searchForFacetValues: (requests: unknown[]) => Promise.resolve(requests.map(() => ({ facetHits: [] }))),
+  }
+
+  // On the results page the box shows what was searched for.
+  const routeQuery = computed(() => (typeof route.query.q === 'string' ? route.query.q : ''))
 
   const indexes = computed < string[] > (() => {
     const value = (config.public).alternateSearchIndexes
@@ -108,6 +118,10 @@
     route.query.index :
     indexes.value[0] || 'products',
   )
+
+  // A computed, not an inline object: a new object each render would make
+  // InstantSearch rebuild (see resultsComponent.vue).
+  const initialUiState = computed(() => ({ [activeIndex.value]: { query: routeQuery.value } }))
 
   // Only used by the pre-hydration fallback form below — the live widget tree
   // reads/writes its query through ais-search-box's own state instead.
@@ -211,6 +225,18 @@
     align-items: center;
     gap: 0.25rem;
     flex: 0 0 auto;
+  }
+
+  .voiceBtn--listening {
+    animation: voice-pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes voice-pulse {
+    50% { opacity: 0.45; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .voiceBtn--listening { animation: none; }
   }
 
   :deep(.ais-VoiceSearch),

@@ -53,7 +53,7 @@
       </tr>
       <tr>
         <th>Average Rating</th>
-        <td><MeeoviRating type="product" :id="product?.id" readonly size="x-small" /></td>
+        <td><MeeoviRating type="product" :id="canonicalProductKey(product)" readonly size="x-small" /></td>
       </tr>
       <tr>
         <th># of Reviews</th>
@@ -134,6 +134,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { usePrice } from '../../../composables/catalog/price/price'
+import { canonicalProductKey } from '../../../utils/productKey'
 import { useAppGateway } from '#shared/app/composables/useAppGateway'
 
 const props = defineProps({

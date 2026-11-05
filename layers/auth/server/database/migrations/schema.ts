@@ -1291,10 +1291,17 @@ export const aboutDepartmentsPlatform = pgTable.withRLS("about_departments_platf
 export const accounts = pgTable.withRLS("accounts", {
 	id: uuid().defaultRandom().primaryKey(),
 	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	// The provider's id for the person (see auth.ts account settings);
+	// migration 20261104120000_accounts_oauth_columns.
+	accountId: text("account_id"),
 	providerId: text("provider_id").default("email-password").notNull(),
 	password: text(),
 	accessToken: text("access_token"),
 	refreshToken: text("refresh_token"),
+	idToken: text("id_token"),
+	accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true }),
+	refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true }),
+	scope: text(),
 	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`),
 	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`),
 });

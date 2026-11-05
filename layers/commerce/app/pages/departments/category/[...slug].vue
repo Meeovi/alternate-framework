@@ -47,7 +47,7 @@
         </v-toolbar>
       </v-card>
 
-      <v-row>
+      <v-row class="catSection">
         <!-- A deleted product leaves its junction row behind with no product. -->
         <v-col v-for="productRel in (category.products || []).filter((rel) => rel?.products_id)" :key="productRel.products_id.id" cols="3">
           <ProductCard :product="productRel.products_id" />
@@ -167,3 +167,9 @@
     title: computed(() => category.value?.name || 'Category Page'),
   })
 </script>
+
+<style scoped>
+.catSection {
+  padding: 25px;
+}
+</style>

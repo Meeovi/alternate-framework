@@ -34,6 +34,9 @@ export type DirectusSearchCollection = {
   filter?: Record<string, unknown>
   /** more fields copied onto the hit as they are (e.g. a product's price) */
   extraFields?: string[]
+  /** where the row's category names are, for the results page's Category
+   *  filter, e.g. 'categories.categories_id.name' (an M2M) */
+  categoryField?: string
 }
 
 type DirectusProviderConfig = {
@@ -159,7 +162,7 @@ export const directusProvider: SearchProvider = {
         // approximate federated totals being the standard tradeoff here).
         const slugField = entry.slugField === undefined ? 'slug' : entry.slugField
         const statusField = entry.statusField === undefined ? 'status' : entry.statusField
-        const fields = ['id', slugField, entry.titleField, entry.descriptionField, entry.imageField, ...(entry.extraFields ?? [])]
+        const fields = ['id', slugField, entry.titleField, entry.descriptionField, entry.imageField, entry.categoryField, ...(entry.extraFields ?? [])]
           .filter((field): field is string => Boolean(field))
         // Search is public: the server token can read private rows (private
         // lists, draft posts, hidden spaces…), so apply the same rules the
@@ -208,6 +211,8 @@ export const directusProvider: SearchProvider = {
             description: entry.descriptionField ? row[entry.descriptionField] ?? null : null,
             image: entry.imageField ? row[entry.imageField] ?? null : null,
             path: buildPath(entry.path, row, entry.slugField === undefined ? 'slug' : entry.slugField),
+            // The relation as Directus returns it; federate.ts reads the names.
+            category: entry.categoryField ? row[entry.categoryField.split('.')[0]!] ?? null : null,
           },
         })
       }

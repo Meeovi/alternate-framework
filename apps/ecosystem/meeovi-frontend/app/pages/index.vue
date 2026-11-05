@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="homepageContent">
     <headerslider />
     
     <div>
@@ -17,7 +17,7 @@
       <relatedstations />
       <relatedspaces />
       <relatedbrands />
-      <blogcallout />
+      <intro />
     </div>
   </div>
 </template>
@@ -41,9 +41,16 @@
   const relatedstations = defineLazyHydrationComponent('visible', () => import('#commerce/app/components/catalog/product/relatedstations.vue'))
   const relatedspaces = defineLazyHydrationComponent('visible', () => import('#social/app/components/related/relatedspaces.vue'))
   const relatedbrands = defineLazyHydrationComponent('visible', () => import('#commerce/app/components/catalog/product/relatedbrands.vue'))
-  const blogcallout = defineLazyHydrationComponent('visible', () => import('../components/content/homepage/blogcallout.vue'))
+  const intro = defineLazyHydrationComponent('visible', () => import('../components/content/homepage/intro.vue'))
 
   useHead({
     title: 'Welcome',
   })
 </script>
+
+<style>
+ .homepageContent {
+  position: relative;
+  top: -25px;
+ }
+</style>

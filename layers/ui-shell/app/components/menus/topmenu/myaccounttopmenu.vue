@@ -1,7 +1,7 @@
 <template>
   <div class="myaccounttopmenu">
     <v-btn class="relative" icon variant="text" @click.stop="drawer = !drawer" aria-label="Account">
-      <v-avatar v-if="session?.user?.image" :image="session.user.image" size="32" />
+      <v-avatar v-if="avatarUrl" :image="avatarUrl" size="32" />
       <v-icon v-else icon="fas fa-user-circle" />
     </v-btn>
     <Teleport to="body">
@@ -75,7 +75,7 @@
 
       <div v-else>
         <v-card-actions class="d-flex flex-column ga-2">
-          <v-btn block color="primary" variant="flat" to="/login">Login</v-btn>
+          <v-btn block color="primary" variant="outlined" to="/login">Login</v-btn>
           <v-btn block color="secondary" variant="outlined" to="/register">Sign Up</v-btn>
         </v-card-actions>
       </div>
@@ -97,11 +97,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import logoutButton from '#auth/app/components/blocks/logoutButton.vue'
 
 const auth = useAuth()
-const { data: session } = await auth.getSession()
+// Reactive, and not awaited: awaiting the session and both menus below
+// left the account button blank (nothing to click) until all three had
+// loaded. useSession() returns the ref itself (see the auth layer notes).
+const sessionState = auth.useSession()
+const session = computed(() => sessionState.value?.data ?? null)
+const avatarUrl = computed(() => session.value?.user?.image || session.value?.user?.avatar || '')
 const drawer = ref(false)
 const showLogoutConfirmation = ref(false)
 
@@ -112,11 +117,11 @@ const queryParams = {
   fields: ['*', 'menus.*']
 }
 
-const { data: navSocial } = await useAsyncData('navSocial', () => {
+const { data: navSocial } = useAsyncData('navSocial', () => {
   return $directus.request($readItem('navigation', '2', queryParams))
 })
 
-const { data: navcomm } = await useAsyncData('navcomm', () => {
+const { data: navcomm } = useAsyncData('navcomm', () => {
   return $directus.request($readItem('navigation', '3', queryParams))
 })
 

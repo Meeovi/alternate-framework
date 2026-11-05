@@ -25,7 +25,7 @@
       <tr>
         <th class="text-left">Rating</th>
         <td v-for="product in products" :key="`rating-${product?.id}`">
-          <MeeoviRating type="product" :id="product?.id" readonly size="x-small" />
+          <MeeoviRating type="product" :id="canonicalProductKey(product)" readonly size="x-small" />
         </td>
       </tr>
 
@@ -41,31 +41,41 @@
         </td>
       </tr>
 
-      <tr>
-        <th class="text-left">Manufacturer</th>
-        <td v-for="product in products" :key="`manufacturer-${product?.id}`">
-          {{ product?.manufacturer?.manufacturer_id?.name }}
-        </td>
-      </tr>
+      <!-- Manufacturer, stock, variant and colour don't apply to digital
+           products: hidden when every product here is digital, a dash for
+           the digital ones in a mixed comparison. -->
+      <template v-if="hasPhysical">
+        <tr>
+          <th class="text-left">Manufacturer</th>
+          <td v-for="product in products" :key="`manufacturer-${product?.id}`">
+            <template v-if="isDigital(product)">—</template>
+            <template v-else>{{ product?.manufacturer?.manufacturer_id?.name }}</template>
+          </td>
+        </tr>
 
-      <tr>
-        <th class="text-left">In Stock</th>
-        <td v-for="product in products" :key="`stock-${product?.id}`">{{ product?.stock }}</td>
-      </tr>
+        <tr>
+          <th class="text-left">In Stock</th>
+          <td v-for="product in products" :key="`stock-${product?.id}`">
+            {{ isDigital(product) ? '—' : product?.stock }}
+          </td>
+        </tr>
 
-      <tr>
-        <th class="text-left">Variant</th>
-        <td v-for="product in products" :key="`size-${product?.id}`">
-          <sizeOptions :size="product?.id" />
-        </td>
-      </tr>
+        <tr>
+          <th class="text-left">Variant</th>
+          <td v-for="product in products" :key="`size-${product?.id}`">
+            <template v-if="isDigital(product)">—</template>
+            <sizeOptions v-else :size="product?.id" />
+          </td>
+        </tr>
 
-      <tr>
-        <th class="text-left">Color</th>
-        <td v-for="product in products" :key="`color-${product?.id}`">
-          <colorOptions :color="product?.id" />
-        </td>
-      </tr>
+        <tr>
+          <th class="text-left">Color</th>
+          <td v-for="product in products" :key="`color-${product?.id}`">
+            <template v-if="isDigital(product)">—</template>
+            <colorOptions v-else :color="product?.id" />
+          </td>
+        </tr>
+      </template>
 
       <tr>
         <th class="text-left">Actions</th>
@@ -84,6 +94,7 @@
   import addToCartBtn from '../../blocks/addToCartBtn.vue'
   import { getImageURL } from '#shared/app/utils/get-asset-url'
   import { usePrice } from '../../../composables/catalog/price/price'
+  import { canonicalProductKey } from '../../../utils/productKey'
 
   const props = defineProps({
     products: {
@@ -96,4 +107,13 @@
   const { getProductPrice } = usePrice()
 
   const getPricing = (product) => getProductPrice(product || {})
+
+  // Digital: a downloadable file (a store product's download_url, or a
+  // Directus file) or the "Digital" product type.
+  const isDigital = (product) => Boolean(
+    product?.download_url
+    || product?.file
+    || product?.product_types?.product_types_id?.name === 'Digital'
+  )
+  const hasPhysical = computed(() => props.products.some((product) => !isDigital(product)))
 </script>

@@ -123,9 +123,11 @@ export const auth = betterAuth({
   updateAccountOnSignIn: true,
   account: {
     modelName: "accounts",
-    fields: {
-      accountId: "id"
-    },
+    // accountId (the provider's id for the person: GitHub's user number,
+    // Google's "sub", the user id for passwords) has its own account_id
+    // column. It used to be mapped onto the uuid primary key, so every
+    // GitHub/Google sign-in failed with "invalid input syntax for type uuid"
+    // and landed on the home page signed out (4 November 2026).
     encryptOAuthTokens: true,
     storeStateStrategy: "database",
     storeAccountCookie: true,

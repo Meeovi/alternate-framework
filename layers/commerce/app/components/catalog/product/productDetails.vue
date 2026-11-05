@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <v-card class="right" elevation="0">
+                    <v-card class="right" elevation="0" color="transparent" style="border: none; box-shadow: none;">
 
                         <v-list lines="one">
                             <!-- Product Title -->
@@ -48,14 +48,17 @@
 
 
                             <!-- Product Rating -->
+                            <!-- A plain wrapping row: v-list-item-title is one line with
+                                 overflow hidden, which cut the stars off. -->
                             <v-list-item>
-                                <v-list-item-title>
+                                <div class="product-actions">
                                     <!-- People's 1–5 star ratings (@mframework/meeovi-ratings) -->
-                                    <MeeoviRating type="product" :id="productDetails?.id" />
-                                    <NuxtLink :to="`/product/${productDetails?.id}#commentsSection`"
-                                        class="pl-1 no-underline">Discussion
-                                    </NuxtLink>
-                                </v-list-item-title>
+                                    <MeeoviRating type="product" :id="canonicalProductKey(productDetails)" />
+                                    <!-- The comments are in the page's Reviews tab: the page
+                                         opens it and scrolls there. -->
+                                    <a href="#discussion" class="no-underline"
+                                        @click.prevent="emit('discussion')">Discussion</a>
+                                </div>
                             </v-list-item>
 
                             <!-- Product Quantity (only for things bought through the cart) -->
@@ -155,7 +158,7 @@
     import addToCartBtn from '../../blocks/addToCartBtn.vue';
     import compareBtn from '../../blocks/compareBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
-    import { parseProductKey, productKey } from '../../../utils/productKey';
+    import { canonicalProductKey, parseProductKey, productKey } from '../../../utils/productKey';
     import { productSeller } from '../../../utils/productSeller';
     import {
         getAssetURL,
@@ -183,6 +186,8 @@
         const nextValue = Number.parseFloat(currentValue);
         set(Math.min(Math.max(nextValue, min.value), max.value));
     }
+
+    const emit = defineEmits<{ discussion: [] }>();
 
     const props = defineProps({
         productDetails: {
@@ -234,7 +239,7 @@
     const sellerProfile = computed(() => {
         if (rowSeller.value) return rowSeller.value.to
         const username = (backendSeller.value as { seller?: { username?: string | null } } | null)?.seller?.username
-        return backendKey.value && username ? `/u/${encodeURIComponent(username)}` : null
+        return backendKey.value && username ? `/outlet/${encodeURIComponent(username)}` : null
     })
 
     // createListBtn's panel needs a resolved image URL, not the raw Directus
@@ -302,5 +307,21 @@
 .qty-stepper__input :deep(input::-webkit-inner-spin-button) {
     -webkit-appearance: none;
     margin: 0;
+}
+
+.product-details {
+    background-color: transparent !important;
+}
+
+.product-details > .image-container {
+    padding: 10px;
+}
+
+.meeovi-rating {
+    padding-right: 5px;
+}
+
+.v-rating__item, .v-rating__wrapper {
+    padding: 2px;
 }
 </style>

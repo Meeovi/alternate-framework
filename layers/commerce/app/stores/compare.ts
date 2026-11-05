@@ -1,4 +1,4 @@
-import { defineStore } from '#imports'
+import { defineStore, onNuxtReady } from '#imports'
 import { computed, ref } from 'vue'
 
 const STORAGE_KEY = 'commerce:compare-product-skus'
@@ -22,7 +22,9 @@ export const useCompareStore = defineStore('compare', () => {
       if (!raw) return
       const parsed = JSON.parse(raw)
       if (Array.isArray(parsed)) {
-        productSkus.value = parsed.filter((sku): sku is string => typeof sku === 'string')
+        // Keep anything added before this ran.
+        const saved = parsed.filter((sku): sku is string => typeof sku === 'string')
+        productSkus.value = [...new Set([...saved, ...productSkus.value])]
       }
     } catch {
       // ignore malformed persisted value
@@ -45,8 +47,10 @@ export const useCompareStore = defineStore('compare', () => {
     persist()
   }
 
+  // After hydration: on a full page load Pinia then replaces this state with
+  // the server's (always empty) copy, which wiped the saved list.
   if (import.meta.client) {
-    hydrate()
+    onNuxtReady(hydrate)
   }
 
   return {

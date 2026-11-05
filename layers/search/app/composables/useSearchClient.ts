@@ -21,7 +21,19 @@ type SearchRefinements = {
   numericRefinements?: Record<string, Record<string, Array<number | string>>>
 }
 
-type SearchRequestParams = SearchRefinements & {
+// What InstantSearch actually sends: Algolia's own parameters. Its filters
+// arrive as facetFilters/numericFilters, never as the helper-state shape
+// above, so before these were read every filter on the results page did
+// nothing.
+type AlgoliaParams = {
+  facets?: string[] | string
+  facetFilters?: unknown
+  numericFilters?: unknown
+  highlightPreTag?: string
+  highlightPostTag?: string
+}
+
+type SearchRequestParams = SearchRefinements & AlgoliaParams & {
   query?: string
   page?: number
   hitsPerPage?: number
@@ -32,7 +44,7 @@ type SearchRequest = {
   params?: SearchRequestParams
 }
 
-type FacetValuesRequestParams = SearchRefinements & {
+type FacetValuesRequestParams = SearchRefinements & AlgoliaParams & {
   query?: string
   facetName?: string
   facetQuery?: string
@@ -91,17 +103,34 @@ function extractFilters(params: SearchRefinements | undefined) {
   return { facetsRefinements, disjunctiveFacetsRefinements, numericRefinements }
 }
 
+function extractAlgoliaFilters(params: AlgoliaParams | undefined) {
+  if (!params?.facetFilters && !params?.numericFilters) return undefined
+  return { facetFilters: params.facetFilters, numericFilters: params.numericFilters }
+}
+
+function requestedFacets(params: AlgoliaParams | undefined): string[] | undefined {
+  const facets = typeof params?.facets === 'string' ? [params.facets] : params?.facets
+  return Array.isArray(facets) && facets.length && !facets.includes('*') ? facets : undefined
+}
+
 async function runSingleSearch(req: SearchRequest): Promise<AlgoliaShapedResult> {
   const params = req.params || {}
   const query = String(params.query || '')
   // InstantSearch's page is 0-based, /api/search's is 1-based.
   const page = Math.max(0, Number(params.page) || 0) + 1
-  const hitsPerPage = Math.max(1, Number(params.hitsPerPage || 12))
+  // 0 for the extra requests InstantSearch makes only for a filter list's
+  // counts; the API still needs a page size.
+  const hitsPerPage = Math.max(1, Number(params.hitsPerPage ?? 12) || 12)
+  const countsOnly = Number(params.hitsPerPage) === 0
   const { sort } = parseSortIndexName(String(req.indexName || ''))
   const filters = extractFilters(params)
+  const algoliaFilters = extractAlgoliaFilters(params)
+  const facets = requestedFacets(params)
 
   const body: Record<string, unknown> = { q: query, page, pageSize: hitsPerPage }
   if (filters) body.instantsearchFilters = filters
+  if (algoliaFilters) body.algoliaFilters = algoliaFilters
+  if (facets) body.facets = facets
   if (sort) body.sort = sort
 
   try {
@@ -110,7 +139,7 @@ async function runSingleSearch(req: SearchRequest): Promise<AlgoliaShapedResult>
     const total = Number(data?.total || 0)
 
     return {
-      hits: items,
+      hits: countsOnly ? [] : items,
       nbHits: total,
       page: page - 1,
       nbPages: Math.max(1, Math.ceil(total / hitsPerPage)),
@@ -143,13 +172,17 @@ async function runSingleSearch(req: SearchRequest): Promise<AlgoliaShapedResult>
 async function runSingleFacetValuesSearch(req: FacetValuesRequest) {
   const params = req.params || {}
   const filters = extractFilters(params)
+  const algoliaFilters = extractAlgoliaFilters(params)
 
   const body: Record<string, unknown> = {
     q: String(params.query || ''),
     facetName: params.facetName || '',
     facetQuery: params.facetQuery || '',
+    highlightPreTag: params.highlightPreTag,
+    highlightPostTag: params.highlightPostTag,
   }
   if (filters) body.instantsearchFilters = filters
+  if (algoliaFilters) body.algoliaFilters = algoliaFilters
 
   try {
     const data = await $fetch<FacetValuesResponse>('/api/search/facet-values', { method: 'POST', body })
