@@ -78,8 +78,8 @@ describe('atproto search provider', () => {
     // 75% of the page to posts, the rest to profiles.
     expect(searchPosts).toHaveBeenCalledWith({ query: 'hello', limit: 3 })
     expect(result.items.map((hit) => hit.id)).toEqual([post.uri, actor.did])
-    expect(result.items[0]!.source).toMatchObject({ type: 'atproto_post', url: 'https://bsky.app/profile/alice.test/post/3kabc' })
-    expect(result.items[1]!.source).toMatchObject({ type: 'atproto_actor', url: 'https://bsky.app/profile/bob.test' })
+    expect(result.items[0]!.source).toMatchObject({ type: 'atproto_post', path: '/connect/note/@alice.test/3kabc', sourceUrl: 'https://bsky.app/profile/alice.test/post/3kabc' })
+    expect(result.items[1]!.source).toMatchObject({ type: 'atproto_actor', path: '/u/bob.test', sourceUrl: 'https://bsky.app/profile/bob.test' })
     expect(result.total).toBe(2)
   })
 

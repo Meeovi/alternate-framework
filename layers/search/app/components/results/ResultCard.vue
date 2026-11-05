@@ -152,15 +152,17 @@ const ROUTE_BUILDERS: Record<string, (item: Record<string, unknown>) => string |
 }
 
 const link = computed(() => {
+  // An explicit in-app path from the provider (the Directus provider's
+  // per-collection `path` template; a Bluesky note's or profile's page on
+  // Meeovi) wins over everything: content from other networks opens here,
+  // with its original kept as `sourceUrl` for attribution only.
+  const path = props.item.path
+  if (typeof path === 'string' && path.startsWith('/') && !path.startsWith('//')) return { href: path, external: false }
+
   const externalUrl = firstValue(['url', 'link', 'permalink'])
   if (externalUrl && /^https?:\/\//i.test(String(externalUrl))) {
     return { href: String(externalUrl), external: true }
   }
-
-  // An explicit in-app path from the provider (e.g. the Directus provider's
-  // per-collection `path` template) wins over the type-based builders.
-  const path = props.item.path
-  if (typeof path === 'string' && path.startsWith('/')) return { href: path, external: false }
 
   const builder = ROUTE_BUILDERS[type.value ?? 'product'] ?? ROUTE_BUILDERS.product!
   const href = builder(props.item)

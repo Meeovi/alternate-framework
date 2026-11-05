@@ -31,7 +31,7 @@ export function useFederationNetwork(id: string): FederationNetwork {
   return network
 }
 
-const CAPABILITIES: FederationCapability[] = ['profile', 'feed', 'searchPosts', 'publish']
+const CAPABILITIES: FederationCapability[] = ['profile', 'feed', 'searchPosts', 'thread', 'publish', 'forMember']
 
 export function federationCapabilities(network: FederationNetwork): FederationCapability[] {
   return CAPABILITIES.filter((c) => typeof network[c] === 'function')

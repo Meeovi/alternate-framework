@@ -58,7 +58,7 @@ export type FederationStatus = {
   detail?: string
 }
 
-export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'publish'
+export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'thread' | 'list' | 'publish' | 'forMember'
 
 export interface FederationNetwork {
   /** 'atproto', 'activitypub', … — used in /api/social/federation/:network. */
@@ -69,6 +69,111 @@ export interface FederationNetwork {
   profile?(handle: string): Promise<FederatedActor | null>
   feed?(actor: string, options?: { limit?: number }): Promise<FederatedPost[]>
   searchPosts?(query: string, options?: { limit?: number }): Promise<FederatedPost[]>
+  /** One post (a note, as Meeovi calls them) by `author` (handle or
+   *  network id) and its network key, with its direct replies; null when
+   *  it doesn't exist. */
+  thread?(author: string, key: string, options?: { limit?: number }): Promise<{ post: FederatedPost, replies: FederatedPost[] } | null>
+  /** A public list (of accounts) by its network id, with its items, for
+   *  its page on this site; null when it doesn't exist or isn't public. */
+  list?(id: string, options?: { limit?: number }): Promise<{ list: FederatedList, items: FederatedListItem[] } | null>
   /** Post as the network's service account. */
   publish?(input: { text: string, [key: string]: unknown }): Promise<FederatedPost>
+  /**
+   * Act as one of this site's members on the network: their timeline,
+   * notes, likes, follows and lists. Null when the member has no account
+   * there (never connected it, or the stored credentials stopped working).
+   * The social layer stores and hands over the credentials, so a plugin
+   * never touches the site's database.
+   */
+  forMember?(member: FederationMember): Promise<FederationMemberSession | null>
 }
+
+// --- Acting as a member ------------------------------------------------------
+// The social layer is a client over every network: what a member sees and
+// does (timeline, notes, likes, reposts, follows, lists) goes through their
+// session on each network they're connected to. "directus" (this site's own
+// members, notes and lists) is one network among them.
+
+export type FederationMember = {
+  /** This site's user id. */
+  id: string
+  /** What the network stored for this member when they connected it
+   *  (e.g. an AT Protocol session), or undefined for networks that need
+   *  none (this site's own). */
+  credentials?: unknown
+  /** Persist refreshed credentials (token refresh). */
+  saveCredentials?(credentials: unknown): Promise<void>
+}
+
+/** A list: of accounts (Bluesky and Mastodon lists) or of things on this
+ *  site (products, notes, vibez, spaces…). */
+export type FederatedList = {
+  /** Network-native id (at:// URI, Mastodon list id, Directus id). */
+  id: string
+  network: string
+  name: string
+  description?: string
+  kind: 'accounts' | 'items'
+  visibility?: 'public' | 'private'
+  /** This site's list type, for item lists (Wishlist, Bookmarks…). */
+  type?: string
+  avatar?: string
+  itemCount?: number
+  /** Link to the list's page on this site. */
+  path?: string
+  /** The list on its own network (bsky.app, the Mastodon instance), shown
+   *  as the source on Meeovi's page for it, never used as its link. */
+  url?: string
+}
+
+export type FederatedListItem = {
+  /** The item's own id within the list (what removeFromList takes). */
+  id: string
+  /** 'account', 'note', or a site kind ('product', 'vibe', 'space'…). */
+  kind: string
+  actor?: FederatedActor
+  post?: FederatedPost
+  /** A thing on this site: its kind's collection and id, with a title and
+   *  picture to show. */
+  ref?: { id: string | number, title?: string, image?: string, path?: string }
+  addedAt?: string
+}
+
+export type FederatedListInput = {
+  name: string
+  description?: string
+  visibility?: 'public' | 'private'
+  /** This site's list type by name (Wishlist, Bookmarks…). */
+  type?: string
+}
+
+/** What to add to a list: an account, a note, or a thing on this site. */
+export type FederatedListItemInput =
+  | { kind: 'account', actor: string }
+  | { kind: 'note', post: string }
+  | { kind: string, id: string | number }
+
+export interface FederationMemberSession {
+  network: string
+  /** The member's own account on this network. */
+  account: FederatedActor
+  /** Notes from the accounts they follow. */
+  timeline?(options?: { limit?: number }): Promise<FederatedPost[]>
+  /** A new note, or a reply when `replyTo` (a note id) is given. */
+  publish?(input: { text: string, replyTo?: string }): Promise<FederatedPost>
+  like?(postId: string): Promise<void>
+  unlike?(postId: string): Promise<void>
+  repost?(postId: string): Promise<void>
+  unrepost?(postId: string): Promise<void>
+  follow?(actorId: string): Promise<void>
+  unfollow?(actorId: string): Promise<void>
+  lists?(): Promise<FederatedList[]>
+  list?(id: string): Promise<{ list: FederatedList, items: FederatedListItem[] } | null>
+  createList?(input: FederatedListInput): Promise<FederatedList>
+  updateList?(id: string, input: Partial<FederatedListInput>): Promise<FederatedList>
+  deleteList?(id: string): Promise<void>
+  addToList?(listId: string, item: FederatedListItemInput): Promise<FederatedListItem>
+  removeFromList?(listId: string, itemId: string): Promise<void>
+}
+
+export type FederationMemberCapability = Exclude<keyof FederationMemberSession, 'network' | 'account'>

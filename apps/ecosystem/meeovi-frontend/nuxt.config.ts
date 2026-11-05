@@ -165,6 +165,8 @@ export default defineNuxtConfig({
     '@mframework/meeovi-ratings',
     // Bookmarks and folders in a responsive grid — /bookmarks, <Bookmarkit>, /api/bookmarks
     '@mframework/bookmarkit',
+    // News for the Meeovi News space from Wikipedia's Current events portal.
+    '@mframework/wikipedia-news',
     '@pinia/nuxt',
     '@sentry/nuxt/module',
     'adapter-magento/module',

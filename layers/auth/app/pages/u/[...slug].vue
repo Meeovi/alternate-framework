@@ -112,12 +112,13 @@
                                 <p v-if="profile?.memberSince" class="text-medium-emphasis mt-4">
                                     Member since {{ formatDate(profile.memberSince) }}
                                 </p>
-                                <p v-if="profile?.bluesky" class="text-medium-emphasis mt-2">
-                                    <v-icon icon="fab fa-bluesky" size="small" /> @{{ profile.bluesky.handle }} on Bluesky
-                                    <template v-if="profile.bluesky.followers !== undefined">
-                                        · {{ profile.bluesky.followers.toLocaleString() }} followers
-                                        · {{ profile.bluesky.following.toLocaleString() }} following
-                                        · {{ profile.bluesky.notes.toLocaleString() }} notes
+                                <p v-if="profile?.federated" class="text-medium-emphasis mt-2">
+                                    <v-icon :icon="profile.federated.network === 'activitypub' ? 'fab fa-mastodon' : 'fab fa-bluesky'" size="small" />
+                                    @{{ profile.federated.handle }} on {{ profile.federated.label }}
+                                    <template v-if="profile.federated.followers !== undefined">
+                                        · {{ profile.federated.followers.toLocaleString() }} followers
+                                        · {{ profile.federated.following.toLocaleString() }} following
+                                        · {{ profile.federated.notes.toLocaleString() }} notes
                                     </template>
                                 </p>
                             </v-card-text>
@@ -158,6 +159,13 @@
                         </div>
                     </v-tabs-window-item>
                 </v-tabs-window>
+
+                <!-- Someone from Bluesky or the Fediverse: their profile stays on
+                     Meeovi, and the original is credited at the bottom, whichever
+                     tab is open (social layer's blocks/sourceAttribution.vue,
+                     auto-registered). -->
+                <BlocksSourceAttribution v-if="profile?.source" class="pa-4" kind="profile"
+                    :url="profile.source.url" :network="profile.source.network" />
             </template>
         </v-card>
     </v-card>

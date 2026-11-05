@@ -127,6 +127,20 @@ describe.runIf(LIVE)(`activitypub network (live: ${SERVER})`, { timeout: 30000 }
     expect(posts.every((p) => p.hashtags?.some((t) => t.toLowerCase() === 'fediverse'))).toBe(true)
   })
 
+  it('opens one post with its replies, only under its own author', async () => {
+    const [first] = await network.feed!('Mastodon', { limit: 1 })
+    const found = await network.thread!(first!.author.handle, first!.id)
+    expect(found?.post).toMatchObject({ id: first!.id, network: 'activitypub' })
+    expect(found?.post.url).toMatch(/^https:\/\//)
+    expect(Array.isArray(found?.replies)).toBe(true)
+    // The local name works too (Mastodon rather than Mastodon@mastodon.social)
+    expect((await network.thread!('Mastodon', first!.id))?.post.id).toBe(first!.id)
+    // Someone else's name, a missing post, or a malformed key: not found
+    expect(await network.thread!('someone-else@example.social', first!.id)).toBeNull()
+    expect(await network.thread!('Mastodon', '1')).toBeNull()
+    expect(await network.thread!('Mastodon', '../x')).toBeNull()
+  })
+
   it('resolves WebFinger', async () => {
     const w = await resolveWebfinger(`Mastodon@${new URL(SERVER).host}`)
     expect(w.subject.toLowerCase()).toBe(`acct:mastodon@${new URL(SERVER).host}`)

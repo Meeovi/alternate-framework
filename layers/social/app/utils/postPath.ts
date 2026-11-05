@@ -11,10 +11,13 @@ type NoteLike = {
  *    from the composer before 19 October 2026, or straight in Directus, can
  *    have no slug, and the note page accepts either);
  *  - a Bluesky note (from the federation API): /connect/note/@<handle>/<key>,
- *    key being the last part of its at:// URI.
+ *    key being the last part of its at:// URI;
+ *  - a Fediverse note: /connect/note/@<user@instance>/<status id>.
+ * Notes from other networks open here (Meeovi is their client); their
+ * original address is only shown on the note's page, as its source.
  */
 export function postPath(post?: NoteLike | null): string | null {
-  if (post?.network === 'atproto') {
+  if (post?.network === 'atproto' || post?.network === 'activitypub') {
     const handle = post.author?.handle
     const key = String(post.id ?? '').split('/').pop()
     return handle && key ? `/connect/note/@${encodeURIComponent(handle)}/${encodeURIComponent(key)}` : null
@@ -23,7 +26,24 @@ export function postPath(post?: NoteLike | null): string | null {
   return key === undefined || key === null || key === '' ? null : `/connect/note/${encodeURIComponent(String(key))}`
 }
 
-/** A Bluesky account's profile on Meeovi (/u/<handle>; a Meeovi member with that account shows as themselves). */
+/**
+ * The note a /connect/note/@<handle>/<key> address points at, or null for a
+ * Meeovi note (/connect/note/<slug>). The handle says the network: a
+ * Fediverse handle is user@instance, a Bluesky one has no @ (alice.bsky.social).
+ */
+export function federatedNoteRef(path: string): { network: 'atproto' | 'activitypub', author: string, key: string } | null {
+  const match = /^@([^/]+)\/([^/]+)$/.exec(path)
+  if (!match) return null
+  const author = decodeURIComponent(match[1]!).replace(/^@/, '')
+  const key = decodeURIComponent(match[2]!)
+  if (!author || !key) return null
+  return { network: author.includes('@') ? 'activitypub' : 'atproto', author, key }
+}
+
+/** What to call a network's content to people. */
+export const NETWORK_LABELS: Record<string, string> = { atproto: 'Bluesky', activitypub: 'the Fediverse' }
+
+/** An account's profile on Meeovi (Bluesky or Fediverse) (/u/<handle>; a Meeovi member with that account shows as themselves). */
 export function federatedProfilePath(author?: { handle?: string } | null): string | null {
   return author?.handle ? `/u/${encodeURIComponent(author.handle)}` : null
 }
