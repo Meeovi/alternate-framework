@@ -17,6 +17,16 @@ const layers = useLayers(__dirname, {
   ui: '../../../layers/ui-shell'
 })
 
+// A rendered page kept for a minute and served while a fresh copy renders
+// (stale-while-revalidate). Keyed on the request's cookies: signed-out
+// visitors share a copy, a signed-in user only ever gets their own.
+// Off in development, where an edit must show at once (a `cache` key on its
+// own turns caching on, so it goes too).
+const renderCache = process.env.NODE_ENV === 'development' ? {} : {
+  swr: 60,
+  cache: { varies: ['cookie'] },
+}
+
 export default defineNuxtConfig({
 
   extends: layers.extends(),
@@ -57,13 +67,16 @@ export default defineNuxtConfig({
     // hit. Cache it server-side, stale-while-revalidate. `varies: cookie`
     // keys the cache on the request's cookies and passes them into the
     // render: anonymous visitors share one entry, a logged-in user only
-    // ever gets the page rendered with their own session.
-    // Off in development (the preview site), where an edit must show at
-    // once. A `cache` key on its own turns caching on, so it goes too.
-    '/': process.env.NODE_ENV === 'development' ? {} : {
-      swr: 60,
-      cache: { varies: ['cookie'] }
-    },
+    // ever gets the page rendered with their own session (see renderCache).
+    '/': renderCache,
+    // The same for departments and their categories, outlets and spaces:
+    // pages built from many Directus (and store) reads, which made them slow
+    // and let one slow render pile up behind another (2026-11-05).
+    '/departments/**': renderCache,
+    '/outlets': renderCache,
+    '/outlet/**': renderCache,
+    '/connect/spaces': renderCache,
+    '/connect/space/**': renderCache,
   },
 
   hooks: {
