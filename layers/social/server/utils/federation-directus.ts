@@ -12,7 +12,7 @@ import type { FederatedActor, FederatedPost, FederationNetwork, FederationStatus
 export const DIRECTUS_NETWORK = 'directus'
 
 const PUBLISHED = ['published', 'Published', 'public', 'Public']
-const PUBLIC_POSTS = [
+export const PUBLIC_POSTS = [
   { status: { _in: PUBLISHED } },
   { _or: [{ visibility_scope: { _null: true } }, { visibility_scope: { _eq: 'public' } }] },
 ]

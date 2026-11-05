@@ -5,7 +5,7 @@
                 :title="department?.name" />
             <deals :category="department?.slug" />
         </div>
-        <div v-if="department?.slug === 'events'">
+        <div v-else-if="department?.slug === 'events'">
             <v-toolbar :style="`background-color: ${department?.color}; color: ${department?.colortext}`"
                 :title="department?.name" />
             <events :category="department?.slug" />
@@ -90,7 +90,7 @@
                 </section>
 
                 <!-- Latest Products Section (commerce) -->
-                <v-sheet style="background-color: transparent; box-shadow: none;">
+                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="latestProducts?.length">
                     <v-toolbar title="Products" color="transparent"></v-toolbar>
                     <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
                         <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
@@ -108,7 +108,7 @@
 
                 <!-- Elite Novels Stories Cards -->
                 <v-sheet style="background-color: transparent; box-shadow: none;"
-                    v-if="department?.name === 'Elite Novels'">
+                    v-if="isEliteNovels && stories?.length">
                     <v-toolbar title="Stories from Elite Novels" color="transparent">
 
                         <v-toolbar-items>
@@ -148,22 +148,6 @@
                     </v-slide-group>
                 </v-sheet>
 
-                <!-- Posts about this Category Section (content) -->
-                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.posts?.length">
-                    <v-toolbar title="Posts" color="transparent"></v-toolbar>
-                    <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                            v-for="post in department?.posts" :key="post.id">
-                            <postCard :post="post" :class="['ma-4', selectedClass]" @click="toggle" />
-                            <div class="d-flex fill-height align-center justify-center">
-                                <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
-                                    </v-icon>
-                                </v-scale-transition>
-                            </div>
-                        </v-slide-group-item>
-                    </v-slide-group>
-                </v-sheet>
 
                 <!-- Event Type Products Section (commerce) -->
                 <v-sheet style="background-color: transparent; box-shadow: none;" v-if="events?.length">
@@ -189,27 +173,15 @@
                         <productCard :product="product?.products_id" />
                     </v-col>
                 </v-row>
+                <!-- Nothing to sell here yet -->
+                <EmptyCategory v-else-if="!latestProducts?.length" kind="department" :department-id="department?.id" />
 
-                <!-- Spaces about this Category Section (content) -->
-                <v-sheet style="background-color: transparent; box-shadow: none;" v-if="department?.spaces?.length">
-                    <v-toolbar title="Spaces" color="transparent"></v-toolbar>
-                    <v-slide-group class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }"
-                            v-for="space in department?.spaces" :key="space.id">
-                            <spaceCard :space="space" :class="['ma-4', selectedClass]" @click="toggle" />
-                            <div class="d-flex fill-height align-center justify-center">
-                                <v-scale-transition>
-                                    <v-icon v-if="isSelected" color="white" icon="fas fa-circle-xmark" size="48">
-                                    </v-icon>
-                                </v-scale-transition>
-                            </div>
-                        </v-slide-group-item>
-                    </v-slide-group>
-                </v-sheet>
+                <!-- Notes, public lists, events and spaces about this department -->
+                <TopicActivity v-if="department?.id" :department-id="department.id" />
 
                 <!-- Elite Novels Characters Cards -->
                 <v-sheet style="background-color: transparent; box-shadow: none;"
-                    v-if="department?.name === 'Elite Novels'">
+                    v-if="isEliteNovels && characters?.length">
                     <v-toolbar title="Characters from Elite Novels" color="transparent">
 
                         <v-toolbar-items>
@@ -238,16 +210,16 @@
 
 <script setup>
     import productCard from '../../components/catalog/product/productCard.vue'
+    import EmptyCategory from '../../components/catalog/emptyCategory.vue'
     import travel from '#commerce/app/components/catalog/categories/travel.vue'
     import deals from '#commerce/app/components/catalog/categories/deals.vue'
     import timeComponent from '#commerce/app/components/catalog/categories/time/time.vue'
     import weather from '#commerce/app/components/catalog/categories/weather/weather.vue'
     import adultstore from '#commerce/app/components/catalog/categories/adultstore.vue'
     import pantry from '#commerce/app/components/catalog/categories/pantry/pantry.vue'
-    import spaceCard from '#social/app/components/related/space.vue'
     import novelsCard from '#commerce/app/components/related/novelsCard.vue'
     import storyCard from '#commerce/app/components/related/storyCard.vue'
-    import postCard from '#social/app/components/related/post.vue'
+    import TopicActivity from '#social/app/components/related/topicActivity.vue'
     import shortsCard from '#social/app/components/related/short.vue'
 
     import {
@@ -454,17 +426,13 @@
         return $directus.request($readItem('callouts', '2'))
     })
 
-    const {
-        data: characters
-    } = useLazyAsyncData('characters', () => {
-        return $directus.request($readItems('characters'))
-    })
-
-    const {
-        data: stories
-    } = useLazyAsyncData('stories', () => {
-        return $directus.request($readItems('stories'))
-    })
+    // Elite Novels' characters and stories, from elitenovels.com's own Directus.
+    const isEliteNovels = computed(() => department.value?.slug === 'elite-novels')
+    const eliteNovels = (kind) => useLazyAsyncData(`elitenovels-${kind}`,
+        () => (isEliteNovels.value ? $fetch('/api/commerce/elitenovels', { query: { kind } }).catch(() => []) : Promise.resolve([])),
+        { default: () => [], watch: [isEliteNovels] })
+    const { data: characters } = eliteNovels('characters')
+    const { data: stories } = eliteNovels('stories')
 
     // The department's categories as a tree: its top-level categories, each
     // with the subcategories under it (categories.parent — e.g. Pixanomy ›

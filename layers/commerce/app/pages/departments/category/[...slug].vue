@@ -54,11 +54,15 @@
         </v-toolbar>
       </v-card>
 
-      <v-row class="catSection">
+      <v-row v-if="products.length" class="catSection">
         <v-col v-for="product in products" :key="product.id" cols="3">
           <ProductCard :product="product" />
         </v-col>
       </v-row>
+      <EmptyCategory v-else kind="category" :department-id="department?.id" :category-id="category?.id" />
+
+      <!-- Notes, public lists, events and spaces about this category -->
+      <TopicActivity v-if="category?.id" :category-id="category.id" />
     </div>
 
     <div v-else class="p-10 text-center text-xl text-medium-emphasis">
@@ -74,6 +78,8 @@
     watch
   } from 'vue'
   import ProductCard from '../../../components/catalog/product/productCard.vue'
+  import EmptyCategory from '../../../components/catalog/emptyCategory.vue'
+  import TopicActivity from '#social/app/components/related/topicActivity.vue'
   import {
     useAppGateway
   } from '#shared/app/composables/useAppGateway'

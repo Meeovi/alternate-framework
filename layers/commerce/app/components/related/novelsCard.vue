@@ -1,35 +1,34 @@
 <template>
-  <div>
-    <NuxtLink :to="`/characters/${character?.slug}`">
-      <v-card class="elite-card ma-2 mx-auto" height="480" width="250" max-width="100%">
-        <div v-if="character?.image?.filename_disk">
-          <img class="align-end text-white" height="250" :src="`${$directus.url}assets/${character?.image?.filename_disk}`" :alt="character?.name"
-            cover />
-        </div>
-
-        <div v-else>
-          <img class="align-end text-white" height="300" src="../../assets/images/coming_soon.png" cover />
-        </div>
-        <v-card-title class="pt-4">{{ character?.name }}</v-card-title>
-        <v-card-subtitle v-if="character?.type === 'Individual'">{{ character?.alias }}</v-card-subtitle>
-        <div class="d-flex fill-height align-center justify-center">
-          <v-scale-transition>
-            <v-icon color="white" size="48" icon="fas fa-circle-xmark"></v-icon>
-          </v-scale-transition>
-        </div>
-      </v-card>
-    </NuxtLink>
-  </div>
+  <!-- A character on elitenovels.com (from /api/commerce/elitenovels). -->
+  <a :href="character?.url" class="elite-link">
+    <v-card class="elite-card ma-2 mx-auto" height="400" width="250" max-width="100%">
+      <img v-if="character?.image" class="elite-img" :src="character.image" :alt="character?.name" loading="lazy" />
+      <img v-else class="elite-img" src="../../assets/images/coming_soon.png" alt="" loading="lazy" />
+      <v-card-title class="pt-4">{{ character?.name }}</v-card-title>
+      <v-card-subtitle v-if="character?.alias">{{ character.alias }}</v-card-subtitle>
+    </v-card>
+  </a>
 </template>
 
 <script setup>
-  const props = defineProps({
+  defineProps({
     character: {
       type: Object,
       required: true,
     },
-  });
-  const {
-    character
-  } = props;
+  })
 </script>
+
+<style scoped>
+.elite-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.elite-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+</style>

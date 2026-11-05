@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { useBusinessDriver } from '../../../composables/useBusinessDriver'
 
 definePageMeta({ middleware: 'seller' })
@@ -145,6 +145,25 @@ function openForm() {
   formError.value = ''
   formOpen.value = true
 }
+
+// An empty department or category page links here with ?add=1 and its
+// department (and category): the form opens with them already chosen, as
+// long as they're ones a product can go in.
+const route = useRoute()
+onMounted(async () => {
+  if (route.query.add !== '1') return
+  openForm()
+  const wanted = (key: string) => Number(Array.isArray(route.query[key]) ? route.query[key][0] : route.query[key]) || null
+  const departmentId = wanted('department')
+  const categoryId = wanted('category')
+  if (!departmentId) return
+  // The departments may still be loading on a client-side visit.
+  if (departmentsPending.value) await new Promise<void>((resolve) => { const stop = watch(departmentsPending, (p) => { if (!p) { stop(); resolve() } }) })
+  if (!departments.value.some((d) => d.id === departmentId)) return
+  form.departmentId = departmentId
+  await nextTick() // choosing a department clears the category
+  if (categoryId && categories.value.some((c) => c.id === categoryId)) form.categoryId = categoryId
+})
 
 // v-file-input gives a File or (multiple) an array, depending on version.
 const single = (value: File | File[] | null) => (Array.isArray(value) ? value[0] : value) || null

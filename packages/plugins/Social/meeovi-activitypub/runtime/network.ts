@@ -139,15 +139,18 @@ export function createActivitypubNetwork(options: { server?: string, accessToken
         throw e
       }
     },
+    // Search results show to anyone, signed in or not: posts their authors
+    // marked sensitive are left out (as the AT Protocol search leaves out
+    // adult-labelled ones).
     async searchPosts(query, { limit = 20 } = {}) {
       if (token) {
         const res = await client.v2.search.list({ q: query, type: 'statuses', limit, resolve: false })
-        return res.statuses.map((s) => toFederatedPost(s, domain))
+        return res.statuses.filter((s) => !s.sensitive).map((s) => toFederatedPost(s, domain))
       }
       const tag = queryToHashtag(query)
       if (!tag) return []
       const statuses = await client.v1.timelines.tag.$select(tag).list({ limit })
-      return statuses.map((s) => toFederatedPost(s, domain))
+      return statuses.filter((s) => !s.sensitive).map((s) => toFederatedPost(s, domain))
     },
   }
   if (token) {
