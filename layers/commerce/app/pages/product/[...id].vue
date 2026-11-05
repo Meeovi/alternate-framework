@@ -322,6 +322,9 @@
   import productCompare from '../../components/catalog/product/compare.vue'
   import { CommerceBackendRegistry } from 'alternate-sdk'
   import { canonicalProductKey, parseProductKey } from '../../utils/productKey'
+  import { PRODUCT_FIELDS } from '../../utils/productFields'
+  // A product card's fields, for the cross-sell and related products sliders.
+  const CARD_FIELDS = ['id', 'name', 'slug', 'sku', 'mageos_sku', 'source', 'price', 'image', 'image_url', 'seller_name', 'seller_username', 'download_url', 'allow_free_download']
   import { authClient } from '#auth/lib/auth-client'
 
   const tab = ref(null);
@@ -377,11 +380,14 @@
   const {
     data: product
   } = await useAsyncData(() => `product-${productId.value}`, async () => {
-    const baseFields = ['*',
+    // Named columns, not '*': see utils/productFields.ts (uncached 13–21 s → about 3 s).
+    const baseFields = [...PRODUCT_FIELDS,
       'showcases.showcases_id.*',
       'comments.comments_id.*',
       'shorts.shorts_id.*',
-      'categories.categories_id.*',
+      // Only what's shown: a category's `*` carried the ids of every product
+      // in it, and cost 3–4 s a read on its own.
+      'categories.categories_id.id', 'categories.categories_id.name', 'categories.categories_id.slug',
       'spaces.spaces_id.*',
       'shops.shops_id.*',
       'product_types.product_types_id.*',
@@ -389,11 +395,11 @@
       // Without these, cross_sell_products/related_products come back as
       // junction rows with no nested product — every card in those two
       // sliders rendered with product=undefined.
-      'cross_sell_products.products_id.*',
-      'related_products.products_id.*',
+      ...CARD_FIELDS.map((f) => `cross_sell_products.products_id.${f}`),
+      ...CARD_FIELDS.map((f) => `related_products.products_id.${f}`),
       // products_tags junction — unexpanded it's bare row ids, which gave
       // <RelatedTag> an undefined tag.
-      'tags.tags_id.*',
+      'tags.tags_id.id', 'tags.tags_id.name', 'tags.tags_id.slug',
       'image.*',
     ]
 
@@ -524,10 +530,11 @@
     }
 
     return $directus.request($readItems('products', {
-      fields: ['*',
+      // products has no `manufacturer` relation: asking for it made Directus
+      // refuse the whole query, so the comparison never had similar products.
+      fields: [...PRODUCT_FIELDS,
         'image.*',
-        'categories.categories_id.*',
-        'manufacturer.manufacturer_id.*',
+        'categories.categories_id.id', 'categories.categories_id.name',
       ],
       filter: {
         _and: [{

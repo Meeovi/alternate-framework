@@ -6,13 +6,15 @@
 import { createDirectus, readItems, rest, staticToken } from '@directus/sdk'
 import { useRuntimeConfig } from '#imports'
 import { redis } from '#shared/server/utils/redis'
+import { PRODUCT_FIELDS } from '../../app/utils/productFields'
 
 type Row = Record<string, any>
 
 /** Redis hash: product key (`magento:<sku>` or a Directus id) → free downloads. */
 export const PRODUCT_DOWNLOADS_KEY = 'meeovi:product-downloads'
 
-export const PRODUCT_FIELDS = ['*', 'image.*', 'brands.brands_id.*']
+// Named columns, not '*' (see app/utils/productFields.ts: '*' made a cold read take 5–9 s).
+const CARD_FIELDS = [...PRODUCT_FIELDS, 'image.*', 'brands.brands_id.*']
 const LIMIT = 12
 const PUBLISHED = { status: { _eq: 'published' } }
 const PUBLIC_CONTENT = [
@@ -50,7 +52,7 @@ export async function productsByKeys(keys: string[]): Promise<Row[]> {
   const skus = keys.filter((k) => k.startsWith('magento:')).map((k) => k.slice('magento:'.length))
   if (!ids.length && !skus.length) return []
   const rows = await read('products', {
-    fields: PRODUCT_FIELDS,
+    fields: CARD_FIELDS,
     filter: { _and: [PUBLISHED, { _or: [...(ids.length ? [{ id: { _in: ids } }] : []), ...(skus.length ? [{ mageos_sku: { _in: skus } }] : [])] }] },
     limit: keys.length,
   })
@@ -96,12 +98,12 @@ export async function bestSellers(): Promise<Row[]> {
 }
 
 export async function latestProducts(): Promise<Row[]> {
-  return read('products', { fields: PRODUCT_FIELDS, filter: PUBLISHED, sort: ['-created_at', '-id'], limit: LIMIT })
+  return read('products', { fields: CARD_FIELDS, filter: PUBLISHED, sort: ['-created_at', '-id'], limit: LIMIT })
 }
 
 /** Deals: under $20, paid ones first (most products are free). */
 export async function deals(): Promise<Row[]> {
-  return read('products', { fields: PRODUCT_FIELDS, filter: { _and: [PUBLISHED, { price: { _lt: 20 } }] }, sort: ['-price', '-created_at'], limit: LIMIT })
+  return read('products', { fields: CARD_FIELDS, filter: { _and: [PUBLISHED, { price: { _lt: 20 } }] }, sort: ['-price', '-created_at'], limit: LIMIT })
 }
 
 /** Product discussions (Rocket.Chat rooms `<prefix>-product-<id>`) by message count. */
@@ -165,7 +167,7 @@ export async function exclusives(): Promise<{ products: Row[], posts: Row[], sho
   ]
   const [products, posts, shorts] = await Promise.all([
     read('products', {
-      fields: PRODUCT_FIELDS,
+      fields: CARD_FIELDS,
       filter: { _and: [PUBLISHED, { _or: [{ seller_name: { _in: sellers } }, { departments: { departments_id: { slug: { _eq: department } } } }] }] },
       sort: ['-created_at', '-id'],
       limit: LIMIT,
@@ -180,7 +182,7 @@ export async function exclusives(): Promise<{ products: Row[], posts: Row[], sho
 export async function pixanomy(): Promise<{ departmentId: number | null, products: Row[] }> {
   const [dept] = await read('departments', { fields: ['id'], filter: { slug: { _eq: 'pixanomy' } }, limit: 1 })
   const products = await read('products', {
-    fields: PRODUCT_FIELDS,
+    fields: CARD_FIELDS,
     filter: { _and: [PUBLISHED, { departments: { departments_id: { slug: { _eq: 'pixanomy' } } } }] },
     sort: ['-created_at', '-id'],
     limit: LIMIT,
