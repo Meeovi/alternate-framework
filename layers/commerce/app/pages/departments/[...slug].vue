@@ -24,14 +24,17 @@
                         </template>
                         <v-list class="departmentMenu">
                             <v-row>
-                                <v-col cols="3" v-for="categories in department?.categories"
-                                    :key="categories?.categories_id?.id">
+                                <v-col cols="3" v-for="group in categoryGroups" :key="group.category.id">
                                     <v-list-item>
                                         <v-chip>
-                                            <NuxtLink :to="`/departments/category/${categories?.categories_id?.id}`">
-                                                {{ categories?.categories_id?.name }}
+                                            <NuxtLink :to="`/departments/category/${group.category.id}`">
+                                                {{ group.category.name }}
                                             </NuxtLink>
                                         </v-chip>
+                                    </v-list-item>
+                                    <v-list-item v-for="sub in group.children" :key="sub.id" density="compact"
+                                        class="ps-8">
+                                        <NuxtLink :to="`/departments/category/${sub.id}`">{{ sub.name }}</NuxtLink>
                                     </v-list-item>
                                 </v-col>
                             </v-row>
@@ -52,11 +55,8 @@
                 <section data-bs-version="5.1" class="pricing6 shopm5 cid-tZY31Y2JxZ" id="apricing6-6g">
                     <div class="mbr-overlay"></div>
                     <div class="container-fluid">
-                        <v-container v-if="department?.slug === 'photography'" fluid class="py-4">
-                            <MeeoviRelatedMedia title="Your media" type="image" :limit="20" :show-empty="false" />
-                        </v-container>
-
-                        <v-container v-if="department?.slug === 'art'" fluid class="py-4">
+                        <!-- Pixanomy: images and artwork (Art, Photography… are its categories). -->
+                        <v-container v-if="department?.slug === 'pixanomy'" fluid class="py-4">
                             <MeeoviRelatedMedia title="Your media" type="image" :limit="20" :show-empty="false" />
                         </v-container>
 
@@ -464,6 +464,24 @@
         data: stories
     } = useLazyAsyncData('stories', () => {
         return $directus.request($readItems('stories'))
+    })
+
+    // The department's categories as a tree: its top-level categories, each
+    // with the subcategories under it (categories.parent — e.g. Pixanomy ›
+    // Photography › Travel). A category whose parent isn't in this
+    // department shows at the top level.
+    const categoryGroups = computed(() => {
+        const list = (department.value?.categories || []).map((rel) => rel?.categories_id).filter((c) => c?.id)
+        const ids = new Set(list.map((c) => c.id))
+        const parentId = (c) => (c.parent && typeof c.parent === 'object' ? c.parent.id : c.parent)
+        const byName = (a, b) => String(a.name || '').localeCompare(String(b.name || ''))
+        return list
+            .filter((c) => !ids.has(parentId(c)))
+            .sort(byName)
+            .map((category) => ({
+                category,
+                children: list.filter((c) => parentId(c) === category.id).sort(byName),
+            }))
     })
 
     useHead({

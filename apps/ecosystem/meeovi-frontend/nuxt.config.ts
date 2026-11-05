@@ -42,6 +42,11 @@ export default defineNuxtConfig({
     '/auth/callback': {
       redirect: '/callback'
     },
+    // Art, Photography and Stock Images were departments until 2026-11-05;
+    // they're now categories under the Pixanomy department (Directus ids).
+    '/departments/art': { redirect: { to: '/departments/category/572', statusCode: 301 } },
+    '/departments/photography': { redirect: { to: '/departments/category/573', statusCode: 301 } },
+    '/departments/stock-images': { redirect: { to: '/departments/category/1325', statusCode: 301 } },
     "/directus/**": {
       proxy: {
         to: import.meta.env.DIRECTUS_URL + "/**"

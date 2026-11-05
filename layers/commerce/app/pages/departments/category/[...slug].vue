@@ -10,13 +10,20 @@
       <v-card variant="text">
         <v-toolbar :style="`background-color: ${category?.color}; color: ${category?.colortext}`">
           <v-toolbar-title>
-            <NuxtLink :to="`/departments/${category?.departments?.[0]?.departments_id?.name?.toLowerCase()}`">
-              Meeovi {{ category?.departments?.[0]?.departments_id?.name }}
-            </NuxtLink>
-            - {{ category?.name }}
+            <template v-if="department">
+              <NuxtLink :to="`/departments/${department.slug || department.name?.toLowerCase()}`">
+                Meeovi {{ department.name }}
+              </NuxtLink>
+              -
+            </template>
+            <template v-if="category?.parent?.id">
+              <NuxtLink :to="`/departments/category/${category.parent.id}`">{{ category.parent.name }}</NuxtLink>
+              -
+            </template>
+            {{ category?.name }}
           </v-toolbar-title>
-          <v-slide-group v-if="category?.categories?.length" show-arrows>
-            <v-slide-group-item v-slot="{ isSelected }">
+          <v-slide-group v-if="subcategories.length || category?.menus?.length" show-arrows>
+            <v-slide-group-item v-if="subcategories.length" v-slot="{ isSelected }">
               <v-menu>
                 <template #activator="{ props }">
                   <v-btn :color="isSelected ? 'primary' : undefined" class="ma-2" v-bind="props" variant="text">
@@ -26,10 +33,10 @@
 
                 <v-list class="departmentMenu">
                   <v-row>
-                    <v-col v-for="sub in category.categories" :key="sub?.categories_id?.id" cols="3">
+                    <v-col v-for="sub in subcategories" :key="sub.id" cols="3">
                       <v-list-item>
-                        <NuxtLink :to="`/departments/categories/${sub.categories_id.id}`">
-                          {{ sub.categories_id.name }}
+                        <NuxtLink :to="`/departments/category/${sub.id}`">
+                          {{ sub.name }}
                         </NuxtLink>
                       </v-list-item>
                     </v-col>
@@ -48,9 +55,8 @@
       </v-card>
 
       <v-row class="catSection">
-        <!-- A deleted product leaves its junction row behind with no product. -->
-        <v-col v-for="productRel in (category.products || []).filter((rel) => rel?.products_id)" :key="productRel.products_id.id" cols="3">
-          <ProductCard :product="productRel.products_id" />
+        <v-col v-for="product in products" :key="product.id" cols="3">
+          <ProductCard :product="product" />
         </v-col>
       </v-row>
     </div>
@@ -116,7 +122,9 @@
       }
       const resp = await $directus.request($readItems('categories', {
         fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*', 'products.products_id.*',
-          'products.products_id.image.*', 'menus.*', 'image.*'
+          'products.products_id.image.*', 'menus.*', 'image.*',
+          'parent.id', 'parent.name', 'parent.departments.departments_id.*',
+          'children.id', 'children.name', 'children.products.products_id.*', 'children.products.products_id.image.*'
         ],
         filter,
         limit: 1,
@@ -162,6 +170,32 @@
   }
 
   const category = computed(() => categoryRaw.value as any)
+
+  // A subcategory may only be linked to its department through its parent
+  // (e.g. Travel › Photography › Pixanomy).
+  const department = computed(() =>
+    category.value?.departments?.[0]?.departments_id
+    || category.value?.parent?.departments?.[0]?.departments_id
+    || null)
+
+  const subcategories = computed(() =>
+    ((category.value?.children || []) as any[])
+      .filter((c) => c?.id)
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''))))
+
+  // The category's own products, then its subcategories' (so Photography
+  // shows its Travel photos), once each. A deleted product leaves its
+  // junction row behind with no product.
+  const products = computed(() => {
+    const seen = new Set()
+    const rels = [
+      ...(category.value?.products || []),
+      ...subcategories.value.flatMap((c: any) => c.products || []),
+    ]
+    return rels
+      .map((rel: any) => rel?.products_id)
+      .filter((p: any) => p?.id && !seen.has(p.id) && seen.add(p.id))
+  })
 
   useHead({
     title: computed(() => category.value?.name || 'Category Page'),

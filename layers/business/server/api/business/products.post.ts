@@ -94,9 +94,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Choose a department and a category.' })
   }
   const department = await directus.request(readItem('departments', departmentId, {
-    fields: ['id', 'name', 'type', { categories: [{ categories_id: ['id', 'name', 'uid'] }] }] as any,
-  })).catch(() => null) as { name?: string, type?: string, categories?: { categories_id?: { id: number, name?: string, uid?: string | null } | null }[] } | null
-  const category = department?.type === 'department'
+    fields: ['id', 'name', 'type', 'active', { categories: [{ categories_id: ['id', 'name', 'uid'] }] }] as any,
+  })).catch(() => null) as { name?: string, type?: string, active?: string, categories?: { categories_id?: { id: number, name?: string, uid?: string | null } | null }[] } | null
+  // Retired departments (Art, Photography… now categories under Pixanomy) take no new products.
+  const category = department?.type === 'department' && department.active === 'active'
     ? department.categories?.map((c) => c.categories_id).find((c) => Number(c?.id) === categoryId)
     : undefined
   if (!department?.name || !category?.name) throw createError({ statusCode: 400, statusMessage: 'That category isn\'t in that department.' })

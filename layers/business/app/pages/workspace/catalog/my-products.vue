@@ -32,7 +32,7 @@
                   :rules="[required]" :loading="departmentsPending" />
               </v-col>
               <v-col cols="12" sm="6">
-                <v-select v-model="form.categoryId" :items="categories" item-title="name" item-value="id" label="Category"
+                <v-select v-model="form.categoryId" :items="categories" item-title="label" item-value="id" label="Category"
                   :rules="[required]" :disabled="!form.departmentId" no-data-text="Choose a department first" />
               </v-col>
             </v-row>
@@ -95,19 +95,23 @@ const formError = ref('')
 // Departments and their categories, as the store front shows them.
 const { $directus, $readItems } = useNuxtApp()
 const { data: departmentRows, pending: departmentsPending } = useAsyncData('workspace-product-departments', () => $directus.request($readItems('departments', {
-  filter: { type: { _eq: 'department' } },
-  fields: ['id', 'name', { categories: [{ categories_id: ['id', 'name'] }] }],
+  filter: { type: { _eq: 'department' }, active: { _eq: 'active' } },
+  fields: ['id', 'name', { categories: [{ categories_id: ['id', 'name', { parent: ['name'] }] }] }],
   sort: ['name'],
   limit: -1,
 })).catch(() => []), { default: () => [] })
-const departments = computed(() => (departmentRows.value || []) as { id: number, name: string, categories?: { categories_id?: { id: number, name: string } | null }[] }[])
+type DepartmentCategory = { id: number, name: string, parent?: { name?: string } | null }
+const departments = computed(() => (departmentRows.value || []) as { id: number, name: string, categories?: { categories_id?: DepartmentCategory | null }[] }[])
+// A subcategory is labelled with the category it sits under
+// ("Photography › Travel"); its own name is what becomes a tag.
 const categories = computed(() => {
   const department = departments.value.find((d) => d.id === form.departmentId)
   const seen = new Set<number>()
   return (department?.categories || [])
     .map((c) => c.categories_id)
-    .filter((c): c is { id: number, name: string } => !!c?.name && !seen.has(c.id) && !!seen.add(c.id))
-    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter((c): c is DepartmentCategory => !!c?.name && !seen.has(c.id) && !!seen.add(c.id))
+    .map((c) => ({ ...c, label: c.parent?.name ? `${c.parent.name} › ${c.name}` : c.name }))
+    .sort((a, b) => a.label.localeCompare(b.label))
 })
 watch(() => form.departmentId, () => { form.categoryId = null })
 
