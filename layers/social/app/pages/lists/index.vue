@@ -30,11 +30,14 @@
         <v-tabs-window v-model="tab" style="margin-top: 10px;">
             <!-- All Lists -->
             <v-tabs-window-item :value="listBar?.menus?.[0]?.value">
+                <!-- Search, sort and filter every row below (kept in the page address) -->
+                <SortFilterBar :controller="listControls" :count="shownCount" :total="totalCount" noun="items"
+                    search-label="Search your lists" />
                 <!-- Your Lists -->
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar :title="listBar?.submenus?.[0]?.name" color="transparent"></v-toolbar>
-                    <v-slide-group v-if="starredLists?.length" class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="list in starredLists"
+                    <v-slide-group v-if="shown(starredLists).length" class="pa-4" selected-class="bg-success" show-arrows>
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="list in shown(starredLists)"
                             :key="list.id">
                             <ListCard :list="list" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
@@ -52,8 +55,8 @@
                 <!-- Public Lists -->
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar :title="listBar?.submenus?.[1]?.name" color="transparent"></v-toolbar>
-                    <v-slide-group v-if="listGrid?.length" class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="list in listGrid"
+                    <v-slide-group v-if="shown(listGrid).length" class="pa-4" selected-class="bg-success" show-arrows>
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="list in shown(listGrid)"
                             :key="list.id">
                             <ListCard :list="list" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
@@ -71,8 +74,8 @@
                 <!-- Collections -->
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar :title="listBar?.submenus?.[2]?.name" color="transparent"></v-toolbar>
-                    <v-slide-group v-if="collectionLists?.length" class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="collection in collectionLists"
+                    <v-slide-group v-if="shown(collectionLists).length" class="pa-4" selected-class="bg-success" show-arrows>
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="collection in shown(collectionLists)"
                         :key="collection.id">
                             <ListCard :list="collection" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex fill-height align-center justify-center">
@@ -90,8 +93,8 @@
                 <!-- Watch Later: the user's saved vibes (server/api/social/watch-later), played in place -->
                 <v-sheet style="background-color: transparent; box-shadow: none;">
                     <v-toolbar :title="listBar?.submenus?.[3]?.name || 'Watch Later'" color="transparent"></v-toolbar>
-                    <v-slide-group v-if="watchLater?.videos?.length" class="pa-4" show-arrows>
-                        <v-slide-group-item v-for="video in watchLater.videos" :key="video.id">
+                    <v-slide-group v-if="shown(watchLater?.videos).length" class="pa-4" show-arrows>
+                        <v-slide-group-item v-for="video in shown(watchLater?.videos)" :key="video.id">
                             <v-card class="ma-4 watch-later-card">
                                 <MeeoviPlayer :src="getAssetURL(video.video_url || video.video)"
                                     :poster="getImageURL(video.thumbnail_url || video.thumbnail)" :title="video.name" />
@@ -117,8 +120,8 @@
                                 @click="openWishlistDialog()" />
                         </div>
                     </v-toolbar>
-                    <v-slide-group v-if="wishlists?.length" class="pa-4" selected-class="bg-success" show-arrows>
-                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="wishlist in wishlists"
+                    <v-slide-group v-if="shown(wishlists).length" class="pa-4" selected-class="bg-success" show-arrows>
+                        <v-slide-group-item v-slot="{ isSelected, toggle, selectedClass }" v-for="wishlist in shown(wishlists)"
                             :key="wishlist.id">
                             <ListCard :list="wishlist" :class="['ma-4', selectedClass]" @click="toggle" />
                             <div class="d-flex justify-end ga-1 mt-1">
@@ -148,8 +151,10 @@
 
             <!-- Archived Lists -->
             <v-tabs-window-item :value="listBar?.menus?.[5]?.value">
+                <SortFilterBar :controller="listControls" :count="shown(archivedLists).length"
+                    :total="(archivedLists || []).length" noun="lists" search-label="Search archived lists" />
                 <v-row>
-                    <v-col v-if="archivedLists?.length" cols="3" v-for="archive in archivedLists" :key="archive.id">
+                    <v-col v-if="shown(archivedLists).length" cols="12" sm="6" md="4" lg="3" v-for="archive in shown(archivedLists)" :key="archive.id">
                         <ListCard :list="archive" />
                     </v-col>
                     <div class="center-text" v-else>No archived lists yet</div>
@@ -199,6 +204,9 @@
 
 <script setup>
     import ListCard from '../../components/related/list.vue'
+    import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+    import { useSortFilter } from '#shared/app/composables/useSortFilter'
+    import { contentSortFilter } from '../../utils/contentSortFilter'
     import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
     import {
         useLists
@@ -448,6 +456,21 @@
     useHead({
         title: 'Meeovi Tasks'
     })
+
+    // One search, sort and filter for every row on the All Lists tab (and the
+    // Archived tab), kept in the page address.
+    const listControls = useSortFilter(contentSortFilter('lists', {
+        filters: [{
+            key: 'visibility',
+            title: 'Visibility',
+            options: [{ value: 'public', title: 'Public' }, { value: 'private', title: 'Private' }],
+            match: (item, value) => String(item?.status || item?.visibility || '').toLowerCase() === value,
+        }],
+    }))
+    const shown = (items) => listControls.apply(items || [])
+    const rows = () => [starredLists.value, listGrid.value, collectionLists.value, watchLater.value?.videos, wishlists.value]
+    const shownCount = computed(() => rows().reduce((n, items) => n + shown(items).length, 0))
+    const totalCount = computed(() => rows().reduce((n, items) => n + (items || []).length, 0))
 </script>
 <style scoped>
     /* Video cards: one comfortable width, never wider than a phone screen. */

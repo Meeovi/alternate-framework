@@ -17,11 +17,16 @@
     <!-- Wishlist: the products saved with the heart on product cards
          (#commerce stores/wishlist); un-hearting one removes it here. -->
     <div v-else-if="isWishlist" class="pa-4">
-      <v-row v-if="wishlistProducts.length">
-        <v-col v-for="product in wishlistProducts" :key="product.key" cols="12" sm="6" md="4" lg="3">
+      <SortFilterBar v-if="wishlistProducts.length" :controller="productControls"
+        :count="shownWishlist.length" :total="wishlistProducts.length" noun="products" search-label="Search this list" />
+      <v-row v-if="shownWishlist.length">
+        <v-col v-for="product in shownWishlist" :key="product.key" cols="12" sm="6" md="4" lg="3">
           <productCard :product="product" />
         </v-col>
       </v-row>
+      <div v-else-if="wishlistProducts.length" class="text-center text-medium-emphasis py-10">
+        No products match. <v-btn variant="text" @click="productControls.reset()">Clear filters</v-btn>
+      </div>
       <div v-else class="text-center text-medium-emphasis py-10">
         Nothing saved yet — tap the heart on any product to add it here.
       </div>
@@ -60,8 +65,10 @@
          (lists_backend_products). -->
     <section v-if="savedProducts.length && !isWishlist" class="pa-4">
       <h2 class="text-h6 mb-3">Saved products</h2>
+      <SortFilterBar :controller="productControls" :count="shownSaved.length" :total="savedProducts.length"
+        noun="products" search-label="Search this list" />
       <v-row>
-        <v-col v-for="product in savedProducts" :key="product.key" cols="12" sm="6" md="4" lg="3">
+        <v-col v-for="product in shownSaved" :key="product.key" cols="12" sm="6" md="4" lg="3">
           <productCard :product="product" />
         </v-col>
       </v-row>
@@ -78,6 +85,9 @@
   import { useWishlistStore } from '#commerce/app/stores/wishlist/useWishlistStore'
   import { productKey } from '#commerce/app/utils/productKey'
   import FederatedListView from '#social/app/components/features/lists/FederatedListView.vue'
+  import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+  import { useSortFilter } from '#shared/app/composables/useSortFilter'
+  import { productSortFilter } from '#commerce/app/utils/productSortFilter'
 
   const route = useRoute();
   const {
@@ -170,6 +180,12 @@
   const wishlistProducts = computed(() => (ownWishlist.value
     ? savedProducts.value.filter((product) => wishlistStore.hasItem(productKey(product)))
     : savedProducts.value))
+
+  // Search, sort and filter the list's products (kept in the page address).
+  const productControls = useSortFilter(productSortFilter('list-products',
+    () => (isWishlist.value ? wishlistProducts.value : savedProducts.value)))
+  const shownWishlist = computed(() => productControls.apply(wishlistProducts.value))
+  const shownSaved = computed(() => productControls.apply(savedProducts.value))
 
   const appConfig = useAppConfig()
   // A list's types (Directus lists_type, M2M): the first one a list-type

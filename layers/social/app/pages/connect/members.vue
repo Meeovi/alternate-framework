@@ -16,8 +16,11 @@
             </v-toolbar-title>
         </v-toolbar>
 
-		<v-row style="padding-top: 30px;">
-			<v-col cols="3" v-for="members in membersList" :key="members.id">
+		<!-- Search, sort and filter members (kept in the page address) -->
+		<SortFilterBar :controller="memberControls" :count="shownMembers.length" :total="membersList.length"
+			noun="members" search-label="Search members" />
+		<v-row style="padding-top: 10px;">
+			<v-col cols="12" sm="6" md="4" lg="3" v-for="members in shownMembers" :key="members.id">
 				<membersCard :member="members" />
 			</v-col>
 		</v-row>
@@ -27,6 +30,9 @@
 <script setup>
     import { computed } from '#imports'
     import membersCard from '#social/app/components/blocks/memberCard.vue'
+    import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+    import { useSortFilter } from '#shared/app/composables/useSortFilter'
+    import { contentSortFilter, networkFilter } from '../../utils/contentSortFilter'
 
     useHead({
         title: 'Creatives Area',
@@ -59,6 +65,13 @@
         ...(atprotoMembers.value?.items || []),
     ])
     
+    // Bluesky's suggested accounts carry an `atproto:` id.
+    const memberControls = useSortFilter(contentSortFilter('members', {
+        filters: [networkFilter((m) => String(m?.id || '').startsWith('atproto:'))],
+        extraSearch: (m) => m?.title,
+    }))
+    const shownMembers = computed(() => memberControls.apply(membersList.value))
+
     definePageMeta({
         middleware: 'auth'
     })

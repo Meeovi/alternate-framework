@@ -18,8 +18,10 @@
 
         <v-container v-if="products.length" class="hashtag-products">
             <h2 class="text-h6 mb-2">Products tagged #{{ tag }}</h2>
+            <SortFilterBar :controller="productControls" :count="shownProducts.length" :total="products.length"
+                noun="products" search-label="Search these products" />
             <v-row>
-                <v-col v-for="product in products" :key="product.id" cols="12" sm="6" md="4" lg="3">
+                <v-col v-for="product in shownProducts" :key="product.id" cols="12" sm="6" md="4" lg="3">
                     <productCard :product="product" />
                 </v-col>
             </v-row>
@@ -37,11 +39,15 @@
 
             <h2 v-else-if="!posts.length" class="text-center text-h6 pa-8">No notes with <b>#{{ tag }}</b> yet.</h2>
 
-            <v-row v-else>
-                <v-col v-for="post in posts" :key="post.id" cols="12" sm="6" md="4" lg="3">
+            <template v-else>
+            <SortFilterBar :controller="noteControls" :count="shownPosts.length" :total="posts.length"
+                noun="notes" search-label="Search these notes" />
+            <v-row>
+                <v-col v-for="post in shownPosts" :key="`${post.network}-${post.id}`" cols="12" sm="6" md="4" lg="3">
                     <postCard :post="post" />
                 </v-col>
             </v-row>
+            </template>
         </v-container>
     </div>
 </template>
@@ -51,6 +57,11 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import productCard from '#commerce/app/components/catalog/product/productCard.vue'
 import postCard from '#social/app/components/related/post.vue'
+import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+import { useSortFilter } from '#shared/app/composables/useSortFilter'
+import { productSortFilter } from '#commerce/app/utils/productSortFilter'
+import { PRODUCT_FIELDS } from '#commerce/app/utils/productFields'
+import { notesSortFilter } from '../../../utils/contentSortFilter'
 
 /**
  * Posts with this hashtag from atproto (Bluesky), through the social layer's
@@ -127,13 +138,20 @@ const { data: productRows } = await useAsyncData(
                 { tags: { tags_id: { name: { _eq: tag.value } } } },
             ],
         },
-        fields: ['*', 'image.*', 'shops.shops_id.name', 'shops.shops_id.slug'],
+        fields: [...PRODUCT_FIELDS, 'image.*', 'shops.shops_id.name', 'shops.shops_id.slug'],
         sort: ['-id'],
         limit: 24,
     })).catch(() => []),
     { default: () => [], watch: [tag] },
 )
 const products = computed(() => (productRows.value || []) as Record<string, any>[])
+
+// Search, sort and filter each grid (kept in the page address; the
+// products' keys start with `products-`).
+const noteControls = useSortFilter(notesSortFilter('hashtag-notes', () => posts.value))
+const shownPosts = computed(() => noteControls.apply(posts.value))
+const productControls = useSortFilter({ ...productSortFilter('hashtag-products', () => products.value), prefix: 'products' })
+const shownProducts = computed(() => productControls.apply(products.value))
 
 useHead({ title: computed(() => `#${tag.value}`) })
 </script>

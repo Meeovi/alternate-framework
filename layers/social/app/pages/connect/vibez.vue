@@ -8,16 +8,9 @@
                 </v-row>
             </v-card-title>
 
-            <v-row class="mb-4" dense>
-                    <v-col cols="12" sm="6" md="4">
-                        <v-select v-model="sortBy" :items="['recency', 'popularity']" label="Sort By" clearable />
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="8">
-                        <v-autocomplete v-model="selectedTags" :items="tags" item-title="name" item-value="id"
-                            label="Filter by Tags" multiple chips clearable />
-                    </v-col>
-                </v-row>
+            <!-- Search, sort and filter the videos (kept in the page address) -->
+            <SortFilterBar :controller="videoControls" :count="filteredVideos.length" :total="videos.length"
+                noun="videos" search-label="Search videos" class="mb-4" />
 
                 <v-divider class="my-6" />
                 <h2 class="text-h6 mb-4">🔴 Live Now</h2>
@@ -82,6 +75,8 @@
 
 <script setup>
 import { ref, computed, watchEffect } from '#imports'
+import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+import { byDate, byNumber, byText, useSortFilter } from '#shared/app/composables/useSortFilter'
 
 const { $sdk, $directus, $readItem, $readItems, $createItem, $deleteItem } = useNuxtApp()
 const config = useRuntimeConfig()
@@ -96,9 +91,7 @@ const getCurrentUserId = () => user.value?.id || user.value?.userId || null
 
 const videos = ref([])
 const tags = ref([])
-const selectedTags = ref([])
 const showMine = ref(false)
-const sortBy = ref('recency')
 
 async function fetchTags() {
     try {
@@ -119,11 +112,20 @@ async function fetchVideos() {
             filter.visibility = { _eq: 'public' }
         }
 
-        const sort = sortBy.value === 'popularity' ? ['-view_count'] : ['-date_created']
+        // Newest first; the bar re-sorts in the page.
+        const sort = ['-date_created']
 
-        const resp = await $directus.request($readItems('videos', { filter, sort, fields: ['*', 'tags.id', 'tags.name'] }))
+        // tags is the videos_tags junction: `tags.id`/`tags.name` were refused
+        // by Directus (no `name` on the junction), so no video ever loaded.
+        const resp = await $directus.request($readItems('videos', { filter, sort, fields: ['*', 'tags.tags_id.id', 'tags.tags_id.name'] }))
         const data = resp?.data || resp || []
-        videos.value = (data || []).map((v) => ({ ...v, liked: false, reaction_count: v.reaction_count || 0, comment_count: v.comment_count || 0 }))
+        videos.value = (data || []).map((v) => ({
+            ...v,
+            tags: (v.tags || []).map((row) => row?.tags_id).filter((tag) => tag?.id),
+            liked: false,
+            reaction_count: v.reaction_count || 0,
+            comment_count: v.comment_count || 0,
+        }))
 
         // fetch counts and user reactions per video
         await Promise.all(
@@ -157,11 +159,35 @@ watchEffect(() => {
     fetchVideos()
 })
 
-const filteredVideos = computed(() =>
-    videos.value.filter((video) =>
-        selectedTags.value.length === 0 || selectedTags.value.every((tagId) => video.tags?.some((t) => t.id === tagId))
-    )
-)
+const videoName = (video) => video?.title || video?.name || ''
+const videoControls = useSortFilter({
+    id: 'vibez',
+    sorts: [
+        { value: 'newest', title: 'Newest', compare: byDate((v) => v?.date_created) },
+        { value: 'oldest', title: 'Oldest', compare: byDate((v) => v?.date_created, false) },
+        { value: 'views', title: 'Most viewed', compare: byNumber((v) => v?.view_count ?? 0, true) },
+        { value: 'likes', title: 'Most liked', compare: byNumber((v) => v?.reaction_count ?? 0, true) },
+        { value: 'comments', title: 'Most comments', compare: byNumber((v) => v?.comment_count ?? 0, true) },
+        { value: 'name', title: 'Name: A to Z', compare: byText(videoName) },
+    ],
+    search: (v) => [videoName(v), v?.description, ...(v?.tags || []).map((t) => t?.name)].join(' '),
+    filters: [{
+        key: 'tags',
+        title: 'Tags',
+        multiple: true,
+        // Only tags some loaded video has.
+        options: () => (tags.value || [])
+            .filter((tag) => videos.value.some((v) => v.tags?.some((t) => t.id === tag.id)))
+            .map((tag) => ({ value: String(tag.id), title: tag.name })),
+        match: (v, value) => !!v.tags?.some((t) => String(t.id) === value),
+    }, {
+        key: 'visibility',
+        title: 'Visibility',
+        options: [{ value: 'public', title: 'Public' }, { value: 'private', title: 'Private' }],
+        match: (v, value) => (v?.visibility === 'public' ? 'public' : 'private') === value,
+    }],
+})
+const filteredVideos = computed(() => videoControls.apply(videos.value))
 
 function getVideoUrl(video) {
     return `https://${config.public.minioEndpoint}/vibez-transcoded/${video.minio_key}`

@@ -27,10 +27,14 @@
             </v-toolbar>
         </v-card>
 
+        <!-- Search, sort and filter stations on both tabs (kept in the page address) -->
+        <SortFilterBar :controller="stationControls" :count="shownStations.length + shownMine.length"
+            :total="(stations || []).length + (myStations || []).length" noun="stations"
+            search-label="Search stations" />
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="radioBar?.menus?.[0]?.value">
                 <v-sheet class="pa-5">
-                    <div v-for="station in stations" :key="station.id" class="d-inline-block">
+                    <div v-for="station in shownStations" :key="station.id" class="d-inline-block">
                         <stationCard :radio="station" />
                     </div>
                 </v-sheet>
@@ -38,7 +42,7 @@
 
             <v-tabs-window-item :value="radioBar?.menus?.[1]?.value">
                 <v-sheet class="pa-5">
-                    <div v-for="station in myStations" :key="station.id" class="d-inline-block">
+                    <div v-for="station in shownMine" :key="station.id" class="d-inline-block">
                         <stationCard :radio="station" />
                     </div>
                 </v-sheet>
@@ -52,6 +56,9 @@
         ref
     } from '#imports';
     import stationCard from '#social/app/components/related/radio.vue'
+    import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+    import { choicesFrom, useSortFilter } from '#shared/app/composables/useSortFilter'
+    import { contentSortFilter } from '../../utils/contentSortFilter'
 
     const {
         $directus,
@@ -120,4 +127,18 @@
     useHead({
         title: 'Radio',
     })
+
+    // Station type (from the stations themselves) and search, on both tabs.
+    const stationType = (station) => (typeof station?.type === 'object' ? station?.type?.name : station?.type) || ''
+    const stationControls = useSortFilter(contentSortFilter('stations', {
+        filters: [{
+            key: 'type',
+            title: 'Type',
+            multiple: true,
+            options: () => choicesFrom([...(stations.value || []), ...(myStations.value || [])], stationType),
+            match: (station, value) => stationType(station).toLowerCase() === value.toLowerCase(),
+        }],
+    }))
+    const shownStations = computed(() => stationControls.apply(stations.value))
+    const shownMine = computed(() => stationControls.apply(myStations.value))
 </script>

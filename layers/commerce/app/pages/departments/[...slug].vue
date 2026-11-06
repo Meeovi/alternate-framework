@@ -172,13 +172,20 @@
                 <!-- Exclusives: everything by Sebastian Hilton and Meeovi -->
                 <exclusives v-if="department?.slug === 'exclusives'" page />
 
-                <!-- Category Products Section (commerce) -->
-                <v-row style="padding: 10px;" v-else-if="department?.products?.length">
-                    <v-col cols="3" v-for="product in department?.products?.filter((p) => p?.products_id)"
-                        :key="product?.products_id?.id ?? product.id">
-                        <productCard :product="product?.products_id" />
-                    </v-col>
-                </v-row>
+                <!-- Category Products Section (commerce): searchable, sortable, filterable -->
+                <template v-else-if="gridProducts.length">
+                    <SortFilterBar :controller="productControls" :count="shownProducts.length"
+                        :total="gridProducts.length" noun="products" search-label="Search this department" />
+                    <v-row v-if="shownProducts.length" style="padding: 10px;">
+                        <v-col cols="12" sm="6" md="4" lg="3" v-for="product in shownProducts"
+                            :key="product.id">
+                            <productCard :product="product" />
+                        </v-col>
+                    </v-row>
+                    <div v-else class="text-center text-medium-emphasis py-10">
+                        No products match. <v-btn variant="text" @click="productControls.reset()">Clear filters</v-btn>
+                    </div>
+                </template>
                 <!-- Nothing to sell here yet -->
                 <EmptyCategory v-else kind="department" :department-id="department?.id" />
 
@@ -229,6 +236,10 @@
     import TopicActivity from '#social/app/components/related/topicActivity.vue'
     import { useNearViewport } from '#shared/app/composables/useNearViewport'
     import shortsCard from '#social/app/components/related/short.vue'
+    import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+    import { useSortFilter } from '#shared/app/composables/useSortFilter'
+    import { productSortFilter } from '../../utils/productSortFilter'
+    import { PRODUCT_FIELDS } from '../../utils/productFields'
 
     import {
         ref,
@@ -261,8 +272,11 @@
             fields: ['*',
                 'categories.categories_id.*',
                 'spaces.spaces_id.*',
-                'products.products_id.*',
+                // Named columns, not `*` (utils/productFields.ts), plus each
+                // product's categories for the Category filter.
+                ...PRODUCT_FIELDS.map((f) => `products.products_id.${f}`),
                 'products.products_id.image.*',
+                'products.products_id.categories.categories_id',
                 'posts.posts_id.*',
                 'menus.*',
                 'shorts.shorts_id.*',
@@ -380,6 +394,36 @@
                 children: list.filter((c) => parentId(c) === category.id).sort(byName),
             }))
     })
+
+    // The products grid: search, sort and filter (by price, category and
+    // seller), kept in the page address (?sort=price-asc&category=12).
+    const gridProducts = computed(() => (department.value?.products || [])
+        .map((rel) => rel?.products_id)
+        .filter((p) => p && typeof p === 'object'))
+    // A product's category ids (from Directus; store products carry none).
+    const productCategoryIds = (p) => new Set((p?.categories || [])
+        .map((rel) => (rel && typeof rel === 'object' ? (rel.categories_id?.id ?? rel.categories_id) : null))
+        .filter((id) => id != null)
+        .map(String))
+    const productControls = useSortFilter(productSortFilter('products', () => gridProducts.value, [{
+        key: 'category',
+        title: 'Category',
+        multiple: true,
+        // Only the categories some product here is in; choosing one also
+        // matches its subcategories.
+        options: () => categoryGroups.value
+            .filter((group) => gridProducts.value.some((p) => {
+                const ids = productCategoryIds(p)
+                return [group.category, ...group.children].some((c) => ids.has(String(c.id)))
+            }))
+            .map((group) => ({ value: String(group.category.id), title: group.category.name })),
+        match: (p, value) => {
+            const group = categoryGroups.value.find((g) => String(g.category.id) === value)
+            const ids = productCategoryIds(p)
+            return !!group && [group.category, ...group.children].some((c) => ids.has(String(c.id)))
+        },
+    }]))
+    const shownProducts = computed(() => productControls.apply(gridProducts.value))
 
     useHead({
         title: computed(() => department?.value?.name || 'Department Page')

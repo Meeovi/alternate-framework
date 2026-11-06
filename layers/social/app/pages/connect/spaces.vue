@@ -44,6 +44,8 @@
                 </v-tabs>
             </v-toolbar>
 
+            <!-- Search and sort the spaces on every tab (kept in the page address) -->
+            <SortFilterBar :controller="spaceControls" search-label="Search spaces" />
             <v-tabs-window v-model="currentTab">
                 <v-tabs-window-item v-for="(menu, index) in tabsList" :key="menu?.value ?? index"
                     :value="menu?.value ?? menu">
@@ -66,6 +68,12 @@
         componentMap
     } from '../../types/componentMap'
     import { DynamicForm } from '@mframework/meeovi-forms'
+    import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+    import { useSortFilter } from '#shared/app/composables/useSortFilter'
+    import { contentSortFilter } from '../../utils/contentSortFilter'
+
+    // Shared with the tab components (components/features/spaceSections).
+    const spaceControls = useSortFilter(contentSortFilter('spaces'))
 
     // current selected tab value (matches menu.value)
     const currentTab = ref(null);

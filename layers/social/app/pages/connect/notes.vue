@@ -30,12 +30,15 @@
             </v-toolbar>
         </v-card>
 
+        <!-- Search, sort and filter notes on every tab (kept in the page address) -->
+        <SortFilterBar :controller="noteControls" :count="shownPosts.length" :total="posts.length" noun="notes"
+            search-label="Search notes" />
         <v-tabs-window v-model="tab">
             <v-tabs-window-item :value="feedBar?.menus?.[0]?.value">
                 <div ref="postsScrollContainer" class="feed-scroll-container">
                     <v-row class="media-container-row">
-                        <template v-if="posts?.length">
-                            <v-col class="wrap col-md-4 feedPost" v-for="post in posts" :key="post.id">
+                        <template v-if="shownPosts.length">
+                            <v-col class="wrap col-md-4 feedPost" v-for="post in shownPosts" :key="post.id">
                                 <postCard :post="post" />
                             </v-col>
                         </template>
@@ -48,8 +51,8 @@
             </v-tabs-window-item>
             <v-tabs-window-item :value="feedBar?.menus?.[1]?.value">
                 <v-row class="media-container-row">
-                    <template v-if="posts?.length">
-                        <v-col class="wrap col-sm-12 col-md-4 feedPost" v-for="post in posts" :key="post.id">
+                    <template v-if="shownPosts.length">
+                        <v-col class="wrap col-sm-12 col-md-4 feedPost" v-for="post in shownPosts" :key="post.id">
                             <postCard :post="post" />
                         </v-col>
                     </template>
@@ -58,9 +61,9 @@
             </v-tabs-window-item>
             <v-tabs-window-item :value="feedBar?.menus?.[2]?.value">
                 <v-row class="media-container-row">
-                    <v-col class="wrap col-sm-12 col-md-4 feedPost" v-if="thoughts?.length"
-                        v-for="thoughtPost in thoughts" :key="thoughtPost.id">
-                        <postCard :post="thoughtPost?.posts_id" />
+                    <v-col class="wrap col-sm-12 col-md-4 feedPost" v-if="shownThoughts.length"
+                        v-for="thoughtPost in shownThoughts" :key="thoughtPost.id">
+                        <postCard :post="thoughtPost" />
                     </v-col>
 
                     <div class="center-text" v-else>No Circles yet</div>
@@ -68,8 +71,8 @@
             </v-tabs-window-item>
             <v-tabs-window-item :value="feedBar?.menus?.[3]?.value">
                 <v-row class="media-container-row">
-                    <template v-if="posts?.length">
-                        <v-col class="wrap col-sm-12 col-md-4 feedPost" v-for="post in posts" :key="post.id">
+                    <template v-if="shownPosts.length">
+                        <v-col class="wrap col-sm-12 col-md-4 feedPost" v-for="post in shownPosts" :key="post.id">
                             <postCard :post="post" />
                         </v-col>
                     </template>
@@ -89,6 +92,9 @@
     import LiveClock from '../../components/blocks/useTimestamp.vue'
     import { authClient } from "#auth/lib/auth-client";
     import { useInfiniteScroll } from '@vueuse/core'
+    import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+    import { useSortFilter } from '#shared/app/composables/useSortFilter'
+    import { notesSortFilter } from '../../utils/contentSortFilter'
 
     // authClient.useSession() returns the Vue ref itself (readonly(shallowRef)
     // from better-auth's vue-store.mjs), not a {data,...} object and not a
@@ -170,6 +176,9 @@
                         _eq: session.value?.data?.user?.id
                     }
                 },
+                // The bar's search and order, so the next pages follow them too.
+                ...(noteControls.q.value.trim() ? { search: noteControls.q.value.trim() } : {}),
+                sort: [noteControls.sort.value === 'oldest' ? 'date_created' : '-date_created'],
                 limit: postsLimit.value,
                 page: page
             }))
@@ -189,6 +198,18 @@
     const loadMorePosts = () => {
         loadPosts(postsPage.value)
     }
+
+    // Search, sort and filter. The loaded notes are sorted and filtered here;
+    // a new search or order also reloads Meeovi notes from the start with it.
+    const noteControls = useSortFilter(notesSortFilter('notes', () => posts.value))
+    const shownPosts = computed(() => noteControls.apply(posts.value))
+    const shownThoughts = computed(() => noteControls.apply((thoughts.value || []).map((t) => t?.posts_id).filter(Boolean)))
+    watch([() => noteControls.q.value.trim(), () => noteControls.sort.value === 'oldest'], () => {
+        posts.value = [...(atprotoTimeline.value?.items || [])]
+        postsPage.value = 1
+        hasMorePosts.value = true
+        loadPosts(1)
+    })
 
     useInfiniteScroll(postsScrollContainer, loadMorePosts, {
         distance: 200,

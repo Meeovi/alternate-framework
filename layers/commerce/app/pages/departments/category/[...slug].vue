@@ -54,11 +54,18 @@
         </v-toolbar>
       </v-card>
 
-      <v-row v-if="products.length" class="catSection">
-        <v-col v-for="product in products" :key="product.id" cols="3">
-          <ProductCard :product="product" />
-        </v-col>
-      </v-row>
+      <template v-if="products.length">
+        <SortFilterBar :controller="productControls" :count="shownProducts.length" :total="products.length"
+          noun="products" search-label="Search this category" />
+        <v-row v-if="shownProducts.length" class="catSection">
+          <v-col v-for="product in shownProducts" :key="product.id" cols="12" sm="6" md="4" lg="3">
+            <ProductCard :product="product" />
+          </v-col>
+        </v-row>
+        <div v-else class="text-center text-medium-emphasis py-10">
+          No products match. <v-btn variant="text" @click="productControls.reset()">Clear filters</v-btn>
+        </div>
+      </template>
       <EmptyCategory v-else kind="category" :department-id="department?.id" :category-id="category?.id" />
 
       <!-- Notes, public lists, events and spaces about this category -->
@@ -90,6 +97,10 @@
     useRuntimeConfig
   } from '#imports'
   import { CommerceBackendRegistry } from 'alternate-sdk'
+  import SortFilterBar from '#shared/app/components/SortFilterBar.vue'
+  import { useSortFilter } from '#shared/app/composables/useSortFilter'
+  import { productSortFilter } from '../../../utils/productSortFilter'
+  import { PRODUCT_FIELDS } from '../../../utils/productFields'
   import Restaurants from '#social/app/components/features/spaceSections/restaurants.vue'
 
   const route = useRoute()
@@ -127,10 +138,14 @@
         }
       }
       const resp = await $directus.request($readItems('categories', {
-        fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*', 'products.products_id.*',
+        // Products with named columns, not `*` (utils/productFields.ts).
+        fields: ['*', 'tags.tags_id.*', 'departments.departments_id.*',
+          ...PRODUCT_FIELDS.map((f) => `products.products_id.${f}`),
           'products.products_id.image.*', 'menus.*', 'image.*',
           'parent.id', 'parent.name', 'parent.departments.departments_id.*',
-          'children.id', 'children.name', 'children.products.products_id.*', 'children.products.products_id.image.*'
+          'children.id', 'children.name',
+          ...PRODUCT_FIELDS.map((f) => `children.products.products_id.${f}`),
+          'children.products.products_id.image.*'
         ],
         filter,
         limit: 1,
@@ -207,6 +222,34 @@
         return key && !seen.has(key) && seen.add(key)
       })
   })
+
+  // Search, sort and filter the grid (price, subcategory, seller), kept in
+  // the page address. A product's subcategory is the one it was listed
+  // under here (store products have none).
+  const productKeyOf = (p: any) => String(p?.mageos_sku || p?.sku || p?.id)
+  const subcategoryOf = computed(() => {
+    const map = new Map<string, Set<string>>()
+    for (const sub of subcategories.value as any[]) {
+      for (const rel of sub.products || []) {
+        const p = rel?.products_id
+        if (!p) continue
+        const key = productKeyOf(p)
+        if (!map.has(key)) map.set(key, new Set())
+        map.get(key)!.add(String(sub.id))
+      }
+    }
+    return map
+  })
+  const productControls = useSortFilter(productSortFilter('products', () => products.value, [{
+    key: 'subcategory',
+    title: 'Subcategory',
+    multiple: true,
+    options: () => (subcategories.value as any[])
+      .filter((sub) => (sub.products || []).some((rel: any) => rel?.products_id))
+      .map((sub) => ({ value: String(sub.id), title: sub.name })),
+    match: (p: any, value: string) => !!subcategoryOf.value.get(productKeyOf(p))?.has(value),
+  }]))
+  const shownProducts = computed(() => productControls.apply(products.value))
 
   useHead({
     title: computed(() => category.value?.name || 'Category Page'),
