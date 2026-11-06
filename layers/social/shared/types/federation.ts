@@ -27,6 +27,19 @@ export type FederatedActor = {
   followers?: number
   following?: number
   posts?: number
+  /** Moderation and self-label values on the account. */
+  labels?: string[]
+  /** What moderation does with it (hide / blur / warn), from its labels. */
+  moderation?: FederatedModeration
+}
+
+/** From the network's moderation labels (meeovi-atproto runtime/moderation.ts). */
+export type FederatedModeration = {
+  action: 'hide' | 'blur' | 'warn'
+  /** The label values behind it. */
+  reasons: string[]
+  /** The author asked not to be shown to signed-out visitors. */
+  signedInOnly?: boolean
 }
 
 export type FederatedMedia = {
@@ -53,6 +66,9 @@ export type FederatedPost = {
   replies?: number
   reposts?: number
   likes?: number
+  /** Moderation and self-label values (the note's and its author's). */
+  labels?: string[]
+  moderation?: FederatedModeration
 }
 
 export type FederationStatus = {
@@ -67,7 +83,7 @@ export type FederationStatus = {
   detail?: string
 }
 
-export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'thread' | 'list' | 'publish' | 'forMember'
+export type FederationCapability = 'profile' | 'feed' | 'searchPosts' | 'thread' | 'list' | 'publish' | 'forMember' | 'report'
 
 export interface FederationNetwork {
   /** 'atproto', 'activitypub', … — used in /api/social/federation/:network. */
@@ -95,6 +111,21 @@ export interface FederationNetwork {
    * never touches the site's database.
    */
   forMember?(member: FederationMember): Promise<FederationMemberSession | null>
+  /**
+   * Report a note or account to this site's moderators on the network
+   * (Bluesky: a report in Meeovi's Ozone). Files it as the site's service
+   * account; `reason` says which member reported it.
+   */
+  report?(input: FederatedReport): Promise<{ id: string }>
+}
+
+export type FederatedReportReason = 'spam' | 'violation' | 'misleading' | 'sexual' | 'rude' | 'other'
+
+export type FederatedReport = {
+  subject: { kind: 'note', id: string } | { kind: 'account', id: string }
+  reasonType: FederatedReportReason
+  /** What the member wrote, plus who they are on this site. */
+  reason?: string
 }
 
 // --- Acting as a member ------------------------------------------------------

@@ -22,8 +22,14 @@
 import { defineNitroPlugin } from 'nitropack/runtime'
 import { useRuntimeConfig } from '#imports'
 import { AtprotoClient, getAtprotoServiceUrl, setAtprotoClient } from '../client'
+import { configureLabelers } from '../moderation'
 
 export default defineNitroPlugin(() => {
+  // Every AppView read (this service account's and members' sessions)
+  // asks for Bluesky's and Meeovi's (Ozone) moderation labels.
+  const labelers = configureLabelers()
+  console.info(`[meeovi-atproto] labelers: ${labelers.join(', ')}`)
+
   const runtimeConfig = useRuntimeConfig()
   // service URL is public; the service-account credentials are private
   // (module.ts keeps them out of `public.atproto`).

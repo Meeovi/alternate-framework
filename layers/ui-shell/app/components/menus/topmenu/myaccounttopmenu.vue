@@ -64,9 +64,6 @@
 
           <v-divider></v-divider>
 
-          <v-list-item style="text-align: left;" prepend-icon="fas fa-upload" href="/upload">
-            <v-list-item-title>Upload Center</v-list-item-title>
-          </v-list-item>
           <v-list-item style="text-align: left;">
             <logoutButton />
           </v-list-item>

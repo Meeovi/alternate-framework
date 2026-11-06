@@ -14,6 +14,7 @@
 // instance entirely.
 import {
   AtpAgent,
+  type Agent,
   RichText,
   type AtpAgentLoginOpts,
   type AtpPersistSessionHandler,
@@ -193,20 +194,28 @@ export interface AtprotoClientOptions {
    *  refresh, expiry) — wire this to persist the session server-side if a
    *  caller wants resumable sessions across requests. */
   onSessionChange?: (event: AtpSessionEvent, session: AtpSessionData | undefined) => void
+  /** An agent that is already signed in some other way (a member's
+   *  Bluesky OAuth session, runtime/oauth.ts), with who it acts as. */
+  agent?: Agent
+  identity?: { did: string, handle: string }
 }
 
 export class AtprotoClient {
   readonly agent: AtpAgent
+  private readonly identity?: { did: string, handle: string }
 
   constructor(options: AtprotoClientOptions = {}) {
     const persistSession: AtpPersistSessionHandler | undefined = options.onSessionChange
       ? (event, session) => options.onSessionChange!(event, session)
       : undefined
 
-    this.agent = new AtpAgent({
+    // An OAuth agent has the same API methods; it just has no
+    // password session (no login/resume — it refreshes itself).
+    this.agent = (options.agent as AtpAgent | undefined) ?? new AtpAgent({
       service: options.serviceUrl || getAtprotoServiceUrl(),
       persistSession,
     })
+    this.identity = options.identity
   }
 
   /** Convenience factory: builds a client and either resumes a persisted
@@ -260,11 +269,11 @@ export class AtprotoClient {
   }
 
   get did(): string | undefined {
-    return this.agent.session?.did
+    return this.agent.session?.did ?? this.identity?.did ?? (this.agent as { did?: string }).did
   }
 
   get handle(): string | undefined {
-    return this.agent.session?.handle
+    return this.agent.session?.handle ?? this.identity?.handle
   }
 
   get session(): AtpSessionData | undefined {
@@ -785,8 +794,8 @@ export class AtprotoClient {
       replyCount: post.replyCount,
       quoteCount: post.quoteCount,
       viewer: post.viewer ? { likeUri: post.viewer.like, repostUri: post.viewer.repost } : undefined,
-      labels: labelValues(post.labels),
-      authorLabels: labelValues(post.author.labels),
+      labels: labelValues(post.labels, post.author.did),
+      authorLabels: labelValues(post.author.labels, post.author.did),
       poll: null,
     }
   }
@@ -803,7 +812,7 @@ export class AtprotoClient {
       followersCount: detailed.followersCount,
       followsCount: detailed.followsCount,
       postsCount: detailed.postsCount,
-      labels: labelValues(actor.labels),
+      labels: labelValues(actor.labels, actor.did),
       viewer: actor.viewer
         ? { following: actor.viewer.following, followedBy: actor.viewer.followedBy, muted: actor.viewer.muted, blocking: actor.viewer.blocking }
         : undefined,
@@ -811,8 +820,15 @@ export class AtprotoClient {
   }
 }
 
-function labelValues(labels: Array<{ val: string, neg?: boolean }> | undefined): string[] {
-  return (labels ?? []).filter((label) => !label.neg).map((label) => label.val)
+// What an author may say about their own content; any other self-label
+// (e.g. Bridgy's `bridged-from-bridgy-fed-web`) is informational and
+// ignored, so only labelers (Bluesky's, Meeovi's Ozone) can add warnings.
+const SELF_LABELS = new Set(['!no-unauthenticated', '!no-promote', 'porn', 'sexual', 'nudity', 'graphic-media', 'gore', 'bot'])
+
+function labelValues(labels: Array<{ val: string, neg?: boolean, src?: string }> | undefined, subjectDid?: string): string[] {
+  return (labels ?? [])
+    .filter((label) => !label.neg && (!subjectDid || label.src !== subjectDid || SELF_LABELS.has(label.val)))
+    .map((label) => label.val)
 }
 
 function parseAtUri(uri: string): { did: string, collection: string, rkey: string } {

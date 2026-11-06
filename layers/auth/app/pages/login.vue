@@ -61,6 +61,14 @@
             :disabled="loading || !!passwordless || captchaMissing" :loading="passwordless === 'link'" @click="sendSignInLink">
             Email me a sign-in link
           </v-btn>
+          <!-- Bluesky (any PDS) through AT Protocol OAuth; only where the site includes Bluesky. -->
+          <template v-if="hasBluesky">
+            <v-btn v-if="!showBluesky" block variant="outlined" prepend-icon="fab fa-bluesky" class="mb-3"
+              :disabled="loading || !!passwordless" @click="showBluesky = true">
+              Sign in with Bluesky
+            </v-btn>
+            <BlueskyOAuth v-else class="mb-3" :callbackURL="redirectTarget" />
+          </template>
         </div>
 
         <div v-if="socialProviders.length > 0" class="auth-buttons">
@@ -103,6 +111,7 @@
     useRuntimeConfig
   } from '#imports';
   import { useSupportedSocialProviders } from '../composables/plugins/useSupportSocialProviders';
+  import BlueskyOAuth from '../components/features/plugins/BlueskyOAuth.vue';
   import { authClient } from "../../lib/auth-client"
   import { safeRedirectPath } from '../utils/safeRedirectPath'
 
@@ -147,12 +156,27 @@
       alertType.value = 'success';
       alertMessage.value = 'Your email address is verified. Sign in to continue.';
     }
+    // Bluesky OAuth that didn't finish lands back here (meeovi-atproto auth/plugin.ts).
+    const blueskyErrors = {
+      bluesky_denied: 'Bluesky sign-in was cancelled.',
+      bluesky_failed: "Bluesky sign-in didn't finish. Please try again.",
+      bluesky_linked_elsewhere: 'That Bluesky account is already connected to another Meeovi account.',
+    };
+    if (blueskyErrors[route.query.error]) {
+      alertType.value = 'error';
+      alertMessage.value = blueskyErrors[route.query.error];
+      showBluesky.value = true;
+    }
     // A magic link that failed (expired, already used) lands back here.
     if (route.query.error === 'magic-link') {
       alertType.value = 'error';
       alertMessage.value = 'That sign-in link has expired or was already used. Send yourself a new one.';
     }
   });
+
+  // "Sign in with Bluesky": the atproto module puts its settings in public config.
+  const hasBluesky = Boolean(useRuntimeConfig().public?.atproto);
+  const showBluesky = ref(false);
 
   // Password-free sign-in in progress: 'passkey' | 'link' | ''.
   const passwordless = ref('');

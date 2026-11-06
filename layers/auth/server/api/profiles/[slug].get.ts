@@ -1,24 +1,12 @@
-import { and, eq, isNull, or } from 'drizzle-orm'
+import { and, eq, isNull, or, sql } from 'drizzle-orm'
 import { createError, defineEventHandler, getRouterParam } from 'h3'
-import { createDirectus, readItem, readItems, rest, staticToken } from '@directus/sdk'
+import { createDirectus, readItems, rest, staticToken } from '@directus/sdk'
 import { db } from '../../utils/drizzle'
 import { users } from '../../database/migrations/schema'
+import { findProfileRow, toProfileLinks } from '../../utils/profileLinks'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const PUBLISHED = ['published', 'Published', 'public', 'Public']
-
-// Font Awesome icons for the Directus `profiles.links[].link_name` choices.
-const LINK_ICONS: Record<string, string> = {
-  facebook: 'fab fa-facebook',
-  x: 'fab fa-x-twitter',
-  twitter: 'fab fa-x-twitter',
-  linkedin: 'fab fa-linkedin',
-  twitch: 'fab fa-twitch',
-  instagram: 'fab fa-instagram',
-  youtube: 'fab fa-youtube',
-  tiktok: 'fab fa-tiktok',
-  github: 'fab fa-github',
-}
 
 /**
  * Rich-text fields come from Directus as HTML. The profile page renders them
@@ -41,22 +29,11 @@ function toText(html: unknown): string {
     .trim()
 }
 
-/** Only http(s) links are rendered; a bare "example.com" gets https://. */
-function safeUrl(raw: unknown): string | null {
-  let value = typeof raw === 'string' ? raw.trim() : ''
-  if (!value) return null
-  if (!/^[a-z][a-z0-9+.-]*:/i.test(value)) value = `https://${value.replace(/^\/+/, '')}`
-  try {
-    const url = new URL(value)
-    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null
-  } catch {
-    return null
-  }
-}
-
 const columns = {
   id: users.id, name: users.name, username: users.username, image: users.image, createdAt: users.createdAt,
   atprotoHandle: users.atprotoHandle, atprotoDid: users.atprotoDid,
+  // Profile cover image (PUT /api/profiles/me/cover).
+  cover: sql<string | null>`${users.rawUserMetaData}->>'cover'`,
 }
 const visible = and(isNull(users.deletedAt), or(isNull(users.authBanned), eq(users.authBanned, false)))
 
@@ -151,6 +128,7 @@ export default defineEventHandler(async (event) => {
       bluesky: null,
       federated: { network: 'activitypub', label: 'the Fediverse', handle: actor.handle, followers: actor.followers ?? 0, following: actor.following ?? 0, notes: actor.posts ?? 0 },
       source: actor.url ? { network: 'activitypub', url: actor.url } : null,
+      moderation: (actor as { moderation?: unknown }).moderation ?? null,
     }
   }
 
@@ -175,6 +153,8 @@ export default defineEventHandler(async (event) => {
       bluesky: { handle: actor.handle, followers: actor.followers ?? 0, following: actor.following ?? 0, notes: actor.posts ?? 0 },
       federated: { network: 'atproto', label: 'Bluesky', handle: actor.handle, followers: actor.followers ?? 0, following: actor.following ?? 0, notes: actor.posts ?? 0 },
       source: { network: 'atproto', url: actor.url || `https://bsky.app/profile/${actor.handle}` },
+      // From its moderation labels (Bluesky's and Meeovi's Ozone): warn / blur.
+      moderation: (actor as { moderation?: unknown }).moderation ?? null,
     }
   }
   if (!user) throw createError({ statusCode: 404, statusMessage: 'Profile not found' })
@@ -189,9 +169,7 @@ export default defineEventHandler(async (event) => {
     // Each source fails independently — an app whose Directus lacks a
     // collection (or whose token can't read it) just shows an empty tab.
     ;[profile, notes, vibez] = await Promise.all([
-      directus.request(readItem('profiles', user.id, {
-        fields: ['first_name', 'last_name', 'username', 'slug', 'description', 'position', 'company', 'links', 'avatar'],
-      })).catch(() => null) as Promise<Record<string, any> | null>,
+      findProfileRow<Record<string, any>>(directus, user.id, ['first_name', 'last_name', 'username', 'slug', 'description', 'position', 'company', 'links', 'avatar']),
       directus.request(readItems('posts', {
         fields: ['id', 'slug', 'title', 'summary', 'content', 'image', 'image_url', 'date_created', 'date_published'],
         filter: {
@@ -215,25 +193,14 @@ export default defineEventHandler(async (event) => {
   }
 
   const fullName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ')
-  const links = (Array.isArray(profile?.links) ? profile.links : [])
-    .map((link: Record<string, any>) => {
-      const url = safeUrl(link?.link)
-      if (!url) return null
-      const label = typeof link?.link_name === 'string' ? link.link_name.trim() : ''
-      return {
-        title: label || new URL(url).hostname.replace(/^www\./, ''),
-        url,
-        description: typeof link?.description === 'string' ? link.description.trim() : '',
-        icon: LINK_ICONS[label.toLowerCase()] || 'fas fa-link',
-      }
-    })
-    .filter(Boolean)
+  const links = toProfileLinks(profile?.links)
 
   return {
     id: user.id,
     name: fullName || user.name,
     username: user.username || profile?.username || null,
     image: user.image || profile?.avatar || null,
+    cover: user.cover || null,
     memberSince: user.createdAt,
     profession: profile?.position || null,
     company: profile?.company || null,

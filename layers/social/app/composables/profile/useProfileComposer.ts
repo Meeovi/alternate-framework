@@ -6,7 +6,7 @@ import { usePosts } from '../posts/usePosts'
 import { newPostSlug } from '../../utils/postPath'
 
 /**
- * Inline post composer for `/u/` (Timeline tab).
+ * Inline post composer for `/u` (Discussions tab, your own profile).
  *
  * Tries the backend-agnostic social driver first (`usePosts().createPost`,
  * the path `QuotePostModal` uses) so the post is attributed server-side.

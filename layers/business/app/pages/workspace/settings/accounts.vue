@@ -58,7 +58,15 @@
                                 <p class="text-body-2 mb-4">
                                     Connect your Bluesky or other AT Protocol account to post, follow and see your feed from Meeovi.
                                 </p>
-                                <AtprotoLink mode="link" />
+                                <!-- OAuth: approve Meeovi on your own Bluesky server (any PDS). -->
+                                <BlueskyOAuth link callbackURL="/workspace/settings/accounts" class="mb-4" />
+                                <v-expansion-panels variant="accordion" flat>
+                                    <v-expansion-panel title="Use an app password instead">
+                                        <v-expansion-panel-text>
+                                            <AtprotoLink mode="link" />
+                                        </v-expansion-panel-text>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
                             </v-col>
                         </v-row>
                     </v-expansion-panel-text>
@@ -130,6 +138,7 @@
     import MultiSessionManager from '../../../../../auth/app/components/features/plugins/sessions.vue'
     import OneTimeTokenManager from '../../../../../auth/app/components/features/plugins/ott.vue'
     import AtprotoLink from '../../../../../auth/app/components/features/plugins/atproto.vue'
+    import BlueskyOAuth from '../../../../../auth/app/components/features/plugins/BlueskyOAuth.vue'
 
     // <AuthSsoSignIn> comes from @mframework/auth-sso, when the app registers it.
     const SsoSignIn = (useAppConfig() as { mframeworkAuth?: { sso?: boolean } }).mframeworkAuth?.sso

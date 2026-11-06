@@ -1,3 +1,4 @@
+import { and, eq, ne } from 'drizzle-orm'
 import * as schema from '../../server/database/migrations/schema'
 import { db } from '../../server/utils/drizzle'
 import { sendAuthEmail } from './infrastructure/email'
@@ -200,6 +201,19 @@ export const plugins = [
             updatedAt: new Date(),
           },
         })
+    },
+    // "Sign in with Bluesky" (OAuth): the tokens stay in the OAuth session
+    // store (Redis, server/plugins/atproto-oauth-stores.ts). This row only
+    // says the member acts on Bluesky through OAuth (service "oauth"; the
+    // token columns are NOT NULL, so they hold the same marker) — read by
+    // layers/social/server/utils/federation-members.ts.
+    onOAuthSessionEstablished: async ({ userId, did, handle }) => {
+      const values = { did, handle, service: 'oauth', accessJwt: 'oauth', refreshJwt: 'oauth' }
+      // One Bluesky account per row: drop a stale row of another member for this DID first.
+      await db.delete(schema.atprotoSessions).where(and(eq(schema.atprotoSessions.did, did), ne(schema.atprotoSessions.userId, userId)))
+      await db.insert(schema.atprotoSessions)
+        .values({ userId, ...values })
+        .onConflictDoUpdate({ target: schema.atprotoSessions.userId, set: { ...values, updatedAt: new Date() } })
     },
   }),
 

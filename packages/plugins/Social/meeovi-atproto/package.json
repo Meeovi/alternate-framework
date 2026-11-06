@@ -13,7 +13,8 @@
     "./client": "./runtime/client.ts",
     "./federation": "./runtime/network.ts",
     "./auth/plugin": "./auth/plugin.ts",
-    "./auth": "./auth/auth.ts"
+    "./auth": "./auth/auth.ts",
+    "./oauth": "./runtime/oauth.ts"
   },
   "files": [
     "module.ts",
@@ -39,6 +40,7 @@
   "author": "Meeovi Labs",
   "dependencies": {
     "@atproto/api": "^0.20.22",
+    "@atproto/oauth-client-node": "^0.5.16",
     "@nuxt/kit": "^4.6.1",
     "zod": "^4.4.3"
   },

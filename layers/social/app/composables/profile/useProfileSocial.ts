@@ -123,10 +123,14 @@ export function useProfileSocial() {
     }
 
     try {
-      const spacesData = await fetchCollection('spaces')
-      spaces.value = (Array.isArray(spacesData) ? spacesData : []).filter(matchCurrentUser)
+      // Spaces they created and spaces they joined (server/api/social/spaces/mine.get.ts).
+      const mine: any = await $fetch('/api/social/spaces/mine')
+      spaces.value = [
+        ...(mine?.created ?? []).map((space: any) => ({ ...space, role: 'Created by you' })),
+        ...(mine?.joined ?? []).map((space: any) => ({ ...space, role: 'Joined' })),
+      ]
       spacesAvailable.value = true
-      spacesMessage.value = spaces.value.length ? '' : 'No spaces found.'
+      spacesMessage.value = spaces.value.length ? '' : "You haven't created or joined any spaces yet."
     } catch {
       spacesAvailable.value = false
     }

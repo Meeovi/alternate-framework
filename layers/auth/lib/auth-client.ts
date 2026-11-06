@@ -32,6 +32,14 @@ import {
 import packageClientFactories from "#auth-client-plugins"
 
 export const authClient = createAuthClient({
+  // Look fetch up on every call: the Turnstile plugin
+  // (layers/shared/app/plugins/turnstile-forms.client.ts) wraps window.fetch
+  // to add x-captcha-response, and this module can load before it does —
+  // then /update-user (avatar, name) was refused with "Missing CAPTCHA
+  // response".
+  fetchOptions: {
+    customFetchImpl: (input: RequestInfo | URL, init?: RequestInit) => globalThis.fetch(input, init),
+  },
   plugins: [
     twoFactorClient({
       onTwoFactorRedirect() {

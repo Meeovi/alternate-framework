@@ -32,10 +32,12 @@
 //
 // Wire this into the app's betterAuth() instance's `plugins` array (see
 // layers/auth/shared/utils/plugins.ts) — it does nothing on its own.
-import { APIError, createAuthEndpoint, sessionMiddleware } from 'better-auth/api'
+import { APIError, createAuthEndpoint, getSessionFromCtx, sessionMiddleware } from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
 import * as z from 'zod'
+import { Agent } from '@atproto/api'
 import { AtprotoClient, getAtprotoServiceUrl } from '../runtime/client'
+import { OAUTH_SCOPE, atprotoOAuthClient } from '../runtime/oauth'
 import type { AtpSessionData } from '@atproto/api'
 import type { BetterAuthPlugin } from 'better-auth'
 
@@ -72,7 +74,25 @@ export interface AtprotoAuthOptions {
    * behalf.
    */
   onSessionEstablished?: (params: { userId: string, session: AtpSessionData, service: string }) => void | Promise<void>
+  /**
+   * Called after a sign-in or link through Bluesky OAuth (/sign-in/atproto/oauth).
+   * The OAuth session itself (DPoP-bound tokens) stays in the OAuth session
+   * store (runtime/oauth.ts); this lets the host app note that the member
+   * acts on Bluesky through it (layers/auth: an atproto_sessions row with
+   * service "oauth").
+   */
+  onOAuthSessionEstablished?: (params: { userId: string, did: string, handle: string }) => void | Promise<void>
 }
+
+/** Where to send the member after OAuth: a path on this site only. */
+const safeReturnPath = (value: unknown, fallback = '/') =>
+  typeof value === 'string' && /^\/(?!\/)[^\s\\]*$/.test(value) ? value : fallback
+
+const signInAtprotoOAuthBody = z.object({
+  handle: z.string().min(3).max(253).meta({ description: 'Bluesky handle (alice.bsky.social), DID, or a PDS URL' }),
+  callbackURL: z.string().optional().meta({ description: 'Path on this site to return to afterwards' }),
+  link: z.boolean().optional().meta({ description: 'Attach the Bluesky account to the signed-in member instead of signing in' }),
+})
 
 /** Resolves a display profile for an atproto session. Tolerant of
  *  getProfile failing (a brand-new account's profile view may not be
@@ -160,6 +180,32 @@ async function issueLocalSession(ctx: any, user: any) {
   }
   await setSessionCookie(ctx, { session: newSession, user })
   return newSession
+}
+
+/**
+ * A single-use invite code from our own PDS (com.atproto.server.createInviteCode,
+ * admin auth: ATPROTO_PDS_ADMIN_PASSWORD), when it requires invites — or
+ * undefined (another PDS, invites off, no admin password).
+ */
+async function ownInviteCode(service: string, options: AtprotoAuthOptions): Promise<string | undefined> {
+  const adminPassword = process.env.ATPROTO_PDS_ADMIN_PASSWORD
+  const own = (options.service || getAtprotoServiceUrl()).replace(/\/+$/, '')
+  if (!adminPassword || service.replace(/\/+$/, '') !== own) return undefined
+  try {
+    const described = await fetch(`${own}/xrpc/com.atproto.server.describeServer`).then((r) => r.json()) as { inviteCodeRequired?: boolean }
+    if (!described?.inviteCodeRequired) return undefined
+    const res = await fetch(`${own}/xrpc/com.atproto.server.createInviteCode`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: `Basic ${Buffer.from(`admin:${adminPassword}`).toString('base64')}` },
+      body: JSON.stringify({ useCount: 1 }),
+    })
+    const body = await res.json().catch(() => null) as { code?: string } | null
+    if (!res.ok || !body?.code) throw new Error(`createInviteCode ${res.status}`)
+    return body.code
+  } catch (error: any) {
+    console.error('[atprotoAuth] could not get an invite code from the PDS:', error?.message || error)
+    return undefined
+  }
 }
 
 function authFailure(error: any): APIError {
@@ -276,8 +322,13 @@ export const atprotoAuth = (options: AtprotoAuthOptions = {}): BetterAuthPlugin 
           },
         },
       }, async (ctx: any) => {
-        const { handle, password, email, inviteCode } = ctx.body as z.infer<typeof signUpAtprotoBody>
+        const { handle, password, email } = ctx.body as z.infer<typeof signUpAtprotoBody>
+        let { inviteCode } = ctx.body as z.infer<typeof signUpAtprotoBody>
         const service = ctx.body.service || options.service || getAtprotoServiceUrl()
+        // Our own PDS keeps invite codes on (so nobody can mass-create
+        // accounts on it directly); a visitor who passed this endpoint's
+        // Turnstile check gets a single-use code made for them.
+        if (!inviteCode) inviteCode = await ownInviteCode(service, options)
 
         let profile: AtprotoProfileSummary
         let atpSession: AtpSessionData
@@ -299,6 +350,89 @@ export const atprotoAuth = (options: AtprotoAuthOptions = {}): BetterAuthPlugin 
           isNewUser: true,
           atproto: { did: profile.did, handle: profile.handle },
         })
+      }),
+
+      // Bluesky OAuth, step 1: the URL where the member approves Meeovi on
+      // their own PDS. Body: { handle, callbackURL?, link? }.
+      signInAtprotoOAuth: createAuthEndpoint('/sign-in/atproto/oauth', {
+        method: 'POST',
+        body: signInAtprotoOAuthBody,
+        requireHeaders: true,
+        metadata: { openapi: { operationId: 'signInWithAtprotoOAuth', description: 'Start signing in (or linking) with Bluesky OAuth; returns the URL to send the member to' } },
+      }, async (ctx: any) => {
+        const { handle, callbackURL, link } = ctx.body as z.infer<typeof signInAtprotoOAuthBody>
+        let linkUserId: string | undefined
+        if (link) {
+          const current = await getSessionFromCtx(ctx)
+          if (!current?.user?.id) throw new APIError('UNAUTHORIZED', { message: 'Sign in first to connect a Bluesky account' })
+          linkUserId = current.user.id
+        }
+        let client
+        try {
+          client = await atprotoOAuthClient()
+        } catch (error: any) {
+          throw new APIError('SERVICE_UNAVAILABLE', { message: error?.statusMessage || 'Signing in with Bluesky is unavailable' })
+        }
+        try {
+          // The app state is kept server-side in the OAuth state store.
+          const url = await client.authorize(handle.trim().replace(/^@/, ''), {
+            scope: OAUTH_SCOPE,
+            state: JSON.stringify({ returnTo: safeReturnPath(callbackURL), linkUserId }),
+          })
+          return ctx.json({ url: url.toString() })
+        } catch (error: any) {
+          throw new APIError('BAD_REQUEST', { message: /resolve|not found|invalid/i.test(error?.message || '') ? "We couldn't find that Bluesky account" : 'Bluesky sign-in could not start. Please try again.' })
+        }
+      }),
+
+      // Bluesky OAuth, step 2: the PDS sends the member back here.
+      atprotoOAuthCallback: createAuthEndpoint('/atproto/oauth/callback', {
+        method: 'GET',
+        requireHeaders: true,
+        metadata: { openapi: { operationId: 'atprotoOAuthCallback', description: 'Finish Bluesky OAuth sign-in or linking' } },
+      }, async (ctx: any) => {
+        const fail = (reason: string, returnTo = '/login') => {
+          throw ctx.redirect(`${returnTo}${returnTo.includes('?') ? '&' : '?'}error=${encodeURIComponent(reason)}`)
+        }
+        let did: string
+        let appState: { returnTo?: string, linkUserId?: string } = {}
+        let handle: string
+        let displayName: string | undefined
+        let avatar: string | undefined
+        try {
+          const client = await atprotoOAuthClient()
+          const params = new URLSearchParams(Object.entries(ctx.query ?? {}).map(([k, v]) => [k, String(v)]))
+          const { session, state } = await client.callback(params)
+          did = session.did
+          try { appState = JSON.parse(state || '{}') } catch { appState = {} }
+          const agent = new Agent(session)
+          const profile = await agent.getProfile({ actor: did }).then((r) => r.data).catch(() => null)
+          handle = profile?.handle || did
+          displayName = profile?.displayName
+          avatar = profile?.avatar
+        } catch (error: any) {
+          console.warn('[atprotoAuth] OAuth callback failed:', error?.message || error)
+          return fail(/denied|access_denied/i.test(String(ctx.query?.error || '')) ? 'bluesky_denied' : 'bluesky_failed')
+        }
+
+        const returnTo = safeReturnPath(appState.returnTo)
+        if (appState.linkUserId) {
+          // Connecting Bluesky to the signed-in member.
+          const existingOwner = await ctx.context.adapter.findOne({ model: 'user', where: [{ field: 'atprotoDid', value: did }] })
+          if (existingOwner && existingOwner.id !== appState.linkUserId) return fail('bluesky_linked_elsewhere', returnTo)
+          await ctx.context.internalAdapter.updateUser(appState.linkUserId, { atprotoDid: did, atprotoHandle: handle })
+          await options.onOAuthSessionEstablished?.({ userId: appState.linkUserId, did, handle })?.catch?.((e: unknown) => console.error('[atprotoAuth] onOAuthSessionEstablished', e))
+          throw ctx.redirect(returnTo)
+        }
+
+        const { user } = await findOrCreateLocalUser(ctx, { did, handle, displayName, avatar }, options)
+        try {
+          await options.onOAuthSessionEstablished?.({ userId: user.id, did, handle })
+        } catch (error) {
+          console.error('[atprotoAuth] onOAuthSessionEstablished failed:', error)
+        }
+        await issueLocalSession(ctx, user)
+        throw ctx.redirect(returnTo)
       }),
 
       linkAtproto: createAuthEndpoint('/link/atproto', {

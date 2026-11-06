@@ -1,4 +1,4 @@
-import { defineNuxtModule, addServerPlugin, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addServerHandler, addServerPlugin, createResolver } from '@nuxt/kit'
 import { DEFAULT_ATPROTO_SERVICE } from './runtime/client'
 
 export interface MeeoviAtprotoModuleOptions {
@@ -65,6 +65,11 @@ export default defineNuxtModule<MeeoviAtprotoModuleOptions>({
     // Nitro-only: bootstraps globalThis.__atprotoClient (a service-level
     // AtprotoClient) — see runtime/server/bootstrap.ts.
     addServerPlugin(resolver.resolve('./runtime/server/bootstrap'))
+
+    // "Sign in with Bluesky" (atproto OAuth, runtime/oauth.ts): the client
+    // metadata (its URL is the client_id) and public key PDSes fetch.
+    addServerHandler({ route: '/oauth-client-metadata.json', method: 'get', handler: resolver.resolve('./runtime/server/oauth-client-metadata') })
+    addServerHandler({ route: '/oauth/jwks.json', method: 'get', handler: resolver.resolve('./runtime/server/oauth-jwks') })
     if (options.federation !== false) addServerPlugin(resolver.resolve('./runtime/server/network'))
 
     // Search: same env vars the search layer used before this provider

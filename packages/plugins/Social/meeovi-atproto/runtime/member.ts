@@ -5,6 +5,8 @@
 // them in atproto_sessions); this file never touches the site's database.
 import { AtprotoClient, type AtprotoActorRecord, type AtprotoListRecord } from './client'
 import { toFederatedActor, toFederatedPost } from './network'
+import { isHiddenByModeration } from './moderation'
+import { restoreOAuthAgent } from './oauth'
 import type {
   FederatedList,
   FederatedListItem,
@@ -50,6 +52,14 @@ export function blueskyListUrl(uri: string): string | undefined {
 
 /** The member's session on Bluesky, or null when they have none. */
 export async function atprotoMemberSession(member: FederationMember): Promise<FederationMemberSession | null> {
+  // Signed in with Bluesky OAuth: act through that session (it refreshes
+  // itself in the OAuth session store).
+  const oauth = member.credentials as { oauth?: boolean, did?: string, handle?: string } | undefined
+  if (oauth?.oauth && oauth.did) {
+    const agent = await restoreOAuthAgent(oauth.did)
+    if (!agent) return null
+    return createAtprotoMemberSession(new AtprotoClient({ agent, identity: { did: oauth.did, handle: oauth.handle || oauth.did } }))
+  }
   if (!isCredentials(member.credentials)) return null
   const { service, session } = member.credentials
   let client: AtprotoClient
@@ -86,7 +96,8 @@ export function createAtprotoMemberSession(client: AtprotoClient): FederationMem
     account: toFederatedActor(me()),
 
     async timeline({ limit = 30 } = {}) {
-      return (await client.getTimeline({ limit })).posts.map(toFederatedPost)
+      // Notes moderation hides stay out of members' timelines too.
+      return (await client.getTimeline({ limit })).posts.map(toFederatedPost).filter((post) => !isHiddenByModeration(post.moderation))
     },
 
     async publish({ text, replyTo }) {

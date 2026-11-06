@@ -14,7 +14,11 @@ const pagesDirs = new Set([pagesDir, (() => { try { return realpathSync(pagesDir
 function markSocialPages(pages: NuxtPage[], parentPath = '') {
   for (const page of pages) {
     const path = page.path.startsWith('/') ? page.path : `${parentPath}/${page.path}`
-    if (/^\/connect(\/|$)/.test(path) || (page.file && [...pagesDirs].some((dir) => page.file!.startsWith(dir)))) {
+    // Profiles (pages/u/index.vue) are public: /u/<name> was the auth
+    // layer's public page before it was merged in. The page itself asks
+    // for sign-in on /u (your own profile).
+    const isProfile = /[\\/]pages[\\/]u[\\/]index\.vue$/.test(page.file || '')
+    if (!isProfile && (/^\/connect(\/|$)/.test(path) || (page.file && [...pagesDirs].some((dir) => page.file!.startsWith(dir))))) {
       page.meta = { ...page.meta, requiresLogin: true }
     }
     if (page.children?.length) markSocialPages(page.children, path)
@@ -49,6 +53,9 @@ export default defineNuxtConfig({
   // The wishlist page was merged into /lists (wishlists are a list type).
   routeRules: {
     '/wishlist': { redirect: '/lists?tab=wishlists' },
+    // Profiles are all /u (pages/u/index.vue); /profile was an unfinished copy.
+    '/profile': { redirect: '/u' },
+    '/profile/**': { redirect: '/u/**' },
   },
 
   runtimeConfig: {

@@ -5,9 +5,10 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-12 col-lg-6 image-wrapper">
-                        <div v-if="federatedImage">
+                        <!-- Covered or blurred by its moderation labels (one "show" for image and text) -->
+                        <ModerationCover v-if="federatedImage" v-model:revealed="moderationShown" :moderation="post?.moderation">
                             <img class="w-100 federatedImage" :src="federatedImage.url" :alt="federatedImage.alt || ''" />
-                        </div>
+                        </ModerationCover>
 
                         <div v-else-if="post?.file_url || post?.file">
                             <MeeoviPlayer :src="getAssetURL(post?.file_url || post?.file)" :poster="getImageURL(post?.image_url || post?.image)" :title="post?.title" />
@@ -47,16 +48,23 @@
                                     <FollowButton v-if="target" entity-type="note" :id="target.id"
                                         follow-label="Follow note" unfollow-label="Following note" size="sm" />
                                     <flag v-if="!federated" class="postFlag" :report="post?.id" />
+                                    <!-- Bluesky notes: a report in Meeovi's Ozone -->
+                                    <ReportToModerators v-else-if="post?.network === 'atproto'" network="atproto"
+                                        :subject="{ kind: 'note', id: String(post.id) }" />
                                 </div>
                             </div>
 
                             <!-- A Bluesky note's plain text, split so hashtags link to their page; no v-html. -->
-                            <p v-if="federated" class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text noteText">
+                            <!-- Text isn't blurred: only a warning covers it. -->
+                            <ModerationCover v-if="federated" v-model:revealed="moderationShown" class="mb-4"
+                                :moderation="post?.moderation?.action === 'warn' ? post.moderation : null">
+                            <p class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text noteText">
                                 <template v-for="(part, i) in withHashtags(post.text)" :key="i">
                                     <NuxtLink v-if="part.tag" :to="`/connect/hashtag/${encodeURIComponent(part.tag)}`">#{{ part.tag }}</NuxtLink>
                                     <template v-else>{{ part.text }}</template>
                                 </template>
                             </p>
+                            </ModerationCover>
                             <!-- A Meeovi note's content is HTML (composer, Directus editor, imported news): rendered through the shared sanitizer, never as raw text. -->
                             <div v-else class="mbr-text align-left mbr-fonts-style mb-4 display-7 auto-text noteContent" v-dompurify-html="post?.content"></div>
 
@@ -210,6 +218,8 @@
     import sourceAttribution from '#social/app/components/blocks/sourceAttribution.vue';
     import { federatedNoteRef, federatedProfilePath, noteTarget } from '#social/app/utils/postPath';
     import FollowButton from '#social/app/components/blocks/FollowButton.vue';
+    import ModerationCover from '#social/app/components/blocks/ModerationCover.vue';
+    import ReportToModerators from '#social/app/components/blocks/ReportToModerators.vue';
     import {
         computed,
         onMounted,
@@ -273,6 +283,8 @@
     const target = computed(() => noteTarget(post.value))
     const federated = computed(() => !!thread.value?.post)
     const networkName = computed(() => ({ atproto: 'Bluesky', activitypub: 'Fediverse' })[post.value?.network] || 'Federated')
+    // One "show" for a moderated note's image and text (blocks/ModerationCover.vue).
+    const moderationShown = ref(false)
     const federatedImage = computed(() => (federated.value ? post.value?.media || [] : []).find((m) => m.type === 'image') || null)
     const authorName = computed(() => post.value?.author?.displayName || post.value?.author?.name || post.value?.author?.handle || '')
     const createdAt = computed(() => post.value?.createdAt || post.value?.date_created || null)

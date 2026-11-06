@@ -3,7 +3,8 @@
 // This file keeps what each network needs to act as the member — stored
 // here, in the site's database — and hands it to the network plugin:
 //
-//   atproto   their AT Protocol session from Bluesky sign-in (atproto_sessions)
+//   atproto   their AT Protocol session from Bluesky sign-in (atproto_sessions;
+//             service "oauth" = the OAuth session store holds the tokens)
 //   directus  nothing: every member has a session on this site's own network
 //   activitypub  nothing yet: there's no Fediverse sign-in, so no session
 //
@@ -29,6 +30,8 @@ const CREDENTIALS: Record<string, CredentialStore> = {
     async load(userId) {
       const [row] = await db.select().from(atprotoSessions).where(eq(atprotoSessions.userId, userId)).limit(1)
       if (!row) return undefined
+      // Signed in with Bluesky OAuth: the tokens are in the OAuth session store.
+      if (row.service === 'oauth') return { oauth: true, did: row.did, handle: row.handle }
       return { service: row.service, session: { did: row.did, handle: row.handle, accessJwt: row.accessJwt, refreshJwt: row.refreshJwt } }
     },
     async save(userId, credentials) {

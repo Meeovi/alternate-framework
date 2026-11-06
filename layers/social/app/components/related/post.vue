@@ -21,6 +21,8 @@
                         <editMenu v-if="!federated" :post="post" />
                     </v-toolbar>
 
+                    <!-- Bluesky notes: covered or blurred by their moderation labels -->
+                    <ModerationCover :moderation="federated ? post?.moderation : null">
                     <div class="align-end text-white" max-height="200px" v-if="federated && federatedImage">
                         <NuxtLink :to="noteLink || undefined">
                             <img :src="federatedImage.preview || federatedImage.url" :alt="federatedImage.alt || ''" loading="lazy" class="federatedImage" />
@@ -60,6 +62,7 @@
                         </p>
                         <p v-else v-dompurify-html="post?.content" class="postContent"></p>
                     </v-card-text>
+                    </ModerationCover>
 
                     <v-card-actions>
                         <template v-if="federated">
@@ -106,6 +109,7 @@
     import share from '#social/app/components/blocks/share.vue';
     //import repost from '#social/app/components/blocks/repost/repost.vue';
     import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
+    import ModerationCover from '#social/app/components/blocks/ModerationCover.vue';
     import { federatedProfilePath, noteTarget, postPath } from '#social/app/utils/postPath';
     import {
         computed,

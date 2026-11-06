@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title class="d-flex align-center justify-space-between">
             <span>Profile Settings</span>
-            <v-btn variant="text" prepend-icon="fas fa-arrow-left" to="/user">Back to Profile</v-btn>
+            <v-btn variant="text" prepend-icon="fas fa-arrow-left" to="/u">Back to Profile</v-btn>
           </v-card-title>
 
           <v-divider />
@@ -68,15 +68,11 @@
                     :name="`${form.firstName} ${form.lastName}`.trim()"
                     @update:image="onAvatarChange"
                   />
-                  <v-text-field v-model="form.coverUrl" label="Cover URL" prepend-inner-icon="fas fa-panorama" />
-                  <v-row>
-                    <v-col cols="12">
-                      <v-sheet rounded="lg" color="grey-lighten-3" class="pa-2">
-                        <div class="text-caption mb-2">Cover Preview</div>
-                        <v-img :src="coverPreview" height="80" cover rounded="lg" />
-                      </v-sheet>
-                    </v-col>
-                  </v-row>
+                  <div class="d-flex align-center ga-3 flex-wrap">
+                    <v-icon icon="fas fa-image" />
+                    <span>Change or remove your cover image on your profile.</span>
+                    <v-btn variant="tonal" size="small" to="/u">Go to my profile</v-btn>
+                  </div>
                 </v-card-text>
               </v-card>
 
@@ -184,10 +180,6 @@ const applyThemeMode = (mode: string) => {
 }
 
 const profileStorageKey = computed(() => `meeovi:user-profile:${(user.value as any)?.id || 'guest'}`)
-
-const coverPreview = computed(() => {
-  return form.coverUrl || 'https://images.unsplash.com/photo-1496345966270-d173adcbdd0f?auto=format&fit=crop&w=2000&q=80'
-})
 
 // AvatarUploader has already uploaded to Pixanomy and saved users.image —
 // just reflect it locally (preview + anything bound to `user`).

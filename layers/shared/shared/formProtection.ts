@@ -27,7 +27,7 @@ export const AUTH_CAPTCHA_HEADER = 'x-captcha-response'
 export const AUTH_CAPTCHA_ENDPOINTS = [
   // sign-in (password guessing)
   // better-auth matches these exactly (1.7+), so list every variant.
-  '/sign-in/email', '/sign-in/email-otp', '/sign-in/username', '/sign-in/magic-link', '/sign-in/atproto',
+  '/sign-in/email', '/sign-in/email-otp', '/sign-in/username', '/sign-in/magic-link', '/sign-in/atproto', '/sign-in/atproto/oauth',
   // accounts (spam)
   '/sign-up/email', '/sign-up/atproto',
   // only exists when an app registers @mframework/auth-anonymous
@@ -66,6 +66,8 @@ const RULES: Rule[] = [
   // Notifying every follower; posting to Bluesky / the Fediverse
   { methods: ['POST'], path: /^\/api\/social\/notify-followers\/?$/ },
   { methods: ['POST'], path: /^\/api\/social\/(atproto\/post|publish)\/?$/ },
+  // Reporting a Bluesky note or account to Meeovi's moderators (Ozone)
+  { methods: ['POST'], path: /^\/api\/social\/moderation\/report\/?$/ },
   // Calendar events (create / edit form)
   { methods: ['POST'], path: /^\/api\/social\/calendar\/events\/?$/ },
   { methods: ['PATCH'], path: /^\/api\/social\/calendar\/events\/[^/]+\/?$/ },
@@ -74,6 +76,10 @@ const RULES: Rule[] = [
   { methods: ['POST'], path: /^\/api\/shipment\/rates\/?$/ },
   { methods: ['POST'], path: /^\/api\/payment\/paypal\/orders\/?$/ },
   { methods: ['POST'], path: /^\/api\/payment\/quote\/?$/ },
+  // A member's "Connect with Me" links (their profile's Linktree tab)
+  { methods: ['PUT'], path: /^\/api\/profiles\/me\/links\/?$/ },
+  // Their profile cover (the upload itself is covered above)
+  { methods: ['PUT'], path: /^\/api\/profiles\/me\/cover\/?$/ },
   // Newsletter sign-up
   { methods: ['POST'], path: /^\/api\/newsletter\/subscribe\/?$/ },
   // Products: a seller adding one (workspace My products)

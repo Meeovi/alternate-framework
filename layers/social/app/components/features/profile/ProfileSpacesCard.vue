@@ -1,7 +1,7 @@
 <template>
   <ProfileSectionCard title="My Spaces" :status="status" :available="available">
     <template #title-append>
-      <v-btn v-if="!status" size="small" variant="text" to="/connect">See all</v-btn>
+      <v-btn v-if="!status" size="small" variant="text" to="/connect/spaces">See all</v-btn>
     </template>
 
     <div v-if="status" class="d-flex ga-2 mb-3">
@@ -15,7 +15,7 @@
       icon="fas fa-users"
       :limit="limit"
       :title-keys="['title', 'name']"
-      :subtitle-keys="['slug', 'date_created']"
+      :subtitle-keys="['role', 'slug', 'date_created']"
       :key-keys="['id']"
       title-prefix="Space #"
       :to="spaceLink"

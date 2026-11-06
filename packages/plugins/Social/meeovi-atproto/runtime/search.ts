@@ -6,6 +6,7 @@
 // (app.bsky.feed.searchPosts / app.bsky.actor.searchActors) is
 // AtprotoClient's; this file only calls into it and reshapes the result.
 import { AtprotoClient, type AtprotoPostRecord, type AtprotoActorRecord } from './client'
+import { moderate } from './moderation'
 import type { NormalizedHit, ProviderSearchResult, SearchProvider, SearchProviderOptions } from './search-types'
 
 export type AtprotoSearchConfig = {
@@ -52,23 +53,18 @@ async function getClient(config: AtprotoSearchConfig): Promise<AtprotoClient> {
   return _clientPromise
 }
 
-// Site search is public and shown signed out, so leave out what Bluesky's
-// own app hides or blurs by default: adult and graphic content labels,
-// moderation takedowns, and accounts that ask not to be shown to
-// logged-out viewers. Unlabelled posts can still be explicit; this only
-// covers what the network has labelled.
-const HIDDEN_LABELS = new Set([
-  'porn', 'sexual', 'nudity', 'graphic-media', 'gore', 'nsfl',
-  '!hide', '!takedown', '!no-unauthenticated',
-])
-
-function isHidden(labels: string[] | undefined): boolean {
-  return (labels ?? []).some((label) => HIDDEN_LABELS.has(label))
+// Site search is public and shown signed out, so it leaves out anything
+// moderation acts on at all (hidden, blurred or warned: see
+// ./moderation.ts — Bluesky's labels and Meeovi's Ozone), and accounts that
+// ask not to be shown to logged-out viewers. Unlabelled posts can still be
+// explicit; this only covers what has been labelled.
+function isHidden(...labels: Array<string[] | undefined>): boolean {
+  return moderate(...labels) !== null
 }
 
 /** Whether a post may appear in public search results. */
 export function isSearchablePost(post: AtprotoPostRecord): boolean {
-  return !isHidden(post.labels) && !isHidden(post.authorLabels)
+  return !isHidden(post.labels, post.authorLabels)
 }
 
 /** Whether a profile may appear in public search results. */

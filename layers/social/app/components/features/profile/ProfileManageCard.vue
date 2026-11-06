@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 const links = computed(() => [
-  { label: 'Gift Cards', icon: 'fas fa-gift', to: '/product/showcases' },
+  { label: 'Gift Cards', icon: 'fas fa-gift', to: '/product/gift-cards' },
   { label: 'Subscriptions', icon: 'fas fa-repeat', to: '/product/showcases' },
   { label: 'Manage Spaces', icon: 'fas fa-users', to: '/connect/spaces' },
   { label: 'Hashtags', icon: 'fas fa-hashtag', to: '/connect/hashtags' },
