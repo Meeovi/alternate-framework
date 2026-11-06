@@ -88,6 +88,8 @@ export function oauthClientMetadata(): OAuthClientMetadataInput | null {
 async function keyset() {
   const raw = String(process.env.ATPROTO_OAUTH_PRIVATE_JWK || '').trim()
   if (!raw) return null
+  // A JWK (JSON) keeps its own kid; a string is read as a PEM key, which has none.
+  if (raw.startsWith('{')) return [await JoseKey.fromImportable(JSON.parse(raw))]
   return [await JoseKey.fromImportable(raw, 'meeovi-oauth-1')]
 }
 
