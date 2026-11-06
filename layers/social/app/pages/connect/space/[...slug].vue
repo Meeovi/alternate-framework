@@ -14,6 +14,11 @@
                     <div class="d-flex align-center" v-if="space">
                         <createListBtn :item="listItem" kind="space" />
                     </div>
+
+                    <!-- Saved in Directus `report`, linked to the space -->
+                    <div class="d-flex align-center text-white" v-if="space?.id">
+                        <ReportToModerators network="meeovi" :subject="{ kind: 'space', id: String(space.id) }" />
+                    </div>
                 </v-toolbar-items>
             </v-toolbar>
 
@@ -130,6 +135,7 @@
     import productCard from '#commerce/app/components/catalog/product/productCard.vue'
     import listsCard from '../../../components/features/lists/lists.vue'
     import createListBtn from '../../../components/blocks/partials/createListBtn.vue'
+    import ReportToModerators from '../../../components/blocks/ReportToModerators.vue'
     import SettingsTab from './SettingsTab.vue'
     import {
         useAuth

@@ -30,6 +30,12 @@
               <div v-else>
                 <productDetails :productDetails="product" @discussion="openDiscussion" />
               </div>
+
+              <!-- Players, gift cards and radio stations don't show productDetails
+                   (which has its own Report button). -->
+              <div v-if="!showsDetails && canonicalProductKey(product)" class="d-flex justify-end mt-2">
+                <ReportToModerators network="meeovi" :subject="{ kind: 'product', id: canonicalProductKey(product) }" />
+              </div>
             </v-col>
 
             <!--Product Videos-->
@@ -322,6 +328,7 @@
   import productCompare from '../../components/catalog/product/compare.vue'
   import { CommerceBackendRegistry } from 'alternate-sdk'
   import { canonicalProductKey, parseProductKey } from '../../utils/productKey'
+  import ReportToModerators from '#social/app/components/blocks/ReportToModerators.vue'
   import { PRODUCT_FIELDS } from '../../utils/productFields'
   // A product card's fields, for the cross-sell and related products sliders.
   const CARD_FIELDS = ['id', 'name', 'slug', 'sku', 'mageos_sku', 'source', 'price', 'image', 'image_url', 'seller_name', 'seller_username', 'download_url', 'allow_free_download']
@@ -367,6 +374,10 @@
       .map((pt) => pt?.product_types_id?.name)
       .filter(Boolean)
   )
+  // Same order as the template: players, gift cards and radio stations
+  // replace productDetails.
+  const showsDetails = computed(() =>
+    !['Audio', 'Video', 'Course', 'Gift Card', 'Radio'].some((name) => productTypeNames.value.includes(name)))
 
   const {
     $directus,

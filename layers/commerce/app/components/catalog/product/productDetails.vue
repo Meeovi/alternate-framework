@@ -58,6 +58,9 @@
                                          opens it and scrolls there. -->
                                     <a href="#discussion" class="no-underline"
                                         @click.prevent="emit('discussion')">Discussion</a>
+                                    <!-- Saved in Directus `report` with the product's key -->
+                                    <ReportToModerators v-if="canonicalProductKey(productDetails)" network="meeovi"
+                                        :subject="{ kind: 'product', id: canonicalProductKey(productDetails) }" />
                                 </div>
                             </v-list-item>
 
@@ -158,6 +161,7 @@
     import addToCartBtn from '../../blocks/addToCartBtn.vue';
     import compareBtn from '../../blocks/compareBtn.vue';
     import createListBtn from '#social/app/components/blocks/partials/createListBtn.vue';
+    import ReportToModerators from '#social/app/components/blocks/ReportToModerators.vue';
     import { canonicalProductKey, parseProductKey, productKey } from '../../../utils/productKey';
     import { productSeller } from '../../../utils/productSeller';
     import {

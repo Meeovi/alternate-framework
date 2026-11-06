@@ -6,7 +6,7 @@
 
     <v-dialog v-model="dialog" max-width="520">
       <v-card>
-        <v-card-title class="text-wrap">Report this {{ subject.kind === 'note' ? 'note' : 'account' }}</v-card-title>
+        <v-card-title class="text-wrap">Report this {{ subject.kind }}</v-card-title>
         <v-card-subtitle class="text-wrap">Meeovi's moderators review every report.</v-card-subtitle>
 
         <v-card-text v-if="!sent">
@@ -37,15 +37,18 @@ import { navigateTo, useRoute } from '#imports'
 import { useSocialStore } from '../../stores/social'
 
 /**
- * Report a Bluesky note or account to Meeovi's moderators (a report in
- * Meeovi's Ozone, via POST /api/social/moderation/report). Signed-out
+ * The one "Report" button for any content: a Meeovi note/product/space/
+ * comment or a Bluesky note/account. POST /api/social/moderation/report
+ * stores it in the Directus `report` collection with the content's id and
+ * the member's email (Bluesky ones also go to Meeovi's Ozone). Signed-out
  * visitors are sent to sign in first.
  *
- *   <ReportToModerators network="atproto" :subject="{ kind: 'note', id: note.id }" />
+ *   <ReportToModerators network="meeovi" :subject="{ kind: 'note', id: post.id }" />
+ *   <ReportToModerators network="atproto" :subject="{ kind: 'account', id: did }" />
  */
 const props = withDefaults(defineProps<{
   network: string
-  subject: { kind: 'note' | 'account', id: string }
+  subject: { kind: 'note' | 'account' | 'product' | 'space' | 'comment', id: string }
   label?: string
 }>(), { label: 'Report' })
 

@@ -10,7 +10,7 @@
                     <v-list-item-title v-if="canEdit"><updatePost :post="post" /></v-list-item-title>
 
                     <!-- Anyone else who is signed in can report it -->
-                    <v-list-item-title v-if="canReport"><flag :reportId="post?.report?.report_id?.id" /></v-list-item-title>
+                    <v-list-item-title v-if="canReport"><ReportToModerators v-if="post?.id" network="meeovi" :subject="{ kind: 'note', id: String(post.id) }" /></v-list-item-title>
                 </v-list-item>
             </v-list>
         </v-menu>
@@ -23,7 +23,7 @@
     } from 'vue'
     import { authClient } from '#auth/lib/auth-client'
     import updatePost from '#social/app/components/features/feed/update-post.vue';
-    import flag from '#social/app/components/blocks/flag.vue';
+    import ReportToModerators from '#social/app/components/blocks/ReportToModerators.vue';
 
     const props = defineProps({
         post: {

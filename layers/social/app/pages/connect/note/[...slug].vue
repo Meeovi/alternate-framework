@@ -47,9 +47,9 @@
                                 <div class="col-6 d-flex align-center justify-end ga-2">
                                     <FollowButton v-if="target" entity-type="note" :id="target.id"
                                         follow-label="Follow note" unfollow-label="Following note" size="sm" />
-                                    <flag v-if="!federated" class="postFlag" :report="post?.id" />
-                                    <!-- Bluesky notes: a report in Meeovi's Ozone -->
-                                    <ReportToModerators v-else-if="post?.network === 'atproto'" network="atproto"
+                                    <!-- Stored in Directus `report`; Bluesky notes also go to Meeovi's Ozone -->
+                                    <ReportToModerators v-if="post?.id && (!federated || post?.network === 'atproto')"
+                                        :network="federated ? 'atproto' : 'meeovi'"
                                         :subject="{ kind: 'note', id: String(post.id) }" />
                                 </div>
                             </div>
@@ -211,7 +211,6 @@
 <script setup>
     import { getAssetURL, getImageURL, hasAsset, PLACEHOLDER_IMAGE_URL } from '#shared/app/utils/get-asset-url'
     import tagCard from '#social/app/components/related/tag.vue';
-    import flag from '#social/app/components/blocks/flag.vue';
     import reactions from '#social/app/components/blocks/reactions.vue';
     import share from '#social/app/components/blocks/share.vue';
     import postCard from '#social/app/components/related/post.vue';
