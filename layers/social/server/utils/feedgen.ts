@@ -2,7 +2,10 @@ import { and, eq, isNotNull, isNull, or } from 'drizzle-orm'
 import { db } from '#auth/server/utils/drizzle'
 import { users } from '#auth/server/database/migrations/schema'
 import type { FederatedPost } from '../../shared/types/federation'
+import { useAtprotoClient } from '@mframework/meeovi-atproto/client'
+import { toFederatedPost } from '@mframework/meeovi-atproto/federation'
 import { federationNetworks, withNetworkTimeout } from './federation'
+import { crosspostedUris } from './crosspost'
 
 /**
  * Meeovi's Bluesky feed generator: feeds any Bluesky app can subscribe to,
@@ -13,10 +16,13 @@ import { federationNetworks, withNetworkTimeout } from './federation'
  * then load themselves), so the feeds are:
  *  - members: recent notes by Meeovi members who connected a Bluesky
  *    account (users.atproto_did), and by Meeovi's own account;
- *  - meeovi:  Bluesky posts linking to meeovi.com or tagged #meeovi.
- * Both come through the atproto federation network, which already applies
- * moderation (anything Bluesky's or Meeovi's Ozone labels as hidden is
- * dropped). Lists are rebuilt at most every few minutes.
+ *  - meeovi:  the latest products and community notes Meeovi posted to
+ *    Bluesky (server/utils/crosspost.ts: products from the site's account,
+ *    notes from members' own accounts), plus Bluesky posts linking to
+ *    meeovi.com or tagged #meeovi.
+ * Everything is read back through Bluesky, which applies moderation
+ * (anything Bluesky's or Meeovi's Ozone labels as hidden is dropped, and
+ * deleted posts fall out). Lists are rebuilt at most every few minutes.
  *
  * The feeds appear in Bluesky apps once their app.bsky.feed.generator
  * records are published in the publisher account's repo (see
@@ -77,13 +83,33 @@ async function memberNotes(): Promise<FederatedPost[]> {
   return merge(lists.map((list, i) => list.filter((post) => post.author?.id === dids[i])), 300)
 }
 
+/** Products and notes Meeovi posted to Bluesky, as Bluesky has them now. */
+async function crossposted(): Promise<FederatedPost[]> {
+  const rows = await crosspostedUris(300).catch((error) => {
+    console.error('[feedgen] crossposts:', (error as Error)?.message || error)
+    return []
+  })
+  if (!rows.length) return []
+  const client = useAtprotoClient()
+  const uris = rows.map((r) => r.uri)
+  const posts: FederatedPost[] = []
+  for (let i = 0; i < uris.length; i += 25) {
+    const found = await withNetworkTimeout(client.getPosts(uris.slice(i, i + 25))).catch(() => [])
+    posts.push(...found.map(toFederatedPost))
+  }
+  return posts.filter((post) => post.moderation?.action !== 'hide')
+}
+
 async function aboutMeeovi(): Promise<FederatedPost[]> {
   const network = atproto()
-  if (!network?.searchPosts) return []
   const queries = ['domain:meeovi.com', '#meeovi']
-  const lists = await Promise.all(queries.map((q) =>
-    withNetworkTimeout(network.searchPosts!(q, { limit: 100 })).catch(() => [] as FederatedPost[])))
-  return merge(lists, 300)
+  const [own, ...searches] = await Promise.all([
+    crossposted(),
+    ...queries.map((q) => network?.searchPosts
+      ? withNetworkTimeout(network.searchPosts(q, { limit: 100 })).catch(() => [] as FederatedPost[])
+      : Promise.resolve([] as FederatedPost[])),
+  ])
+  return merge([own, ...searches], 300)
 }
 
 export const FEEDS: FeedDefinition[] = [
@@ -96,7 +122,7 @@ export const FEEDS: FeedDefinition[] = [
   {
     rkey: 'meeovi',
     displayName: 'Meeovi',
-    description: 'Bluesky posts about Meeovi: links to meeovi.com and #meeovi.',
+    description: 'The latest products and notes from the Meeovi community (meeovi.com), plus Bluesky posts about Meeovi.',
     build: aboutMeeovi,
   },
 ]

@@ -14,7 +14,8 @@
     "./federation": "./runtime/network.ts",
     "./auth/plugin": "./auth/plugin.ts",
     "./auth": "./auth/auth.ts",
-    "./oauth": "./runtime/oauth.ts"
+    "./oauth": "./runtime/oauth.ts",
+    "./linkcard": "./runtime/linkcard.ts"
   },
   "files": [
     "module.ts",

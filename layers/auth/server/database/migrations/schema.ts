@@ -6489,6 +6489,23 @@ export const atprotoSessions = pgTable.withRLS("atproto_sessions", {
 	unique("atproto_sessions_did_unique").on(table.did),
 ]);
 
+// Products and members' notes posted to Bluesky (migration 20261106120000).
+export const atprotoCrossposts = pgTable.withRLS("atproto_crossposts", {
+	id: uuid().defaultRandom().primaryKey(),
+	sourceType: varchar("source_type", { length: 16 }).notNull(),
+	sourceId: varchar("source_id", { length: 64 }).notNull(),
+	userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+	authorDid: varchar("author_did", { length: 255 }).notNull(),
+	uri: text().notNull(),
+	cid: varchar({ length: 255 }),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+}, (table) => [
+	unique("atproto_crossposts_source_unique").on(table.sourceType, table.sourceId),
+	unique("atproto_crossposts_uri_unique").on(table.uri),
+	index("atproto_crossposts_created_at_idx").on(table.createdAt),
+	check("atproto_crossposts_source_type_check", sql`source_type IN ('product', 'note')`),
+]);
+
 export const variants = pgTable.withRLS("variants", {
 	id: serial().primaryKey(),
 	productId: integer("product_id").references(() => products.id, { onDelete: "cascade" } ),

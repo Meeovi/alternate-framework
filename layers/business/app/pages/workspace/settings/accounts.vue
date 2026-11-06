@@ -60,6 +60,7 @@
                                 </p>
                                 <!-- OAuth: approve Meeovi on your own Bluesky server (any PDS). -->
                                 <BlueskyOAuth link callbackURL="/workspace/settings/accounts" class="mb-4" />
+                                <BlueskyCrosspost class="mb-4" />
                                 <v-expansion-panels variant="accordion" flat>
                                     <v-expansion-panel title="Use an app password instead">
                                         <v-expansion-panel-text>
@@ -139,6 +140,7 @@
     import OneTimeTokenManager from '../../../../../auth/app/components/features/plugins/ott.vue'
     import AtprotoLink from '../../../../../auth/app/components/features/plugins/atproto.vue'
     import BlueskyOAuth from '../../../../../auth/app/components/features/plugins/BlueskyOAuth.vue'
+    import BlueskyCrosspost from '../../../../../auth/app/components/features/plugins/BlueskyCrosspost.vue'
 
     // <AuthSsoSignIn> comes from @mframework/auth-sso, when the app registers it.
     const SsoSignIn = (useAppConfig() as { mframeworkAuth?: { sso?: boolean } }).mframeworkAuth?.sso

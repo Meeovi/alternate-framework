@@ -7,6 +7,7 @@ import { AtprotoClient, type AtprotoActorRecord, type AtprotoListRecord } from '
 import { toFederatedActor, toFederatedPost } from './network'
 import { isHiddenByModeration } from './moderation'
 import { restoreOAuthAgent } from './oauth'
+import { linkCardEmbed } from './linkcard'
 import type {
   FederatedList,
   FederatedListItem,
@@ -100,16 +101,26 @@ export function createAtprotoMemberSession(client: AtprotoClient): FederationMem
       return (await client.getTimeline({ limit })).posts.map(toFederatedPost).filter((post) => !isHiddenByModeration(post.moderation))
     },
 
-    async publish({ text, replyTo }) {
+    async publish({ text, replyTo, card, langs }) {
       // A reply names its parent and the thread's root (the parent itself
       // when replying to a top-level note).
       const parent = replyTo ? await post(replyTo) : null
       const root = parent?.replyRootUri ? await post(parent.replyRootUri) : parent
       const created = await client.createPost({
         text,
+        ...(langs?.length ? { langs } : {}),
+        ...(card ? { externalEmbed: await linkCardEmbed(client, card) } : {}),
         ...(parent && root ? { replyParentUri: parent.uri, replyParentCid: parent.cid, replyRootUri: root.uri, replyRootCid: root.cid } : {}),
       })
       return toFederatedPost(created)
+    },
+
+    async unpublish(id) {
+      // Only the member's own notes (at://<their did>/app.bsky.feed.post/…).
+      if (!id.startsWith(`at://${client.did}/app.bsky.feed.post/`)) {
+        throw Object.assign(new Error('Not your note'), { statusCode: 403, statusMessage: 'You can only delete your own notes' })
+      }
+      await client.deletePost(id)
     },
 
     async like(id) {

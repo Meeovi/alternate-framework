@@ -193,14 +193,20 @@ export type FederatedListItemInput =
   | { kind: 'note', post: string }
   | { kind: string, id: string | number }
 
+/** A link card under a note: the page it opens (https), with a thumbnail. */
+export type FederatedLinkCard = { url: string, title: string, description: string, image?: string }
+
 export interface FederationMemberSession {
   network: string
   /** The member's own account on this network. */
   account: FederatedActor
   /** Notes from the accounts they follow. */
   timeline?(options?: { limit?: number }): Promise<FederatedPost[]>
-  /** A new note, or a reply when `replyTo` (a note id) is given. */
-  publish?(input: { text: string, replyTo?: string }): Promise<FederatedPost>
+  /** A new note, or a reply when `replyTo` (a note id) is given. `card`
+   *  adds a link card (page title, description, thumbnail) under it. */
+  publish?(input: { text: string, replyTo?: string, card?: FederatedLinkCard, langs?: string[] }): Promise<FederatedPost>
+  /** Deletes one of the member's own notes. */
+  unpublish?(postId: string): Promise<void>
   like?(postId: string): Promise<void>
   unlike?(postId: string): Promise<void>
   repost?(postId: string): Promise<void>

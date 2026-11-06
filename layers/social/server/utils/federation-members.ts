@@ -91,7 +91,7 @@ export async function memberSessions(userId: string): Promise<MemberNetwork[]> {
 }
 
 const MEMBER_CAPABILITIES: FederationMemberCapability[] = [
-  'timeline', 'publish', 'like', 'unlike', 'repost', 'unrepost', 'follow', 'unfollow',
+  'timeline', 'publish', 'unpublish', 'like', 'unlike', 'repost', 'unrepost', 'follow', 'unfollow',
   'lists', 'list', 'createList', 'updateList', 'deleteList', 'addToList', 'removeFromList',
 ]
 

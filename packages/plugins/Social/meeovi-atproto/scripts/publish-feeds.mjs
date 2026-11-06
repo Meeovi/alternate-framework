@@ -13,7 +13,7 @@ import { AtpAgent } from '@atproto/api'
 
 const FEEDS = [
   { rkey: 'meeovi-members', displayName: 'Meeovi Members', description: 'The latest from people on Meeovi (meeovi.com) who connected their Bluesky account.' },
-  { rkey: 'meeovi', displayName: 'Meeovi', description: 'Bluesky posts about Meeovi: links to meeovi.com and #meeovi.' },
+  { rkey: 'meeovi', displayName: 'Meeovi', description: 'The latest products and notes from the Meeovi community (meeovi.com), plus Bluesky posts about Meeovi.' },
 ]
 
 const host = String(process.env.ATPROTO_FEEDGEN_HOSTNAME || '').trim().toLowerCase()
