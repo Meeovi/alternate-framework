@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const targetType = query.targetType as string | undefined
   const targetId = query.targetId as string | undefined
 
-  if (!targetId || !['user', 'space'].includes(targetType as string)) {
+  if (!targetId || !['user', 'space', 'outlet', 'note'].includes(targetType as string) || !/^[A-Za-z0-9_.:-]{1,128}$/.test(targetId)) {
     throw createError({ statusCode: 400, statusMessage: 'targetType and targetId are required' })
   }
 

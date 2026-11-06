@@ -76,7 +76,8 @@ const errorMessage = ref<string | null>(null)
 // with "atproto:{did}" — routed through the atproto-specific follow
 // endpoints below instead of the Directus `follows` collection, which has
 // no notion of an atproto DID as a target_id.
-const atprotoDid = computed(() => props.id?.startsWith('atproto:') ? props.id.slice('atproto:'.length) : null)
+// Members only: a Bluesky note's key starts `atproto:` too (federatedNoteKey).
+const atprotoDid = computed(() => props.entityType === 'user' && props.id?.startsWith('atproto:') ? props.id.slice('atproto:'.length) : null)
 
 watch(
   () => props.initialFollowing,

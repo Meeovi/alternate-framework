@@ -16,7 +16,8 @@
         </v-toolbar-title>
 
         <v-toolbar-items style="position: relative; top: 7px; padding-right: 5px;">
-          <followBtn style="position: relative; top: 13px; padding-right: 5px;" />
+          <!-- It had no outlet: every click failed (follows target_type outlet = shops.id). -->
+          <followBtn v-if="shop?.id" entity-type="outlet" :id="String(shop.id)" style="position: relative; top: 13px; padding-right: 5px;" />
 
           <share />
         </v-toolbar-items>

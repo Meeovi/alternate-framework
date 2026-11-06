@@ -34,14 +34,19 @@
                                 <strong class="auto-text">{{ post?.title || (federated ? `Note by ${authorName}` : '') }}</strong>
                             </h1>
 
-                            <div v-if="!federated" class="row">
-                                <div class="col-6 d-flex align-center">
-                                    <MeeoviRating v-if="post?.id" type="post" :id="post.id" />
-                                    <reactions class="postReactions" />
+                            <!-- Rate and follow any note: Meeovi's own, Bluesky's and the
+                                 Fediverse's (ratings, follows and the discussion use
+                                 noteTarget from utils/postPath.ts). -->
+                            <div class="row">
+                                <div class="col-6 d-flex align-center flex-wrap ga-2">
+                                    <MeeoviRating v-if="target" :type="target.type" :id="target.id" />
+                                    <reactions v-if="!federated" class="postReactions" />
                                 </div>
 
-                                <div class="col-6">
-                                    <flag class="postFlag" :report="post?.id" />
+                                <div class="col-6 d-flex align-center justify-end ga-2">
+                                    <FollowButton v-if="target" entity-type="note" :id="target.id"
+                                        follow-label="Follow note" unfollow-label="Following note" size="sm" />
+                                    <flag v-if="!federated" class="postFlag" :report="post?.id" />
                                 </div>
                             </div>
 
@@ -176,9 +181,14 @@
         <div class="col-sm-6 col-lg-12 feedPost">
             <v-divider></v-divider>
 
-            <!-- A Bluesky or Fediverse note's replies, as notes; a Meeovi note's comments -->
-            <div v-if="federated" id="postComments" class="container py-6">
-                <h2 class="text-h6 mb-4">Replies</h2>
+            <!-- Every note has a discussion on Meeovi; a Bluesky or Fediverse
+                 note also shows its replies from that network. -->
+            <div id="postComments">
+                <MeeoviDiscussion v-if="target" :type="target.type" :id="target.id"
+                    :title="post?.title || (federated ? `Note by ${authorName}` : undefined)" />
+            </div>
+            <div v-if="federated" class="container py-6">
+                <h2 class="text-h6 mb-4">Replies on {{ networkName }}</h2>
                 <v-row v-if="replies.length">
                     <v-col v-for="reply in replies" :key="reply.id" cols="12" sm="6" md="4" lg="3">
                         <postCard :post="reply" />
@@ -186,7 +196,6 @@
                 </v-row>
                 <p v-else class="text-medium-emphasis">No replies yet.</p>
             </div>
-            <div v-else id="postComments"><MeeoviDiscussion v-if="post?.id" type="post" :id="post.id" :title="post?.title" /></div>
         </div>
     </div>
 </template>
@@ -199,7 +208,8 @@
     import share from '#social/app/components/blocks/share.vue';
     import postCard from '#social/app/components/related/post.vue';
     import sourceAttribution from '#social/app/components/blocks/sourceAttribution.vue';
-    import { federatedNoteRef, federatedProfilePath } from '#social/app/utils/postPath';
+    import { federatedNoteRef, federatedProfilePath, noteTarget } from '#social/app/utils/postPath';
+    import FollowButton from '#social/app/components/blocks/FollowButton.vue';
     import {
         computed,
         onMounted,
@@ -260,6 +270,7 @@
         set: (value) => { directusPost.value = value },
     })
     const replies = computed(() => thread.value?.replies || [])
+    const target = computed(() => noteTarget(post.value))
     const federated = computed(() => !!thread.value?.post)
     const networkName = computed(() => ({ atproto: 'Bluesky', activitypub: 'Fediverse' })[post.value?.network] || 'Federated')
     const federatedImage = computed(() => (federated.value ? post.value?.media || [] : []).find((m) => m.type === 'image') || null)

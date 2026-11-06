@@ -70,3 +70,37 @@ export function newPostSlug(text?: string | null): string {
   const suffix = Math.random().toString(36).slice(2, 8)
   return words ? `${words}-${suffix}` : `post-${suffix}`
 }
+
+/**
+ * The key a Bluesky or Fediverse note has on Meeovi, for its ratings
+ * (content_ratings type `note`), its discussion (room `discussion-note-…`)
+ * and its followers (follows target_type `note`). Meeovi's own notes keep
+ * their post id (type `post`).
+ *  - Bluesky: `atproto:<author DID>:<post key>` (the DID never changes; a
+ *    handle can).
+ *  - Fediverse: `activitypub:<instance>:<status id>`.
+ * Only letters, digits and `_ . : -` (what ratings accept), at most 128.
+ */
+export function federatedNoteKey(post?: { network?: string, id?: string | number | null, author?: { id?: string, handle?: string } | null } | null): string | null {
+  if (!post || (post.network !== 'atproto' && post.network !== 'activitypub')) return null
+  // Feed items from server/utils/atproto-normalize.ts prefix it `atproto:`.
+  const id = String(post.id ?? '').replace(/^atproto:(?=at:\/\/)/, '')
+  let key: string | null = null
+  if (post.network === 'atproto') {
+    // at://<did>/app.bsky.feed.post/<rkey>
+    const match = /^at:\/\/([^/]+)\/[^/]+\/([^/]+)$/.exec(id)
+    if (match) key = `atproto:${match[1]}:${match[2]}`
+  } else {
+    const instance = String(post.author?.handle ?? '').split('@').pop()
+    const status = id.split('/').pop()
+    if (instance && status) key = `activitypub:${instance}:${status}`
+  }
+  return key ? key.replace(/[^A-Za-z0-9_.:-]/g, '-').slice(0, 128) : null
+}
+
+/** The type and id a note's rating, discussion and follow use. */
+export function noteTarget(post?: Parameters<typeof federatedNoteKey>[0] & { id?: string | number | null }): { type: 'post' | 'note', id: string } | null {
+  const key = federatedNoteKey(post)
+  if (key) return { type: 'note', id: key }
+  return post?.id !== undefined && post?.id !== null && post?.id !== '' ? { type: 'post', id: String(post.id) } : null
+}

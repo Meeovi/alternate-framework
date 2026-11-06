@@ -72,11 +72,13 @@
                             <span class="text-caption text-medium-emphasis noteCount" title="Likes">
                                 <v-icon icon="fas fa-heart" size="x-small" /> {{ post.likes ?? 0 }}
                             </span>
+                            <!-- Meeovi members' rating of this Bluesky/Fediverse note (rate on its page) -->
+                            <MeeoviRating v-if="target" :type="target.type" :id="target.id" summary />
                         </template>
 
                         <template v-else>
                             <!--Rating (rate on the note page)-->
-                            <MeeoviRating v-if="post?.id" type="post" :id="post.id" summary />
+                            <MeeoviRating v-if="target" :type="target.type" :id="target.id" summary />
 
                             <!--Comments, on the note page-->
                             <v-btn prepend-icon="fas fa-comment" title="Comment on this note" text="Comment"
@@ -104,7 +106,7 @@
     import share from '#social/app/components/blocks/share.vue';
     //import repost from '#social/app/components/blocks/repost/repost.vue';
     import TimeAgo from '#social/app/components/blocks/useTimeAgo.vue';
-    import { federatedProfilePath, postPath } from '#social/app/utils/postPath';
+    import { federatedProfilePath, noteTarget, postPath } from '#social/app/utils/postPath';
     import {
         computed,
         toRef
@@ -124,6 +126,9 @@
     // The note's page on Meeovi (slug, or id for notes saved without one;
     // /connect/note/@<handle>/<key> for a Bluesky note).
     const noteLink = computed(() => postPath(post.value));
+    // What its rating is stored under: a Meeovi note's post id, or a
+    // Bluesky/Fediverse note's key (type `note`).
+    const target = computed(() => noteTarget(post.value));
 
     // A note from Bluesky as the social layer's federation API returns it:
     // { id, network, text, createdAt, author: { handle, displayName,

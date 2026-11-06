@@ -2,6 +2,7 @@ import { timingSafeEqual } from 'node:crypto'
 import { createError, defineEventHandler, readBody, setResponseStatus } from 'h3'
 import { deleteMessage, muteInRoom, rcUserInfo } from '@mframework/meeovi-discussions/server'
 import { checkSpam } from '../../../../../shared/server/utils/spam'
+import { notifyNoteFollowers } from '../../../utils/noteFollowers'
 
 /**
  * POST /api/social/discussions/moderate — Rocket.Chat's outgoing webhook
@@ -13,6 +14,7 @@ import { checkSpam } from '../../../../../shared/server/utils/spam'
  *
  * Set up with packages/plugins/Scripts/rocketchat-spam-webhook.mjs; the
  * integration's token is NUXT_MEEOVI_DISCUSSIONS_MODERATION_TOKEN here.
+ * Comments that pass also notify the note's followers (utils/noteFollowers.ts).
  * Answers 204 so Rocket.Chat posts no reply.
  */
 type OutgoingMessage = {
@@ -20,6 +22,7 @@ type OutgoingMessage = {
   bot?: unknown
   message_id?: string
   channel_id?: string
+  channel_name?: string
   user_id?: string
   user_name?: string
   text?: string
@@ -56,7 +59,13 @@ export default defineEventHandler(async (event) => {
     scope: roomId,
     accountAgeHours: Number.isFinite(createdAt) ? (Date.now() - createdAt) / 3_600_000 : null,
   })
-  if (!verdict.spam) return null
+  if (!verdict.spam) {
+    // A comment on a note: tell the note's followers (best-effort).
+    await notifyNoteFollowers(body.channel_name, body.user_name).catch((e) => {
+      console.error(`[discussions] could not notify note followers for ${body.channel_name}`, e?.message)
+    })
+    return null
+  }
 
   await deleteMessage(event, roomId, messageId).catch((e) => {
     console.error(`[spam] could not delete message ${messageId} in ${roomId}`, e?.data?.error || e?.message)

@@ -17,7 +17,8 @@ export default defineNuxtModule<MeeoviRatingsModuleOptions>({
 
   defaults: {
     apiBase: '/api/ratings',
-    types: ['post', 'shorts', 'product', 'list', 'station', 'space', 'outlet', 'video', 'event', 'service', 'story', 'character'],
+    // `note`: a Bluesky or Fediverse note (key from #social/app/utils/postPath federatedNoteKey).
+    types: ['post', 'note', 'shorts', 'product', 'list', 'station', 'space', 'outlet', 'video', 'event', 'service', 'story', 'character'],
     owners: {
       shorts: { collection: 'shorts', field: 'creator_id', label: 'Vibes' },
       post: { collection: 'posts', field: 'creator_id', label: 'Posts' },

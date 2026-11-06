@@ -9,26 +9,24 @@
       <MeeoviTable collection="memories" height="calc(100vh - 420px)" :hide="['summary', 'target_audience', 'date_published']" />
     </div>
 
-    <!-- Their own Bluesky posts — view-only, managed on Bluesky. -->
+    <!-- Their own Bluesky posts, opened on Meeovi's note page (managed on Bluesky). -->
     <v-card v-if="blueskyPosts.length" elevation="0" class="mt-4">
       <v-card-title>From Bluesky</v-card-title>
       <v-list lines="two">
-        <v-list-item v-for="post in blueskyPosts" :key="post.id" :href="post.url" target="_blank" rel="noopener"
-          :title="post.content || '(no text)'" :subtitle="formatDate(post.date_created)">
-          <template #append>
-            <v-icon icon="fas fa-arrow-up-right-from-square" size="small" />
-          </template>
-        </v-list-item>
+        <v-list-item v-for="post in blueskyPosts" :key="post.id" :to="postPath(post) || undefined"
+          :title="post.content || '(no text)'" :subtitle="formatDate(post.date_created)" />
       </v-list>
     </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { postPath } from '#social/app/utils/postPath'
+
 definePageMeta({ middleware: 'auth' })
 useHead({ title: 'Manage Memories' })
 
-type BlueskyPost = { id: string, content?: string, url: string, date_created?: string }
+type BlueskyPost = { id: string, content?: string, url: string, date_created?: string, network?: string, author?: { handle?: string } }
 
 // `{ items: [] }` when not linked to Bluesky (layers/social own-posts endpoint).
 const { data } = await useAsyncData('workspace:memories:bluesky',

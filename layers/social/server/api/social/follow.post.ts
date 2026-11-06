@@ -5,6 +5,13 @@ import { revokeSpaceMedia } from '../../utils/spaceMedia'
 
 type FollowActor = { id: string; name?: string; email?: string }
 
+// What can be followed: members, spaces, outlets (shops.id) and notes —
+// a Meeovi note by its post id, a Bluesky/Fediverse note by its key
+// (federatedNoteKey in app/utils/postPath.ts, e.g. atproto:did:plc:…:3mzn…).
+const FOLLOW_TARGETS = ['user', 'space', 'outlet', 'note'] as const
+type FollowTarget = typeof FOLLOW_TARGETS[number]
+const VALID_TARGET_ID = /^[A-Za-z0-9_.:-]{1,128}$/
+
 // Directus's `follows` collection: follower_id (uuid) + target_id/target_type
 // (added specifically for this — see follows.target_id/target_type, a flat
 // cross-system reference rather than a real Directus relation, since the
@@ -20,9 +27,9 @@ export default defineEventHandler(async (event) => {
   const userId = user.id
   const body = await readBody(event)
 
-  const { targetId, targetType } = body as { targetId?: string; targetType?: 'user' | 'space' }
+  const { targetId, targetType } = body as { targetId?: string; targetType?: FollowTarget }
 
-  if (!targetId || !['user', 'space'].includes(targetType as string)) {
+  if (!targetId || !FOLLOW_TARGETS.includes(targetType as FollowTarget) || !VALID_TARGET_ID.test(String(targetId))) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid payload parameters' })
   }
 
