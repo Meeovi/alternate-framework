@@ -1,0 +1,37 @@
+{
+  "name": "@mframework/meeovi-video-bookmarks",
+  "version": "0.1.0",
+  "description": "Video bookmarks for M Framework: members add videos to the site by link (YouTube, Vimeo, Dailymotion, TikTok, PeerTube), with adult and NSFW links refused before they're saved.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./safety": "./runtime/server/safety.ts",
+    "./providers": "./runtime/server/providers.ts"
+  },
+  "files": ["module.ts", "runtime", "test", "README.md"],
+  "scripts": {
+    "build": "echo 'meeovi-video-bookmarks is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": ["nuxt", "nuxt-module", "video", "bookmarks", "youtube", "vimeo", "peertube", "moderation", "mframework", "meeovi"],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1",
+    "undici": "^6.21.0",
+    "zod": "^4.0.0"
+  },
+  "peerDependencies": { "nuxt": "^4.0.0" },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.0.0"
+  }
+}

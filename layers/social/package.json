@@ -34,6 +34,7 @@
     "@mframework/meeovi-atproto": "file:../../packages/plugins/Social/meeovi-atproto",
     "@mframework/meeovi-ostatus": "file:../../packages/plugins/Social/meeovi-ostatus",
     "@mframework/meeovi-webtorrent": "file:../../packages/plugins/Social/meeovi-webtorrent",
+    "@mframework/meeovi-video-bookmarks": "file:../../packages/plugins/Social/meeovi-video-bookmarks",
     "@mframework/meeovi-zot": "file:../../packages/plugins/Social/meeovi-zot",
     "@mframework/meeovi-discussions": "file:../../packages/plugins/Social/meeovi-discussions",
     "@nuxt/image": "^2.0.0",

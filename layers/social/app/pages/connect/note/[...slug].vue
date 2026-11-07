@@ -205,6 +205,9 @@
                 </v-row>
                 <p v-else class="text-medium-emphasis">No replies yet.</p>
             </div>
+
+            <!-- Discovery: the author's other notes, after the discussion -->
+            <authorNotes :post="post" :federated="federated" />
         </div>
     </div>
 </template>
@@ -215,6 +218,7 @@
     import reactions from '#social/app/components/blocks/reactions.vue';
     import share from '#social/app/components/blocks/share.vue';
     import postCard from '#social/app/components/related/post.vue';
+    import authorNotes from '#social/app/components/related/authorNotes.vue';
     import sourceAttribution from '#social/app/components/blocks/sourceAttribution.vue';
     import { federatedNoteRef, federatedProfilePath, noteTarget } from '#social/app/utils/postPath';
     import FollowButton from '#social/app/components/blocks/FollowButton.vue';

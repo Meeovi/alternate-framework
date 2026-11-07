@@ -1,7 +1,7 @@
 <template>
   <v-dialog :model-value="modelValue" max-width="640" scrollable @update:model-value="$emit('update:modelValue', $event)">
     <v-card>
-      <v-card-title>Tag products in this vibe</v-card-title>
+      <v-card-title>Tag products in this {{ noun || 'vibe' }}</v-card-title>
       <v-card-subtitle class="text-wrap">
         Add any product on Meeovi. Give it a time and its card pops up over the video at that moment.
       </v-card-subtitle>
@@ -60,6 +60,8 @@ const props = defineProps<{
   currentTime?: number
   saving?: boolean
   error?: string
+  /** What's being tagged: 'vibe', or 'video' on a Video product's page. */
+  noun?: string
 }>()
 const emit = defineEmits<{ 'update:modelValue': [open: boolean], save: [tags: VibeTag[]] }>()
 

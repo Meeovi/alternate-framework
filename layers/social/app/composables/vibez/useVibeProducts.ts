@@ -17,7 +17,12 @@ export type VibeTag = { product: string | number, start?: number | null, end?: n
 /** How long a timed card stays up when it has no end time. */
 export const DEFAULT_PIN_SECONDS = 6
 
-export function useVibeProducts(shortId: Ref<string | number | null | undefined>) {
+/**
+ * `base`: '/api/social/vibez' for a vibe, '/api/social/videos' for a Video
+ * product ("Products in this video", keyed by its product key).
+ */
+export function useVibeProducts(shortId: Ref<string | number | null | undefined>, base = '/api/social/vibez') {
+  const url = () => `${base}/${encodeURIComponent(String(shortId.value))}/products`
   const items = ref<VibeProduct[]>([])
   const canEdit = ref(false)
   const loading = ref(false)
@@ -27,7 +32,7 @@ export function useVibeProducts(shortId: Ref<string | number | null | undefined>
     if (!shortId.value) { items.value = []; canEdit.value = false; return }
     loading.value = true
     try {
-      const res = await $fetch<{ canEdit: boolean, items: VibeProduct[] }>(`/api/social/vibez/${shortId.value}/products`)
+      const res = await $fetch<{ canEdit: boolean, items: VibeProduct[] }>(url())
       items.value = res.items
       canEdit.value = res.canEdit
     } catch {
@@ -40,7 +45,7 @@ export function useVibeProducts(shortId: Ref<string | number | null | undefined>
   async function save(tags: VibeTag[]) {
     error.value = ''
     try {
-      const res = await $fetch<{ canEdit: boolean, items: VibeProduct[] }>(`/api/social/vibez/${shortId.value}/products`, { method: 'PUT', body: { tags } })
+      const res = await $fetch<{ canEdit: boolean, items: VibeProduct[] }>(url(), { method: 'PUT', body: { tags } })
       items.value = res.items
       return true
     } catch (e: any) {

@@ -22,6 +22,8 @@
             </template>
             {{ category?.name }}
           </v-toolbar-title>
+          <!-- Sellers add videos by link here (@mframework/meeovi-video-bookmarks) -->
+          <component :is="addVideoLink" v-if="isVideoCategory" class="mr-2" />
           <v-slide-group v-if="subcategories.length || category?.menus?.length" show-arrows>
             <v-slide-group-item v-if="subcategories.length" v-slot="{ isSelected }">
               <v-menu>
@@ -82,7 +84,8 @@
   import {
     ref,
     computed,
-    watch
+    watch,
+    resolveComponent
   } from 'vue'
   import ProductCard from '../../../components/catalog/product/productCard.vue'
   import EmptyCategory from '../../../components/catalog/emptyCategory.vue'
@@ -104,6 +107,9 @@
   import Restaurants from '#social/app/components/features/spaceSections/restaurants.vue'
 
   const route = useRoute()
+  // The Videos category takes linked videos (meeovi-video-bookmarks, when installed).
+  const addVideoLink = resolveComponent('AddVideoLink')
+  const videoCategoryPath = (useRuntimeConfig().public as any).meeoviVideoBookmarks?.categoryPath as string | undefined
   const {
     $directus,
     $readItems
@@ -148,6 +154,12 @@
           'children.products.products_id.image.*'
         ],
         filter,
+        // Published products only: a seller's new product (or linked video)
+        // waits for the store's approval as a draft row and mustn't list yet.
+        deep: {
+          products: { _filter: { products_id: { status: { _eq: 'published' } } } },
+          children: { products: { _filter: { products_id: { status: { _eq: 'published' } } } } },
+        },
         limit: 1,
       }))
       return Array.isArray(resp?.data) ? resp.data[0] : (resp?.data || resp || [])[0] || null
@@ -191,6 +203,8 @@
   }
 
   const category = computed(() => categoryRaw.value as any)
+  const isVideoCategory = computed(() => typeof addVideoLink !== 'string' && !!videoCategoryPath
+    && !!category.value?.slug && videoCategoryPath === `/departments/category/${category.value.slug}`)
 
   // A subcategory may only be linked to its department through its parent
   // (e.g. Travel › Photography › Pixanomy).

@@ -10,10 +10,24 @@
 
               <!--If the Product is a digital product-->
               <div
-                v-if="productTypeNames.includes('Audio') || productTypeNames.includes('Video') || productTypeNames.includes('Course')">
-                <MeeoviPlayer :src="getAssetURL(product?.file)" :type="product?.file?.type"
+                v-if="hasVideoLink || productTypeNames.includes('Audio') || productTypeNames.includes('Video') || productTypeNames.includes('Course')">
+                <!-- A video added by link plays in its platform's player (meeovi-video-bookmarks) -->
+                <template v-if="hasVideoLink">
+                  <component :is="videoEmbed" v-if="videoEmbed !== 'VideoEmbed'" :embed-url="product.video_link_embed_url"
+                    :provider="product.video_link_provider" :title="product?.name" />
+                  <p class="mt-2 text-medium-emphasis">
+                    <a :href="product.video_link_url" target="_blank" rel="noopener nofollow ugc">Watch on {{ videoLinkLabel }}</a>
+                  </p>
+                </template>
+                <!-- A Video product's tagged products pop up over it at their moment -->
+                <MeeoviPlayer v-else ref="playerRef" :src="getAssetURL(product?.file)" :type="product?.file?.type"
                   :kind="productTypeNames.includes('Audio') ? 'audio' : undefined"
-                  :poster="getImageURL(product?.image)" :title="product?.name" />
+                  :poster="getImageURL(product?.image)" :title="product?.name"
+                  @timeupdate="currentTime = $event">
+                  <template v-if="isVideo && videoProducts.items.value.length" #overlay>
+                    <vibeProductPins :items="videoProducts.items.value" :time="currentTime" />
+                  </template>
+                </MeeoviPlayer>
               </div>
 
               <!--If the Product is a Gift Card-->
@@ -58,6 +72,15 @@
               </v-sheet>
             </v-col>
           </v-row>
+        </v-col>
+
+        <!-- Products in this video (products_tagged; the video's seller tags them) -->
+        <v-col cols="12" v-if="isVideo && (videoProducts.items.value.length || videoProducts.canEdit.value)">
+          <vibeProductList :items="videoProducts.items.value" :can-edit="videoProducts.canEdit.value"
+            title="Products in this video" noun="video" @edit="taggerOpen = true" @seek="seek" />
+          <vibeProductTagger v-if="videoProducts.canEdit.value" v-model="taggerOpen" noun="video"
+            :items="videoProducts.items.value" :current-time="currentTime" :saving="taggerSaving"
+            :error="videoProducts.error.value" @save="saveTags" />
         </v-col>
 
         <v-col cols="12">
@@ -195,6 +218,11 @@
           </v-card>
         </v-col>
 
+        <!-- Discovery: the creator's other videos (and vibez), or the seller's other products -->
+        <v-col cols="12" v-if="sellerLookupKey">
+          <moreFromSeller :product-key="sellerLookupKey" :kind="isVideo ? 'videos' : 'products'" />
+        </v-col>
+
         <v-col cols="12">
           <!--Crossell Products-->
           <v-sheet class="mx-auto sliderProducts row align-items-stretch items-row justify-content-center">
@@ -313,7 +341,8 @@
   import {
     ref,
     computed,
-    watch
+    watch,
+    resolveComponent
   } from 'vue';
   import radioCard from '#social/app/components/related/radio.vue'
   import productDetails from '../../components/catalog/product/productDetails.vue'
@@ -333,6 +362,11 @@
   // A product card's fields, for the cross-sell and related products sliders.
   const CARD_FIELDS = ['id', 'name', 'slug', 'sku', 'mageos_sku', 'source', 'price', 'image', 'image_url', 'seller_name', 'seller_username', 'download_url', 'allow_free_download']
   import { authClient } from '#auth/lib/auth-client'
+  import moreFromSeller from '../../components/catalog/product/moreFromSeller.vue'
+  import vibeProductPins from '#social/app/components/features/vibeSections/shop/vibeProductPins.vue'
+  import vibeProductList from '#social/app/components/features/vibeSections/shop/vibeProductList.vue'
+  import vibeProductTagger from '#social/app/components/features/vibeSections/shop/vibeProductTagger.vue'
+  import { useVibeProducts } from '#social/app/composables/vibez/useVibeProducts'
 
   const tab = ref(null);
   // Each v-slide-group needs its own model — they used to all share one
@@ -376,14 +410,15 @@
   )
   // Same order as the template: players, gift cards and radio stations
   // replace productDetails.
-  const showsDetails = computed(() =>
-    !['Audio', 'Video', 'Course', 'Gift Card', 'Radio'].some((name) => productTypeNames.value.includes(name)))
+  const showsDetails = computed(() => !/^https:\/\//.test(String(product.value?.video_link_embed_url || ''))
+    && !['Audio', 'Video', 'Course', 'Gift Card', 'Radio'].some((name) => productTypeNames.value.includes(name)))
 
   const {
     $directus,
     $readItem,
     $readItems
   } = useNuxtApp()
+
 
   // Keyed by the product: with a fixed key, moving from one product to
   // another inside the site (a similar or recently viewed product) reused
@@ -424,16 +459,24 @@
       // The store adapter doesn't return a free product's download; the
       // Directus mirror keeps it (download_url, set only when the product is
       // free and the seller allows it), so the Download button can show.
-      if (!found.download_url) {
-        const mirrored = await $directus.request($readItems('products', {
-          filter: { mageos_sku: { _eq: backendKey.key } },
-          fields: ['download_url'],
-          limit: 1,
-        })).catch(() => null)
-        const downloadUrl = (mirrored?.data ?? mirrored)?.[0]?.download_url
-        if (downloadUrl) return { ...found, download_url: downloadUrl }
+      // A linked video's player comes from the mirror too (video_link_* fields).
+      const MIRROR_FIELDS = ['download_url', 'video_link_url', 'video_link_embed_url', 'video_link_provider', 'video_link_id', 'product_types.product_types_id.name']
+      const mirrored = await $directus.request($readItems('products', {
+        filter: { mageos_sku: { _eq: backendKey.key } },
+        fields: MIRROR_FIELDS,
+        limit: 1,
+      })).catch(() => null)
+      const row = (mirrored?.data ?? mirrored)?.[0]
+      if (!row) return found
+      return {
+        ...found,
+        download_url: found.download_url || row.download_url || undefined,
+        ...(row.video_link_embed_url ? {
+          video_link_url: row.video_link_url, video_link_embed_url: row.video_link_embed_url,
+          video_link_provider: row.video_link_provider, video_link_id: row.video_link_id,
+          product_types: found.product_types?.length ? found.product_types : row.product_types,
+        } : {}),
       }
-      return found
     }
 
     try {
@@ -463,6 +506,37 @@
       throw directusError
     }
   })
+
+  // A Video product is also the site's video page.
+  const isVideo = computed(() => productTypeNames.value.includes('Video'))
+  // A video added by link (video_link_* fields, @mframework/meeovi-video-bookmarks).
+  const hasVideoLink = computed(() => /^https:\/\//.test(String(product.value?.video_link_embed_url || '')))
+  const videoEmbed = resolveComponent('VideoEmbed')
+  const VIDEO_LINK_LABELS = { youtube: 'YouTube', vimeo: 'Vimeo', dailymotion: 'Dailymotion', tiktok: 'TikTok', peertube: 'PeerTube' }
+  const videoLinkLabel = computed(() => VIDEO_LINK_LABELS[product.value?.video_link_provider] || 'its site')
+  // The product's key for the discovery and tagging lookups: a store
+  // product's `magento:<sku>`, else its Directus id.
+  const sellerLookupKey = computed(() => (product.value ? canonicalProductKey(product.value) : ''))
+
+  // "Products in this video": same tags, pins and tagger as shoppable vibez
+  // (composables/vibez/useVibeProducts.ts), stored per video product.
+  const videoKey = computed(() => (isVideo.value ? sellerLookupKey.value : null))
+  const videoProducts = useVibeProducts(videoKey, '/api/social/videos')
+  const playerRef = ref(null)
+  const currentTime = ref(0)
+  const taggerOpen = ref(false)
+  const taggerSaving = ref(false)
+  function seek(seconds) {
+    const media = playerRef.value?.media
+    if (!media) return
+    media.currentTime = seconds
+    playerRef.value?.play?.()
+  }
+  async function saveTags(tags) {
+    taggerSaving.value = true
+    if (await videoProducts.save(tags)) taggerOpen.value = false
+    taggerSaving.value = false
+  }
 
   // readItem fetches a single item by primary key and doesn't accept a
   // filter param at all (confirmed: throws 403) — these three need

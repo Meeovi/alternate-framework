@@ -3,7 +3,7 @@
     <div class="d-flex align-center mb-2">
       <h3 class="vibe-product-list__title">
         <v-icon icon="fas fa-bag-shopping" size="small" class="mr-1" />
-        {{ items.length ? `Shop this vibe (${items.length})` : 'Shop this vibe' }}
+        {{ items.length ? `${title} (${items.length})` : title }}
       </h3>
       <v-spacer />
       <v-btn v-if="canEdit" size="small" variant="tonal" prepend-icon="fas fa-tag" @click="$emit('edit')">
@@ -11,7 +11,7 @@
       </v-btn>
     </div>
     <p v-if="!items.length" class="text-body-2 text-medium-emphasis">
-      Tag the products in your vibe so people can shop them while they watch.
+      Tag the products in your {{ noun }} so people can shop them while they watch.
     </p>
     <div class="vibe-product-list__items">
       <vibeProductMini v-for="item in items" :key="item.id" :product="item.product"
@@ -29,7 +29,10 @@ import { formatSeconds, type VibeProduct } from '../../../../composables/vibez/u
  * "Shop this vibe": every product tagged on it, under the player. A timed
  * product's "at 1:15" seeks the video there (emits `seek`).
  */
-defineProps<{ items: VibeProduct[], canEdit?: boolean }>()
+withDefaults(defineProps<{ items: VibeProduct[], canEdit?: boolean, title?: string, noun?: string }>(), {
+  title: 'Shop this vibe',
+  noun: 'vibe',
+})
 const emit = defineEmits<{ edit: [], seek: [seconds: number] }>()
 
 function onClick(event: MouseEvent, item: VibeProduct) {

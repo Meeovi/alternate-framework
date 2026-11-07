@@ -23,6 +23,15 @@ export const MAX_TAGS = 20
 
 export type VibeTagInput = { product: string | number, start?: number | null, end?: number | null }
 
+/**
+ * Where a video's tags are kept: a vibe's in `shorts_products` (by
+ * `shorts_id`), a Video product's in `products_tagged` (by `video_id`,
+ * "Products in this video" on the product page). Same columns otherwise.
+ */
+export type TagTarget = { collection: 'shorts_products' | 'products_tagged', field: 'shorts_id' | 'video_id' }
+export const VIBE_TARGET: TagTarget = { collection: 'shorts_products', field: 'shorts_id' }
+export const VIDEO_TARGET: TagTarget = { collection: 'products_tagged', field: 'video_id' }
+
 export type VibeProduct = {
   id: number
   start: number | null
@@ -90,10 +99,10 @@ export async function resolveTags(tags: VibeTagInput[]): Promise<Array<{ product
   return out
 }
 
-/** The vibe's tagged products that are still for sale, by start time (untimed last). */
-export async function listVibeProducts(shortId: number | string): Promise<VibeProduct[]> {
-  const rows = await directus().request(readItems('shorts_products' as never, {
-    filter: { shorts_id: { _eq: shortId } },
+/** The vibe's (or video product's) tagged products that are still for sale, by start time (untimed last). */
+export async function listVibeProducts(shortId: number | string, target: TagTarget = VIBE_TARGET): Promise<VibeProduct[]> {
+  const rows = await directus().request(readItems(target.collection as never, {
+    filter: { [target.field]: { _eq: shortId } },
     fields: ['id', 'start_seconds', 'end_seconds', ...VIBE_PRODUCT_FIELDS.map((f) => `products_id.${f}`)],
     limit: MAX_TAGS * 2,
   } as never)) as Array<{ id: number, start_seconds: number | null, end_seconds: number | null, products_id: Record<string, unknown> | null }>
@@ -103,20 +112,52 @@ export async function listVibeProducts(shortId: number | string): Promise<VibePr
     .sort((a, b) => (a.start ?? Infinity) - (b.start ?? Infinity) || a.id - b.id)
 }
 
-/** Replaces the vibe's tags. */
-export async function setVibeProducts(shortId: number, userId: string, tags: Awaited<ReturnType<typeof resolveTags>>): Promise<void> {
+/** Replaces the vibe's (or video product's) tags. */
+export async function setVibeProducts(shortId: number, userId: string, tags: Awaited<ReturnType<typeof resolveTags>>, target: TagTarget = VIBE_TARGET): Promise<void> {
   const client = directus()
-  const existing = await client.request(readItems('shorts_products' as never, {
-    filter: { shorts_id: { _eq: shortId } }, fields: ['id', 'shorts_id'], limit: -1,
-  } as never)) as Array<{ id: number, shorts_id: number }>
-  // Only this vibe's rows (checked again here, never trusted from the query).
-  const old = existing.filter((row) => Number(row.shorts_id) === shortId).map((row) => row.id)
+  const existing = await client.request(readItems(target.collection as never, {
+    filter: { [target.field]: { _eq: shortId } }, fields: ['id', target.field], limit: -1,
+  } as never)) as Array<Record<string, number>>
+  // Only this video's rows (checked again here, never trusted from the query).
+  const old = existing.filter((row) => Number(row[target.field]) === shortId).map((row) => row.id!)
   if (tags.length) {
-    await client.request(createItems('shorts_products' as never, tags.map((t) => ({
-      shorts_id: shortId, products_id: t.productId, start_seconds: t.start, end_seconds: t.end, tagged_by: userId,
+    await client.request(createItems(target.collection as never, tags.map((t) => ({
+      [target.field]: shortId, products_id: t.productId, start_seconds: t.start, end_seconds: t.end, tagged_by: userId,
     })) as never))
   }
-  if (old.length) await client.request(deleteItems('shorts_products' as never, old as never))
+  if (old.length) await client.request(deleteItems(target.collection as never, old as never))
+}
+
+type VideoProduct = { id: number, status?: string | null, seller_username?: string | null, isVideo: boolean }
+
+/**
+ * A product by its page key (Directus id, or `magento:<sku>` for a store
+ * product's Directus mirror), with what tagging needs: its seller and
+ * whether it's a Video product.
+ */
+export async function readVideoProduct(key: string): Promise<VideoProduct> {
+  const store = /^magento:([\w.\-]{1,64})$/.exec(key)
+  if (!store && !/^\d{1,18}$/.test(key)) throw createError({ statusCode: 404, statusMessage: 'Video not found' })
+  const rows = await directus().request(readItems('products' as never, {
+    filter: store ? { mageos_sku: { _eq: store[1] } } : { id: { _eq: key } },
+    fields: ['id', 'status', 'seller_username', 'product_types.product_types_id.name'], limit: 1,
+  } as never)) as Array<{ id: number | string, status?: string | null, seller_username?: string | null, product_types?: Array<{ product_types_id?: { name?: string } | null }> }>
+  const row = rows[0]
+  if (!row) throw createError({ statusCode: 404, statusMessage: 'Video not found' })
+  return {
+    id: Number(row.id),
+    status: row.status,
+    seller_username: row.seller_username,
+    isVideo: (row.product_types ?? []).some((pt) => pt?.product_types_id?.name === 'Video'),
+  }
+}
+
+/** The video product's seller (by Meeovi username) or an admin. */
+export function canTagVideo(video: VideoProduct, user: { username?: string | null, role?: string | null } | null | undefined): boolean {
+  if (!user) return false
+  if ((user.role || '').split(',').map((r) => r.trim()).includes('admin')) return true
+  const seller = String(video.seller_username ?? '').trim().toLowerCase()
+  return Boolean(seller && seller === String(user.username ?? '').trim().toLowerCase())
 }
 
 /** Tagged product counts for feed cards. */

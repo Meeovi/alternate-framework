@@ -68,6 +68,8 @@ export default defineNuxtConfig({
     '@mframework/meeovi-zot',
     '@mframework/meeovi-ostatus',
     '@mframework/meeovi-webtorrent',
+    // Members add videos by link (YouTube, Vimeo, Dailymotion, TikTok, PeerTube); adult links refused.
+    '@mframework/meeovi-video-bookmarks',
     ...(isProd ? ['nuxt-module-feed'] : [])
   ],
   $meta: {

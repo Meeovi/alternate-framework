@@ -26,5 +26,7 @@ export const PRODUCT_FIELDS = [
   'coordinates', 'latitude', 'longitude', 'location_name',
   'download_url', 'allow_free_download',
   'seller_username', 'seller_name',
+  // A video added by link (@mframework/meeovi-video-bookmarks): played with its platform's player.
+  'video_link_url', 'video_link_embed_url', 'video_link_provider', 'video_link_id',
   'created_at', 'updated_at',
 ]

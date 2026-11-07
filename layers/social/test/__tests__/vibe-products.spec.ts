@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Directus and the session are mocked: no CMS writes in tests.
 const state = vi.hoisted(() => ({
-  user: { id: 'creator-1', role: 'user' } as { id: string, role?: string } | null,
+  user: { id: 'creator-1', role: 'user' } as { id: string, role?: string, username?: string } | null,
   body: null as unknown,
   shorts: [] as any[],
   products: [] as any[],
@@ -37,7 +37,7 @@ const matches = (row: any, filter: any): boolean => {
 }
 vi.mock('@directus/sdk', () => {
   const client: any = { with: () => client, request: async (op: any) => op() }
-  const table = (name: string) => ({ shorts: state.shorts, products: state.products, shorts_products: state.links } as Record<string, any[]>)[name]!
+  const table = (name: string) => ({ shorts: state.shorts, products: state.products, shorts_products: state.links, products_tagged: state.links } as Record<string, any[]>)[name]!
   return {
     createDirectus: () => client,
     rest: () => ({}),
@@ -60,10 +60,16 @@ vi.mock('@directus/sdk', () => {
 
 const { default: getHandler } = await import('../../server/api/social/vibez/[id]/products.get')
 const { default: putHandler } = await import('../../server/api/social/vibez/[id]/products.put')
+const { default: getVideoHandler } = await import('../../server/api/social/videos/[id]/products.get')
+const { default: putVideoHandler } = await import('../../server/api/social/videos/[id]/products.put')
 const { activePins, formatSeconds, parseSeconds } = await import('../../app/composables/vibez/useVibeProducts')
 
 const get = (id: string) => (getHandler as any)({ params: { id }, node: { req: { headers: {} } }, context: {} })
 const put = (id: string, body: unknown) => { state.body = body; return (putHandler as any)({ params: { id }, node: { req: { headers: {} } }, context: {} }) }
+
+const getVideo = (id: string) => (getVideoHandler as any)({ params: { id }, node: { req: { headers: {} }, res: { setHeader() {} } }, context: {} })
+const putVideo = (id: string, body: unknown) => { state.body = body; return (putVideoHandler as any)({ params: { id }, node: { req: { headers: {} } }, context: {} }) }
+const VIDEO_TYPE = [{ product_types_id: { name: 'Video' } }]
 
 beforeEach(() => {
   state.user = { id: 'creator-1', role: 'user' }
@@ -72,6 +78,9 @@ beforeEach(() => {
     { id: 7, name: 'Lamp', status: 'published' },
     { id: 8, name: 'Loop 4', status: 'published', mageos_sku: 'LOOP-4' },
     { id: 9, name: 'Old', status: 'archived' },
+    { id: 20, name: 'Clip', status: 'published', seller_username: 'maker', product_types: VIDEO_TYPE },
+    { id: 21, name: 'Store clip', status: 'published', seller_username: 'maker', mageos_sku: 'CLIP-2', product_types: VIDEO_TYPE },
+    { id: 22, name: 'Draft clip', status: 'draft', seller_username: 'maker', product_types: VIDEO_TYPE },
   ]
   state.links = [{ id: 1, shorts_id: 5, products_id: state.products[0], start_seconds: null, end_seconds: null }]
   state.created = []
@@ -150,5 +159,43 @@ describe('timing helpers', () => {
     expect(parseSeconds('1:02:03')).toBe(3723)
     expect(parseSeconds('')).toBeNull()
     expect(parseSeconds('abc')).toBeNaN()
+  })
+})
+
+describe('Products in this video (/api/social/videos/:key/products)', () => {
+  it("lists a published video's products; only its seller (by username) or an admin can edit", async () => {
+    state.links.push({ id: 2, video_id: 20, products_id: state.products[0], start_seconds: 4, end_seconds: null })
+    state.user = null
+    const anon = await getVideo('20')
+    expect(anon.canEdit).toBe(false)
+    expect(anon.items.map((i: any) => [i.product.name, i.start])).toEqual([['Lamp', 4]])
+    state.user = { id: 'u-maker', role: 'user', username: 'Maker' }
+    expect((await getVideo('20')).canEdit).toBe(true)
+    state.user = { id: 'u-other', role: 'user', username: 'other' }
+    expect((await getVideo('20')).canEdit).toBe(false)
+    state.user = { id: 'admin-1', role: 'admin' }
+    expect((await getVideo('20')).canEdit).toBe(true)
+  })
+
+  it("keeps a video's tags apart from vibes' and finds store videos by their mirror", async () => {
+    state.user = { id: 'u-maker', role: 'user', username: 'maker' }
+    await putVideo('magento:CLIP-2', { tags: [{ product: 7, start: 2 }] })
+    expect(state.created).toEqual([{ video_id: 21, products_id: 7, start_seconds: 2, end_seconds: null, tagged_by: 'u-maker' }])
+    expect(state.deleted).toEqual([])
+    expect((await get('5')).items.map((i: any) => i.product.name)).toEqual(['Lamp'])
+  })
+
+  it("refuses strangers, non-video products, drafts for the public, and tagging a video in itself", async () => {
+    state.user = { id: 'u-other', role: 'user', username: 'other' }
+    await expect(putVideo('20', { tags: [] })).rejects.toMatchObject({ statusCode: 403 })
+    state.user = { id: 'admin-1', role: 'admin' }
+    await expect(putVideo('7', { tags: [] })).rejects.toMatchObject({ statusCode: 400 })
+    expect((await getVideo('7')).items).toEqual([])
+    state.user = null
+    await expect(getVideo('22')).rejects.toMatchObject({ statusCode: 404 })
+    await expect(getVideo('not-a-key')).rejects.toMatchObject({ statusCode: 404 })
+    state.user = { id: 'u-maker', role: 'user', username: 'maker' }
+    await putVideo('20', { tags: [{ product: 20 }, { product: 8 }] })
+    expect(state.created.map((row: any) => row.products_id)).toEqual([8])
   })
 })

@@ -3,6 +3,9 @@
     <v-toolbar color="primary">
       <v-toolbar-title>My products</v-toolbar-title>
       <v-spacer />
+      <!-- A video from YouTube, Vimeo… as a free product (@mframework/meeovi-video-bookmarks, when installed) -->
+      <component :is="addVideoLink" v-if="typeof addVideoLink !== 'string'" variant="flat" color="white" class="mr-2"
+        label="Add video link" @added="refresh()" />
       <v-btn prepend-icon="fas fa-plus" variant="flat" color="white" class="mr-2" @click="openForm">Add product</v-btn>
     </v-toolbar>
 
@@ -79,12 +82,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, resolveComponent, watch } from 'vue'
 import { useBusinessDriver } from '../../../composables/useBusinessDriver'
 
 definePageMeta({ middleware: 'seller' })
 useHead({ title: 'My products' })
 
+const addVideoLink = resolveComponent('AddVideoLink')
 const snackbar = useSnackbar()
 const business = useBusinessDriver()
 const { data: rows, pending, error, refresh } = useAsyncData('workspace-my-products', () => business.products.list(), { default: () => [] })
