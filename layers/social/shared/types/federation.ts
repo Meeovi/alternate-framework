@@ -117,6 +117,42 @@ export interface FederationNetwork {
    * account; `reason` says which member reported it.
    */
   report?(input: FederatedReport): Promise<{ id: string }>
+  /**
+   * How a member connects this network to their Meeovi account, when they
+   * choose to (Settings → Accounts). 'account': they sign in to their own
+   * server (Zot hub, GNU social server…) and `connect` checks the details;
+   * the social layer stores what it returns, encrypted, and hands it back
+   * as FederationMember.credentials. 'opt-in': a switch (WebTorrent).
+   */
+  connection?: FederationConnection
+}
+
+export type FederationConnectField = {
+  /** Key in the input `connect` gets. */
+  name: string
+  label: string
+  type: 'text' | 'url' | 'password'
+  placeholder?: string
+  hint?: string
+  /** Default true. */
+  required?: boolean
+}
+
+export type FederationConnection = {
+  kind: 'account' | 'opt-in'
+  /** One or two sentences on what connecting does. */
+  description: string
+  /** Shown before they connect (privacy, what is stored). */
+  notice?: string
+  /** What the member fills in ('account' connections). */
+  fields?: FederationConnectField[]
+  /**
+   * Checks the details against their server and says what to keep: the
+   * account it signed in as (alice@hub.example), the server, and the
+   * credentials to store (encrypted) for forMember. Throw an Error with a
+   * message to show when they don't work.
+   */
+  connect?(input: Record<string, string>): Promise<{ account: string, service?: string, credentials?: unknown }>
 }
 
 export type FederatedReportReason = 'spam' | 'violation' | 'misleading' | 'sexual' | 'rude' | 'other'

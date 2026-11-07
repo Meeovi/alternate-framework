@@ -1,0 +1,37 @@
+{
+  "name": "@mframework/meeovi-ostatus",
+  "version": "0.1.0",
+  "description": "OStatus (GNU social, Friendica, postActiv…) for M Framework: profiles and posts via WebFinger and Atom, and members' own accounts through the GNU-social-compatible API, as the 'ostatus' federation network for the social layer.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./federation": "./runtime/network.ts",
+    "./safe-fetch": "./runtime/safe-fetch.ts"
+  },
+  "files": ["module.ts", "runtime", "test", "README.md"],
+  "scripts": {
+    "build": "echo 'meeovi-ostatus is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": ["nuxt", "nuxt-module", "ostatus", "gnu-social", "friendica", "federation", "mframework", "meeovi"],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1",
+    "fast-xml-parser": "^5.3.0",
+    "undici": "^6.21.0"
+  },
+  "peerDependencies": { "nuxt": "^4.0.0" },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.0.0"
+  }
+}

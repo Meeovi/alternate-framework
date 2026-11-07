@@ -1,0 +1,35 @@
+{
+  "name": "@mframework/meeovi-webtorrent",
+  "version": "0.1.0",
+  "description": "WebTorrent for M Framework: opt-in peer-to-peer playback of videos and vibez (WebRTC, with the original file as web seed), a torrent builder and web-seed proxy, useWebTorrentSource() and <WebTorrentPeers>.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./composable": "./runtime/composables/useWebTorrentSource.ts"
+  },
+  "files": ["module.ts", "runtime", "test", "README.md"],
+  "scripts": {
+    "build": "echo 'meeovi-webtorrent is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": ["nuxt", "nuxt-module", "webtorrent", "p2p", "webrtc", "video", "mframework", "meeovi"],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1",
+    "create-torrent": "^6.1.3"
+  },
+  "peerDependencies": { "nuxt": "^4.0.0", "vue": "^3.4.0", "vuetify": ">=3.0.0" },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.0.0"
+  }
+}

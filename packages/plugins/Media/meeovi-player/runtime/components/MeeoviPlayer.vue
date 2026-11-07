@@ -16,6 +16,13 @@ import type { MeeoviPlayerKind, MeeoviPlayerPublicConfig, MeeoviPlayerSkin } fro
  * The Video.js elements are registered client-side the first time a player
  * of that kind is shown; the server renders a same-sized placeholder.
  * Video players include the Google Cast extension.
+ *
+ * `timeupdate` reports the playback position (seconds), and the `overlay`
+ * slot is drawn over the video (shoppable vibez' product cards):
+ *
+ *   <MeeoviPlayer :src="url" @timeupdate="t = $event">
+ *     <template #overlay><ProductPin … /></template>
+ *   </MeeoviPlayer>
  */
 const props = withDefaults(defineProps<{
   src?: string | null
@@ -46,6 +53,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (e: 'play' | 'pause' | 'ended' | 'error', event: Event): void
+  (e: 'timeupdate', seconds: number): void
 }>()
 
 const config = useRuntimeConfig().public.meeoviPlayer as MeeoviPlayerPublicConfig | undefined
@@ -128,6 +136,7 @@ const on = {
   pause: (e: Event) => emit('pause', e),
   ended: (e: Event) => emit('ended', e),
   error: (e: Event) => emit('error', e),
+  timeupdate: (e: Event) => emit('timeupdate', (e.target as HTMLMediaElement | null)?.currentTime ?? 0),
 }
 </script>
 
@@ -144,6 +153,11 @@ const on = {
         <google-cast v-if="!isAudio" />
       </component>
     </component>
+
+    <!-- Drawn over the video, under nothing but its own content. -->
+    <div v-if="$slots.overlay && ready && !unavailable" class="meeovi-player__overlay">
+      <slot name="overlay" />
+    </div>
 
     <!-- Server render / loading, and "nothing to play" -->
     <div v-else class="meeovi-player__placeholder" :aria-busy="!unavailable">
@@ -165,6 +179,18 @@ const on = {
 
 .meeovi-player--video {
   background: #000;
+}
+
+/* Leaves the bottom control bar clear; only the slot's own content takes clicks. */
+.meeovi-player__overlay {
+  position: absolute;
+  inset: 0 0 56px 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.meeovi-player__overlay > :deep(*) {
+  pointer-events: auto;
 }
 
 .meeovi-player--audio {

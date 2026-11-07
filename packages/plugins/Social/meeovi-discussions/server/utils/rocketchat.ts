@@ -132,6 +132,32 @@ export async function ensureRoom(event: H3Event, name: string, title?: string): 
   return room
 }
 
+/**
+ * Posts a message in a content discussion as the admin account under a
+ * display alias — a reply from the fediverse shows as "@alice@mastodon.social"
+ * (layers/social server/utils/activitypub). Creates the room if nobody has
+ * opened the discussion yet. Returns the message id (for deleting it later).
+ */
+export async function postAsAlias(
+  event: H3Event | undefined,
+  name: string,
+  text: string,
+  alias: string,
+  options: { title?: string, avatar?: string } = {},
+): Promise<{ roomId: string, messageId: string }> {
+  const room = await ensureRoom(event as H3Event, name, options.title)
+  const res = await rc<{ message?: { _id: string } }>(event, 'chat.postMessage', {
+    method: 'POST',
+    body: {
+      roomId: room._id,
+      text: text.slice(0, 4000),
+      alias: alias.slice(0, 120),
+      ...(options.avatar && /^https:\/\//.test(options.avatar) ? { avatar: options.avatar } : { emoji: ':globe_with_meridians:' }),
+    },
+  })
+  return { roomId: room._id, messageId: String(res.message?._id ?? '') }
+}
+
 // ---------------------------------------------------------------------------
 // Users + SSO
 

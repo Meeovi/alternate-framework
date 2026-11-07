@@ -1,121 +1,30 @@
 <template>
   <div class="upload-page">
-    <h1>Upload Your Vibez 🎥</h1>
-
-    <v-form @submit.prevent="handleUpload">
-      <label>
-        Title:
-        <v-text-field v-model="name" type="text" placeholder="My awesome video" />
-      </label>
-
-      <label>
-        Video File:
-        <v-text-field type="file" accept="video/*" @change="handleFile" />
-      </label>
-
-      <v-btn type="submit" :disabled="loading" :loading="loading">
-        {{ loading ? 'Uploading...' : 'Upload Vibez' }}
-      </v-btn>
-
-      <p v-if="error" class="error">{{ error }}</p>
-      <p v-if="success" class="success">Upload successful! 🎉</p>
-    </v-form>
+    <h1 class="upload-page__title">Make a vibe 🎥</h1>
+    <vibeEditor />
   </div>
 </template>
 
 <script setup>
-import { ref } from '#imports'
+import vibeEditor from '../../../components/features/vibeSections/editor/vibeEditor.vue'
 
-// globalThis.useAuth was never a real thing anywhere in this app — this
-// always fell through to a plain empty local ref, so the logged-in check
-// below could never actually pass.
-const user = useCurrentUser()
-
-const name = ref('')
-const file = ref(null)
-const loading = ref(false)
-const error = ref('')
-const success = ref(false)
-
-function handleFile(e) {
-  file.value = e.target.files[0]
-}
-
-async function handleUpload() {
-  error.value = ''
-  success.value = false
-  loading.value = true
-
-  if (!user.value) {
-    error.value = 'You must be logged in to upload.'
-    loading.value = false
-    return
-  }
-
-  if (!file.value) {
-    error.value = 'Please select a video file.'
-    loading.value = false
-    return
-  }
-
-  const formData = new FormData()
-  formData.append('name', name.value)
-  formData.append('video', file.value)
-
-  // No manual auth header needed — requireAuth() on the server reads the
-  // real better-auth session cookie, which the browser already sends
-  // automatically on this same-origin request. The previous code tried to
-  // read a Supabase-style access_token/sb:token cookie that this app's
-  // real auth (better-auth) never actually sets.
-  const res = await fetch('/api/upload-video', {
-    method: 'POST',
-    body: formData,
-  })
-
-  const result = await res.json()
-  if (!res.ok) {
-    error.value = result.statusMessage || 'Upload failed.'
-  } else {
-    success.value = true
-    name.value = ''
-    file.value = null
-  }
-
-  loading.value = false
-}
-    
-    definePageMeta({
-        middleware: 'auth'
-    })
-
+// Record or choose a video, add filters, stickers and backgrounds, post it
+// (components/features/vibeSections/editor/vibeEditor.vue). Signed-in only:
+// the upload (/api/upload-video) is the member's.
+definePageMeta({
+  middleware: 'auth'
+})
 </script>
 
 <style scoped>
 .upload-page {
-  max-width: 600px;
+  max-width: 1200px;
   margin: auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
-label {
-  display: block;
+
+.upload-page__title {
   margin-bottom: 1rem;
-}
-input[type="text"],
-input[type="file"] {
-  width: 100%;
-  padding: 0.5rem;
-}
-v-btn {
-  padding: 0.75rem 1.5rem;
-  background: #0070f3;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-.error {
-  color: red;
-}
-.success {
-  color: green;
+  font-size: 1.75rem;
 }
 </style>

@@ -58,6 +58,11 @@
         <div class="profile-meta ml-4 mb-3">
           <h1 class="text-h4 font-weight-bold mb-1">{{ displayName }}</h1>
           <div v-if="username" class="text-medium-emphasis">@{{ username }}</div>
+          <!-- Followable on the fediverse (ActivityPub), when they turned it on -->
+          <div v-if="fediverse.handle" class="text-caption text-medium-emphasis" :title="`Follow from Mastodon, Pixelfed, Threads… by searching ${fediverse.handle}`">
+            <v-icon icon="fas fa-globe" size="x-small" class="mr-1" />{{ fediverse.handle }}
+            <span v-if="fediverse.followers"> · {{ fediverse.followers }} {{ fediverse.followers === 1 ? 'follower' : 'followers' }}</span>
+          </div>
           <div v-if="loadError" class="text-caption text-error mt-1">{{ loadError }}</div>
           <div v-if="images.error.value" class="text-caption text-error mt-1">{{ images.error.value }}</div>
         </div>
@@ -101,12 +106,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import FollowButton from '../../blocks/FollowButton.vue'
 import ReportToModerators from '../../blocks/ReportToModerators.vue'
 import { useProfileImages } from '../../../composables/profile/useProfileImages'
 
-defineProps({
+const props = defineProps({
   /** Empty: no cover yet (the theme colour shows). */
   coverImage: { type: String, default: '' },
   avatarUrl: { type: String, default: '' },
@@ -131,6 +136,16 @@ defineProps({
     ],
   },
 })
+
+// The member's fediverse handle (server/api/social/activitypub/profile.get.ts).
+const fediverse = ref({ handle: null, followers: 0 })
+const loadFediverse = async () => {
+  fediverse.value = { handle: null, followers: 0 }
+  if (!props.username) return
+  fediverse.value = await $fetch('/api/social/activitypub/profile', { query: { username: props.username } }).catch(() => fediverse.value)
+}
+onMounted(loadFediverse)
+watch(() => props.username, loadFediverse)
 
 const emit = defineEmits(['update:tab', 'toggle-theme', 'sign-out', 'update:cover', 'update:avatar'])
 

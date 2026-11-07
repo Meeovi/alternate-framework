@@ -29,7 +29,10 @@ export function storedUsername(username: string): string {
   return username.toLowerCase()
 }
 
-/** Allowed characters, and not 'admin' or a lookalike of it ("adm1n", "4dm1n"). */
+/** Reserved: 'admin', and 'meeovi' (the site's own fediverse account, @meeovi@meeovi.com). */
+const RESERVED = new Set(['admin', 'meeovi'])
+
+/** Allowed characters, and not a reserved name or a lookalike of one ("adm1n", "4dm1n", "me3ovi"). */
 export function isAllowedUsername(username: string): boolean {
-  return USERNAME_PATTERN.test(username) && normalizeUsername(username) !== 'admin'
+  return USERNAME_PATTERN.test(username) && !RESERVED.has(normalizeUsername(username))
 }

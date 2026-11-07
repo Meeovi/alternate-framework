@@ -1,0 +1,36 @@
+{
+  "name": "@mframework/meeovi-zot",
+  "version": "0.1.0",
+  "description": "Zot (Hubzilla and Streams) for M Framework: channels via WebFinger and Zot discovery, posts via their ActivityPub side, and members' own channels through the hub API (api/z/1.0), as the 'zot' federation network for the social layer.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./module.ts",
+  "module": "./module.ts",
+  "types": "./module.ts",
+  "exports": {
+    ".": "./module.ts",
+    "./module": "./module.ts",
+    "./federation": "./runtime/network.ts",
+    "./safe-fetch": "./runtime/safe-fetch.ts"
+  },
+  "files": ["module.ts", "runtime", "test", "README.md"],
+  "scripts": {
+    "build": "echo 'meeovi-zot is consumed from source (module.ts); no build step' && exit 0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "keywords": ["nuxt", "nuxt-module", "zot", "hubzilla", "streams", "nomadic-identity", "federation", "mframework", "meeovi"],
+  "author": "Meeovi Labs",
+  "dependencies": {
+    "@nuxt/kit": "^4.6.1",
+    "undici": "^6.21.0"
+  },
+  "peerDependencies": { "nuxt": "^4.0.0" },
+  "devDependencies": {
+    "@nuxt/schema": "^4.6.1",
+    "@types/node": "latest",
+    "nuxt": "^4.6.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.0.0"
+  }
+}

@@ -56,7 +56,7 @@ beforeEach(() => {
 describe('input', () => {
   it('accepts only watch and listen, and plain ids', () => {
     expect(readKind('watch')).toBe('watch')
-    expect(() => readKind('read')).toThrow('kind must be watch or listen')
+    expect(() => readKind('read')).toThrow('kind must be watch, listen or view')
     expect(readItemId(46)).toBe('46')
     expect(() => readItemId('../x')).toThrow('Invalid item id')
   })

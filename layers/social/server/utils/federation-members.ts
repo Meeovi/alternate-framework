@@ -7,6 +7,9 @@
 //             service "oauth" = the OAuth session store holds the tokens)
 //   directus  nothing: every member has a session on this site's own network
 //   activitypub  nothing yet: there's no Fediverse sign-in, so no session
+//   any network with a `connection` (zot, ostatus…): what its connect()
+//             returned, from federation_connections (encrypted at rest —
+//             federation-connections.ts)
 //
 // Routes use memberSession() for one network and memberSessions() for all.
 import { createError } from 'h3'
@@ -19,6 +22,7 @@ import type {
   FederationNetwork,
 } from '../../shared/types/federation'
 import { federationNetworks, useFederationNetwork, withNetworkTimeout } from './federation'
+import { findConnection, updateConnectionCredentials } from './federation-connections'
 
 type CredentialStore = {
   load(userId: string): Promise<unknown | undefined>
@@ -44,10 +48,20 @@ const CREDENTIALS: Record<string, CredentialStore> = {
   },
 }
 
+/** Networks members connect in Settings (FederationNetwork.connection). */
+const connectionStore = (networkId: string): CredentialStore => ({
+  async load(userId) {
+    const row = await findConnection(userId, networkId)
+    // Connected, but the stored credentials can't be read (key changed): reconnect.
+    return row ? (row.credentials ?? undefined) : undefined
+  },
+  save: (userId, credentials) => updateConnectionCredentials(userId, networkId, credentials),
+})
+
 /** The member's session on one network, or null when they aren't connected to it. */
 export async function openMemberSession(network: FederationNetwork, userId: string): Promise<FederationMemberSession | null> {
   if (typeof network.forMember !== 'function') return null
-  const store = CREDENTIALS[network.id]
+  const store = CREDENTIALS[network.id] ?? (network.connection?.kind === 'account' ? connectionStore(network.id) : undefined)
   const credentials = store ? await store.load(userId) : undefined
   if (store && credentials === undefined) return null
   return network.forMember({
@@ -79,7 +93,8 @@ export type MemberNetwork = {
 /** Every installed network with the member's session on it (null when
  *  they aren't connected). One network failing never fails the others. */
 export async function memberSessions(userId: string): Promise<MemberNetwork[]> {
-  return Promise.all(federationNetworks().map(async (network): Promise<MemberNetwork> => {
+  // Only networks a member can act on (WebTorrent, say, is a playback switch, not a network to post to).
+  return Promise.all(federationNetworks().filter((network) => network.connection?.kind !== 'opt-in').map(async (network): Promise<MemberNetwork> => {
     try {
       const session = await withNetworkTimeout(openMemberSession(network, userId))
       return { id: network.id, label: network.label, connected: !!session, session }

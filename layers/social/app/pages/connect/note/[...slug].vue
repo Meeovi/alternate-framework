@@ -41,6 +41,7 @@
                             <div class="row">
                                 <div class="col-6 d-flex align-center flex-wrap ga-2">
                                     <MeeoviRating v-if="target" :type="target.type" :id="target.id" />
+                                    <FediverseCounts v-if="!federated && post?.id" type="note" :id="post.id" />
                                     <reactions v-if="!federated" class="postReactions" />
                                 </div>
 
@@ -219,6 +220,7 @@
     import FollowButton from '#social/app/components/blocks/FollowButton.vue';
     import ModerationCover from '#social/app/components/blocks/ModerationCover.vue';
     import ReportToModerators from '#social/app/components/blocks/ReportToModerators.vue';
+    import FediverseCounts from '#social/app/components/blocks/FediverseCounts.vue';
     import {
         computed,
         onMounted,
@@ -281,7 +283,7 @@
     const replies = computed(() => thread.value?.replies || [])
     const target = computed(() => noteTarget(post.value))
     const federated = computed(() => !!thread.value?.post)
-    const networkName = computed(() => ({ atproto: 'Bluesky', activitypub: 'Fediverse' })[post.value?.network] || 'Federated')
+    const networkName = computed(() => ({ atproto: 'Bluesky', activitypub: 'Fediverse', ostatus: 'GNU social', zot: 'Hubzilla' })[post.value?.network] || 'Federated')
     // One "show" for a moderated note's image and text (blocks/ModerationCover.vue).
     const moderationShown = ref(false)
     const federatedImage = computed(() => (federated.value ? post.value?.media || [] : []).find((m) => m.type === 'image') || null)

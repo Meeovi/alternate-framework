@@ -1,4 +1,6 @@
 import { realpathSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineNuxtConfig } from 'nuxt/config'
 import type { NuxtPage } from '@nuxt/schema'
@@ -25,7 +27,23 @@ function markSocialPages(pages: NuxtPage[], parentPath = '') {
   }
 }
 
+// The vibe editor's background removal (MediaPipe, app/utils/vibeEditor/)
+// loads its WebAssembly from Meeovi itself: the package's wasm/ folder is
+// served at /mediapipe/wasm (29 MB, so not copied into the repo), the model
+// is public/mediapipe/selfie_segmenter.tflite.
+const mediapipeWasm = (() => {
+  try {
+    return dirname(createRequire(import.meta.url).resolve('@mediapipe/tasks-vision/vision_wasm_internal.js'))
+  } catch {
+    return null
+  }
+})()
+
 export default defineNuxtConfig({
+
+  nitro: {
+    publicAssets: mediapipeWasm ? [{ dir: mediapipeWasm, baseURL: '/mediapipe/wasm', maxAge: 60 * 60 * 24 * 30 }] : [],
+  },
 
   hooks: {
     'pages:extend': markSocialPages,
@@ -43,6 +61,13 @@ export default defineNuxtConfig({
     //    are set to.
     '@mframework/meeovi-atproto',
     '@mframework/meeovi-activitypub',
+    //  - networks members can choose to connect in Settings → Accounts
+    //    (layers/social server/utils/federation-connections.ts):
+    //    Hubzilla/Streams channels, GNU social accounts, and opt-in
+    //    peer-to-peer playback of vibez.
+    '@mframework/meeovi-zot',
+    '@mframework/meeovi-ostatus',
+    '@mframework/meeovi-webtorrent',
     ...(isProd ? ['nuxt-module-feed'] : [])
   ],
   $meta: {
@@ -57,6 +82,7 @@ export default defineNuxtConfig({
     '/profile': { redirect: '/u' },
     '/profile/**': { redirect: '/u/**' },
   },
+
 
   runtimeConfig: {
     adminKey: '',

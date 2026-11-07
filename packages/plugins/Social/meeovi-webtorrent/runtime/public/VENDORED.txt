@@ -1,0 +1,1 @@
+webtorrent 3.0.21 (MIT), dist/webtorrent.min.js and dist/sw.min.js, vendored unchanged from the npm package.

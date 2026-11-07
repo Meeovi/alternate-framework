@@ -50,6 +50,13 @@
                     </v-expansion-panel-text>
                 </v-expansion-panel>
 
+                <!-- Meeovi itself on the fediverse (ActivityPub): @username@meeovi.com -->
+                <v-expansion-panel title="Be followable on the fediverse (Mastodon, Pixelfed, Threads…)">
+                    <v-expansion-panel-text>
+                        <FediverseSettings />
+                    </v-expansion-panel-text>
+                </v-expansion-panel>
+
                 <!-- Fediverse accounts are connected here, after signing in (moved off the login page 2026-11-04). -->
                 <v-expansion-panel title="Connect fediverse accounts (Bluesky / AT Protocol)">
                     <v-expansion-panel-text>
@@ -70,6 +77,13 @@
                                 </v-expansion-panels>
                             </v-col>
                         </v-row>
+                    </v-expansion-panel-text>
+                </v-expansion-panel>
+
+                <!-- Other networks members can choose to connect (federation plugins: Zot, OStatus, WebTorrent…) -->
+                <v-expansion-panel title="Connect other networks (Hubzilla, GNU social, WebTorrent)">
+                    <v-expansion-panel-text>
+                        <FederationConnections />
                     </v-expansion-panel-text>
                 </v-expansion-panel>
 
@@ -141,6 +155,8 @@
     import AtprotoLink from '../../../../../auth/app/components/features/plugins/atproto.vue'
     import BlueskyOAuth from '../../../../../auth/app/components/features/plugins/BlueskyOAuth.vue'
     import BlueskyCrosspost from '../../../../../auth/app/components/features/plugins/BlueskyCrosspost.vue'
+    import FediverseSettings from '../../../../../auth/app/components/features/plugins/FediverseSettings.vue'
+    import FederationConnections from '../../../../../auth/app/components/features/plugins/FederationConnections.vue'
 
     // <AuthSsoSignIn> comes from @mframework/auth-sso, when the app registers it.
     const SsoSignIn = (useAppConfig() as { mframeworkAuth?: { sso?: boolean } }).mframeworkAuth?.sso

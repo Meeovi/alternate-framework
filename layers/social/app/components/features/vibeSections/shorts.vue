@@ -60,6 +60,11 @@
       <span class="text-caption">{{ short?.shares_count || 0 }}</span>
       
       <v-spacer />
+      <!-- Shoppable vibez: opens the vibe, where its products are listed -->
+      <v-chip v-if="productCount" :to="`/connect/vibe/${short?.id}`" size="small" color="orange" variant="tonal"
+        prepend-icon="fas fa-bag-shopping" class="mr-1">
+        {{ productCount }} {{ productCount === 1 ? 'product' : 'products' }}
+      </v-chip>
       <v-btn :to="`/connect/vibe/${short?.id}`" variant="text" size="small">View Vibe</v-btn>
     </v-card-actions>
 
@@ -77,6 +82,7 @@
 <script setup>
 import { ref, computed } from '#imports'
 import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
+import { useVibeProductCount } from '../../../composables/vibez/useVibeProducts'
 
 const { short } = defineProps({
   short: {
@@ -88,6 +94,7 @@ const { short } = defineProps({
 const emit = defineEmits(['hashtag-click', 'comment-click', 'share'])
 
 const showComments = ref(false)
+const productCount = useVibeProductCount(short?.id)
 
 const hashtags = computed(() => {
   if (!short?.description) return []

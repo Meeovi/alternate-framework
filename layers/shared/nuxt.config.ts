@@ -114,6 +114,12 @@ function buildContentSecurityPolicy(): string {
     ? new URL(httpsOrigin(process.env.BETTER_AUTH_IDENTIFY_URL)).origin
     : 'https://kv.better-auth.com'
 
+  // WebTorrent trackers (@mframework/meeovi-webtorrent): members who opt in
+  // to peer-to-peer playback find other viewers through these WebSockets.
+  // Keep in step with that module's default (WEBTORRENT_TRACKERS overrides both).
+  const webtorrentTrackers = (process.env.WEBTORRENT_TRACKERS || 'wss://tracker.openwebtorrent.com,wss://tracker.webtorrent.dev')
+    .split(',').map((t) => t.trim()).filter((t) => /^wss:\/\/[a-z0-9.-]+(:\d+)?(\/.*)?$/i.test(t)).map((t) => new URL(t).origin.replace(/^https:/, 'wss:'))
+
   const connectSrc = [
     "'self'",
     'https://*.mux.com',
@@ -130,6 +136,7 @@ function buildContentSecurityPolicy(): string {
     ...analyticsHosts,
     ...adHosts,
     ...paymentHosts,
+    ...webtorrentTrackers,
   ].filter(Boolean).join(' ')
 
   return [
@@ -152,7 +159,9 @@ function buildContentSecurityPolicy(): string {
     "object-src 'none';",
     // Starting point for a stricter script/frame pass: blocks http: and
     // data: scripts, eval, and non-https frames.
-    "script-src 'self' 'unsafe-inline' https: blob:;",
+    // 'wasm-unsafe-eval' lets pages compile WebAssembly (the vibe editor's
+    // background removal, MediaPipe) — it doesn't allow JavaScript eval.
+    "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https: blob:;",
     "frame-src 'self' https: blob:;",
     "base-uri 'self';",
     "frame-ancestors 'self';",

@@ -9,18 +9,32 @@
           </v-card-subtitle>
 
           <v-card-text>
-            <MeeoviPlayer :src="playerData.src" :poster="playerData.poster" :title="short?.name" />
+            <!-- Shoppable vibez: tagged products pop up over the video at their moment -->
+            <!-- Members who opted in to WebTorrent (Settings → Accounts) stream it peer-to-peer -->
+            <MeeoviPlayer ref="playerRef" :src="p2p.src.value" :poster="playerData.poster" :title="short?.name"
+              @timeupdate="currentTime = $event">
+              <template v-if="vibeProducts.items.value.length" #overlay>
+                <vibeProductPins :items="vibeProducts.items.value" :time="currentTime" />
+              </template>
+            </MeeoviPlayer>
 
             <p v-if="short?.description" class="mt-4">{{ short.description }}</p>
+
+            <vibeProductList class="mt-4" :items="vibeProducts.items.value" :can-edit="vibeProducts.canEdit.value"
+              @edit="taggerOpen = true" @seek="seek" />
           </v-card-text>
 
           <v-card-actions>
             <MeeoviRating v-if="short?.id" type="shorts" :id="short.id" />
+            <FediverseCounts v-if="short?.id" type="vibe" :id="short.id" class="ml-2" />
+            <WebTorrentPeers :source="p2p" class="ml-2" />
             <v-spacer />
             <watchLaterBtn v-if="short?.id" :short-id="short.id" />
             <createListBtn v-if="short" :item="listItem" kind="vibe" />
           </v-card-actions>
         </v-card>
+        <vibeProductTagger v-if="vibeProducts.canEdit.value" v-model="taggerOpen" :items="vibeProducts.items.value"
+          :current-time="currentTime" :saving="taggerSaving" :error="vibeProducts.error.value" @save="saveTags" />
       </v-col>
 
       <v-col>
@@ -48,6 +62,11 @@
   import watchLaterBtn from '../../../components/features/watchLater/watchLaterBtn.vue'
   import { recordPlay } from '../../../composables/media/usePlayHistory'
   import { getAssetURL, getImageURL } from '#shared/app/utils/get-asset-url'
+  import FediverseCounts from '../../../components/blocks/FediverseCounts.vue'
+  import vibeProductPins from '../../../components/features/vibeSections/shop/vibeProductPins.vue'
+  import vibeProductList from '../../../components/features/vibeSections/shop/vibeProductList.vue'
+  import vibeProductTagger from '../../../components/features/vibeSections/shop/vibeProductTagger.vue'
+  import { useVibeProducts } from '../../../composables/vibez/useVibeProducts'
   import {
     ref,
     computed,
@@ -74,6 +93,8 @@
     src: getAssetURL(short.value?.video_url || short.value?.video),
     poster: getImageURL(short.value?.thumbnail_url || short.value?.thumbnail),
   }))
+  // The peer-to-peer stream when the member opted in and it's running, else the file itself.
+  const p2p = useWebTorrentSource(() => playerData.value.src)
 
   // createListBtn's panel needs a resolved thumbnail URL, not the raw
   // Directus asset reference short.thumbnail holds.
@@ -89,6 +110,24 @@
     if (props.vibe !== null && props.vibe !== undefined && props.vibe !== '') return String(props.vibe)
     return Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
   })
+
+  // Shoppable vibez (composables/vibez/useVibeProducts.ts)
+  const vibeProducts = useVibeProducts(shortId)
+  const playerRef = ref(null)
+  const currentTime = ref(0)
+  const taggerOpen = ref(false)
+  const taggerSaving = ref(false)
+  function seek(seconds) {
+    const media = playerRef.value?.media
+    if (!media) return
+    media.currentTime = seconds
+    playerRef.value?.play?.()
+  }
+  async function saveTags(tags) {
+    taggerSaving.value = true
+    if (await vibeProducts.save(tags)) taggerOpen.value = false
+    taggerSaving.value = false
+  }
 
   async function fetchShort() {
     short.value = await $directus.request($readItem('shorts', shortId.value, {

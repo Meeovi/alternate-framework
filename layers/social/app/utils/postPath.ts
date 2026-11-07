@@ -12,7 +12,10 @@ type NoteLike = {
  *    have no slug, and the note page accepts either);
  *  - a Bluesky note (from the federation API): /connect/note/@<handle>/<key>,
  *    key being the last part of its at:// URI;
- *  - a Fediverse note: /connect/note/@<user@instance>/<status id>.
+ *  - a Fediverse note: /connect/note/@<user@instance>/<status id>;
+ *  - a note from another network plugin (OStatus, Zot…):
+ *    /connect/note/@<handle>/<network>:<key> — their handles look like
+ *    Fediverse ones, so the network is named in the key.
  * Notes from other networks open here (Meeovi is their client); their
  * original address is only shown on the note's page, as its source.
  */
@@ -21,6 +24,11 @@ export function postPath(post?: NoteLike | null): string | null {
     const handle = post.author?.handle
     const key = String(post.id ?? '').split('/').pop()
     return handle && key ? `/connect/note/@${encodeURIComponent(handle)}/${encodeURIComponent(key)}` : null
+  }
+  if (post?.network && post.network !== 'directus' && OTHER_NETWORK.test(post.network)) {
+    const handle = post.author?.handle
+    const key = String(post.id ?? '')
+    return handle && key ? `/connect/note/@${encodeURIComponent(handle)}/${encodeURIComponent(`${post.network}:${key}`)}` : null
   }
   const key = post?.slug || post?.id
   return key === undefined || key === null || key === '' ? null : `/connect/note/${encodeURIComponent(String(key))}`
@@ -31,17 +39,23 @@ export function postPath(post?: NoteLike | null): string | null {
  * Meeovi note (/connect/note/<slug>). The handle says the network: a
  * Fediverse handle is user@instance, a Bluesky one has no @ (alice.bsky.social).
  */
-export function federatedNoteRef(path: string): { network: 'atproto' | 'activitypub', author: string, key: string } | null {
+export function federatedNoteRef(path: string): { network: string, author: string, key: string } | null {
   const match = /^@([^/]+)\/([^/]+)$/.exec(path)
   if (!match) return null
   const author = decodeURIComponent(match[1]!).replace(/^@/, '')
   const key = decodeURIComponent(match[2]!)
   if (!author || !key) return null
+  // '<network>:<key>' — a note from another network plugin (OStatus, Zot…).
+  const named = /^([a-z][a-z0-9_-]{1,31}):(.+)$/.exec(key)
+  if (named && OTHER_NETWORK.test(named[1]!)) return { network: named[1]!, author, key: named[2]! }
   return { network: author.includes('@') ? 'activitypub' : 'atproto', author, key }
 }
 
+/** Network ids other than the built-in three that name themselves in note links. */
+const OTHER_NETWORK = /^(?!atproto$|activitypub$|directus$)[a-z][a-z0-9_-]{1,31}$/
+
 /** What to call a network's content to people. */
-export const NETWORK_LABELS: Record<string, string> = { atproto: 'Bluesky', activitypub: 'the Fediverse' }
+export const NETWORK_LABELS: Record<string, string> = { atproto: 'Bluesky', activitypub: 'the Fediverse', ostatus: 'GNU social', zot: 'Hubzilla' }
 
 /** An account's profile on Meeovi (Bluesky or Fediverse) (/u/<handle>; a Meeovi member with that account shows as themselves). */
 export function federatedProfilePath(author?: { handle?: string } | null): string | null {
@@ -82,7 +96,12 @@ export function newPostSlug(text?: string | null): string {
  * Only letters, digits and `_ . : -` (what ratings accept), at most 128.
  */
 export function federatedNoteKey(post?: { network?: string, id?: string | number | null, author?: { id?: string, handle?: string } | null } | null): string | null {
-  if (!post || (post.network !== 'atproto' && post.network !== 'activitypub')) return null
+  if (!post?.network || post.network === 'directus') return null
+  if (post.network !== 'atproto' && post.network !== 'activitypub') {
+    // Other network plugins (OStatus '<host>~<id>', Zot …): their ids already carry their server.
+    const id = String(post.id ?? '')
+    return id && OTHER_NETWORK.test(post.network) ? `${post.network}:${id}`.replace(/[^A-Za-z0-9_.:-]/g, '-').slice(0, 128) : null
+  }
   // Feed items from server/utils/atproto-normalize.ts prefix it `atproto:`.
   const id = String(post.id ?? '').replace(/^atproto:(?=at:\/\/)/, '')
   let key: string | null = null

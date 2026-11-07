@@ -109,7 +109,7 @@ const NOT_PROSE = /(^|_)(id|ids|url|urls|slug|status|type|image|file|video|audio
 // Also per-user server-only collections: dropshipping credentials, and
 // integration installs (each user's installs and plugin data, served only
 // by the integrations API, scoped to the session user).
-const AUTH_TABLES = /^(sessions|users|accounts|verification|two_factor|apikey|api_keys|passkeys?|rate_limit|atproto_sessions|oauth_[a-z_]*|jwks|audit_log_entries|device_code|member|invitation|organization[a-z_]*|team[a-z_]*|sso_provider|scim_provider|dropship_[a-z_]*|integration_installs)$/i
+const AUTH_TABLES = /^(sessions|users|accounts|verification|two_factor|apikey|api_keys|passkeys?|rate_limit|atproto_sessions|atproto_crossposts|ap_[a-z_]+|federation_connections|oauth_[a-z_]*|jwks|audit_log_entries|device_code|member|invitation|organization[a-z_]*|team[a-z_]*|sso_provider|scim_provider|dropship_[a-z_]*|integration_installs)$/i
 
 // Directus' own tables (its admin users, roles, settings…), apart from the
 // file library the app uploads to.
@@ -117,7 +117,7 @@ const SYSTEM_TABLES = /^directus_(?!files$|folders$)/i
 
 // Personal / billing data the app never reads from the browser: admins only.
 // `customers` is the Mage-OS store's customers, mirrored into Directus.
-const PRIVATE_COLLECTIONS = /^(address|addresses|customers|os_[a-z_]+|subscriptions[a-z_]*|help_feedback|play_history)$/i
+const PRIVATE_COLLECTIONS = /^(address|addresses|customers|os_[a-z_]+|subscriptions[a-z_]*|help_feedback|play_history|vibe_effects)$/i
 
 // Customer billing records. The app reads them client-side (order /
 // invoice / transaction pages), so instead of being admin-only, a

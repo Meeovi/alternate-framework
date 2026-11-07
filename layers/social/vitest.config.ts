@@ -6,6 +6,8 @@ export default defineConfig({
     // Layers don't get Nuxt's generated cross-layer aliases in vitest.
     alias: {
       '#auth': fileURLToPath(new URL('../auth', import.meta.url)),
+      '#commerce': fileURLToPath(new URL('../commerce', import.meta.url)),
+      '#shared': fileURLToPath(new URL('../shared', import.meta.url)),
     },
   },
   test: {

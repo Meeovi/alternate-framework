@@ -23,6 +23,9 @@ const OWNED: Record<string, string> = {
   media_folders: 'user',
   spaces: 'owner',
   websites: 'creator',
+  // Vibe editor stickers/filters/backgrounds (a seller's effect product
+  // stays in the store; its effect row goes).
+  vibe_effects: 'creator_id',
 }
 
 export async function eraseUserContent(userId: string): Promise<void> {

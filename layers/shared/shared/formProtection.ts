@@ -68,6 +68,8 @@ const RULES: Rule[] = [
   { methods: ['POST'], path: /^\/api\/social\/(atproto\/post|publish)\/?$/ },
   // Reporting a Bluesky note or account to Meeovi's moderators (Ozone)
   { methods: ['POST'], path: /^\/api\/social\/moderation\/report\/?$/ },
+  // Vibe editor effects members upload (stickers, filters, backgrounds).
+  { methods: ['POST'], path: /^\/api\/social\/vibez\/effects\/?$/ },
   // Calendar events (create / edit form)
   { methods: ['POST'], path: /^\/api\/social\/calendar\/events\/?$/ },
   { methods: ['PATCH'], path: /^\/api\/social\/calendar\/events\/[^/]+\/?$/ },

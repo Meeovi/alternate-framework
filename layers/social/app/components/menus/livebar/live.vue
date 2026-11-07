@@ -13,8 +13,10 @@
                         </template>
 
                         <template v-slot:default="{ isActive }">
-                            <v-card color="white">
-                                <addlive />
+                            <v-card color="white" class="pa-4">
+                                <!-- The same editor as /connect/vibe/upload -->
+                                <!-- Unmounted on close, so the camera turns off -->
+                                <vibeEditor v-if="createdialog" />
 
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
@@ -77,7 +79,7 @@
 <script setup>
     import { authClient } from '#auth/lib/auth-client'
     import vibe from '#social/app/pages/connect/vibe/[...id].vue'
-    import addlive from '#social/app/components/features/vibeSections/add-live.vue'
+    import vibeEditor from '#social/app/components/features/vibeSections/editor/vibeEditor.vue'
     import {
         ref,
         computed,

@@ -20,7 +20,7 @@ import { requireCapability, useFederationNetwork, withNetworkTimeout } from '../
  * Body: { network: 'meeovi' | 'atproto' | …, subject: { kind, id },
  *         reasonType: 'spam' | 'violation' | 'misleading' | 'sexual' | 'rude' | 'other',
  *         details? }
- * Meeovi kinds: note, product, space, comment (id = the Directus id; a
+ * Meeovi kinds: note, product, space, comment, effect (id = the Directus id; a
  * store product may be `magento:<sku>`).
  * Bluesky kinds: note (at:// URI), account (DID).
  * Behind Turnstile (shared/formProtection.ts); at most 20 reports an hour
@@ -30,7 +30,7 @@ import { requireCapability, useFederationNetwork, withNetworkTimeout } from '../
 const Body = z.object({
   network: z.string().regex(/^[a-z][a-z0-9-]{1,31}$/),
   subject: z.object({
-    kind: z.enum(['note', 'account', 'product', 'space', 'comment']),
+    kind: z.enum(['note', 'account', 'product', 'space', 'comment', 'effect']),
     id: z.string().min(1).max(512),
   }),
   reasonType: z.enum(['spam', 'violation', 'misleading', 'sexual', 'rude', 'other']),
@@ -47,11 +47,13 @@ const REASON_TITLES: Record<string, string> = {
 }
 
 /** Meeovi content: the Directus collection it lives in and the report's link field. */
-const MEEOVI_KINDS: Record<string, { collection: string, link: string, linkKey: string }> = {
+const MEEOVI_KINDS: Record<string, { collection: string, link?: string, linkKey?: string }> = {
   note: { collection: 'posts', link: 'posts', linkKey: 'posts_id' },
   product: { collection: 'products', link: 'products', linkKey: 'products_id' },
   space: { collection: 'spaces', link: 'spaces', linkKey: 'spaces_id' },
   comment: { collection: 'comments', link: 'comments', linkKey: 'comments_id' },
+  // A vibe editor sticker/filter/background (no link table; content_id says which).
+  effect: { collection: 'vibe_effects' },
 }
 
 const directus = () => createDirectus(process.env.DIRECTUS_URL!)
@@ -82,7 +84,7 @@ async function storeReport(input: {
     if (!store && !/^[\w-]{1,64}$/.test(input.id)) throw notFound()
     const filter = store ? { mageos_sku: { _eq: store[1] } } : { id: { _eq: input.id } }
     const found = await client.request(readItems(target.collection as never, { filter, fields: ['id'], limit: 1 } as never)) as Array<{ id: string | number }>
-    if (found[0]) row[target.link] = [{ [target.linkKey]: found[0].id }]
+    if (found[0] && target.link && target.linkKey) row[target.link] = [{ [target.linkKey]: found[0].id }]
     else if (!store) throw notFound()
   }
   const created = await client.request(createItem('report' as never, row as never, { fields: ['id'] } as never)) as { id: string | number }

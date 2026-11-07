@@ -40,10 +40,28 @@
             <v-combobox v-model="form.tags" label="Tags" multiple chips closable-chips
               :hint="`Up to ${MAX_TAGS}. Press Enter after each one.`" persistent-hint
               :rules="[maxTags]" :delimiters="[',']" />
+            <!-- A sticker, filter or background members buy and use in the vibe editor -->
+            <v-select v-model="form.effectKind" :items="EFFECT_KINDS" label="Vibe effect (optional)" clearable class="mt-2"
+              hint="Sell a sticker, filter or background people use in their vibez" persistent-hint />
+            <template v-if="form.effectKind === 'sticker' || form.effectKind === 'background'">
+              <v-file-input v-model="form.effect" class="mt-2" show-size prepend-icon="fas fa-wand-magic-sparkles"
+                :label="form.effectKind === 'sticker' ? 'Sticker image (PNG, WebP or GIF, up to 2 MB)' : 'Background image (JPEG, PNG or WebP, up to 5 MB)'"
+                :accept="form.effectKind === 'sticker' ? 'image/png,image/webp,image/gif' : 'image/jpeg,image/png,image/webp'"
+                :rules="[requiredFile]" />
+            </template>
+            <div v-else-if="form.effectKind === 'filter'" class="mt-2">
+              <p class="text-body-2 mb-1">Filter settings</p>
+              <div class="d-flex align-center ga-3 mb-2">
+                <div class="seller-filter-preview" :style="{ filter: filterPreview }" />
+                <span class="text-caption text-medium-emphasis">Preview</span>
+              </div>
+              <v-slider v-for="s in FILTER_SLIDERS" :key="s.key" v-model="form.filter[s.key]" :label="s.label" :min="s.min"
+                :max="s.max" :step="s.step" hide-details density="compact" />
+            </div>
             <v-file-input v-model="form.image" label="Image (JPEG, PNG or GIF, up to 8 MB)" accept="image/jpeg,image/png,image/gif" prepend-icon="fas fa-image" show-size />
             <v-file-input v-model="form.download" label="Download file (optional, up to 200 MB)" prepend-icon="fas fa-file-arrow-down" show-size
               hint="What buyers get: an image, PDF, ZIP, audio or video file" persistent-hint />
-            <v-text-field v-if="!form.download" v-model="form.qty" label="Quantity in stock" type="number" min="0" step="1" class="mt-2" />
+            <v-text-field v-if="!form.download && !form.effectKind" v-model="form.qty" label="Quantity in stock" type="number" min="0" step="1" class="mt-2" />
             <v-checkbox v-model="form.allowFreeDownload" :disabled="!canBeFree" class="mt-2" hide-details
               label="Allow anyone to download it for free" />
             <p v-if="!canBeFree" class="text-caption text-medium-emphasis">Needs a price of 0 and a download file.</p>
@@ -85,6 +103,8 @@ const money = (value: unknown) => new Intl.NumberFormat('en-US', { style: 'curre
 const blank = () => ({
   name: '', price: '0', description: '', qty: '0', image: null as File | null, download: null as File | null, allowFreeDownload: false,
   departmentId: null as number | null, categoryId: null as number | null, tags: [] as string[],
+  effectKind: null as 'sticker' | 'filter' | 'background' | null, effect: null as File | null,
+  filter: { brightness: 1, contrast: 1, saturate: 1, warmth: 0, hue: 0, vignette: 0 } as Record<string, number>,
 })
 const form = reactive(blank())
 const formOpen = ref(false)
@@ -137,6 +157,29 @@ const canBeFree = computed(() => Number(form.price) === 0 && !!form.download)
 watch(canBeFree, (ok) => { if (!ok) form.allowFreeDownload = false })
 
 const required = (v: unknown) => !!String(v ?? '').trim() || 'Required'
+const requiredFile = (v: File | File[] | null) => !!single(v) || 'Required'
+
+// Vibe effects (layers/social server/utils/vibeEffects.ts).
+const EFFECT_KINDS = [
+  { title: 'Sticker', value: 'sticker' },
+  { title: 'Filter', value: 'filter' },
+  { title: 'Background', value: 'background' },
+]
+const FILTER_SLIDERS = [
+  { key: 'brightness', label: 'Brightness', min: 0.5, max: 1.5, step: 0.01 },
+  { key: 'contrast', label: 'Contrast', min: 0.5, max: 1.5, step: 0.01 },
+  { key: 'saturate', label: 'Colour', min: 0, max: 2, step: 0.01 },
+  { key: 'warmth', label: 'Warmth', min: 0, max: 0.6, step: 0.01 },
+  { key: 'hue', label: 'Hue', min: -180, max: 180, step: 1 },
+  { key: 'vignette', label: 'Vignette', min: 0, max: 0.8, step: 0.01 },
+]
+/** Only the settings moved away from neutral. */
+const filterSettings = computed(() => Object.fromEntries(Object.entries(form.filter)
+  .filter(([key, value]) => value !== (['brightness', 'contrast', 'saturate'].includes(key) ? 1 : 0))))
+const filterPreview = computed(() => {
+  const f = form.filter
+  return `brightness(${f.brightness}) contrast(${f.contrast}) saturate(${f.saturate}) sepia(${f.warmth}) hue-rotate(${f.hue}deg)`
+})
 const nonNegative = (v: string) => (Number(v) >= 0 && Number.isFinite(Number(v))) || 'Must be 0 or more'
 
 function openForm() {
@@ -187,12 +230,23 @@ async function submit() {
     const download = single(form.download)
     if (image) body.append('image', image, image.name)
     if (download) body.append('download', download, download.name)
+    if (form.effectKind) {
+      body.append('effectKind', form.effectKind)
+      const effect = single(form.effect)
+      if (effect) body.append('effect', effect, effect.name)
+      if (form.effectKind === 'filter') {
+        if (!Object.keys(filterSettings.value).length) { formError.value = 'Move at least one filter setting.'; return }
+        body.append('effectConfig', JSON.stringify(filterSettings.value))
+      }
+    }
     const result = await $fetch<{ sku: string, problems: string[] }>('/api/business/products', { method: 'POST', body })
     formOpen.value = false
     snackbar.show({
       message: result.problems?.length
         ? `Product added, but its ${result.problems.join(' and ')} didn't upload. Edit it in the store or try again.`
-        : 'Product added. It goes live once the store approves it.',
+        : form.effectKind
+          ? 'Product added. Once the store approves it, it shows in the vibe editor\'s shop.'
+          : 'Product added. It goes live once the store approves it.',
       color: result.problems?.length ? 'warning' : 'success',
     })
     await refresh()
@@ -203,3 +257,12 @@ async function submit() {
   }
 }
 </script>
+
+<style scoped>
+.seller-filter-preview {
+  width: 72px;
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f6b26b, #6fa8dc 50%, #93c47d);
+}
+</style>

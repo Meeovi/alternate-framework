@@ -48,7 +48,7 @@ import { useSocialStore } from '../../stores/social'
  */
 const props = withDefaults(defineProps<{
   network: string
-  subject: { kind: 'note' | 'account' | 'product' | 'space' | 'comment', id: string }
+  subject: { kind: 'note' | 'account' | 'product' | 'space' | 'comment' | 'effect', id: string }
   label?: string
 }>(), { label: 'Report' })
 

@@ -6506,6 +6506,80 @@ export const atprotoCrossposts = pgTable.withRLS("atproto_crossposts", {
 	check("atproto_crossposts_source_type_check", sql`source_type IN ('product', 'note')`),
 ]);
 
+// Meeovi on the fediverse (migration 20261107010000_activitypub; layers/social
+// server/utils/activitypub/*).
+export const apActorKeys = pgTable.withRLS("ap_actor_keys", {
+	identifier: varchar({ length: 160 }).notNull(),
+	keyType: varchar("key_type", { length: 32 }).notNull(),
+	privateKey: jsonb("private_key").notNull(),
+	publicKey: jsonb("public_key").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+}, (table) => [
+	primaryKey({ columns: [table.identifier, table.keyType], name: "ap_actor_keys_pkey" }),
+]);
+
+export const apFollowers = pgTable.withRLS("ap_followers", {
+	identifier: varchar({ length: 160 }).notNull(),
+	actorUri: text("actor_uri").notNull(),
+	followId: text("follow_id"),
+	handle: text(),
+	name: text(),
+	url: text(),
+	inboxUrl: text("inbox_url").notNull(),
+	sharedInboxUrl: text("shared_inbox_url"),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+}, (table) => [
+	primaryKey({ columns: [table.identifier, table.actorUri], name: "ap_followers_pkey" }),
+	index("ap_followers_actor_uri_idx").on(table.actorUri),
+]);
+
+export const apOutbox = pgTable.withRLS("ap_outbox", {
+	id: uuid().defaultRandom().primaryKey(),
+	identifier: varchar({ length: 160 }).notNull(),
+	objectType: varchar("object_type", { length: 16 }).notNull(),
+	objectId: varchar("object_id", { length: 64 }).notNull(),
+	publishedAt: timestamp("published_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true }),
+	deletedAt: timestamp("deleted_at", { withTimezone: true }),
+}, (table) => [
+	unique("ap_outbox_item_unique").on(table.identifier, table.objectType, table.objectId),
+	index("ap_outbox_identifier_idx").on(table.identifier, table.publishedAt),
+	index("ap_outbox_object_idx").on(table.objectType, table.objectId),
+]);
+
+export const apInteractions = pgTable.withRLS("ap_interactions", {
+	id: uuid().defaultRandom().primaryKey(),
+	kind: varchar({ length: 12 }).notNull(),
+	objectType: varchar("object_type", { length: 16 }).notNull(),
+	objectId: varchar("object_id", { length: 64 }).notNull(),
+	actorUri: text("actor_uri").notNull(),
+	actorHandle: text("actor_handle"),
+	activityId: text("activity_id").notNull(),
+	objectUri: text("object_uri"),
+	content: text(),
+	discussionMessageId: varchar("discussion_message_id", { length: 64 }),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+}, (table) => [
+	unique("ap_interactions_activity_unique").on(table.activityId),
+	index("ap_interactions_object_idx").on(table.objectType, table.objectId, table.kind),
+]);
+
+// Members' connections to other networks (Zot, OStatus, WebTorrent…); see
+// migrations/20261107030000_federation_connections. credentials = AES-GCM ciphertext.
+export const federationConnections = pgTable.withRLS("federation_connections", {
+	userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	network: varchar({ length: 32 }).notNull(),
+	account: varchar({ length: 320 }),
+	service: varchar({ length: 255 }),
+	credentials: text(),
+	settings: jsonb().default({}).notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`now()`).notNull(),
+}, (table) => [
+	primaryKey({ columns: [table.userId, table.network], name: "federation_connections_pkey" }),
+	index("federation_connections_network_idx").on(table.network),
+]);
+
 export const variants = pgTable.withRLS("variants", {
 	id: serial().primaryKey(),
 	productId: integer("product_id").references(() => products.id, { onDelete: "cascade" } ),
