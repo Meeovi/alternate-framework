@@ -225,6 +225,23 @@ class SellerProductManagement implements SellerProductManagementInterface
         throw new LocalizedException(__('A product with SKU "%1" already exists.', $sku));
     }
 
+    /**
+     * "Me-at-the-Zoo-4824b2" → "me-at-the-zoo-4824b2". A SKU that changes when
+     * written this way ("A_B" and "A-B" would meet) gets a short hash of itself,
+     * so the key stays unique.
+     */
+    private function urlKeyFor(string $sku): string
+    {
+        $key = trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower($sku)), '-');
+        if ($key === '') {
+            return 'product-' . substr(sha1($sku), 0, 10);
+        }
+        if ($key !== strtolower($sku)) {
+            $key .= '-' . substr(sha1($sku), 0, 6);
+        }
+        return substr($key, 0, 240);
+    }
+
     private function buildProduct(
         string $sku,
         string $name,
@@ -242,6 +259,11 @@ class SellerProductManagement implements SellerProductManagementInterface
 
         $product->setSku($sku);
         $product->setName($name);
+        // The URL key comes from the SKU, which is unique: left to Magento it's
+        // made from the name, and a second product with the same name (two
+        // sellers' "Funny cat" videos) failed with "URL key for specified store
+        // already exists".
+        $product->setUrlKey($this->urlKeyFor($sku));
         $product->setPrice($price);
         $product->setTypeId('simple');
         $product->setAttributeSetId($attributeSetId ?? $this->getDefaultAttributeSetId());
